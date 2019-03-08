@@ -14,8 +14,6 @@ public interface SocketEvents {
 
     void sendAppliedStatus();
 
-    void closeSocketEvents();
-
     void socketEventError();
 
     void closeSocket();

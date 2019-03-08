@@ -786,8 +786,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             public void onRefresh() {
                 if (networkStatus) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        intent.setAction("refresh");
                         startForegroundService(intent);
                     } else {
+                        intent.setAction("refresh");
                         startService(intent);
                     }
                     if (listener != null) {

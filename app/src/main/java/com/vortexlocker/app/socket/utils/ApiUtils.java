@@ -8,9 +8,11 @@ import com.vortexlocker.app.app.MyApplication;
 import com.vortexlocker.app.networkResponseModels.DealerLoginResponse;
 import com.vortexlocker.app.settings.SettingContract.SettingsMvpView;
 import com.vortexlocker.app.settings.SettingsActivity;
+import com.vortexlocker.app.socket.SocketSingleton;
 import com.vortexlocker.app.socket.interfaces.ApiRequests;
 import com.vortexlocker.app.socket.interfaces.RefreshListener;
 import com.vortexlocker.app.socket.service.SocketService;
+import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +135,8 @@ public class ApiUtils implements ApiRequests, RefreshListener {
     @Override
     public void onSwipe() {
         Timber.d("<<< swipe to refresh >>>");
-        new SocketUtils().closeSocket();
+        String device_id = PrefUtils.getStringPref(context, AppConstants.DEVICE_ID);
+        SocketSingleton.closeSocket(device_id);
         getDeviceId();
     }
 }

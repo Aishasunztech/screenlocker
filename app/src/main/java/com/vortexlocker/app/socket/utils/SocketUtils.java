@@ -2,7 +2,6 @@ package com.vortexlocker.app.socket.utils;
 
 import android.content.Context;
 
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.vortexlocker.app.appSelection.AppSelectionActivity;
@@ -10,6 +9,7 @@ import com.vortexlocker.app.launcher.AppInfo;
 import com.vortexlocker.app.settings.SettingContract;
 import com.vortexlocker.app.settings.SettingsActivity;
 import com.vortexlocker.app.settingsMenu.SettingsMenuActivity;
+import com.vortexlocker.app.socket.SocketSingleton;
 import com.vortexlocker.app.socket.interfaces.ChangeSettings;
 import com.vortexlocker.app.socket.interfaces.DatabaseStatus;
 import com.vortexlocker.app.socket.interfaces.GetApplications;
@@ -20,11 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 import timber.log.Timber;
 
+import static com.vortexlocker.app.socket.SocketSingleton.getSocket;
 import static com.vortexlocker.app.socket.utils.utils.getAppsList;
 import static com.vortexlocker.app.socket.utils.utils.getAppsWithoutIcons;
 import static com.vortexlocker.app.socket.utils.utils.settingsChangeListener;
@@ -45,7 +45,6 @@ import static com.vortexlocker.app.utils.AppConstants.IS_SYNCED;
 import static com.vortexlocker.app.utils.AppConstants.SEND_APPS;
 import static com.vortexlocker.app.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.SETTINGS_CHANGE;
-import static com.vortexlocker.app.utils.AppConstants.SOCKET_SERVER_URL;
 
 public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplications, SettingContract.SettingsMvpView, ChangeSettings {
 
@@ -62,7 +61,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
 
     }
 
-    public SocketUtils(String device_id, Context context, String token) {
+    SocketUtils(String device_id, Context context, String token) {
         this.device_id = device_id;
         this.context = context;
         this.token = token;
@@ -91,19 +90,10 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
 
     }
 
-    public void initSocket() {
+    private void initSocket() {
         Timber.d("<<< initializing socket >>>");
-        IO.Options opts = new IO.Options();
-        opts.forceNew = true;
-        opts.reconnectionDelay = 1000;
-        opts.reconnection = true;
-        opts.query = "device_id=" + device_id + "&token=" + token;
-        try {
-            socket = IO.socket(SOCKET_SERVER_URL, opts);
-        } catch (URISyntaxException e) {
-            Timber.e("error : %S", e.getMessage());
-        }
-        socket.connect();
+        socket = getSocket(device_id, token);
+
     }
 
 
@@ -274,15 +264,6 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
 
     }
 
-    @Override
-    public void closeSocketEvents() {
-        socket.off(GET_SYNC_STATUS + device_id);
-        socket.off(GET_APPLIED_SETTINGS + device_id);
-        socket.off(DEVICE_STATUS + device_id);
-        socket.off(Socket.EVENT_ERROR);
-        socket.off(Socket.EVENT_CONNECT);
-        socket.off(Socket.EVENT_DISCONNECT);
-    }
 
     @Override
     public void socketEventError() {
@@ -294,11 +275,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
     @Override
     public void closeSocket() {
         Timber.d("<<< closing socket >>>");
-        if (socket != null) {
-            closeSocketEvents();
-            socket.disconnect();
-        }
-
+        SocketSingleton.closeSocket(device_id);
     }
 
     @Override

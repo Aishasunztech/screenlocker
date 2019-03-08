@@ -8,9 +8,12 @@ import android.os.IBinder;
 
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.settings.SettingContract;
+import com.vortexlocker.app.socket.SocketSingleton;
 import com.vortexlocker.app.socket.utils.ApiUtils;
 import com.vortexlocker.app.socket.utils.SocketUtils;
+import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.CommonUtils;
+import com.vortexlocker.app.utils.PrefUtils;
 
 import timber.log.Timber;
 
@@ -28,12 +31,21 @@ public class SocketService extends Service implements SettingContract.SettingsMv
     public void onCreate() {
         Timber.d("<<< socket service created >>>");
         startService();
-        String macAddress = CommonUtils.getMacAddress();
-        new ApiUtils(SocketService.this, macAddress);
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
+        String action = intent.getAction();
+        if (action != null) {
+            if (action.equals("refresh")) {
+                String macAddress = CommonUtils.getMacAddress();
+                new ApiUtils(SocketService.this, macAddress);
+            }
+        }
+
         Timber.d("<<< socket service started >>>");
         return START_STICKY;
     }
@@ -49,7 +61,8 @@ public class SocketService extends Service implements SettingContract.SettingsMv
     @Override
     public void onDestroy() {
         Timber.d("<<< socket service destroyed >>>");
-        new SocketUtils().closeSocket();
+        String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
+        SocketSingleton.closeSocket(device_id);
         super.onDestroy();
     }
 
