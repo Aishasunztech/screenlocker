@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="colorPrimary">#131313</color>
+    <color name="colorPrimaryDark">#4b4b4b</color>
+    <color name="colorAccent">#40dcff</color>
+    <color name="colorLine">#9f9f9f</color>
+    <color name="textColorPrimary">#ffffff</color>
+    <color name="colorTransparent">#80000000</color>
+    <!--<color name="guest_default_background_color">#4b4b4b</color>-->
+    <color name="guest_default_background_color">#000000</color>
+    <color name="encrypted_default_background_color">#000000</color>
+
+    <color name="green_dark">#0e7904</color>
+
+
+
+
+</resources>

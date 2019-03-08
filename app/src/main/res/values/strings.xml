@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Screen Locker</string>
+
+    <string name="number_zero">0</string>
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="number_six">6</string>
+    <string name="number_seven">7</string>
+    <string name="number_eight">8</string>
+    <string name="number_nine">9</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_backspace">CLEAR ALL</string>
+    <string name="description_notification_icon">notification icon</string>
+    <string name="description_app_image">app image</string>
+    <string name="unlock">UNLOCK</string>
+    <string name="enter_pin">Enter pin</string>
+    <string name="re_enter_pin">Re-Enter pin</string>
+    <string name="confirm_pin">Confirm Pin</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="pin">PIN</string>
+    <string name="wrong_password_try_again">Wrong password! Try again</string>
+    <string name="set_guest_password">Set Guest Password</string>
+    <string name="set_encrypted_password">Set Encrypted Password</string>
+    <string name="enable_lock_screen">Enable Lock Screen</string>
+    <string name="please_add_encrypted_password">Please add encrypted password first.</string>
+    <string name="please_enter_encrypted_password">Please enter encrypted password</string>
+    <string name="please_enter_your_current_password">Please enter your current password.</string>
+    <string name="wrong_password_entered">You have entered wrong password.</string>
+    <string name="password_changed">password changed</string>
+    <string name="password_not_changed">password not changed</string>
+    <string name="hint_please_enter_guest_pin">Please enter guest pin</string>
+    <string name="hint_please_enter_duress_pin">Please enter duress pin</string>
+    <string name="hint_please_confirm_your_pin">Please confirm your pin</string>
+    <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
+    <string name="empty">Empty!</string>
+    <string name="password_dont_match">Oops password dont match!!</string>
+    <string name="toolbar_title">Screen Locker</string>
+    <string name="set_guest_code">Guest Pin Code</string>
+    <string name="set_duress_code">Duress Pin Code</string>
+    <string name="set_encrypted_code">Encrypted Pin Code</string>
+    <string name="please_set_encrypted_password">Please set Encrypted password first.</string>
+    <string name="set_background_for">Set Background for</string>
+    <string name="guest_all">Turn ON Guest ALL</string>
+    <string name="encryption_all">Turn ON Encrypted ALL</string>
+    <string name="enable_all">Enable All</string>
+    <string name="please_enter_current_guest_password">Please enter current Guest password.</string>
+    <string name="please_enter_current_encrypted_password">Please enter current Encrypted password.</string>
+    <string name="please_enter_current_duress_password">Please enter current Duress password.</string>
+    <string name="check_for_updates"><u>Check for updates</u></string>
+    <string name="set_code_pin">Set code pin</string>
+    <string name="hint_please_enter_code_pin">Please enter code pin</string>
+    <string name="please_enter_code_admin_password">Please enter code admin password.</string>
+    <string name="code">Code</string>
+    <string name="set_apps_permissions"><![CDATA[Set Apps & Permissions]]></string>
+    <string name="reset_guest_encrypted_pass"><![CDATA[Reset Guest & Encrypted Pass]]></string>
+    <string name="settings_menu">Settings Menu</string>
+    <string name="change_admin_panel_code">Change Admin Panel Code</string>
+    <string name="password_is_changed_to_default">Password is changed to default.</string>
+    <string name="service_desc">used to lock the device</string>
+    <string name="install_apps">Install Apps</string>
+    <string name="please_check_network_connection">Please check your network connection.</string>
+    <string name="sim">SIM</string>
+    <string name="set_duress_pass">Set Duress Password</string>
+
+    // MDM strings
+
+    <string name="no_internet">Internet not available</string>
+    <string name="processing">Processing…</string>
+    <string name="submit">Submit</string>
+    <string name="permission_required">We need this permission to read hardware ids to secure your device</string>
+    <string name="dont_have_permission">We do not have permission.</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="info">Info :</string>
+    <string name="device_already_linked">Device already linked with DealerId</string>
+    <string name="link_request_pending">Link request pending!</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="link_device">Link device</string>
+    <string name="device_not_linked">Device not linked!</string>
+    <string name="stop_linking">Stop Linking</string>
+    <string name="session_expired">Session expired</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment_second">hello blank fragment</string>
+
+</resources>
