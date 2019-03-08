@@ -94,7 +94,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
                 && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE)) {
 
+            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
             mainPresenter.startLockService(lockScreenIntent);
+
             //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
             if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);

@@ -3,6 +3,7 @@ package com.vortexlocker.app.base;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -38,7 +39,7 @@ import timber.log.Timber;
 import static com.vortexlocker.app.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 
 @SuppressLint("Registered")
-public abstract class   BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
     customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
@@ -74,6 +75,9 @@ public abstract class   BaseActivity extends AppCompatActivity implements Lifecy
         disablePullNotificationTouch();
         createAlertDialog();
 
+        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+
         if (PermissionUtils.canDrawOver(this)) {
             addStatusOverlay();
             statusViewAdded = true;
@@ -104,11 +108,11 @@ public abstract class   BaseActivity extends AppCompatActivity implements Lifecy
     }
 
     void removeStatusOverlay() {
-//        manager.removeView(getOverLayView());
+        manager.removeView(getOverLayView());
     }
 
     void addStatusOverlay() {
-//        manager.addView(getOverLayView(), getOverLayLayoutParams());
+        manager.addView(getOverLayView(), getOverLayLayoutParams());
     }
 
     private void createAlertDialog() {
@@ -142,24 +146,6 @@ public abstract class   BaseActivity extends AppCompatActivity implements Lifecy
 
     private void createLayoutParams() {
 
-//
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-//            localLayoutParams = new WindowManager.LayoutParams(
-//                    WindowManager.LayoutParams.WRAP_CONTENT,
-//                    WindowManager.LayoutParams.WRAP_CONTENT,
-//                    WindowManager.LayoutParams.TYPE_PHONE,
-//                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-//                    PixelFormat.TRANSLUCENT);
-//        } else {
-//            localLayoutParams = new WindowManager.LayoutParams(
-//                    WindowManager.LayoutParams.WRAP_CONTENT,
-//                    WindowManager.LayoutParams.WRAP_CONTENT,
-//                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-//                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-//                    PixelFormat.TRANSLUCENT);
-//        }
-
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
@@ -175,11 +161,8 @@ public abstract class   BaseActivity extends AppCompatActivity implements Lifecy
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
-
         localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (25 * getResources()
-                .getDisplayMetrics().scaledDensity);
-
+        localLayoutParams.height = (int) (25 * getResources().getDisplayMetrics().scaledDensity);
         localLayoutParams.format = PixelFormat.TRANSPARENT;
     }
 

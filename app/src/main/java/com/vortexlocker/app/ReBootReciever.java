@@ -24,6 +24,7 @@ public class ReBootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
 
+        context.sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
 
         if (Objects.requireNonNull(intent.getAction()).equals(Intent.ACTION_BOOT_COMPLETED)) {
             String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
