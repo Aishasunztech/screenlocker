@@ -453,9 +453,7 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
-
         Toast.makeText(this, "Device linked ", Toast.LENGTH_SHORT).show();
-        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, TOUR_STATUS, true);
         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
         Intent intent = new Intent(LinkDeviceActivity.this, SettingsActivity.class);
         startActivity(intent);

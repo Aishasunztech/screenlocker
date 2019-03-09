@@ -307,7 +307,7 @@ public class utils {
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
         if (main_password == null) {
-            PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, "12345");
+            PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
         }
         Intent lockScreenIntent = new Intent(context, LockScreenService.class);
         lockScreenIntent.setAction(msg);

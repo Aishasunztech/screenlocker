@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:padding="16dp"
-        android:text="@string/settings_menu"
+        android:text="@string/system_controls"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
         app:layout_constraintEnd_toEndOf="parent"

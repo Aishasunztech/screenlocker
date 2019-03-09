@@ -274,6 +274,8 @@ public class Utils {
                             break;
                     }
                 } else {
+                    keyboardView.setPassword(null);
+
                     keyboardView.setWarningText("Wrong password! Try again", null);
                 }
 
@@ -301,6 +303,7 @@ public class Utils {
         if (view == null) {
             view = new View(activity);
         }
+
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 

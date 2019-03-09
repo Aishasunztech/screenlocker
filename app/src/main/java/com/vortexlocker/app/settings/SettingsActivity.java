@@ -148,7 +148,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-            return;
         }
 //        final Intent intent = new Intent(this, SocketService.class);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

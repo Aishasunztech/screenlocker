@@ -226,11 +226,12 @@
         <activity
             android:name=".mdm.MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
-            />
-
-        <activity android:name=".mdm.ui.LinkDeviceActivity" />
+        <activity
+            android:name=".mdm.ui.LinkDeviceActivity"
+            android:screenOrientation="portrait" />
 
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />

@@ -79,7 +79,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
         setContentView(R.layout.activity_settings_menu);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Settings Menu");
+        getSupportActionBar().setTitle("System Controls");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ResolveInfo settingResolveInfo = querySettingPkgName();

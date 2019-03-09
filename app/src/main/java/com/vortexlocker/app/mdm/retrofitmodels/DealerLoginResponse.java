@@ -3,7 +3,7 @@ package com.vortexlocker.app.mdm.retrofitmodels;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DealerLoginResponse {
+public class  DealerLoginResponse {
 
     @SerializedName("token")
     @Expose

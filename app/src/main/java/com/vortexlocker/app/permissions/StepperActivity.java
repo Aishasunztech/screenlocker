@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.vortexlocker.app.MyAdmin;
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.mdm.MainActivity;
+import com.vortexlocker.app.mdm.ui.LinkDeviceActivity;
 import com.vortexlocker.app.settings.SettingsActivity;
 import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.PermissionUtils;
@@ -33,6 +34,7 @@ import timber.log.Timber;
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.CURRENT_STEP;
 import static com.vortexlocker.app.utils.AppConstants.RESULT_ENABLE;
+import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
 import static com.vortexlocker.app.utils.PermissionUtils.isPermissionGranted;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionAdmin;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionModify;
@@ -56,7 +58,7 @@ public class StepperActivity extends AppCompatActivity {
         SettingsActivity settingsActivity = new SettingsActivity();
 
         steppersViewConfig.setOnFinishAction(() -> {
-
+            PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
             Intent intent = new Intent(StepperActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -103,45 +105,6 @@ public class StepperActivity extends AppCompatActivity {
         linking.setOnClickContinue(() -> {
         });
 
-
-//        int i = 0;
-//        while (i <= 10) {
-//
-//            final SteppersItem item = new SteppersItem();
-//            item.setLabel("Step nr " + i);
-//            item.setPositiveButtonEnable(i % 2 != 0);
-//
-//            if (i % 2 == 0) {
-//                BlankFragment blankFragment = new BlankFragment();
-//                blankFragment.setOnClickListener(v -> item.setPositiveButtonEnable(true));
-//                if (i % 4 == 0) {
-//                    item.setSkippable(true, () -> {
-//                        Toast skipToast = Toast.makeText(StepperActivity.this,
-//                                "Step \"" + item.getLabel() + "\" skipped",
-//                                Toast.LENGTH_SHORT);
-//                        skipToast.setGravity(Gravity.BOTTOM, 0, 50);
-//                        skipToast.show();
-//                    });
-//                } else {
-//                    item.setSkippable(true);
-//                }
-//
-//                item.setOnClickContinue(() -> new AlertDialog.Builder(StepperActivity.this)
-//                        .setTitle("Are you really want continue?")
-//                        .setPositiveButton("Yes", (dialogInterface, i1) -> steppersView.nextStep())
-//                        .setNegativeButton("No", (dialogInterface, i1) -> dialogInterface.dismiss()).show());
-//
-//                item.setSubLabel("Fragment: " + blankFragment.getClass().getSimpleName());
-//                item.setFragment(blankFragment);
-//            } else {
-//                BlankSecondFragment blankSecondFragment = new BlankSecondFragment();
-//                item.setSubLabel("Fragment: " + blankSecondFragment.getClass().getSimpleName());
-//                item.setFragment(blankSecondFragment);
-//            }
-//
-//            steps.add(item);
-//            i++;
-//        }
 
         SteppersItem guestPassword = new SteppersItem();
         guestPassword.setLabel("Set Guest Password");

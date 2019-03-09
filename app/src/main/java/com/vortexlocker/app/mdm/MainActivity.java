@@ -117,11 +117,11 @@ public class MainActivity extends BaseActivity {
     protected void init() {
 
         Intent intent = new Intent();
-        intent.setAction( "com.mediatek.ppl.NOTIFY_LOCK");
+        intent.setAction("com.mediatek.ppl.NOTIFY_LOCK");
 //        startActivity(intent);
 
 
-        boolean link_status = PrefUtils.getBooleanPref(this,DEVICE_LINKED_STATUS);
+        boolean link_status = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
         if (link_status) {
             Toast.makeText(this, "devcie already linked ", Toast.LENGTH_LONG).show();
         } else {
@@ -221,8 +221,8 @@ public class MainActivity extends BaseActivity {
      */
     private void autologin() {
 
-        final String autoLoginPin = PrefUtils.getStringPref(this,AUTO_LOGIN_PIN);
-        final String autoLoginId = PrefUtils.getStringPref(this,AppConstants.KEY_DEALER_ID);
+        final String autoLoginPin = PrefUtils.getStringPref(this, AUTO_LOGIN_PIN);
+        final String autoLoginId = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
 
         if (autoLoginPin != null) {
 
@@ -240,13 +240,13 @@ public class MainActivity extends BaseActivity {
                                 if (dlr.getStatus()) {
                                     //updating the prefs
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
 
 
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AUTH_TOKEN, dlr.getToken());
+                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
 
                                     Log.e(TAG, "onResponse: login_if");
                                     checkCurrentStatusAndProceedAutoLogin(autoLoginId);
@@ -289,7 +289,7 @@ public class MainActivity extends BaseActivity {
                 .getApiOneCaller()
                 .linkDeviceStatus(
                         new LinkStatusModel(defaultImei, DeviceIdUtils.getMacAddress()),
-                        PrefUtils.getStringPref(MainActivity.this,AUTH_TOKEN)
+                        PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
                 )
                 .enqueue(new Callback<LinkStatusResponse>() {
                     @Override
@@ -436,7 +436,9 @@ public class MainActivity extends BaseActivity {
     private void handleSubmit() {
 
         final String dealerPin = etPin.getText().toString().trim();
-        if (dealerPin.matches("^([\\d]{6,})$")) {
+
+
+        if (dealerPin.matches("\\d{6}|\\d{7}")) {
             disableViews();
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
@@ -449,12 +451,12 @@ public class MainActivity extends BaseActivity {
                                 DealerLoginResponse dlr = response.body();
                                 if (dlr != null && dlr.getStatus()) {
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
                                     PrefUtils
-                                            .saveStringPref(MainActivity.this,AUTH_TOKEN, dlr.getToken());
-                                    PrefUtils.saveStringPref(MainActivity.this,TEMP_AUTO_LOGIN_PIN, dealerPin);
+                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
+                                    PrefUtils.saveStringPref(MainActivity.this, TEMP_AUTO_LOGIN_PIN, dealerPin);
                                     Log.e(TAG, "onResponse: TEMP_PIN_ADDED" + dealerPin);
                                     checkCurrentStatusAndProceed();
                                 } else {
@@ -470,8 +472,9 @@ public class MainActivity extends BaseActivity {
                         }
                     });
         } else {
-            etPin.setError("Invalid Dealer");
+            etPin.setError("Invalid Dealer or Code");
         }
+
     }
 
     /**
@@ -479,13 +482,13 @@ public class MainActivity extends BaseActivity {
      */
     private void checkCurrentStatusAndProceed() {
 
-        final String Did_current = PrefUtils.getStringPref(MainActivity.this,AppConstants.KEY_DEALER_ID);
+        final String Did_current = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID);
 
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .linkDeviceStatus(
                         new LinkStatusModel(defaultImei, DeviceIdUtils.getMacAddress()),
-                        PrefUtils.getStringPref(MainActivity.this,AUTH_TOKEN)
+                        PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
                 )
                 .enqueue(new Callback<LinkStatusResponse>() {
                     @Override

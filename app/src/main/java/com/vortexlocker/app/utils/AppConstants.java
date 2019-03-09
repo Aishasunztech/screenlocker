@@ -82,8 +82,8 @@ public class AppConstants {
     public static final String DEVICE_STATUS_CHANGE_RECEIVER = "com.vortexlocker.app.DEVICE_STATUS_CHANGE";
     public static final String DB_STATUS = "db_status";
     public static final String SETTINGS_APPLIED_STATUS = "settings_applied_status_";
-    public static final String DEFAULT_MAIN_PASS = "1234";
-    public static final String DEFAULT_GUEST_PASS = "5678";
+    public static final String DEFAULT_MAIN_PASS = "5678";
+    public static final String DEFAULT_GUEST_PASS = "1234";
 
 
     // MDM

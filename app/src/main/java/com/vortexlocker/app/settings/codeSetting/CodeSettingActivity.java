@@ -384,8 +384,8 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void resetPassword() {
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
         if (isServiceRunning()) {
             final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);
             stopService(lockScreenIntent);
