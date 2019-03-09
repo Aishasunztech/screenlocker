@@ -135,8 +135,10 @@ public class MyApplication extends Application implements NetworkListener {
             Intent intent = new Intent(this, SocketService.class);
             if (status) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.setAction("restart");
                     startForegroundService(intent);
                 } else {
+                    intent.setAction("restart");
                     startService(intent);
                 }
             } else {

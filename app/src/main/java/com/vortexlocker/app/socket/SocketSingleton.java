@@ -22,9 +22,9 @@ public class SocketSingleton {
     public static Socket getSocket(String device_id, String token) {
 
         if (socket != null) {
-             return socket;
+            return socket;
         } else {
-            
+
             IO.Options opts = new IO.Options();
             opts.forceNew = true;
             opts.reconnectionDelay = 1000;
@@ -41,6 +41,13 @@ public class SocketSingleton {
         return socket;
     }
 
+
+    public static boolean isSocketConnected() {
+        if (socket != null) {
+            return socket.connected();
+        }
+        return false;
+    }
 
     public static void closeSocket(String device_id) {
 

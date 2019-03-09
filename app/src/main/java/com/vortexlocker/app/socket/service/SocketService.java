@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.settings.SettingContract;
@@ -17,6 +18,7 @@ import com.vortexlocker.app.utils.PrefUtils;
 
 import timber.log.Timber;
 
+import static com.vortexlocker.app.socket.SocketSingleton.isSocketConnected;
 import static com.vortexlocker.app.utils.Utils.getNotification;
 
 public class SocketService extends Service implements SettingContract.SettingsMvpView {
@@ -37,10 +39,18 @@ public class SocketService extends Service implements SettingContract.SettingsMv
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
         String action = intent.getAction();
         if (action != null) {
             if (action.equals("refresh")) {
+                if (!isSocketConnected()) {
+                    String macAddress = CommonUtils.getMacAddress();
+                    new ApiUtils(SocketService.this, macAddress);
+                }
+
+            }
+            if (action.equals("restart")) {
+                String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
+                SocketSingleton.closeSocket(device_id);
                 String macAddress = CommonUtils.getMacAddress();
                 new ApiUtils(SocketService.this, macAddress);
             }

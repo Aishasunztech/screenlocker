@@ -148,7 +148,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
+//        final Intent intent = new Intent(this, SocketService.class);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            intent.setAction("refresh");
+//            startForegroundService(intent);
+//        } else {
+//            intent.setAction("refresh");
+//            startService(intent);
+//        }
+
     }
 
     public void init() {
@@ -786,10 +796,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             public void onRefresh() {
                 if (networkStatus) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        intent.setAction("refresh");
+                        intent.setAction("restart");
                         startForegroundService(intent);
                     } else {
-                        intent.setAction("refresh");
+                        intent.setAction("restart");
                         startService(intent);
                     }
                     if (listener != null) {
@@ -808,15 +818,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onNetworkChange(boolean status) {
         Log.d("networkStatus", "onNetworkChange: " + status);
         networkStatus = status;
-
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-
         if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);
+
             if (networkStatus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.setAction("refresh");
                     startForegroundService(intent);
                 } else {
+                    intent.setAction("refresh");
                     startService(intent);
                 }
             } else {
