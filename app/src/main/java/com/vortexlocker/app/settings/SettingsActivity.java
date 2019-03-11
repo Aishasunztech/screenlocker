@@ -470,9 +470,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      * set listeners
      */
     private void setListeners() {
-        findViewById(R.id.tvSetMainPassword).setOnClickListener(this);
-        findViewById(R.id.tvSetGuestPassword).setOnClickListener(this);
-        findViewById(R.id.tvSetDuressPassword).setOnClickListener(this);
+
+        findViewById(R.id.tvManagePasswords).setOnClickListener(this);
         findViewById(R.id.tvChooseBackground).setOnClickListener(this);
         findViewById(R.id.tvAbout).setOnClickListener(this);
         findViewById(R.id.tvCode).setOnClickListener(this);
@@ -485,37 +484,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         if (isOverLayAllowed()) {
             switch (v.getId()) {
+                case R.id.tvManagePasswords:
+                    Intent passwordsIntent = new Intent(SettingsActivity.this, ManagePasswords.class);
+                    startActivity(passwordsIntent);
+                    break;
                 case R.id.tvSetDefaultLauncher:
                     handleSetDefaultLauncher();
                     break;
-
-                case R.id.tvSetGuestPassword:   // handle the set guest password click event
-                    /**
-                     * start the {@link SetUpLockActivity} to get the password
-                     */
-                    handleSetGuestPassword(SettingsActivity.this, rootLayout);
-                    break;
-
-                case R.id.tvSetMainPassword:    // handle the set main password click event
-                    /**
-                     * start the {@link SetUpLockActivity} to get the password
-                     */
-                    handleSetMainPassword(SettingsActivity.this, rootLayout);
-                    break;
-
-                case R.id.tvSetDuressPassword:    // handle the set duress password click event
-                    /**
-                     * start the {@link SetUpLockActivity} to get the password
-                     */
-
-                    handleSetDuressPassword(SettingsActivity.this, rootLayout);
-                    break;
-
-
                 case R.id.tvChooseBackground:     // handle the choose apps click event
                     handleChooseABackground();
                     break;
-
 
                 case R.id.tvCode:
                     handleCodeAdmin();

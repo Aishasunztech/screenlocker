@@ -46,8 +46,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--<activity android:name=".ManagePasswords"></activity>-->
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}"
@@ -110,6 +108,11 @@
             android:name=".appSelection.AppSelectionActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".settings.ManagePasswords"
+
+            android:screenOrientation="portrait" />
 
         <service android:name=".utils.LifecycleReceiverService" />
         <service

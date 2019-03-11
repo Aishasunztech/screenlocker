@@ -30,78 +30,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <!-- including  the toolbar -->
-
-                <!--to set the guest password-->
                 <TextView
-                    android:id="@+id/tvSetGuestPassword"
+                    android:id="@+id/tvManagePasswords"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="55dp"
                     android:background="?selectableItemBackground"
                     android:padding="16dp"
-                    android:text="@string/set_guest_password"
+                    android:text="Manage Passwords"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="@dimen/textSize"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/divider2"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@color/colorLine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSetGuestPassword" />
-                <!-- to set the encrypted password -->
-                <TextView
-                    android:id="@+id/tvSetMainPassword"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackground"
-                    android:padding="16dp"
-                    android:text="@string/set_encrypted_password"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="@dimen/textSize"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSetGuestPassword" />
-
-                <View
-                    android:id="@+id/divider3"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@color/colorLine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSetDuressPassword" />
-
-                <TextView
-                    android:id="@+id/tvSetDuressPassword"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackground"
-                    android:padding="16dp"
-                    android:text="@string/set_duress_pass"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="@dimen/textSize"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider" />
 
                 <View
                     android:id="@+id/divider"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-
                     android:background="@color/colorLine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSetMainPassword" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/tvManagePasswords"
+                    tools:layout_editor_absoluteX="0dp" />
 
                 <!-- to enable or enable the lock screen pin -->
                 <Switch
@@ -132,7 +82,6 @@
                     android:id="@+id/tvChooseBackground"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
                     android:background="?selectableItemBackground"
                     android:padding="16dp"
                     android:text="Set Background Image"
@@ -140,9 +89,9 @@
                     android:textSize="@dimen/textSize"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
 
                 <View
                     android:id="@+id/divider5"

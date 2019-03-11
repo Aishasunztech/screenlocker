@@ -54,7 +54,7 @@ public class StepperActivity extends AppCompatActivity {
         setContentView(R.layout.stepper_layout);
         steppersView = findViewById(R.id.steppersView);
         SteppersView.Config steppersViewConfig = new SteppersView.Config();
-        boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+
         SettingsActivity settingsActivity = new SettingsActivity();
 
         steppersViewConfig.setOnFinishAction(() -> {

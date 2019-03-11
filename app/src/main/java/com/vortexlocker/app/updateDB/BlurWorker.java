@@ -52,12 +52,21 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
 
                     app.setGuest(false);
+
+//                    // chat app
+//                    String chatApp = String.valueOf(ri.loadLabel(getApplicationContext().getPackageManager()));
+//                    if (app.getUniqueName().equals(getApplicationContext().getPackageName() + chatApp)) {
+//                        app.setEncrypted(true);
+//                        app.setEnable(true);
+//                    }
+
                     // own app
                     if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {
                         app.setEncrypted(true);
                         app.setEnable(true);
                     } else {
                         app.setEncrypted(false);
+                        app.setGuest(true);
                         app.setEnable(false);
                     }
 

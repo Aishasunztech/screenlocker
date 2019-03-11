@@ -81,13 +81,11 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
                 String settingPackageName = null;
                 if (resolveInfos != null || resolveInfos.size() != 0) {
-
                     settingPackageName = resolveInfos.get(0).activityInfo.packageName + String.valueOf(resolveInfos.get(0).loadLabel(getPackageManager()));
                 }
                 if (settingPackageName != null) {
                     AppInfo particularApp = MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
                     if (particularApp == null) {
-
                         AppInfo appInfo = new AppInfo();
                         appInfo.setEncrypted(false);
                         appInfo.setEnable(false);
