@@ -59,7 +59,7 @@ public class StepperActivity extends AppCompatActivity {
 
         steppersViewConfig.setOnFinishAction(() -> {
             PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
-            Intent intent = new Intent(StepperActivity.this, MainActivity.class);
+            Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
             startActivity(intent);
             finish();
         });
@@ -101,8 +101,10 @@ public class StepperActivity extends AppCompatActivity {
         SteppersItem linking = new SteppersItem();
         linking.setLabel("Link Device");
         linking.setPositiveButtonEnable(true);
-        linking.setSkippable(false);
+        linking.setSkippable(true);
         linking.setOnClickContinue(() -> {
+            Intent intent = new Intent(StepperActivity.this, MainActivity.class);
+            startActivity(intent);
         });
 
 
@@ -131,13 +133,15 @@ public class StepperActivity extends AppCompatActivity {
         });
 
 
+        SteppersItem finish = new SteppersItem();
+        finish.setLabel("Finish");
         //Add Steps
         steps.add(permissions);
         steps.add(guestPassword);
         steps.add(encryptedPassword);
         steps.add(duressPassword);
         steps.add(linking);
-
+        steps.add(finish);
 
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
         steppersView.setConfig(steppersViewConfig);

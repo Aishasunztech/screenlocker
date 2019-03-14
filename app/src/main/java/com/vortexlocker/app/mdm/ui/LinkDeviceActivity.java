@@ -325,59 +325,66 @@ public class LinkDeviceActivity extends BaseActivity {
 
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
+        if (btnLinkDevice.getText().equals("Next")) {
+            PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+            Intent intent = new Intent(LinkDeviceActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            processingLinkViewState();
 
-        processingLinkViewState();
-
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .linkDeviceToDealer(
-                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
-                        PrefUtils.getStringPref(LinkDeviceActivity.this, AUTH_TOKEN)
+            ((MyApplication) getApplicationContext())
+                    .getApiOneCaller()
+                    .linkDeviceToDealer(
+                            new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
+                            PrefUtils.getStringPref(LinkDeviceActivity.this, AUTH_TOKEN)
 //                                +"INVALID_TOKEN"
-                )
-                .enqueue(new Callback<LinkDeviceResponse>() {
-                    @Override
-                    public void onResponse(Call<LinkDeviceResponse> call, Response<LinkDeviceResponse> response) {
+                    )
+                    .enqueue(new Callback<LinkDeviceResponse>() {
+                        @Override
+                        public void onResponse(Call<LinkDeviceResponse> call, Response<LinkDeviceResponse> response) {
 
-                        if (response.isSuccessful()) {
+                            if (response.isSuccessful()) {
 
-                            LinkDeviceResponse ldr = response.body();
+                                LinkDeviceResponse ldr = response.body();
 
-                            if (ldr.getStatus() != null) {
+                                if (ldr.getStatus() != null) {
 
-                                if (ldr.getStatus().equals("true")) {
-                                    checkLinkDeviceStatus();
+                                    if (ldr.getStatus().equals("true")) {
+                                        checkLinkDeviceStatus();
 
+                                    } else {
+
+                                        checkLinkDeviceStatus();
+                                    }
+
+                                } else if (ldr.getMsg() != null) {
+
+                                    switch (ldr.getMsg()) {
+
+                                        case TOKEN_EXPIRED:
+                                        case TOKEN_INVALID:
+                                        case TOKEN_NOT_PROVIDED:
+                                            Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
+                                            finish();
+                                    }
                                 } else {
-
                                     checkLinkDeviceStatus();
-                                }
-
-                            } else if (ldr.getMsg() != null) {
-
-                                switch (ldr.getMsg()) {
-
-                                    case TOKEN_EXPIRED:
-                                    case TOKEN_INVALID:
-                                    case TOKEN_NOT_PROVIDED:
-                                        Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
-                                        finish();
                                 }
                             } else {
                                 checkLinkDeviceStatus();
                             }
-                        } else {
+                        }
+
+                        @Override
+                        public void onFailure(Call<LinkDeviceResponse> call, Throwable t) {
+//                        newLinkViewState();
                             checkLinkDeviceStatus();
                         }
-                    }
+                    });
+        }
 
-                    @Override
-                    public void onFailure(Call<LinkDeviceResponse> call, Throwable t) {
-//                        newLinkViewState();
-                        checkLinkDeviceStatus();
-                    }
-                });
     }
 
     @OnClick(R.id.btnStopLink)
@@ -448,16 +455,13 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void approvedLinkViewState() {
-        btnLinkDevice.setVisibility(View.GONE);
+        btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
+        btnLinkDevice.setText("Next");
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
-        Toast.makeText(this, "Device linked ", Toast.LENGTH_SHORT).show();
-        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-        Intent intent = new Intent(LinkDeviceActivity.this, SettingsActivity.class);
-        startActivity(intent);
-        finish();
+
     }
 
     private void pendingLinkViewState() {

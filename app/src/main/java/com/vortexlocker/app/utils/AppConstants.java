@@ -61,11 +61,11 @@ public class AppConstants {
 
     public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-//    public static String STAGING_BASE_URL = "http://192.168.18.26:3000/mobile/";//for localhost real device
+//    public static String STAGING_BASE_URL = "http://192.168.18.78:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
     public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.18.26:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://192.168.18.78:3000";//local host with real device
 
 
     public static final String RESPONSE_TO_SERVER = "sendApps_";

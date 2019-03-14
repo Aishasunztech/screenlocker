@@ -9,7 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -101,6 +103,8 @@ public class MainActivity extends BaseActivity {
      */
     @BindView(R.id.lytSwipeRefresh)
     SwipeRefreshLayout lytSwipeRefresh;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * @return this is to setup the layout for this activity
@@ -119,23 +123,27 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setAction("com.mediatek.ppl.NOTIFY_LOCK");
 //        startActivity(intent);
+        setToolbar(toolbar);
+
+        initAutoLoginWithPermissions();
+
+        lytSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Timber.i("<<<<<SwipedToRefresh>>>>>");
+                initAutoLogin();
+            }
+        });
 
 
-        boolean link_status = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-        if (link_status) {
-            Toast.makeText(this, "devcie already linked ", Toast.LENGTH_LONG).show();
-        } else {
-            initAutoLoginWithPermissions();
+    }
 
-            lytSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    Timber.i("<<<<<SwipedToRefresh>>>>>");
-                    initAutoLogin();
-                }
-            });
+    private void setToolbar(Toolbar mToolbar) {
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Link Device");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
 
     }
 
@@ -671,4 +679,16 @@ public class MainActivity extends BaseActivity {
         error.setVisibility(View.GONE);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

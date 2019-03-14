@@ -49,9 +49,36 @@
                     android:id="@+id/divider"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
+
                     android:background="@color/colorLine"
-                    app:layout_constraintTop_toBottomOf="@+id/tvManagePasswords"
-                    tools:layout_editor_absoluteX="0dp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvManagePasswords" />
+
+
+                <!--to enable or disable vpn -->
+
+                <Switch
+                    android:id="@+id/switchEnableVpn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/enable_vpn"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="@dimen/textSize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider13" />
+
+                <View
+                    android:id="@+id/divider10"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/switchEnableVpn" />
 
                 <!-- to enable or enable the lock screen pin -->
                 <Switch
@@ -59,13 +86,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-
                     android:text="@string/enable_lock_screen"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="@dimen/textSize"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSetDefaultLauncher" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider10" />
 
                 <View
                     android:id="@+id/divider4"
@@ -77,6 +104,30 @@
                     app:layout_constraintTop_toBottomOf="@+id/switchEnableLockScreen" />
 
                 <!-- to select the apps those user want to encrypt -->
+
+                <TextView
+                    android:id="@+id/tvlinkDevice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground"
+                    android:padding="16dp"
+                    android:text="Link Device"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="@dimen/textSize"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+                <View
+                    android:id="@+id/divider14"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvlinkDevice" />
 
                 <TextView
                     android:id="@+id/tvChooseBackground"
@@ -91,7 +142,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider14" />
 
                 <View
                     android:id="@+id/divider5"

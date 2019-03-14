@@ -25,11 +25,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
@@ -54,7 +52,6 @@ import com.vortexlocker.app.settings.codeSetting.CodeSettingActivity;
 import com.vortexlocker.app.socket.interfaces.DatabaseStatus;
 import com.vortexlocker.app.socket.interfaces.NetworkListener;
 import com.vortexlocker.app.socket.interfaces.RefreshListener;
-import com.vortexlocker.app.socket.model.Settings;
 import com.vortexlocker.app.socket.receiver.NetworkReceiver;
 import com.vortexlocker.app.socket.service.SocketService;
 import com.vortexlocker.app.updateDB.BlurWorker;
@@ -76,11 +73,8 @@ import timber.log.Timber;
 import static com.vortexlocker.app.launcher.MainActivity.RESULT_ENABLE;
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.DB_STATUS;
-import static com.vortexlocker.app.utils.AppConstants.DEFAULT_GUEST_PASS;
-import static com.vortexlocker.app.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.vortexlocker.app.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.vortexlocker.app.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.vortexlocker.app.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
@@ -109,7 +103,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      */
     private static final int REQUEST_CODE_PASSWORD = 883;
     private InputMethodManager imm;
-    private Switch switchEnableLockScreen;
+    private Switch switchEnableLockScreen, switchEnableVpn;
 
     private SettingsPresenter settingsPresenter;
     private ConstraintLayout rootLayout;
@@ -121,6 +115,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private static RefreshListener listener;
     private static DatabaseStatus listener1;
+    private TextView tvlinkDevice;
 
     public void setDatabaseStatus(DatabaseStatus databaseStatus) {
         listener1 = databaseStatus;
@@ -143,11 +138,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         init();
+
+
         boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
         if (!linkStatus) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            tvlinkDevice.setVisibility(View.VISIBLE);
+        } else {
+            tvlinkDevice.setVisibility(View.GONE);
         }
 //        final Intent intent = new Intent(this, SocketService.class);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -200,6 +197,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         // switch change listener(on off service for lock)
         switchEnableLockScreen.setOnCheckedChangeListener(this);
+
+        // switch change listener(on off service for vpn)
+        switchEnableVpn.setOnCheckedChangeListener(this);
         createActiveDialog();
         createNoNetworkDialog();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -264,10 +264,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void setIds() {
         switchEnableLockScreen = findViewById(R.id.switchEnableLockScreen);
+        switchEnableVpn = findViewById(R.id.switchEnableVpn);
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
         swipeToApiRequest = findViewById(R.id.swipe_to_api_request);
-
+        tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
     // TODO REMOVE PREFS FOR START DATE AND END DATE
@@ -477,6 +478,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvCode).setOnClickListener(this);
         findViewById(R.id.tvCheckForUpdate).setOnClickListener(this);
         findViewById(R.id.tvSetDefaultLauncher).setOnClickListener(this);
+        findViewById(R.id.tvlinkDevice).setOnClickListener(this);
     }
 
 
@@ -505,6 +507,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
                     //Crashlytics.getInstance().crash(); // Force a crash
+                    break;
+                case R.id.tvlinkDevice:
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
                     break;
             }
         } else {
@@ -760,6 +766,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     PermissionUtils.requestOverlayPermission(SettingsActivity.this);
                     switchEnableLockScreen.setChecked(false);
                 }
+                break;
+            case R.id.switchEnableVpn:
+
+                if (isChecked) {
+
+
+                } else {
+                    Toast.makeText(this, "unckeked", Toast.LENGTH_SHORT).show();
+
+                }
+
                 break;
         }
     }
