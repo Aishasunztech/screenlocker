@@ -243,7 +243,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 statusViewAdded = true;
             }
             if (PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT) == null) {
-                enableScreenShotBlocker(true);
+                enableScreenShotBlocker(false);
             }
         } else {
             if (statusViewAdded) {
@@ -269,11 +269,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             mWindowManager = getWindowManager();
 
         if (isChecked) {
-
-//            mWindowManager.addView(getScreenShotView(), getLayoutParams());
+            mWindowManager.addView(getScreenShotView(), getLayoutParams());
             PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-        } else
+        } else{
+            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
             Toast.makeText(BaseActivity.this, "already screenshot enabled", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 

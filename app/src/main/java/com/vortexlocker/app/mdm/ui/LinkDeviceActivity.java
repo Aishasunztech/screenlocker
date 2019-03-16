@@ -21,6 +21,7 @@ import com.vortexlocker.app.mdm.retrofitmodels.LinkDeviceResponse;
 import com.vortexlocker.app.mdm.retrofitmodels.LinkStatusModel;
 import com.vortexlocker.app.mdm.retrofitmodels.LinkStatusResponse;
 import com.vortexlocker.app.mdm.utils.DeviceIdUtils;
+import com.vortexlocker.app.permissions.StepperActivity;
 import com.vortexlocker.app.settings.SettingsActivity;
 import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.PrefUtils;
@@ -36,6 +37,7 @@ import timber.log.Timber;
 
 import static com.vortexlocker.app.utils.AppConstants.AUTH_TOKEN;
 import static com.vortexlocker.app.utils.AppConstants.AUTO_LOGIN_PIN;
+import static com.vortexlocker.app.utils.AppConstants.CURRENT_STEP;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_NEW;
@@ -101,6 +103,11 @@ public class LinkDeviceActivity extends BaseActivity {
     @Override
     protected int getContentView() {
         return R.layout.activity_link_device;
+    }
+
+
+    public LinkDeviceActivity() {
+
     }
 
     @SuppressLint({"LogNotTimber", "HardwareIds"})
@@ -327,9 +334,16 @@ public class LinkDeviceActivity extends BaseActivity {
     public void onClickBtnLinkDevice() {
         if (btnLinkDevice.getText().equals("Next")) {
             PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-            Intent intent = new Intent(LinkDeviceActivity.this, SettingsActivity.class);
-            startActivity(intent);
-            finish();
+            boolean tour_status = PrefUtils.getBooleanPref(LinkDeviceActivity.this, TOUR_STATUS);
+            if (tour_status) {
+                finish();
+            } else {
+                int current_step = PrefUtils.getIntegerPref(LinkDeviceActivity.this, CURRENT_STEP);
+                PrefUtils.saveIntegerPref(LinkDeviceActivity.this, CURRENT_STEP, current_step + 1);
+                Log.d("kjgjnjsg", "onClickBtnLinkDevice: " + PrefUtils.getIntegerPref(LinkDeviceActivity.this, CURRENT_STEP));
+                finish();
+            }
+
         } else {
             processingLinkViewState();
 
@@ -458,6 +472,7 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         btnLinkDevice.setText("Next");
+        btnLinkDevice.setEnabled(true);
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);

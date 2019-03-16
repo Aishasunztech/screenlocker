@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                 if (bg == null || bg.equals("")) {
 
-                    Glide.with(MainActivity.this).load(R.drawable.default_background).apply(new RequestOptions().centerCrop()).into(background);
+                    Glide.with(MainActivity.this).load(R.drawable.guest_space).apply(new RequestOptions().centerCrop()).into(background);
 
                 } else {
                     Glide.with(MainActivity.this)

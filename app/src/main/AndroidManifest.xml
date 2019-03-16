@@ -31,6 +31,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
@@ -150,6 +152,7 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".alarm.AlarmReceiver" />
         <receiver android:name=".socket.receiver.MdmEventReciever">
             <intent-filter>
                 <action android:name="com.secureportal.barryapp.app_linked_success" />
@@ -240,10 +243,10 @@
 
         <!-- VPN service for -->
         <!--<service android:name=".MyVpnService"-->
-            <!--android:permission="android.permission.BIND_VPN_SERVICE">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.net.VpnService"/>-->
-            <!--</intent-filter>-->
+        <!--android:permission="android.permission.BIND_VPN_SERVICE">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.net.VpnService"/>-->
+        <!--</intent-filter>-->
         <!--</service>-->
 
     </application>

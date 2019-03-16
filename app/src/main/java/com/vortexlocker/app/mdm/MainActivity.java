@@ -120,6 +120,25 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void init() {
 
+
+        //get imei of device
+        IMEI = DeviceIdUtils.getIMEI(this);
+        // get sim number
+        SimNo = DeviceIdUtils.getSimNumber(this);
+        //get serial number
+        SerialNo = DeviceIdUtils.getSerialNumber();
+        // get ip address
+        IP = DeviceIdUtils.getIPAddress(true);
+        // get mac address
+        MAC = DeviceIdUtils.getMacAddress();
+
+        defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
+
+        SerialNo = (SerialNo == null) ? "" : SerialNo;
+
+        IP = (IP == null) ? "" : IP;
+
+
         Intent intent = new Intent();
         intent.setAction("com.mediatek.ppl.NOTIFY_LOCK");
 //        startActivity(intent);
@@ -174,10 +193,18 @@ public class MainActivity extends BaseActivity {
      * call api and check weather its allowed to login or not
      */
 
-
     List<String> IMEI;
 
     String defaultImei;
+
+    List<String> SimNo;
+
+    String MAC;
+
+    String IP;
+
+    String SerialNo;
+
 
     private void initAutoLogin() {
 
@@ -446,8 +473,22 @@ public class MainActivity extends BaseActivity {
         final String dealerPin = etPin.getText().toString().trim();
 
 
-        if (dealerPin.matches("\\d{6}|\\d{7}")) {
-            disableViews();
+        if (dealerPin.matches("\\d{6}")) {
+
+            request(1, dealerPin);
+        } else if (dealerPin.matches("\\d{7}")) {
+            request(2, dealerPin);
+
+        } else {
+            etPin.setError("Invalid Dealer or Code");
+        }
+
+    }
+
+
+    private void request(int type, String dealerPin) {
+        disableViews();
+        if (type == 1) {
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
                     .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin))
@@ -479,9 +520,41 @@ public class MainActivity extends BaseActivity {
                             enableViews();
                         }
                     });
-        } else {
-            etPin.setError("Invalid Dealer or Code");
+        } else if (type == 2) {
+
+            ((MyApplication) getApplicationContext())
+                    .getApiOneCaller()
+                    .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
+                    .enqueue(new Callback<DealerLoginResponse>() {
+                        @Override
+                        public void onResponse(Call<DealerLoginResponse> call, Response<DealerLoginResponse> response) {
+
+                            if (response.isSuccessful()) {
+                                DealerLoginResponse dlr = response.body();
+                                if (dlr != null && dlr.getStatus()) {
+                                    PrefUtils
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
+                                    PrefUtils
+                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
+                                    PrefUtils
+                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
+                                    PrefUtils.saveStringPref(MainActivity.this, TEMP_AUTO_LOGIN_PIN, dealerPin);
+                                    Log.e(TAG, "onResponse: TEMP_PIN_ADDED" + dealerPin);
+                                    checkCurrentStatusAndProceed();
+                                } else {
+                                    etPin.setError(dlr.getMsg());
+                                }
+                            }
+                            enableViews();
+                        }
+
+                        @Override
+                        public void onFailure(Call<DealerLoginResponse> call, Throwable t) {
+                            enableViews();
+                        }
+                    });
         }
+
 
     }
 

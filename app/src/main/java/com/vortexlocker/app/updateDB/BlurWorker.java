@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.app.MyApplication;
@@ -53,12 +54,14 @@ public class BlurWorker extends Worker {
 
                     app.setGuest(false);
 
-//                    // chat app
-//                    String chatApp = String.valueOf(ri.loadLabel(getApplicationContext().getPackageManager()));
-//                    if (app.getUniqueName().equals(getApplicationContext().getPackageName() + chatApp)) {
-//                        app.setEncrypted(true);
-//                        app.setEnable(true);
-//                    }
+                    // uem app
+                    String uemApp = String.valueOf(ri.loadLabel(getApplicationContext().getPackageManager()));
+                    Log.d("kldgjgijsgijo", "doWork: " + app.getPackageName());
+                    if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
+                        Log.d("kldgjgijsgijo", "uemApp: " + app.getPackageName());
+                        app.setEncrypted(true);
+                        app.setEnable(true);
+                    }
 
                     // own app
                     if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {

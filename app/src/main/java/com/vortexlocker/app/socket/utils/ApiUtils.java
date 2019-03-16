@@ -29,6 +29,7 @@ import static com.vortexlocker.app.utils.AppConstants.DEVICE_ID;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.vortexlocker.app.utils.AppConstants.TOKEN;
+import static com.vortexlocker.app.utils.AppConstants.VALUE_EXPIRED;
 
 public class ApiUtils implements ApiRequests, RefreshListener {
 
@@ -53,6 +54,12 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                     @Override
                     public void onResponse(@NotNull Call<DealerLoginResponse> call, @NotNull Response<DealerLoginResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
+
+                            Timber.d("Expiresin %s", response.body().getExpiresIn());
+                            String expire_date = response.body().getExpiresIn();
+                            if (expire_date != null) {
+                                PrefUtils.saveStringPref(context, VALUE_EXPIRED, expire_date);
+                            }
                             Timber.d(" response successful ");
                             String device_id = response.body().getDevice_id();
                             Timber.d(" device_id : %S", device_id);

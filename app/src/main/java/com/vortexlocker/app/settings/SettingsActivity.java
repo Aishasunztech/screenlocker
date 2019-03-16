@@ -52,6 +52,7 @@ import com.vortexlocker.app.settings.codeSetting.CodeSettingActivity;
 import com.vortexlocker.app.socket.interfaces.DatabaseStatus;
 import com.vortexlocker.app.socket.interfaces.NetworkListener;
 import com.vortexlocker.app.socket.interfaces.RefreshListener;
+import com.vortexlocker.app.socket.model.Settings;
 import com.vortexlocker.app.socket.receiver.NetworkReceiver;
 import com.vortexlocker.app.socket.service.SocketService;
 import com.vortexlocker.app.updateDB.BlurWorker;
@@ -71,13 +72,16 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.vortexlocker.app.launcher.MainActivity.RESULT_ENABLE;
+import static com.vortexlocker.app.socket.utils.utils.suspendedDevice;
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.DB_STATUS;
+import static com.vortexlocker.app.utils.AppConstants.DEVICE_ID;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.vortexlocker.app.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.vortexlocker.app.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
+import static com.vortexlocker.app.utils.AppConstants.VALUE_EXPIRED;
 import static com.vortexlocker.app.utils.PermissionUtils.isPermissionGranted;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionAdmin;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionModify;
@@ -139,13 +143,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         init();
 
-
-        boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
-        if (!linkStatus) {
-            tvlinkDevice.setVisibility(View.VISIBLE);
-        } else {
-            tvlinkDevice.setVisibility(View.GONE);
-        }
 //        final Intent intent = new Intent(this, SocketService.class);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            intent.setAction("refresh");
@@ -287,7 +284,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 else {
                     //TODO change this
                     if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
-                        if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(AppConstants.VALUE_EXPIRED)) {
+                        if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
                             isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
                             isActiveDialog.show();
                         } else {
@@ -340,7 +337,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                         isActiveDialog.cancel();
                                     }
                                 } else {
-                                    PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, AppConstants.VALUE_EXPIRED);
+                                    PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, VALUE_EXPIRED);
                                     isActiveDialog.setTitle(response.body().getMsg());
                                     if (!isActiveDialog.isShowing()) {
                                         isActiveDialog.show();
@@ -379,7 +376,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                         if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
 
-                            if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(AppConstants.VALUE_EXPIRED)) {
+                            if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
                                 isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
                                 isActiveDialog.show();
                             } else {
@@ -454,6 +451,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             } else {
                 Toast.makeText(this, "not granted", Toast.LENGTH_SHORT).show();
             }
+            if (tvlinkDevice != null) {
+                tvlinkDevice.setVisibility(View.GONE);
+            }
+
         }
 
 
@@ -877,6 +878,37 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         aboutDialog.getWindow().setAttributes(params);
         aboutDialog.setCancelable(true);
         TextView tvVersionCode = aboutDialog.findViewById(R.id.tvVersionCode);
+
+        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
+        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
+        TextView textView16 = aboutDialog.findViewById(R.id.textView16);
+        TextView textView17 = aboutDialog.findViewById(R.id.textView17);
+        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
+        String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
+
+        if (device_id != null && value_expired != null) {
+            long current_time = System.currentTimeMillis();
+
+            Log.d("dfkgijog", "createAboutDialog: " + current_time);
+
+            long expired_time = Long.parseLong(value_expired);
+            long remaining_miliseconds = expired_time - current_time;
+
+            int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
+
+            textView16.setVisibility(View.VISIBLE);
+            textView17.setVisibility(View.VISIBLE);
+            tvExpiresIn.setVisibility(View.VISIBLE);
+            tvDeviceId.setVisibility(View.VISIBLE);
+            tvDeviceId.setText(device_id);
+            if (remaining_days >= 0) {
+                tvExpiresIn.setText(remaining_days + " days");
+            }
+//            else {
+//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
+//            }
+        }
+
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             tvVersionCode.setText("v" + String.valueOf(pInfo.versionName));

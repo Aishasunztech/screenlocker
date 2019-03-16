@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import me.drozdzynski.library.steppers.SteppersItem;
 import me.drozdzynski.library.steppers.SteppersView;
+import me.drozdzynski.library.steppers.interfaces.OnSkipStepAction;
 import timber.log.Timber;
 
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
@@ -126,15 +127,23 @@ public class StepperActivity extends AppCompatActivity {
 
         SteppersItem duressPassword = new SteppersItem();
         duressPassword.setLabel("Set Duress Password");
-        duressPassword.setSkippable(true);
         duressPassword.setPositiveButtonEnable(true);
+        duressPassword.setSkippable(true, new OnSkipStepAction() {
+            @Override
+            public void onSkipStep() {
+                int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
+                PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
+            }
+        });
         duressPassword.setOnClickContinue(() -> {
             settingsActivity.handleSetDuressPassword(StepperActivity.this, steppersView);
         });
 
 
         SteppersItem finish = new SteppersItem();
-        finish.setLabel("Finish");
+        finish.setLabel("Activate");
+
+        finish.setSubLabel("By pressing finish button you can start Screen Locker.");
         //Add Steps
         steps.add(permissions);
         steps.add(guestPassword);
@@ -142,7 +151,6 @@ public class StepperActivity extends AppCompatActivity {
         steps.add(duressPassword);
         steps.add(linking);
         steps.add(finish);
-
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
         steppersView.setConfig(steppersViewConfig);
         steppersView.setItems(steps);
@@ -150,8 +158,14 @@ public class StepperActivity extends AppCompatActivity {
         steppersView.setActiveItem(current_step);
     }
 
+
     private boolean checkPermssions() {
         init();
+
+        if (!PermissionUtils.canControlNotification(StepperActivity.this)) {
+            PermissionUtils.requestNotificationAccessibilityPermission(StepperActivity.this);
+        }
+
         boolean permission;
         boolean adminActive = devicePolicyManager.isAdminActive(compName);
 
@@ -160,7 +174,7 @@ public class StepperActivity extends AppCompatActivity {
         } else {
             permission = ContextCompat.checkSelfPermission(StepperActivity.this, Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
         }
-        if (permission && adminActive) {
+        if (permission && adminActive && PermissionUtils.canControlNotification(StepperActivity.this)) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 return Settings.canDrawOverlays(StepperActivity.this);
             }
@@ -197,38 +211,25 @@ public class StepperActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
+
         if (clickStatus) {
-            init();
-            permissionModify(StepperActivity.this);
-            permissionAdmin(StepperActivity.this, devicePolicyManager, compName);
-            isPermissionGranted(StepperActivity.this);
-            if (!PermissionUtils.canControlNotification(StepperActivity.this)) {
-                PermissionUtils.requestNotificationAccessibilityPermission(StepperActivity.this);
-            }
+//            init();
+//            permissionModify(StepperActivity.this);
+//            permissionAdmin(StepperActivity.this, devicePolicyManager, compName);
+//            isPermissionGranted(StepperActivity.this);
+//            if (!PermissionUtils.canControlNotification(StepperActivity.this)) {
+//                PermissionUtils.requestNotificationAccessibilityPermission(StepperActivity.this);
+//            }
 
         }
+        int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
+        Log.d("kjgjnjsg", "onResume: " + current_step);
 
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
-        switch (requestCode) {
-            case CODE_WRITE_SETTINGS_PERMISSION:
-                Log.d("permissiond", "CODE_WRITE_SETTINGS_PERMISSION");
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("permissionAllowed", "ok");
-
-                } else {
-                    Log.d("permissionAllowed", "k");
-
-                }
-                break;
+        if (steppersView != null) {
+            steppersView.setActiveItem(current_step);
         }
+        super.onResume();
     }
+
 
 }
