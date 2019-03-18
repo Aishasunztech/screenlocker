@@ -75,7 +75,7 @@
     <string name="dont_have_permission">We do not have permission.</string>
     <string name="permission_denied">Permission denied</string>
     <string name="info">Info :</string>
-    <string name="device_already_linked">Device already linked with DealerId</string>
+    <string name="device_already_linked">Device linked successfully</string>
     <string name="link_request_pending">Link request pending!</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="link_device">Link device</string>

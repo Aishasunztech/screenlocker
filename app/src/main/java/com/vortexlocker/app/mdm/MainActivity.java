@@ -489,6 +489,7 @@ public class MainActivity extends BaseActivity {
     private void request(int type, String dealerPin) {
         disableViews();
         if (type == 1) {
+            Log.d("kldjddf", "request: " + type);
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
                     .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin))
@@ -521,6 +522,8 @@ public class MainActivity extends BaseActivity {
                         }
                     });
         } else if (type == 2) {
+
+            Log.d("kldjddf", "request: " + type);
 
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()

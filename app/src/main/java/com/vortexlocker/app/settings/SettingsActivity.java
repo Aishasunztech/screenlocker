@@ -134,6 +134,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
         boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
         if (!tourStatus) {
             Intent intent = new Intent(this, StepperActivity.class);
@@ -143,14 +144,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         init();
 
-//        final Intent intent = new Intent(this, SocketService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            intent.setAction("refresh");
-//            startForegroundService(intent);
-//        } else {
-//            intent.setAction("refresh");
-//            startService(intent);
-//        }
+        final Intent intent = new Intent(this, SocketService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.setAction("refresh");
+            startForegroundService(intent);
+        } else {
+            intent.setAction("refresh");
+            startService(intent);
+        }
 
     }
 
@@ -455,6 +456,23 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 tvlinkDevice.setVisibility(View.GONE);
             }
 
+            if (networkStatus) {
+                Intent intent = new Intent(this, SocketService.class);
+                if (networkStatus) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        intent.setAction("refresh");
+                        startForegroundService(intent);
+                    } else {
+                        intent.setAction("refresh");
+                        startService(intent);
+                    }
+                } else {
+                    stopService(intent);
+                    Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+
         }
 
 
@@ -530,20 +548,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             startActivityForResult(intent, REQUEST_CODE_PASSWORD);
         } else {
             final EditText input = new EditText(SettingsActivity.this);
-            settingsPresenter.showAlertDialog(input, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
-                        // start Code settings activity if the code password entered is correct
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+                if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
+                    // start Code settings activity if the code password entered is correct
 
-                        startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
-                    } else {
-                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
-                    }
+                    startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
+                } else {
+                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
                 }
             }, null, getString(R.string.please_enter_code_admin_password));
         }
@@ -786,26 +801,23 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void setSwipeToApiRequest() {
         final Intent intent = new Intent(this, SocketService.class);
-        swipeToApiRequest.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (networkStatus) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        intent.setAction("restart");
-                        startForegroundService(intent);
-                    } else {
-                        intent.setAction("restart");
-                        startService(intent);
-                    }
-                    if (listener != null) {
-                        listener.onSwipe();
-                    }
+        swipeToApiRequest.setOnRefreshListener(() -> {
+            if (networkStatus) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.setAction("restart");
+                    startForegroundService(intent);
                 } else {
-                    stopService(intent);
-                    Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
+                    intent.setAction("restart");
+                    startService(intent);
                 }
-                swipeToApiRequest.setRefreshing(false);
+                if (listener != null) {
+                    listener.onSwipe();
+                }
+            } else {
+                stopService(intent);
+                Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
             }
+            swipeToApiRequest.setRefreshing(false);
         });
     }
 
@@ -816,7 +828,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
         if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);
-
             if (networkStatus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     intent.setAction("refresh");
@@ -878,24 +889,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         aboutDialog.getWindow().setAttributes(params);
         aboutDialog.setCancelable(true);
         TextView tvVersionCode = aboutDialog.findViewById(R.id.tvVersionCode);
-
         TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
         TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
         TextView textView16 = aboutDialog.findViewById(R.id.textView16);
         TextView textView17 = aboutDialog.findViewById(R.id.textView17);
         String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
         String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
-
         if (device_id != null && value_expired != null) {
             long current_time = System.currentTimeMillis();
-
             Log.d("dfkgijog", "createAboutDialog: " + current_time);
-
             long expired_time = Long.parseLong(value_expired);
             long remaining_miliseconds = expired_time - current_time;
-
             int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
-
             textView16.setVisibility(View.VISIBLE);
             textView17.setVisibility(View.VISIBLE);
             tvExpiresIn.setVisibility(View.VISIBLE);
@@ -948,64 +953,58 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         }
 
-        rgUserType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rbGuest:
-                        isEncryptedChecked = false;
-                        break;
-                    case R.id.rbEncrypted:
-                        isEncryptedChecked = true;
-                        break;
-                }
+        rgUserType.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rbGuest:
+                    isEncryptedChecked = false;
+                    break;
+                case R.id.rbEncrypted:
+                    isEncryptedChecked = true;
+                    break;
             }
         });
-        dialog.findViewById(R.id.btOk).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        dialog.findViewById(R.id.btOk).setOnClickListener(view -> {
 
-                String enteredPassword = etPassword.getText().toString().toLowerCase();
-                if (TextUtils.isEmpty(enteredPassword)) {
-                    Toast.makeText(SettingsActivity.this, "Please enter your Password", Toast.LENGTH_SHORT).show();
+            String enteredPassword = etPassword.getText().toString().toLowerCase();
+            if (TextUtils.isEmpty(enteredPassword)) {
+                Toast.makeText(SettingsActivity.this, "Please enter your Password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (isEncryptedChecked) {
+                if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD) == null) {
+                    Toast.makeText(SettingsActivity.this, "Please set Encrypted Password First.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                if (isEncryptedChecked) {
-                    if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD) == null) {
-                        Toast.makeText(SettingsActivity.this, "Please set Encrypted Password First.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
-                        // allow him to set background for encrypted user
-                        CropImage.activity()
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .start(SettingsActivity.this);
-                    } else {
-                        // dont allow him to set background because password was wrong
-                        Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
-                    }
-
+                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
+                    // allow him to set background for encrypted user
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(SettingsActivity.this);
                 } else {
-                    if (PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD) == null) {
-                        Toast.makeText(SettingsActivity.this, "Please set Guest Password First.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD))) {
-                        // allow him to set background for encrypted user
-
-                        CropImage.activity()
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .start(SettingsActivity.this);
-                    } else {
-                        // dont allow him to set background because password was wrong
-                        Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
-                    }
-
+                    // dont allow him to set background because password was wrong
+                    Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
                 }
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                dialog.cancel();
+
+            } else {
+                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD) == null) {
+                    Toast.makeText(SettingsActivity.this, "Please set Guest Password First.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD))) {
+                    // allow him to set background for encrypted user
+
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(SettingsActivity.this);
+                } else {
+                    // dont allow him to set background because password was wrong
+                    Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
+                }
+
             }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            dialog.cancel();
         });
         dialog.findViewById(R.id.btCancel).setOnClickListener(new View.OnClickListener() {
             @Override
