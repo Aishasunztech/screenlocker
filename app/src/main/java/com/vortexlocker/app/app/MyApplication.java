@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -154,4 +155,6 @@ public class MyApplication extends Application implements NetworkListener {
         unregisterReceiver(mdmEventReciever);
         super.onTerminate();
     }
+
+
 }

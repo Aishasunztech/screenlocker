@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.vortexlocker.app">
 
+
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
     <uses-permission
         android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
         tools:ignore="ProtectedPermissions" />
@@ -99,7 +102,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".permissions.StepperActivity">
+        <activity android:name=".permissions.StepperActivity"
+            android:screenOrientation="portrait"
+            >
 
         </activity>
         <activity

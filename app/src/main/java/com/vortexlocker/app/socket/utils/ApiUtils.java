@@ -65,7 +65,9 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                             Timber.d(" device_id : %S", device_id);
                             String token = response.body().getToken();
                             Timber.d(" token : %S", token);
-                            PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
+                            if (device_id != null) {
+                                PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
+                            }
                             PrefUtils.saveStringPref(context, TOKEN, token);
                             if (device_id != null && token != null) {
                                 new SocketUtils(device_id, context, token);

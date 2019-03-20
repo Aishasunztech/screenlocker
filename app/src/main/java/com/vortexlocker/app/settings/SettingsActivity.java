@@ -895,9 +895,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         TextView textView17 = aboutDialog.findViewById(R.id.textView17);
         String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
         String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
+
         if (device_id != null && value_expired != null) {
             long current_time = System.currentTimeMillis();
-            Log.d("dfkgijog", "createAboutDialog: " + current_time);
+
             long expired_time = Long.parseLong(value_expired);
             long remaining_miliseconds = expired_time - current_time;
             int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));

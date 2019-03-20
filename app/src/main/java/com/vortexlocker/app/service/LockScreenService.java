@@ -1,15 +1,23 @@
 package com.vortexlocker.app.service;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.vortexlocker.app.R;
+import com.vortexlocker.app.launcher.AppInfo;
 import com.vortexlocker.app.notifications.NotificationItem;
 import com.vortexlocker.app.settings.SettingsActivity;
 import com.vortexlocker.app.utils.PrefUtils;
@@ -27,6 +36,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.vortexlocker.app.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.vortexlocker.app.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 /**
@@ -42,6 +52,7 @@ public class LockScreenService extends Service {
 
     @Override
     public void onCreate() {
+
         notificationItems = new ArrayList<>();
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -101,17 +112,16 @@ public class LockScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
-
+        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         if (intent != null) {
             String action = intent.getAction();
             Timber.d("locker screen action :%s", action);
             if (action == null) {
                 String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
                 if (main_password == null) {
-                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, "12345");
-                } else {
-                    startLockScreen();
+                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
+                startLockScreen();
             }
             if (action != null) {
                 switch (action) {
@@ -207,6 +217,8 @@ public class LockScreenService extends Service {
 ////            mLayout = null;
 //        }
     }
+
+
 
 
 }

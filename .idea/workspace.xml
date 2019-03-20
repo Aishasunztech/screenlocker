@@ -6,7 +6,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="Socket" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="runningApps" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
@@ -19,13 +19,13 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/updateDB/BlurWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/updateDB/BlurWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_link_device.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_link_device.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/dialog_about_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_about_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/LifecycleReceiverService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/LifecycleReceiverService.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -44,56 +44,58 @@
     <session id="1279527107">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.15" value="2" />
           <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.2" value="2" />
           <entry key="project.open.time.24" value="1" />
-          <entry key="project.opened" value="9" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="class" value="3" />
-          <entry key="gradle" value="4" />
-          <entry key="java" value="82" />
-          <entry key="xml" value="13" />
+          <entry key="class" value="5" />
+          <entry key="gradle" value="5" />
+          <entry key="java" value="88" />
+          <entry key="xml" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CLASS" value="3" />
-          <entry key="Groovy" value="4" />
-          <entry key="JAVA" value="82" />
-          <entry key="XML" value="13" />
+          <entry key="CLASS" value="5" />
+          <entry key="Groovy" value="5" />
+          <entry key="JAVA" value="88" />
+          <entry key="XML" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="gradle" value="4" />
-          <entry key="java" value="2048" />
-          <entry key="xml" value="359" />
+          <entry key="gradle" value="5" />
+          <entry key="java" value="2782" />
+          <entry key="xml" value="374" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Groovy" value="4" />
-          <entry key="JAVA" value="2048" />
-          <entry key="XML" value="359" />
+          <entry key="Groovy" value="5" />
+          <entry key="JAVA" value="2782" />
+          <entry key="XML" value="374" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10">
-              <caret line="66" column="87" selection-start-line="66" selection-start-column="87" selection-end-line="66" selection-end-column="87" />
+            <state relative-caret-position="1920">
+              <caret line="158" selection-start-line="158" selection-end-line="158" />
             </state>
           </provider>
         </entry>
@@ -101,41 +103,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/codeSetting/CodeSettingActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="394" column="40" selection-start-line="394" selection-start-column="40" selection-end-line="394" selection-end-column="40" />
-              <folding>
-                <element signature="e#2984#4470#0" expanded="true" />
-                <element signature="e#4469#4470#0" expanded="true" />
-                <element signature="e#13616#13618#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/AppSelectionActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2032">
-              <caret line="196" column="42" selection-start-line="196" selection-start-column="42" selection-end-line="196" selection-end-column="42" />
-              <caret line="195" column="21" selection-start-line="195" selection-start-column="21" selection-end-line="195" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/service/SocketService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="53" column="56" selection-start-line="53" selection-start-column="56" selection-end-line="53" selection-end-column="56" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionModel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="125" column="30" selection-start-line="125" selection-start-column="30" selection-end-line="125" selection-end-column="30" />
+            <state relative-caret-position="4320">
+              <caret line="338" column="32" selection-start-line="338" selection-start-column="32" selection-end-line="338" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -143,54 +112,54 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25">
-              <caret line="33" column="21" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="21" />
+            <state relative-caret-position="585">
+              <caret line="68" column="71" selection-start-line="68" selection-start-column="71" selection-end-line="68" selection-end-column="71" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionPresenter.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="50" column="5" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
-              <folding>
-                <element signature="e#1446#1447#0" expanded="true" />
-                <element signature="e#1492#1493#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-989">
+              <caret line="85" selection-start-line="85" selection-end-line="85" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionContract.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/LifecycleReceiverService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+            <state relative-caret-position="480">
+              <caret line="41" column="9" selection-start-line="41" selection-start-column="9" selection-end-line="41" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/codeSetting/CodeSettingPresenter.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <provider editor-type-id="android-manifest" />
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="6" column="44" selection-start-line="6" selection-start-column="44" selection-end-line="6" selection-end-column="44" />
-              <folding>
-                <element signature="e#561#562#0" expanded="true" />
-                <element signature="e#610#611#0" expanded="true" />
-                <element signature="e#665#666#0" expanded="true" />
-                <element signature="e#718#719#0" expanded="true" />
-              </folding>
+              <caret line="6" column="71" selection-start-line="6" selection-start-column="71" selection-end-line="6" selection-end-column="71" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsModel.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/utils/LifecycleReceiverService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="64" column="30" selection-start-line="64" selection-start-column="30" selection-end-line="64" selection-end-column="30" />
+            <state relative-caret-position="60">
+              <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2001">
+              <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -229,6 +198,9 @@
       <find>code</find>
       <find>tvSetAppsPermission</find>
       <find>handleSetAppsPermission</find>
+      <find>about</find>
+      <find>LifecycleReceiverService</find>
+      <find>Stepp</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -239,26 +211,29 @@
       <list>
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/utils.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/settings_layout.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settingsMenu/SettingsMenuActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/base/BaseActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/ReBootReciever.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/alarm/AlarmReceiver.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/retrofitmodels/LinkDeviceModel.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/retrofitmodels/DealerLoginModel.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/ui/LinkDeviceActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/permissions/StepperActivity.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_link_device.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_about_background.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/updateDB/BlurWorker.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/codeSetting/CodeSettingActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/LifecycleReceiverService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -274,6 +249,7 @@
     <panes>
       <pane id="ProjectPane" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -297,6 +273,13 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="android" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="vortexlocker" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -309,55 +292,20 @@
             </path>
             <path>
               <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="vortexlocker" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="vortexlocker" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-              <item name="codeSetting" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="vortexlocker" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="socket" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="vortexlocker" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="socket" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="Appcon&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Socket&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/socket/service/SocketService.java&#10;Utils&#9;PSI&#9;JAVA://com.vortexlocker.app.utils.Utils&#10;Settings&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java&#10;Setting&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settingsMenu/SettingsMenuActivity.java&#10;Main&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java&#10;about&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/layout/dialog_about_background.xml&#10;AppCon&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;String&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/values/strings.xml&#10;Application&#9;PSI&#9;JAVA://com.vortexlocker.app.app.MyApplication&#10;Con&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Link&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/ui/LinkDeviceActivity.java&#10;linkDevice&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/retrofitmodels/LinkDeviceModel.java&#10;SettingsAp&#9;null&#9;null&#10;AppC&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Stepper&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/permissions/StepperActivity.java&#10;link&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/ui/LinkDeviceActivity.java&#10;main&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/MainActivity.java&#10;ApiU&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java&#10;utils&#9;PSI&#9;JAVA://com.vortexlocker.app.socket.utils.utils&#10;AppCOn&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Settin&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java&#10;ApiOn&#9;PSI&#9;JAVA://com.vortexlocker.app.retrofitapis.ApiOneCaller&#10;blu&#9;PSI&#9;JAVA://com.vortexlocker.app.updateDB.BlurWorker&#10;And&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/AndroidManifest.xml&#10;Base&#9;PSI&#9;JAVA://com.vortexlocker.app.base.BaseActivity&#10;MainA&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java&#10;settings&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/layout/settings_layout.xml" />
+    <property name="SearchEverywhereHistoryKey" value="Settings&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java&#10;Android&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/AndroidManifest.xml&#10;Lock&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java&#10;Main&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java&#10;myApp&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/app/MyApplication.java&#10;MainA&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java&#10;Appcon&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Socket&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/socket/service/SocketService.java&#10;Utils&#9;PSI&#9;JAVA://com.vortexlocker.app.utils.Utils&#10;Setting&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settingsMenu/SettingsMenuActivity.java&#10;about&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/layout/dialog_about_background.xml&#10;AppCon&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;String&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/values/strings.xml&#10;Application&#9;PSI&#9;JAVA://com.vortexlocker.app.app.MyApplication&#10;Con&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Link&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/ui/LinkDeviceActivity.java&#10;linkDevice&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/retrofitmodels/LinkDeviceModel.java&#10;SettingsAp&#9;null&#9;null&#10;AppC&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Stepper&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/permissions/StepperActivity.java&#10;link&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/ui/LinkDeviceActivity.java&#10;main&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/mdm/MainActivity.java&#10;ApiU&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java&#10;utils&#9;PSI&#9;JAVA://com.vortexlocker.app.socket.utils.utils&#10;AppCOn&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java&#10;Settin&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java&#10;ApiOn&#9;PSI&#9;JAVA://com.vortexlocker.app.retrofitapis.ApiOneCaller&#10;blu&#9;PSI&#9;JAVA://com.vortexlocker.app.updateDB.BlurWorker&#10;And&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/AndroidManifest.xml&#10;Base&#9;PSI&#9;JAVA://com.vortexlocker.app.base.BaseActivity&#10;settings&#9;FILE&#9;file:///home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/app/src/main/res/layout/settings_layout.xml" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
-    <property name="device.picker.selection" value="VSP1001901S00431" />
+    <property name="device.picker.selection" value="Pixel_XL_API_28" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../vpn/ics-openvpn" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../vpn/sunzTech_Vpn" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
     <property name="show.do.not.ask.upgrade.gradle.plugin" value="3.3.0" />
   </component>
@@ -464,13 +412,13 @@
       <window_info id="Designer" order="6" />
       <window_info id="Capture Tool" order="7" />
       <window_info anchor="bottom" id="Run" order="0" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.498713" weight="0.88860106" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.498713" weight="0.5284974" />
       <window_info anchor="bottom" id="TODO" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.511658" />
-      <window_info anchor="bottom" id="Terminal" order="4" weight="0.32901555" />
+      <window_info anchor="bottom" id="Terminal" order="4" weight="0.7901554" />
       <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.501287" side_tool="true" weight="0.6567358" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.32901555" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.498713" weight="0.5103627" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.498713" weight="0.26683939" />
       <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
@@ -485,42 +433,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/Android/Sdk/platforms/android-27/android.jar!/android/provider/Settings.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="13" column="19" selection-start-line="13" selection-start-column="19" selection-end-line="13" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/PermissionUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="150" column="74" lean-forward="true" selection-start-line="150" selection-start-column="74" selection-end-line="150" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/alarm/AlarmReceiver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="59" column="43" lean-forward="true" selection-start-line="59" selection-start-column="43" selection-end-line="59" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/networkResponseModels/DealerLoginResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/SocketUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2550">
@@ -576,13 +488,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1425">
           <caret line="134" column="96" selection-start-line="134" selection-start-column="96" selection-end-line="134" selection-end-column="96" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="49" lean-forward="true" selection-start-line="6" selection-start-column="49" selection-end-line="6" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -648,13 +553,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="477">
-          <caret line="147" selection-start-line="147" selection-end-line="147" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_about_background.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
@@ -674,9 +572,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="46" column="61" selection-start-line="46" selection-start-column="61" selection-end-line="46" selection-end-column="61" />
-          <folding>
-            <element signature="e#2706#2753#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -684,19 +579,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="570">
           <caret line="537" column="45" lean-forward="true" selection-start-line="537" selection-start-column="45" selection-end-line="537" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1041">
-          <caret line="137" column="55" lean-forward="true" selection-start-line="137" selection-start-column="55" selection-end-line="137" selection-end-column="55" />
-          <folding>
-            <element signature="e#5763#6850#0" expanded="true" />
-            <element signature="e#6390#6808#0" expanded="true" />
-            <element signature="e#6807#6808#0" expanded="true" />
-            <element signature="e#6849#6850#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -718,12 +600,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
           <caret line="312" column="24" selection-start-line="312" selection-start-column="24" selection-end-line="312" selection-end-column="24" />
-          <folding>
-            <element signature="e#8704#9586#0" expanded="true" />
-            <element signature="e#9585#9586#0" expanded="true" />
-            <element signature="e#10802#12055#0" expanded="true" />
-            <element signature="e#12054#12055#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -731,18 +607,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2475">
           <caret line="356" column="40" lean-forward="true" selection-start-line="356" selection-start-column="40" selection-end-line="356" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="558" column="76" selection-start-line="558" selection-start-column="76" selection-end-line="558" selection-end-column="76" />
-          <folding>
-            <element signature="e#22815#22858#0" expanded="true" />
-            <element signature="e#23345#23376#0" expanded="true" />
-            <element signature="e#23624#23676#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -765,10 +629,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
-          <folding>
-            <element signature="e#359#360#0" expanded="true" />
-            <element signature="e#393#394#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -808,13 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="125" column="30" selection-start-line="125" selection-start-column="30" selection-end-line="125" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/AppInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
@@ -822,10 +675,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsModel.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionContract.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="64" column="30" selection-start-line="64" selection-start-column="30" selection-end-line="64" selection-end-column="30" />
+        <state relative-caret-position="240">
+          <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -833,49 +686,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" column="44" selection-start-line="6" selection-start-column="44" selection-end-line="6" selection-end-column="44" />
-          <folding>
-            <element signature="e#561#562#0" expanded="true" />
-            <element signature="e#610#611#0" expanded="true" />
-            <element signature="e#665#666#0" expanded="true" />
-            <element signature="e#718#719#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionContract.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+        <state relative-caret-position="600">
+          <caret line="64" column="30" selection-start-line="64" selection-start-column="30" selection-end-line="64" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionPresenter.java">
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="50" column="5" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
-          <folding>
-            <element signature="e#1446#1447#0" expanded="true" />
-            <element signature="e#1492#1493#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/codeSetting/CodeSettingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="394" column="40" selection-start-line="394" selection-start-column="40" selection-end-line="394" selection-end-column="40" />
-          <folding>
-            <element signature="e#2984#4470#0" expanded="true" />
-            <element signature="e#4469#4470#0" expanded="true" />
-            <element signature="e#13616#13618#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="33" column="21" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="21" />
+        <state relative-caret-position="148">
+          <caret line="64" column="27" selection-start-line="64" selection-start-column="27" selection-end-line="64" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -886,10 +710,95 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="388">
+          <caret line="125" column="30" selection-start-line="125" selection-start-column="30" selection-end-line="125" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/appSelection/SelectionPresenter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/AppConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10">
-          <caret line="66" column="87" selection-start-line="66" selection-start-column="87" selection-end-line="66" selection-end-column="87" />
+        <state relative-caret-position="1050">
+          <caret line="70" column="42" selection-start-line="70" selection-start-column="42" selection-end-line="70" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/app/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1920">
+          <caret line="158" selection-start-line="158" selection-end-line="158" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/codeSetting/CodeSettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4320">
+          <caret line="338" column="32" selection-start-line="338" selection-start-column="32" selection-end-line="338" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/socket/utils/ApiUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="68" column="71" selection-start-line="68" selection-start-column="71" selection-end-line="68" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/utils/LifecycleReceiverService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="41" column="9" selection-start-line="41" selection-start-column="9" selection-end-line="41" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/mdm/utils/LifecycleReceiverService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Android/Sdk/platforms/android-27/android.jar!/android/app/ActivityManager.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="349" column="29" selection-start-line="349" selection-start-column="29" selection-end-line="349" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="71" selection-start-line="6" selection-start-column="71" selection-end-line="6" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/settings/SettingsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="897" column="8" selection-start-line="897" selection-start-column="8" selection-end-line="897" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/service/LockScreenService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2001">
+          <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/vortexlocker/app/launcher/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-989">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
         </state>
       </provider>
     </entry>

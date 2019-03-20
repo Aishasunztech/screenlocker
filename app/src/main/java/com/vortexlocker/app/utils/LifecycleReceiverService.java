@@ -40,7 +40,6 @@ public class LifecycleReceiverService extends Service implements LifecycleReceiv
         if(!this.isRunning) {
             this.isRunning = true;
         }
-
         Timber.tag("TAGLLLL").e("onStartCommand: Started");
         registerReceiver(lifecycleReceiver,new IntentFilter(LIFECYCLE_ACTION));
         lifecycleReceiver.setStateChangeListener(this);

@@ -10,11 +10,14 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +32,7 @@ import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.PrefUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.vortexlocker.app.utils.Utils.collapseNow;
 
@@ -53,6 +57,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         //Remove title bar
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //Remove notification bar
@@ -69,6 +74,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         pm = getPackageManager();
         //        LockScreenService lockScreenService = new LockScreenService();
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
+
 
         // if service is  running make it run
 //        if (mainPresenter.isServiceRunning() && PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) != null) {
@@ -172,7 +178,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
         }
-
         allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
 
@@ -220,5 +225,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //        super.onBackPressed();
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+//                .getSystemService(Context.ACTIVITY_SERVICE);
+//        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
 }
+
+
+
