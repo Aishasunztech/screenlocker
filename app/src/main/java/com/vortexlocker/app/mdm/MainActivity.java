@@ -473,10 +473,10 @@ public class MainActivity extends BaseActivity {
         final String dealerPin = etPin.getText().toString().trim();
 
 
-        if (dealerPin.matches("\\d{6}")) {
+        if (dealerPin.length() == 6) {
 
             request(1, dealerPin);
-        } else if (dealerPin.matches("\\d{7}")) {
+        } else if (dealerPin.length() == 7) {
             request(2, dealerPin);
 
         } else {
