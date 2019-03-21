@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/screenlockerv4.iml" filepath="$PROJECT_DIR$/screenlockerv4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/screenlockerv4-app.iml" filepath="$PROJECT_DIR$/app/screenlockerv4-app.iml" />
     </modules>
   </component>
 </project>

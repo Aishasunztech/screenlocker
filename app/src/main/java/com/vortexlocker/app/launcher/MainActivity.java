@@ -2,6 +2,8 @@ package com.vortexlocker.app.launcher;
 
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatImageView;
@@ -33,7 +36,12 @@ import com.vortexlocker.app.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 
+import static com.vortexlocker.app.utils.PermissionUtils.isAccessGranted;
 import static com.vortexlocker.app.utils.Utils.collapseNow;
 
 /**
@@ -53,11 +61,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
     private ActivityManager activityManager;
+    private String currentProcess = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkCurrentProcess();
+            }
+        },0,200);
         //Remove title bar
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //Remove notification bar
@@ -232,6 +248,62 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //                .getSystemService(Context.ACTIVITY_SERVICE);
 //        activityManager.moveTaskToFront(getTaskId(), 0);
     }
+
+    private void checkCurrentProcess() {
+
+        if(isAccessGranted(MainActivity.this))
+        {
+            currentProcess = retriveNewApp();
+
+            if(currentProcess.contains("com.android.vending") || currentProcess.contains("com.android.systemui"))
+            {
+                ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                        .getSystemService(Context.ACTIVITY_SERVICE);
+                activityManager.moveTaskToFront(getTaskId(), 0);
+            }
+            Log.d("CurrentTouch",currentProcess);
+
+        }
+        else{
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+
+    }
+
+    private String retriveNewApp() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            String currentApp = null;
+            UsageStatsManager usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            if (applist != null && applist.size() > 0) {
+                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+                for (UsageStats usageStats : applist) {
+                    for(UsageStats usageStats1 :applist)
+                    {
+                        Log.d("mainActivityP",usageStats1.toString());
+                    }
+                    mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                }
+                if (mySortedMap != null && !mySortedMap.isEmpty()) {
+                    currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+                }
+            }
+            Log.e("MainActivity", "Current App in foreground is: " + currentApp);
+
+            return currentApp;
+
+        }
+        else {
+
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            String mm=(manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+            Log.e("MainActivity", "Current App in foreground is: " + mm);
+            return mm;
+        }
+    }
+
 }
 
 
