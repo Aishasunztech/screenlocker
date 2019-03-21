@@ -36,10 +36,12 @@ import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMIS
 import static com.vortexlocker.app.utils.AppConstants.CURRENT_STEP;
 import static com.vortexlocker.app.utils.AppConstants.RESULT_ENABLE;
 import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
+import static com.vortexlocker.app.utils.PermissionUtils.isAccessGranted;
 import static com.vortexlocker.app.utils.PermissionUtils.isPermissionGranted;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionAdmin;
 import static com.vortexlocker.app.utils.PermissionUtils.permissionModify;
 import static com.vortexlocker.app.utils.PermissionUtils.requestOverlayPermission;
+import static com.vortexlocker.app.utils.PermissionUtils.requestUsageStatePermission;
 
 public class StepperActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PASSWORD = 883;
@@ -90,6 +92,7 @@ public class StepperActivity extends AppCompatActivity {
             permissionModify(StepperActivity.this);
             requestOverlayPermission(StepperActivity.this);
             isPermissionGranted(StepperActivity.this);
+            requestUsageStatePermission(StepperActivity.this);
 
             if (checkPermssions()) {
                 int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
@@ -176,7 +179,10 @@ public class StepperActivity extends AppCompatActivity {
         }
         if (permission && adminActive && PermissionUtils.canControlNotification(StepperActivity.this)) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                return Settings.canDrawOverlays(StepperActivity.this);
+                if(isAccessGranted(StepperActivity.this))
+                {
+                    return Settings.canDrawOverlays(StepperActivity.this);
+                }
             }
 
         }

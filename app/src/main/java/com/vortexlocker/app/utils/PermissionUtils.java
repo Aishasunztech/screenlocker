@@ -2,9 +2,12 @@ package com.vortexlocker.app.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -136,6 +139,39 @@ public class PermissionUtils {
         } else { //permission is automatically granted on sdk<23 upon installation
             Timber.v("Permission is granted");
             return true;
+        }
+    }
+
+    public static boolean isAccessGranted(Context context) {
+        try {
+            if(Build.VERSION.SDK_INT >=19) {
+
+
+                PackageManager packageManager = context.getPackageManager();
+                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+                AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+                int mode = 0;
+                if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                    mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                            applicationInfo.uid, applicationInfo.packageName);
+                }
+                return (mode == AppOpsManager.MODE_ALLOWED);
+            }
+            else{
+                return true;
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static void requestUsageStatePermission(Context context)
+    {
+        if(!isAccessGranted(context))
+        {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            context.startActivity(intent);
         }
     }
 }
