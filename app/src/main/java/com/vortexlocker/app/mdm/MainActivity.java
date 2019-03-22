@@ -524,6 +524,7 @@ public class MainActivity extends BaseActivity {
         } else if (type == 2) {
 
             Log.d("kldjddf", "request: " + type);
+            Log.d("kldjddf", "mac: " + MAC);
 
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
