@@ -75,9 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         disablePullNotificationTouch();
         createAlertDialog();
 
-        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-
-
         if (PermissionUtils.canDrawOver(this)) {
             addStatusOverlay();
             statusViewAdded = true;

@@ -1,6 +1,7 @@
 package com.vortexlocker.app.settings;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,7 +42,7 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vortexlocker.app.MyAdmin;
-import com.vortexlocker.app.R;
+
 import com.vortexlocker.app.app.MyApplication;
 import com.vortexlocker.app.base.BaseActivity;
 import com.vortexlocker.app.mdm.MainActivity;
@@ -52,7 +53,6 @@ import com.vortexlocker.app.settings.codeSetting.CodeSettingActivity;
 import com.vortexlocker.app.socket.interfaces.DatabaseStatus;
 import com.vortexlocker.app.socket.interfaces.NetworkListener;
 import com.vortexlocker.app.socket.interfaces.RefreshListener;
-import com.vortexlocker.app.socket.model.Settings;
 import com.vortexlocker.app.socket.receiver.NetworkReceiver;
 import com.vortexlocker.app.socket.service.SocketService;
 import com.vortexlocker.app.updateDB.BlurWorker;
@@ -64,6 +64,8 @@ import com.vortexlocker.app.utils.PrefUtils;
 
 import org.jsoup.Jsoup;
 
+import java.util.Objects;
+
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import retrofit2.Call;
@@ -72,14 +74,16 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.vortexlocker.app.launcher.MainActivity.RESULT_ENABLE;
-import static com.vortexlocker.app.socket.utils.utils.suspendedDevice;
+import static com.vortexlocker.app.utils.AppConstants.CHAT_ID;
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.DB_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_ID;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.vortexlocker.app.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
+import static com.vortexlocker.app.utils.AppConstants.PGP_EMAIL;
 import static com.vortexlocker.app.utils.AppConstants.REQUEST_READ_PHONE_STATE;
+import static com.vortexlocker.app.utils.AppConstants.SIM_ID;
 import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.VALUE_EXPIRED;
 import static com.vortexlocker.app.utils.PermissionUtils.isPermissionGranted;
@@ -134,6 +138,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
+        try {
+            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+        } catch (Exception ignored) {
+        }
 
         boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
         if (!tourStatus) {
@@ -881,40 +890,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void createAboutDialog() {
         Dialog aboutDialog = new Dialog(this);
         aboutDialog.setContentView(R.layout.dialog_about_background);
-        WindowManager.LayoutParams params = aboutDialog.getWindow().getAttributes();
+        WindowManager.LayoutParams params = Objects.requireNonNull(aboutDialog.getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         aboutDialog.getWindow().setAttributes(params);
         aboutDialog.setCancelable(true);
+
+        // Version Code
         TextView tvVersionCode = aboutDialog.findViewById(R.id.tvVersionCode);
-        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
-        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
-        TextView textView16 = aboutDialog.findViewById(R.id.textView16);
-        TextView textView17 = aboutDialog.findViewById(R.id.textView17);
-        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
-        String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
-
-        if (device_id != null && value_expired != null) {
-            long current_time = System.currentTimeMillis();
-
-            long expired_time = Long.parseLong(value_expired);
-            long remaining_miliseconds = expired_time - current_time;
-            int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
-            textView16.setVisibility(View.VISIBLE);
-            textView17.setVisibility(View.VISIBLE);
-            tvExpiresIn.setVisibility(View.VISIBLE);
-            tvDeviceId.setVisibility(View.VISIBLE);
-            tvDeviceId.setText(device_id);
-            if (remaining_days >= 0) {
-                tvExpiresIn.setText(remaining_days + " days");
-            }
-//            else {
-//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
-//            }
-        }
-
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             tvVersionCode.setText("v" + String.valueOf(pInfo.versionName));
@@ -922,6 +908,67 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
             tvVersionCode.setText("");
         }
+
+        // Expiry Date
+        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
+        TextView textView16 = aboutDialog.findViewById(R.id.textView16);
+        String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
+        if (value_expired != null) {
+            long current_time = System.currentTimeMillis();
+            long expired_time = Long.parseLong(value_expired);
+            long remaining_miliseconds = expired_time - current_time;
+            int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
+            textView16.setVisibility(View.VISIBLE);
+            tvExpiresIn.setVisibility(View.VISIBLE);
+            if (remaining_days >= 0) {
+                tvExpiresIn.setText(Integer.toString(remaining_days));
+            } else {
+                tvExpiresIn.setText("expired");
+            }
+//            else {
+//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
+//            }
+        }
+
+        // Device ID
+        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
+        TextView textView17 = aboutDialog.findViewById(R.id.textView17);
+        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
+        if (device_id != null) {
+            tvDeviceId.setVisibility(View.VISIBLE);
+            textView17.setVisibility(View.VISIBLE);
+            tvDeviceId.setText(device_id);
+        }
+
+        // PGP Email
+        TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
+        TextView textView18 = aboutDialog.findViewById(R.id.textView18);
+        String pgpEmail = PrefUtils.getStringPref(SettingsActivity.this, PGP_EMAIL);
+        if (pgpEmail != null) {
+            textView18.setVisibility(View.VISIBLE);
+            tvPgpEmail.setVisibility(View.VISIBLE);
+            tvPgpEmail.setText(pgpEmail);
+        }
+
+        // Chat ID
+        TextView tvChatId = aboutDialog.findViewById(R.id.tvChatId);
+        TextView textView19 = aboutDialog.findViewById(R.id.textView19);
+        String chatId = PrefUtils.getStringPref(SettingsActivity.this, CHAT_ID);
+        if (chatId != null) {
+            textView19.setVisibility(View.VISIBLE);
+            tvChatId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chatId);
+        }
+        // Sim ID
+        TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
+        TextView textView20 = aboutDialog.findViewById(R.id.textView20);
+        String simId = PrefUtils.getStringPref(SettingsActivity.this, SIM_ID);
+        if (simId != null) {
+            textView20.setVisibility(View.VISIBLE);
+            tvSimId.setVisibility(View.VISIBLE);
+            tvSimId.setText(simId);
+        }
+
 
         aboutDialog.show();
 

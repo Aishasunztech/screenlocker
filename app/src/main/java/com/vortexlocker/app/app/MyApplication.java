@@ -55,11 +55,16 @@ public class MyApplication extends Application implements NetworkListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        try {
+            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+        } catch (Exception ignored) {
+        }
 
         compName = new ComponentName(this, MyAdmin.class);
         screenShotView = createScreenShotView();
 
-        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+//        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
 
 //        OnEventsChangeListener onEventsChangeListener = (OnEventsChangeListener) this;
 //

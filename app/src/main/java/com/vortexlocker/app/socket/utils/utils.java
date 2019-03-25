@@ -323,6 +323,7 @@ public class utils {
     }
 
     public static void unlinkDevcie(Context context) {
+
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
         PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
@@ -333,6 +334,8 @@ public class utils {
         PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
         PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
+
+
         try {
             Intent socketService = new Intent(context, SocketService.class);
             context.stopService(socketService);

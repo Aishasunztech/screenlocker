@@ -88,6 +88,9 @@
     <string name="hello_blank_fragment_second">hello blank fragment</string>
     <string name="system_controls">System Controls</string>
     <string name="enable_vpn">Enable VPN</string>
+    <string name="pgp_email">Pgp Email</string>
+    <string name="chat_id">Chat Id</string>
+    <string name="sim_id">Sim Id</string>
 
 
 </resources>

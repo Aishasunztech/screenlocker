@@ -112,7 +112,12 @@ public class LockScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
-        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+        try {
+            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+        } catch (Exception ignored) {
+        }
+
         if (intent != null) {
             String action = intent.getAction();
             Timber.d("locker screen action :%s", action);
@@ -172,10 +177,6 @@ public class LockScreenService extends Service {
             }
 
             notificationItems.clear();
-
-
-            Log.d("sadklakldfa", "startLockScreen: ");
-
 
             if (mNM != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

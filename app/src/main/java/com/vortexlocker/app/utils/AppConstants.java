@@ -120,4 +120,16 @@ public class AppConstants {
     // expiry date
     public static final String VALUE_EXPIRED = "expired";
 
+    // pgp id
+    public static final String PGP_EMAIL = "pgp_email";
+
+    // chat id
+    public static final String CHAT_ID = "chat_id";
+
+    // sim id
+    public static final String SIM_ID = "sim_id";
+
+
+
+
 }

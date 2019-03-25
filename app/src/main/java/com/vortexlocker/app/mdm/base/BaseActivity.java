@@ -36,9 +36,7 @@ public abstract class BaseActivity
 
         ButterKnife.bind(this);
 //        Timber.plant(new Timber.DebugTree());
-
         networkChangeReceiver = new NetworkChangeReceiver();
-        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         init();
 
 
