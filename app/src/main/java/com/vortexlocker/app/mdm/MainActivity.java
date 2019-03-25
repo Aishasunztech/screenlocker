@@ -138,10 +138,6 @@ public class MainActivity extends BaseActivity {
 
         IP = (IP == null) ? "" : IP;
 
-
-        Intent intent = new Intent();
-        intent.setAction("com.mediatek.ppl.NOTIFY_LOCK");
-//        startActivity(intent);
         setToolbar(toolbar);
 
         initAutoLoginWithPermissions();

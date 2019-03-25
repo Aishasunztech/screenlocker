@@ -64,7 +64,7 @@
             android:layout_marginTop="16dp"
             android:text="Expiry (days remaining)"
             android:textSize="@dimen/textTitle"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
@@ -75,7 +75,7 @@
             android:layout_marginEnd="16dp"
             android:text="10 days"
             android:textSize="@dimen/textSize"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView16" />
@@ -88,7 +88,7 @@
             android:layout_marginTop="16dp"
             android:text="Device Id"
             android:textSize="@dimen/textTitle"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
@@ -99,7 +99,7 @@
             android:layout_marginEnd="16dp"
             android:text="ABSG45879"
             android:textSize="@dimen/textSize"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView17"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView17" />
@@ -112,7 +112,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/pgp_email"
             android:textSize="@dimen/textTitle"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -124,7 +124,7 @@
             android:layout_marginTop="16dp"
             android:text="ABSG45879"
             android:textSize="@dimen/textSize"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView18"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView18" />
@@ -138,7 +138,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/chat_id"
             android:textSize="@dimen/textTitle"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
@@ -150,7 +150,7 @@
             android:layout_marginTop="16dp"
             android:text="ABSG45879"
             android:textSize="@dimen/textSize"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView19"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView19" />
@@ -163,7 +163,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/sim_id"
             android:textSize="@dimen/textTitle"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
@@ -175,7 +175,7 @@
             android:layout_marginTop="16dp"
             android:text="ABSG45879"
             android:textSize="@dimen/textSize"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView20" />

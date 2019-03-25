@@ -333,7 +333,7 @@ public class LinkDeviceActivity extends BaseActivity {
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
         if (btnLinkDevice.getText().equals("Next")) {
-            PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+
             boolean tour_status = PrefUtils.getBooleanPref(LinkDeviceActivity.this, TOUR_STATUS);
             if (tour_status) {
                 finish();
@@ -476,7 +476,7 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
-
+        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
     }
 
     private void pendingLinkViewState() {

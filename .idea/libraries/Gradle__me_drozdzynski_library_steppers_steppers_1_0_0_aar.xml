@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: me.drozdzynski.library.steppers:steppers:1.0.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/steppers-1.0.0.aar/3185f29e14fe0f80d85c465392d6f1f5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/steppers-1.0.0.aar/3185f29e14fe0f80d85c465392d6f1f5/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.drozdzynski.library.steppers/steppers/1.0.0/8e2e0120c5169e1a1a6a9b86120c0efb4ccc19db/steppers-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

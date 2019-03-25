@@ -43,6 +43,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vortexlocker.app.MyAdmin;
 
+import com.vortexlocker.app.R;
 import com.vortexlocker.app.app.MyApplication;
 import com.vortexlocker.app.base.BaseActivity;
 import com.vortexlocker.app.mdm.MainActivity;
@@ -447,7 +448,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-
         if (linkStatus) {
             if (devicePolicyManager != null && compName != null) {
                 permissionAdmin(SettingsActivity.this, devicePolicyManager, compName);
@@ -479,6 +479,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     stopService(intent);
                     Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
                 }
+
             }
 
 
@@ -809,7 +810,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private boolean networkStatus = false;
 
     private void setSwipeToApiRequest() {
+
         final Intent intent = new Intent(this, SocketService.class);
+
+
         swipeToApiRequest.setOnRefreshListener(() -> {
             if (networkStatus) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -834,7 +838,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onNetworkChange(boolean status) {
         Log.d("networkStatus", "onNetworkChange: " + status);
         networkStatus = status;
+
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+
         if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);
             if (networkStatus) {

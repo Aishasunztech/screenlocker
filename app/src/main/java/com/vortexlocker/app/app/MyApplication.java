@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,6 +138,8 @@ public class MyApplication extends Application implements NetworkListener {
     @Override
     public void onNetworkChange(boolean status) {
         boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+        Log.d("dkvnjdndd", "onNetworkChange: "+linkStatus);
+
         if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);
             if (status) {
