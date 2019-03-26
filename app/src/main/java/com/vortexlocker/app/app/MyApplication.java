@@ -138,7 +138,7 @@ public class MyApplication extends Application implements NetworkListener {
     @Override
     public void onNetworkChange(boolean status) {
         boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-        Log.d("dkvnjdndd", "onNetworkChange: "+linkStatus);
+
 
         if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);

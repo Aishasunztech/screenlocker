@@ -67,7 +67,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+        try {
+            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
+        } catch (Exception ignored) {
+
+        }
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -75,7 +81,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             public void run() {
                 checkCurrentProcess();
             }
-        },0,100);
+        }, 0, 100);
         //Remove title bar
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //Remove notification bar
@@ -256,12 +262,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkCurrentProcess() {
 
-        if(isAccessGranted(MainActivity.this))
-        {
+        if (isAccessGranted(MainActivity.this)) {
             currentProcess = retriveNewApp();
 
-            if(currentProcess.contains("com.android.systemui"))
-            {
+            if (currentProcess.contains("com.android.systemui")) {
                 ActivityManager activityManager = (ActivityManager) getApplicationContext()
                         .getSystemService(Context.ACTIVITY_SERVICE);
                 if (activityManager != null) {
@@ -269,8 +273,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 }
             }
 
-        }
-        else{
+        } else {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);
         }
@@ -298,11 +301,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
             return currentApp;
 
-        }
-        else {
+        } else {
 
             ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            String mm= null;
+            String mm = null;
             if (manager != null) {
                 mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
             }

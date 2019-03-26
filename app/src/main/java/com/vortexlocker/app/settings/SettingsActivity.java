@@ -54,6 +54,7 @@ import com.vortexlocker.app.settings.codeSetting.CodeSettingActivity;
 import com.vortexlocker.app.socket.interfaces.DatabaseStatus;
 import com.vortexlocker.app.socket.interfaces.NetworkListener;
 import com.vortexlocker.app.socket.interfaces.RefreshListener;
+import com.vortexlocker.app.socket.model.Settings;
 import com.vortexlocker.app.socket.receiver.NetworkReceiver;
 import com.vortexlocker.app.socket.service.SocketService;
 import com.vortexlocker.app.updateDB.BlurWorker;
@@ -154,14 +155,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         init();
 
-        final Intent intent = new Intent(this, SocketService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent.setAction("refresh");
-            startForegroundService(intent);
-        } else {
-            intent.setAction("refresh");
-            startService(intent);
+        boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
+        if (linkStatus && networkStatus) {
+            final Intent intent = new Intent(this, SocketService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.setAction("refresh");
+                startForegroundService(intent);
+            } else {
+                intent.setAction("refresh");
+                startService(intent);
+            }
         }
+
 
     }
 
@@ -813,23 +818,27 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         final Intent intent = new Intent(this, SocketService.class);
 
-
         swipeToApiRequest.setOnRefreshListener(() -> {
             if (networkStatus) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    intent.setAction("restart");
-                    startForegroundService(intent);
-                } else {
-                    intent.setAction("restart");
-                    startService(intent);
+                boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+                if (linkStatus) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        intent.setAction("restart");
+                        startForegroundService(intent);
+                    } else {
+                        intent.setAction("restart");
+                        startService(intent);
+                    }
+                    if (listener != null) {
+                        listener.onSwipe();
+                    }
                 }
-                if (listener != null) {
-                    listener.onSwipe();
-                }
+
             } else {
                 stopService(intent);
                 Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
             }
+
             swipeToApiRequest.setRefreshing(false);
         });
     }
@@ -1084,9 +1093,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Timber.e("onStop: service is stopped");
                 PrefUtils.saveBooleanPref(this, AppConstants.KEY_SERVICE_RUNNING, false);
             }
-        } else {
-            Toast.makeText(this, "Device is not linked yet", Toast.LENGTH_SHORT).show();
-        }
+        }  //            Toast.makeText(this, "Device is not linked yet", Toast.LENGTH_SHORT).show();
+
     }
 
 
