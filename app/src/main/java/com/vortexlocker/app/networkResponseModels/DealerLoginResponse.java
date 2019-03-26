@@ -21,6 +21,7 @@ public class DealerLoginResponse {
 
 
 
+
     public int getdId() {
         return dId;
     }

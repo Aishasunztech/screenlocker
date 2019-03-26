@@ -69,7 +69,7 @@
     // MDM strings
 
     <string name="no_internet">Internet not available</string>
-    <string name="processing">Processing…</string>
+    <string name="processing">Activating device please wait.</string>
     <string name="submit">Submit</string>
     <string name="permission_required">We need this permission to read hardware ids to secure your device</string>
     <string name="dont_have_permission">We do not have permission.</string>

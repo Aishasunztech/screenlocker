@@ -104,6 +104,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView17" />
 
+        <!-- PGP Email view-->
+
         <TextView
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
@@ -120,9 +122,9 @@
             android:id="@+id/tvPgpEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            android:text="ABSG45879"
+            android:layout_marginEnd="16dp"
+            android:text="7992PFY@ARMORSEC.XYZ"
             android:textSize="@dimen/textSize"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView18"
@@ -130,6 +132,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView18" />
 
 
+        <!-- Chat ID view -->
         <TextView
             android:id="@+id/textView19"
             android:layout_width="wrap_content"
@@ -146,15 +149,16 @@
             android:id="@+id/tvChatId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            android:text="ABSG45879"
+            android:layout_marginEnd="16dp"
+            android:text="5141281304"
             android:textSize="@dimen/textSize"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView19"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView19" />
 
+        <!-- Sim ID view-->
         <TextView
             android:id="@+id/textView20"
             android:layout_width="wrap_content"
@@ -171,9 +175,9 @@
             android:id="@+id/tvSimId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            android:text="ABSG45879"
+            android:layout_marginEnd="16dp"
+            android:text="5141281304"
             android:textSize="@dimen/textSize"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView20"

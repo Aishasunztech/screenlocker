@@ -79,9 +79,11 @@ import static com.vortexlocker.app.launcher.MainActivity.RESULT_ENABLE;
 import static com.vortexlocker.app.utils.AppConstants.CHAT_ID;
 import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.DB_STATUS;
+import static com.vortexlocker.app.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_ID;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.vortexlocker.app.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.vortexlocker.app.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.vortexlocker.app.utils.AppConstants.PGP_EMAIL;
 import static com.vortexlocker.app.utils.AppConstants.REQUEST_READ_PHONE_STATE;
@@ -113,7 +115,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      */
     private static final int REQUEST_CODE_PASSWORD = 883;
     private InputMethodManager imm;
-    private Switch switchEnableLockScreen, switchEnableVpn;
+    private Switch switchEnableVpn;
 
     private SettingsPresenter settingsPresenter;
     private ConstraintLayout rootLayout;
@@ -154,7 +156,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         init();
-
         boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
         if (linkStatus && networkStatus) {
             final Intent intent = new Intent(this, SocketService.class);
@@ -166,9 +167,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 startService(intent);
             }
         }
-
-
     }
+
 
     public void init() {
 
@@ -189,6 +189,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        if (default_guest_pass == null) {
 //            PrefUtils.saveStringPref(this, KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
 //        }
+
+
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
         networkReceiver = new NetworkReceiver(this);
@@ -198,18 +200,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         registerReceiver(networkReceiver, filter);
 
         setSwipeToApiRequest();
-
-        // check if our service is running or not
-        if (settingsPresenter.isServiceRunning()) {
-            //  make switch on
-            switchEnableLockScreen.setChecked(true);
-        } else {
-            //  make switch off
-            switchEnableLockScreen.setChecked(false);
-        }
-
-        // switch change listener(on off service for lock)
-        switchEnableLockScreen.setOnCheckedChangeListener(this);
 
         // switch change listener(on off service for vpn)
         switchEnableVpn.setOnCheckedChangeListener(this);
@@ -243,6 +233,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         PrefUtils.saveBooleanPref(this, DB_STATUS, true);
                     }
                 });
+
+
+        final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
+        lockScreenIntent.setAction("lock screen");
+        //  check for the can draw over permission ,is it enabled or not
+        if (PermissionUtils.canDrawOver(SettingsActivity.this)) {
+            // check for the permission to allow notification
+            if (PermissionUtils.canControlNotification(SettingsActivity.this)) {
+                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
+                    // main password is not set
+                    PrefUtils.saveStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+                }
+
+                if (!settingsPresenter.isServiceRunning()) {
+                    settingsPresenter.startLockService(lockScreenIntent);
+                }
+
+            } else {
+                // request user to allow notification for our app
+                PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
+            }
+        } else {
+            // request user to enable over lay permission for our app
+            PermissionUtils.requestOverlayPermission(SettingsActivity.this);
+        }
     }
 
     AppInstallReciever mInstallReciever;
@@ -276,7 +291,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private void setIds() {
-        switchEnableLockScreen = findViewById(R.id.switchEnableLockScreen);
         switchEnableVpn = findViewById(R.id.switchEnableVpn);
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
@@ -511,7 +525,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAbout).setOnClickListener(this);
         findViewById(R.id.tvCode).setOnClickListener(this);
         findViewById(R.id.tvCheckForUpdate).setOnClickListener(this);
-        findViewById(R.id.tvSetDefaultLauncher).setOnClickListener(this);
         findViewById(R.id.tvlinkDevice).setOnClickListener(this);
     }
 
@@ -523,9 +536,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvManagePasswords:
                     Intent passwordsIntent = new Intent(SettingsActivity.this, ManagePasswords.class);
                     startActivity(passwordsIntent);
-                    break;
-                case R.id.tvSetDefaultLauncher:
-                    handleSetDefaultLauncher();
                     break;
                 case R.id.tvChooseBackground:     // handle the choose apps click event
                     handleChooseABackground();
@@ -593,7 +603,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     public void handleSetMainPassword(Activity activity, View rootLayout) {
 
-        if (PrefUtils.getStringPref(activity, AppConstants.KEY_MAIN_PASSWORD) == null) {
+        if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
             Intent i = new Intent(activity, SetUpLockActivity.class);
             i.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
             activity.startActivityForResult(i, REQUEST_CODE_PASSWORD);
@@ -619,7 +629,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                     if (input.getText().toString().
                             equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                    AppConstants.KEY_MAIN_PASSWORD))) {
+                                    KEY_MAIN_PASSWORD))) {
                         // if password is right then allow user to change it
                         Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
                         setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
@@ -731,73 +741,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void handleSetDefaultLauncher() {
-
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) == null) {
-            Snackbar.make(rootLayout, R.string.please_add_encrypted_password, Snackbar.LENGTH_SHORT).show();
-        } else {
-            final EditText input = new EditText(SettingsActivity.this);
-            settingsPresenter.showAlertDialog(input, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
-
-                        if (!settingsPresenter.isMyLauncherDefault()) {
-                            resetPreferredLauncherAndOpenChooser(SettingsActivity.this);
-                        } else
-                            Toast.makeText(SettingsActivity.this, "already set", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            }, null, getString(R.string.please_enter_encrypted_password));
-
-        }
-
-    }
-
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, final boolean isChecked) {
 
         switch (compoundButton.getId()) {
-            case R.id.switchEnableLockScreen:
-                final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
-                lockScreenIntent.setAction("lock screen");
-                //  check for the can draw over permission ,is it enabled or not
-                if (PermissionUtils.canDrawOver(SettingsActivity.this)) {
-                    // check for the permission to allow notification
-                    if (PermissionUtils.canControlNotification(SettingsActivity.this)) {
-                        if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD) == null) {
-                            // main password is not set
-                            Snackbar.make(rootLayout, R.string.please_set_encrypted_password, Snackbar.LENGTH_SHORT).show();
-                            switchEnableLockScreen.setChecked(false);
-                        } else {
-                            if (isChecked) {
-                                // if the switch if on then start the lock service
-                                settingsPresenter.startLockService(lockScreenIntent);
 
-                            } else {
-                                // if the switch is off or get off then stop (unbind the service)
-                                settingsPresenter.stopLockService(lockScreenIntent);
-
-                            }
-                        }
-                    } else {
-                        // request user to allow notification for our app
-                        PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
-                        switchEnableLockScreen.setChecked(false);
-                    }
-                } else {
-                    // request user to enable over lay permission for our app
-                    PermissionUtils.requestOverlayPermission(SettingsActivity.this);
-                    switchEnableLockScreen.setChecked(false);
-                }
-                break;
             case R.id.switchEnableVpn:
 
                 if (isChecked) {
@@ -903,10 +852,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
             Timber.d("Current version " + currentVersion + "playstore version " + onlineVersion);
         }
+
     }
 
     @SuppressLint("SetTextI18n")
     private void createAboutDialog() {
+//        about device dialog
+
         Dialog aboutDialog = new Dialog(this);
         aboutDialog.setContentView(R.layout.dialog_about_background);
         WindowManager.LayoutParams params = Objects.requireNonNull(aboutDialog.getWindow()).getAttributes();
@@ -1035,11 +987,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
 
             if (isEncryptedChecked) {
-                if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD) == null) {
+                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
                     Toast.makeText(SettingsActivity.this, "Please set Encrypted Password First.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
+                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD))) {
                     // allow him to set background for encrypted user
                     CropImage.activity()
                             .setGuidelines(CropImageView.Guidelines.ON)
@@ -1077,24 +1029,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         });
         dialog.show();
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-        if (linkStatus) {
-
-            if (switchEnableLockScreen.isChecked()) {
-                Timber.e("onStop: service is started");
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_SERVICE_RUNNING, true);
-            } else {
-                Timber.e("onStop: service is stopped");
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_SERVICE_RUNNING, false);
-            }
-        }  //            Toast.makeText(this, "Device is not linked yet", Toast.LENGTH_SHORT).show();
-
     }
 
 

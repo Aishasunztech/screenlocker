@@ -32,14 +32,11 @@ import retrofit2.http.Url;
 
 public interface ApiOneCaller {
 
-
-
     //   @Headers( "Content-Type: application/json" )
     @POST("adddevice")
     Call<NetworkResponse> addExpiryDate(
             @FieldMap Map<String, String> params
     );
-
 
     @FormUrlEncoded
     @POST("getinfo")
@@ -65,11 +62,9 @@ public interface ApiOneCaller {
             @FieldMap Map<String, String> params
     );
 
-
     @FormUrlEncoded
     @POST("getstatus")
     Call<NetworkResponse> checkStatus(@Field("imei") String imeiNumber, @Field("mac") String macAddress);
-
 
     @FormUrlEncoded
     @POST("adddev")
@@ -77,18 +72,14 @@ public interface ApiOneCaller {
             @FieldMap Map<String, String> params
     );
 
-
     @GET("apklist")
     Call<InstallAppModel> getApps();
-
 
     @Streaming
     @GET
     Call<ResponseBody> downloadApp(@Url String url);
 
-
     Call<RequestBody> getDownloadUrl();
-
 
     @Headers("Content-Type: application/json")
     @POST("login")

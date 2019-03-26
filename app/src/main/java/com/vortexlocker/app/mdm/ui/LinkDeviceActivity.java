@@ -37,11 +37,14 @@ import timber.log.Timber;
 
 import static com.vortexlocker.app.utils.AppConstants.AUTH_TOKEN;
 import static com.vortexlocker.app.utils.AppConstants.AUTO_LOGIN_PIN;
+import static com.vortexlocker.app.utils.AppConstants.CHAT_ID;
 import static com.vortexlocker.app.utils.AppConstants.CURRENT_STEP;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_NEW;
 import static com.vortexlocker.app.utils.AppConstants.DEVICE_PENDING;
+import static com.vortexlocker.app.utils.AppConstants.PGP_EMAIL;
+import static com.vortexlocker.app.utils.AppConstants.SIM_ID;
 import static com.vortexlocker.app.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
 import static com.vortexlocker.app.utils.AppConstants.TOKEN_EXPIRED;
 import static com.vortexlocker.app.utils.AppConstants.TOKEN_INVALID;
@@ -83,7 +86,6 @@ public class LinkDeviceActivity extends BaseActivity {
     @BindView(R.id.tvIP)
     TextView tvIP;
     String IP;
-
     @BindView(R.id.btnLinkDevice)
     Button btnLinkDevice;
     @BindView(R.id.btnStopLink)
@@ -97,8 +99,26 @@ public class LinkDeviceActivity extends BaseActivity {
     TextView tvSimNo2;
     @BindView(R.id.tvIMEI2)
     TextView tvIMEI2;
-
     String defaultImei;
+
+    // Pgp Email view
+    @BindView(R.id.pgpEmail)
+    TableRow pgpEmail;
+    @BindView(R.id.tvPgpEmail)
+    TextView tvPgpEmail;
+
+    // Chat ID view
+    @BindView(R.id.chatId)
+    TableRow chatId;
+    @BindView(R.id.tvChatId)
+    TextView tvChatId;
+
+    // Sim ID view
+    @BindView(R.id.simId)
+    TableRow simId;
+    @BindView(R.id.tvSimId)
+    TextView tvSimId;
+
 
     @Override
     protected int getContentView() {
@@ -477,6 +497,26 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+
+        // pgp Email
+        String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
+        if (pgp_Email != null) {
+            pgpEmail.setVisibility(View.VISIBLE);
+            tvPgpEmail.setText(pgp_Email);
+        }
+        // chat ID
+        String chat_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, CHAT_ID);
+        if (chat_Id != null) {
+            chatId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chat_Id);
+        }
+        // sim ID
+        String sim_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, SIM_ID);
+        if (sim_Id != null) {
+            simId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chat_Id);
+        }
+
     }
 
     private void pendingLinkViewState() {

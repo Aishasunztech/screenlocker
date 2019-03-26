@@ -350,6 +350,96 @@
                         tools:text="IP Addr" />
                 </TableRow>
 
+                <!-- PGP Email view -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/pgpEmail"
+                    android:visibility="gone"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PGP Email"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" : "
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvPgpEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="18sp"
+                        tools:layout_editor_absoluteX="165dp"
+                        tools:layout_editor_absoluteY="190dp"
+                        tools:text="7992PFY@ARMORSEC.XYZ" />
+                </TableRow>
+
+                <!-- Chat ID view-->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/chatId"
+                    android:visibility="gone"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chat Id"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" : "
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvChatId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="18sp"
+                        tools:layout_editor_absoluteX="165dp"
+                        tools:layout_editor_absoluteY="190dp"
+                        tools:text="5141281304" />
+                </TableRow>
+
+                <!-- Sim ID view-->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/simId"
+                    android:visibility="gone"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sim Id"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" : "
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvSimId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:textSize="18sp"
+                        tools:layout_editor_absoluteX="165dp"
+                        tools:layout_editor_absoluteY="190dp"
+                        tools:text="5141281304" />
+                </TableRow>
+
             </TableLayout>
 
             <Button
@@ -372,7 +462,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
-
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>

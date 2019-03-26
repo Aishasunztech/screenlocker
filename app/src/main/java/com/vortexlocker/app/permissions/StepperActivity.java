@@ -5,23 +5,17 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.vortexlocker.app.MyAdmin;
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.mdm.MainActivity;
-import com.vortexlocker.app.mdm.ui.LinkDeviceActivity;
 import com.vortexlocker.app.settings.SettingsActivity;
-import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.PermissionUtils;
 import com.vortexlocker.app.utils.PrefUtils;
 
@@ -30,11 +24,8 @@ import java.util.ArrayList;
 import me.drozdzynski.library.steppers.SteppersItem;
 import me.drozdzynski.library.steppers.SteppersView;
 import me.drozdzynski.library.steppers.interfaces.OnSkipStepAction;
-import timber.log.Timber;
 
-import static com.vortexlocker.app.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.vortexlocker.app.utils.AppConstants.CURRENT_STEP;
-import static com.vortexlocker.app.utils.AppConstants.RESULT_ENABLE;
 import static com.vortexlocker.app.utils.AppConstants.TOUR_STATUS;
 import static com.vortexlocker.app.utils.PermissionUtils.isAccessGranted;
 import static com.vortexlocker.app.utils.PermissionUtils.isPermissionGranted;
@@ -93,12 +84,6 @@ public class StepperActivity extends AppCompatActivity {
             requestOverlayPermission(StepperActivity.this);
             isPermissionGranted(StepperActivity.this);
             requestUsageStatePermission(StepperActivity.this);
-
-            if (checkPermssions()) {
-                int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
-                PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
-                steppersView.nextStep();
-            }
 
         });
 
@@ -164,7 +149,6 @@ public class StepperActivity extends AppCompatActivity {
 
     private boolean checkPermssions() {
         init();
-
         if (!PermissionUtils.canControlNotification(StepperActivity.this)) {
             PermissionUtils.requestNotificationAccessibilityPermission(StepperActivity.this);
         }
@@ -179,8 +163,7 @@ public class StepperActivity extends AppCompatActivity {
         }
         if (permission && adminActive && PermissionUtils.canControlNotification(StepperActivity.this)) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                if(isAccessGranted(StepperActivity.this))
-                {
+                if (isAccessGranted(StepperActivity.this)) {
                     return Settings.canDrawOverlays(StepperActivity.this);
                 }
             }
@@ -218,20 +201,16 @@ public class StepperActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 
-        if (clickStatus) {
-//            init();
-//            permissionModify(StepperActivity.this);
-//            permissionAdmin(StepperActivity.this, devicePolicyManager, compName);
-//            isPermissionGranted(StepperActivity.this);
-//            if (!PermissionUtils.canControlNotification(StepperActivity.this)) {
-//                PermissionUtils.requestNotificationAccessibilityPermission(StepperActivity.this);
-//            }
-
-        }
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
-        Log.d("kjgjnjsg", "onResume: " + current_step);
 
-        if (steppersView != null) {
+        if (clickStatus) {
+            if (checkPermssions() && current_step == 0) {
+                PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
+                if (steppersView != null) {
+                    steppersView.nextStep();
+                }
+            }
+        } else if (steppersView != null) {
             steppersView.setActiveItem(current_step);
         }
         super.onResume();

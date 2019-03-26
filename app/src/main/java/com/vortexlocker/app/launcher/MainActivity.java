@@ -70,7 +70,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         try {
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-
         } catch (Exception ignored) {
 
         }
@@ -124,7 +123,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
                 && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE)) {
 
-            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+            try {
+                sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+            } catch (Exception ignored) {
+
+            }
+
 
             mainPresenter.startLockService(lockScreenIntent);
 
