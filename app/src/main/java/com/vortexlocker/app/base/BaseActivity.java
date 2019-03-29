@@ -3,6 +3,7 @@ package com.vortexlocker.app.base;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.vortexlocker.app.BlockStatusBar;
 import com.vortexlocker.app.app.MyApplication;
 import com.vortexlocker.app.utils.AppConstants;
 import com.vortexlocker.app.utils.LifecycleReceiver;
@@ -233,7 +235,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 statusViewAdded = true;
             }
             if (PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT) == null) {
-                enableScreenShotBlocker(false);
+                enableScreenShotBlocker(true);
             }
         } else {
             if (statusViewAdded) {
@@ -261,7 +263,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         if (isChecked) {
             mWindowManager.addView(getScreenShotView(), getLayoutParams());
             PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-        } else{
+        } else {
             PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
             Toast.makeText(BaseActivity.this, "already screenshot enabled", Toast.LENGTH_SHORT).show();
         }
@@ -274,7 +276,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             mWindowManager = getWindowManager();
         if (isChecked) {
             try {
-//                mWindowManager.removeView(getScreenShotView());
+                mWindowManager.removeView(getScreenShotView());
                 PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_DISABLE);
             } catch (Exception ignored) {
             }
@@ -325,10 +327,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        freezeStatusbar();
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            if (!hasFocus) {
+//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//                sendBroadcast(closeDialog);
+                // Method that handles loss of window focus
+                new BlockStatusBar(this, false).collapseNow();
+            }
+        }
     }
 
 
     protected abstract void freezeStatusbar();
+
+
 }

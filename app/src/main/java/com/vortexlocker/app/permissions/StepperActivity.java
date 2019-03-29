@@ -15,7 +15,10 @@ import android.widget.Toast;
 import com.vortexlocker.app.MyAdmin;
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.mdm.MainActivity;
+import com.vortexlocker.app.settings.SettingContract;
 import com.vortexlocker.app.settings.SettingsActivity;
+import com.vortexlocker.app.settings.SettingsModel;
+import com.vortexlocker.app.settings.SettingsPresenter;
 import com.vortexlocker.app.utils.PermissionUtils;
 import com.vortexlocker.app.utils.PrefUtils;
 
@@ -34,13 +37,15 @@ import static com.vortexlocker.app.utils.PermissionUtils.permissionModify;
 import static com.vortexlocker.app.utils.PermissionUtils.requestOverlayPermission;
 import static com.vortexlocker.app.utils.PermissionUtils.requestUsageStatePermission;
 
-public class StepperActivity extends AppCompatActivity {
+public class StepperActivity extends AppCompatActivity implements SettingContract.SettingsMvpView {
     private static final int REQUEST_CODE_PASSWORD = 883;
     private SteppersView steppersView;
-    boolean permission;
+    boolean launcher = false;
     boolean clickStatus = false;
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
+
+    private SettingsPresenter settingsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class StepperActivity extends AppCompatActivity {
 
         SettingsActivity settingsActivity = new SettingsActivity();
 
+        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
+
         steppersViewConfig.setOnFinishAction(() -> {
             PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
             Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
@@ -60,7 +67,6 @@ public class StepperActivity extends AppCompatActivity {
 
 
         steppersViewConfig.setOnCancelAction(this::finish);
-
         steppersViewConfig.setOnChangeStepAction((position, activeStep) -> {
 
 //            Toast.makeText(StepperActivity.this,
@@ -84,6 +90,30 @@ public class StepperActivity extends AppCompatActivity {
             requestOverlayPermission(StepperActivity.this);
             isPermissionGranted(StepperActivity.this);
             requestUsageStatePermission(StepperActivity.this);
+
+        });
+
+        SteppersItem defaultLauncher = new SteppersItem();
+        defaultLauncher.setLabel("Set Default Launcher");
+        defaultLauncher.setPositiveButtonEnable(true);
+//        defaultLauncher.setSkippable(true);
+        defaultLauncher.setOnClickContinue(() -> {
+            launcher = true;
+            if (settingsPresenter.isMyLauncherDefault()) {
+                Toast.makeText(StepperActivity.this, "Already set as default.", Toast.LENGTH_SHORT).show();
+                steppersView.nextStep();
+            } else {
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        final Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                        startActivity(intent);
+                    } else {
+                        final Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                        startActivity(intent);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
 
         });
 
@@ -138,6 +168,7 @@ public class StepperActivity extends AppCompatActivity {
         steps.add(encryptedPassword);
         steps.add(duressPassword);
         steps.add(linking);
+        steps.add(defaultLauncher);
         steps.add(finish);
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
         steppersView.setConfig(steppersViewConfig);
@@ -201,18 +232,28 @@ public class StepperActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 
-        int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
-
-        if (clickStatus) {
-            if (checkPermssions() && current_step == 0) {
-                PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
-                if (steppersView != null) {
+        try {
+            int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
+            if (clickStatus) {
+                if (checkPermssions() && current_step == 0) {
+                    PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
+                    if (steppersView != null) {
+                        steppersView.nextStep();
+                    }
+                }
+            } else if (launcher) {
+                if (settingsPresenter.isMyLauncherDefault()) {
                     steppersView.nextStep();
                 }
+
+            } else if (steppersView != null) {
+                steppersView.setActiveItem(current_step);
             }
-        } else if (steppersView != null) {
-            steppersView.setActiveItem(current_step);
+        } catch (Exception ignored) {
+
         }
+
+
         super.onResume();
     }
 

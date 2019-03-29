@@ -175,6 +175,9 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
         <activity
             android:name=".settingsMenu.SettingsMenuActivity"
             android:screenOrientation="portrait" />

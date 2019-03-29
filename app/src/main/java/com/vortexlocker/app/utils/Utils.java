@@ -22,6 +22,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.vortexlocker.app.BuildConfig;
 import com.vortexlocker.app.R;
@@ -45,6 +47,7 @@ import static com.vortexlocker.app.socket.utils.utils.loginAsGuest;
 import static com.vortexlocker.app.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.vortexlocker.app.socket.utils.utils.wipeDevice;
 import static com.vortexlocker.app.utils.AppConstants.LOCK_SCREEN_STATUS;
+import static com.vortexlocker.app.utils.AppConstants.LOGIN_ATTEMPTS;
 
 public class Utils {
 
@@ -108,7 +111,7 @@ public class Utils {
     }
 
 
-    public static WindowManager.LayoutParams prepareLockScreenView(final FrameLayout layout, List<NotificationItem> notifications, final Context context) {
+    public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout, List<NotificationItem> notifications, final Context context) {
 
 
         int windowType;
@@ -136,6 +139,8 @@ public class Utils {
                 PixelFormat.TRANSLUCENT);
         params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         params.gravity = Gravity.CENTER;
+
+
 //        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -219,6 +224,7 @@ public class Utils {
             @Override
             public void onClick(View v) {
 
+
                 Timber.d("on unlock: click ");
                 String enteredPin = keyboardView.getInputText().trim();
                 String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
@@ -227,22 +233,27 @@ public class Utils {
                 String device_status = getDeviceStatus(context);
                 Timber.d("device status %s", device_status);
 
-                if (getUserType(enteredPin, context).equals("guest") && device_status == null) {
-                    loginAsGuest(context);
-                }
-                //if input is for eyncrypted
-                else if (getUserType(enteredPin, context).equals("encrypted") && device_status == null) {
-                    loginAsEncrypted(context);
-                    boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
-                    if (lock_screen) {
-                        Intent intent = new Intent(context, LockScreenService.class);
-                        context.stopService(intent);
-                        PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+                if (enteredPin.length() != 0) {
+
+
+                    if (getUserType(enteredPin, context).equals("guest") && device_status == null) {
+                        loginAsGuest(context);
+                        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
                     }
-                } else if (getUserType(enteredPin, context).equals("duress")) {
-                    wipeDevice(context);
-                }
-                // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
+                    //if input is for eyncrypted
+                    else if (getUserType(enteredPin, context).equals("encrypted") && device_status == null) {
+                        loginAsEncrypted(context);
+                        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
+                        boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
+                        if (lock_screen) {
+                            Intent intent = new Intent(context, LockScreenService.class);
+                            context.stopService(intent);
+                            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+                        }
+                    } else if (getUserType(enteredPin, context).equals("duress")) {
+                        wipeDevice(context);
+                    }
+                    // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
                 /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
 
 // JUST a go through LOCK
@@ -255,30 +266,42 @@ public class Utils {
                     }
 
                 }*/
-                else if (device_status != null) {
+                    else if (device_status != null) {
 
-                    switch (device_status) {
-                        case "suspended":
-                            if (device_id != null) {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", device_id);
-                            } else {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", "N/A");
-                            }
-                            break;
-                        case "expired":
-                            if (device_id != null) {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", device_id);
-                            } else {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", "N/A");
-                            }
-                            break;
+                        switch (device_status) {
+                            case "suspended":
+                                if (device_id != null) {
+                                    keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", device_id);
+                                } else {
+                                    keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", "N/A");
+                                }
+                                break;
+                            case "expired":
+                                if (device_id != null) {
+                                    keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", device_id);
+                                } else {
+                                    keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", "N/A");
+                                }
+                                break;
+                        }
+                    } else {
+
+                        int attempts = 10;
+                        int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+                        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
+
+                        int x = attempts - count;
+
+                        if (count < 10) {
+                            keyboardView.setPassword(null);
+                            keyboardView.setWarningText("After " + x + " more attempts,\n this device will reset automatically!", null);
+                        } else {
+                            wipeDevice(context);
+                        }
+
                     }
-                } else {
-                    keyboardView.setPassword(null);
 
-                    keyboardView.setWarningText("Wrong password! Try again", null);
                 }
-
 
             }
         });

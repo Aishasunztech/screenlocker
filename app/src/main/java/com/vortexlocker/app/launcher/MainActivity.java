@@ -12,21 +12,19 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.vortexlocker.app.MyAdmin;
+import com.vortexlocker.app.MyService;
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.ShutDownReceiver;
 import com.vortexlocker.app.app.MyApplication;
@@ -69,18 +67,20 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onCreate(savedInstanceState);
 
         try {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void run() {
+                    checkCurrentProcess();
+                }
+            }, 0, 100);
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
+
         } catch (Exception ignored) {
 
         }
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void run() {
-                checkCurrentProcess();
-            }
-        }, 0, 100);
+
         //Remove title bar
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //Remove notification bar
@@ -123,14 +123,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
                 && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE)) {
 
+//            mainPresenter.startLockService(lockScreenIntent);
+            MyService.enqueueWork(MainActivity.this, new Intent());
+
             try {
                 sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
             } catch (Exception ignored) {
 
             }
-
-
-            mainPresenter.startLockService(lockScreenIntent);
 
             //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
             if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
@@ -258,10 +258,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        }
+
 //        ActivityManager activityManager = (ActivityManager) getApplicationContext()
 //                .getSystemService(Context.ACTIVITY_SERVICE);
 //        activityManager.moveTaskToFront(getTaskId(), 0);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkCurrentProcess() {
@@ -287,7 +293,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private String retriveNewApp() {
         if (Build.VERSION.SDK_INT >= 21) {
             String currentApp = null;
-            UsageStatsManager usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
+            UsageStatsManager usm = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
+            }
             long time = System.currentTimeMillis();
             List<UsageStats> applist = null;
             if (usm != null) {

@@ -127,6 +127,9 @@ public class AppConstants {
     public static final String SIM_ID = "sim_id";
 
 
+    public static final String LOGIN_ATTEMPTS = "login_attempts";
+
+
 
 
 }

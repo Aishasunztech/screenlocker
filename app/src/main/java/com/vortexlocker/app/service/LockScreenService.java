@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.vortexlocker.app.R;
 import com.vortexlocker.app.launcher.AppInfo;
@@ -45,7 +46,7 @@ import static com.vortexlocker.app.utils.AppConstants.KEY_MAIN_PASSWORD;
  */
 public class LockScreenService extends Service {
     @SuppressLint("StaticFieldLeak")
-    private static FrameLayout mLayout = null;
+    private static RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
     private BroadcastReceiver notificationRefreshedListener;
     private static List<NotificationItem> notificationItems;
@@ -173,7 +174,8 @@ public class LockScreenService extends Service {
             WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
             removeLockScreenView(windowManager);
             if (mLayout == null) {
-                mLayout = new FrameLayout(LockScreenService.this);
+                mLayout = new RelativeLayout(LockScreenService.this);
+
             }
 
             notificationItems.clear();

@@ -89,7 +89,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider15" />
 
                 <View
                     android:id="@+id/divider14"
@@ -111,9 +111,9 @@
                     android:textSize="@dimen/textSize"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider14" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
 
                 <View
                     android:id="@+id/divider5"
@@ -135,8 +135,9 @@
                     android:textColor="@color/textColorPrimary"
                     android:textSize="@dimen/textSize"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider15" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider14" />
 
                 <TextView
                     android:id="@+id/tvCheckForUpdate"

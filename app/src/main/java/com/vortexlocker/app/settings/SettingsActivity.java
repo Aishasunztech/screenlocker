@@ -1089,4 +1089,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (settingsPresenter.isMyLauncherDefault()) {
+            Intent home = new Intent(SettingsActivity.this, com.vortexlocker.app.launcher.MainActivity.class);
+            startActivity(home);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+
+
+    }
 }
