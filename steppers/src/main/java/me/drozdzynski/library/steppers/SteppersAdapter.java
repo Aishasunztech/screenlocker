@@ -84,14 +84,15 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
         final SteppersItem steppersItem = items.get(position);
 
         holder.setChecked(position < currentStep);
-        if(holder.isChecked()) {
+        if (holder.isChecked()) {
             holder.roundedView.setChecked(true);
         } else {
             holder.roundedView.setChecked(false);
             holder.roundedView.setText(position + 1 + "");
         }
 
-        if(position == currentStep || holder.isChecked()) holder.roundedView.setCircleAccentColor();
+        if (position == currentStep || holder.isChecked())
+            holder.roundedView.setCircleAccentColor();
         else holder.roundedView.setCircleGrayColor();
 
         holder.textViewLabel.setText(steppersItem.getLabel());
@@ -103,27 +104,27 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
         steppersItem.addObserver(new Observer() {
             @Override
             public void update(Observable observable, Object data) {
-                if(observable != null) {
+                if (observable != null) {
                     SteppersItem item = (SteppersItem) observable;
                     holder.buttonContinue.setEnabled(item.isPositiveButtonEnable());
                 }
             }
         });
 
-        if (position == getItemCount() - 1) holder.buttonContinue.setText(context.getResources().getString(R.string.step_finish));
-        else holder.buttonContinue.setText(context.getResources().getString(R.string.step_continue));
+//        if (position == getItemCount() - 1) holder.buttonContinue.setText(context.getResources().getString(R.string.step_finish));
+        holder.buttonContinue.setText(context.getResources().getString(R.string.step_continue));
 
         holder.buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position == getItemCount() - 1) config.getOnFinishAction().onFinish();
-                else {
-                    if(steppersItem.getOnClickContinue() != null) {
-                        steppersItem.getOnClickContinue().onClick();
-                    } else {
-                        nextStep();
-                    }
+//                if(position == getItemCount() - 1) config.getOnFinishAction().onFinish();
+
+                if (steppersItem.getOnClickContinue() != null) {
+                    steppersItem.getOnClickContinue().onClick();
+                } else {
+                    nextStep();
                 }
+
             }
         });
 
@@ -143,7 +144,7 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
             holder.buttonSkip.setVisibility(View.GONE);
         }
 
-        if(config.isCancelAvailable()) {
+        if (config.isCancelAvailable()) {
             if (config.getOnCancelAction() != null)
                 holder.buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -158,11 +159,12 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.frame_layout, holder.frameLayout, true);
 
-        if(frameLayoutIds.get(position) == null) frameLayoutIds.put(position, findUnusedId(holder.itemView));
+        if (frameLayoutIds.get(position) == null)
+            frameLayoutIds.put(position, findUnusedId(holder.itemView));
 
         //frameLayout.setId(frameLayoutIds.get(position));
 
-        if(config.getFragmentManager() != null && steppersItem.getFragment() != null) {
+        if (config.getFragmentManager() != null && steppersItem.getFragment() != null) {
             holder.frameLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
             holder.frameLayout.setTag(frameLayoutName());
 
@@ -173,18 +175,21 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
             String name = makeFragmentName(steppersView.getId(), position);
             Fragment fragment = fragmentManager.findFragmentByTag(name);
 
-            if(position < beforeStep) {
+            if (position < beforeStep) {
                 if (fragment != null) {
-                    if(BuildConfig.DEBUG) Log.v(TAG, "Removing item #" + position + ": f=" + fragment);
+                    if (BuildConfig.DEBUG)
+                        Log.v(TAG, "Removing item #" + position + ": f=" + fragment);
                     fragmentTransaction.detach(fragment);
                 }
-            } else if(position == beforeStep || position == currentStep) {
+            } else if (position == beforeStep || position == currentStep) {
                 if (fragment != null) {
-                    if(BuildConfig.DEBUG) Log.v(TAG, "Attaching item #" + position + ": f=" + fragment + " d=" + fragment.isDetached());
+                    if (BuildConfig.DEBUG)
+                        Log.v(TAG, "Attaching item #" + position + ": f=" + fragment + " d=" + fragment.isDetached());
                     fragmentTransaction.attach(fragment);
                 } else {
                     fragment = steppersItem.getFragment();
-                    if(BuildConfig.DEBUG) Log.v(TAG, "Adding item #" + position + ": f=" + fragment + " n=" + name);
+                    if (BuildConfig.DEBUG)
+                        Log.v(TAG, "Adding item #" + position + ": f=" + fragment + " n=" + name);
                     fragmentTransaction.add(steppersView.getId(), fragment,
                             name);
 
@@ -197,12 +202,12 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
                 fragmentManager.executePendingTransactions();
             }
 
-            if(fragmentManager.findFragmentByTag(name) != null &&
+            if (fragmentManager.findFragmentByTag(name) != null &&
                     fragmentManager.findFragmentByTag(name).getView() != null) {
 
                 View fragmentView = fragmentManager.findFragmentByTag(name).getView();
 
-                if(fragmentView.getParent() != null && frameLayoutName() != ((View) fragmentView.getParent()).getTag()) {
+                if (fragmentView.getParent() != null && frameLayoutName() != ((View) fragmentView.getParent()).getTag()) {
                     steppersView.removeViewInLayout(fragmentView);
 
                     holder.frameLayout.removeAllViews();
@@ -211,10 +216,10 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
             }
         }
 
-        if(beforeStep == position) {
+        if (beforeStep == position) {
             AnimationUtils.hide(holder.linearLayoutContent);
         }
-        if(currentStep == position && !steppersItem.isDisplayed()) {
+        if (currentStep == position && !steppersItem.isDisplayed()) {
             steppersItem.setDisplayed(true);
         }
     }
@@ -224,20 +229,20 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
     }
 
     protected void changeToStep(int position) {
-        if(position != currentStep) {
+        if (position != currentStep) {
             this.beforeStep = currentStep;
             this.currentStep = position;
-            if(beforeStep < currentStep)
+            if (beforeStep < currentStep)
                 notifyItemRangeChanged(beforeStep, currentStep);
             else
                 notifyItemRangeChanged(currentStep, beforeStep);
 
-            if(config.getOnChangeStepAction() != null) {
+            if (config.getOnChangeStepAction() != null) {
                 SteppersItem steppersItem = items.get(this.currentStep);
                 config.getOnChangeStepAction().onChangeStep(this.currentStep, steppersItem);
             }
         } else {
-            if(BuildConfig.DEBUG) Log.i(TAG, "This step is currently active");
+            if (BuildConfig.DEBUG) Log.i(TAG, "This step is currently active");
         }
     }
 
@@ -253,7 +258,7 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
     private int fID = 87352142;
 
     public int findUnusedId(View view) {
-        while( view.findViewById(++fID) != null );
+        while (view.findViewById(++fID) != null) ;
         return fID;
     }
 

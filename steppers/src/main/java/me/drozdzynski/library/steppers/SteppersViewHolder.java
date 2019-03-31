@@ -43,11 +43,11 @@ public class SteppersViewHolder extends RecyclerView.ViewHolder {
     public SteppersViewHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
-        this.roundedView = itemView.findViewById(R.id.roundedView);
-        this.textViewLabel = itemView.findViewById(R.id.textViewLabel);
-        this.textViewSubLabel = itemView.findViewById(R.id.textViewSubLabel);
-        this.linearLayoutContent = itemView.findViewById(R.id.linearLayoutContent);
-        this.frameLayout = itemView.findViewById(R.id.frameLayout);
+        this.roundedView = (RoundedView) itemView.findViewById(R.id.roundedView);
+        this.textViewLabel = (TextView) itemView.findViewById(R.id.textViewLabel);
+        this.textViewSubLabel = (TextView) itemView.findViewById(R.id.textViewSubLabel);
+        this.linearLayoutContent = (LinearLayout) itemView.findViewById(R.id.linearLayoutContent);
+        this.frameLayout = (FrameLayout) itemView.findViewById(R.id.frameLayout);
         //this.frameLayoutsContainer = (LinearLayout) itemView.findViewById(R.id.frameLayoutsContainer);
         this.buttonContinue = (Button) itemView.findViewById(R.id.buttonContinue);
         this.buttonSkip = (Button) itemView.findViewById(R.id.buttonSkip);

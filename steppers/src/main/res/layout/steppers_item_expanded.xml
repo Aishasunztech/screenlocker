@@ -45,6 +45,7 @@
             android:id="@+id/textViewLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:textAppearance="@style/LabelActive"
             tools:text="Main label of step" />
 

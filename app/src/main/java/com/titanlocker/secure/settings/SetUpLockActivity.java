@@ -1,0 +1,190 @@
+package com.titanlocker.secure.settings;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.titanlocker.secure.R;
+import com.titanlocker.secure.utils.AppConstants;
+import com.titanlocker.secure.utils.PrefUtils;
+import com.titanlocker.secure.utils.Validator;
+
+import static com.titanlocker.secure.socket.utils.utils.passwordsOk;
+
+/**
+ * this activity set ups the password for the both guest and encrypted users
+ */
+public class SetUpLockActivity extends AppCompatActivity implements View.OnClickListener {
+    /**
+     * entered pin from the user
+     */
+    private AppCompatEditText etEnterPin;
+
+    /**
+     * to confirm the user entered password
+     */
+    private AppCompatEditText etConfirmPin;
+
+    /**
+     * button to validate the password and save it
+     */
+    private AppCompatButton btnConfirm;
+
+    private String from;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_set_up_lock);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
+        setToolbar(mToolbar);
+        init();
+
+        if (getIntent().hasExtra(Intent.EXTRA_TEXT)) {
+            String setMainPwd = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+            if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_GUEST)) {
+                from = AppConstants.KEY_GUEST;
+                // setting toolbar name for guest type
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(R.string.set_guest_code);
+                etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
+                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+            } else if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
+                from = AppConstants.KEY_DURESS;
+                // setting toolbar name for guest type
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(R.string.set_duress_code);
+                etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
+                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+            } else if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_CODE)) {
+                from = AppConstants.KEY_CODE;
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(R.string.set_code_pin);
+                etEnterPin.setHint(R.string.hint_please_enter_code_pin);
+                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+            } else {
+                from = AppConstants.KEY_MAIN;
+                // setting toolbar name for encrypted type
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(R.string.set_encrypted_code);
+                etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
+                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+
+            }
+        }
+
+    }
+
+    private void setToolbar(Toolbar mToolbar) {
+        setSupportActionBar(mToolbar);
+        //setting back button in toolbar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void init() {
+        etEnterPin = findViewById(R.id.etEnterPin);
+        etConfirmPin = findViewById(R.id.etConfirmPin);
+        btnConfirm = findViewById(R.id.btnConfirm);
+        btnConfirm.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.btnConfirm) {
+
+
+            String enteredPassword = etEnterPin.getText().toString().trim();
+            String reEnteredPassword = etConfirmPin.getText().toString().trim();
+
+            boolean isValid = Validator.validAndMatch(enteredPassword, reEnteredPassword);
+
+
+            if (isValid) {
+
+                boolean keyOk = passwordsOk(this, reEnteredPassword);
+
+                //Password password = new Password();
+                // password.setUserPassword(reEnteredPassword);
+                switch (from) {
+                    case AppConstants.KEY_GUEST:
+
+                        if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            etConfirmPin.setError("This password is taken please try again");
+                        }
+                        break;
+                    case AppConstants.KEY_CODE:
+
+                        if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.KEY_CODE_PASSWORD, reEnteredPassword);
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            etConfirmPin.setError("This password is taken please try again");
+                        }
+
+                        break;
+                    case AppConstants.KEY_MAIN:
+
+                        if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            etConfirmPin.setError("This password is taken please try again");
+                        }
+                        break;
+
+                    case AppConstants.KEY_DURESS:
+
+                        if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            etConfirmPin.setError("This password is taken please try again");
+                        }
+                        break;
+                }
+
+                // finishing the current activity to go back with the result
+            } else {
+                if (TextUtils.isEmpty(enteredPassword)) {
+                    etEnterPin.setError(getString(R.string.empty));
+                } else if (reEnteredPassword.equals("")) {
+                    etConfirmPin.setError(getString(R.string.empty));
+                } else {
+                    etConfirmPin.setError(getString(R.string.password_dont_match));
+                }
+
+            }
+        }
+    }
+
+
+}

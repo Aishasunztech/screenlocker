@@ -31,8 +31,6 @@ import java.util.List;
 
 import me.drozdzynski.library.steppers.interfaces.OnCancelAction;
 import me.drozdzynski.library.steppers.interfaces.OnChangeStepAction;
-import me.drozdzynski.library.steppers.interfaces.OnFinishAction;
-import me.drozdzynski.library.steppers.interfaces.OnSkipStepAction;
 
 public class SteppersView extends LinearLayout {
 
@@ -78,7 +76,7 @@ public class SteppersView extends LinearLayout {
     }
 
     public void build() {
-        if(config != null) {
+        if (config != null) {
             setOrientation(LinearLayout.HORIZONTAL);
 
             RecyclerView recyclerView = new RecyclerView(getContext());
@@ -103,7 +101,6 @@ public class SteppersView extends LinearLayout {
 
     public static class Config {
 
-        private OnFinishAction onFinishAction;
         private OnCancelAction onCancelAction;
         private OnChangeStepAction onChangeStepAction;
         private FragmentManager fragmentManager;
@@ -113,14 +110,6 @@ public class SteppersView extends LinearLayout {
 
         }
 
-        public Config setOnFinishAction(OnFinishAction onFinishAction) {
-            this.onFinishAction = onFinishAction;
-            return this;
-        }
-
-        public OnFinishAction getOnFinishAction() {
-            return onFinishAction;
-        }
 
         public Config setOnCancelAction(OnCancelAction onCancelAction) {
             this.onCancelAction = onCancelAction;
@@ -157,8 +146,9 @@ public class SteppersView extends LinearLayout {
     }
 
     static int fID = 190980;
+
     protected static int findUnusedId(View view) {
-        while( view.getRootView().findViewById(++fID) != null );
+        while (view.getRootView().findViewById(++fID) != null) ;
         return fID;
     }
 

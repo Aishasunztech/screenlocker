@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.vortexlocker.app">
+    package="com.titanlocker.secure">
 
-
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
     <uses-permission
@@ -38,6 +39,8 @@
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+
 
     <!-- permisions for overlay windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -102,13 +105,12 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".permissions.StepperActivity"
-            android:screenOrientation="portrait"
-            >
+        <activity
+            android:name=".permissions.StepperActivity"
+            android:screenOrientation="portrait">
 
         </activity>
         <activity
@@ -175,8 +177,9 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".MyService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
             android:name=".settingsMenu.SettingsMenuActivity"

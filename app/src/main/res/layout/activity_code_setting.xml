@@ -19,7 +19,7 @@
         android:id="@+id/ivLogo"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_vpn_key_black_24dp"
+        android:src="@mipmap/ic_launcher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include"
@@ -144,6 +144,7 @@
         android:padding="16dp"
         android:text="@string/sim"
         android:textColor="@color/textColorPrimary"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider19" />

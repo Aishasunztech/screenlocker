@@ -16,7 +16,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 27
         versionCode 1
-        versionName "4.47"
+        versionName "4.50"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -104,9 +104,9 @@ dependencies {
 
     //SDP
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    // Stepper
-    implementation 'me.drozdzynski.library.steppers:steppers:1.0.0'
 
+    // Stepper
+    implementation project(':steppers')
 }
 repositories {
     mavenCentral()

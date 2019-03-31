@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <com.vortexlocker.app.views.KeyboardView
+    <com.titanlocker.secure.views.KeyboardView
         android:id="@+id/keypad"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_320sdp"
+        android:layout_marginTop="@dimen/_365sdp"
         android:background="@drawable/keyboard_button_bg"
         android:text="@string/unlock"
         android:textColor="@color/textColorPrimary"

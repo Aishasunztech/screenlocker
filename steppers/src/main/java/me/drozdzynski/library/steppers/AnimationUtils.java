@@ -38,14 +38,6 @@ public class AnimationUtils {
         collapse.setStartOffset(500);
         collapse.setDuration(500);
 
-        int a = 9;
-        int b = 10;
-
-        a = b;
-
-
-
-
         AnimationSet animation = new AnimationSet(false);
         animation.setInterpolator(new AccelerateInterpolator());
         animation.addAnimation(fadeOut);

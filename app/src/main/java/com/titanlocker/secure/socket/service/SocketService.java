@@ -1,0 +1,78 @@
+package com.titanlocker.secure.socket.service;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+
+import com.titanlocker.secure.R;
+import com.titanlocker.secure.settings.SettingContract;
+import com.titanlocker.secure.socket.SocketSingleton;
+import com.titanlocker.secure.socket.utils.ApiUtils;
+import com.titanlocker.secure.utils.AppConstants;
+import com.titanlocker.secure.utils.CommonUtils;
+import com.titanlocker.secure.utils.PrefUtils;
+
+import timber.log.Timber;
+
+import static com.titanlocker.secure.socket.SocketSingleton.isSocketConnected;
+import static com.titanlocker.secure.utils.Utils.getNotification;
+
+public class SocketService extends Service implements SettingContract.SettingsMvpView {
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        Timber.d("<<< socket service created >>>");
+        startService();
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        String action = intent.getAction();
+        if (action != null) {
+            if (action.equals("refresh")) {
+                if (!isSocketConnected()) {
+                    String macAddress = CommonUtils.getMacAddress();
+                    new ApiUtils(SocketService.this, macAddress);
+                }
+
+            }
+            if (action.equals("restart")) {
+                String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
+                SocketSingleton.closeSocket(device_id);
+                String macAddress = CommonUtils.getMacAddress();
+                new ApiUtils(SocketService.this, macAddress);
+            }
+        }
+
+        Timber.d("<<< socket service started >>>");
+
+        return START_STICKY;
+    }
+
+    private void startService() {
+        final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (mNM != null) {
+            Notification notification = getNotification(this, R.drawable.sync);
+            startForeground(4577, notification);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        Timber.d("<<< socket service destroyed >>>");
+        String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
+        SocketSingleton.closeSocket(device_id);
+        super.onDestroy();
+    }
+
+}
