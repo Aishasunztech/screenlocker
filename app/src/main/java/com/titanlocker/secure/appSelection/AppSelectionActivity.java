@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
@@ -32,7 +33,6 @@ import static com.titanlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.titanlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.titanlocker.secure.utils.LifecycleReceiver.STATE;
-import static com.titanlocker.secure.utils.Utils.collapseNow;
 
 
 public class AppSelectionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
@@ -264,6 +264,22 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isBackPressed) {
+            try {
+                if (CodeSettingActivity.codeSettingsInstance != null) {
+                    this.finish();
+                    //  finish previous activity and this activity
+                    CodeSettingActivity.codeSettingsInstance.finish();
+
+                }
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         isBackPressed = false;
@@ -298,7 +314,6 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 
     }
 
-
     @Override
     public void onStateChange(int state) {            //<---
         switch (state) {
@@ -321,17 +336,11 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
         }
     }
 
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
-        }
-    }
-
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         isBackPressed = true;
+
     }
 }

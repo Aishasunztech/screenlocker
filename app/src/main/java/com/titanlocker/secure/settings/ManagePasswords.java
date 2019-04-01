@@ -11,8 +11,6 @@ import android.view.View;
 import com.titanlocker.secure.R;
 import com.titanlocker.secure.base.BaseActivity;
 
-import static com.titanlocker.secure.utils.Utils.collapseNow;
-
 public class ManagePasswords extends BaseActivity implements View.OnClickListener {
     private ConstraintLayout rootLayout;
 
@@ -30,12 +28,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
     }
 
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
-        }
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

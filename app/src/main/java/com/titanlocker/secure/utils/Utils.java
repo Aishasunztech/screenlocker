@@ -44,6 +44,7 @@ import static com.titanlocker.secure.socket.utils.utils.getUserType;
 import static com.titanlocker.secure.socket.utils.utils.loginAsEncrypted;
 import static com.titanlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.titanlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
+import static com.titanlocker.secure.socket.utils.utils.unlockDevice;
 import static com.titanlocker.secure.socket.utils.utils.wipeDevice;
 import static com.titanlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.titanlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
@@ -314,27 +315,27 @@ public class Utils {
                                 countDownTimer.start();
                             break;
                         case 6:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 7:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 10, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 3, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 8:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 15, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 9:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 30, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 10:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 60, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
@@ -418,64 +419,6 @@ public class Utils {
 
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-
-    public static void collapseNow(Context context) {
-
-        try {
-
-            // Initialize 'collapseNotificationHandler'
-            Handler collapseNotificationHandler = new Handler();
-
-            // Post a Runnable with some delay - currently set to 300 ms
-            collapseNotificationHandler.postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    // Use reflection to trigger a method from 'StatusBarManager'
-                    @SuppressLint("WrongConstant") Object statusBarService = context.getSystemService("statusbar");
-                    Class<?> statusBarManager = null;
-
-                    try {
-                        statusBarManager = Class.forName("android.app.StatusBarManager");
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    Method collapseStatusBar = null;
-                    try {
-                        // Prior to API 17, the method to call is 'collapse()'
-                        // API 17 onwards, the method to call is `collapsePanels()`
-                        if (Build.VERSION.SDK_INT > 16) {
-                            collapseStatusBar = statusBarManager.getMethod("collapsePanels");
-                        } else {
-                            collapseStatusBar = statusBarManager.getMethod("collapse");
-                        }
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
-
-                    collapseStatusBar.setAccessible(true);
-
-                    try {
-                        collapseStatusBar.invoke(statusBarService);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    // Currently, the delay is 10 ms. You can change this
-                    // value to suit your needs.
-                    collapseNotificationHandler.postDelayed(this, 10L);
-                }
-            }, 10L);
-        } catch (Exception e) {
-            Log.d("helsssslo", "collapseNow: " + e.getMessage());
         }
     }
 

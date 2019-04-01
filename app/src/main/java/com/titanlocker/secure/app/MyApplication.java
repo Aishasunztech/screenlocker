@@ -167,7 +167,6 @@ public class MyApplication extends Application implements NetworkListener {
         unregisterReceiver(networkReceiver);
         unregisterReceiver(mdmEventReciever);
 
-
         super.onTerminate();
     }
 

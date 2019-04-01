@@ -1,5 +1,7 @@
 package com.titanlocker.secure.socket.utils;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
@@ -102,6 +104,9 @@ public class utils {
             }
         }
 
+    }
+
+    public static void unlockDevice(Activity activity) {
     }
 
     public static void getAppsList(final Context context, final GetApplications listener) {

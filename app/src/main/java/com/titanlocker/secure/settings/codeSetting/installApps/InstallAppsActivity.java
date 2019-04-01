@@ -48,7 +48,7 @@ import timber.log.Timber;
 import static com.titanlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.titanlocker.secure.utils.LifecycleReceiver.STATE;
-import static com.titanlocker.secure.utils.Utils.collapseNow;
+
 
 public class InstallAppsActivity extends BaseActivity implements View.OnClickListener, InstallAppsAdapter.InstallAppListener {
     private RecyclerView rvInstallApps;
@@ -101,13 +101,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             default:
                 Timber.e("onStateChange: SOMETHING");
                 break;
-        }
-    }
-
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
         }
     }
 
@@ -393,6 +386,23 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         mAdapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isBackPressed && !isInstallDialogOpen) {
+            try {
+                if (CodeSettingActivity.codeSettingsInstance != null) {
+                    this.finish();
+                    //  finish previous activity and this activity
+                    CodeSettingActivity.codeSettingsInstance.finish();
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -401,7 +411,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             Intent intent = new Intent(LIFECYCLE_ACTION);
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
-
         }
     }
 

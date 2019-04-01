@@ -38,7 +38,6 @@ public class PermissionUtils {
 //            intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
 
-
             activity.startActivityForResult(intent, 1);
         }
     }
@@ -106,8 +105,6 @@ public class PermissionUtils {
         }
 
 
-
-
     }
 
     public static void permissionAdmin(Activity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
@@ -141,20 +138,21 @@ public class PermissionUtils {
 
     public static boolean isAccessGranted(Context context) {
         try {
-            if(Build.VERSION.SDK_INT >=19) {
-
-
+            if (Build.VERSION.SDK_INT >= 19) {
                 PackageManager packageManager = context.getPackageManager();
                 ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
                 AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
                 int mode = 0;
-                if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
-                    mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                            applicationInfo.uid, applicationInfo.packageName);
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+                    if (appOpsManager != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                                    applicationInfo.uid, applicationInfo.packageName);
+                        }
+                    }
                 }
                 return (mode == AppOpsManager.MODE_ALLOWED);
-            }
-            else{
+            } else {
                 return true;
             }
 
@@ -163,10 +161,8 @@ public class PermissionUtils {
         }
     }
 
-    public static void requestUsageStatePermission(Context context)
-    {
-        if(!isAccessGranted(context))
-        {
+    public static void requestUsageStatePermission(Context context) {
+        if (!isAccessGranted(context)) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             context.startActivity(intent);
         }

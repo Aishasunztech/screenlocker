@@ -46,7 +46,7 @@ import static com.titanlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.titanlocker.secure.utils.LifecycleReceiver.STATE;
-import static com.titanlocker.secure.utils.Utils.collapseNow;
+
 
 public class SettingsMenuActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -79,7 +79,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
         setContentView(R.layout.activity_settings_menu);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("System Controls");
+        getSupportActionBar().setTitle("Settings App");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ResolveInfo settingResolveInfo = querySettingPkgName();
@@ -187,11 +187,11 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
         String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
 
         //for screenshot
-        if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
-            switchScreenShot.setChecked(false);
-        } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
-            switchScreenShot.setChecked(true);
-        }
+//        if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
+//            switchScreenShot.setChecked(false);
+//        } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
+//            switchScreenShot.setChecked(true);
+//        }
 
         //for hotspot
         isHotSpotEnabled = WifiApControl.isWifiApEnabled(wifiManager);
@@ -252,13 +252,6 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
             default:
                 Timber.e("onStateChange: SOMETHING");
                 break;
-        }
-    }
-
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
         }
     }
 
@@ -370,10 +363,10 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
                 String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
                 if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
                     switchScreenShot.setChecked(true);
-                    disableScreenShotBlocker(true);
+//                    disableScreenShotBlocker(true);
                 } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
                     switchScreenShot.setChecked(false);
-                    enableScreenShotBlocker(true);
+//                    enableScreenShotBlocker(true);
                 }
 
                 break;
@@ -402,14 +395,25 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
 
     @Override
     protected void onPause() {
-        Timber.d("onPause: ");
-        Timber.d("listener%s", listener);
+        super.onPause();
+
+        if (!isBackPressed && !isSwitchLocationClicked) {
+            try {
+                if (CodeSettingActivity.codeSettingsInstance != null) {
+                    this.finish();
+                    //  finish previous activity and this activity
+                    CodeSettingActivity.codeSettingsInstance.finish();
+                }
+            } catch (Exception ignored) {
+            }
+        }
 
         if (listener != null) {
             listener.onSettingsChanged();
         }
+
         PrefUtils.saveBooleanPref(SettingsMenuActivity.this, SETTINGS_CHANGE, true);
-        super.onPause();
+
 
     }
 

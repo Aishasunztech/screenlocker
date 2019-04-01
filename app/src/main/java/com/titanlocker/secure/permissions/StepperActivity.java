@@ -8,11 +8,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.titanlocker.secure.MyAdmin;
@@ -62,6 +62,8 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
         steppersViewConfig.setOnCancelAction(this::finish);
+
+
         steppersViewConfig.setOnChangeStepAction((position, activeStep) -> {
 
 //            Toast.makeText(StepperActivity.this,
@@ -94,6 +96,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         SteppersItem defaultLauncher = new SteppersItem();
         defaultLauncher.setLabel("Set Default Launcher");
         defaultLauncher.setPositiveButtonEnable(true);
+
 //        defaultLauncher.setSkippable(true);
         defaultLauncher.setOnClickContinue(() -> {
             launcher = true;
@@ -103,7 +106,6 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
                 Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 finish();
-
             } else {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -122,7 +124,13 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         SteppersItem linking = new SteppersItem();
         linking.setLabel("Link Device");
         linking.setPositiveButtonEnable(true);
-        linking.setSkippable(true);
+        linking.setSkippable(true, new OnSkipStepAction() {
+            @Override
+            public void onSkipStep() {
+                int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
+                PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
+            }
+        });
         linking.setOnClickContinue(() -> {
             Intent intent = new Intent(StepperActivity.this, MainActivity.class);
             startActivity(intent);
@@ -160,6 +168,24 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         });
 
 
+//        SteppersItem launchApplication = new SteppersItem();
+//        launchApplication.setLabel("Launch App");
+//        launchApplication.setSkippable(false);
+//        launchApplication.setPositiveButtonEnable(true);
+//        launchApplication.setOnClickContinue(() -> {
+//
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//
+//
+//                }
+//            }, 5000);
+//
+//        });
+
+
         //Add Steps
         steps.add(permissions);
         steps.add(guestPassword);
@@ -167,8 +193,10 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         steps.add(duressPassword);
         steps.add(linking);
         steps.add(defaultLauncher);
+//        steps.add(launchApplication);
 
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
+
         steppersView.setConfig(steppersViewConfig);
         steppersView.setItems(steps);
         steppersView.build();
@@ -225,7 +253,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
                     int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
                     PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
                 } else {
-                    Toast.makeText(this, "Password is not changed! Try again", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Password is not changed! Try again", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -252,12 +280,12 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
                 }
             }
             if (launcher) {
+                int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
                 if (settingsPresenter.isMyLauncherDefault()) {
                     PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
                     Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
                     startActivity(intent);
                     finish();
-
                 }
 
             }

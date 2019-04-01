@@ -42,7 +42,6 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.titanlocker.secure.MyAdmin;
-
 import com.titanlocker.secure.R;
 import com.titanlocker.secure.app.MyApplication;
 import com.titanlocker.secure.base.BaseActivity;
@@ -65,10 +64,6 @@ import com.titanlocker.secure.utils.PrefUtils;
 
 import org.jsoup.Jsoup;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Objects;
 
 import androidx.work.OneTimeWorkRequest;
@@ -85,7 +80,6 @@ import static com.titanlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.titanlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.titanlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.titanlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.titanlocker.secure.utils.AppConstants.KEY_CODE_PASSWORD;
 import static com.titanlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.titanlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.titanlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
@@ -97,7 +91,6 @@ import static com.titanlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.titanlocker.secure.utils.PermissionUtils.isPermissionGranted;
 import static com.titanlocker.secure.utils.PermissionUtils.permissionAdmin;
 import static com.titanlocker.secure.utils.PermissionUtils.permissionModify;
-import static com.titanlocker.secure.utils.Utils.collapseNow;
 
 /***
  * this activity show the settings for the app
@@ -146,6 +139,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
+//        ApplicationInfo ai = null;
+//        try {
+//            ai = getPackageManager().getApplicationInfo("com.android.launcher3", 0);
+//            boolean appStatus = ai.enabled;
+//            Log.d("kjdjjsnv", "onCreate: " + ai.packageName);
+//            Log.d("kjdjjsnv", "onCreate: " + appStatus);
+//
+//            if (appStatus) {
+//                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                intent.setData(Uri.parse("package:" + ai.packageName));
+//                startActivity(intent);
+//            }
+//
+//        } catch (Exception e) {
+//            Log.d("kjdjjsnv", "onCreate: " + e.getMessage());
+//        }
+
 
         try {
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
@@ -275,13 +286,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         if (networkReceiver != null) {
             unregisterReceiver(networkReceiver);
-        }
-    }
-
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
         }
     }
 
@@ -550,7 +554,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
 
                 case R.id.tvAbout:
-
                     //handle the about click event
                     createAboutDialog();
                     break;
@@ -1042,12 +1045,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         PackageManager packageManager = context.getPackageManager();
         ComponentName componentName = new ComponentName(context, com.titanlocker.secure.launcher.FakeLauncherActivity.class);
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
         Intent selector = new Intent(Intent.ACTION_MAIN);
         selector.addCategory(Intent.CATEGORY_HOME);
         selector.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(selector);
-
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 

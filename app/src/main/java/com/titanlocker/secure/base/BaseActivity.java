@@ -4,26 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.titanlocker.secure.BlockStatusBar;
-import com.titanlocker.secure.app.MyApplication;
 import com.titanlocker.secure.utils.AppConstants;
 import com.titanlocker.secure.utils.LifecycleReceiver;
 import com.titanlocker.secure.utils.PermissionUtils;
@@ -35,7 +26,7 @@ import static com.titanlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 
 @SuppressLint("Registered")
 public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
-    customViewGroup view;
+//    customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
     private static WindowManager manager, mWindowManager;
@@ -67,11 +58,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         mWindowManager = getWindowManager();
         mWindow = getWindow();
         localLayoutParams = new WindowManager.LayoutParams();
-        disablePullNotificationTouch();
+//        disablePullNotificationTouch();
         createAlertDialog();
 
         if (PermissionUtils.canDrawOver(this)) {
-            addStatusOverlay();
+//            addStatusOverlay();
             statusViewAdded = true;
         } else {
             if (alertDialog == null) {
@@ -100,11 +91,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
     void removeStatusOverlay() {
-        manager.removeView(getOverLayView());
+//        manager.removeView(getOverLayView());
     }
 
     void addStatusOverlay() {
-        manager.addView(getOverLayView(), getOverLayLayoutParams());
+//        manager.addView(getOverLayView(), getOverLayLayoutParams());
     }
 
     private void createAlertDialog() {
@@ -129,12 +120,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
     }
 
-
-    public void disablePullNotificationTouch() {
-        createLayoutParams();
-        view = new customViewGroup(this);
-
-    }
+//
+//    public void disablePullNotificationTouch() {
+//        createLayoutParams();
+//        view = new customViewGroup(this);
+//
+//    }
 
     private void createLayoutParams() {
 
@@ -158,12 +149,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         localLayoutParams.format = PixelFormat.TRANSPARENT;
     }
 
-    public customViewGroup getOverLayView() {
-        if (view == null) {
-            view = new customViewGroup(this);
-        }
-        return view;
-    }
+//    public customViewGroup getOverLayView() {
+//        if (view == null) {
+//            view = new customViewGroup(this);
+//        }
+//        return view;
+//    }
 
 
     @Override
@@ -198,48 +189,44 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-    //Add this class in your project
-    public class customViewGroup extends ViewGroup {
-
-        public customViewGroup(Context context) {
-            super(context);
-        }
-
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-            Timber.v("**********Intercepted");
-            return true;
-        }
-
-    }
+//    //Add this class in your project
+//    public class customViewGroup extends ViewGroup {
+//
+//        public customViewGroup(Context context) {
+//            super(context);
+//        }
+//
+//
+//        @Override
+//        protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        }
+//
+//        @Override
+//        public boolean onInterceptTouchEvent(MotionEvent ev) {
+//
+//            Timber.v("**********Intercepted");
+//            return true;
+//        }
+//
+//    }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-
         if (PermissionUtils.canDrawOver(this)) {
             overlayIsAllowed = true;
             if (!statusViewAdded) {
-                addStatusOverlay();
+//                addStatusOverlay();
                 statusViewAdded = true;
             }
             if (PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT) == null) {
-                enableScreenShotBlocker(true);
+//                enableScreenShotBlocker(true);
             }
         } else {
             if (statusViewAdded) {
-                removeStatusOverlay();
+//                removeStatusOverlay();
             }
             overlayIsAllowed = false;
             statusViewAdded = false;
@@ -250,53 +237,52 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 if (!alertDialog.isShowing())
                     alertDialog.show();
             }
-
         }
     }
 
 
-    public void enableScreenShotBlocker(boolean isChecked) {
-
-        if (mWindowManager == null)
-            mWindowManager = getWindowManager();
-
-        if (isChecked) {
-            mWindowManager.addView(getScreenShotView(), getLayoutParams());
-            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-        } else {
-            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-            Toast.makeText(BaseActivity.this, "already screenshot enabled", Toast.LENGTH_SHORT).show();
-        }
-
-
-    }
-
-    public void disableScreenShotBlocker(boolean isChecked) {
-        if (mWindowManager == null)
-            mWindowManager = getWindowManager();
-        if (isChecked) {
-            try {
-                mWindowManager.removeView(getScreenShotView());
-                PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_DISABLE);
-            } catch (Exception ignored) {
-            }
-        } else {
-            Toast.makeText(this, "already screenshot disabled", Toast.LENGTH_SHORT).show();
-            String name = "\uD83E\uDD23";
-        }
-
-    }
-
-
-    @NonNull
-    private LinearLayout getScreenShotView() {
+//    public void enableScreenShotBlocker(boolean isChecked) {
 //
-//        if (mScreenShotView == null)
-//            mScreenShotView = createScreenShotView();
-//        return mScreenShotView;
-        return MyApplication.getScreenShotView(getApplicationContext());
-    }
+//        if (mWindowManager == null)
+//            mWindowManager = getWindowManager();
+//
+//        if (isChecked) {
+////            mWindowManager.addView(getScreenShotView(), getLayoutParams());
+//            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
+//        } else {
+//            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
+//            Toast.makeText(BaseActivity.this, "already screenshot enabled", Toast.LENGTH_SHORT).show();
+//        }
+//
+//
+//    }
 
+//    public void disableScreenShotBlocker(boolean isChecked) {
+//        if (mWindowManager == null)
+//            mWindowManager = getWindowManager();
+//        if (isChecked) {
+//            try {
+////                mWindowManager.removeView(getScreenShotView());
+//                PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_DISABLE);
+//            } catch (Exception ignored) {
+//            }
+//        } else {
+//            Toast.makeText(this, "already screenshot disabled", Toast.LENGTH_SHORT).show();
+//            String name = "\uD83E\uDD23";
+//        }
+//
+//    }
+
+
+//    @NonNull
+//    private LinearLayout getScreenShotView() {
+////
+////        if (mScreenShotView == null)
+////            mScreenShotView = createScreenShotView();
+////        return mScreenShotView;
+//        return MyApplication.getScreenShotView(getApplicationContext());
+//    }
+/*
 
     @NonNull
     private WindowManager.LayoutParams getLayoutParams() {
@@ -304,25 +290,25 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             screenShotParams = createScreenShotParams();
         }
         return screenShotParams;
-    }
+    }*/
 
-    private WindowManager.LayoutParams createScreenShotParams() {
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        else
-            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        params.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_SECURE;
-        params.format = PixelFormat.TRANSPARENT;
-        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        params.gravity = Gravity.CENTER;
-
-        return params;
-    }
+//    private WindowManager.LayoutParams createScreenShotParams() {
+//
+//        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+//        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+//        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        else
+//            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+//        params.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_SECURE;
+//        params.format = PixelFormat.TRANSPARENT;
+//        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+//        params.gravity = Gravity.CENTER;
+//
+//        return params;
+//    }
 
 
     @Override
@@ -334,13 +320,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
                 // Method that handles loss of window focus
-                new BlockStatusBar(this, false).collapseNow();
+//                new BlockStatusBar(this, false).collapseNow();
             }
         }
     }
 
-
-    protected abstract void freezeStatusbar();
 
 
 }

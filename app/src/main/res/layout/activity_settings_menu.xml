@@ -138,8 +138,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView7"
         app:layout_constraintEnd_toStartOf="@+id/texstsVsidew10"
         app:layout_constraintTop_toTopOf="@+id/textView7"
@@ -273,8 +273,8 @@
         android:padding="16dp"
         android:text="Screen Capture"
         android:textColor="@color/textColorPrimary"
-
         android:textSize="@dimen/textSize"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider12" />
 
@@ -285,6 +285,7 @@
         android:layout_marginEnd="8dp"
         android:text="OFF"
         android:textColor="@color/textColorPrimary"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/switchScreenShot"
         app:layout_constraintEnd_toStartOf="@+id/switchScreenShot"
         app:layout_constraintTop_toTopOf="@+id/switchScreenShot" />
@@ -295,6 +296,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvScreenShot"
         app:layout_constraintEnd_toStartOf="@+id/textView14"
         app:layout_constraintTop_toTopOf="@+id/tvScreenShot" />

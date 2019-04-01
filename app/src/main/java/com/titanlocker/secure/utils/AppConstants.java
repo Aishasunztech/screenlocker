@@ -59,7 +59,6 @@ public class AppConstants {
     public static final String TOKEN = "token";
 
 
-
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
     public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
@@ -134,7 +133,9 @@ public class AppConstants {
     public static final String TIME_REMAINING = "time_remaining";
     public static final String TIME_REMAINING_REBOOT = "time_remaining_reboot";
 
+    //launcher settings status
 
+    public static final String SETTINGS_STATUS = "settings_status";
 
 
 }

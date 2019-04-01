@@ -43,11 +43,12 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.titanlocker.secure.socket.utils.utils.passwordsOk;
 import static com.titanlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.titanlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.titanlocker.secure.utils.LifecycleReceiver.STATE;
-import static com.titanlocker.secure.utils.Utils.collapseNow;
+
 
 public class CodeSettingActivity extends BaseActivity implements View.OnClickListener
         , CodeSettingContract.CodeSettingMvpView {
@@ -57,6 +58,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private CodeSettingPresenter mPresenter;
     AlertDialog adminPasswordDialog;
     public static Activity codeSettingsInstance;
+
     private boolean goToAppSelection;
     private boolean goToAppSettingMenu;
     private boolean goToInstallApps;
@@ -231,12 +233,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
-        }
-    }
 
     private void handleChangeAdminPassword() {
 
@@ -271,6 +267,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if (validatePassword(etOldText, etNewPassword, confirmPassword)) {
+//                    boolean keyOk = passwordsOk(this, reEnteredPassword);
                     PrefUtils.saveStringPref(CodeSettingActivity.this,
                             AppConstants.KEY_CODE_PASSWORD, etNewPassword.getText().toString().trim());
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -279,6 +276,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                         dialog.cancel();
                     }
                     Snackbar.make(rootLayout, "Admin Password Changed.", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CodeSettingActivity.this, "This password is taken please Try again", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -297,6 +297,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         sendBroadcast(intent);
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -305,6 +306,15 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!goToAppSelection && !goToAppSettingMenu && !goToInstallApps) {
+            finish();
+        }
+
     }
 
     private boolean validatePassword(EditText etOldText, EditText etNewPassword, EditText etConfirmPassword) {
@@ -329,6 +339,8 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             etConfirmPassword.requestFocus();
             Toast.makeText(this, "Password did not match.", Toast.LENGTH_SHORT).show();
             return false;
+        } else if (!passwordsOk(this, etConfirmPassword.getText().toString())) {
+            return false;
         } else {
             return true;
         }
@@ -339,7 +351,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     public void handleSetAppsPermission() {
         goToAppSelection = true;
         startActivity(new Intent(this, AppSelectionActivity.class));
-
 //
 //        Intent i = new Intent(Intent.ACTION_MAIN, null);
 //        i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -380,6 +391,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 //
 //        }
     }
+
 
     @Override
     public void resetPassword() {

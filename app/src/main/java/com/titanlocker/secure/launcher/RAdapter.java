@@ -42,6 +42,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
             img.setOnClickListener(this);
         }
+
         @SuppressLint("StaticFieldLeak")
         @Override
         public void onClick(final View v) {
@@ -54,20 +55,26 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             .getAppDatabase(context)
                             .getDao()
                             .getParticularApp(appsList.get(pos[0]).getPackageName() + appsList.get(pos[0]).getLabel());
-                    if(appInfo==null){
-                    return     false;
-                    }else{
+                    if (appInfo == null) {
+                        return false;
+                    } else {
                         return appInfo.isEnable();
                     }
 
                 }
+
                 @Override
                 protected void onPostExecute(Boolean presentApp) {
                     super.onPostExecute(presentApp);
 
                     if (presentApp) {
-                        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
-                        context.startActivity(launchIntent);
+                        try {
+                            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
+                            context.startActivity(launchIntent);
+                        } catch (Exception e) {
+                            Toast.makeText(context, "App not found", Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Toast.makeText(context, "App is disabled", Toast.LENGTH_SHORT).show();
                     }
@@ -90,12 +97,12 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
         String appLabel = appsList.get(i).getLabel();
         String appPackage = appsList.get(i).getPackageName();
-       // Drawable appIcon = appsList.get(i).getIcon();
+        // Drawable appIcon = appsList.get(i).getIcon();
 
         TextView textView = viewHolder.textView;
         textView.setText(appLabel);
-      //  ImageView imageView = viewHolder.img;
-       // imageView.setImageDrawable(appIcon);
+        //  ImageView imageView = viewHolder.img;
+        // imageView.setImageDrawable(appIcon);
 
         Glide.with(viewHolder.img.getContext())
                 .load(appsList.get(i).getIcon())

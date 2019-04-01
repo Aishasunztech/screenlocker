@@ -10,8 +10,6 @@ import android.view.MenuItem;
 import com.titanlocker.secure.R;
 import com.titanlocker.secure.base.BaseActivity;
 
-import static com.titanlocker.secure.utils.Utils.collapseNow;
-
 public class SimActivity extends BaseActivity {
 
     @Override
@@ -22,12 +20,7 @@ public class SimActivity extends BaseActivity {
         setRecyclerView();
     }
 
-    @Override
-    protected void freezeStatusbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            collapseNow(this);
-        }
-    }
+
 
     private void setRecyclerView() {
         RecyclerView rvSim = findViewById(R.id.rvSim);
