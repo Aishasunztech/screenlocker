@@ -311,27 +311,27 @@ public class Utils {
                                 countDownTimer.start();
                             break;
                         case 6:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 7:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 3, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 10, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 8:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 15, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 9:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 30, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 10:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 5, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * 30, x, context, count);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
