@@ -1,8 +1,10 @@
 package com.screenlocker.secure.permissions;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -49,12 +51,16 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 
     private SettingsPresenter settingsPresenter;
 
+    public static Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stepper_layout);
         steppersView = findViewById(R.id.steppersView);
         SteppersView.Config steppersViewConfig = new SteppersView.Config();
+
+        activity = this;
 
         SettingsActivity settingsActivity = new SettingsActivity();
 
@@ -94,6 +100,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 
         SteppersItem defaultLauncher = new SteppersItem();
         defaultLauncher.setLabel("Set Default Launcher");
+
         defaultLauncher.setPositiveButtonEnable(true);
 
 //        defaultLauncher.setSkippable(true);
@@ -192,6 +199,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         steps.add(duressPassword);
         steps.add(linking);
         steps.add(defaultLauncher);
+
 //        steps.add(launchApplication);
 
         int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);

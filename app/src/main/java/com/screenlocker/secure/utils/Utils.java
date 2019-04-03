@@ -228,7 +228,7 @@ public class Utils {
         if (time_remaining != 0) {
             unLockButton.setEnabled(false);
             unLockButton.setClickable(false);
-            int attempts = 11;
+            int attempts = 10;
             int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
             int x = attempts - count;
             CountDownTimer countDownTimer = timer(unLockButton, keyboardView, time_remaining, x, context, count);
@@ -295,11 +295,11 @@ public class Utils {
                     }
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-                    int attempts = 11;
+                    int attempts = 10;
                     int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
                     int x = attempts - count;
 
-                    if (count > 10) {
+                    if (count > 9) {
                         wipeDevice(context);
                     }
 

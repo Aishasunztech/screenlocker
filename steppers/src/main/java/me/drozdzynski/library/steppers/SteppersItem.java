@@ -33,6 +33,7 @@ public class SteppersItem extends Observable {
     private boolean skippable = false;
     private OnSkipStepAction onSkipStepAction;
 
+
     private boolean displayed = false;
 
     public String getLabel() {
@@ -70,6 +71,7 @@ public class SteppersItem extends Observable {
         setChanged();
         notifyObservers();
     }
+
 
     public OnClickContinue getOnClickContinue() {
         return onClickContinue;

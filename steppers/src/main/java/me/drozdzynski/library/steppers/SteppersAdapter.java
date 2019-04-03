@@ -111,7 +111,12 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
             }
         });
 
-        if (position == getItemCount() - 1) holder.buttonContinue.setText(context.getResources().getString(R.string.step_finish));
+        if (position == getItemCount() - 1)
+            holder.buttonContinue.setText(context.getResources().getString(R.string.step_finish));
+
+        if (position == getItemCount() - 1) {
+            holder.buttonCancel.setVisibility(View.GONE);
+        }
 
         holder.buttonContinue.setText(context.getResources().getString(R.string.step_continue));
 
@@ -119,7 +124,6 @@ public class SteppersAdapter extends RecyclerView.Adapter<SteppersViewHolder> {
             @Override
             public void onClick(View v) {
 //                if(position == getItemCount() - 1) config.getOnFinishAction().onFinish();
-
                 if (steppersItem.getOnClickContinue() != null) {
                     steppersItem.getOnClickContinue().onClick();
                 } else {

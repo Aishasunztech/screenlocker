@@ -45,13 +45,14 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="com.screenlocker.secure.app.MyApplication"
+        android:name=".app.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity"></activity>
+        <activity android:name=".settings.settingsControls.SettingsControlsActivity"></activity>
+        <activity android:name=".settings.codeSetting.policy.PolicyActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -64,7 +65,7 @@
         </provider>
 
         <activity
-            android:name="com.screenlocker.secure.launcher.MainActivity"
+            android:name=".launcher.MainActivity"
             android:enabled="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -85,7 +86,7 @@
         <!-- </intent-filter> -->
         <!-- </activity-alias> -->
         <activity
-            android:name="com.screenlocker.secure.launcher.FakeLauncherActivity"
+            android:name=".launcher.FakeLauncherActivity"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,7 +96,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.screenlocker.secure.settings.SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -105,27 +106,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.screenlocker.secure.permissions.StepperActivity"
-            android:screenOrientation="portrait"></activity>
+            android:name=".permissions.StepperActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.screenlocker.secure.settings.SetUpLockActivity"
+            android:name=".settings.SetUpLockActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name="com.screenlocker.secure.appSelection.AppSelectionActivity"
+            android:name=".appSelection.AppSelectionActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.screenlocker.secure.settings.ManagePasswords"
+            android:name=".settings.ManagePasswords"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.screenlocker.secure.utils.LifecycleReceiverService" />
+        <service android:name=".utils.LifecycleReceiverService" />
         <service
-            android:name="com.screenlocker.secure.service.LockScreenService"
+            android:name=".service.LockScreenService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name="com.screenlocker.secure.service.DeviceNotificationListener"
+            android:name=".service.DeviceNotificationListener"
             android:enabled="true"
             android:exported="true"
             android:label="@string/app_name"
@@ -134,7 +135,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name="com.screenlocker.secure.socket.service.SocketService" /> <!-- <service -->
+        <service android:name=".socket.service.SocketService" /> <!-- <service -->
         <!-- android:name=".utils.MyAccessibilityService" -->
         <!-- android:label="@string/app_name" -->
         <!-- android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"> -->
@@ -149,34 +150,34 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
-        <receiver android:name="com.screenlocker.secure.ReBootReciever">
+        <receiver android:name=".ReBootReciever">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.screenlocker.secure.alarm.AlarmReceiver" />
-        <receiver android:name="com.screenlocker.secure.socket.receiver.MdmEventReciever">
+        <receiver android:name=".alarm.AlarmReceiver" />
+        <receiver android:name=".socket.receiver.MdmEventReciever">
             <intent-filter>
                 <action android:name="com.secureportal.barryapp.app_linked_success" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.screenlocker.secure.ShutDownReceiver">
+        <receiver android:name=".ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.screenlocker.secure.MyService"
+            android:name=".MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name="com.screenlocker.secure.settingsMenu.SettingsMenuActivity"
+            android:name=".settingsMenu.SettingsMenuActivity"
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name="com.screenlocker.secure.MyAdmin"
+            android:name=".MyAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
@@ -187,7 +188,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.screenlocker.secure.utils.AppInstallReciever"
+            android:name=".utils.AppInstallReciever"
             android:enabled="true"
             android:priority="100">
             <intent-filter>
@@ -199,7 +200,7 @@
             </intent-filter>
         </receiver> <!-- reciever to block calls -->
         <receiver
-            android:name="com.screenlocker.secure.settings.disableCalls.PhoneCallReceiver"
+            android:name=".settings.disableCalls.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -207,7 +208,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.screenlocker.secure.socket.receiver.DeviceStatusReceiver"
+            android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -227,25 +228,25 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
         <activity
-            android:name="com.screenlocker.secure.settings.codeSetting.CodeSettingActivity"
+            android:name=".settings.codeSetting.CodeSettingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity" />
+        <activity android:name=".settings.codeSetting.installApps.InstallAppsActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0681a8885d07f744d26521d50a0995b0dcef653c" />
 
-        <activity android:name="com.screenlocker.secure.settings.codeSetting.Sim.SimActivity" />
+        <activity android:name=".settings.codeSetting.Sim.SimActivity" />
         <activity
-            android:name="com.screenlocker.secure.mdm.MainActivity"
+            android:name=".mdm.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.screenlocker.secure.mdm.ui.LinkDeviceActivity"
+            android:name=".mdm.ui.LinkDeviceActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.screenlocker.secure.mdm.utils.LifecycleReceiverService" />
+        <service android:name=".mdm.utils.LifecycleReceiverService" />
     </application>
 
 </manifest>

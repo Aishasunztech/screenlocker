@@ -79,12 +79,12 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
         setContentView(R.layout.activity_settings_menu);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Settings Controls");
+        getSupportActionBar().setTitle("System Controls");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         ResolveInfo settingResolveInfo = querySettingPkgName();
-
         PackageManager packageManager = getPackageManager();
+
+
         switchDisable = findViewById(R.id.switchDisable);
         switchGuest = findViewById(R.id.switchGuest);
         switchEncrypt = findViewById(R.id.switchEncrypt);

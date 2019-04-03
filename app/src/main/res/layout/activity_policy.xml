@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:ems="12"
         android:gravity="center"
-        android:hint="enter policy name"
+        android:hint="Enter policy name"
 
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,15 +30,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="@dimen/_250sdp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:text="If you dont have a Policy Name please select default Policy below"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"
+        app:layout_constraintStart_toStartOf="@+id/edtTxtPin"
+        app:layout_constraintTop_toBottomOf="@+id/edtTxtPin" />
+
     <Button
         android:id="@+id/btnDefaultPolicy"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="@dimen/_25sdp"
         android:text="Default Policy"
         app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtTxtPin"
-        app:layout_constraintTop_toBottomOf="@+id/edtTxtPin" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <ImageView
         android:id="@+id/imageView"

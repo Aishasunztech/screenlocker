@@ -58,21 +58,51 @@
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider6" />
+        app:layout_constraintTop_toBottomOf="@+id/divider14" />
 
     <TextView
         android:id="@+id/tvSettingsMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:background="?selectableItemBackground"
         android:padding="16dp"
         android:text="@string/system_controls"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvResetPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSettingsControl" />
+
+    <TextView
+        android:id="@+id/tvSettingsControl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="?selectableItemBackground"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="@string/settings_controls"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider6" />
+
+    <View
+        android:id="@+id/divider21"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSettingsControl" />
 
     <TextView
         android:id="@+id/tvChangeAdminPassword"
@@ -84,8 +114,9 @@
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider14" />
+        app:layout_constraintTop_toBottomOf="@+id/divider8" />
 
     <View
         android:id="@+id/divider8"

@@ -31,8 +31,12 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.permissions.StepperActivity;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.settings.SettingsModel;
+import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -41,10 +45,18 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView {
+public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -62,12 +74,44 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public static final int RESULT_ENABLE = 11;
     public static ActivityManager activityManager;
 
+    private SettingsPresenter settingsPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+
+        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
+
+
+        boolean tour_status = PrefUtils.getBooleanPref(this, TOUR_STATUS);
+
+        if (!tour_status) {
+            if (settingsPresenter.isMyLauncherDefault()) {
+                try {
+
+                    String key_guest = PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD);
+                    if (key_guest == null)
+                        PrefUtils.saveStringPref(this, KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
+                    String key_main = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
+                    if (key_main == null)
+                        PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+                    PrefUtils.saveBooleanPref(this, TOUR_STATUS, true);
+                    Intent intent = new Intent(this, SettingsActivity.class);
+                    startActivity(intent);
+                    StepperActivity.activity.finish();
+                    finish();
+                } catch (Exception ignored) {
+                }
+
+            }
+        }
+
+
         context = MainActivity.this;
+
 
         try {
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
@@ -284,7 +328,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             String bg = "";
             if (!message.equals("")) {
-                if (message.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                if (message.equals(KEY_GUEST_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {

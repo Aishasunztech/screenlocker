@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Screen Locker</string>
+    <string name="app_name">Titan Locker</string>
 
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
@@ -38,7 +38,7 @@
     <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
     <string name="empty">Empty!</string>
     <string name="password_dont_match">Oops password dont match!!</string>
-    <string name="toolbar_title">Screen Locker</string>
+    <string name="toolbar_title">Titan Locker</string>
     <string name="set_guest_code">Guest Pin Code</string>
     <string name="set_duress_code">Duress Pin Code</string>
     <string name="set_encrypted_code">Encrypted Pin Code</string>
@@ -86,11 +86,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_blank_fragment_second">hello blank fragment</string>
-    <string name="system_controls">Settings Controls</string>
+    <string name="system_controls">System Controls</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
+    <string name="settings_controls">Settings App permission</string>
 
 
 </resources>

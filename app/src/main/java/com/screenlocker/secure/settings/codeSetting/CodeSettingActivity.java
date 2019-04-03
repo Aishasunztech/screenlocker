@@ -34,6 +34,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
+import com.screenlocker.secure.settings.settingsControls.SettingsControlsActivity;
 import com.screenlocker.secure.settingsMenu.SettingsMenuActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -63,6 +64,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean goToAppSettingMenu;
     private boolean goToInstallApps;
     private boolean goToPolicyMenu;
+    private boolean goToSettingsControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +176,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tvSetAppsPermission).setOnClickListener(this);
         findViewById(R.id.tvResetPassword).setOnClickListener(this);
         findViewById(R.id.tvSettingsMenu).setOnClickListener(this);
+        findViewById(R.id.tvSettingsControl).setOnClickListener(this);
         findViewById(R.id.tvChangeAdminPassword).setOnClickListener(this);
         findViewById(R.id.tvInstallApps).setOnClickListener(this);
         findViewById(R.id.tvSim).setOnClickListener(this);
@@ -205,6 +208,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tvPolicyMenu:
                 handlePolicyMenu();
+                break;
+            case R.id.tvSettingsControl:
+                handleSettingsControl();
                 break;
         }
     }
@@ -428,10 +434,16 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         return false;
     }
 
+
+    private void handleSettingsControl() {
+        goToSettingsControl = true;
+
+        startActivity(new Intent(CodeSettingActivity.this, SettingsControlsActivity.class));
+    }
+
     private void handleSettingsMenu() {
         goToAppSettingMenu = true;
         startActivity(new Intent(CodeSettingActivity.this, SettingsMenuActivity.class));
-
 
     /*    if (PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) == null) {
             Snackbar.make(rootLayout, R.string.please_add_encrypted_password, Snackbar.LENGTH_SHORT).show();
