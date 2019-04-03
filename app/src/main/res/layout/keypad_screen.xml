@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <com.titanlocker.secure.views.KeyboardView
+    <com.screenlocker.secure.views.KeyboardView
         android:id="@+id/keypad"
         android:layout_width="match_parent"
         android:layout_height="0dp"
