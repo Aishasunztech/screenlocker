@@ -246,6 +246,13 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
             protected Void doInBackground(Void... voids) {
                 List<AppInfo> apps = MyApplication.getAppDatabase(AppSelectionActivity.this).getDao().getApps();
                 // add the data to the list to show apps
+
+                for (AppInfo app : apps) {
+                    if (app.isExtension()) {
+                        apps.remove(app);
+                    }
+                }
+
                 selectionPresenter.addAppsToList(mPackageManager, mAppsList, apps);
                 Timber.e("doInBackground: data is added to the database");
                 return null;

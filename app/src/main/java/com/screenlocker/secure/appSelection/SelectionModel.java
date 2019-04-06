@@ -63,6 +63,7 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         boolean allDisable = true;
         boolean allGuest = true;
         boolean allEncrypted = true;
+
         String projectPrimaryKey = context.getPackageName() + context.getString(R.string.app_name);
 
 

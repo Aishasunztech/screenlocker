@@ -55,22 +55,16 @@ public class BlockStatusBar {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-
-
                     try {
-
                         // Prior to API 17, the method to call is 'collapse()'
                         // API 17 onwards, the method to call is `collapsePanels()`
-
                         if (statusBarManager != null) {
                             collapseStatusBar = statusBarManager.getMethod("collapsePanels");
                         }
                     } catch (NoSuchMethodException e) {
                         e.printStackTrace();
                     }
-
                     collapseStatusBar.setAccessible(true);
-
                     try {
                         collapseStatusBar.invoke(statusBarService);
                     } catch (IllegalArgumentException e) {

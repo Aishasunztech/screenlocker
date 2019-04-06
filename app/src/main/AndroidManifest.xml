@@ -7,6 +7,12 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
+
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+
+
+
     <uses-permission
         android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
         tools:ignore="ProtectedPermissions" />
@@ -51,8 +57,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.settingsControls.SettingsControlsActivity"></activity>
-        <activity android:name=".settings.codeSetting.policy.PolicyActivity" />
+        <activity
+            android:name=".settings.codeSetting.settingsAppPermissions.SettingsAppPermissionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.codeSetting.policy.PolicyActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -72,7 +82,6 @@
             android:taskAffinity="a.s.s">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -90,7 +99,6 @@
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -101,7 +109,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -173,7 +180,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name=".settingsMenu.SettingsMenuActivity"
+            android:name=".settings.codeSetting.systemControls.SystemControlsActivity"
             android:screenOrientation="portrait" />
 
         <receiver
@@ -222,7 +229,7 @@
         <!-- <category android:name="android.intent.category.HOME" /> -->
         <!-- </intent-filter> -->
         <!-- </activity> -->
-        <!-- <receiver android:name=".settingsMenu.SettingsMenuActivity$WifiAPReceiver"> -->
+        <!-- <receiver android:name=".settingsMenu.SystemControlsActivity$WifiAPReceiver"> -->
         <!-- <intent-filter> -->
         <!-- <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" /> -->
         <!-- </intent-filter> -->

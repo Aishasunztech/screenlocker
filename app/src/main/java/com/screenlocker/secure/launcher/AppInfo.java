@@ -4,20 +4,30 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+
 @Entity
 public class AppInfo {
     @NonNull
     @PrimaryKey
-    private String uniqueName;
+    String uniqueName;
+
+    public void setExtension(boolean extension) {
+        this.extension = extension;
+    }
 
     private String label;
     private String packageName;
+
+    public boolean isExtension() {
+        return extension;
+    }
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
     private boolean guest;
     private boolean enable;
     private boolean encrypted;
+    private boolean extension;
 
     @NonNull
     public String getUniqueName() {
@@ -27,7 +37,6 @@ public class AppInfo {
     public void setUniqueName(@NonNull String uniqueName) {
         this.uniqueName = uniqueName;
     }
-
 
 
     public boolean isEncrypted() {
@@ -88,6 +97,7 @@ public class AppInfo {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
+
     @Override
     public int hashCode() {
         int hashCode = 1;
@@ -97,6 +107,7 @@ public class AppInfo {
 
         return hashCode;
     }
+
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof AppInfo)) {

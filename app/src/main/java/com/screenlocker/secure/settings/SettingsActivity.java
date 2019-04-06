@@ -39,6 +39,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.screenlocker.secure.socket.model.Settings;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.screenlocker.secure.MyAdmin;
@@ -142,6 +143,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.settings_layout);
 
         setting_context = SettingsActivity.this;
+
 //        ApplicationInfo ai = null;
 //        try {
 //            ai = getPackageManager().getApplicationInfo("com.android.launcher3", 0);
@@ -159,11 +161,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //            Log.d("kjdjjsnv", "onCreate: " + e.getMessage());
 //        }
 
-
         try {
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         } catch (Exception ignored) {
         }
+
 
         boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
         if (!tourStatus) {
@@ -172,6 +174,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             finish();
             return;
         }
+
+
         init();
 
         boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
@@ -229,7 +233,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         } else {
             mMacAddress = null;
         }
-
 
 //        if (!PermissionUtils.canControlNotification(SettingsActivity.this)) {
 //            PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
@@ -516,6 +519,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     }
+
 
 
     private void setToolbar(Toolbar mToolbar) {

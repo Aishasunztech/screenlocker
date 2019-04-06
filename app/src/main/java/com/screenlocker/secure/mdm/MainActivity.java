@@ -119,13 +119,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void init() {
 
-
         //get imei of device
         IMEI = DeviceIdUtils.getIMEI(this);
         // get sim number
         SimNo = DeviceIdUtils.getSimNumber(this);
-        //get serial number
-        SerialNo = DeviceIdUtils.getSerialNumber();
+
         // get ip address
         IP = DeviceIdUtils.getIPAddress(true);
         // get mac address
@@ -133,6 +131,8 @@ public class MainActivity extends BaseActivity {
 
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
+        //get serial number
+        SerialNo = DeviceIdUtils.getSerialNumber();
         SerialNo = (SerialNo == null) ? "" : SerialNo;
 
         IP = (IP == null) ? "" : IP;
@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity {
         showLoading();
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
-                .checkDeviceStatus(new CheckStatusModel(defaultImei, DeviceIdUtils.getMacAddress()))
+                .checkDeviceStatus(new CheckStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
                 .enqueue(new Callback<CheckStatusResponse>() {
                     @Override
                     public void onResponse(Call<CheckStatusResponse> call, Response<CheckStatusResponse> response) {
@@ -318,7 +318,7 @@ public class MainActivity extends BaseActivity {
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .linkDeviceStatus(
-                        new LinkStatusModel(defaultImei, DeviceIdUtils.getMacAddress()),
+                        new LinkStatusModel(SerialNo, DeviceIdUtils.getMacAddress()),
                         PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
                 )
                 .enqueue(new Callback<LinkStatusResponse>() {
@@ -408,7 +408,7 @@ public class MainActivity extends BaseActivity {
 
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
-                .checkDeviceStatus(new CheckStatusModel(defaultImei, DeviceIdUtils.getMacAddress()))
+                .checkDeviceStatus(new CheckStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
                 .enqueue(new Callback<CheckStatusResponse>() {
                     @Override
                     public void onResponse(Call<CheckStatusResponse> call, Response<CheckStatusResponse> response) {
@@ -567,7 +567,7 @@ public class MainActivity extends BaseActivity {
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .linkDeviceStatus(
-                        new LinkStatusModel(defaultImei, DeviceIdUtils.getMacAddress()),
+                        new LinkStatusModel(SerialNo, DeviceIdUtils.getMacAddress()),
                         PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
                 )
                 .enqueue(new Callback<LinkStatusResponse>() {

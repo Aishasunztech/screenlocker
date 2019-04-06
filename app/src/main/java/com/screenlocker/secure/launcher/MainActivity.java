@@ -16,11 +16,15 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.drawable.IconCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -32,7 +36,9 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.permissions.StepperActivity;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.SettingsModel;
@@ -43,6 +49,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
@@ -83,8 +91,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         setContentView(R.layout.activity_main);
 
 
-        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
+        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
         boolean tour_status = PrefUtils.getBooleanPref(this, TOUR_STATUS);
 
@@ -111,6 +119,22 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
         context = MainActivity.this;
+
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+
+
+            Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
+            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            shortcutIntent.setAction(Intent.ACTION_MAIN);
+            ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(MainActivity.this, "Manage Passwords")
+                    .setShortLabel("Manage Passwords")
+                    .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.settings_icon))
+                    .setIntent(shortcutIntent)
+                    .build();
+            ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
+        }
 
 
         try {
@@ -207,7 +231,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (activityManager != null) {
                 activityManager.moveTaskToFront(context.getTaskId(), 0);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.d("kjkjgsjgig", "clearRecentApp: " + e.getMessage());
         }
     }
 
@@ -220,6 +245,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();
+
 
             Thread t2 = new Thread() {
                 @Override
@@ -235,7 +261,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             };
             t2.start();
 
-            removeOverlay();
 
         }
 
@@ -248,6 +273,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public static RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
 
     public static void drawOverLay() {
+
+        Log.d("gekjgiogse", "drawOverLay: ");
+
 
         try {
             int windowType;
@@ -275,21 +303,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 layout.setBackgroundColor(MyApplication.getAppContext().getResources().getColor(R.color.colorPrimary));
             }
 
-
             if (windowManager != null) {
-                if (layout != null && layout.getId() != R.id.splash_id && !view_status) {
+                if (layout != null && layout.getId() != R.id.splash_id) {
                     layout.setId(R.id.splash_id);
                     windowManager.addView(layout, params);
-                    view_status = true;
-                    Log.d("dogrikog", "drawOverLay: ");
+
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
 
+            Log.d("gekjgiogse", "drawOverLay: " + e.getMessage());
         }
-
-
     }
+
 
     public static void removeOverlay() {
         try {
@@ -300,9 +326,20 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     view_status = false;
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
 
+            Log.d("dklgjdiogjgher", "removeOverlay: " + e.getMessage());
         }
+
+    }
+
+
+    @Override
+    protected void onStop() {
+
+
+        super.onStop();
+
 
     }
 
@@ -392,7 +429,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //
 //    }
 
+
     public static String getCurrentApp() {
+
         String dum = "hello";
         try {
             if (Build.VERSION.SDK_INT >= 21) {
@@ -425,7 +464,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 }
                 return mm;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
 
             return dum;
         }

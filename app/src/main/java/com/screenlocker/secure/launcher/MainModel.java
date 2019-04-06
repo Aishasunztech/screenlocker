@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -18,6 +19,7 @@ import java.util.List;
 import timber.log.Timber;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+import static com.screenlocker.secure.launcher.MainActivity.removeOverlay;
 
 public class MainModel implements MainContract.MainMvpModel {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -117,6 +119,12 @@ public class MainModel implements MainContract.MainMvpModel {
                 adapter.appsList.addAll(allDbApps);
         }
 
+        AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+            @Override
+            public void run() {
+                removeOverlay();
+            }
+        });
 
      /*   Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -150,16 +158,15 @@ public class MainModel implements MainContract.MainMvpModel {
 
     private void getRunningApps(PackageManager pm) {
         List<ApplicationInfo> packages;
-
         //get a list of installed apps.
         packages = pm.getInstalledApplications(0);
-
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
         for (ApplicationInfo packageInfo : packages) {
             if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) continue;
             if (packageInfo.packageName.equals(context.getPackageName())) continue;
-            mActivityManager.killBackgroundProcesses(packageInfo.packageName);
+            if (mActivityManager != null) {
+                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
+            }
         }
     }
 

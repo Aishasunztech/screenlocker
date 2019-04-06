@@ -84,7 +84,9 @@ public class MyApplication extends Application implements NetworkListener {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME).build();
+                myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
+                        .fallbackToDestructiveMigration()
+                        .build();
             }
         };
         thread.start();

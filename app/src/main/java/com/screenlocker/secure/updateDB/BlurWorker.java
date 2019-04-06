@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
 import com.screenlocker.secure.R;
@@ -11,6 +12,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.utils.CommonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.work.Worker;
@@ -28,11 +30,11 @@ public class BlurWorker extends Worker {
 
     @NonNull
     @Override
+
     public Worker.Result doWork() {
-
         Context applicationContext = getApplicationContext();
-
         try {
+
             PackageManager pm = applicationContext.getPackageManager();
             List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getApps();
             Intent i = new Intent(Intent.ACTION_MAIN, null);
@@ -40,6 +42,7 @@ public class BlurWorker extends Worker {
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
             // adding data to the model
             //getRunningApps(pm);
+
             for (int j = 0; j < allApps.size(); j++) {
                 ResolveInfo ri = allApps.get(j);
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
@@ -50,24 +53,31 @@ public class BlurWorker extends Worker {
 //                        .apply(new RequestOptions().centerCrop())
 //                        .into(viewHolder.img);
                 if (!dbApps.contains(app)) {
-
                     app.setGuest(false);
-
                     // own app && uem app
                     if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client")) {
                         app.setEncrypted(true);
                         app.setEnable(true);
+                        app.setExtension(false);
                     } else {
                         app.setEncrypted(false);
                         app.setGuest(true);
                         app.setEnable(false);
+                        app.setExtension(false);
                     }
-
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
                 }
 
-
             }
+
+            Drawable wifi_drawable = applicationContext.getResources().getDrawable(android.R.drawable.ic_dialog_email);
+            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+            AppInfo wifiExtension = new AppInfo("wi-fi", "com.secure.settings", wifi_icon);
+            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
+            wifiExtension.setExtension(true);
+            wifiExtension.setGuest(true);
+            wifiExtension.setEncrypted(true);
+            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
 
 
             return Worker.Result.success();

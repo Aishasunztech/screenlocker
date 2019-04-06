@@ -34,8 +34,8 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
-import com.screenlocker.secure.settings.settingsControls.SettingsControlsActivity;
-import com.screenlocker.secure.settingsMenu.SettingsMenuActivity;
+import com.screenlocker.secure.settings.codeSetting.settingsAppPermissions.SettingsAppPermissionActivity;
+import com.screenlocker.secure.settings.codeSetting.systemControls.SystemControlsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -61,10 +61,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     public static Activity codeSettingsInstance;
 
     private boolean goToAppSelection;
-    private boolean goToAppSettingMenu;
+    private boolean gotoSystemControl;
     private boolean goToInstallApps;
     private boolean goToPolicyMenu;
-    private boolean goToSettingsControl;
+    private boolean goToSettingsAppPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,7 +210,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 handlePolicyMenu();
                 break;
             case R.id.tvSettingsControl:
-                handleSettingsControl();
+                handleSettingsApp();
                 break;
         }
     }
@@ -306,9 +306,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         goToAppSelection = false;
-        goToAppSettingMenu = false;
+        gotoSystemControl = false;
         goToInstallApps = false;
         goToPolicyMenu = false;
+        goToSettingsAppPermission = false;
         Intent intent = new Intent(LIFECYCLE_ACTION);
         intent.putExtra(STATE, FOREGROUND);
         sendBroadcast(intent);
@@ -318,7 +319,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-        if (!goToAppSelection && !goToAppSettingMenu && !goToInstallApps && !goToPolicyMenu) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission) {
             Intent intent = new Intent(LIFECYCLE_ACTION);
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
@@ -328,7 +329,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        if (!goToAppSelection && !goToAppSettingMenu && !goToInstallApps && !goToPolicyMenu) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission) {
             finish();
         }
 
@@ -435,15 +436,14 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    private void handleSettingsControl() {
-        goToSettingsControl = true;
-
-        startActivity(new Intent(CodeSettingActivity.this, SettingsControlsActivity.class));
+    private void handleSettingsApp() {
+        goToSettingsAppPermission = true;
+        startActivity(new Intent(CodeSettingActivity.this, SettingsAppPermissionActivity.class));
     }
 
     private void handleSettingsMenu() {
-        goToAppSettingMenu = true;
-        startActivity(new Intent(CodeSettingActivity.this, SettingsMenuActivity.class));
+        gotoSystemControl = true;
+        startActivity(new Intent(CodeSettingActivity.this, SystemControlsActivity.class));
 
     /*    if (PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) == null) {
             Snackbar.make(rootLayout, R.string.please_add_encrypted_password, Snackbar.LENGTH_SHORT).show();
@@ -460,7 +460,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                         return;
                     }
                     if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
-                        startActivity(new Intent(CodeSettingActivity.this, SettingsMenuActivity.class));
+                        startActivity(new Intent(CodeSettingActivity.this, SystemControlsActivity.class));
                     } else {
                         Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
 //                        Toast.makeText(CodeSettingActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();

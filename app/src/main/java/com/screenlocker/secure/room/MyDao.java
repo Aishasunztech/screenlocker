@@ -15,7 +15,7 @@ public interface MyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertApps(AppInfo appsModel);
 
-    @Query("select * from AppInfo")
+    @Query("select * from AppInfo ")
     List<AppInfo> getApps();
 
     @Query("SELECT * FROM AppInfo WHERE uniqueName= :value")
@@ -26,7 +26,5 @@ public interface MyDao {
 
     @Query("DELETE FROM AppInfo where uniqueName=:packageName")
     void deleteOne(String packageName);
-
-
 
 }

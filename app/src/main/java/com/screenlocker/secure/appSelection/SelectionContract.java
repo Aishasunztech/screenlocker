@@ -9,7 +9,7 @@ import com.screenlocker.secure.launcher.AppInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-interface SelectionContract {
+public interface SelectionContract {
     interface SelectionMvpModel {
         List<ResolveInfo> getTheAppListFromSystem(PackageManager packageManager);
 

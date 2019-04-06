@@ -3,6 +3,7 @@ package com.screenlocker.secure.base;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
@@ -319,7 +321,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             if (!hasFocus) {
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
-                // Method that handles loss of window focus
+//                Method that handles loss of window focus
 //                new BlockStatusBar(this, false).collapseNow();
             }
         }

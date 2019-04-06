@@ -263,7 +263,7 @@ public class LinkDeviceActivity extends BaseActivity {
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .linkDeviceStatus(
-                        new LinkStatusModel(defaultImei, MAC),
+                        new LinkStatusModel(SerialNo, MAC),
                         PrefUtils.getStringPref(this, AUTH_TOKEN)
 //                        +"INVALID_TOKEN"
                 )
@@ -275,55 +275,56 @@ public class LinkDeviceActivity extends BaseActivity {
 
                             LinkStatusResponse lsr = response.body();
 
-                            if (lsr.getStatus() != null) {
-                                tvDeviceId.setText(lsr.getDeviceId());
+                            if (lsr != null) {
+                                if (lsr.getStatus() != null) {
+                                    tvDeviceId.setText(lsr.getDeviceId());
 
-                                switch (lsr.getStatus()) {
+                                    switch (lsr.getStatus()) {
 
-                                    case DEVICE_NEW:
-                                        newLinkViewState();
-                                        setDealerPin(DEALER_ID_DEFAULT/*+linkedDealerPin*/);
-                                        break;
+                                        case DEVICE_NEW:
+                                            newLinkViewState();
+                                            setDealerPin(DEALER_ID_DEFAULT/*+linkedDealerPin*/);
+                                            break;
 
-                                    case DEVICE_PENDING:
-                                        String tempPin = PrefUtils.getStringPref(LinkDeviceActivity.this, TEMP_AUTO_LOGIN_PIN);
-                                        PrefUtils.saveStringPref(LinkDeviceActivity.this,
-                                                AUTO_LOGIN_PIN,
-                                                tempPin);
+                                        case DEVICE_PENDING:
+                                            String tempPin = PrefUtils.getStringPref(LinkDeviceActivity.this, TEMP_AUTO_LOGIN_PIN);
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this,
+                                                    AUTO_LOGIN_PIN,
+                                                    tempPin);
 
-                                        Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin);
-                                        pendingLinkViewState();
-//                                        setDealerPin(lsr.getDealer_id());
-                                        setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
-                                        break;
+                                            Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin);
+                                            pendingLinkViewState();
+                                            //                                        setDealerPin(lsr.getDealer_id());
+                                            setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
+                                            break;
 
-                                    case DEVICE_LINKED:
-                                        String tempPin1 = PrefUtils.getStringPref(LinkDeviceActivity.this, TEMP_AUTO_LOGIN_PIN);
-                                        PrefUtils.saveStringPref(LinkDeviceActivity.this,
-                                                AUTO_LOGIN_PIN,
-                                                tempPin1);
+                                        case DEVICE_LINKED:
+                                            String tempPin1 = PrefUtils.getStringPref(LinkDeviceActivity.this, TEMP_AUTO_LOGIN_PIN);
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this,
+                                                    AUTO_LOGIN_PIN,
+                                                    tempPin1);
 
-                                        Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin1);
+                                            Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin1);
+
+                                            approvedLinkViewState();
+                                            //                                        setDealerPin(lsr.getDealer_id());
+                                            setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
 
 
-                                        approvedLinkViewState();
-//                                        setDealerPin(lsr.getDealer_id());
-                                        setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
+                                            break;
+                                    }
+                                } else if (lsr.getMsg() != null) {
 
+                                    switch (lsr.getMsg()) {
 
-                                        break;
-                                }
-                            } else if (lsr.getMsg() != null) {
-
-                                switch (lsr.getMsg()) {
-
-                                    case TOKEN_EXPIRED:
-                                    case TOKEN_INVALID:
-                                    case TOKEN_NOT_PROVIDED:
-                                        //start main activity if token is not provided
-                                        Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
-                                        finish();
+                                        case TOKEN_EXPIRED:
+                                        case TOKEN_INVALID:
+                                        case TOKEN_NOT_PROVIDED:
+                                            //start main activity if token is not provided
+                                            Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
+                                            finish();
+                                    }
                                 }
                             }
 
@@ -351,7 +352,6 @@ public class LinkDeviceActivity extends BaseActivity {
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
         if (btnLinkDevice.getText().equals("Next")) {
-
             boolean tour_status = PrefUtils.getBooleanPref(LinkDeviceActivity.this, TOUR_STATUS);
             if (tour_status) {
                 finish();
@@ -380,29 +380,31 @@ public class LinkDeviceActivity extends BaseActivity {
 
                                 LinkDeviceResponse ldr = response.body();
 
-                                if (ldr.getStatus() != null) {
+                                if (ldr != null) {
+                                    if (ldr.getStatus() != null) {
 
-                                    if (ldr.getStatus().equals("true")) {
-                                        checkLinkDeviceStatus();
+                                        if (ldr.getStatus().equals("true")) {
+                                            checkLinkDeviceStatus();
 
+                                        } else {
+
+                                            checkLinkDeviceStatus();
+                                        }
+
+                                    } else if (ldr.getMsg() != null) {
+
+                                        switch (ldr.getMsg()) {
+
+                                            case TOKEN_EXPIRED:
+                                            case TOKEN_INVALID:
+                                            case TOKEN_NOT_PROVIDED:
+                                                Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
+                                                finish();
+                                        }
                                     } else {
-
                                         checkLinkDeviceStatus();
                                     }
-
-                                } else if (ldr.getMsg() != null) {
-
-                                    switch (ldr.getMsg()) {
-
-                                        case TOKEN_EXPIRED:
-                                        case TOKEN_INVALID:
-                                        case TOKEN_NOT_PROVIDED:
-                                            Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(LinkDeviceActivity.this, MainActivity.class));
-                                            finish();
-                                    }
-                                } else {
-                                    checkLinkDeviceStatus();
                                 }
                             } else {
                                 checkLinkDeviceStatus();

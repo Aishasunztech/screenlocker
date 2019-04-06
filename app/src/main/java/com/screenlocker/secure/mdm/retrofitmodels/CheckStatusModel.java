@@ -5,24 +5,24 @@ import com.google.gson.annotations.SerializedName;
 
 public class CheckStatusModel {
 
-    @SerializedName("imei")
+    @SerializedName("serial_number")
     @Expose
-    private String imei;
+    private String serial_number;
     @SerializedName("mac")
     @Expose
     private String mac;
 
-    public CheckStatusModel(String imei, String mac) {
-        this.imei = imei;
+    public CheckStatusModel(String serial_number, String mac) {
+        this.serial_number = serial_number;
         this.mac = mac;
     }
 
     public String getImei() {
-        return imei;
+        return serial_number;
     }
 
     public void setImei(String imei) {
-        this.imei = imei;
+        this.serial_number = imei;
     }
 
     public String getMac() {

@@ -43,8 +43,6 @@ public class SelectionPresenter implements SelectionContract.SelectionMvpPresent
         return mvpModel.isAppPresentInDB(primaryKey);
     }
 
-
-
     @Override
     public void insertAppsInDB(AppInfo model) {
         mvpModel.insertAppsInDB(model);
@@ -54,9 +52,6 @@ public class SelectionPresenter implements SelectionContract.SelectionMvpPresent
     public void updateAppInDB(AppInfo appInfo) {
         mvpModel.updateAppInDB(appInfo);
     }
-
-
-
 
 
     @Override

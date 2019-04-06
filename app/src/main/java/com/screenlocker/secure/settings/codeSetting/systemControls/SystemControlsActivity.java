@@ -1,4 +1,4 @@
-package com.screenlocker.secure.settingsMenu;
+package com.screenlocker.secure.settings.codeSetting.systemControls;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -48,7 +48,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
-public class SettingsMenuActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class SystemControlsActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     //  WifiAPReceiver mReciever;
     private static final int REQUEST_CODE_LOCATION_GPS = 7;
@@ -76,7 +76,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings_menu);
+        setContentView(R.layout.activity_system_controls);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("System Controls");
@@ -213,20 +213,18 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
             @Override
             public void run() {
 
-                appInfo = MyApplication.getAppDatabase(SettingsMenuActivity.this)
+                appInfo = MyApplication.getAppDatabase(SystemControlsActivity.this)
                         .getDao().getParticularApp(settingPrimaryKey);
                 if (appInfo == null) {
-                    MyApplication.getAppDatabase(SettingsMenuActivity.this).getDao().insertApps(appInfo);
+                    MyApplication.getAppDatabase(SystemControlsActivity.this).getDao().insertApps(appInfo);
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 //TODO if it exist in db then updatte the ui
-
                             switchGuest.setChecked(appInfo.isGuest());
                             switchEncrypt.setChecked(appInfo.isEncrypted());
                             switchDisable.setChecked(appInfo.isEnable());
-
                         }
                     });
                 }
@@ -275,7 +273,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
             public void run() {
                 try {
                     if (appInfo == null) {
-                        appInfo = MyApplication.getAppDatabase(SettingsMenuActivity.this)
+                        appInfo = MyApplication.getAppDatabase(SystemControlsActivity.this)
                                 .getDao().getParticularApp(settingPrimaryKey);
                         appInfo.setGuest(switchGuest.isChecked());
                         appInfo.setEncrypted(switchEncrypt.isChecked());
@@ -285,7 +283,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
                         appInfo.setEncrypted(switchEncrypt.isChecked());
                         appInfo.setEnable(switchDisable.isChecked());
                     }
-                    MyApplication.getAppDatabase(SettingsMenuActivity.this).getDao().updateApps(appInfo);
+                    MyApplication.getAppDatabase(SystemControlsActivity.this).getDao().updateApps(appInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -414,7 +412,7 @@ public class SettingsMenuActivity extends BaseActivity implements CompoundButton
             listener.onSettingsChanged();
         }
 
-        PrefUtils.saveBooleanPref(SettingsMenuActivity.this, SETTINGS_CHANGE, true);
+        PrefUtils.saveBooleanPref(SystemControlsActivity.this, SETTINGS_CHANGE, true);
 
 
     }
