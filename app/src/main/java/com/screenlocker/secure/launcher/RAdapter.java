@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.screenlocker.secure.app.MyApplication;
 import java.util.List;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
-    Context context;
+    private Context context;
     public List<AppInfo> appsList;
 
 
@@ -66,11 +67,11 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 @Override
                 protected void onPostExecute(Boolean presentApp) {
                     super.onPostExecute(presentApp);
-
                     if (presentApp) {
                         try {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
                             context.startActivity(launchIntent);
+
                         } catch (Exception e) {
                             Toast.makeText(context, "App not found", Toast.LENGTH_SHORT).show();
                         }
@@ -88,6 +89,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
     public RAdapter() {
 
+//        this.context = context;
     }
 
     @Override
@@ -122,7 +124,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public RAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //This is what adds the code we've written in here to our target view
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());

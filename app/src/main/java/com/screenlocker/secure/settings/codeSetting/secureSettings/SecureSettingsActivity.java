@@ -1,4 +1,4 @@
-package com.screenlocker.secure.settings.codeSetting.settingsAppPermissions;
+package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -35,7 +35,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
-public class SettingsAppPermissionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
+public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
 
 
     /**
@@ -82,7 +82,7 @@ public class SettingsAppPermissionActivity extends BaseActivity implements Selec
     private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Settings App permissions");
+        getSupportActionBar().setTitle("Secure Settings Permission");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -222,6 +222,8 @@ public class SettingsAppPermissionActivity extends BaseActivity implements Selec
      */
     @SuppressLint("StaticFieldLeak")
     private void populateApps() {
+
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -231,14 +233,8 @@ public class SettingsAppPermissionActivity extends BaseActivity implements Selec
 
             @Override
             protected Void doInBackground(Void... voids) {
-                List<AppInfo> apps = MyApplication.getAppDatabase(SettingsAppPermissionActivity.this).getDao().getApps();
+                List<AppInfo> apps = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppsOrExtensions(true);
                 // add the data to the list to show apps
-
-//                for (AppInfo app : apps) {
-//                    if (!app.isExtension()) {
-//                        apps.remove(app);
-//                    }
-//                }
 
                 selectionPresenter.addAppsToList(mPackageManager, mAppsList, apps);
 

@@ -12,6 +12,16 @@ public class AppExecutor {
 
 
     private Executor singleThreadExecutor;
+    private ExecutorService singleExecutor;
+
+    public ExecutorService getSingleExecutor() {
+        return singleExecutor;
+    }
+
+    public void readyNewExecutor(){
+        secondSingleThreadExecutor= Executors.newSingleThreadExecutor();
+    }
+
     private Executor mainThread;
     private static AppExecutor appExecutor;
     private ExecutorService secondSingleThreadExecutor;
@@ -25,8 +35,9 @@ public class AppExecutor {
     }
 
     private AppExecutor() {
+        singleExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor = Executors.newSingleThreadExecutor();
-        secondSingleThreadExecutor = Executors.newFixedThreadPool(3);
+        secondSingleThreadExecutor = Executors.newSingleThreadExecutor();
         mainThread = new MainThreadExecutor();
 
     }

@@ -24,7 +24,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -36,7 +35,6 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.permissions.StepperActivity;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
@@ -49,15 +47,11 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
@@ -90,7 +84,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         setContentView(R.layout.activity_main);
 
-
+        context = MainActivity.this;
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
@@ -116,9 +110,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
             }
         }
-
-
-        context = MainActivity.this;
 
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
@@ -171,10 +162,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).sendBroadcast(mainPresenter.getSendingIntent());
 
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
-        ShutDownReceiver mShutDownReceiver = new ShutDownReceiver();
-        registerReceiver(mShutDownReceiver, filter);
 
+        try {
+
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
+            ShutDownReceiver mShutDownReceiver = new ShutDownReceiver();
+            registerReceiver(mShutDownReceiver, filter);
+
+        } catch (Exception ignored) {
+        }
         //      Toast.makeText(this, " "+PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN), Toast.LENGTH_LONG).show();
 
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
@@ -225,14 +221,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     public static void clearRecentApp() {
 
+        Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + context);
         try {
             ActivityManager activityManager = (ActivityManager) MyApplication.getAppContext()
                     .getSystemService(Context.ACTIVITY_SERVICE);
+            Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + activityManager);
             if (activityManager != null) {
                 activityManager.moveTaskToFront(context.getTaskId(), 0);
             }
         } catch (Exception e) {
-            Log.d("kjkjgsjgig", "clearRecentApp: " + e.getMessage());
+            Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + e.getMessage());
         }
     }
 
@@ -347,6 +345,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         super.onResume();
 
+        if (context == null) {
+            context = MainActivity.this;
+        }
+
 
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
         if (!mainPresenter.isServiceRunning()) {
@@ -432,13 +434,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     public static String getCurrentApp() {
 
-        String dum = "hello";
+        Log.d("dkjgkjdgjgijsr", "getCurrentApp: ");
+        String dum = null;
         try {
             if (Build.VERSION.SDK_INT >= 21) {
-                String currentApp = "test";
+                String currentApp = null;
                 UsageStatsManager usm = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    usm = (UsageStatsManager) SettingsActivity.setting_context.getSystemService(Context.USAGE_STATS_SERVICE);
+                    usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
                 }
                 long time = System.currentTimeMillis();
                 List<UsageStats> applist = null;
@@ -458,17 +461,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 return currentApp;
             } else {
                 ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                String mm = "test";
+                String mm = null;
                 if (manager != null) {
                     mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
                 }
                 return mm;
             }
         } catch (Exception e) {
+            Log.d("dkjgkjdgjgijsr", "getCurrentApp: " + e.getMessage());
 
             return dum;
         }
     }
+
 
 }
 

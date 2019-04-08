@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -15,6 +16,9 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+
+import timber.log.Timber;
 
 public class SelectionModel implements SelectionContract.SelectionMvpModel {
     private Context context;
@@ -55,9 +59,12 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         String settingPackageName = null;
-        if (resolveInfos != null || resolveInfos.size() != 0) {
 
+        if (resolveInfos != null || resolveInfos.size() != 0) {
             settingPackageName = resolveInfos.get(0).activityInfo.packageName + String.valueOf(resolveInfos.get(0).loadLabel(packageManager));
+
+
+            Timber.d(settingPackageName);
         }
 
         boolean allDisable = true;
@@ -70,9 +77,9 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         for (int i = 0; i < dbApps.size(); i++) {
             AppInfo appInfo = dbApps.get(i);
 
-            if (settingPackageName == null || !appInfo.getUniqueName().equals(settingPackageName)) {
+//            if (settingPackageName == null || !appInfo.getUniqueName().equals(settingPackageName)) {
                 appsList.add(appInfo);
-            }
+//            }
 
             if (allDisable) {
                 if (appInfo.isEnable()) {

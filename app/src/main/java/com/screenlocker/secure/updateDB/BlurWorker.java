@@ -1,15 +1,20 @@
 package com.screenlocker.secure.updateDB;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.utils.CommonUtils;
 
 import java.util.ArrayList;
@@ -32,11 +37,12 @@ public class BlurWorker extends Worker {
     @Override
 
     public Worker.Result doWork() {
+
         Context applicationContext = getApplicationContext();
         try {
 
             PackageManager pm = applicationContext.getPackageManager();
-            List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getApps();
+            List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getAppsForBlurWorker(false);
             Intent i = new Intent(Intent.ACTION_MAIN, null);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
@@ -44,7 +50,12 @@ public class BlurWorker extends Worker {
             //getRunningApps(pm);
 
             for (int j = 0; j < allApps.size(); j++) {
+
+
                 ResolveInfo ri = allApps.get(j);
+
+                Log.d("skjfjifoijofew", "doWork: " + ri.activityInfo.packageName);
+
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
                 app.setUniqueName(app.getPackageName() + app.getLabel());
@@ -55,7 +66,7 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
                     app.setGuest(false);
                     // own app && uem app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client")) {
+                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client") || app.getPackageName().equals("com.android.settings")) {
                         app.setEncrypted(true);
                         app.setEnable(true);
                         app.setExtension(false);
@@ -70,14 +81,15 @@ public class BlurWorker extends Worker {
 
             }
 
-            Drawable wifi_drawable = applicationContext.getResources().getDrawable(android.R.drawable.ic_dialog_email);
-            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
-            AppInfo wifiExtension = new AppInfo("wi-fi", "com.secure.settings", wifi_icon);
-            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
-            wifiExtension.setExtension(true);
-            wifiExtension.setGuest(true);
-            wifiExtension.setEncrypted(true);
-            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
+//            Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
+//            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+//            AppInfo wifiExtension = new AppInfo("Secure\nSettings", "com.android.settings", wifi_icon);
+//            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
+//            wifiExtension.setExtension(false);
+//            wifiExtension.setGuest(true);
+//            wifiExtension.setEncrypted(true);
+//            wifiExtension.setEnable(true);
+//            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
 
 
             return Worker.Result.success();

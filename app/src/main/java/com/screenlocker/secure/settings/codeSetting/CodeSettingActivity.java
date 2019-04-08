@@ -34,7 +34,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
-import com.screenlocker.secure.settings.codeSetting.settingsAppPermissions.SettingsAppPermissionActivity;
+import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemControlsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -438,7 +438,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     private void handleSettingsApp() {
         goToSettingsAppPermission = true;
-        startActivity(new Intent(CodeSettingActivity.this, SettingsAppPermissionActivity.class));
+        startActivity(new Intent(CodeSettingActivity.this, SecureSettingsActivity.class));
     }
 
     private void handleSettingsMenu() {
