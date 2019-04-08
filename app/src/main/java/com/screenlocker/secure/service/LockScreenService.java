@@ -4,33 +4,23 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.interfaces.ChangeSettings;
-import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -39,13 +29,6 @@ import com.screenlocker.secure.utils.Utils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 import timber.log.Timber;
 
@@ -53,27 +36,20 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.launcher.MainActivity.clearRecentApp;
 import static com.screenlocker.secure.launcher.MainActivity.drawOverLay;
 import static com.screenlocker.secure.launcher.MainActivity.getCurrentApp;
-import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
-import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
-import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
-import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
  * (must enable service by enabling service from settings screens{@link SettingsActivity#onClick(View)})
  */
-public class LockScreenService extends Service implements DatabaseStatus, GetApplications {
+public class LockScreenService extends Service implements GetApplications {
     @SuppressLint("StaticFieldLeak")
     private static RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
-    private ScreenOnReceiver screenOnReceiver;
     private BroadcastReceiver notificationRefreshedListener;
     private static List<NotificationItem> notificationItems;
 
@@ -106,24 +82,16 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
             public void onReceive(Context context, Intent intent) {
 
                 String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
-                Log.d("dkjgkjdgjgijsr", "onReceive: " + message);
+                Timber.d("onReceive: %s", message);
 
                 if (message.equals(KEY_MAIN_PASSWORD)) {
-                    userBaseQuery(true);
-                } else if (message.equals(KEY_GUEST_PASSWORD)) {
                     userBaseQuery(false);
+                } else if (message.equals(KEY_GUEST_PASSWORD)) {
+                    userBaseQuery(true);
                 }
 
             }
         }, intentFilter);
-
-        screenOnReceiver = new ScreenOnReceiver(new ScreenOnReceiver.OnScreenOnListener() {
-            @Override
-            public void onScreenOn() {
-//                sheduleOwerLayWindow();
-//                sheduleRecentAppsKill();
-            }
-        });
 
 
         screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {
@@ -131,13 +99,6 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
             public void onScreenOff() {
                 startLockScreen();
                 clearRecentApp();
-//                try {
-//                    // cancel black apps thread
-//                    if (timer != null) {
-//                        timer.cancel();
-//                    }
-//                } catch (Exception ignored) {
-//                }
             }
         });
 
@@ -148,56 +109,27 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
                 if (items != null) {
                     notificationItems.clear();
                     notificationItems.addAll(items);
-                    if (mLayout != null) {
-//                        ((RecyclerView) mLayout.findViewById(R.id.notification_list)).getAdapter().notifyDataSetChanged(); // <--
-                    }
                 }
             }
         };
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(notificationRefreshedListener,
                         new IntentFilter(DeviceNotificationListener.ACTION_NOTIFICATION_REFRESH));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
 
-//        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-//        if (mNM != null) {
-//            mNM.notify(R.string.app_name, notification);
-//        }
-
-//
         startForeground(R.string.app_name, notification);
 
     }
-
-//    private void sheduleOwerLayWindow() {
-//        appExecutor.getSingleThreadExecutor().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    if (!powerManager.isScreenOn()) {
-//                        appExecutor.getMainThread().execute(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                drawOverLay();
-//                            }
-//                        });
-//                        return;
-//                    }
-//                }
-//            }
-//        });
-//    }
 
     private void sheduleRecentAppsKill() {
 
         Timber.d("sheduleRecentAppsKill: %s", whiteAppsList.toString());
 
-        appExecutor.getSecondSingleThreadExecutor().execute(new Runnable() {
+        appExecutor.getExecutorForSedulingRecentAppKill().execute(new Runnable() {
             @Override
             public void run() {
                 while (!Thread.interrupted()) {
@@ -206,7 +138,7 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
                         String current_package = getCurrentApp();
                         if (current_package != null)
                             if (!whiteAppsList.contains(current_package)) {
-                                Log.d("dkjgkjdgjgijsr", "run: " + current_package);
+                                Timber.d("run: %s", current_package);
                                 clearRecentApp();
                             }
                     } else {
@@ -232,7 +164,6 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(notificationRefreshedListener);
         PrefUtils.saveToPref(this, false);
-        unregisterReceiver(screenOnReceiver);
 
         super.onDestroy();
     }
@@ -335,44 +266,32 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
             mLayout = null;
         } catch (Exception ignored) {
         }
-//        if (mLayout != null) {
-//            if (manager != null && mLayout.getWindowToken() != null) {
-//                try {
-//                    manager.removeView(mLayout);
-//                    mLayout = null;
-//                } catch (IllegalArgumentException ignore) {
-//                }
-//            }
-////            mLayout = null;
-//        }
     }
 
-
-    @Override
-    public void onAppsInserted() {
-
-    }
-
-
+    /**
+     * Queering allowed packages on user base
+     *
+     * @param isGuest identify if current user is guest or not.
+     */
     private synchronized void userBaseQuery(boolean isGuest) {
 
 
         try {
-
-            if (!appExecutor.getSecondSingleThreadExecutor().isShutdown())
-                appExecutor.getSecondSingleThreadExecutor().shutdown();
+            /*
+              if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
+             */
+            if (!appExecutor.getExecutorForSedulingRecentAppKill().isShutdown())
+                appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
             whiteAppsList.clear();
-            whiteAppsList.add(getPackageName());
-            whiteAppsList.add("com.rim.mobilefusion.client");
-
             if (isGuest) {
-                appExecutor.getSingleExecutor().submit(new Runnable() {
+                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
                     @Override
                     public void run() {
                         List<AppInfo> appInfos = MyApplication.getAppDatabase(LockScreenService.this).getDao().getGuestApps(true, true);
                         for (AppInfo info : appInfos) {
                             whiteAppsList.add(info.getPackageName());
                         }
+                        //Prepare new Executor as previous was shutdown
                         appExecutor.readyNewExecutor();
                         sheduleRecentAppsKill();
 
@@ -381,7 +300,8 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
 
 
             } else {
-                appExecutor.getSingleExecutor().submit(new Runnable() {
+                whiteAppsList.add(getPackageName());
+                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
                     @Override
                     public void run() {
                         List<AppInfo> appInfos = MyApplication.getAppDatabase(LockScreenService.this).getDao().getEncryptedApps(true, true);
@@ -400,10 +320,17 @@ public class LockScreenService extends Service implements DatabaseStatus, GetApp
         }
     }
 
+    /**
+     * Change on app permission
+     *
+     * @param ignored is ignored here
+     */
     @Override
-    public void onAppsReady(List<AppInfo> appList) {
+    public void onAppsReady(List<AppInfo> ignored) {
         String current_user = PrefUtils.getStringPref(this, CURRENT_KEY);
-
+        /*
+         * Queering app depending on user type.
+         */
         switch (current_user) {
             case KEY_GUEST_PASSWORD:
                 userBaseQuery(true);

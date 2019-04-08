@@ -3,6 +3,7 @@ package com.screenlocker.secure.settings.codeSetting.policy;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 
 import timber.log.Timber;
@@ -25,12 +27,14 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private boolean isBackPressed;
 
     private boolean isPolicyDialogOpen;
+    private ConstraintLayout containerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_policy);
         setToolbar();
+        containerLayout = findViewById(R.id.rootView);
         findViewById(R.id.btnDefaultPolicy).setOnClickListener(this);
 
 
@@ -105,8 +109,10 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         super.onPause();
         if (!isBackPressed && !isPolicyDialogOpen) {
             try {
+                containerLayout.setVisibility(View.INVISIBLE);
+                finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
+
                     //  finish previous activity and this activity
                     CodeSettingActivity.codeSettingsInstance.finish();
                 }

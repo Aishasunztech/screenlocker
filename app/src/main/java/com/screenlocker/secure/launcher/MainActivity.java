@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import timber.log.Timber;
+
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -62,6 +64,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
+     *
      */
     private RAdapter adapter;
     /**
@@ -272,7 +275,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     public static void drawOverLay() {
 
-        Log.d("gekjgiogse", "drawOverLay: ");
+        Timber.d("drawOverLay: ");
 
 
         try {
@@ -310,7 +313,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
         } catch (Exception e) {
 
-            Log.d("gekjgiogse", "drawOverLay: " + e.getMessage());
+            Timber.d("drawOverLay: %s", e.getMessage());
         }
     }
 
@@ -326,7 +329,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
         } catch (Exception e) {
 
-            Log.d("dklgjdiogjgher", "removeOverlay: " + e.getMessage());
+            Timber.d("removeOverlay: %s", e.getMessage());
         }
 
     }
@@ -433,8 +436,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
     public static String getCurrentApp() {
-
-        Log.d("dkjgkjdgjgijsr", "getCurrentApp: ");
         String dum = null;
         try {
             if (Build.VERSION.SDK_INT >= 21) {
@@ -468,7 +469,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 return mm;
             }
         } catch (Exception e) {
-            Log.d("dkjgkjdgjgijsr", "getCurrentApp: " + e.getMessage());
+            Timber.d("getCurrentApp: %s", e.getMessage());
 
             return dum;
         }

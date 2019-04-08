@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.screenlocker.secure.R;
@@ -21,6 +23,7 @@ import com.screenlocker.secure.appSelection.SelectionPresenter;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -61,6 +64,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     private String packageName;
     private WorkManager mWorkManager;
     private boolean isBackPressed;
+    private ConstraintLayout containerLayout;
 
 
     @Override
@@ -91,6 +95,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
      * set up recyclerview and its adapter
      */
     private void setRecyclerView() {
+        containerLayout = findViewById(R.id.container_layout);
         rvAppSelection = findViewById(R.id.appSelectionList);
         adapter = new AppListAdapter(getPackageName(), mAppsList);
         rvAppSelection.setAdapter(adapter);
@@ -257,6 +262,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         super.onPause();
         if (!isBackPressed) {
             try {
+                containerLayout.setVisibility(View.INVISIBLE);
                 if (CodeSettingActivity.codeSettingsInstance != null) {
                     this.finish();
                     //  finish previous activity and this activity

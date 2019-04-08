@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -48,7 +50,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
-public class SystemControlsActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class SystemPermissionActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     //  WifiAPReceiver mReciever;
     private static final int REQUEST_CODE_LOCATION_GPS = 7;
@@ -65,6 +67,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
     private boolean isBackPressed;
     private Switch switchBlockCall;
     private boolean isSwitchLocationClicked;
+    private ConstraintLayout containerLayout ;
 
 
     private static ChangeSettings listener;
@@ -94,6 +97,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
         switchLocation = findViewById(R.id.switchLocation);
         switchScreenShot = findViewById(R.id.switchScreenShot);
         switchBlockCall = findViewById(R.id.switchBlockCall);
+        containerLayout = findViewById(R.id.container_layout);
         switchWifi.setOnCheckedChangeListener(this);
         switchBluetooth.setOnCheckedChangeListener(this);
         switchHotSpot.setOnCheckedChangeListener(this);
@@ -213,10 +217,10 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
             @Override
             public void run() {
 
-                appInfo = MyApplication.getAppDatabase(SystemControlsActivity.this)
+                appInfo = MyApplication.getAppDatabase(SystemPermissionActivity.this)
                         .getDao().getParticularApp(settingPrimaryKey);
                 if (appInfo == null) {
-                    MyApplication.getAppDatabase(SystemControlsActivity.this).getDao().insertApps(appInfo);
+                    MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().insertApps(appInfo);
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -273,7 +277,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
             public void run() {
                 try {
                     if (appInfo == null) {
-                        appInfo = MyApplication.getAppDatabase(SystemControlsActivity.this)
+                        appInfo = MyApplication.getAppDatabase(SystemPermissionActivity.this)
                                 .getDao().getParticularApp(settingPrimaryKey);
                         appInfo.setGuest(switchGuest.isChecked());
                         appInfo.setEncrypted(switchEncrypt.isChecked());
@@ -283,7 +287,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
                         appInfo.setEncrypted(switchEncrypt.isChecked());
                         appInfo.setEnable(switchDisable.isChecked());
                     }
-                    MyApplication.getAppDatabase(SystemControlsActivity.this).getDao().updateApps(appInfo);
+                    MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateApps(appInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -398,9 +402,11 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
         super.onPause();
 
         if (!isBackPressed && !isSwitchLocationClicked) {
+            containerLayout.setVisibility(View.INVISIBLE);
             try {
+                this.finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
+
                     //  finish previous activity and this activity
                     CodeSettingActivity.codeSettingsInstance.finish();
                 }
@@ -412,7 +418,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
             listener.onSettingsChanged();
         }
 
-        PrefUtils.saveBooleanPref(SystemControlsActivity.this, SETTINGS_CHANGE, true);
+        PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
 
 
     }

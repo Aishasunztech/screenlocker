@@ -110,8 +110,6 @@ dependencies {
     // Stepper
     implementation project(':steppers')
 
-    //Live data
-    implementation "android.arch.lifecycle:livedata:1.1.1"
 
 
 }

@@ -1,17 +1,19 @@
 package com.screenlocker.secure.appSelection;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.screenlocker.secure.R;
@@ -19,6 +21,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -65,19 +68,24 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
      * for package manager
      */
     private PackageManager mPackageManager;
+    /**
+     * hiding layout
+     */
+    private ConstraintLayout containerLayout;
 
 
     private AppListAdapter adapter;
     private SelectionPresenter selectionPresenter;
     private String packageName;
     private WorkManager mWorkManager;
-    private boolean isBackPressed;
+    private boolean isBackPressed = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_selection);
+        isBackPressed = false;
         setToolbar();
         mProgress = findViewById(R.id.progress);
         selectionPresenter = new SelectionPresenter(this, new SelectionModel(this));
@@ -106,6 +114,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
      * set up recyclerview and its adapter
      */
     private void setRecyclerView() {
+        containerLayout = findViewById(R.id.container_layout);
         rvAppSelection = findViewById(R.id.appSelectionList);
         adapter = new AppListAdapter(getPackageName(), mAppsList);
         rvAppSelection.setAdapter(adapter);
@@ -275,31 +284,50 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 //
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onPause() {
         super.onPause();
         if (!isBackPressed) {
+            containerLayout.setVisibility(View.INVISIBLE);
+            Log.d("jkhdfui9eh", "onPause: ");
+            //ExitActivity.exitApplicationAndRemoveFromRecent(AppSelectionActivity.this);
+            this.finish();
             try {
+
                 if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
                     //  finish previous activity and this activity
+                    Log.d("jkhdfui9eh", "onPause: codeSettingsInstance");
                     CodeSettingActivity.codeSettingsInstance.finish();
 
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+
             }
+
+        }
+    }
+
+
+    @Override
+    public void finish() {
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            super.finishAndRemoveTask();
+        }else {
+            super.finish();
         }
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         isBackPressed = false;
+        super.onResume();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         // update the db with new setting
         new Thread() {
             @Override
@@ -323,6 +351,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
             }
         }.start();
 
+        super.onStop();
 
     }
 
@@ -351,8 +380,8 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         isBackPressed = true;
+        super.onBackPressed();
 
     }
 }

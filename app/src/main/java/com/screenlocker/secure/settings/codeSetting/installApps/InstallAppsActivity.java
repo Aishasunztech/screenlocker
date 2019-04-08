@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -61,6 +63,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     private PackageManager mPackageManager;
     private boolean isBackPressed;
     private boolean isInstallDialogOpen;
+    private ConstraintLayout containerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +185,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setRecyclerView() {
+        containerLayout = findViewById(R.id.container_layout);
         appModelList = new ArrayList<>();
         rvInstallApps = findViewById(R.id.rvInstallApps);
 
@@ -392,8 +396,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         super.onPause();
         if (!isBackPressed && !isInstallDialogOpen) {
             try {
+                containerLayout.setVisibility(View.INVISIBLE);
+                this.finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
+
                     //  finish previous activity and this activity
                     CodeSettingActivity.codeSettingsInstance.finish();
                 }

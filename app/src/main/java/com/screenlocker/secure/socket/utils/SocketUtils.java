@@ -8,7 +8,7 @@ import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.settings.codeSetting.systemControls.SystemControlsActivity;
+import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
@@ -72,8 +72,8 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
         SettingsActivity settingsActivity = new SettingsActivity();
         settingsActivity.setDatabaseStatus(this);
 
-        SystemControlsActivity systemControlsActivity = new SystemControlsActivity();
-        systemControlsActivity.setListener(this);
+        SystemPermissionActivity systemPermissionActivity = new SystemPermissionActivity();
+        systemPermissionActivity.setListener(this);
 
         initSocket();
         if (socket != null) {

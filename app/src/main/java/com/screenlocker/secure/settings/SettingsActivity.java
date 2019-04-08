@@ -89,6 +89,7 @@ import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STAT
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
@@ -296,6 +297,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        hideKeyboard(SettingsActivity.this);
+
+        super.onPause();
+    }
 
     private void createActiveDialog() {
         isActiveDialog = new AlertDialog.Builder(this).setMessage("").setCancelable(false).create();

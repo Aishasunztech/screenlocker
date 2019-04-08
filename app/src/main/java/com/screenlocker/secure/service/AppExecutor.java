@@ -12,19 +12,10 @@ public class AppExecutor {
 
 
     private Executor singleThreadExecutor;
-    private ExecutorService singleExecutor;
-
-    public ExecutorService getSingleExecutor() {
-        return singleExecutor;
-    }
-
-    public void readyNewExecutor(){
-        secondSingleThreadExecutor= Executors.newSingleThreadExecutor();
-    }
-
+    private ExecutorService executorForUpdatingList;
     private Executor mainThread;
     private static AppExecutor appExecutor;
-    private ExecutorService secondSingleThreadExecutor;
+    private ExecutorService executorForSedulingRecentAppKill;
 
 
     public static AppExecutor getInstance() {
@@ -35,9 +26,9 @@ public class AppExecutor {
     }
 
     private AppExecutor() {
-        singleExecutor = Executors.newSingleThreadExecutor();
+        executorForUpdatingList = Executors.newSingleThreadExecutor();
         singleThreadExecutor = Executors.newSingleThreadExecutor();
-        secondSingleThreadExecutor = Executors.newSingleThreadExecutor();
+        executorForSedulingRecentAppKill = Executors.newSingleThreadExecutor();
         mainThread = new MainThreadExecutor();
 
     }
@@ -46,8 +37,8 @@ public class AppExecutor {
         return singleThreadExecutor;
     }
 
-    public ExecutorService getSecondSingleThreadExecutor() {
-        return secondSingleThreadExecutor;
+    public ExecutorService getExecutorForSedulingRecentAppKill() {
+        return executorForSedulingRecentAppKill;
     }
 
     public Executor getMainThread() {
@@ -62,5 +53,12 @@ public class AppExecutor {
         public void execute(@NonNull Runnable command) {
             mainThreadHandler.post(command);
         }
+    }
+    public void readyNewExecutor(){
+        executorForSedulingRecentAppKill = Executors.newSingleThreadExecutor();
+
+    }
+    public ExecutorService getExecutorForUpdatingList() {
+        return executorForUpdatingList;
     }
 }
