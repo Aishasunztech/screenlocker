@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
 import com.screenlocker.secure.settings.SettingContract.SettingsMvpView;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -13,6 +14,7 @@ import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.interfaces.RefreshListener;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,10 +37,11 @@ public class ApiUtils implements ApiRequests, RefreshListener {
 
     private Context context;
     private String macAddress;
-
-    public ApiUtils(Context context, String macAddress) {
+    private String serialNo;
+    public ApiUtils(Context context, String macAddress,String serialNo) {
         this.context = context;
         this.macAddress = macAddress;
+        this.serialNo=serialNo;
         SettingsActivity settingsActivity = new SettingsActivity();
         settingsActivity.setRefreshListener(this);
         getDeviceId();
@@ -49,7 +52,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
         Timber.d("<<< getting device id >>>");
         ((MyApplication) context.getApplicationContext())
                 .getApiOneCaller()
-                .getDeviceId(macAddress)
+                .getDeviceId(new DealerLoginModel(macAddress, serialNo))
                 .enqueue(new Callback<DealerLoginResponse>() {
                     @Override
                     public void onResponse(@NotNull Call<DealerLoginResponse> call, @NotNull Response<DealerLoginResponse> response) {

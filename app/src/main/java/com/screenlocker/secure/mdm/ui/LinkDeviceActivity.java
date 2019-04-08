@@ -307,6 +307,8 @@ public class LinkDeviceActivity extends BaseActivity {
                                             Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin1);
 
                                             approvedLinkViewState();
+
+
                                             //                                        setDealerPin(lsr.getDealer_id());
                                             setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
 

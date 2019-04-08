@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -42,7 +43,8 @@ public class SocketService extends Service implements SettingContract.SettingsMv
             if (action.equals("refresh")) {
                 if (!isSocketConnected()) {
                     String macAddress = CommonUtils.getMacAddress();
-                    new ApiUtils(SocketService.this, macAddress);
+                    String serialNo = DeviceIdUtils.getSerialNumber();
+                    new ApiUtils(SocketService.this, macAddress,serialNo);
                 }
 
             }
@@ -50,7 +52,8 @@ public class SocketService extends Service implements SettingContract.SettingsMv
                 String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
                 SocketSingleton.closeSocket(device_id);
                 String macAddress = CommonUtils.getMacAddress();
-                new ApiUtils(SocketService.this, macAddress);
+                String serialNumber = DeviceIdUtils.getSerialNumber();
+                new ApiUtils(SocketService.this, macAddress,serialNumber);
             }
         }
 

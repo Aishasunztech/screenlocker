@@ -44,10 +44,10 @@ public interface ApiOneCaller {
             @Field("imei") String params
     );
 
-    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
     @POST("login")
     Call<DealerLoginResponse> getDeviceId(
-            @Field("mac_address") String params
+            @Body DealerLoginModel dealerLoginModel
     );
 
     @FormUrlEncoded
