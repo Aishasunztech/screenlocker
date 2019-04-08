@@ -322,7 +322,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
-                new BlockStatusBar(this, false).collapseNow();
+//                new BlockStatusBar(this, false).collapseNow();
             }
         }
     }
