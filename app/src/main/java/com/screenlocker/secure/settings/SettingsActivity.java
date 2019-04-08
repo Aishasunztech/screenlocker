@@ -241,6 +241,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
+
+
         WorkManager.getInstance().enqueue(insertionWork);
 
         WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())

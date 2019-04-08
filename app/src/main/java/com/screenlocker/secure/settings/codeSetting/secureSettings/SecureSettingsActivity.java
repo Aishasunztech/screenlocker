@@ -1,13 +1,10 @@
-package com.screenlocker.secure.settings.codeSetting.settingsAppPermissions;
+package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,7 +15,6 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppListAdapter;
 
-import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.appSelection.SelectionContract;
 import com.screenlocker.secure.appSelection.SelectionModel;
 import com.screenlocker.secure.appSelection.SelectionPresenter;
@@ -39,7 +35,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
-public class SettingsAppPermissionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
+public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
 
 
     /**
@@ -237,7 +233,7 @@ public class SettingsAppPermissionActivity extends BaseActivity implements Selec
 
             @Override
             protected Void doInBackground(Void... voids) {
-                List<AppInfo> apps = MyApplication.getAppDatabase(SettingsAppPermissionActivity.this).getDao().getAppsOrExtensions(true);
+                List<AppInfo> apps = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppsOrExtensions(true);
                 // add the data to the list to show apps
 
                 selectionPresenter.addAppsToList(mPackageManager, mAppsList, apps);

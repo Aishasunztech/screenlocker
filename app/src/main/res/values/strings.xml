@@ -55,7 +55,7 @@
     <string name="hint_please_enter_code_pin">Please enter code pin</string>
     <string name="please_enter_code_admin_password">Please enter code admin password.</string>
     <string name="code">Code</string>
-    <string name="set_apps_permissions"><![CDATA[Set Apps & Permissions]]></string>
+    <string name="set_apps_permissions">Application Permission</string>
     <string name="reset_guest_encrypted_pass"><![CDATA[Reset Guest & Encrypted Pass]]></string>
     <string name="settings_menu">Settings Menu</string>
     <string name="change_admin_panel_code">Change Admin Panel Code</string>
@@ -86,12 +86,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_blank_fragment_second">hello blank fragment</string>
-    <string name="system_controls">System Controls</string>
+    <string name="system_controls">System Permission</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
-    <string name="settings_controls">Settings App permission</string>
+    <string name="settings_controls">Secure Settings Permission</string>
 
 
 </resources>

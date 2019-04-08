@@ -11,16 +11,9 @@ public class AppInfo {
     @PrimaryKey
     String uniqueName;
 
-    public void setExtension(boolean extension) {
-        this.extension = extension;
-    }
 
     private String label;
     private String packageName;
-
-    public boolean isExtension() {
-        return extension;
-    }
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
@@ -28,6 +21,16 @@ public class AppInfo {
     private boolean enable;
     private boolean encrypted;
     private boolean extension;
+
+
+
+    public boolean isExtension() {
+        return extension;
+    }
+    public void setExtension(boolean extension) {
+        this.extension = extension;
+    }
+
 
     @NonNull
     public String getUniqueName() {

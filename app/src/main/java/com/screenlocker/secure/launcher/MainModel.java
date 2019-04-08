@@ -1,6 +1,7 @@
 package com.screenlocker.secure.launcher;
 
 import android.app.ActivityManager;
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -96,7 +97,11 @@ public class MainModel implements MainContract.MainMvpModel {
     @Override
     public void addDataToList(PackageManager pm, String message, RAdapter adapter) {
 
+
+
         List<AppInfo> allDbApps = MyApplication.getAppDatabase(context).getDao().getApps();
+
+
         if (message != null && !message.equals("")) {
             if (allDbApps != null) {
                 for (AppInfo model :
@@ -105,9 +110,9 @@ public class MainModel implements MainContract.MainMvpModel {
                         if (model.isGuest()) {
                             adapter.appsList.add(model);
                         }
+
                     } else {
                         // for the encrypted user type
-
                         if (model.isEncrypted()) {
                             adapter.appsList.add(model);
                         }

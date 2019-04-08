@@ -1,10 +1,13 @@
 package com.screenlocker.secure.appSelection;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -233,8 +236,11 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
     /**
      * doing the task of adding the apps and populating it in the  background thread
      */
+
     @SuppressLint("StaticFieldLeak")
     private void populateApps() {
+        selectionPresenter.showProgress(mProgress);
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -244,6 +250,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 
             @Override
             protected Void doInBackground(Void... voids) {
+
                 List<AppInfo> apps = MyApplication.getAppDatabase(AppSelectionActivity.this).getDao().getApps();
                 // add the data to the list to show apps
 
@@ -265,7 +272,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                 rvAppSelection.getAdapter().notifyDataSetChanged();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+//
     }
 
     @Override

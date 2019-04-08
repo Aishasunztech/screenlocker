@@ -79,7 +79,7 @@ public class SystemControlsActivity extends BaseActivity implements CompoundButt
         setContentView(R.layout.activity_system_controls);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("System Controls");
+        getSupportActionBar().setTitle(getResources().getString(R.string.system_controls));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ResolveInfo settingResolveInfo = querySettingPkgName();
         PackageManager packageManager = getPackageManager();

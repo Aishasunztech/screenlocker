@@ -16,7 +16,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 27
         versionCode 1
-        versionName "4.52"
+        versionName "4.54"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -35,7 +35,6 @@ android {
 ext {
     //dependencies
     work = "1.0.0-beta02"
-
     versionDagger = '2.16'
     versionRetrofit = '2.4.0'
     versionGson = '2.8.5'
@@ -43,6 +42,7 @@ ext {
     versionButterknife = '8.8.1'
     versionTimber = '4.7.1'
     versionOkHttp3LoggingInterceptor = '3.8.0'
+
 }
 dependencies {
     implementation 'com.android.support:design:27.0.0'
@@ -60,6 +60,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
 
+
+    // Room
     // implementation "android.arch.persistence.room:runtime:1.0.0"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     implementation 'com.android.support:design:27.1.1'
@@ -107,6 +109,10 @@ dependencies {
 
     // Stepper
     implementation project(':steppers')
+
+    //Live data
+    implementation "android.arch.lifecycle:livedata:1.1.1"
+
 
 }
 repositories {
