@@ -53,6 +53,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <activity android:name=".settings.codeSetting.ExitActivity"></activity>
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
@@ -239,9 +241,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".settings.codeSetting.installApps.InstallAppsActivity" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="0681a8885d07f744d26521d50a0995b0dcef653c" />
+
 
         <activity android:name=".settings.codeSetting.Sim.SimActivity" />
         <activity
@@ -254,6 +254,14 @@
             android:screenOrientation="portrait" />
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e"
+            />
+
+
+
     </application>
 
 </manifest>

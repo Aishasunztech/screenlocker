@@ -31,6 +31,11 @@ public class DealerLoginModel {
         this.linkCode = linkCode;
     }
 
+    public DealerLoginModel(String serialNo, String macAddr) {
+        this.serialNo = serialNo;
+        this.macAddr = macAddr;
+    }
+
     public DealerLoginModel(String linkCode, List<String> imei, List<String> simNo, String serialNo, String macAddr, String ipAddr) {
         this.imei = imei;
         this.simNo = simNo;

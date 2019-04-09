@@ -31,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //    customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
-    private static WindowManager manager, mWindowManager;
+//    private static WindowManager manager, mWindowManager;
 
     private Window mWindow;
     private WindowManager.LayoutParams screenShotParams;
@@ -56,8 +56,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        manager = ((WindowManager) BaseActivity.this.getSystemService(Context.WINDOW_SERVICE));
-        mWindowManager = getWindowManager();
+//        manager = ((WindowManager) BaseActivity.this.getSystemService(Context.WINDOW_SERVICE));
+//        mWindowManager = getWindowManager();
         mWindow = getWindow();
         localLayoutParams = new WindowManager.LayoutParams();
 //        disablePullNotificationTouch();

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -23,6 +24,7 @@ import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -63,6 +65,7 @@ public class MyApplication extends Application implements NetworkListener {
         appContext = getApplicationContext();
 
         try {
+            Fabric.with(this, new Crashlytics());
             sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         } catch (Exception ignored) {
         }
