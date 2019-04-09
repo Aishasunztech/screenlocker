@@ -66,7 +66,7 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
                     app.setGuest(false);
                     // own app && uem app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client") || app.getPackageName().equals("com.android.settings")) {
+                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client")) {
                         app.setEncrypted(true);
                         app.setEnable(true);
                         app.setExtension(false);

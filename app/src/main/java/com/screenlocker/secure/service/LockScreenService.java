@@ -134,12 +134,15 @@ public class LockScreenService extends Service implements GetApplications {
             public void run() {
                 while (!Thread.interrupted()) {
                     if (powerManager.isScreenOn()) {
-
                         String current_package = getCurrentApp();
                         if (current_package != null)
                             if (!whiteAppsList.contains(current_package)) {
-                                Timber.d("run: %s", current_package);
-                                clearRecentApp();
+                                if (current_package.equals(getPackageName())) {
+                                    Timber.d("run: %s", current_package);
+                                } else {
+                                    Timber.d("run: %s", current_package);
+                                    clearRecentApp();
+                                }
                             }
                     } else {
                         appExecutor.getMainThread().execute(new Runnable() {
@@ -274,8 +277,6 @@ public class LockScreenService extends Service implements GetApplications {
      * @param isGuest identify if current user is guest or not.
      */
     private synchronized void userBaseQuery(boolean isGuest) {
-
-
         try {
             /*
               if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
