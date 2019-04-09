@@ -136,14 +136,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         listener = refreshListener;
     }
 
-    public static Context setting_context = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
-        setting_context = SettingsActivity.this;
 
 //        ApplicationInfo ai = null;
 //        try {
@@ -531,7 +528,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)
@@ -839,6 +835,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    public void forceCrash(View view) {
+        throw new RuntimeException("This is a crash");
     }
 
 

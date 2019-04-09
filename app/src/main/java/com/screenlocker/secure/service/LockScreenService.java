@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -21,7 +22,6 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
@@ -33,9 +33,11 @@ import java.util.List;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+
 import static com.screenlocker.secure.launcher.MainActivity.clearRecentApp;
 import static com.screenlocker.secure.launcher.MainActivity.drawOverLay;
 import static com.screenlocker.secure.launcher.MainActivity.getCurrentApp;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -46,7 +48,7 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
  * (must enable service by enabling service from settings screens{@link SettingsActivity#onClick(View)})
  */
-public class LockScreenService extends Service implements GetApplications {
+public class LockScreenService extends Service {
     @SuppressLint("StaticFieldLeak")
     private static RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
@@ -61,6 +63,29 @@ public class LockScreenService extends Service implements GetApplications {
 
     AppExecutor appExecutor;
 
+    private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null)
+                if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
+                    Log.d("kjghrijgorir", "onReceive: ");
+
+                    String current_user = PrefUtils.getStringPref(LockScreenService.this, CURRENT_KEY);
+                    /*
+                     * Queering app depending on user type.
+                     */
+                    switch (current_user) {
+                        case KEY_GUEST_PASSWORD:
+                            userBaseQuery(true);
+                            break;
+                        case KEY_MAIN_PASSWORD:
+                            userBaseQuery(false);
+                            break;
+                    }
+                }
+        }
+    };
+
 
     @Override
     public void onCreate() {
@@ -71,6 +96,9 @@ public class LockScreenService extends Service implements GetApplications {
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         appExecutor = AppExecutor.getInstance();
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
 //        sheduleOwerLayWindow();
 
@@ -168,6 +196,7 @@ public class LockScreenService extends Service implements GetApplications {
                 .unregisterReceiver(notificationRefreshedListener);
         PrefUtils.saveToPref(this, false);
 
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
         super.onDestroy();
     }
 
@@ -321,26 +350,5 @@ public class LockScreenService extends Service implements GetApplications {
         }
     }
 
-    /**
-     * Change on app permission
-     *
-     * @param ignored is ignored here
-     */
-    @Override
-    public void onAppsReady(List<AppInfo> ignored) {
-        String current_user = PrefUtils.getStringPref(this, CURRENT_KEY);
-        /*
-         * Queering app depending on user type.
-         */
-        switch (current_user) {
-            case KEY_GUEST_PASSWORD:
-                userBaseQuery(true);
-                break;
-            case KEY_MAIN_PASSWORD:
-                userBaseQuery(false);
-                break;
-        }
 
-
-    }
 }

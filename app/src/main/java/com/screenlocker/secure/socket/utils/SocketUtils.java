@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -12,7 +11,6 @@ import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermiss
 import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
-import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -46,7 +44,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 
-public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplications, SettingContract.SettingsMvpView, ChangeSettings {
+public class SocketUtils implements SocketEvents, DatabaseStatus, SettingContract.SettingsMvpView, ChangeSettings {
 
 
     private Socket socket;
@@ -61,13 +59,11 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
 
     }
 
+
     SocketUtils(String device_id, Context context, String token) {
         this.device_id = device_id;
         this.context = context;
         this.token = token;
-
-        AppSelectionActivity appSelectionActivity = new AppSelectionActivity();
-        appSelectionActivity.setListener(this);
 
         SettingsActivity settingsActivity = new SettingsActivity();
         settingsActivity.setDatabaseStatus(this);
@@ -313,8 +309,8 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, GetApplication
         sendApps();
     }
 
-    @Override
-    public void onAppsReady(List<AppInfo> infos) {
+
+    public void setApps(List<AppInfo> infos) {
         Timber.d("<<< on apps ready size =>>>%S", infos.size());
         try {
             List<AppInfo> appList = getAppsWithoutIcons(infos);

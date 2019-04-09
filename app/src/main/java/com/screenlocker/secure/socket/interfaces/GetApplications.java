@@ -5,5 +5,5 @@ import com.screenlocker.secure.launcher.AppInfo;
 import java.util.List;
 
 public interface GetApplications {
-    void onAppsReady(List<AppInfo> appList);
+    void onAppsReady(List<AppInfo> infos);
 }

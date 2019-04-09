@@ -2,12 +2,14 @@ package com.screenlocker.secure.appSelection;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,8 +23,6 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.ExitActivity;
-import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -34,19 +34,13 @@ import androidx.work.WorkManager;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
 public class AppSelectionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
-
-    private static GetApplications listener;
-
-
-    public void setListener(GetApplications getApplications) {
-        listener = getApplications;
-    }
 
 
     public AppSelectionActivity() {
@@ -315,7 +309,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             super.finishAndRemoveTask();
-        }else {
+        } else {
             super.finish();
         }
     }
@@ -337,8 +331,10 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                         selectionPresenter.updateAppInDB(model);
                     }
                     PrefUtils.saveBooleanPref(AppSelectionActivity.this, APPS_SETTING_CHANGE, true);
-                    if (listener != null)
-                        listener.onAppsReady(mAppsList);
+                    Intent intent = new Intent(BROADCAST_APPS_ACTION);
+                    intent.putParcelableArrayListExtra("apps_list", mAppsList);
+                    LocalBroadcastManager.getInstance(AppSelectionActivity.this).sendBroadcast(intent);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

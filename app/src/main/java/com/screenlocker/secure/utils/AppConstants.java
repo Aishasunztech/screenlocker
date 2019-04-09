@@ -17,6 +17,10 @@ public class AppConstants {
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 3;
     public static final String BROADCAST_ACTION = "intentKey";
+
+    public static final String BROADCAST_APPS_ACTION = "appInfoKey";
+
+
     public static final String BROADCAST_KEY = "key";
     public static final String SUPER_ADMIN_KEY = "11111";
 
@@ -60,13 +64,13 @@ public class AppConstants {
 
 
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
-//    public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
+        public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-    public static String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
+//    public static String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
 
 
     public static final String RESPONSE_TO_SERVER = "sendApps_";

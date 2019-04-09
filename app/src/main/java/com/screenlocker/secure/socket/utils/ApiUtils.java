@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
 import com.screenlocker.secure.settings.SettingContract.SettingsMvpView;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -35,21 +36,34 @@ public class ApiUtils implements ApiRequests, RefreshListener {
 
     private Context context;
     private String macAddress;
+    private String serialNo;
 
-    public ApiUtils(Context context, String macAddress) {
+    public SocketUtils getSocketUtils() {
+        return socketUtils;
+    }
+
+    private SocketUtils socketUtils = null;
+
+
+    public ApiUtils(Context context, String macAddress, String serialNo) {
         this.context = context;
         this.macAddress = macAddress;
+        this.serialNo = serialNo;
         SettingsActivity settingsActivity = new SettingsActivity();
         settingsActivity.setRefreshListener(this);
+        Timber.d("serialNo :%s", serialNo);
+        Timber.d("macAddress :%s", macAddress);
+
         getDeviceId();
     }
+
 
     @Override
     public void getDeviceId() {
         Timber.d("<<< getting device id >>>");
         ((MyApplication) context.getApplicationContext())
                 .getApiOneCaller()
-                .getDeviceId(macAddress)
+                .getDeviceId(new DealerLoginModel(serialNo, macAddress))
                 .enqueue(new Callback<DealerLoginResponse>() {
                     @Override
                     public void onResponse(@NotNull Call<DealerLoginResponse> call, @NotNull Response<DealerLoginResponse> response) {
@@ -70,7 +84,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                             }
                             PrefUtils.saveStringPref(context, TOKEN, token);
                             if (device_id != null && token != null) {
-                                new SocketUtils(device_id, context, token);
+                                socketUtils = new SocketUtils(device_id, context, token);
                             }
                             String msg = response.body().getMsg();
                             Intent socketIntent = new Intent(context, SocketService.class);
@@ -148,4 +162,6 @@ public class ApiUtils implements ApiRequests, RefreshListener {
         SocketSingleton.closeSocket(device_id);
         getDeviceId();
     }
+
+
 }
