@@ -56,7 +56,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (nm != null) {
 
-            int value_expired = PrefUtils.getIntegerPref(context, VALUE_EXPIRED);
+//            int value_expired = PrefUtils.getIntegerPref(context, VALUE_EXPIRED);
 
 //            nm.notify(1, b.build());
 

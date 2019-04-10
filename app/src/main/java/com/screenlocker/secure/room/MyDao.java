@@ -42,6 +42,7 @@ public interface MyDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateApps(AppInfo appsModel);
 
+
     @Query("DELETE FROM AppInfo where uniqueName=:packageName")
     void deleteOne(String packageName);
 

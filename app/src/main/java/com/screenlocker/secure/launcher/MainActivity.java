@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.pm.ShortcutInfoCompat;
 import android.support.v4.content.pm.ShortcutManagerCompat;
@@ -35,7 +36,9 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.permissions.StepperActivity;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -45,12 +48,15 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -64,22 +70,31 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
-     *
      */
     private RAdapter adapter;
     /**
      * this is used to get the details of apps of the system
      */
 
-    public static Activity context = null;
+//    public static Activity context = null;
+
+    private HashSet<String> whiteAppsList = new HashSet<>();
+
+
+    PowerManager powerManager;
+
+    AppExecutor appExecutor;
+
 
     private PackageManager pm;
     private MainPresenter mainPresenter;
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
-    public static ActivityManager activityManager;
 
     private SettingsPresenter settingsPresenter;
+
+
+    private ScreenOffReceiver screenOffReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +102,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         setContentView(R.layout.activity_main);
 
-        context = MainActivity.this;
+
+        powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+
+        appExecutor = AppExecutor.getInstance();
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
@@ -114,6 +135,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
         }
 
+
+        screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {
+            @Override
+            public void onScreenOff() {
+                clearRecentApp();
+            }
+        });
+
+
+        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
@@ -142,7 +173,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //Remove notification bar
         // this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
         ComponentName compName = new ComponentName(this, MyAdmin.class);
         mainPresenter = new MainPresenter(this, new MainModel(this));
         background = findViewById(R.id.background);
@@ -222,18 +253,18 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
      * reciever to recieve for the action {@link AppConstants#BROADCAST_ACTION}
      */
 
-    public static void clearRecentApp() {
+    public void clearRecentApp() {
 
-        Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + context);
+
         try {
             ActivityManager activityManager = (ActivityManager) MyApplication.getAppContext()
                     .getSystemService(Context.ACTIVITY_SERVICE);
-            Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + activityManager);
+
             if (activityManager != null) {
-                activityManager.moveTaskToFront(context.getTaskId(), 0);
+                activityManager.moveTaskToFront(getTaskId(), 0);
             }
         } catch (Exception e) {
-            Log.d("dkjgkjdgjgijsr", "clearRecentApp: " + e.getMessage());
+
         }
     }
 
@@ -263,17 +294,22 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             t2.start();
 
 
+            if (message.equals(KEY_MAIN_PASSWORD)) {
+                userBaseQuery(false);
+            } else if (message.equals(KEY_GUEST_PASSWORD)) {
+                userBaseQuery(true);
+            }
+
         }
 
     };
 
-    private static boolean view_status = false;
 
-    public static WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
+    public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
 
-    public static RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
+    public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
 
-    public static void drawOverLay() {
+    public void drawOverLay() {
 
         Timber.d("drawOverLay: ");
 
@@ -318,13 +354,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     }
 
 
-    public static void removeOverlay() {
+    public void removeOverlay() {
         try {
             if (windowManager != null) {
                 if (layout != null) {
                     layout.setId(R.id.splash_id_null);
                     windowManager.removeViewImmediate(layout);
-                    view_status = false;
                 }
             }
         } catch (Exception e) {
@@ -347,10 +382,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (context == null) {
-            context = MainActivity.this;
-        }
 
 
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
@@ -435,14 +466,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //    }
 
 
-    public static String getCurrentApp() {
+    public String getCurrentApp() {
         String dum = null;
         try {
             if (Build.VERSION.SDK_INT >= 21) {
                 String currentApp = null;
                 UsageStatsManager usm = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
                 }
                 long time = System.currentTimeMillis();
                 List<UsageStats> applist = null;
@@ -461,7 +492,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 }
                 return currentApp;
             } else {
-                ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 String mm = null;
                 if (manager != null) {
                     mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
@@ -476,6 +507,124 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     }
 
 
+    /**
+     * Queering allowed packages on user base
+     *
+     * @param isGuest identify if current user is guest or not.
+     */
+    private synchronized void userBaseQuery(boolean isGuest) {
+        try {
+            /*
+              if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
+             */
+            if (!appExecutor.getExecutorForSedulingRecentAppKill().isShutdown())
+                appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
+            whiteAppsList.clear();
+            whiteAppsList.add(getPackageName());
+            if (isGuest) {
+                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getGuestApps(true, true);
+                        for (AppInfo info : appInfos) {
+                            whiteAppsList.add(info.getPackageName());
+                        }
+                        //Prepare new Executor as previous was shutdown
+                        appExecutor.readyNewExecutor();
+                        sheduleRecentAppsKill();
+
+                    }
+                });
+
+
+            } else {
+                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getEncryptedApps(true, true);
+                        for (AppInfo info : appInfos) {
+                            whiteAppsList.add(info.getPackageName());
+                        }
+                        appExecutor.readyNewExecutor();
+                        sheduleRecentAppsKill();
+
+                    }
+                });
+
+            }
+        } catch (Exception ignored) {
+
+        }
+    }
+
+
+    private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null)
+                if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
+
+                    String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
+                    /*
+                     * Queering app depending on user type.
+                     */
+
+                    if (current_user != null) {
+                        switch (current_user) {
+                            case KEY_GUEST_PASSWORD:
+                                userBaseQuery(true);
+                                break;
+                            case KEY_MAIN_PASSWORD:
+                                userBaseQuery(false);
+                                break;
+                        }
+                    }
+
+
+                }
+        }
+    };
+
+
+    private void sheduleRecentAppsKill() {
+
+        Timber.d("sheduleRecentAppsKill: %s", whiteAppsList.toString());
+
+        appExecutor.getExecutorForSedulingRecentAppKill().execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!Thread.interrupted()) {
+                    if (powerManager.isScreenOn()) {
+                        String current_package = getCurrentApp();
+                        if (current_package != null)
+                            if (!whiteAppsList.contains(current_package)) {
+
+                                clearRecentApp();
+                            }
+
+                    } else {
+                        appExecutor.getMainThread().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                drawOverLay();
+                            }
+                        });
+                        return;
+                    }
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
+        unregisterReceiver(screenOffReceiver);
+
+    }
 }
 
 
