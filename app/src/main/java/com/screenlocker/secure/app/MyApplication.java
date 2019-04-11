@@ -24,6 +24,7 @@ import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -63,6 +64,7 @@ public class MyApplication extends Application implements NetworkListener {
         super.onCreate();
 
         appContext = getApplicationContext();
+
 
         try {
             Fabric.with(this, new Crashlytics());

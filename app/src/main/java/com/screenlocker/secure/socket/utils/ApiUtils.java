@@ -26,6 +26,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevcie;
+import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
@@ -114,6 +115,9 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                         break;
                                     case "Invalid Device":
                                         context.stopService(socketIntent);
+                                        break;
+                                    case "wiped":
+                                        wipeDevice(context);
                                         break;
                                 }
                             }

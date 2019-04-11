@@ -25,6 +25,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.SocketSingleton.getSocket;
 import static com.screenlocker.secure.socket.utils.utils.getAppsList;
 import static com.screenlocker.secure.socket.utils.utils.getAppsWithoutIcons;
+import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.settingsChangeListener;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
@@ -34,6 +35,7 @@ import static com.screenlocker.secure.socket.utils.utils.unlinkDevcie;
 import static com.screenlocker.secure.socket.utils.utils.updateAppsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
+import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
@@ -41,6 +43,7 @@ import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 
@@ -215,6 +218,11 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, SettingContrac
                                 Timber.d("<<< device unlinked >>>");
                                 unlinkDevcie(context);
                                 break;
+
+                            case "wiped":
+                                Timber.d("<<< device wiped >>>");
+                                wipeDevice(context);
+                                break;
                         }
                     }
 
@@ -253,6 +261,27 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, SettingContrac
     @Override
     public void sendSettings() {
         Timber.d("<<< sending settings >>>");
+
+//        boolean is_synced = PrefUtils.getBooleanPref(context, IS_SYNCED);
+//        Timber.d(" device sync status : %S", is_synced);
+//
+////        boolean db_status = PrefUtils.getBooleanPref(context, DB_STATUS);
+//
+//        Timber.d(" db status : %S", "");
+//
+//        if (!is_synced) {
+//            Timber.d(" device is not synced ");
+//            getAppsList(context, appList -> {
+//                socket.emit(SEND_SETTINGS + device_id, new Gson().toJson(appList));
+//                socket.emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(context)));
+//                Timber.d(" apps sent and size : %S", appList.size());
+//                Timber.d(" settings sent ");
+//            });
+//        } else {
+//            Timber.d("device already synced");
+//        }
+
+
     }
 
     @Override

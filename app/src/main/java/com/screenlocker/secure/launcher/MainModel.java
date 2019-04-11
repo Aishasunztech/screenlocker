@@ -1,7 +1,7 @@
 package com.screenlocker.secure.launcher;
 
+import android.app.Activity;
 import android.app.ActivityManager;
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -20,7 +20,6 @@ import java.util.List;
 import timber.log.Timber;
 
 import static android.content.Context.ACTIVITY_SERVICE;
-import static com.screenlocker.secure.launcher.MainActivity.removeOverlay;
 
 public class MainModel implements MainContract.MainMvpModel {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -98,7 +97,6 @@ public class MainModel implements MainContract.MainMvpModel {
     public void addDataToList(PackageManager pm, String message, RAdapter adapter) {
 
 
-
         List<AppInfo> allDbApps = MyApplication.getAppDatabase(context).getDao().getApps();
 
 
@@ -127,7 +125,7 @@ public class MainModel implements MainContract.MainMvpModel {
         AppExecutor.getInstance().getMainThread().execute(new Runnable() {
             @Override
             public void run() {
-                removeOverlay();
+                ((MainActivity) context).removeOverlay();
             }
         });
 
