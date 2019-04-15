@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <android.support.design.widget.AppBarLayout
+            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main_settings_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white" />
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/settings_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:id="@+id/wif_container_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/wifi_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/wifi_icons"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/wifi_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Wi-Fi"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/wifi_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="wifi_name"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                        />
+
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bluetooth_container_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/wif_container_layout"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/bluuetooth_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/blutooth_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/bluetooth_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Bluetooth"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/bluetooth_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Disabled"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                        />
+
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sim_cotainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/bluetooth_container_layout"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/sim_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:src="@drawable/sim_card_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/sim_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="SIM Cards"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/data_roaming_cotainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/sim_cotainer"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/data_roaming_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:visibility="invisible"
+                    android:src="@drawable/sim_card_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/data_roaming_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Data Roaming"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hotspot_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/data_roaming_cotainer"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/hotspot_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:visibility="invisible"
+                    android:src="@drawable/sim_card_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/hotspot_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Hotspot"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/screen_lock_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/hotspot_container"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/screen_lock_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:visibility="invisible"
+                    android:src="@drawable/sim_card_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/screen_lock_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Screen Lock"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
+            <LinearLayout
+                android:id="@+id/brightness_container_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/screen_lock_container"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/brightness_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:src="@drawable/brightness"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/brightness_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Brightness"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+                    <TextView
+                        android:id="@+id/brightness_lavel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="brightness level"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                        />
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sleep_cotainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/brightness_container_layout"
+                style="@style/MainActivityItemsStyle"
+                >
+
+
+                <ImageView
+                    android:id="@+id/sleep_icon"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
+
+                    android:visibility="invisible"
+                    android:src="@drawable/sim_card_icon"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/sleep_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Sleep"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+                    <TextView
+                        android:id="@+id/sleep_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="After 15 seconds of inactivity"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                        />
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+
+
+        <android.support.constraint.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/permission_not_granted"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_marginBottom="24dp"
+                android:text="Please Grant Permissions"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/button"
+                app:layout_constraintStart_toStartOf="@+id/button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Request Permission"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintVertical_bias="0.0" />
+        </android.support.constraint.ConstraintLayout>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</layout>

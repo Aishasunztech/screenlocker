@@ -24,10 +24,8 @@ public interface MyDao {
     @Query("select * from AppInfo where encrypted= :isEncrypted and enable =:isEnable ")
     List<AppInfo> getEncryptedApps(boolean isEncrypted, boolean isEnable);
 
-
     @Query("select uniqueName ,label, packageName, guest ,enable ,encrypted,extension from AppInfo ")
     List<AppInfo> getAppsWithoutIcons();
-
 
     @Query("select * from AppInfo where extension = :extension")
     List<AppInfo> getAppsOrExtensions(boolean extension);
@@ -35,15 +33,27 @@ public interface MyDao {
     @Query("select * from AppInfo where extension = :extension")
     List<AppInfo> getAppsForBlurWorker(boolean extension);
 
-
     @Query("SELECT * FROM AppInfo WHERE uniqueName= :value")
     AppInfo getParticularApp(String value);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateApps(AppInfo appsModel);
 
-
     @Query("DELETE FROM AppInfo where uniqueName=:packageName")
     void deleteOne(String packageName);
+
+    @Query("UPDATE AppInfo SET guest=:guest , encrypted=:encrypted, enable=:enable WHERE uniqueName=:uniqueName")
+    void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);
+
+    @Query("SELECT guest,encrypted,enable,extension,uniqueName from AppInfo  WHERE uniqueName=:uniqueName")
+    AppInfo getAppStatus(String uniqueName);
+
+    @Query("SELECT * from SubExtension  WHERE uniqueName=:uniqueName")
+    List<SubExtension> getSubExtensions(String uniqueName);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertSubExtensions(SubExtension subExtensionModal);
+
+
 
 }

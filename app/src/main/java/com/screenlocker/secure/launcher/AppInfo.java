@@ -9,10 +9,10 @@ import android.support.annotation.NonNull;
 
 @Entity
 public class AppInfo implements Parcelable {
+
     @NonNull
     @PrimaryKey
     String uniqueName;
-
 
     private String label;
     private String packageName;
@@ -23,7 +23,6 @@ public class AppInfo implements Parcelable {
     private boolean enable;
     private boolean encrypted;
     private boolean extension;
-
 
     public boolean isExtension() {
         return extension;

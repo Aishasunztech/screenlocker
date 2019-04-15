@@ -13,11 +13,22 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.SubExtension;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -132,10 +143,11 @@ public class CommonUtils {
         long remaining_time = PrefUtils.getLongPref(context, TIME_REMAINING);
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, current_time + remaining_time);
     }
+
     public static void hideKeyboard(Activity activity) {
 
 
-        try{
+        try {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
             //Find the currently focused view, so we can grab the correct window token from it.
             View view = activity.getCurrentFocus();
@@ -146,9 +158,33 @@ public class CommonUtils {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
     }
 
 
+    // adding secure settings menus
 
+    public static void setSecureSettingsMenu(Context context) {
+
+        String uniqueName = "com.secureSetting.SettingsMainActivity";
+
+        List<SubExtension> subExtensions = new ArrayList<>();
+
+        // wifi menu
+        Drawable wifi_drawable = context.getResources().getDrawable(R.drawable.wifi_icons);
+        byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+        SubExtension wifi = new SubExtension();
+        wifi.setLabel("wi-fi");
+        wifi.setIcon(wifi_icon);
+        wifi.setUniqueName(uniqueName);
+        wifi.setGuest(false);
+        wifi.setEncrypted(false);
+        subExtensions.add(wifi);
+
+
+
+
+
+    }
 }

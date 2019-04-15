@@ -69,7 +69,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     if (presentApp) {
                         try {
                             if (appsList.get(getAdapterPosition()).isExtension()){
-                                Intent intent = new Intent(context,Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
+                                Intent intent = new Intent(context , Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
                                 context.startActivity(intent);
                             }else {
                                 Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());

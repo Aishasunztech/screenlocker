@@ -54,7 +54,6 @@ public class BlurWorker extends Worker {
 
                 ResolveInfo ri = allApps.get(j);
 
-                Log.d("skjfjifoijofew", "doWork: " + ri.activityInfo.packageName);
 
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
@@ -81,9 +80,10 @@ public class BlurWorker extends Worker {
 
             }
 
+            //Secure settings Extension
             Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
-            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
-            AppInfo wifiExtension = new AppInfo("Secure Settings", "com.secureSetting.SettingsMainActivity", wifi_icon);
+            byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+            AppInfo wifiExtension = new AppInfo("Secure Settings", "com.secureSetting.SettingsMainActivity", secure_settings_icon);
             wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
             wifiExtension.setExtension(true);
             wifiExtension.setGuest(true);

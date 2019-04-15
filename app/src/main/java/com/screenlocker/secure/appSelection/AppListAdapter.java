@@ -1,5 +1,6 @@
 package com.screenlocker.secure.appSelection;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +66,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
 
 
     @Override
-    public void onBindViewHolder(AppListAdapter.ViewHolder vh, int i) {
+    public void onBindViewHolder(@NonNull AppListAdapter.ViewHolder vh, int i) {
 
         //Here we use the information in the list we created to define the views
 

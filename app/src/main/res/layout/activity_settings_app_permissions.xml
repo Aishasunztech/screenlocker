@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    android:id="@+id/container_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".appSelection.AppSelectionActivity">
@@ -42,17 +41,17 @@
         app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <Switch
-        android:id="@+id/swichGuest"
+        android:id="@+id/switchGuest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:text="Guest "
-        app:layout_constraintBottom_toBottomOf="@+id/switch3"
-        app:layout_constraintEnd_toStartOf="@+id/switch3"
-        app:layout_constraintTop_toTopOf="@+id/switch3" />
+        app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
+        app:layout_constraintEnd_toStartOf="@+id/switchEncrypt"
+        app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
 
     <Switch
-        android:id="@+id/switch3"
+        android:id="@+id/switchEncrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -63,13 +62,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Switch
+        android:id="@+id/switchEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Enable "
-        app:layout_constraintBottom_toBottomOf="@+id/switch3"
-        app:layout_constraintStart_toEndOf="@+id/switch3"
-        app:layout_constraintTop_toTopOf="@+id/switch3" />
+        app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
+        app:layout_constraintStart_toEndOf="@+id/switchEncrypt"
+        app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
 
     <View
         android:id="@+id/divider1"
@@ -80,7 +80,7 @@
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch3"
+        app:layout_constraintTop_toBottomOf="@+id/switchEncrypt"
         tools:layout_editor_absoluteY="278dp" />
 
 
@@ -149,7 +149,6 @@
         app:layout_constraintTop_toBottomOf="@+id/ll" />
 
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/appSelectionList"
         android:layout_width="match_parent"
@@ -162,7 +161,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintVertical_bias="1.0"
-        tools:listitem="@layout/selectable_app_list_item"/>
+        tools:listitem="@layout/selectable_app_list_item" />
 
     <ProgressBar
         android:id="@+id/progress"
@@ -172,7 +171,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
