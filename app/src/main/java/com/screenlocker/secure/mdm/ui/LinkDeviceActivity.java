@@ -429,7 +429,7 @@ public class LinkDeviceActivity extends BaseActivity {
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .stopLinkingDevice(
-                        defaultImei,
+                        MAC,SerialNo,
                         PrefUtils.getStringPref(LinkDeviceActivity.this, AUTH_TOKEN)
 //                                +"INVALID_TOKEN"
                 )

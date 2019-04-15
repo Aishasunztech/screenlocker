@@ -103,9 +103,10 @@ public interface ApiOneCaller {
     );
 
     @Headers("Content-Type: application/json")
-    @DELETE("unlink/{imei_to_unlink}")
+    @DELETE("unlink/{macAddr}/{serialNo}")
     Call<LinkDeviceResponse> stopLinkingDevice(
-            @Path("imei_to_unlink") String IMEI,
+            @Path("macAddr") String MAC,
+            @Path("serialNo") String SerialNo,
             @Header("authorization") String token
     );
 

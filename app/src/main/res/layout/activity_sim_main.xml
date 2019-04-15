@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.secureSetting.SimMainActivity">
+
+
+    <android.support.design.widget.AppBarLayout
+    android:id="@+id/toolbar_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+
+    <!--android:theme="@style/AppTheme.AppBarOverlay"-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/simToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/sim_1_slot_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingLeft="@dimen/_60sdp"
+        android:paddingRight="@dimen/_20sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        >
+
+        <TextView
+            android:id="@+id/sim_1_slot_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM slot 1"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/sim_1_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM empty"
+            app:layout_constraintTop_toBottomOf="@id/sim_1_slot_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sim_1_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/sim_2_slot_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/sim_1_slot_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingLeft="@dimen/_60sdp"
+        android:paddingRight="@dimen/_20sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        >
+
+        <TextView
+            android:id="@+id/sim_2_slot_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM slot 2"
+            android:textSize="@dimen/_13ssp"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/sim_2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM empty"
+            app:layout_constraintTop_toBottomOf="@id/sim_2_slot_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sim_2_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <View
+        android:id="@+id/sim_slot_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        app:layout_constraintTop_toBottomOf="@id/sim_2_slot_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="?android:attr/listDivider"/>
+
+    <TextView
+        android:id="@+id/preffered_sim_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/_60sdp"
+        app:layout_constraintTop_toBottomOf="@id/sim_slot_divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:textColor="@color/colorAccent"
+        android:text="Preferred SIM for"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/mobile_data_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintTop_toBottomOf="@+id/preffered_sim_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <TextView
+            android:id="@+id/mobile_data_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mobile Data"
+            android:textSize="@dimen/_13ssp"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selection required"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+    android:id="@+id/calls_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/_60sdp"
+    android:layout_marginTop="@dimen/_20sdp"
+    app:layout_constraintTop_toBottomOf="@+id/mobile_data_container"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    >
+    <TextView
+        android:id="@+id/calls_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calls"
+        android:textSize="@dimen/_13ssp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ask every time"
+        />
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sms_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintTop_toBottomOf="@+id/calls_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <TextView
+            android:id="@+id/sms_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS messages"
+            android:textSize="@dimen/_13ssp"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ask every time"
+            />
+
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.screenlocker.secure.utils;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,9 +17,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
@@ -40,9 +39,12 @@ import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
 import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
 
 public class Utils {
@@ -149,9 +151,19 @@ public class Utils {
 
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
+        if (PrefUtils.getStringPref(context,DEVICE_LINKED_STATUS) == null){
+            keypadView.findViewById(R.id.device_status_labels).setVisibility(View.INVISIBLE);
+        }else {
+            TextView exDate = keypadView.findViewById(R.id.device_status);
+            exDate.setText(PrefUtils.getStringPref(context, VALUE_EXPIRED));
+            TextView deviceId = keypadView.findViewById(R.id.device_id);
+            deviceId.setText(PrefUtils.getStringPref(context, DEVICE_ID));
+            TextView decice_status = keypadView.findViewById(R.id.device_exp_date);
+            decice_status.setText(PrefUtils.getStringPref(context, DEVICE_LINKED_STATUS));
+        }
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
-        final String device_id = PrefUtils.getStringPref(context, AppConstants.DEVICE_ID);
+        final String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
 
         final String device_status = getDeviceStatus(context);
 

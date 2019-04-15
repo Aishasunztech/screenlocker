@@ -8,15 +8,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BlockStatusBar {
-    Context context;
+    private Context context;
 
     // To keep track of activity's window focus
-    boolean currentFocus;
+    private boolean currentFocus;
     // To keep track of activity's foreground/background status
-    boolean isPaused;
+    private boolean isPaused;
 
-    public static Handler collapseNotificationHandler;
-    Method collapseStatusBar = null;
+    private static Handler collapseNotificationHandler;
+    private Method collapseStatusBar = null;
 
 
     public BlockStatusBar(Context context, boolean isPaused) {

@@ -81,15 +81,15 @@ public class BlurWorker extends Worker {
 
             }
 
-//            Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
-//            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
-//            AppInfo wifiExtension = new AppInfo("wi-fi", "com.android.settings", wifi_icon);
-//            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
-//            wifiExtension.setExtension(true);
-//            wifiExtension.setGuest(true);
-//            wifiExtension.setEncrypted(true);
-//            wifiExtension.setEnable(true);
-//            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
+            Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
+            byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+            AppInfo wifiExtension = new AppInfo("Secure Settings", "com.secureSetting.SettingsMainActivity", wifi_icon);
+            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
+            wifiExtension.setExtension(true);
+            wifiExtension.setGuest(true);
+            wifiExtension.setEncrypted(true);
+            wifiExtension.setEnable(true);
+            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
 
 
             return Worker.Result.success();

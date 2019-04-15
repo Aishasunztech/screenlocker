@@ -1,13 +1,19 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
@@ -16,6 +22,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,10 +42,14 @@ import com.screenlocker.secure.utils.LifecycleReceiver;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -327,7 +338,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                 File f = getFileStreamPath(appName);
                 Uri apkUri = FileProvider.getUriForFile(InstallAppsActivity.this,
                         /*getApplicationContext().getPackageName() + ".provider"*/ BuildConfig.APPLICATION_ID, f);
-                Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath()));
+                Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath())+"  "+apkUri  );
 
                 Intent intent = ShareCompat.IntentBuilder.from(InstallAppsActivity.this)
                         .setStream(apkUri) // uri from FileProvider
@@ -337,6 +348,17 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                         .setDataAndType(apkUri, "application/vnd.android.package-archive")
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivity(intent);
+                /*try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if (installPackage(InstallAppsActivity.this,f.getAbsolutePath(),"com.nemo.vidmate")) {
+                            Toast.makeText(InstallAppsActivity.this,"Installed", Toast.LENGTH_LONG).show();
+                        }else
+                            Toast.makeText(InstallAppsActivity.this,"went wrong", Toast.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: "+e.getMessage());
+                }*/
+
 
                 isInstallDialogOpen = true;
             }
@@ -357,8 +379,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
             CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
             Timber.e("getAppLabel: package name is " + packageInfo.packageName);
-            String packageName = packageInfo.packageName;
-            return packageName;
+            return packageInfo.packageName;
+
         } else {
             return null;
         }
@@ -424,5 +446,40 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     public void onBackPressed() {
         super.onBackPressed();
         isBackPressed = true;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public  boolean installPackage(Context context, String abspath, String packageName)
+            throws IOException {
+        PackageInstaller packageInstaller = getPackageManager().getPackageInstaller();
+        PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+        params.setAppPackageName(packageName);
+        // set params
+        int sessionId = packageInstaller.createSession(params);
+        PackageInstaller.Session session = packageInstaller.openSession(sessionId);
+        InputStream in = new FileInputStream(abspath);
+        OutputStream out = session.openWrite("com.nemo.vidmate", 0, -1);
+        byte[] buffer = new byte[65536];
+        int c;
+        while ((c = in.read(buffer)) != -1) {
+            out.write(buffer, 0, c);
+        }
+        session.fsync(out);
+        in.close();
+        out.close();
+
+        session.commit(createIntentSender(context, sessionId));
+        return true;
+    }
+
+
+
+    private IntentSender createIntentSender(Context context, int sessionId) {
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                sessionId,
+                new Intent(Intent.ACTION_MAIN),
+                0);
+        return pendingIntent.getIntentSender();
     }
 }

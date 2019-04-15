@@ -92,6 +92,34 @@
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
     <string name="settings_controls">Secure Settings Permission</string>
-
-
+<!--SecureSeting strings-->
+    <string name="device_discovery_started">Looking for nearby devices&#8230;</string>
+    <string name="device_already_paired">This device is already paired!</string>
+    <string name="device_pairing_success">Device successfully paired!</string>
+    <string name="enabling_bluetooth">Turning on Bluetooth and looking for devices&#8230;</string>
+    <string name="device_discovery_stopped">Device discovery cancelled</string>
+    <string name="empty_list_message">No nearby devices found. Tap on the bottom-right button to start a new device discovery.</string>
+    <string name="bluetooth_not_available_message">It seems that this device doesn\'t have a Bluetooth controller available. \nBlue Pair works only with Bluetooth, so please try again on a different device. \nThe app will be now terminated.</string>
+    <string name="bluetooth_not_available_title">Bluetooth not available</string>
+    <string name="location_permission_message">Wifi Settings need this permission to search available wifi signals</string>
+    <string name="gps_not_found_title">GPS not found</string>
+    <string name="gps_not_found_message">Please turn on gps to further proceed</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="wifi_bar_title">Secure Wi-Fi</string>
+    <string name="removedNetwork">removedNetwork</string>
+    <string name="connectNetwork">connectedNetwok</string>
+    <string name="networkId">networkId</string>
+    <string name="savedBSSID">BSSID</string>
+    <string name="savedSSID">SSID</string>
+    <string name="savedSecurity">Security</string>
+    <string name="savedLinkedSpeed">linkSpeed</string>
+    <string name="savedFrequency">frequency</string>
+    <string name="savedSignalStrength">signalStrength</string>
+    <string name="DisplayTitle">Display</string>
+    <string name="adaptive_birghtness_instruction">Optimize Brightness level for available light</string>
+    <string name="fine_location_and_cross_location">Fine Location</string>
+    <string name="show_password">Show Password</string>
+    <string name="password">Password</string>
+    <string name="connected">Connected</string>
 </resources>

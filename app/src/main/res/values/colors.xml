@@ -13,8 +13,9 @@
     <color name="encrypted_default_background_color">#000000</color>
 
     <color name="green_dark">#0e7904</color>
-
-
+    <color name="seekbarColor">#EF9C00</color>
+    <color name="switchContainerColor">#eeeeee</color>
+    <color name="partialBlackColor">#898989</color>
 
 
 </resources>

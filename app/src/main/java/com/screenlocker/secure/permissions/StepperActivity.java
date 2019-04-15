@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import me.drozdzynski.library.steppers.SteppersItem;
 import me.drozdzynski.library.steppers.SteppersView;
 import me.drozdzynski.library.steppers.interfaces.OnSkipStepAction;
 
+import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_STEP;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
@@ -53,6 +55,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 
     public static Activity activity;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +92,14 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
             init();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 startActivity(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName())));
+            }
+            boolean isNonPlayAppAllowed = getPackageManager().canRequestPackageInstalls();
+
+
+            if (!isNonPlayAppAllowed) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                activity.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
             }
             permissionAdmin(StepperActivity.this, devicePolicyManager, compName);
             permissionModify(StepperActivity.this);
@@ -263,6 +274,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 //                    Toast.makeText(this, "Password is not changed! Try again", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
         }
     }
 

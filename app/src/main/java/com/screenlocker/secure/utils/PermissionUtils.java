@@ -20,6 +20,7 @@ import java.util.Set;
 
 import timber.log.Timber;
 
+
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
@@ -122,12 +123,12 @@ public class PermissionUtils {
     public static boolean isPermissionGranted(Activity activity) {
 
         if (Build.VERSION.SDK_INT >= 23) {
-            if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&  activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED  && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Timber.v("Permission is granted");
                 return true;
             } else {
                 Timber.v("Permission is revoked");
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_READ_PHONE_STATE);
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_READ_PHONE_STATE);
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
@@ -167,4 +168,5 @@ public class PermissionUtils {
             context.startActivity(intent);
         }
     }
+
 }

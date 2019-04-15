@@ -8,17 +8,102 @@
     android:background="@drawable/background_icon">
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="@dimen/_100sdp"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/device_status_labels"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/_80sdp"
         android:layout_marginStart="8dp"
-        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription" >
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            style="@style/TextColor"
+
+            android:text="Device ID :"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/device_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            style="@style/TextColor"
+
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView21"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="HKK657896096H" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            style="@style/TextColor"
+            android:layout_marginTop="8dp"
+            android:text="Status :"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+        <TextView
+            android:id="@+id/device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextColor"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/device_id"
+            tools:text="Active" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            style="@style/TextColor"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Expiry (Remaining Days) :"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView22"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/device_exp_date"
+            android:layout_width="wrap_content"
+            style="@style/TextColor"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView23"
+            app:layout_constraintTop_toBottomOf="@+id/device_status"
+            app:layout_constraintVertical_bias="0.07999998"
+            tools:text="180" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <com.screenlocker.secure.views.KeyboardView
         android:id="@+id/keypad"
@@ -28,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/device_status_labels" />
 
     <Button
         android:id="@+id/ivUnlock"

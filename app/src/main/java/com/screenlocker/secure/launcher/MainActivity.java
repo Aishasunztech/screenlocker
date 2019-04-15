@@ -90,7 +90,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private MainPresenter mainPresenter;
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
-
+private ShutDownReceiver mShutDownReceiver;
     private SettingsPresenter settingsPresenter;
 
 
@@ -200,7 +200,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
 
             IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
-            ShutDownReceiver mShutDownReceiver = new ShutDownReceiver();
+             mShutDownReceiver = new ShutDownReceiver();
             registerReceiver(mShutDownReceiver, filter);
 
         } catch (Exception ignored) {
@@ -521,6 +521,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
             whiteAppsList.clear();
             whiteAppsList.add(getPackageName());
+            whiteAppsList.add("com.android.phone");
+            whiteAppsList.add("com.android.packageinstaller");
+            whiteAppsList.add("com.omegamoon.sysadmin");
             if (isGuest) {
                 appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
                     @Override
@@ -565,9 +568,28 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
 
                     String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
+                    adapter.appsList.clear();
+                    adapter.notifyDataSetChanged();
+
+
+                    Thread t2 = new Thread() {
+                        @Override
+                        public void run() {
+                            mainPresenter.addDataToList(pm, current_user, adapter);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    };
+                    t2.start();
+
                     /*
                      * Queering app depending on user type.
                      */
+
 
                     if (current_user != null) {
                         switch (current_user) {
@@ -598,7 +620,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                         String current_package = getCurrentApp();
                         if (current_package != null)
                             if (!whiteAppsList.contains(current_package)) {
-
+                                Log.d("khiouugifdugj", "run: "+current_package);
                                 clearRecentApp();
                             }
 
@@ -622,6 +644,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onDestroy();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
+        unregisterReceiver(mShutDownReceiver);
         unregisterReceiver(screenOffReceiver);
 
     }

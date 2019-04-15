@@ -33,8 +33,4 @@ public class MainPresenter implements MainContract.MainMvpPresenter
     public void addDataToList(PackageManager pm, String message, RAdapter adapter) {
         mvpModel.addDataToList(pm,  message,  adapter);
     }
-
-//    public void setBackground(String message){
-//        mvpView.setBackground();
-//    }
 }

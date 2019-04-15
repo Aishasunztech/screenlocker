@@ -73,7 +73,7 @@ public class MainModel implements MainContract.MainMvpModel {
     public Intent getSendingIntent() {
         Intent intent = new Intent(AppConstants.BROADCAST_ACTION);
 
-        //i am sending the key from here to reciever
+        //i am sending the key from here to receiver
         //sending the broadcast to show the apps
         if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY) != null) {
             // from the guest part

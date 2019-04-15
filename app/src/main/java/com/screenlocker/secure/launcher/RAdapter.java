@@ -22,7 +22,6 @@ import com.screenlocker.secure.app.MyApplication;
 import java.util.List;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
-    private Context context;
     public List<AppInfo> appsList;
 
 
@@ -69,8 +68,13 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     super.onPostExecute(presentApp);
                     if (presentApp) {
                         try {
-                            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
-                            context.startActivity(launchIntent);
+                            if (appsList.get(getAdapterPosition()).isExtension()){
+                                Intent intent = new Intent(context,Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
+                                context.startActivity(intent);
+                            }else {
+                                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
+                                context.startActivity(launchIntent);
+                            }
 
                         } catch (Exception e) {
                             Toast.makeText(context, "App not found", Toast.LENGTH_SHORT).show();
@@ -131,7 +135,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
         View view = inflater.inflate(R.layout.row, parent, false);
 
-        context = parent.getContext();
+//        context = parent.getContext();
         return new ViewHolder(view);
     }
 }

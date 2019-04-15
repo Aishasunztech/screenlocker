@@ -23,10 +23,17 @@
         tools:ignore="ProtectedPermissions" /> <!-- wifi  permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.TETHER_PRIVILEGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -41,6 +48,8 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" /> <!-- permisions for overlay windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
@@ -259,9 +268,27 @@
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e"
             />
-
-
-
+        <!--secureApp setting-->
+        <activity android:name="com.secureSetting.SimMainActivity"
+            android:theme="@style/SecureAppTheme"></activity>
+        <activity android:name="com.secureSetting.bluetooth.BTReceivedFilesActivity"
+            android:theme="@style/SecureAppTheme"/>
+        <activity
+            android:name="com.secureSetting.bluetooth.BluetoothMainActivity"
+            android:theme="@style/SecureAppTheme"
+            android:parentActivityName="com.secureSetting.SettingsMainActivity" />
+        <activity
+            android:name="com.secureSetting.bluetooth.BluetoothActivity"
+            android:theme="@style/SecureAppTheme"
+            android:parentActivityName="com.secureSetting.bluetooth.BluetoothMainActivity" />
+        <activity
+            android:name="com.secureSetting.SettingsMainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.secureSetting.wifisettings.WifiMainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName="com.secureSetting.SettingsMainActivity" />
     </application>
 
 </manifest>
