@@ -98,32 +98,36 @@ public class LockScreenService extends Service {
         Timber.d("screen locker starting.");
 
 
-        String action = intent.getAction();
-        Timber.d("locker screen action :%s", action);
-        if (action == null) {
-            String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
-            if (main_password == null) {
-                PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-            }
-            startLockScreen();
-        } else {
-            switch (action) {
-                case "suspended":
-                    startLockScreen();
-                    break;
-                case "expired":
-                    startLockScreen();
-                    break;
-                case "reboot":
-                    startLockScreen();
-                    break;
-                case "unlinked":
+        try {
+            String action = intent.getAction();
+
+            Timber.d("locker screen action :%s", action);
+            if (action == null) {
+                String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
+                if (main_password == null) {
+                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+                }
+                startLockScreen();
+            } else {
+                switch (action) {
+                    case "suspended":
+                        startLockScreen();
+                        break;
+                    case "expired":
+                        startLockScreen();
+                        break;
+                    case "reboot":
+                        startLockScreen();
+                        break;
+                    case "unlinked":
 //                    stopLockScreen();
-                    break;
-                case "unlocked":
-                    removeLockScreenView();
-                    break;
+                        break;
+                    case "unlocked":
+                        removeLockScreenView();
+                        break;
+                }
             }
+        } catch (Exception ignored) {
         }
 
 

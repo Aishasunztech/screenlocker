@@ -1,8 +1,11 @@
 package com.secureSetting;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -31,6 +34,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -59,6 +63,15 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private ConstraintLayout settingsLayout;
 
     HashMap<String, LinearLayout> extensions;
+
+
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            finish();
+        }
+
+    };
 
 
     // showing allowed menu for each user type
@@ -130,7 +143,13 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         setSetIds();
         checkPermissions(this);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+
+
         permissionModify(SecureSettingsMain.this);
+
+
         if (!checkLocationStatus(this)) {
             turnOnLocation(this);
         }
@@ -286,6 +305,12 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 
     @Override
     protected void onResume() {
