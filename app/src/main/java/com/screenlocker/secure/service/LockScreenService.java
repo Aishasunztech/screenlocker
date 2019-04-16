@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -10,9 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -26,6 +22,7 @@ import com.screenlocker.secure.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
@@ -100,42 +97,36 @@ public class LockScreenService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
 
-        try {
-            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-        } catch (Exception ignored) {
+
+        String action = intent.getAction();
+        Timber.d("locker screen action :%s", action);
+        if (action == null) {
+            String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
+            if (main_password == null) {
+                PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+            }
+            startLockScreen();
+        } else {
+            switch (action) {
+                case "suspended":
+                    startLockScreen();
+                    break;
+                case "expired":
+                    startLockScreen();
+                    break;
+                case "reboot":
+                    startLockScreen();
+                    break;
+                case "unlinked":
+//                    stopLockScreen();
+                    break;
+                case "unlocked":
+                    removeLockScreenView();
+                    break;
+            }
         }
 
-        if (intent != null) {
-            String action = intent.getAction();
-            Timber.d("locker screen action :%s", action);
-            if (action == null) {
-                String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
-                if (main_password == null) {
-                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-                }
-                startLockScreen();
-            }
-            if (action != null) {
-                switch (action) {
-                    case "suspended":
-                        startLockScreen();
-                        break;
-                    case "expired":
-                        startLockScreen();
-                        break;
-                    case "reboot":
-                        startLockScreen();
-                        break;
-                    case "unlinked":
-                        stopLockScreen();
-                        break;
-                    case "unlocked":
-                        removeLockScreenView();
-                        break;
-                }
-            }
 
-        }
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
     }

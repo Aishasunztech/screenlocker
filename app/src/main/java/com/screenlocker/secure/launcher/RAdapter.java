@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,11 +70,12 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     super.onPostExecute(presentApp);
                     if (presentApp) {
                         try {
-                            if (appsList.get(getAdapterPosition()).isExtension()){
-                                Intent intent = new Intent(context , Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
+                            if (appsList.get(getAdapterPosition()).isExtension()) {
+                                Intent intent = new Intent(context, Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
                                 context.startActivity(intent);
-                            }else {
+                            } else {
                                 Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
+
                                 context.startActivity(launchIntent);
                             }
 

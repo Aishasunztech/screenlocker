@@ -62,7 +62,6 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, SettingContrac
 
     }
 
-
     SocketUtils(String device_id, Context context, String token) {
         this.device_id = device_id;
         this.context = context;
@@ -243,6 +242,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, SettingContrac
         Timber.d(" device sync status : %S", is_synced);
         boolean db_status = PrefUtils.getBooleanPref(context, DB_STATUS);
         Timber.d(" db status : %S", db_status);
+
 
         if (!is_synced && db_status) {
             Timber.d(" device is not synced ");

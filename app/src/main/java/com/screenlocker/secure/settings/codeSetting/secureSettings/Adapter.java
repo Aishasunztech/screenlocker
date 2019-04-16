@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
 
 import java.util.List;
@@ -21,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private final List<SubExtension> subExtensionList;
+
+    private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tv;
@@ -34,12 +38,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             guestSwitch = itemView.findViewById(R.id.guestSwitch);
             encryptedSwitch = itemView.findViewById(R.id.encryptedSwitch);
             enabledSwitch = itemView.findViewById(R.id.enabledSwitch);
-            enabledSwitch.setVisibility(View.GONE);
+
 
             guestSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     subExtensionList.get(getAdapterPosition()).setGuest(isChecked);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MyApplication.getAppDatabase(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                        }
+                    }).start();
                 }
             });
 
@@ -47,6 +57,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     subExtensionList.get(getAdapterPosition()).setEncrypted(isChecked);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                        }
+                    }).start();
                 }
             });
 
@@ -54,9 +70,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     }
 
-    public Adapter(List<SubExtension> subExtensions) {
+    public Adapter(List<SubExtension> subExtensions, Context context) {
 
         this.subExtensionList = subExtensions;
+        this.context = context;
     }
 
 
@@ -75,9 +92,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 .into(vh.img);
         vh.guestSwitch.setChecked(info.isGuest());
         vh.encryptedSwitch.setChecked(info.isEncrypted());
-
-        vh.enabledSwitch.setVisibility(View.VISIBLE);
-        vh.encryptedSwitch.setVisibility(View.VISIBLE);
+        vh.enabledSwitch.setVisibility(View.GONE);
 
     }
 

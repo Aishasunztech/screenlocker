@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 
+import com.screenlocker.secure.utils.PrefUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -23,6 +25,7 @@ public class BlockStatusBar {
         this.context = context;
         this.isPaused = isPaused;
         collapseNow();
+
     }
 
     public void collapseNow() {

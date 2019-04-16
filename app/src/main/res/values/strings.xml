@@ -83,4 +83,11 @@
     <string name="sim_id">Sim Id</string>
     <string name="settings_controls">Secure Settings Permission</string>
 <!--SecureSeting strings-->
+
+    <string name="gps_not_found_title">GPS not found</string>
+    <string name="gps_not_found_message">Please turn on gps to further proceed</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fine_location_and_cross_location">Fine Location</string>
+
 </resources>

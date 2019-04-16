@@ -1,1 +1,1 @@
-include ':app', ':steppers', ':secureSetting';
+include ':app', ':steppers';

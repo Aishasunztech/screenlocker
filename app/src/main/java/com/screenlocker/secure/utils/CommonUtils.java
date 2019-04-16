@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.settings.SettingsActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
@@ -29,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
+import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class CommonUtils {
     public static boolean isNetworkAvailable(Context context) {
@@ -142,7 +144,6 @@ public class CommonUtils {
 
     public static void hideKeyboard(AppCompatActivity activity) {
 
-
         try {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
             //Find the currently focused view, so we can grab the correct window token from it.
@@ -164,30 +165,121 @@ public class CommonUtils {
     public static void setSecureSettingsMenu(Context context) {
 
 
-        String uniqueName = "com.secureSetting.SettingsMainActivity";
-
         List<SubExtension> subExtensions = new ArrayList<>();
 
         // wifi menu
-        Drawable wifi_drawable = context.getResources().getDrawable(R.drawable.wifi_icons);
+        Drawable wifi_drawable = context.getResources().getDrawable(R.drawable.ic_wifi);
         byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
         SubExtension wifi = new SubExtension();
         wifi.setLabel("wi-fi");
         wifi.setIcon(wifi_icon);
-        wifi.setUniqueName(uniqueName);
+        wifi.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         wifi.setGuest(false);
         wifi.setEncrypted(false);
+        wifi.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "wi-fi");
         subExtensions.add(wifi);
 
+        // bluetooth menu
+        Drawable bluetooth_drawable = context.getResources().getDrawable(R.drawable.ic_bluetooth);
+        byte[] bluetooth_icon = CommonUtils.convertDrawableToByteArray(bluetooth_drawable);
+        SubExtension bluetooth = new SubExtension();
+        bluetooth.setLabel("Bluetooth");
+        bluetooth.setIcon(bluetooth_icon);
+        bluetooth.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        bluetooth.setGuest(false);
+        bluetooth.setEncrypted(false);
+        bluetooth.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Bluetooth");
+        subExtensions.add(bluetooth);
+
+        // SIM CARDS
+        Drawable sim_card_drawable = context.getResources().getDrawable(R.drawable.ic_sim_card);
+        byte[] sim_card_icon = CommonUtils.convertDrawableToByteArray(sim_card_drawable);
+        SubExtension sim_card = new SubExtension();
+        sim_card.setLabel("SIM Cards");
+        sim_card.setIcon(sim_card_icon);
+        sim_card.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        sim_card.setGuest(false);
+        sim_card.setEncrypted(false);
+        sim_card.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards");
+        subExtensions.add(sim_card);
+
+        // HOT SPOT
+        Drawable hotspot_drawable = context.getResources().getDrawable(R.drawable.ic_wifi_hotspot);
+        byte[] hotspot_icon = CommonUtils.convertDrawableToByteArray(hotspot_drawable);
+        SubExtension hotspot = new SubExtension();
+        hotspot.setLabel("Hotspot");
+        hotspot.setIcon(hotspot_icon);
+        hotspot.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        hotspot.setGuest(false);
+        hotspot.setEncrypted(false);
+        hotspot.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Hotspot");
+        subExtensions.add(hotspot);
+
+        // SCREEN LOCK
+        Drawable screenLock_drawable = context.getResources().getDrawable(R.drawable.ic_screen_lock);
+        byte[] screenLock_icon = CommonUtils.convertDrawableToByteArray(screenLock_drawable);
+        SubExtension screenLock = new SubExtension();
+        screenLock.setLabel("Screen Lock");
+        screenLock.setIcon(screenLock_icon);
+        screenLock.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        screenLock.setGuest(false);
+        screenLock.setEncrypted(false);
+        screenLock.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Screen Lock");
+        subExtensions.add(screenLock);
+
+        // HOT SPOT
+        Drawable brightness_drawable = context.getResources().getDrawable(R.drawable.ic_settings_brightness);
+        byte[] brightness_icon = CommonUtils.convertDrawableToByteArray(brightness_drawable);
+        SubExtension brightness = new SubExtension();
+        brightness.setLabel("Brightness");
+        brightness.setIcon(brightness_icon);
+        brightness.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        brightness.setGuest(false);
+        brightness.setEncrypted(false);
+        brightness.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Brightness");
+        subExtensions.add(brightness);
+
+        // SLEEP
+        Drawable sleep_drawable = context.getResources().getDrawable(R.drawable.ic_sleep);
+        byte[] sleep_icon = CommonUtils.convertDrawableToByteArray(sleep_drawable);
+        SubExtension sleep = new SubExtension();
+        sleep.setLabel("Sleep");
+        sleep.setIcon(sleep_icon);
+        sleep.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        sleep.setGuest(false);
+        sleep.setEncrypted(false);
+        sleep.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sleep");
+        subExtensions.add(sleep);
+
+
         for (SubExtension subExtension : subExtensions) {
-            Log.d("igjioejigtete", "setSecureSettingsMenu: "+subExtension.getUniqueName());
             MyApplication.getAppDatabase(context).getDao().insertSubExtensions(subExtension);
         }
 
-        List<SubExtension> subExtension = MyApplication.getAppDatabase(context).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
-
-        Log.d("igjioejigtete", "setSecureSettingsMenu: " + subExtension.size());
     }
 
+    // calculate expiry date
 
+    public static String getRemainingDays(Context context) {
+
+        String daysLeft = null;
+
+        String value_expired = PrefUtils.getStringPref(context, VALUE_EXPIRED);
+
+
+        if (value_expired != null) {
+            long current_time = System.currentTimeMillis();
+            long expired_time = Long.parseLong(value_expired);
+            long remaining_miliseconds = expired_time - current_time;
+            int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
+
+            if (remaining_days >= 0) {
+                daysLeft = Integer.toString(remaining_days);
+            } else {
+                daysLeft = "expired";
+            }
+        }
+
+        return daysLeft;
+    }
 }

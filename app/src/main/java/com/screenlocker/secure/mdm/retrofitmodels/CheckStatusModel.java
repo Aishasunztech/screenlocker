@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class CheckStatusModel {
 
-    @SerializedName("serial_number")
+    @SerializedName("serialNo")
     @Expose
     private String serial_number;
-    @SerializedName("mac")
+    @SerializedName("macAddr")
     @Expose
     private String mac;
 

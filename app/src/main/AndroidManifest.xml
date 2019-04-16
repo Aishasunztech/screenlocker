@@ -267,6 +267,9 @@
         <activity
             android:name=".mdm.ui.LinkDeviceActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.secureSetting.SecureSettingsMain"
+            android:screenOrientation="portrait" />
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />
 

@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -90,9 +91,9 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     }
 
     private void setRecyclerView(List<SubExtension> subExtensions) {
-        containerLayout = findViewById(R.id.container_layout);
+
         rvSubExtensions = findViewById(R.id.extensionList);
-        adapter = new Adapter(subExtensions);
+        adapter = new Adapter(subExtensions, this);
         rvSubExtensions.setAdapter(adapter);
     }
 
@@ -112,7 +113,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                 extensionsList = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
                 // add the data to the list to show apps
-                Log.d("igjioejigtete", "doInBackground: " + extensionsList.size());
 
                 Timber.e("doInBackground: data is added to the database");
                 return null;
@@ -168,18 +168,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-        }
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (!isBackPressed) {
@@ -201,6 +189,64 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         super.onResume();
         isBackPressed = false;
 
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.extension_select_menu, menu);
+//
+//
+////        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_GUEST_ALL)) {
+////            // all hide switch is turned on
+////            menu.findItem(R.id.action_guest_all).setChecked(true);
+////        } else {
+////            // all hide switch is turned off
+////            menu.findItem(R.id.action_guest_all).setChecked(false);
+////        }
+////
+////        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL)) {
+////            // all hide switch is turned on
+////            menu.findItem(R.id.action_encryption_all).setChecked(true);
+////        } else {
+////            // all hide switch is turned off
+////            menu.findItem(R.id.action_encryption_all).setChecked(false);
+////        }
+//
+//
+//        return true;
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+//            case R.id.action_guest_all:
+//
+//                if (item.isChecked()) {
+//                    for (SubExtension subExtension : extensionsList) {
+//                        if(subExtension.isGuest())
+//                        subExtension.setGuest(false);
+//                    }
+//                    item.setChecked(false);
+//                } else {
+//                    for (SubExtension subExtension : extensionsList) {
+//                        if(!subExtension.isGuest())
+//                        subExtension.setGuest(true);
+//                    }
+//                    item.setChecked(true);
+//                }
+//
+//                adapter.notifyDataSetChanged();
+//                break;
+//
+//            case R.id.action_encryption_all:
+//
+//                adapter.notifyDataSetChanged();
+//                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -239,9 +285,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
             @Override
             public void run() {
                 MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().updateParticularApp(guest, encrypted, enable, AppConstants.SECURE_SETTINGS_UNIQUE);
-                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_GUEST, guest);
-                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_ENCRYPTED, encrypted);
-                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_ENABLE, enable);
             }
         }).start();
     }

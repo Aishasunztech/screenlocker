@@ -3,13 +3,17 @@ package com.screenlocker.secure.mdm;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -206,7 +210,6 @@ public class MainActivity extends BaseActivity {
         IMEI = DeviceIdUtils.getIMEI(MainActivity.this);
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
-        Log.d("edfhuifuhhui", "macAddress" + DeviceIdUtils.getMacAddress());
 
         showLoading();
         ((MyApplication) getApplicationContext())
@@ -218,6 +221,8 @@ public class MainActivity extends BaseActivity {
 
                         if (response.isSuccessful()) {
                             // if status is true that means dealer is valid so login is allowed
+
+                            Timber.d("status %s", response.body().getStatus());
                             if (response.body().getStatus()) {
                                 autologin();
 

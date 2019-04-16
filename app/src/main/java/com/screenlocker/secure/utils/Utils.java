@@ -10,8 +10,10 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,10 +43,12 @@ import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusRec
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
 
 public class Utils {
@@ -152,15 +156,15 @@ public class Utils {
 
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
-        if (PrefUtils.getStringPref(context,DEVICE_LINKED_STATUS) == null){
+        if (PrefUtils.getStringPref(context, DEVICE_STATUS) == null) {
             keypadView.findViewById(R.id.device_status_labels).setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             TextView exDate = keypadView.findViewById(R.id.device_status);
-            exDate.setText(PrefUtils.getStringPref(context, VALUE_EXPIRED));
+            exDate.setText(getRemainingDays(context));
             TextView deviceId = keypadView.findViewById(R.id.device_id);
             deviceId.setText(PrefUtils.getStringPref(context, DEVICE_ID));
             TextView decice_status = keypadView.findViewById(R.id.device_exp_date);
-            decice_status.setText(PrefUtils.getStringPref(context, DEVICE_LINKED_STATUS));
+            decice_status.setText(PrefUtils.getStringPref(context, DEVICE_STATUS));
         }
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
@@ -255,7 +259,7 @@ public class Utils {
 
 
         unLockButton.setOnClickListener(v -> {
-            Timber.d("on unlock: click ");
+
             String enteredPin = keyboardView.getInputText().trim();
             String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
             Timber.d("enteredPin:%s", enteredPin);

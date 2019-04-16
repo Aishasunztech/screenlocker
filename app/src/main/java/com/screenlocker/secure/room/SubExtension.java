@@ -1,20 +1,21 @@
 package com.screenlocker.secure.room;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.screenlocker.secure.launcher.AppInfo;
 
+import java.util.Objects;
+
 @Entity
 public class SubExtension implements Parcelable {
-
-    @PrimaryKey(autoGenerate = true)
-    private int subExtensionId;
 
     private String label;
 
@@ -23,27 +24,17 @@ public class SubExtension implements Parcelable {
             parentColumns = "uniqueName",
             childColumns = "uniqueName"
     )
+
     private String uniqueName;
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private byte[] icon;
-    private boolean guest;
-    private boolean encrypted;
 
-    public SubExtension(String label, String uniqueName, byte[] icon, boolean guest, boolean encrypted) {
-        this.label = label;
-        this.uniqueName = uniqueName;
-        this.icon = icon;
-        this.guest = guest;
-        this.encrypted = encrypted;
-    }
-
-    public SubExtension() {
-    }
+    @NonNull
+    @PrimaryKey
+    private String uniqueExtension;
 
     protected SubExtension(Parcel in) {
-        subExtensionId = in.readInt();
         label = in.readString();
         uniqueName = in.readString();
+        uniqueExtension = Objects.requireNonNull(in.readString());
         icon = in.createByteArray();
         guest = in.readByte() != 0;
         encrypted = in.readByte() != 0;
@@ -61,9 +52,31 @@ public class SubExtension implements Parcelable {
         }
     };
 
-    public void setSubExtensionId(int subExtensionId) {
-        this.subExtensionId = subExtensionId;
+    @NonNull
+    public String getUniqueExtension() {
+        return uniqueExtension;
     }
+
+    public void setUniqueExtension(@NonNull String uniqueExtension) {
+        this.uniqueExtension = uniqueExtension;
+    }
+
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] icon;
+    private boolean guest;
+    private boolean encrypted;
+
+    public SubExtension(String label, @NonNull String uniqueName, byte[] icon, boolean guest, boolean encrypted) {
+        this.label = label;
+        this.uniqueName = uniqueName;
+        this.icon = icon;
+        this.guest = guest;
+        this.encrypted = encrypted;
+    }
+
+    public SubExtension() {
+    }
+
 
     public void setLabel(String label) {
         this.label = label;
@@ -85,9 +98,6 @@ public class SubExtension implements Parcelable {
         this.encrypted = encrypted;
     }
 
-    public int getSubExtensionId() {
-        return subExtensionId;
-    }
 
     public String getLabel() {
         return label;
@@ -109,6 +119,7 @@ public class SubExtension implements Parcelable {
         return encrypted;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -116,9 +127,9 @@ public class SubExtension implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(subExtensionId);
         dest.writeString(label);
         dest.writeString(uniqueName);
+        dest.writeString(uniqueExtension);
         dest.writeByteArray(icon);
         dest.writeByte((byte) (guest ? 1 : 0));
         dest.writeByte((byte) (encrypted ? 1 : 0));

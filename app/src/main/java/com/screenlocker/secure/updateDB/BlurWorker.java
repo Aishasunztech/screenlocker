@@ -9,10 +9,9 @@ import android.graphics.drawable.Drawable;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PrefUtils;
-import com.securesettings.SecureSettingsMain;
 
 import java.util.List;
 
@@ -79,19 +78,28 @@ public class BlurWorker extends Worker {
 
             }
 
-            //Secure settings Extension
-            Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
-            byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
-            AppInfo wifiExtension = new AppInfo("Secure Settings", AppConstants.SECURE_SETTINGS_PACKAGE, secure_settings_icon);
-            wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
-            wifiExtension.setExtension(true);
-            wifiExtension.setGuest(PrefUtils.getBooleanPref(applicationContext, AppConstants.SS_GUEST));
-            wifiExtension.setEncrypted(PrefUtils.getBooleanPref(applicationContext, AppConstants.SS_ENCRYPTED));
-            wifiExtension.setEnable(PrefUtils.getBooleanPref(applicationContext, AppConstants.SS_ENABLE));
-            MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
+            AppInfo appInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_SETTINGS_UNIQUE);
 
-            // Secure settings Menu
-            setSecureSettingsMenu(applicationContext);
+            if (appInfo == null) {
+                //Secure settings Extension
+                Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.settings_icon);
+                byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+                AppInfo wifiExtension = new AppInfo("Secure Settings", AppConstants.SECURE_SETTINGS_PACKAGE, secure_settings_icon);
+                wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
+                wifiExtension.setExtension(true);
+                wifiExtension.setGuest(true);
+                wifiExtension.setEncrypted(true);
+                wifiExtension.setEnable(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
+            }
+
+
+            List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+
+            if (dbExtensions == null || dbExtensions.size() == 0) {
+                //Secure settings Menu
+                setSecureSettingsMenu(applicationContext);
+            }
 
             return Worker.Result.success();
         } catch (Throwable throwable) {

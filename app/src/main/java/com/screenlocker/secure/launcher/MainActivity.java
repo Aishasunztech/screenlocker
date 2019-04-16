@@ -168,11 +168,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 
-        try {
-            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-        } catch (Exception ignored) {
-
-        }
 
         //Remove title bar
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -261,15 +256,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     public void clearRecentApp() {
 
-
         try {
-            ActivityManager activityManager = (ActivityManager) MyApplication.getAppContext()
-                    .getSystemService(Context.ACTIVITY_SERVICE);
 
+
+            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             if (activityManager != null) {
                 activityManager.moveTaskToFront(getTaskId(), 0);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
+
 
         }
     }
@@ -278,9 +273,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         @Override
         public void onReceive(final Context context, Intent intent) {
             sheduleRecentAppsKill();
+            clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
-
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();
 
@@ -298,8 +293,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 }
             };
             t2.start();
-
-
 //            if (message.equals(KEY_MAIN_PASSWORD)) {
 //                userBaseQuery(false);
 //            } else if (message.equals(KEY_GUEST_PASSWORD)) {
@@ -473,6 +466,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
     public String getCurrentApp() {
+
         String dum = null;
         try {
             if (Build.VERSION.SDK_INT >= 21) {
@@ -615,7 +609,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
     private void sheduleRecentAppsKill() {
-
 
 
         appExecutor.getExecutorForSedulingRecentAppKill().execute(new Runnable() {

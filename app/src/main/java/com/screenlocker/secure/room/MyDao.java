@@ -54,6 +54,18 @@ public interface MyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSubExtensions(SubExtension subExtensionModal);
 
+    @Query("UPDATE SubExtension set guest=:guest WHERE uniqueExtension=:uniqueExtension")
+    void setGuest(boolean guest, String uniqueExtension);
+
+    @Query("UPDATE SubExtension set encrypted=:encrypted WHERE uniqueExtension=:uniqueExtension")
+    void setEncrypted(boolean encrypted, String uniqueExtension);
+
+
+    @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
+    List<SubExtension> getGuestExtensions(String uniqueName, boolean status);
+
+    @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
+    List<SubExtension> getEncryptedExtensions(String uniqueName, boolean status);
 
 
 }

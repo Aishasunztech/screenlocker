@@ -75,6 +75,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDevcie;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
@@ -89,6 +90,7 @@ import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STAT
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
@@ -141,7 +143,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
 //        ApplicationInfo ai = null;
 //        try {
 //            ai = getPackageManager().getApplicationInfo("com.android.launcher3", 0);
@@ -158,11 +159,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        } catch (Exception e) {
 //            Log.d("kjdjjsnv", "onCreate: " + e.getMessage());
 //        }
-
-        try {
-            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-        } catch (Exception ignored) {
-        }
 
 
         boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
@@ -457,19 +453,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 }).show();
             }
         }
-        if (requestCode == REQUEST_READ_PHONE_STATE) {
-            Log.d("permissiond", "REQUEST_READ_PHONE_STATE");
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
 
-            } else {
-                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == CODE_WRITE_SETTINGS_PERMISSION) {
-            Log.d("permissiond", "CODE_WRITE_SETTINGS_PERMISSION");
-        }
 
     }
 
@@ -495,11 +479,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (!PermissionUtils.canControlNotification(SettingsActivity.this)) {
                 PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
             }
-            if (isPermissionGranted(SettingsActivity.this)) {
-                Toast.makeText(this, "granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "not granted", Toast.LENGTH_SHORT).show();
-            }
+
             if (tvlinkDevice != null) {
                 tvlinkDevice.setVisibility(View.GONE);
             }
@@ -905,19 +885,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Expiry Date
         TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
         TextView textView16 = aboutDialog.findViewById(R.id.textView16);
-        String value_expired = PrefUtils.getStringPref(SettingsActivity.this, VALUE_EXPIRED);
-        if (value_expired != null) {
-            long current_time = System.currentTimeMillis();
-            long expired_time = Long.parseLong(value_expired);
-            long remaining_miliseconds = expired_time - current_time;
-            int remaining_days = (int) (remaining_miliseconds / (60 * 60 * 24 * 1000));
+
+        String remaining_days = getRemainingDays(this);
+
+        if (remaining_days != null) {
+
             textView16.setVisibility(View.VISIBLE);
             tvExpiresIn.setVisibility(View.VISIBLE);
-            if (remaining_days >= 0) {
-                tvExpiresIn.setText(Integer.toString(remaining_days));
-            } else {
-                tvExpiresIn.setText("expired");
-            }
+            tvExpiresIn.setText(remaining_days);
+
 //            else {
 //                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
 //            }

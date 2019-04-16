@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsModel;
@@ -42,14 +44,17 @@ import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
 
 public class utils {
@@ -329,16 +334,35 @@ public class utils {
 
     public static void unlinkDevcie(Context context) {
 
+        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
-        PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
-        PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-        PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, null);
-        PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
+
+
+        String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
+        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
+
+        PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+
+
+        if (guest_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
+        }
+        if (main_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+
+        }
+
+
+//        PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, null);
+//        PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
+
         PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
         PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
         PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
+
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
 
 
         try {
@@ -382,12 +406,12 @@ public class utils {
 
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-       Intent service = new Intent(context , LockScreenService.class);
-       service.setAction("unlocked");
-       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
-           context.startForegroundService(service);
-       }else
-           context.startService(service);
+        Intent service = new Intent(context, LockScreenService.class);
+        service.setAction("unlocked");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            context.startForegroundService(service);
+        } else
+            context.startService(service);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
@@ -399,11 +423,11 @@ public class utils {
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
 
 
-        Intent service = new Intent(context , LockScreenService.class);
+        Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
-        }else
+        } else
             context.startService(service);
 
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);

@@ -107,7 +107,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                         utils.sendBroadcast(context, "expired");
                                         Timber.d("<<< device expired >>>");
                                         break;
-                                    case "unliked":
+                                    case "unlinked":
                                         unlinkDevcie(context);
                                         break;
                                     case "Device not linked":
