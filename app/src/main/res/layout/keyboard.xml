@@ -47,10 +47,10 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_margin="8dp"
-        app:srcCompat="@drawable/img"
         app:layout_constraintBottom_toBottomOf="@+id/password_field"
         app:layout_constraintEnd_toEndOf="@+id/password_field"
-        app:layout_constraintTop_toTopOf="@+id/password_field" />
+        app:layout_constraintTop_toTopOf="@+id/password_field"
+        android:src="@drawable/img" />
 
 
     <TableLayout
@@ -69,6 +69,7 @@
 
             <TextView
                 android:id="@+id/t9_key_1"
+
                 style="@style/keyboard_number_button"
                 android:layout_height="65dp"
                 android:text="@string/number_one" />

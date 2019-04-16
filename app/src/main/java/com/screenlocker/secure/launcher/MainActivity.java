@@ -15,6 +15,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -22,6 +23,7 @@ import androidx.core.graphics.drawable.IconCompat;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -89,7 +91,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private MainPresenter mainPresenter;
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
-private ShutDownReceiver mShutDownReceiver;
+    private ShutDownReceiver mShutDownReceiver;
     private SettingsPresenter settingsPresenter;
 
 
@@ -100,7 +102,12 @@ private ShutDownReceiver mShutDownReceiver;
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            Intent intent = new Intent(this, StepperActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -199,7 +206,7 @@ private ShutDownReceiver mShutDownReceiver;
         try {
 
             IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
-             mShutDownReceiver = new ShutDownReceiver();
+            mShutDownReceiver = new ShutDownReceiver();
             registerReceiver(mShutDownReceiver, filter);
 
         } catch (Exception ignored) {
@@ -270,7 +277,7 @@ private ShutDownReceiver mShutDownReceiver;
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-
+            sheduleRecentAppsKill();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
 
@@ -293,11 +300,11 @@ private ShutDownReceiver mShutDownReceiver;
             t2.start();
 
 
-            if (message.equals(KEY_MAIN_PASSWORD)) {
-                userBaseQuery(false);
-            } else if (message.equals(KEY_GUEST_PASSWORD)) {
-                userBaseQuery(true);
-            }
+//            if (message.equals(KEY_MAIN_PASSWORD)) {
+//                userBaseQuery(false);
+//            } else if (message.equals(KEY_GUEST_PASSWORD)) {
+//                userBaseQuery(true);
+//            }
 
         }
 
@@ -511,53 +518,53 @@ private ShutDownReceiver mShutDownReceiver;
      *
      * @param isGuest identify if current user is guest or not.
      */
-    private synchronized void userBaseQuery(boolean isGuest) {
-        try {
-            /*
-              if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
-             */
-            if (!appExecutor.getExecutorForSedulingRecentAppKill().isShutdown())
-                appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
-            whiteAppsList.clear();
-            whiteAppsList.add(getPackageName());
-            whiteAppsList.add("com.android.phone");
-            whiteAppsList.add("com.android.packageinstaller");
-            whiteAppsList.add("com.omegamoon.sysadmin");
-            if (isGuest) {
-                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getGuestApps(true, true);
-                        for (AppInfo info : appInfos) {
-                            whiteAppsList.add(info.getPackageName());
-                        }
-                        //Prepare new Executor as previous was shutdown
-                        appExecutor.readyNewExecutor();
-                        sheduleRecentAppsKill();
-
-                    }
-                });
-
-
-            } else {
-                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getEncryptedApps(true, true);
-                        for (AppInfo info : appInfos) {
-                            whiteAppsList.add(info.getPackageName());
-                        }
-                        appExecutor.readyNewExecutor();
-                        sheduleRecentAppsKill();
-
-                    }
-                });
-
-            }
-        } catch (Exception ignored) {
-
-        }
-    }
+//    private synchronized void userBaseQuery(boolean isGuest) {
+//        try {
+//            /*
+//              if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
+//             */
+//            if (!appExecutor.getExecutorForSedulingRecentAppKill().isShutdown())
+//                appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
+//            whiteAppsList.clear();
+//            whiteAppsList.add(getPackageName());
+//            whiteAppsList.add("com.android.phone");
+//            whiteAppsList.add("com.android.packageinstaller");
+//            whiteAppsList.add("com.omegamoon.sysadmin");
+//            if (isGuest) {
+//                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getGuestApps(true, true);
+//                        for (AppInfo info : appInfos) {
+//                            whiteAppsList.add(info.getPackageName());
+//                        }
+//                        //Prepare new Executor as previous was shutdown
+//                        appExecutor.readyNewExecutor();
+//                        sheduleRecentAppsKill();
+//
+//                    }
+//                });
+//
+//
+//            } else {
+//                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getEncryptedApps(true, true);
+//                        for (AppInfo info : appInfos) {
+//                            whiteAppsList.add(info.getPackageName());
+//                        }
+//                        appExecutor.readyNewExecutor();
+//                        sheduleRecentAppsKill();
+//
+//                    }
+//                });
+//
+//            }
+//        } catch (Exception ignored) {
+//
+//        }
+//    }
 
 
     private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
@@ -590,16 +597,16 @@ private ShutDownReceiver mShutDownReceiver;
                      */
 
 
-                    if (current_user != null) {
-                        switch (current_user) {
-                            case KEY_GUEST_PASSWORD:
-                                userBaseQuery(true);
-                                break;
-                            case KEY_MAIN_PASSWORD:
-                                userBaseQuery(false);
-                                break;
-                        }
-                    }
+//                    if (current_user != null) {
+//                        switch (current_user) {
+//                            case KEY_GUEST_PASSWORD:
+//                                userBaseQuery(true);
+//                                break;
+//                            case KEY_MAIN_PASSWORD:
+//                                userBaseQuery(false);
+//                                break;
+//                        }
+//                    }
 
 
                 }
@@ -609,21 +616,14 @@ private ShutDownReceiver mShutDownReceiver;
 
     private void sheduleRecentAppsKill() {
 
-        Timber.d("sheduleRecentAppsKill: %s", whiteAppsList.toString());
+
 
         appExecutor.getExecutorForSedulingRecentAppKill().execute(new Runnable() {
             @Override
             public void run() {
-                while (!Thread.interrupted()) {
-                    if (powerManager.isScreenOn()) {
-                        String current_package = getCurrentApp();
-                        if (current_package != null)
-                            if (!whiteAppsList.contains(current_package)) {
-                                Log.d("khiouugifdugj", "run: "+current_package);
-                                clearRecentApp();
-                            }
-
-                    } else {
+                while (!Thread.currentThread().isInterrupted()) {
+                    if (!powerManager.isInteractive()) {
+                        Timber.d("x: Screen is not intractive");
                         appExecutor.getMainThread().execute(new Runnable() {
                             @Override
                             public void run() {
@@ -631,6 +631,15 @@ private ShutDownReceiver mShutDownReceiver;
                             }
                         });
                         return;
+
+//
+//                        String current_package = getCurrentApp();
+//                        if (current_package != null)
+//                            if (!whiteAppsList.contains(current_package)) {
+//                                Log.d("khiouugifdugj", "run: " + current_package);
+//                                clearRecentApp();
+//                            }
+
                     }
                 }
             }
@@ -642,9 +651,13 @@ private ShutDownReceiver mShutDownReceiver;
     protected void onDestroy() {
         super.onDestroy();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
-        unregisterReceiver(mShutDownReceiver);
-        unregisterReceiver(screenOffReceiver);
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
+            unregisterReceiver(mShutDownReceiver);
+            unregisterReceiver(screenOffReceiver);
+        } catch (Exception ignored) {
+            //
+        }
 
     }
 }

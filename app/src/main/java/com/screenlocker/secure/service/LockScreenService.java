@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -36,18 +38,18 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  * (must enable service by enabling service from settings screens{@link SettingsActivity#onClick(View)})
  */
 public class LockScreenService extends Service {
-    @SuppressLint("StaticFieldLeak")
-    private static RelativeLayout mLayout = null;
+    private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
     private BroadcastReceiver notificationRefreshedListener;
-    private static List<NotificationItem> notificationItems;
+    private List<NotificationItem> notificationItems;
+    private WindowManager windowManager;
 
     @Override
     public void onCreate() {
 
         notificationItems = new ArrayList<>();
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {
             @Override
@@ -78,7 +80,6 @@ public class LockScreenService extends Service {
         startForeground(R.string.app_name, notification);
 
     }
-
 
 
     @Override
@@ -128,6 +129,9 @@ public class LockScreenService extends Service {
                     case "unlinked":
                         stopLockScreen();
                         break;
+                    case "unlocked":
+                        removeLockScreenView();
+                        break;
                 }
             }
 
@@ -139,8 +143,8 @@ public class LockScreenService extends Service {
     private void stopLockScreen() {
 
         try {
-            WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            removeLockScreenView(windowManager);
+
+            removeLockScreenView();
             if (mLayout != null) {
                 mLayout = null;
             }
@@ -157,8 +161,8 @@ public class LockScreenService extends Service {
 
         try {
             final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            removeLockScreenView(windowManager);
+
+            removeLockScreenView();
             if (mLayout == null) {
                 mLayout = new RelativeLayout(LockScreenService.this);
             }
@@ -184,16 +188,15 @@ public class LockScreenService extends Service {
         return null;
     }
 
-    public static void removeLockScreenView(WindowManager manager) {
+    public void removeLockScreenView() {
         setTimeRemaining(getAppContext());
 
         try {
-            manager.removeView(mLayout);
+            windowManager.removeView(mLayout);
             mLayout = null;
         } catch (Exception ignored) {
         }
     }
-
 
 
 }

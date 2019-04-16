@@ -380,14 +380,14 @@ public class utils {
 
     public static void loginAsGuest(Context context) {
 
-        WindowManager windowManager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
-        Timber.d("login as guest windowmanager %s", windowManager);
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        if (windowManager != null) {
-            LockScreenService.removeLockScreenView(windowManager);
-            // handler.removeCallbacks(runnable);
-        }
+       Intent service = new Intent(context , LockScreenService.class);
+       service.setAction("unlocked");
+       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+           context.startForegroundService(service);
+       }else
+           context.startService(service);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
@@ -399,11 +399,13 @@ public class utils {
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
 
 
-        WindowManager windowManager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
-        if (windowManager != null) {
-            LockScreenService.removeLockScreenView(windowManager);
-            // handler.removeCallbacks(runnable);
-        }
+        Intent service = new Intent(context , LockScreenService.class);
+        service.setAction("unlocked");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+            context.startForegroundService(service);
+        }else
+            context.startService(service);
+
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);

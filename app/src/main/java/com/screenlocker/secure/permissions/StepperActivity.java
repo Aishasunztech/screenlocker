@@ -8,8 +8,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.screenlocker.secure.MyAdmin;
@@ -44,6 +47,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.requestUsageStatePer
 public class StepperActivity extends AppCompatActivity implements SettingContract.SettingsMvpView {
     private static final int REQUEST_CODE_PASSWORD = 883;
     private SteppersView steppersView;
+    private TextView waitLayout;
     boolean launcher = false;
     boolean clickStatus = false;
     private DevicePolicyManager devicePolicyManager;
@@ -58,6 +62,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stepper_layout);
+        waitLayout = findViewById(R.id.wait_layout);
         steppersView = findViewById(R.id.steppersView);
         SteppersView.Config steppersViewConfig = new SteppersView.Config();
 
@@ -77,6 +82,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 //                    Toast.LENGTH_SHORT).show();
 
         });
+
 
         steppersViewConfig.setFragmentManager(getSupportFragmentManager());
         ArrayList<SteppersItem> steps = new ArrayList<>();
@@ -116,11 +122,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         defaultLauncher.setOnClickContinue(() -> {
             launcher = true;
             if (settingsPresenter.isMyLauncherDefault()) {
-                Toast.makeText(StepperActivity.this, "Already set as default.", Toast.LENGTH_SHORT).show();
-                PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
-                Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                finish();
+                steppersView.nextStep();
             } else {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -183,22 +185,25 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         });
 
 
-//        SteppersItem launchApplication = new SteppersItem();
-//        launchApplication.setLabel("Launch App");
-//        launchApplication.setSkippable(false);
-//        launchApplication.setPositiveButtonEnable(true);
-//        launchApplication.setOnClickContinue(() -> {
-//
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//
-//
-//                }
-//            }, 5000);
-//
-//        });
+        SteppersItem launchApplication = new SteppersItem();
+        launchApplication.setLabel("Launch App");
+        launchApplication.setSkippable(false);
+        launchApplication.setPositiveButtonEnable(true);
+        launchApplication.setOnClickContinue(() -> {
+            steppersView.setVisibility(View.GONE);
+            waitLayout.setVisibility(View.VISIBLE);
+            PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 3000);
+
+        });
 
 
         //Add Steps
@@ -208,6 +213,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
         steps.add(duressPassword);
         steps.add(linking);
         steps.add(defaultLauncher);
+        steps.add(launchApplication);
 
 //        steps.add(launchApplication);
 
@@ -299,10 +305,9 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
             if (launcher) {
                 int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
                 if (settingsPresenter.isMyLauncherDefault()) {
-                    PrefUtils.saveBooleanPref(StepperActivity.this, TOUR_STATUS, true);
-                    Intent intent = new Intent(StepperActivity.this, SettingsActivity.class);
-                    startActivity(intent);
-                    finish();
+                    PrefUtils.saveIntegerPref(StepperActivity.this, CURRENT_STEP, current_step + 1);
+                    steppersView.setActiveItem(current_step+1);
+
                 }
 
             }
@@ -310,6 +315,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
                 int current_step = PrefUtils.getIntegerPref(StepperActivity.this, CURRENT_STEP);
                 steppersView.setActiveItem(current_step);
             }
+
         } catch (Exception ignored) {
 
         }

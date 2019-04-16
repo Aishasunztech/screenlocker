@@ -81,6 +81,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         mPackageManager = getPackageManager();
         setRecyclerView();
         createProgressDialog();
+        findViewById(R.id.fabRefresh).setBackgroundColor(getResources().getColor(R.color.seekbarColor));
         findViewById(R.id.fabRefresh).setOnClickListener(this);
         getAllApps();
 

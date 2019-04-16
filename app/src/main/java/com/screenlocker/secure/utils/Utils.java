@@ -113,7 +113,8 @@ public class Utils {
     }
 
 
-    public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout, List<NotificationItem> notifications, final Context context) {
+    public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
+                                                                   List<NotificationItem> notifications, final Context context) {
 
 
         int windowType;
