@@ -1,11 +1,12 @@
 package com.screenlocker.secure.settings.codeSetting;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class ExitActivity extends Activity
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ExitActivity extends AppCompatActivity
 {
     @Override protected void onCreate(Bundle savedInstanceState)
     {

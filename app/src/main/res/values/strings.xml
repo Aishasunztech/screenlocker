@@ -11,7 +11,6 @@
     <string name="number_seven">7</string>
     <string name="number_eight">8</string>
     <string name="number_nine">9</string>
-    <string name="btn_clear">Clear</string>
     <string name="btn_backspace">CLEAR ALL</string>
     <string name="description_notification_icon">notification icon</string>
     <string name="description_app_image">app image</string>
@@ -22,12 +21,8 @@
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>
     <string name="pin">PIN</string>
-    <string name="wrong_password_try_again">Wrong password! Try again</string>
     <string name="set_guest_password">Set Guest Password</string>
     <string name="set_encrypted_password">Set Encrypted Password</string>
-    <string name="enable_lock_screen">Enable Lock Screen</string>
-    <string name="please_add_encrypted_password">Please add encrypted password first.</string>
-    <string name="please_enter_encrypted_password">Please enter encrypted password</string>
     <string name="please_enter_your_current_password">Please enter your current password.</string>
     <string name="wrong_password_entered">You have entered wrong password.</string>
     <string name="password_changed">password changed</string>
@@ -42,7 +37,6 @@
     <string name="set_guest_code">Guest Pin Code</string>
     <string name="set_duress_code">Duress Pin Code</string>
     <string name="set_encrypted_code">Encrypted Pin Code</string>
-    <string name="please_set_encrypted_password">Please set Encrypted password first.</string>
     <string name="set_background_for">Set Background for</string>
     <string name="guest_all">Turn ON Guest ALL</string>
     <string name="encryption_all">Turn ON Encrypted ALL</string>
@@ -57,10 +51,8 @@
     <string name="code">Code</string>
     <string name="set_apps_permissions">Application Permission</string>
     <string name="reset_guest_encrypted_pass"><![CDATA[Reset Guest & Encrypted Pass]]></string>
-    <string name="settings_menu">Settings Menu</string>
     <string name="change_admin_panel_code">Change Admin Panel Code</string>
     <string name="password_is_changed_to_default">Password is changed to default.</string>
-    <string name="service_desc">used to lock the device</string>
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
     <string name="sim">SIM</string>
@@ -84,8 +76,6 @@
     <string name="session_expired">Session expired</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello_blank_fragment_second">hello blank fragment</string>
     <string name="system_controls">System Permission</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
@@ -93,33 +83,4 @@
     <string name="sim_id">Sim Id</string>
     <string name="settings_controls">Secure Settings Permission</string>
 <!--SecureSeting strings-->
-    <string name="device_discovery_started">Looking for nearby devices&#8230;</string>
-    <string name="device_already_paired">This device is already paired!</string>
-    <string name="device_pairing_success">Device successfully paired!</string>
-    <string name="enabling_bluetooth">Turning on Bluetooth and looking for devices&#8230;</string>
-    <string name="device_discovery_stopped">Device discovery cancelled</string>
-    <string name="empty_list_message">No nearby devices found. Tap on the bottom-right button to start a new device discovery.</string>
-    <string name="bluetooth_not_available_message">It seems that this device doesn\'t have a Bluetooth controller available. \nBlue Pair works only with Bluetooth, so please try again on a different device. \nThe app will be now terminated.</string>
-    <string name="bluetooth_not_available_title">Bluetooth not available</string>
-    <string name="location_permission_message">Wifi Settings need this permission to search available wifi signals</string>
-    <string name="gps_not_found_title">GPS not found</string>
-    <string name="gps_not_found_message">Please turn on gps to further proceed</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="wifi_bar_title">Secure Wi-Fi</string>
-    <string name="removedNetwork">removedNetwork</string>
-    <string name="connectNetwork">connectedNetwok</string>
-    <string name="networkId">networkId</string>
-    <string name="savedBSSID">BSSID</string>
-    <string name="savedSSID">SSID</string>
-    <string name="savedSecurity">Security</string>
-    <string name="savedLinkedSpeed">linkSpeed</string>
-    <string name="savedFrequency">frequency</string>
-    <string name="savedSignalStrength">signalStrength</string>
-    <string name="DisplayTitle">Display</string>
-    <string name="adaptive_birghtness_instruction">Optimize Brightness level for available light</string>
-    <string name="fine_location_and_cross_location">Fine Location</string>
-    <string name="show_password">Show Password</string>
-    <string name="password">Password</string>
-    <string name="connected">Connected</string>
 </resources>

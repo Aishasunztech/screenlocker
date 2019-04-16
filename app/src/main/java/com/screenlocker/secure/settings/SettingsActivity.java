@@ -3,7 +3,6 @@ package com.screenlocker.secure.settings;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -19,12 +18,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,9 +32,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.screenlocker.secure.socket.model.Settings;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -62,11 +53,20 @@ import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jsoup.Jsoup;
 
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import retrofit2.Call;
@@ -622,7 +622,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public void handleSetMainPassword(Activity activity, View rootLayout) {
+    public void handleSetMainPassword(AppCompatActivity activity, View rootLayout) {
 
         if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
             Intent i = new Intent(activity, SetUpLockActivity.class);
@@ -666,7 +666,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    public void handleSetDuressPassword(Activity activity, View rootLayout) {
+    public void handleSetDuressPassword(AppCompatActivity activity, View rootLayout) {
         if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
             new AlertDialog.Builder(activity).
                     setTitle("Warning!")
@@ -717,7 +717,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    public void handleSetGuestPassword(Activity activity, View rootLayout) {
+    public void handleSetGuestPassword(AppCompatActivity activity, View rootLayout) {
 
         if (PrefUtils.getStringPref(activity, KEY_GUEST_PASSWORD) == null) {
             Intent intent = new Intent(activity, SetUpLockActivity.class);

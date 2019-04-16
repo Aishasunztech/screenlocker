@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +77,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             }
 
                         } catch (Exception e) {
-                            Toast.makeText(context, "App not found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                     } else {

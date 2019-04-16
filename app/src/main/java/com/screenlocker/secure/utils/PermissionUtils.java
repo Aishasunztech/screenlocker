@@ -1,7 +1,6 @@
 package com.screenlocker.secure.utils;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -12,14 +11,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
 
 import java.util.Set;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import timber.log.Timber;
-
 
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
@@ -28,7 +27,7 @@ import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
 public class PermissionUtils {
 
 
-    public static void requestOverlayPermission(Activity activity) {
+    public static void requestOverlayPermission(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
@@ -44,7 +43,7 @@ public class PermissionUtils {
     }
 
 
-    public static boolean canDrawOver(Activity activity) {
+    public static boolean canDrawOver(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
 
@@ -53,7 +52,7 @@ public class PermissionUtils {
         return Settings.canDrawOverlays(activity);
     }
 
-    public static boolean canControlNotification(Activity activity) {
+    public static boolean canControlNotification(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return true;
         }
@@ -64,7 +63,7 @@ public class PermissionUtils {
         return notificationListenerSet.contains(activity.getPackageName());
     }
 
-    public static void requestNotificationAccessibilityPermission(Activity activity) {
+    public static void requestNotificationAccessibilityPermission(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return;
         }
@@ -88,7 +87,7 @@ public class PermissionUtils {
     }
 
 
-    public static void permissionModify(Activity activity) {
+    public static void permissionModify(AppCompatActivity activity) {
         boolean permission;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permission = Settings.System.canWrite(activity);
@@ -108,7 +107,7 @@ public class PermissionUtils {
 
     }
 
-    public static void permissionAdmin(Activity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
+    public static void permissionAdmin(AppCompatActivity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
 
         boolean adminActive = devicePolicyManager.isAdminActive(compName);
 
@@ -120,7 +119,7 @@ public class PermissionUtils {
         }
     }
 
-    public static boolean isPermissionGranted(Activity activity) {
+    public static boolean isPermissionGranted(AppCompatActivity activity) {
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&  activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED  && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {

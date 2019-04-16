@@ -1,6 +1,5 @@
 package com.screenlocker.secure.socket.utils;
 
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.MyAdmin;
@@ -34,6 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -105,7 +105,7 @@ public class utils {
 
     }
 
-    public static void unlockDevice(Activity activity) {
+    public static void unlockDevice(AppCompatActivity activity) {
     }
 
     public static void getAppsList(final Context context, final GetApplications listener) {

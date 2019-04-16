@@ -1,26 +1,37 @@
 package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.Toolbar;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.appSelection.AppListAdapter;
+import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.appSelection.SelectionContract;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
+import com.screenlocker.secure.utils.PrefUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
@@ -34,7 +45,16 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     private Switch switchGuest, switchEncrypt, switchEnable;
 
     // status
-    boolean guest, encrypted, enable;
+    boolean guest = false, encrypted = false, enable = false;
+
+
+    private RecyclerView rvSubExtensions;
+
+    private Adapter adapter;
+
+    private List<SubExtension> extensionsList;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +67,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         setListeners();
         // setting checks
         setChecks();
+
+        populateApps();
     }
 
 
@@ -56,6 +78,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         switchGuest = findViewById(R.id.switchGuest);
         switchEncrypt = findViewById(R.id.switchEncrypt);
         switchEnable = findViewById(R.id.switchEnable);
+        progressBar = findViewById(R.id.progress);
+
     }
 
     //setListeners
@@ -65,18 +89,58 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         switchEnable.setOnCheckedChangeListener(this);
     }
 
+    private void setRecyclerView(List<SubExtension> subExtensions) {
+        containerLayout = findViewById(R.id.container_layout);
+        rvSubExtensions = findViewById(R.id.extensionList);
+        adapter = new Adapter(subExtensions);
+        rvSubExtensions.setAdapter(adapter);
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private void populateApps() {
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                extensionsList = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                // add the data to the list to show apps
+                Log.d("igjioejigtete", "doInBackground: " + extensionsList.size());
+
+                Timber.e("doInBackground: data is added to the database");
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void models) {
+                super.onPostExecute(models);
+                progressBar.setVisibility(View.GONE);
+                setRecyclerView(extensionsList);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//
+    }
+
     //set checked
     private void setChecks() {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String uniqueName = "com.secureSetting.SettingsMainActivitySecure Settings";
-                AppInfo appInfo = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppStatus(uniqueName);
+                AppInfo appInfo = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppStatus(AppConstants.SECURE_SETTINGS_UNIQUE);
 
-                guest = appInfo.isGuest();
-                encrypted = appInfo.isEncrypted();
-                enable = appInfo.isEnable();
+                if (appInfo != null) {
+                    guest = appInfo.isGuest();
+                    encrypted = appInfo.isEncrypted();
+                    enable = appInfo.isEnable();
+                }
 
                 AppExecutor.getInstance().getMainThread().execute(new Runnable() {
                     @Override
@@ -90,6 +154,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
             }
         }).start();
+
+
     }
 
     // set toolbar
@@ -172,8 +238,10 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String uniqueName = "com.secureSetting.SettingsMainActivitySecure Settings";
-                MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().updateParticularApp(guest, encrypted, enable, uniqueName);
+                MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().updateParticularApp(guest, encrypted, enable, AppConstants.SECURE_SETTINGS_UNIQUE);
+                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_GUEST, guest);
+                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_ENCRYPTED, encrypted);
+                PrefUtils.saveBooleanPref(SecureSettingsActivity.this, AppConstants.SS_ENABLE, enable);
             }
         }).start();
     }

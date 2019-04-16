@@ -1,10 +1,8 @@
 package com.screenlocker.secure.permissions;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,9 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.screenlocker.secure.MyAdmin;
@@ -29,6 +24,9 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import me.drozdzynski.library.steppers.SteppersItem;
 import me.drozdzynski.library.steppers.SteppersView;
 import me.drozdzynski.library.steppers.interfaces.OnSkipStepAction;
@@ -53,7 +51,7 @@ public class StepperActivity extends AppCompatActivity implements SettingContrac
 
     private SettingsPresenter settingsPresenter;
 
-    public static Activity activity;
+    public static AppCompatActivity activity;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

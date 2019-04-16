@@ -1,6 +1,6 @@
 package com.screenlocker.secure.launcher;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class FakeLauncherActivity extends AppCompatActivity {

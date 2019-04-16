@@ -2,7 +2,6 @@ package com.screenlocker.secure.settings.codeSetting.systemControls;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,11 +14,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -31,7 +25,6 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -40,6 +33,12 @@ import com.screenlocker.secure.utils.WifiApControl;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
@@ -118,7 +117,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         setDefaultState();
     }
 
-    public void youDesirePermissionCode(Activity context, boolean isChecked) {
+    public void youDesirePermissionCode(AppCompatActivity context, boolean isChecked) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permission = Settings.System.canWrite(context);
         } else {

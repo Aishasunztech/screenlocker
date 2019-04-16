@@ -64,13 +64,13 @@ public class AppConstants {
 
 
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
-//        public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
+            public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-    public static final String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
+//    public static final String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
 
 
     public static final String RESPONSE_TO_SERVER = "sendApps_";
@@ -140,6 +140,15 @@ public class AppConstants {
     //launcher settings status
 
     public static final String SETTINGS_STATUS = "settings_status";
+
+    // unique name for SecureSettings extension
+    public static final String SECURE_SETTINGS_UNIQUE = "com.securesettings.SecureSettingsMainSecure Settings";
+    // package name for SecureSettings
+    public static final String SECURE_SETTINGS_PACKAGE = "com.securesettings.SecureSettingsMain";
+
+    public static final String SS_GUEST = "ss_guest";
+    public static final String SS_ENCRYPTED = "ss_encrypted";
+    public static final String SS_ENABLE = "ss_enable";
 
 
 }

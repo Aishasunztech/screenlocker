@@ -25,13 +25,7 @@ public interface SelectionContract {
 
         void deleteAppFromDB(String primaryKey);
 
-
-
-
-
-
         void updateAppInDB(AppInfo appInfo);
-
 
     }
 

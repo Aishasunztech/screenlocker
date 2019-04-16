@@ -17,12 +17,12 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.vortexlocker.app"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "4.58"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -35,6 +35,7 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+
 }
 ext {
     //dependencies
@@ -43,7 +44,7 @@ ext {
     versionRetrofit = '2.4.0'
     versionGson = '2.8.5'
     versionGsonJodatimeSerialisers = '1.7.0'
-    versionButterknife = '8.8.1'
+    versionButterknife = '10.1.0'
     versionTimber = '4.7.1'
     versionOkHttp3LoggingInterceptor = '3.8.0'
 
@@ -52,23 +53,24 @@ dependencies {
 
     // Add dependency
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     //noinspection GradleCompatible
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    implementation 'androidx.room:room-runtime:2.0.0-beta01'
 
     // Room
 
     // implementation "android.arch.persistence.room:runtime:1.0.0"
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-    implementation 'com.android.support:design:28.0.0'
+    annotationProcessor 'androidx.room:room-compiler:2.0.0-beta01'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
 
     //location service
@@ -123,7 +125,8 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'pub.devrel:easypermissions:2.0.1'
 
-
+    //Secure settings app
+    implementation project(':secureSetting')
 }
 repositories {
     mavenCentral()

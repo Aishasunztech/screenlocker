@@ -6,7 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.notifications.NotificationItem;

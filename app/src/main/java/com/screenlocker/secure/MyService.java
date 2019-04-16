@@ -3,8 +3,8 @@ package com.screenlocker.secure;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.JobIntentService;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 
 import com.screenlocker.secure.service.LockScreenService;
 
@@ -15,6 +15,8 @@ public class MyService extends JobIntentService {
 
     public static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, MyService.class, JOB_ID, work);
+
+
     }
 
     @Override

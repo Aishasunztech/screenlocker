@@ -1,6 +1,5 @@
 package com.screenlocker.secure.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,18 +8,13 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
@@ -28,8 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
@@ -144,11 +140,11 @@ public class CommonUtils {
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, current_time + remaining_time);
     }
 
-    public static void hideKeyboard(Activity activity) {
+    public static void hideKeyboard(AppCompatActivity activity) {
 
 
         try {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
             //Find the currently focused view, so we can grab the correct window token from it.
             View view = activity.getCurrentFocus();
             //If no view currently has focus, create a new one, just so we can grab a window token from it
@@ -167,6 +163,7 @@ public class CommonUtils {
 
     public static void setSecureSettingsMenu(Context context) {
 
+
         String uniqueName = "com.secureSetting.SettingsMainActivity";
 
         List<SubExtension> subExtensions = new ArrayList<>();
@@ -182,9 +179,15 @@ public class CommonUtils {
         wifi.setEncrypted(false);
         subExtensions.add(wifi);
 
+        for (SubExtension subExtension : subExtensions) {
+            Log.d("igjioejigtete", "setSecureSettingsMenu: "+subExtension.getUniqueName());
+            MyApplication.getAppDatabase(context).getDao().insertSubExtensions(subExtension);
+        }
 
+        List<SubExtension> subExtension = MyApplication.getAppDatabase(context).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
 
-
-
+        Log.d("igjioejigtete", "setSecureSettingsMenu: " + subExtension.size());
     }
+
+
 }

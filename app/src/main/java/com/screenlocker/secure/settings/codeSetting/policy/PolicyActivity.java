@@ -1,10 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.policy;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -12,9 +9,11 @@ import android.widget.Toast;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;

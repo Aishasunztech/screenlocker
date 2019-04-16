@@ -2,16 +2,17 @@ package com.screenlocker.secure.appSelection;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -254,14 +255,8 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
             @Override
             protected Void doInBackground(Void... voids) {
 
-                List<AppInfo> apps = MyApplication.getAppDatabase(AppSelectionActivity.this).getDao().getApps();
+                List<AppInfo> apps = MyApplication.getAppDatabase(AppSelectionActivity.this).getDao().getAppsOrExtensions(false);
                 // add the data to the list to show apps
-
-                for (AppInfo app : apps) {
-                    if (app.isExtension()) {
-                        apps.remove(app);
-                    }
-                }
 
                 selectionPresenter.addAppsToList(mPackageManager, mAppsList, apps);
                 Timber.e("doInBackground: data is added to the database");

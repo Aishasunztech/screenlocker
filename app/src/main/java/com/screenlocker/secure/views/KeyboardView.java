@@ -3,7 +3,7 @@ package com.screenlocker.secure.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;

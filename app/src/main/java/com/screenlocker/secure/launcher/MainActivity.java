@@ -1,6 +1,5 @@
 package com.screenlocker.secure.launcher;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -16,13 +15,13 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.pm.ShortcutInfoCompat;
-import android.support.v4.content.pm.ShortcutManagerCompat;
-import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -214,7 +213,7 @@ private ShutDownReceiver mShutDownReceiver;
                 mainPresenter.startLockService(lockScreenIntent);
             }
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                MyService.enqueueWork(MainActivity.this, new Intent());
+//                MyService.enqueueWork(SecureSettingsMain.this, new Intent());
 //            }
             try {
                 sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
@@ -449,7 +448,7 @@ private ShutDownReceiver mShutDownReceiver;
 //    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 //    private void checkCurrentProcess() {
 //        try {
-//            if (isAccessGranted(MainActivity.this)) {
+//            if (isAccessGranted(SecureSettingsMain.this)) {
 //                String currentProcess = retriveNewApp();
 //                if (currentProcess.contains("com.android.systemui")) {
 //                    clearRecentApp();

@@ -3,7 +3,7 @@
     <style name="LabelActive">
         <item name="android:textSize">14sp</item>
         <!--<item name="android:textStyle">@integer/font_textStyle_medium</item>-->
-        <item name="android:fontFamily">@string/font_fontFamily_medium</item>
+        <item name="fontFamily">@string/font_fontFamily_medium</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 </resources>

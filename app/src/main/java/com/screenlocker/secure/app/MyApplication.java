@@ -2,7 +2,7 @@ package com.screenlocker.secure.app;
 
 import android.app.Application;
 import android.app.admin.DevicePolicyManager;
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

@@ -16,19 +16,12 @@
     </style>
 
 
-
-
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="keyboard_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:divider">@drawable/keyboard_divider</item>
+        <item name="divider">@drawable/keyboard_divider</item>
         <item name="android:gravity">center</item>
-        <item name="android:showDividers">beginning|middle|end</item>
+        <item name="showDividers">beginning|middle|end</item>
     </style>
 
     <style name="keyboard_button">
@@ -41,7 +34,7 @@
         <item name="android:clickable">true</item>
         <item name="android:gravity">center</item>
         <item name="android:scaleType">centerInside</item>
-        <item name="android:background">@drawable/keyboard_button_bg</item>
+        <item name="background">@drawable/keyboard_button_bg</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textSize">30sp</item>
     </style>
@@ -50,17 +43,7 @@
         <item name="android:tag">number_button</item>
 
     </style>
-    <style name="SecureAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
 
-    <style name="AppTheme.NoActionBar" parent="SecureAppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
     <style name="TextColor">
         <item name="android:textColor">@color/seekbarColor</item>
     </style>

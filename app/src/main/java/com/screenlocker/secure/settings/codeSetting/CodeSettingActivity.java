@@ -1,6 +1,5 @@
 package com.screenlocker.secure.settings.codeSetting;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,10 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -25,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
@@ -42,6 +38,10 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
@@ -59,7 +59,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private Toolbar mToolbar;
     private CodeSettingPresenter mPresenter;
     AlertDialog adminPasswordDialog;
-    public static Activity codeSettingsInstance;
+    public static AppCompatActivity codeSettingsInstance;
 
     private boolean goToAppSelection;
     private boolean gotoSystemControl;

@@ -8,15 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.screenlocker.secure.launcher.MainActivity;
-import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Calendar;
 import java.util.Objects;
-
-import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
