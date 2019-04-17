@@ -17,9 +17,11 @@ import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -66,9 +68,10 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     private boolean isBackPressed;
     private Switch switchBlockCall;
     private boolean isSwitchLocationClicked;
-    private ConstraintLayout containerLayout ;
+    private ConstraintLayout containerLayout;
 
 
+    private ImageView appImage;
     private static ChangeSettings listener;
 
     public void setListener(ChangeSettings settingsChangeListener) {
@@ -97,6 +100,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchScreenShot = findViewById(R.id.switchScreenShot);
         switchBlockCall = findViewById(R.id.switchBlockCall);
         containerLayout = findViewById(R.id.container_layout);
+        appImage = findViewById(R.id.appImage);
         switchWifi.setOnCheckedChangeListener(this);
         switchBluetooth.setOnCheckedChangeListener(this);
         switchHotSpot.setOnCheckedChangeListener(this);
@@ -228,6 +232,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                             switchGuest.setChecked(appInfo.isGuest());
                             switchEncrypt.setChecked(appInfo.isEncrypted());
                             switchDisable.setChecked(appInfo.isEnable());
+                            Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
                         }
                     });
                 }

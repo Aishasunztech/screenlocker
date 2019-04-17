@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
         //appSelected = new ArrayList<>();
         setRecyclerView();
         mPackageManager = getPackageManager();
+
         populateApps();
 
     }
@@ -279,14 +281,13 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
         super.onPause();
         if (!isBackPressed) {
             containerLayout.setVisibility(View.INVISIBLE);
-            Log.d("jkhdfui9eh", "onPause: ");
+
             //ExitActivity.exitApplicationAndRemoveFromRecent(AppSelectionActivity.this);
             this.finish();
             try {
 
                 if (CodeSettingActivity.codeSettingsInstance != null) {
                     //  finish previous activity and this activity
-                    Log.d("jkhdfui9eh", "onPause: codeSettingsInstance");
                     CodeSettingActivity.codeSettingsInstance.finish();
 
                 }

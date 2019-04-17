@@ -141,18 +141,19 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         setContentView(R.layout.activity_secure_main);
         setToolbar();
         setSetIds();
-        checkPermissions(this);
+//        checkPermissions(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
 
 
-        permissionModify(SecureSettingsMain.this);
+//        permissionModify(SecureSettingsMain.this);
 
 
-        if (!checkLocationStatus(this)) {
-            turnOnLocation(this);
-        }
+//        if (!checkLocationStatus(this)) {
+//            turnOnLocation(this);
+//        }
+
         clickListeners();
         showMenus();
 
