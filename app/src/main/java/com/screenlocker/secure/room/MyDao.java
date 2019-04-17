@@ -67,5 +67,18 @@ public interface MyDao {
     @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
     List<SubExtension> getEncryptedExtensions(String uniqueName, boolean status);
 
+    @Query("UPDATE subextension set guest=:status WHERE uniqueName=:uniqueName ")
+    void setAllGuest(String uniqueName, boolean status);
+
+
+    @Query("UPDATE subextension set encrypted=:status WHERE uniqueName=:uniqueName ")
+    void setAllEncrypted(String uniqueName, boolean status);
+
+    @Query("SELECT COUNT(guest)FROM subextension WHERE guest = :status")
+    int checkGuestStatus(boolean status);
+
+    @Query("SELECT COUNT(encrypted)FROM subextension WHERE encrypted = :status")
+    int checkEncryptedStatus(boolean status);
+
 
 }

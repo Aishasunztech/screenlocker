@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -24,11 +25,8 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.BrightnessDialog;
-import com.secureSetting.SleepDialog;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,8 +37,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.secureSetting.UtilityFunctions.checkLocationStatus;
-import static com.secureSetting.UtilityFunctions.checkPermissions;
+import static com.secureSetting.UtilityFunctions.getBatteryLevel;
 import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
 import static com.secureSetting.UtilityFunctions.getScreenBrightness;
 import static com.secureSetting.UtilityFunctions.getSleepTime;
@@ -49,16 +46,19 @@ import static com.secureSetting.UtilityFunctions.permissionModify;
 import static com.secureSetting.UtilityFunctions.pxFromDp;
 import static com.secureSetting.UtilityFunctions.secondsToMintues;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
-import static com.secureSetting.UtilityFunctions.turnOnLocation;
 
 public class SecureSettingsMain extends AppCompatActivity implements BrightnessDialog.BrightnessChangeListener
         , SleepDialog.SleepChangerListener {
 
     private PopupWindow popupWindow;
 
-    private TextView bluetoothName, brightnessLevel, sleepTime, wifiName;
+    private TextView bluetoothName, brightnessLevel, sleepTime,
+            wifiName,battery_status;
 
-    private LinearLayout wifiContainer, bluetoothContainer, simCardContainer, hotspotContainer, screenLockContainer, brightnessContainer, sleepContainer;
+    private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
+            hotspotContainer, screenLockContainer, brightnessContainer,
+            sleepContainer,battery_container,sound_container,
+            language_container,dateTimeContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -73,63 +73,77 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 
     };
 
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context ctxt, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            String batteryStatus ="";
+            if(status == BatteryManager.BATTERY_STATUS_CHARGING)
+            {
+                batteryStatus = "Charging";
+            }
+            battery_status.setText(String.valueOf(level) + "% " + batteryStatus);
+        }
+    };
 
     // showing allowed menu for each user type
     private void showMenus() {
         String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        if(userType != null) {
+            switch (userType) {
+                // encrypted user
+                case KEY_MAIN_PASSWORD:
 
-        switch (userType) {
-            // encrypted user
-            case KEY_MAIN_PASSWORD:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                            if (subExtensions == null || subExtensions.size() == 0) {
+                                settingsLayout.setVisibility(View.GONE);
+                            } else {
+                                for (SubExtension subExtension : subExtensions) {
+                                    String extensionName = subExtension.getUniqueExtension();
+                                    if (extensions.containsKey(extensionName)) {
+                                        LinearLayout extension = extensions.get(extensionName);
+                                        if (extension != null) {
+                                            extension.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+                            }
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-                        if (subExtensions == null || subExtensions.size() == 0) {
-                            settingsLayout.setVisibility(View.GONE);
-                        } else {
-                            for (SubExtension subExtension : subExtensions) {
-                                String extensionName = subExtension.getUniqueExtension();
-                                if (extensions.containsKey(extensionName)) {
-                                    LinearLayout extension = extensions.get(extensionName);
-                                    if (extension != null) {
-                                        extension.setVisibility(View.VISIBLE);
+                        }
+                    }).start();
+
+                    break;
+
+                //guest user
+                case KEY_GUEST_PASSWORD:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+
+                            if (subExtensions == null || subExtensions.size() == 0) {
+                                settingsLayout.setVisibility(View.GONE);
+                            } else {
+                                for (SubExtension subExtension : subExtensions) {
+                                    String extensionName = subExtension.getUniqueExtension();
+                                    if (extensions.containsKey(extensionName)) {
+                                        LinearLayout extension = extensions.get(extensionName);
+                                        if (extension != null) {
+                                            extension.setVisibility(View.VISIBLE);
+                                        }
                                     }
                                 }
                             }
                         }
+                    }).start();
 
-                    }
-                }).start();
-
-                break;
-
-            //guest user
-            case KEY_GUEST_PASSWORD:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-
-                        if (subExtensions == null || subExtensions.size() == 0) {
-                            settingsLayout.setVisibility(View.GONE);
-                        } else {
-                            for (SubExtension subExtension : subExtensions) {
-                                String extensionName = subExtension.getUniqueExtension();
-                                if (extensions.containsKey(extensionName)) {
-                                    LinearLayout extension = extensions.get(extensionName);
-                                    if (extension != null) {
-                                        extension.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }).start();
-
-                break;
+                    break;
+            }
         }
 
     }
@@ -138,6 +152,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_secure_main);
         setToolbar();
         setSetIds();
@@ -145,6 +160,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+
+        registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
 //        permissionModify(SecureSettingsMain.this);
@@ -162,9 +179,12 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Bluetooth", bluetoothContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards", simCardContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Hotspot", hotspotContainer);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Screen Lock", screenLockContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Finger Print + Lock", screenLockContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Brightness", brightnessContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Sleep", sleepContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery", battery_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound", sound_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
 
 
     }
@@ -183,7 +203,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         brightnessLevel = findViewById(R.id.brightness_lavel);
         sleepTime = findViewById(R.id.sleep_time);
         wifiName = findViewById(R.id.wifi_name);
-
+        battery_status = findViewById(R.id.battery_status);
         wifiContainer = findViewById(R.id.wif_container_layout);
         bluetoothContainer = findViewById(R.id.bluetooth_container_layout);
         simCardContainer = findViewById(R.id.sim_cotainer);
@@ -191,6 +211,10 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         screenLockContainer = findViewById(R.id.screen_lock_container);
         brightnessContainer = findViewById(R.id.brightness_container_layout);
         sleepContainer = findViewById(R.id.sleep_cotainer);
+        battery_container = findViewById(R.id.battery_cotainer);
+        sound_container = findViewById(R.id.sound_container);
+        language_container = findViewById(R.id.language_container);
+        dateTimeContainer = findViewById(R.id.dateTime_container);
         settingsLayout = findViewById(R.id.settings_layout);
 
     }
@@ -269,8 +293,6 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         findViewById(R.id.sim_cotainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-//                startActivity(intent);
 
                 Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
                 startActivity(intent);
@@ -281,10 +303,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-//                intent.addCategory(Intent.CATEGORY_LAUNCHER);
                 ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.TetherSettings");
                 intent.setComponent(cn);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
 
@@ -304,11 +324,41 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
                 startActivity(intent);
             }
         });
+        battery_container.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
+            startActivity(intent);
+        });
+
+        sound_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
+                startActivity(intent);
+            }
+        });
+        language_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.LanguageAndInputSettingsActivity");
+                intent.setComponent(cn);
+                startActivity(intent);
+
+            }
+        });
+        dateTimeContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+                startActivity(intent);
+            }
+        });
     }
 
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(mBatInfoReceiver);
         super.onDestroy();
 
     }
@@ -320,7 +370,14 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
         sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this)) + " of inactivity");
         wifiName.setText(getWifiStatus(this));
+
+//        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
+
+
+
     }
+
+
 
     @Override
     public void brightnessChanged() {
@@ -331,4 +388,6 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     public void sleepTimeChanged(String time) {
         sleepTime.setText(time);
     }
+
+
 }

@@ -153,4 +153,8 @@ public class AppConstants {
     public static final int RC_PERMISSION = 123;
 
 
+    public static final String EXTENSION_GUEST_CHECKED = "ExtensionGuest";
+    public static final String EXTENSION_ENCRYPTED_CHECKED = "ExtensionEncrypted";
+
+
 }

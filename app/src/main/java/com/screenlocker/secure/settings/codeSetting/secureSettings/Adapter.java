@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d( "run:Enc " ,subExtensionList.get(getAdapterPosition()).isEncrypted() + "");
                             MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();

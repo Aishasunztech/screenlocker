@@ -63,5 +63,16 @@
         <item name="android:paddingLeft">@dimen/_10sdp</item>
     </style>
 
+    //Secure Settings theme
+    <style name="SecureSettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/switchContainerColor</item>
+        <item name="colorAccent">@color/SettingsColorAccent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+
+
 
 </resources>

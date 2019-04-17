@@ -22,6 +22,7 @@ import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.appSelection.SelectionContract;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyDao;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
@@ -35,6 +36,8 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.EXTENSION_ENCRYPTED_CHECKED;
+import static com.screenlocker.secure.utils.AppConstants.EXTENSION_GUEST_CHECKED;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 
 public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView, CompoundButton.OnCheckedChangeListener {
@@ -80,6 +83,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         switchEncrypt = findViewById(R.id.switchEncrypt);
         switchEnable = findViewById(R.id.switchEnable);
         progressBar = findViewById(R.id.progress);
+        rvSubExtensions = findViewById(R.id.extensionList);
+
 
     }
 
@@ -92,8 +97,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
     private void setRecyclerView(List<SubExtension> subExtensions) {
 
-        rvSubExtensions = findViewById(R.id.extensionList);
         adapter = new Adapter(subExtensions, this);
+
         rvSubExtensions.setAdapter(adapter);
     }
 
@@ -189,62 +194,193 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         super.onResume();
         isBackPressed = false;
 
+
+
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.extension_select_menu, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.extension_select_menu, menu);
+        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int guestStatus = myDao.checkGuestStatus(false);
+                if(guestStatus == 0)
+                {
+                    menu.findItem(R.id.extension_guest_all).setChecked(true);
+
+                }else{
+                    menu.findItem(R.id.extension_guest_all).setChecked(false);
+
+                }
+
+                int encryptedStatus = myDao.checkEncryptedStatus(false);
+                if(encryptedStatus == 0)
+                {
+                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
+
+                }else{
+                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
+
+                }
+            }
+        }).start();
+
+
+//            if(PrefUtils.getBooleanPref(this,EXTENSION_GUEST_CHECKED))
+//            {
+//                menu.findItem(R.id.extension_guest_all).setChecked(true);
+//            }
+//            else{
+//                menu.findItem(R.id.extension_guest_all).setChecked(false);
 //
+//            }
+
+//        if(PrefUtils.getBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED))
+//        {
+//            menu.findItem(R.id.extension_encryption_all).setChecked(true);
+//        }
+//        else{
+//            menu.findItem(R.id.extension_encryption_all).setChecked(false);
 //
-////        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_GUEST_ALL)) {
-////            // all hide switch is turned on
-////            menu.findItem(R.id.action_guest_all).setChecked(true);
-////        } else {
-////            // all hide switch is turned off
-////            menu.findItem(R.id.action_guest_all).setChecked(false);
-////        }
-////
-////        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL)) {
-////            // all hide switch is turned on
-////            menu.findItem(R.id.action_encryption_all).setChecked(true);
-////        } else {
-////            // all hide switch is turned off
-////            menu.findItem(R.id.action_encryption_all).setChecked(false);
-////        }
+//        }
+
+
+//        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_GUEST_ALL)) {
+//            // all hide switch is turned on
+//            menu.findItem(R.id.action_guest_all).setChecked(true);
+//        } else {
+//            // all hide switch is turned off
+//            menu.findItem(R.id.action_guest_all).setChecked(false);
+//        }
 //
-//
-//        return true;
-//    }
+//        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL)) {
+//            // all hide switch is turned on
+//            menu.findItem(R.id.action_encryption_all).setChecked(true);
+//        } else {
+//            // all hide switch is turned off
+//            menu.findItem(R.id.action_encryption_all).setChecked(false);
+//        }
+
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
-//            case R.id.action_guest_all:
-//
-//                if (item.isChecked()) {
-//                    for (SubExtension subExtension : extensionsList) {
-//                        if(subExtension.isGuest())
-//                        subExtension.setGuest(false);
-//                    }
-//                    item.setChecked(false);
-//                } else {
-//                    for (SubExtension subExtension : extensionsList) {
-//                        if(!subExtension.isGuest())
-//                        subExtension.setGuest(true);
-//                    }
-//                    item.setChecked(true);
-//                }
-//
+            case R.id.extension_guest_all:
+
+                if (item.isChecked()) {
+                    for (SubExtension subExtension : extensionsList) {
+                        if(subExtension.isGuest())
+                        subExtension.setGuest(false);
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE,false);
+                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setRecyclerView(extensionsList);
+
+                                }
+                            });
+
+                        }
+                    }).start();
+//                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,false);
+                    item.setChecked(false);
+                } else {
+                    for (SubExtension subExtension : extensionsList) {
+                        if(!subExtension.isGuest())
+                        subExtension.setGuest(true);
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE,true);
+                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setRecyclerView(extensionsList);
+
+                                }
+                            });
+
+                        }
+                    }).start();
+//                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,true);
+
+                    item.setChecked(true);
+                }
+
 //                adapter.notifyDataSetChanged();
-//                break;
-//
-//            case R.id.action_encryption_all:
-//
+                break;
+
+            case R.id.extension_encryption_all:
+                if (item.isChecked()) {
+
+                    for (SubExtension subExtension : extensionsList) {
+                        if(subExtension.isEncrypted())
+                            subExtension.setEncrypted(false);
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE,false);
+
+                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setRecyclerView(extensionsList);
+
+                                }
+                            });
+
+                        }
+                    }).start();
+//                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,false);
+
+
+                    item.setChecked(false);
+                } else {
+                    for (SubExtension subExtension : extensionsList) {
+                        if(!subExtension.isEncrypted())
+                            subExtension.setEncrypted(true);
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE,true);
+                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setRecyclerView(extensionsList);
+
+                                }
+                            });
+
+                        }
+                    }).start();
+//                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,true);
+                    item.setChecked(true);
+                }
+
 //                adapter.notifyDataSetChanged();
-//                break;
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
