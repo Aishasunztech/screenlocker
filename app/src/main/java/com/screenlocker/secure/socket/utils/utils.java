@@ -8,17 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.util.Log;
-import android.view.WindowManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.settings.SettingsModel;
-import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
@@ -39,20 +33,20 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
-import static android.content.Context.WINDOW_SERVICE;
-import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
+import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
@@ -304,8 +298,10 @@ public class utils {
         }
     }
 
-    public static void suspendedDevice(final Context context, SettingContract.SettingsMvpView mvpView, String device_id, String msg) {
+    public static void suspendedDevice(final Context context, String device_id, String msg) {
         Timber.d("%s device", msg);
+
+
         switch (msg) {
             case "suspended":
                 PrefUtils.saveStringPref(context, DEVICE_STATUS, "suspended");
@@ -319,16 +315,15 @@ public class utils {
         if (main_password == null) {
             PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
         }
+
         Intent lockScreenIntent = new Intent(context, LockScreenService.class);
         lockScreenIntent.setAction(msg);
-        SettingsPresenter settingsPresenter = new SettingsPresenter(mvpView, new SettingsModel(context));
-        if (!settingsPresenter.isServiceRunning()) {
-            settingsPresenter.startLockService(lockScreenIntent);
-            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            context.startForegroundService(lockScreenIntent);
         } else {
-            settingsPresenter.startLockService(lockScreenIntent);
-            Timber.d("lock screen already running");
-            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+            context.startService(lockScreenIntent);
         }
     }
 
@@ -458,32 +453,16 @@ public class utils {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    public static void settingsChangeListener(Context context, SettingContract.SettingsMvpView mvpView) {
-        String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
-        if (main_password == null) {
-            PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, "12345");
-        }
 
-        Intent lockScreenIntent = new Intent(context, LockScreenService.class);
-        lockScreenIntent.setAction(null);
-        SettingsPresenter settingsPresenter = new SettingsPresenter(mvpView, new SettingsModel(context));
-        if (!settingsPresenter.isServiceRunning()) {
-            settingsPresenter.startLockService(lockScreenIntent);
-            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, true);
-        } else {
-            settingsPresenter.startLockService(lockScreenIntent);
-            Timber.d("lock screen already running");
-            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
-        }
+    public static void syncDevice(Context context, boolean isSync, boolean apps, boolean extensions, boolean settings) {
+
+        PrefUtils.saveBooleanPref(context, IS_SYNCED, isSync);
+        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, apps);
+        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, extensions);
+        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, settings);
+
     }
 
-    public static void syncDevice(Context context) {
-        PrefUtils.saveBooleanPref(context, IS_SYNCED, true);
-        PrefUtils.saveBooleanPref(context, APPS_SETTING_CHANGE, false);
-        PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
-    }
 
-    public static void unSyncDevice(Context context) {
-        PrefUtils.saveBooleanPref(context, IS_SYNCED, false);
-    }
+
 }

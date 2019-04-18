@@ -1,14 +1,14 @@
 package com.screenlocker.secure.room;
 
+import com.screenlocker.secure.launcher.AppInfo;
+
+import java.util.List;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import com.screenlocker.secure.launcher.AppInfo;
-
-import java.util.List;
 
 @Dao
 public interface MyDao {
@@ -50,6 +50,10 @@ public interface MyDao {
 
     @Query("SELECT * from SubExtension  WHERE uniqueName=:uniqueName")
     List<SubExtension> getSubExtensions(String uniqueName);
+
+    @Query("SELECT * from SubExtension ")
+    List<SubExtension> getAllSubExtensions();
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSubExtensions(SubExtension subExtensionModal);

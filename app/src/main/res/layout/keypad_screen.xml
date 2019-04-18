@@ -10,34 +10,34 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/device_status_labels"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_80sdp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="33dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" >
+        tools:ignore="ContentDescription">
 
         <TextView
             android:id="@+id/textView21"
+            style="@style/TextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            style="@style/TextColor"
             android:text="Device ID :"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/device_id"
+            style="@style/TextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            style="@style/TextColor"
 
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,10 +48,10 @@
 
         <TextView
             android:id="@+id/textView22"
+            style="@style/TextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            style="@style/TextColor"
             android:layout_marginTop="8dp"
             android:text="Status :"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,9 +59,9 @@
 
         <TextView
             android:id="@+id/device_status"
+            style="@style/TextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextColor"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -73,10 +73,10 @@
 
         <TextView
             android:id="@+id/textView23"
+            style="@style/TextColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            style="@style/TextColor"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="Expiry (Remaining Days) :"
@@ -87,8 +87,8 @@
 
         <TextView
             android:id="@+id/device_exp_date"
-            android:layout_width="wrap_content"
             style="@style/TextColor"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -109,11 +109,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_80sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/device_status_labels"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button

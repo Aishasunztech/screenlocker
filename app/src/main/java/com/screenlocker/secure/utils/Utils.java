@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -155,16 +156,23 @@ public class Utils {
 //        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
+
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
-        if (PrefUtils.getStringPref(context, DEVICE_STATUS) == null) {
-            keypadView.findViewById(R.id.device_status_labels).setVisibility(View.INVISIBLE);
+
+        ConstraintLayout constraintLayout = keypadView.findViewById(R.id.device_status_labels);
+
+        if (!PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+            constraintLayout.setVisibility(View.INVISIBLE);
         } else {
-            TextView exDate = keypadView.findViewById(R.id.device_status);
+            constraintLayout.setVisibility(View.VISIBLE);
+            TextView exDate = keypadView.findViewById(R.id.device_exp_date);
             exDate.setText(getRemainingDays(context));
             TextView deviceId = keypadView.findViewById(R.id.device_id);
             deviceId.setText(PrefUtils.getStringPref(context, DEVICE_ID));
-            TextView decice_status = keypadView.findViewById(R.id.device_exp_date);
-            decice_status.setText(PrefUtils.getStringPref(context, DEVICE_STATUS));
+            TextView decice_status = keypadView.findViewById(R.id.device_status);
+
+            String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS) == null ? "active" : PrefUtils.getStringPref(context, DEVICE_STATUS);
+            decice_status.setText(device_status);
         }
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 

@@ -98,7 +98,7 @@ public class LockScreenService extends Service {
         Timber.d("screen locker starting.");
 
 
-        try {
+        if (intent != null) {
             String action = intent.getAction();
 
             Timber.d("locker screen action :%s", action);
@@ -120,14 +120,13 @@ public class LockScreenService extends Service {
                         startLockScreen();
                         break;
                     case "unlinked":
-//                    stopLockScreen();
+                        startLockScreen();
                         break;
                     case "unlocked":
                         removeLockScreenView();
                         break;
                 }
             }
-        } catch (Exception ignored) {
         }
 
 

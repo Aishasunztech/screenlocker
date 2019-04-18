@@ -1,7 +1,6 @@
 package com.screenlocker.secure.settings;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
@@ -75,9 +74,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevcie;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
-import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -86,13 +83,11 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
-import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
-import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
 
@@ -143,23 +138,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-//        ApplicationInfo ai = null;
-//        try {
-//            ai = getPackageManager().getApplicationInfo("com.android.launcher3", 0);
-//            boolean appStatus = ai.enabled;
-//            Log.d("kjdjjsnv", "onCreate: " + ai.packageName);
-//            Log.d("kjdjjsnv", "onCreate: " + appStatus);
-//
-//            if (appStatus) {
-//                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                intent.setData(Uri.parse("package:" + ai.packageName));
-//                startActivity(intent);
-//            }
-//
-//        } catch (Exception e) {
-//            Log.d("kjdjjsnv", "onCreate: " + e.getMessage());
-//        }
+        OneTimeWorkRequest insertionWork =
+                new OneTimeWorkRequest.Builder(BlurWorker.class)
+                        .build();
 
+
+        WorkManager.getInstance().enqueue(insertionWork);
+
+        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
+                .observe(this, workInfo -> {
+                    // Do something with the status
+                    if (workInfo != null && workInfo.getState().isFinished()) {
+                        Timber.d("work completed");
+                        if (listener1 != null) {
+                            listener1.onDataInserted();
+                        }
+                        PrefUtils.saveBooleanPref(this, DB_STATUS, true);
+                    }
+                });
 
         boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
         if (!tourStatus) {
@@ -231,25 +227,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        if (!PermissionUtils.canControlNotification(SettingsActivity.this)) {
 //            PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
 //        }
-
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-
-
-        WorkManager.getInstance().enqueue(insertionWork);
-
-        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-                .observe(this, workInfo -> {
-                    // Do something with the status
-                    if (workInfo != null && workInfo.getState().isFinished()) {
-                        Timber.d("work completed");
-                        if (listener1 != null) {
-                            listener1.onAppsInserted();
-                        }
-                        PrefUtils.saveBooleanPref(this, DB_STATUS, true);
-                    }
-                });
 
 
         final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
@@ -861,7 +838,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    @SuppressLint("SetTextI18n")
+
     private void createAboutDialog() {
 //        about device dialog
 
@@ -886,14 +863,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
         TextView textView16 = aboutDialog.findViewById(R.id.textView16);
 
-        String remaining_days = getRemainingDays(this);
+        String remaining_days = getRemainingDays(SettingsActivity.this);
 
         if (remaining_days != null) {
-
             textView16.setVisibility(View.VISIBLE);
             tvExpiresIn.setVisibility(View.VISIBLE);
             tvExpiresIn.setText(remaining_days);
-
 //            else {
 //                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
 //            }

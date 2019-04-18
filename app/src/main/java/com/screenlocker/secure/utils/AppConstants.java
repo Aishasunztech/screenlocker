@@ -73,12 +73,21 @@ public class AppConstants {
     public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
 
 
-    public static final String RESPONSE_TO_SERVER = "sendApps_";
+    public static final String APPS_SENT_STATUS = "apps_sent_status";
+    public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
+    public static final String SETTINGS_SENT_STATUS = "settings_sent_status";
+    public static final String IS_SYNCED = "is_synced";
+
+
+    public static final String SEND_EXTENSIONS = "sendExtensions_";
     public static final String SEND_APPS = "sendApps_";
     public static final String SEND_SETTINGS = "sendSettings_";
+
+
     public static final String GET_SYNC_STATUS = "get_sync_status_";
+
+
     public static final String GET_APPLIED_SETTINGS = "get_applied_settings_";
-    public static final String IS_SYNCED = "is_synced";
     public static final String ICON_BASE_URL = "http://46.101.243.120:3000/users/getFile/";
     public static final String APPS_SETTING_CHANGE = "APPS_SETTING_CHANGE";
     public static final String SETTINGS_CHANGE = "SETTINGS_CHANGE";

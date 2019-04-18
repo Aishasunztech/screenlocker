@@ -4,17 +4,9 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +24,10 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 import timber.log.Timber;
 
@@ -328,7 +324,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                     }
                     PrefUtils.saveBooleanPref(AppSelectionActivity.this, APPS_SETTING_CHANGE, true);
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
-                    intent.putParcelableArrayListExtra("apps_list", mAppsList);
+//                    intent.putParcelableArrayListExtra("apps_list", mAppsList);
                     LocalBroadcastManager.getInstance(AppSelectionActivity.this).sendBroadcast(intent);
 
                 } catch (Exception e) {

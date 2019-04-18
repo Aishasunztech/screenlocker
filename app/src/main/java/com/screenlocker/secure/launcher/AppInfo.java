@@ -1,14 +1,12 @@
 package com.screenlocker.secure.launcher;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import android.os.Parcel;
-import android.os.Parcelable;
-import androidx.annotation.NonNull;
 
 @Entity
-public class AppInfo implements Parcelable {
+public class AppInfo {
 
     @NonNull
     @PrimaryKey
@@ -124,43 +122,5 @@ public class AppInfo implements Parcelable {
         return this.uniqueName.equals(that.uniqueName);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.uniqueName);
-        dest.writeString(this.label);
-        dest.writeString(this.packageName);
-        dest.writeByteArray(this.icon);
-        dest.writeByte(this.guest ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.enable ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.encrypted ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.extension ? (byte) 1 : (byte) 0);
-    }
-
-    protected AppInfo(Parcel in) {
-        this.uniqueName = in.readString();
-        this.label = in.readString();
-        this.packageName = in.readString();
-        this.icon = in.createByteArray();
-        this.guest = in.readByte() != 0;
-        this.enable = in.readByte() != 0;
-        this.encrypted = in.readByte() != 0;
-        this.extension = in.readByte() != 0;
-    }
-
-    public static final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() {
-        @Override
-        public AppInfo createFromParcel(Parcel source) {
-            return new AppInfo(source);
-        }
-
-        @Override
-        public AppInfo[] newArray(int size) {
-            return new AppInfo[size];
-        }
-    };
 }

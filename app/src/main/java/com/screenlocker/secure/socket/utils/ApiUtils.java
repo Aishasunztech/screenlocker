@@ -2,22 +2,19 @@ package com.screenlocker.secure.socket.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
-import com.screenlocker.secure.settings.SettingContract.SettingsMvpView;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.interfaces.RefreshListener;
 import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,7 +90,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                             if (msg != null) {
                                 switch (msg) {
                                     case "suspended":
-                                        suspendedDevice(context, (SettingsMvpView) context, device_id, "suspended");
+                                        suspendedDevice(context, device_id, "suspended");
                                         utils.sendBroadcast(context, "suspended");
                                         Timber.d("<<< device suspended >>>");
                                         break;
@@ -103,7 +100,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                         Timber.d("<<< device activated >>>");
                                         break;
                                     case "expired":
-                                        suspendedDevice(context, (SettingsMvpView) context, device_id, "expired");
+                                        suspendedDevice(context, device_id, "expired");
                                         utils.sendBroadcast(context, "expired");
                                         Timber.d("<<< device expired >>>");
                                         break;
@@ -162,9 +159,9 @@ public class ApiUtils implements ApiRequests, RefreshListener {
     @Override
     public void onSwipe() {
         Timber.d("<<< swipe to refresh >>>");
-        String device_id = PrefUtils.getStringPref(context, AppConstants.DEVICE_ID);
-        SocketSingleton.closeSocket(device_id);
-        getDeviceId();
+//        String device_id = PrefUtils.getStringPref(context, AppConstants.DEVICE_ID);
+////        SocketSingleton.closeSocket(device_id);
+//        getDeviceId();
     }
 
 

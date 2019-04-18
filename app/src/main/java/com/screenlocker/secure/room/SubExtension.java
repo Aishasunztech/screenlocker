@@ -1,21 +1,16 @@
 package com.screenlocker.secure.room;
 
 
+import com.screenlocker.secure.launcher.AppInfo;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.screenlocker.secure.launcher.AppInfo;
-
-import java.util.Objects;
-
 @Entity
-public class SubExtension implements Parcelable {
+public class SubExtension  {
 
     private String label;
 
@@ -31,26 +26,6 @@ public class SubExtension implements Parcelable {
     @PrimaryKey
     private String uniqueExtension;
 
-    protected SubExtension(Parcel in) {
-        label = in.readString();
-        uniqueName = in.readString();
-        uniqueExtension = Objects.requireNonNull(in.readString());
-        icon = in.createByteArray();
-        guest = in.readByte() != 0;
-        encrypted = in.readByte() != 0;
-    }
-
-    public static final Creator<SubExtension> CREATOR = new Creator<SubExtension>() {
-        @Override
-        public SubExtension createFromParcel(Parcel in) {
-            return new SubExtension(in);
-        }
-
-        @Override
-        public SubExtension[] newArray(int size) {
-            return new SubExtension[size];
-        }
-    };
 
     @NonNull
     public String getUniqueExtension() {
@@ -120,18 +95,5 @@ public class SubExtension implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(label);
-        dest.writeString(uniqueName);
-        dest.writeString(uniqueExtension);
-        dest.writeByteArray(icon);
-        dest.writeByte((byte) (guest ? 1 : 0));
-        dest.writeByte((byte) (encrypted ? 1 : 0));
-    }
 }

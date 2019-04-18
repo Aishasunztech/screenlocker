@@ -8,6 +8,8 @@ public interface SocketEvents {
 
     void sendApps();
 
+    void sendExtensions();
+
     void getDeviceStatus();
 
     void sendSettings();

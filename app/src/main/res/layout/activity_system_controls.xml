@@ -16,12 +16,12 @@
 
     <ImageView
         android:id="@+id/appImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
         android:contentDescription="@string/description_app_image"
         app:layout_constraintBottom_toBottomOf="@+id/switchGuest"
-        app:layout_constraintEnd_toStartOf="@+id/switchGuest"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/switchGuest"
         tools:src="@mipmap/ic_launcher" />
 
@@ -29,11 +29,12 @@
         android:id="@+id/switchGuest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
 
+        android:layout_marginTop="16dp"
         android:switchPadding="8dp"
         android:text="Guest"
-        app:layout_constraintEnd_toStartOf="@+id/switchEncrypt"
+        app:layout_constraintStart_toEndOf="@+id/appImage"
         app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
     <Switch
@@ -41,10 +42,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_marginStart="8dp"
         android:switchPadding="8dp"
         android:text="Encrypt"
         app:layout_constraintBottom_toBottomOf="@+id/switchGuest"
-        app:layout_constraintEnd_toStartOf="@+id/switchDisable"
+        app:layout_constraintStart_toEndOf="@+id/switchGuest"
         app:layout_constraintTop_toTopOf="@+id/switchGuest" />
 
     <Switch
@@ -52,10 +54,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_marginStart="8dp"
         android:switchPadding="8dp"
         android:text="Enable"
         app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/switchEncrypt"
         app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
 
     <View
