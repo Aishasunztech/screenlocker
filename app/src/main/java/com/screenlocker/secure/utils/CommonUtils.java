@@ -219,12 +219,12 @@ public class CommonUtils {
         Drawable screenLock_drawable = context.getResources().getDrawable(R.drawable.ic_screen_lock);
         byte[] screenLock_icon = CommonUtils.convertDrawableToByteArray(screenLock_drawable);
         SubExtension screenLock = new SubExtension();
-        screenLock.setLabel("Screen Lock");
+        screenLock.setLabel("Finger Print + Lock");
         screenLock.setIcon(screenLock_icon);
         screenLock.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         screenLock.setGuest(false);
         screenLock.setEncrypted(false);
-        screenLock.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Screen Lock");
+        screenLock.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Finger Print + Lock");
         subExtensions.add(screenLock);
 
         // HOT SPOT
@@ -251,7 +251,43 @@ public class CommonUtils {
         sleep.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sleep");
         subExtensions.add(sleep);
 
+        // BATTERY
+        Drawable battery_drawable = context.getResources().getDrawable(R.drawable.ic_battery);
+        byte[] battery_icon = CommonUtils.convertDrawableToByteArray(battery_drawable);
+        SubExtension battery = new SubExtension();
+        battery.setLabel("Battery");
+        battery.setIcon(battery_icon);
+        battery.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        battery.setGuest(false);
+        battery.setEncrypted(false);
+        battery.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery");
+        subExtensions.add(battery);
 
+        // SOUND
+        Drawable sound_drawable = context.getResources().getDrawable(R.drawable.ic_sound);
+        byte[] sound_icon = CommonUtils.convertDrawableToByteArray(sound_drawable);
+        SubExtension sound = new SubExtension();
+        sound.setLabel("Sound");
+        sound.setIcon(sound_icon);
+        sound.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        sound.setGuest(false);
+        sound.setEncrypted(false);
+        sound.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound");
+        subExtensions.add(sound);
+
+        // DATE & TIME
+        Drawable dateTime_drawable = context.getResources().getDrawable(R.drawable.ic_date_time);
+        byte[] dateTime_icon = CommonUtils.convertDrawableToByteArray(dateTime_drawable);
+        SubExtension dateTime = new SubExtension();
+        dateTime.setLabel("Date & Time");
+        dateTime.setIcon(dateTime_icon);
+        dateTime.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        dateTime.setGuest(false);
+        dateTime.setEncrypted(false);
+        dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
+        subExtensions.add(dateTime);
+        
+        
         for (SubExtension subExtension : subExtensions) {
             MyApplication.getAppDatabase(context).getDao().insertSubExtensions(subExtension);
         }

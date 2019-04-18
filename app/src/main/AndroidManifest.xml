@@ -279,7 +279,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.SecureSettingsMain"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme"/>
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />
 

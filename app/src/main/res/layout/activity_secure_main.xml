@@ -21,15 +21,20 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:background="@android:color/white"
+            app:titleTextColor="@color/SettingsColorPrimary"
+            />
     </com.google.android.material.appbar.AppBarLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settings_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:tag="@string/app_name">
 
 
@@ -49,7 +54,8 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_wifi" />
+                android:src="@drawable/ic_wifi"
+                android:tint="@android:color/black"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Wi-Fi"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -97,7 +103,7 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
-
+                android:tint="@android:color/black"
                 android:layout_marginLeft="20dp"
                 android:src="@drawable/ic_bluetooth" />
 
@@ -112,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Bluetooth"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -147,7 +153,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/ic_sim_card" />
 
             <LinearLayout
@@ -161,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="SIM Cards"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -187,7 +193,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/sim_card_icon"
                 android:visibility="invisible" />
 
@@ -202,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Data Roaming"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -227,7 +233,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/ic_wifi_hotspot"
                 android:visibility="visible" />
 
@@ -242,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Hotspot"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -267,7 +273,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/ic_screen_lock"
                 android:visibility="visible" />
 
@@ -281,8 +287,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
-                    android:text="Screen Lock"
-                    android:textColor="@color/textColorPrimary"
+                    android:text="Finger Print + Lock"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -307,7 +313,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/ic_settings_brightness" />
 
             <LinearLayout
@@ -321,7 +327,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Brightness"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -358,7 +364,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-
+                android:tint="@android:color/black"
                 android:src="@drawable/ic_sleep"
                  />
 
@@ -373,7 +379,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:text="Sleep"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -394,10 +400,224 @@
             </LinearLayout>
 
 
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/battery_cotainer"
+            style="@style/MainActivityItemsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/sleep_cotainer">
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:tint="@android:color/black"
+                android:src="@drawable/ic_battery"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Battery"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/battery_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="99 %"
+                    app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                    />
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sound_container"
+            style="@style/MainActivityItemsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/battery_cotainer">
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:tint="@android:color/black"
+                android:src="@drawable/ic_sound"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Sound"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/sound_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Volume, vibration, Do Not Disturb"
+
+
+                    />
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/language_container"
+            style="@style/MainActivityItemsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/sound_container">
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:tint="@android:color/black"
+                android:src="@drawable/ic_language"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Languages"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                     />
+
+
+                <TextView
+                    android:id="@+id/language_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Volume, vibration, Do Not Disturb"
+
+
+                    />
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dateTime_container"
+            style="@style/MainActivityItemsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/language_container">
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:tint="@android:color/black"
+                android:src="@drawable/ic_date_time"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Date &amp; time"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    />
+
+
+                <TextView
+                    android:id="@+id/dateTimeStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Volume, vibration, Do Not Disturb"
+                    android:visibility="gone"
+
+                    />
+
+
+            </LinearLayout>
+
+
+
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+</ScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -429,5 +649,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </LinearLayout>

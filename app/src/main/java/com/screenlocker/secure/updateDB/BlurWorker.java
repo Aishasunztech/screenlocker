@@ -101,6 +101,7 @@ public class BlurWorker extends Worker {
                 setSecureSettingsMenu(applicationContext);
             }
 
+
             return Worker.Result.success();
         } catch (Throwable throwable) {
 

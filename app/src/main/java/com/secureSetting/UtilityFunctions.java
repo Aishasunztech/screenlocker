@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.LOCATION_SETTINGS_CODE;
@@ -143,7 +145,7 @@ public class UtilityFunctions {
             String SSID = wifiInfo.getSSID().substring(1,wifiInfo.getSSID().length()-1);
             if(SSID.contains("unknown"))
             {
-                  return "Non Connected";
+                  return "Not Connected";
             }
             else{
 
@@ -155,7 +157,7 @@ public class UtilityFunctions {
         } else {
             int wifiState = wifiManager.getWifiState();
             if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                return "Non Connected";
+                return "Not Connected";
             } else {
                 return "Disabled";
             }
@@ -184,6 +186,11 @@ public class UtilityFunctions {
             EasyPermissions.requestPermissions(activity,activity.getString(R.string.fine_location_and_cross_location),
                     RC_PERMISSION, prems);
         }
+    }
+
+    public static int getBatteryLevel(Context context) {
+        BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
     }
 
 
