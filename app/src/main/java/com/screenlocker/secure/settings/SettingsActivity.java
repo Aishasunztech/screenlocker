@@ -114,7 +114,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     /**
      * request code for the set password activity
      */
-    private static final int REQUEST_CODE_PASSWORD = 883;
+    public static final int REQUEST_CODE_PASSWORD = 883;
     private InputMethodManager imm;
     private Switch switchEnableVpn;
 

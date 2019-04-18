@@ -352,16 +352,8 @@ public class LinkDeviceActivity extends BaseActivity {
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
         if (btnLinkDevice.getText().equals("Next")) {
-            boolean tour_status = PrefUtils.getBooleanPref(LinkDeviceActivity.this, TOUR_STATUS);
-            if (tour_status) {
-                finish();
-            } else {
-                int current_step = PrefUtils.getIntegerPref(LinkDeviceActivity.this, CURRENT_STEP);
-                PrefUtils.saveIntegerPref(LinkDeviceActivity.this, CURRENT_STEP, current_step + 1);
-                Log.d("kjgjnjsg", "onClickBtnLinkDevice: " + PrefUtils.getIntegerPref(LinkDeviceActivity.this, CURRENT_STEP));
-                finish();
-            }
-
+            PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+            finish();
         } else {
             processingLinkViewState();
 
@@ -444,7 +436,6 @@ public class LinkDeviceActivity extends BaseActivity {
                             if (ldr.getStatus().equals("true")) {
 
                                 if (response.body().getStatus().equals("true")) {
-                                    Log.e(TAG, "onResponse: AUTOLOGINREMOVED");
                                     PrefUtils.saveStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN, null);
                                     checkLinkDeviceStatus();
                                 } else {
@@ -496,8 +487,6 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
-        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
         // pgp Email
         String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
         if (pgp_Email != null) {

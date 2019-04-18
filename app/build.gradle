@@ -124,8 +124,7 @@ dependencies {
     //ssp
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'pub.devrel:easypermissions:2.0.1'
-
-
+    implementation project(':Stepper1')
 }
 repositories {
     mavenCentral()

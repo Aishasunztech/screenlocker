@@ -64,13 +64,13 @@ public class AppConstants {
 
 
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
-    public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
+    //    public static String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-//    public static final String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
+    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
-    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
+    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
 
 
     public static final String RESPONSE_TO_SERVER = "sendApps_";
@@ -90,6 +90,17 @@ public class AppConstants {
     public static final String DEFAULT_MAIN_PASS = "5678";
     public static final String DEFAULT_GUEST_PASS = "1234";
 
+    /*Permissions Strings*/
+    public static final String PER_ADMIN = "per_admin";
+    public static final String PER_OVERLAY = "per_overlay";
+    public static final String PER_MODIFIY = "per_modify";
+    public static final String PER_USAGE = "per_usage";
+    public static final String PER_UNKNOWN = "per_unknown";
+    public static final String PER_RUNTIME = "per_runtime";
+    public static final String PER_BATTERY = "per_batteryopt";
+    public static final String PER_NOTIFICATION = "per_notification";
+    public static final String PERMISSIONS_NUMBER = "permission_numbers";
+    public static final int  NOFICATION_REQUEST = 1323;
 
     // MDM
 
@@ -118,6 +129,12 @@ public class AppConstants {
     //Permissions codes
 
     public static final int CODE_WRITE_SETTINGS_PERMISSION = 2;
+    public static final int CODE_UNKNOWN_RESOURCES = 225;
+    public static final int CODE_MODIFY_SYSTEMS_STATE = 223;
+    public static final int CODE_USAGE_ACCESS = 224;
+    public static final int CODE_BATERY_OPTIMIZATION = 2255;
+    public static final int CODE_LAUNCHER = 2265;
+
     public static final int RESULT_ENABLE = 11;
     public static final int PERMISSION_REQUEST_READ_PHONE_STATE = 100;
     public static final int REQUEST_READ_PHONE_STATE = 2020;

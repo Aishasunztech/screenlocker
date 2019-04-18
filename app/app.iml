@@ -218,7 +218,7 @@
     <orderEntry type="library" name="Gradle: com.theartofdev.edmodo:android-image-cropper:2.7.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.collection:collection:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-process:2.0.0@aar" level="project" />
-    <orderEntry type="module" module-name="steppers" />
+    <orderEntry type="module" module-name="Stepper1" />
     <orderEntry type="module" module-name="steppers" />
   </component>
 </module>
