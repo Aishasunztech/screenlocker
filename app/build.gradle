@@ -16,7 +16,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.vortexlocker.app"
+        applicationId "com.titanlocker.secure"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
