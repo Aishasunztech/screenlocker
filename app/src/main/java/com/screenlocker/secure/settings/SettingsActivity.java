@@ -38,7 +38,6 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
-import com.screenlocker.secure.permissions.StepperActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
@@ -84,7 +83,6 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
-import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
@@ -157,13 +155,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
 
-        boolean tourStatus = PrefUtils.getBooleanPref(this, TOUR_STATUS);
-        if (!tourStatus) {
-            Intent intent = new Intent(this, StepperActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
 
 
         init();

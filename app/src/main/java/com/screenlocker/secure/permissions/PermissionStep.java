@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Set;
@@ -36,6 +37,7 @@ import static com.screenlocker.secure.utils.AppConstants.CODE_BATERY_OPTIMIZATIO
 import static com.screenlocker.secure.utils.AppConstants.CODE_MODIFY_SYSTEMS_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_UNKNOWN_RESOURCES;
 import static com.screenlocker.secure.utils.AppConstants.CODE_USAGE_ACCESS;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.NOFICATION_REQUEST;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSIONS_NUMBER;
 import static com.screenlocker.secure.utils.AppConstants.PER_ADMIN;
@@ -64,8 +66,13 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
     private ComponentName compName;
 
     @Override
+    public void onNext() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,1);
+    }
+
+    @Override
     public boolean nextIf() {
-        return PrefUtils.getIntegerPref(getContext(),PERMISSIONS_NUMBER) ==8;
+        return PrefUtils.getIntegerPref(MyApplication.getAppContext(),PERMISSIONS_NUMBER) ==8;
 
     }
 
@@ -206,32 +213,32 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
                 if (resultCode == RESULT_OK) {
                     activeAdmin.setChecked(true);
                     activeAdmin.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_ADMIN, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else activeAdmin.setChecked(false);
                 break;
             case DRAW_OVERLAY:
                 if (Settings.canDrawOverlays(getContext())) {
                     drawoverlay.setChecked(true);
                     drawoverlay.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_OVERLAY, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else drawoverlay.setChecked(false);
                 break;
             case CODE_MODIFY_SYSTEMS_STATE:
                 if (android.provider.Settings.System.canWrite(getActivity())) {
                     modifiSystemState.setChecked(true);
                     modifiSystemState.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_MODIFIY, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_MODIFIY, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else modifiSystemState.setChecked(false);
                 break;
             case CODE_USAGE_ACCESS:
                 if (isAccessGranted(getActivity())) {
                     usageAccess.setChecked(true);
                     usageAccess.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_USAGE, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else usageAccess.setChecked(false);
                 break;
             case CODE_UNKNOWN_RESOURCES:
@@ -239,26 +246,26 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
 
                     unknownResources.setChecked(true);
                     unknownResources.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_UNKNOWN, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else unknownResources.setChecked(false);
                 break;
             case NOFICATION_REQUEST:
                 Set<String> abc = NotificationManagerCompat
-                        .getEnabledListenerPackages(getContext());
-                if (abc.contains(getContext().getPackageName())) {
+                        .getEnabledListenerPackages(MyApplication.getAppContext());
+                if (abc.contains(MyApplication.getAppContext().getPackageName())) {
                     notificationAccess.setChecked(true);
                     notificationAccess.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_NOTIFICATION, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 } else notificationAccess.setChecked(false);
                 break;
             case CODE_BATERY_OPTIMIZATION:
                 if (resultCode == RESULT_OK){
                     batteryOptimization.setChecked(true);
                     batteryOptimization.setClickable(false);
-                    PrefUtils.saveBooleanPref(getContext(), PER_BATTERY, true);
-                    PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
                 }else batteryOptimization.setChecked(false);
 
         }
@@ -274,8 +281,8 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
                     grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                 runtimePermissions.setChecked(true);
                 runtimePermissions.setClickable(false);
-                PrefUtils.saveBooleanPref(getContext(), PER_RUNTIME, true);
-                PrefUtils.saveIntegerPref(getContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(getContext(), PERMISSIONS_NUMBER) + 1));
+                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
+                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER, (PrefUtils.getIntegerPref(MyApplication.getAppContext(), PERMISSIONS_NUMBER) + 1));
             } else {
                 runtimePermissions.setChecked(false);
 
@@ -292,7 +299,7 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
 
         if (!Settings.canDrawOverlays(getContext())) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+            intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));
 
 
             startActivityForResult(intent, DRAW_OVERLAY);
@@ -301,12 +308,12 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void requestUnknownResouirces() {
-        boolean isNonPlayAppAllowed = getContext().getPackageManager().canRequestPackageInstalls();
+        boolean isNonPlayAppAllowed = MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls();
 
 
         if (!isNonPlayAppAllowed) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-            intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+            intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));
             startActivityForResult(intent, CODE_UNKNOWN_RESOURCES);
         }
     }

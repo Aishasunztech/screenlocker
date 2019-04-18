@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Stepper1/Stepper1.iml" filepath="$PROJECT_DIR$/Stepper1/Stepper1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stepper/Stepper.iml" filepath="$PROJECT_DIR$/Stepper/Stepper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/screenlockerv4.iml" filepath="$PROJECT_DIR$/screenlockerv4.iml" />
-      <module fileurl="file://$PROJECT_DIR$/steppers/steppers.iml" filepath="$PROJECT_DIR$/steppers/steppers.iml" />
     </modules>
   </component>
 </project>

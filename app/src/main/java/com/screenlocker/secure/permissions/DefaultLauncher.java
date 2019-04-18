@@ -20,9 +20,12 @@ import android.widget.Button;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import static android.app.Activity.RESULT_OK;
 import static com.screenlocker.secure.utils.AppConstants.CODE_LAUNCHER;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 
 
@@ -39,6 +42,17 @@ public class DefaultLauncher extends AbstractStep {
     @Override
     public boolean nextIf() {
         return allow;
+    }
+
+    @Override
+    public void onNext() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,6);
+    }
+
+    @Override
+    public void onSkip() {
+        super.onSkip();
+
     }
 
     @Override
@@ -84,7 +98,7 @@ public class DefaultLauncher extends AbstractStep {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(getContext()) ){
+        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext()) ){
             setLauncher.setText("Default Launcher set");
             setLauncher.setEnabled(false);
             setLauncher.setClickable(false);

@@ -13,6 +13,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper {
@@ -23,8 +24,16 @@ public class SteppersActivity extends DotStepper {
 
         setTitle("Permissions");
 
-//        setPrimaryColor(R.color.colorPrimary);
-//        setDarkPrimaryColor(R.color.colorPrimaryDark);
+
+        boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
+
+        if (tour_status) {
+            Intent intent = new Intent(SteppersActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+
 
 
         addStep(createFragment(new PermissionStep()));
@@ -36,7 +45,13 @@ public class SteppersActivity extends DotStepper {
         addStep(createFragment(new Finish()));
 
 
+
         super.onCreate(savedInstanceState);
+        int position =PrefUtils.getIntegerPref(getApplication(),DEF_PAGE_NO);
+        mSteps.current(position);
+        onUpdate();
+
+
 
 
     }

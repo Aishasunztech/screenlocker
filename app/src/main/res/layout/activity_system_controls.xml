@@ -16,38 +16,50 @@
 
     <ImageView
         android:id="@+id/appImage"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/description_app_image"
-        app:layout_constraintBottom_toBottomOf="@+id/switchGuest"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/switchGuest"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintEnd_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5"
         tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="10dp"
+        android:text="Android Settings"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
     <Switch
         android:id="@+id/switchGuest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:switchPadding="8dp"
         android:text="Guest"
-        app:layout_constraintStart_toEndOf="@+id/appImage"
-        app:layout_constraintTop_toBottomOf="@+id/appBar" />
+        app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
+        app:layout_constraintEnd_toStartOf="@+id/switchEncrypt"
+        app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
 
     <Switch
         android:id="@+id/switchEncrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:switchPadding="8dp"
         android:text="Encrypt"
-        app:layout_constraintBottom_toBottomOf="@+id/switchGuest"
-        app:layout_constraintStart_toEndOf="@+id/switchGuest"
-        app:layout_constraintTop_toTopOf="@+id/switchGuest" />
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Switch
         android:id="@+id/switchDisable"
@@ -59,7 +71,8 @@
         android:text="Enable"
         app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
         app:layout_constraintStart_toEndOf="@+id/switchEncrypt"
-        app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
+        app:layout_constraintTop_toTopOf="@+id/switchEncrypt"
+        app:layout_constraintVertical_bias="0.0" />
 
     <View
         android:id="@+id/divider7"
@@ -69,7 +82,9 @@
         android:background="@color/colorLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchGuest" />
+        app:layout_constraintTop_toBottomOf="@+id/switchEncrypt"
+
+        tools:layout_editor_absoluteY="169dp" />
 
     <TextView
         android:id="@+id/textView6"

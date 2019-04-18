@@ -76,7 +76,7 @@
     <string name="session_expired">Session expired</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="system_controls">System Permission</string>
+    <string name="system_controls">System Permissions</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
     <string name="chat_id">Chat Id</string>

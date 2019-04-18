@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Validator;
@@ -20,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
@@ -29,10 +31,14 @@ public class GuestPassword extends AbstractStep implements View.OnClickListener 
         return "Guess Password";
     }
 
+    @Override
+    public void onNext() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,2);
+    }
 
     @Override
     public boolean nextIf() {
-        if (PrefUtils.getStringPref(getContext(), KEY_GUEST_PASSWORD) != null ) {
+        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null ) {
             return true;
         }
         return false;
@@ -96,7 +102,7 @@ public class GuestPassword extends AbstractStep implements View.OnClickListener 
                 //Password password = new Password();
                 // password.setUserPassword(reEnteredPassword);
                         if (keyOk) {
-                            PrefUtils.saveStringPref(getContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
                             btnConfirm.setText("Pin Confirmed");
                             btnConfirm.setEnabled(false);
                         } else {

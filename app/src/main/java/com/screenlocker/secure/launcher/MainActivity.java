@@ -24,7 +24,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -36,13 +35,12 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.permissions.StepperActivity;
+import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.SettingsModel;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
@@ -58,10 +56,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 /**
@@ -103,7 +98,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-            Intent intent = new Intent(this, StepperActivity.class);
+            Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -119,27 +114,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
         boolean tour_status = PrefUtils.getBooleanPref(this, TOUR_STATUS);
-
-        if (!tour_status) {
-            if (settingsPresenter.isMyLauncherDefault()) {
-                try {
-
-                    String key_guest = PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD);
-                    if (key_guest == null)
-                        PrefUtils.saveStringPref(this, KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
-                    String key_main = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
-                    if (key_main == null)
-                        PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-                    PrefUtils.saveBooleanPref(this, TOUR_STATUS, true);
-                    Intent intent = new Intent(this, SettingsActivity.class);
-                    startActivity(intent);
-                    StepperActivity.activity.finish();
-                    finish();
-                } catch (Exception ignored) {
-                }
-
-            }
-        }
 
 
         screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {

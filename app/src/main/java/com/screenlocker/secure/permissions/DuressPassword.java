@@ -1,16 +1,17 @@
 
 package com.screenlocker.secure.permissions;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.settings.SetUpLockActivity;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Validator;
@@ -24,20 +25,30 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class DuressPassword extends AbstractStep implements View.OnClickListener {
+
     @Override
     public String name() {
         return "Duress Pin";
     }
 
+    @Override
+    public void onNext() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
+    }
+
+    @Override
+    public void onSkip() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
+        super.onSkip();
+    }
 
     @Override
     public boolean nextIf() {
-        if (PrefUtils.getStringPref(getContext(), KEY_DURESS_PASSWORD) != null) {
+        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_DURESS_PASSWORD) != null) {
             return true;
         }
         return false;
@@ -55,8 +66,8 @@ public class DuressPassword extends AbstractStep implements View.OnClickListener
 
     @Override
     public void onStepVisible() {
-        if (PrefUtils.getStringPref(getContext(), AppConstants.KEY_DURESS_PASSWORD) == null) {
-            new AlertDialog.Builder(getContext()).
+        if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null && mContext != null) {
+            new AlertDialog.Builder(mContext).
                     setTitle("Warning!")
                     .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.")
                     .setPositiveButton("Ok", (dialogInterface, i) -> {
@@ -65,10 +76,21 @@ public class DuressPassword extends AbstractStep implements View.OnClickListener
 
                     .setNegativeButton("Cancel", (dialogInterface, i) -> {
 //                        dialogInterface.cancel();
-                        onSkip();
+                        dialogInterface.dismiss();
+
                     })
                     .show();
         }
+    }
+
+    Context mContext = null;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mContext = context;
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,11 @@ import android.widget.Button;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 
 
@@ -34,8 +37,19 @@ public class LinkDevice extends AbstractStep {
     }
 
     @Override
+    public void onNext() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,5);
+    }
+
+    @Override
+    public void onSkip() {
+        super.onSkip();
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,5);
+    }
+
+    @Override
     public boolean nextIf() {
-        return PrefUtils.getBooleanPref(getContext(),DEVICE_LINKED_STATUS);
+        return PrefUtils.getBooleanPref(MyApplication.getAppContext(),DEVICE_LINKED_STATUS);
     }
 
     @Override
@@ -49,7 +63,7 @@ public class LinkDevice extends AbstractStep {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_link_device, container, false);

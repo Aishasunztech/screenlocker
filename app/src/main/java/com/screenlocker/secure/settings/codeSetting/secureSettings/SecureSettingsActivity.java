@@ -201,67 +201,48 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.extension_select_menu, menu);
-        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int guestStatus = myDao.checkGuestStatus(false);
-                if(guestStatus == 0)
-                {
-                    menu.findItem(R.id.extension_guest_all).setChecked(true);
 
-                }else{
-                    menu.findItem(R.id.extension_guest_all).setChecked(false);
-
-                }
-
-                int encryptedStatus = myDao.checkEncryptedStatus(false);
-                if(encryptedStatus == 0)
-                {
-                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
-
-                }else{
-                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
-
-                }
-            }
-        }).start();
-
-
-//            if(PrefUtils.getBooleanPref(this,EXTENSION_GUEST_CHECKED))
-//            {
-//                menu.findItem(R.id.extension_guest_all).setChecked(true);
+//        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                int guestStatus = myDao.checkGuestStatus(false);
+//                if(guestStatus == 0)
+//                {
+//                    menu.findItem(R.id.extension_guest_all).setChecked(true);
+//
+//                }else{
+//                    menu.findItem(R.id.extension_guest_all).setChecked(false);
+//
+//                }
+//
+//                int encryptedStatus = myDao.checkEncryptedStatus(false);
+//                if(encryptedStatus == 0)
+//                {
+//                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
+//
+//                }else{
+//                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
+//
+//                }
 //            }
-//            else{
-//                menu.findItem(R.id.extension_guest_all).setChecked(false);
-//
-//            }
-
-//        if(PrefUtils.getBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED))
-//        {
-//            menu.findItem(R.id.extension_encryption_all).setChecked(true);
-//        }
-//        else{
-//            menu.findItem(R.id.extension_encryption_all).setChecked(false);
-//
-//        }
+//        }).start();
 
 
-//        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_GUEST_ALL)) {
-//            // all hide switch is turned on
-//            menu.findItem(R.id.action_guest_all).setChecked(true);
-//        } else {
-//            // all hide switch is turned off
-//            menu.findItem(R.id.action_guest_all).setChecked(false);
-//        }
-//
-//        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL)) {
-//            // all hide switch is turned on
-//            menu.findItem(R.id.action_encryption_all).setChecked(true);
-//        } else {
-//            // all hide switch is turned off
-//            menu.findItem(R.id.action_encryption_all).setChecked(false);
-//        }
+        if (PrefUtils.getBooleanPref(this, EXTENSION_GUEST_CHECKED)) {
+            menu.findItem(R.id.extension_guest_all).setChecked(true);
+        } else {
+            menu.findItem(R.id.extension_guest_all).setChecked(false);
+
+        }
+
+        if (PrefUtils.getBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED)) {
+            menu.findItem(R.id.extension_encryption_all).setChecked(true);
+        } else {
+            menu.findItem(R.id.extension_encryption_all).setChecked(false);
+
+        }
+
 
 
         return true;
@@ -296,7 +277,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-//                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,false);
+                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,false);
                     item.setChecked(false);
                 } else {
                     for (SubExtension subExtension : extensionsList) {
@@ -318,7 +299,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-//                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,true);
+                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,true);
 
                     item.setChecked(true);
                 }
@@ -350,7 +331,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-//                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,false);
+                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,false);
 
 
                     item.setChecked(false);
@@ -375,7 +356,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-//                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,true);
+                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,true);
                     item.setChecked(true);
                 }
 
