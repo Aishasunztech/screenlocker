@@ -2,28 +2,24 @@ package com.screenlocker.secure.permissions;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.utils.PrefUtils;
 
-import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Finish extends AbstractStep {
+public class FinishFragment extends AbstractStep {
 
 
-    public Finish() {
+    public FinishFragment() {
         // Required empty public constructor
     }
 

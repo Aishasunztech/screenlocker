@@ -3,14 +3,6 @@ package com.screenlocker.secure.permissions;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +14,12 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 
@@ -29,13 +27,13 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LinkDevice extends AbstractStep {
+public class LinkDeviceFragment extends AbstractStep {
 
 
-    public LinkDevice() {
+    public LinkDeviceFragment() {
         // Required empty public constructor
     }
-
+    //save the status of this step as completed
     @Override
     public void onNext() {
         PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,5);
@@ -44,19 +42,20 @@ public class LinkDevice extends AbstractStep {
     @Override
     public void onSkip() {
         super.onSkip();
+        //save the status of this step as completed
         PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,5);
     }
-
+    //next only if device is linked other wise skip
     @Override
     public boolean nextIf() {
         return PrefUtils.getBooleanPref(MyApplication.getAppContext(),DEVICE_LINKED_STATUS);
     }
-
+    //if user try to next without linking device
     @Override
     public String error() {
         return "Please Link Device or Skip";
     }
-
+    // user can skip the current step
     @Override
     public boolean setSkipable() {
         return true;

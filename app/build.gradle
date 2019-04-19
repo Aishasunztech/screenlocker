@@ -103,13 +103,13 @@ dependencies {
 
     // TIMBER
     implementation "com.jakewharton.timber:timber:$versionTimber"
-
+    //matrial design
+    implementation 'com.google.android.material:material:1.0.0'
     //WORK MANAGER
     implementation "android.arch.work:work-runtime:$work"
 
     //SOCKET.IO
     implementation 'com.github.nkzawa:socket.io-client:0.3.0'
-
 
     //fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {

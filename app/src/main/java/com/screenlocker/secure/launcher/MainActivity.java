@@ -2,10 +2,7 @@ package com.screenlocker.secure.launcher;
 
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,22 +12,12 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
@@ -41,17 +28,18 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.settings.SettingsModel;
-import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
@@ -74,8 +62,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 //    public static Activity context = null;
 
-    private HashSet<String> whiteAppsList = new HashSet<>();
-
 
     PowerManager powerManager;
 
@@ -87,7 +73,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
-    private SettingsPresenter settingsPresenter;
 
 
     private ScreenOffReceiver screenOffReceiver;
@@ -108,20 +93,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         appExecutor = AppExecutor.getInstance();
 
-
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
-        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
-        boolean tour_status = PrefUtils.getBooleanPref(this, TOUR_STATUS);
-
-
-        screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {
-            @Override
-            public void onScreenOff() {
-                clearRecentApp();
-            }
-        });
+        screenOffReceiver = new ScreenOffReceiver(this::clearRecentApp);
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -140,29 +115,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     .build();
             ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
         }
-
-
-
-        //Remove title bar
-        // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//Remove notification bar
-        // this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-
-        ComponentName compName = new ComponentName(this, MyAdmin.class);
         mainPresenter = new MainPresenter(this, new MainModel(this));
         background = findViewById(R.id.background);
         pm = getPackageManager();
-        //        LockScreenService lockScreenService = new LockScreenService();
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
-
-        // if service is  running make it run
-//        if (mainPresenter.isServiceRunning() && PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) != null) {
-//            PrefUtils.saveToPref(this, true);
-//            mainPresenter.startLockService(lockScreenIntent);
-//            Toast.makeText(lockScreenService, "service is running now", Toast.LENGTH_SHORT).show();
-//            ((KeyguardManager) getSystemService(KEYGUARD_SERVICE)).newKeyguardLock("IN").disableKeyguard();
-//        }
 
         setRecyclerView();
 
@@ -180,7 +137,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         } catch (Exception ignored) {
         }
-        //      Toast.makeText(this, " "+PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN), Toast.LENGTH_LONG).show();
+
 
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
                 && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE)) {
@@ -188,9 +145,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (!mainPresenter.isServiceRunning()) {
                 mainPresenter.startLockService(lockScreenIntent);
             }
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                MyService.enqueueWork(SecureSettingsMain.this, new Intent());
-//            }
             try {
                 sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
             } catch (Exception ignored) {
@@ -208,9 +162,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     devicePolicyManager.lockNow();
                 }
             }
-
-
-            //MyApplication.getDevicePolicyManager(this).lockNow();
         }
 
     }
@@ -246,7 +197,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            sheduleRecentAppsKill();
+            sheduleScreenOffMonitor();
             clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
@@ -258,20 +209,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 @Override
                 public void run() {
                     mainPresenter.addDataToList(pm, message, adapter);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
+                    runOnUiThread(() -> adapter.notifyDataSetChanged());
                 }
             };
             t2.start();
-//            if (message.equals(KEY_MAIN_PASSWORD)) {
-//                userBaseQuery(false);
-//            } else if (message.equals(KEY_GUEST_PASSWORD)) {
-//                userBaseQuery(true);
-//            }
 
         }
 
@@ -342,16 +283,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     }
 
-
-    @Override
-    protected void onStop() {
-
-
-        super.onStop();
-
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -372,7 +303,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private void setBackground(String message) {
 
         try {
-            String bg = "";
+            String bg;
             if (!message.equals("")) {
                 if (message.equals(KEY_GUEST_PASSWORD)) {
                     // for the guest type user
@@ -415,124 +346,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
      */
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        //do nothing here
     }
-
-
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    private void checkCurrentProcess() {
-//        try {
-//            if (isAccessGranted(SecureSettingsMain.this)) {
-//                String currentProcess = retriveNewApp();
-//                if (currentProcess.contains("com.android.systemui")) {
-//                    clearRecentApp();
-//                }
-//
-//            } else {
-//                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-//                startActivity(intent);
-//            }
-//
-//        } catch (Exception ignored) {
-//        }
-//
-//    }
-
-
-    public String getCurrentApp() {
-
-        String dum = null;
-        try {
-            if (Build.VERSION.SDK_INT >= 21) {
-                String currentApp = null;
-                UsageStatsManager usm = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-                }
-                long time = System.currentTimeMillis();
-                List<UsageStats> applist = null;
-                if (usm != null) {
-                    applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
-                }
-                if (applist != null && applist.size() > 0) {
-                    SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
-
-                    for (UsageStats usageStats : applist) {
-                        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-                    }
-                    if (!mySortedMap.isEmpty()) {
-                        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
-                    }
-                }
-                return currentApp;
-            } else {
-                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                String mm = null;
-                if (manager != null) {
-                    mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
-                }
-                return mm;
-            }
-        } catch (Exception e) {
-            Timber.d("getCurrentApp: %s", e.getMessage());
-
-            return dum;
-        }
-    }
-
-
-    /**
-     * Queering allowed packages on user base
-     *
-     * @param isGuest identify if current user is guest or not.
-     */
-//    private synchronized void userBaseQuery(boolean isGuest) {
-//        try {
-//            /*
-//              if sheduleRecentAppsKill is already schedule, interrupt it for updating @whiteAppsList
-//             */
-//            if (!appExecutor.getExecutorForSedulingRecentAppKill().isShutdown())
-//                appExecutor.getExecutorForSedulingRecentAppKill().shutdown();
-//            whiteAppsList.clear();
-//            whiteAppsList.add(getPackageName());
-//            whiteAppsList.add("com.android.phone");
-//            whiteAppsList.add("com.android.packageinstaller");
-//            whiteAppsList.add("com.omegamoon.sysadmin");
-//            if (isGuest) {
-//                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getGuestApps(true, true);
-//                        for (AppInfo info : appInfos) {
-//                            whiteAppsList.add(info.getPackageName());
-//                        }
-//                        //Prepare new Executor as previous was shutdown
-//                        appExecutor.readyNewExecutor();
-//                        sheduleRecentAppsKill();
-//
-//                    }
-//                });
-//
-//
-//            } else {
-//                appExecutor.getExecutorForUpdatingList().submit(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        List<AppInfo> appInfos = MyApplication.getAppDatabase(MainActivity.this).getDao().getEncryptedApps(true, true);
-//                        for (AppInfo info : appInfos) {
-//                            whiteAppsList.add(info.getPackageName());
-//                        }
-//                        appExecutor.readyNewExecutor();
-//                        sheduleRecentAppsKill();
-//
-//                    }
-//                });
-//
-//            }
-//        } catch (Exception ignored) {
-//
-//        }
-//    }
 
 
     private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
@@ -550,31 +365,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                         @Override
                         public void run() {
                             mainPresenter.addDataToList(pm, current_user, adapter);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
+                            runOnUiThread(() -> adapter.notifyDataSetChanged());
                         }
                     };
                     t2.start();
-
-                    /*
-                     * Queering app depending on user type.
-                     */
-
-
-//                    if (current_user != null) {
-//                        switch (current_user) {
-//                            case KEY_GUEST_PASSWORD:
-//                                userBaseQuery(true);
-//                                break;
-//                            case KEY_MAIN_PASSWORD:
-//                                userBaseQuery(false);
-//                                break;
-//                        }
-//                    }
 
 
                 }
@@ -582,32 +376,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     };
 
 
-    private void sheduleRecentAppsKill() {
+    private void sheduleScreenOffMonitor() {
 
 
-        appExecutor.getExecutorForSedulingRecentAppKill().execute(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (!powerManager.isInteractive()) {
-                        Timber.d("x: Screen is not intractive");
-                        appExecutor.getMainThread().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                drawOverLay();
-                            }
-                        });
-                        return;
+        appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                if (!powerManager.isInteractive()) {
+                    appExecutor.getMainThread().execute(this::drawOverLay);
+                    return;
 
-//
-//                        String current_package = getCurrentApp();
-//                        if (current_package != null)
-//                            if (!whiteAppsList.contains(current_package)) {
-//                                Log.d("khiouugifdugj", "run: " + current_package);
-//                                clearRecentApp();
-//                            }
-
-                    }
                 }
             }
         });

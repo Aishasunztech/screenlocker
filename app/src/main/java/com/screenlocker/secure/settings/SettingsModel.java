@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -103,15 +104,24 @@ public class SettingsModel implements SettingContract.SettingsMvpModel {
         alertDialog.setView(input);
         alertDialog.setIcon(R.mipmap.ic_launcher);
         input.setFocusable(true);
-        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        input.setFocusableInTouchMode(true);
+        input.clearFocus();
+        input.requestFocus();
+        input.postDelayed(new Runnable(){
+                               @Override public void run(){
+                                   InputMethodManager keyboard=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                   keyboard.showSoftInput(input,0);
+                               }
+                           }
+                ,100);
+//
 
         alertDialog.setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onClickListener.onClick(dialog, which);
                         try {
-                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+//                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -124,7 +134,7 @@ public class SettingsModel implements SettingContract.SettingsMvpModel {
                         try {
                             if (onNegativeClick != null)
                                 onNegativeClick.onClick(dialog, which);
-                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+//                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

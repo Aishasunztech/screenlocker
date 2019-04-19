@@ -28,7 +28,7 @@ import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 
-public class DuressPassword extends AbstractStep implements View.OnClickListener {
+public class SetDuressPasswordFragment extends AbstractStep implements View.OnClickListener {
 
     @Override
     public String name() {

@@ -22,7 +22,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
     private final List<AppInfo> appsList;
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tv;
         final ImageView img;
         final Switch guestSwitch, encryptedSwitch, enabledSwitch;
@@ -35,31 +35,16 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
             encryptedSwitch = itemView.findViewById(R.id.encryptedSwitch);
             enabledSwitch = itemView.findViewById(R.id.enabledSwitch);
 
-            guestSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    appsList.get(getAdapterPosition()).setGuest(isChecked);
-                }
-            });
+            guestSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> appsList.get(getAdapterPosition()).setGuest(isChecked));
 
-            encryptedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    appsList.get(getAdapterPosition()).setEncrypted(isChecked);
-                }
-            });
+            encryptedSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> appsList.get(getAdapterPosition()).setEncrypted(isChecked));
 
-            enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    appsList.get(getAdapterPosition()).setEnable(isChecked);
-                }
-            });
+            enabledSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> appsList.get(getAdapterPosition()).setEnable(isChecked));
         }
 
     }
 
-    public AppListAdapter(String packageName, List<AppInfo> apps) {
+    AppListAdapter(String packageName, List<AppInfo> apps) {
         this.packageName = packageName;
         this.appsList = apps;
     }
@@ -102,8 +87,9 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
     }
 
 
+    @NonNull
     @Override
-    public AppListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AppListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //This is what adds the code we've written in here to our target view
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());

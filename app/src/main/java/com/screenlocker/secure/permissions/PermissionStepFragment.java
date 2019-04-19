@@ -58,7 +58,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.requestNotificationA
 import static com.screenlocker.secure.utils.PermissionUtils.requestNotificationAccessibilityPermission1;
 import static com.screenlocker.secure.utils.PermissionUtils.requestUsageStatePermission1;
 
-public class PermissionStep extends AbstractStep implements CompoundButton.OnCheckedChangeListener {
+public class PermissionStepFragment extends AbstractStep implements CompoundButton.OnCheckedChangeListener {
 
 
     private static final int DRAW_OVERLAY = 111;
@@ -69,31 +69,33 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
     public void onNext() {
         PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,1);
     }
-
+    //only next if user has allowed all permissions
     @Override
     public boolean nextIf() {
         return PrefUtils.getIntegerPref(MyApplication.getAppContext(),PERMISSIONS_NUMBER) ==8;
 
     }
-
+    // user can,'t skip this
     @Override
     public boolean setSkipable() {
         return false;
     }
 
+
+    //return title for activity
     @Override
     public String name() {
         return "Permissions";
     }
     // step optional title (default: "Optional")
 
-
+// error message if user try to next without granting permission
     @Override
     public String error() {
         return "Please Grant all permissions";
     }
 
-    TextView textView;
+
 
     @BindView(R.id.active_admin)
     Switch activeAdmin;
@@ -118,6 +120,7 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
         View v = inflater.inflate(R.layout.permmision_layout, container, false);
         ButterKnife.bind(this, v);
         init();
+        //check if user already granted the permission
         if (PrefUtils.getBooleanPref(getContext(), PER_ADMIN)) {
             activeAdmin.setChecked(true);
             activeAdmin.setClickable(false);
@@ -174,6 +177,7 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked)
+            //request permission according to user clicks
             switch (buttonView.getId()) {
                 case R.id.active_admin:
                     permissionAdmin(this, devicePolicyManager, compName);
@@ -209,6 +213,7 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            //handle results from permission settings
             case RESULT_ENABLE:
                 if (resultCode == RESULT_OK) {
                     activeAdmin.setChecked(true);
@@ -275,6 +280,7 @@ public class PermissionStep extends AbstractStep implements CompoundButton.OnChe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_PHONE_STATE) {
+            //runtime permission result
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[2] == PackageManager.PERMISSION_GRANTED &&

@@ -1,10 +1,8 @@
 package com.screenlocker.secure.launcher;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +23,7 @@ public class MainModel implements MainContract.MainMvpModel {
     private static final String TAG = MainActivity.class.getSimpleName();
     private Context context;
 
-    public MainModel(Context context) {
+    MainModel(Context context) {
         this.context = context;
     }
 
@@ -122,55 +120,7 @@ public class MainModel implements MainContract.MainMvpModel {
                 adapter.appsList.addAll(allDbApps);
         }
 
-        AppExecutor.getInstance().getMainThread().execute(new Runnable() {
-            @Override
-            public void run() {
-                ((MainActivity) context).removeOverlay();
-            }
-        });
-
-     /*   Intent i = new Intent(Intent.ACTION_MAIN, null);
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
-        // adding data to the model
-        //getRunningApps(pm);
-        for (ResolveInfo ri : allApps) {
-            AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)), ri.activityInfo.packageName, ri.activityInfo.loadIcon(pm));
-            if (message != null && !message.equals("")) {
-                AppInfo dbApps = MyApplication.getAppDatabase(context).getDao().getParticularApp(app.getPackageName() + app.getLabel());
-                if (message.equals(AppConstants.KEY_GUEST_PASSWORD)) {
-                    // for the guest type user
-                    if (dbApps != null) {
-                        if (dbApps.isGuest()) {
-                            adapter.appsList.add(app);
-                        }
-                    }
-
-                } else {
-                    // for the encrypted user type
-                    if (dbApps != null) {
-                        if (dbApps.isEncrypted()) {
-                            adapter.appsList.add(app);
-                        }
-                    }
-                }
-            } else  // means that the user have not come from the lock screen so show all apps
-                adapter.appsList.add(app);
-        }*/
-    }
-
-    private void getRunningApps(PackageManager pm) {
-        List<ApplicationInfo> packages;
-        //get a list of installed apps.
-        packages = pm.getInstalledApplications(0);
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ApplicationInfo packageInfo : packages) {
-            if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) continue;
-            if (packageInfo.packageName.equals(context.getPackageName())) continue;
-            if (mActivityManager != null) {
-                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
-            }
-        }
+        AppExecutor.getInstance().getMainThread().execute(() -> ((MainActivity) context).removeOverlay());
     }
 
 }

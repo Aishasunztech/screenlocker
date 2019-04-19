@@ -1,44 +1,44 @@
 package com.screenlocker.secure.permissions;
 
-        import android.os.Bundle;
-        import android.text.TextUtils;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-        import com.github.fcannizzaro.materialstepper.AbstractStep;
-        import com.screenlocker.secure.R;
-        import com.screenlocker.secure.app.MyApplication;
-        import com.screenlocker.secure.utils.AppConstants;
-        import com.screenlocker.secure.utils.PrefUtils;
-        import com.screenlocker.secure.utils.Validator;
+import com.github.fcannizzaro.materialstepper.AbstractStep;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Validator;
 
-        import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
-        import androidx.appcompat.widget.AppCompatButton;
-        import androidx.appcompat.widget.AppCompatEditText;
-        import butterknife.BindView;
-        import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-        import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
-        import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
-        import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-        import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
-public class EncryptedPassword extends AbstractStep implements View.OnClickListener {
+public class SetGuestPasswordFragment extends AbstractStep implements View.OnClickListener {
     @Override
     public String name() {
-        return "Encrypted Password";
+        return "Guess Password";
     }
 
     @Override
     public void onNext() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,3);
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,2);
     }
 
     @Override
     public boolean nextIf() {
-        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
+        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null ) {
             return true;
         }
         return false;
@@ -51,7 +51,7 @@ public class EncryptedPassword extends AbstractStep implements View.OnClickListe
 
     @Override
     public String error() {
-        return "Please Set Encrypted Password";
+        return "Please Set Guest Password";
     }
 
     @Override
@@ -65,7 +65,7 @@ public class EncryptedPassword extends AbstractStep implements View.OnClickListe
      * to confirm the user entered password
      */
     @BindView(R.id.etConfirmPin)
-    AppCompatEditText etConfirmPin;
+     AppCompatEditText etConfirmPin;
 
     /**
      * button to validate the password and save it
@@ -77,7 +77,7 @@ public class EncryptedPassword extends AbstractStep implements View.OnClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.guess_password_layout,container, false);
         ButterKnife.bind(this,v);
-        etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
+        etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
         etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
         btnConfirm.setOnClickListener(this);
 
@@ -101,18 +101,18 @@ public class EncryptedPassword extends AbstractStep implements View.OnClickListe
 
                 //Password password = new Password();
                 // password.setUserPassword(reEnteredPassword);
-                if (keyOk) {
-                    PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
-                    btnConfirm.setText("Pin Confirmed");
-                    btnConfirm.setEnabled(false);
-                } else {
-                    etConfirmPin.setError("This password is taken please try again");
+                        if (keyOk) {
+                            PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            btnConfirm.setText("Pin Confirmed");
+                            btnConfirm.setEnabled(false);
+                        } else {
+                            etConfirmPin.setError("This password is taken please try again");
+                        }
+
+
                 }
 
-
-            }
-
-            else {
+                else {
                 if (TextUtils.isEmpty(enteredPassword)) {
                     etEnterPin.setError(getString(R.string.empty));
                 } else if (reEnteredPassword.equals("")) {
@@ -125,4 +125,3 @@ public class EncryptedPassword extends AbstractStep implements View.OnClickListe
         }
     }
 }
-

@@ -32,10 +32,10 @@ import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DefaultLauncher extends AbstractStep {
+public class SetDefaultLauncherFragment extends AbstractStep {
 
     private boolean allow = false;
-    public DefaultLauncher() {
+    public SetDefaultLauncherFragment() {
         // Required empty public constructor
     }
 
