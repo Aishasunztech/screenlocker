@@ -17,6 +17,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
+import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -138,6 +139,38 @@ public class utils {
         }.start();
     }
 
+
+    public static void updateExtensionsList(final Context context, final JSONArray extensions, final GetExtensions listener) {
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                for (int i = 0; i < extensions.length(); i++) {
+
+                    try {
+
+                        JSONObject app = extensions.getJSONObject(i);
+                        boolean guest = (boolean) app.get("guest");
+                        String uniqueExtension = app.getString("uniqueExtension");
+                        boolean encrypted = (boolean) app.get("encrypted");
+
+                        MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest, encrypted, uniqueExtension);
+
+                        if (i == extensions.length() - 1) {
+                            listener.onExtensionsReady();
+                        }
+
+
+                    } catch (JSONException e) {
+                        Timber.d("error : %s", e.getMessage());
+                    }
+                }
+            }
+        }.start();
+    }
+
     public static boolean validateRequest(String arg1, String arg2) {
         if (arg1 == null || arg2 == null) {
             return false;
@@ -188,7 +221,7 @@ public class utils {
     }
 
     public static Settings getCurrentSettings(Context context) {
-        //        //Calls setting
+        //Calls setting
         Settings settings = new Settings();
         boolean callStatus = PrefUtils.getBooleanPref(context, AppConstants.KEY_DISABLE_CALLS);
         settings.setCall_status(callStatus);

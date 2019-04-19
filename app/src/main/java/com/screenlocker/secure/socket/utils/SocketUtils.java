@@ -13,6 +13,7 @@ import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
+import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -30,6 +31,7 @@ import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.socket.utils.utils.updateAppsList;
+import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
@@ -41,6 +43,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
@@ -48,7 +51,7 @@ import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 
-public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings {
+public class SocketUtils implements SocketEvents, DatabaseStatus {
 
 
     private Socket socket;
@@ -68,8 +71,6 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
         SettingsActivity settingsActivity = new SettingsActivity();
         settingsActivity.setDatabaseStatus(this);
 
-        SystemPermissionActivity systemPermissionActivity = new SystemPermissionActivity();
-        systemPermissionActivity.setListener(this);
 
         initSocket();
 
@@ -89,9 +90,11 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
 
     @Override
     public void connectSocket() {
-        socket.on(Socket.EVENT_CONNECT, args -> {
-            Timber.d("<<< socket connected >>>");
 
+
+        try{
+            socket.on(Socket.EVENT_CONNECT, args -> {
+            Timber.d("<<< socket connected >>>");
             disconnectSocket();
             socketEventError();
             getSyncStatus();
@@ -99,7 +102,10 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
             getDeviceStatus();
 
 
-        });
+        });}catch (Exception e){
+            Timber.d(e);
+        }
+
     }
 
     @Override
@@ -138,7 +144,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
 
                     if (socket.connected()) {
                         socket.emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyApplication.getAppDatabase(context).getDao().getExtensionsWithoutIcons()));
-                        PrefUtils.saveBooleanPref(context, APPS_SETTING_CHANGE, false);
+                        PrefUtils.saveBooleanPref(context, SECURE_SETTINGS_CHANGE, false);
 
                         Timber.d("Extensions sent");
                     } else {
@@ -286,25 +292,40 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
 //                            changeSettings(context, new Gson().fromJson(settings, Settings.class));
                                 Timber.d(" settings applied ");
                             }
+                            String extensionList = obj.getString("extension_list");
+
+                            if(!extensionList.equals("[]"))
+                            {
+                                updateExtensionsList(context, new JSONArray(extensionList), () -> {
+                                    Timber.d(" extensions updated ");
+                                });
+                            }
 
                             socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
                             Timber.d(" settings applied status sent ");
                         } else {
                             Timber.d(" no settings available in history ");
-                            boolean appsSettingStatus = PrefUtils.getBooleanPref(context, APPS_SETTING_CHANGE);
 
+                            boolean appsSettingStatus = PrefUtils.getBooleanPref(context, APPS_SETTING_CHANGE);
                             Timber.d(" apps settings status in local : %S", appsSettingStatus);
+
+                            if (appsSettingStatus) {
+                                sendAppsWithoutIcons();
+                            }
+
                             boolean settingsStatus = PrefUtils.getBooleanPref(context, SETTINGS_CHANGE);
                             Timber.d(" settings status in local : %S", settingsStatus);
-                            if (appsSettingStatus) {
-//                                sendApps();
-                            }
                             if (settingsStatus) {
-                                Gson gson = new Gson();
-//                            Settings settings = getCurrentSettings(context);
-//                            socket.emit(SEND_SETTINGS + device_id, gson.toJson(settings));
-//                                Timber.d(" settings sent ");
+                                sendApps();
                             }
+
+                            boolean extensionsStatus = PrefUtils.getBooleanPref(context, SECURE_SETTINGS_CHANGE);
+                            Timber.d(" extensions status in local : %S", extensionsStatus);
+                            if (extensionsStatus) {
+                                sendExtensionsWithoutIcons();
+                            }
+
+
 
                         }
 
@@ -358,7 +379,6 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
                                     Timber.d("<<< device unlinked >>>");
                                     unlinkDevice(context);
                                     break;
-
                                 case "wiped":
                                     Timber.d("<<< device wiped >>>");
                                     wipeDevice(context);
@@ -386,6 +406,9 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
 
         if (socket.connected()) {
             socket.emit(SEND_SETTINGS + device_id, "settings");
+            PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
+        }else {
+            Timber.d("Socket not connected");
         }
 
     }
@@ -427,24 +450,9 @@ public class SocketUtils implements SocketEvents, DatabaseStatus, ChangeSettings
 
     }
 
-
-    @Override
-    public void onSettingsChanged() {
-        Timber.d("<<< on settings changed >>>");
-        try {
-            Gson gson = new Gson();
-//            Settings settings = getCurrentSettings(context);
-//            socket.emit(SEND_SETTINGS + device_id, gson.toJson(settings));
-            PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
-        } catch (Exception e) {
-            Timber.e("error :%S", e.getMessage());
-        }
-    }
-
     @Override
     public void onDataInserted() {
         Timber.d("<<< data is ready to send >>>");
-
 
         PrefUtils.saveBooleanPref(context, DB_STATUS, true);
 

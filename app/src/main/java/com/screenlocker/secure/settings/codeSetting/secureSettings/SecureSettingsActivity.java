@@ -219,30 +219,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         getMenuInflater().inflate(R.menu.extension_select_menu, menu);
 
         MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int guestStatus = myDao.checkGuestStatus(false);
-//                if(guestStatus == 0)
-//                {
-//                    menu.findItem(R.id.extension_guest_all).setChecked(true);
-//
-//                }else{
-//                    menu.findItem(R.id.extension_guest_all).setChecked(false);
-//
-//                }
-//
-//                int encryptedStatus = myDao.checkEncryptedStatus(false);
-//                if(encryptedStatus == 0)
-//                {
-//                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
-//
-//                }else{
-//                    menu.findItem(R.id.extension_encryption_all).setChecked(true);
-//
-//                }
-//            }
-//        }).start();
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -462,7 +438,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
     @Override
     public void updateMenu() {
-        Log.d("UPdateMenu", "updateMenu: ");
         invalidateOptionsMenu();
     }
 }

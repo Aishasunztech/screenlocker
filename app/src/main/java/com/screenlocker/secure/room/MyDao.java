@@ -40,6 +40,9 @@ public interface MyDao {
     @Query("UPDATE AppInfo SET guest=:guest  , enable=:enable , encrypted =:encrypted WHERE uniqueName=:uniqueName ")
     int updateAppStatusFromServer(boolean guest, boolean encrypted, boolean enable, String uniqueName);
 
+    @Query("UPDATE SubExtension SET guest=:guest  , encrypted =:encrypted WHERE uniqueExtension=:uniqueExtension ")
+    int updateExtensionStatusFromServer(boolean guest, boolean encrypted, String uniqueExtension);
+
 
     @Query("select * from AppInfo where extension = :extension")
     List<AppInfo> getAppsOrExtensions(boolean extension);

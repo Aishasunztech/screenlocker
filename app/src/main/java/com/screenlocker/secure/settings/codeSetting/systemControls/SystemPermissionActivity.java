@@ -80,12 +80,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     private ImageView appImage;
 
 
-    private static ChangeSettings listener;
-
-    public void setListener(ChangeSettings settingsChangeListener) {
-        listener = settingsChangeListener;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -303,7 +297,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
                     intent.putExtra(KEY_DATABASE_CHANGE, "settings");
                     LocalBroadcastManager.getInstance(SystemPermissionActivity.this).sendBroadcast(intent);
-                    PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SECURE_SETTINGS_CHANGE, true);
+                    PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
 
 
                 } catch (Exception e) {
@@ -432,9 +426,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             }
         }
 
-        if (listener != null) {
-            listener.onSettingsChanged();
-        }
+
 
         PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
 
