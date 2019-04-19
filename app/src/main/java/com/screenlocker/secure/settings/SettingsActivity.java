@@ -184,16 +184,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setToolbar(mToolbar);
         setListeners();
 
-//        String default_main_pass = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
-//        String default_guest_pass = PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD);
-//
-//        if (default_main_pass == null) {
-//            PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-//        }
-//        if (default_guest_pass == null) {
-//            PrefUtils.saveStringPref(this, KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
-//        }
-
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
@@ -216,9 +206,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             mMacAddress = null;
         }
 
-//        if (!PermissionUtils.canControlNotification(SettingsActivity.this)) {
-//            PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
-//        }
 
 
         final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
@@ -283,7 +270,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
-    // TODO REMOVE PREFS FOR START DATE AND END DATE
     private void addExpiryDate() {
 //if there is no data  which means user have deleted the data or its the first time so..
         if (ActivityCompat.checkSelfPermission(getApplicationContext(),
@@ -320,12 +306,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
                 Snackbar.make(rootLayout, "We need this permission to read hardware ids to secure your device",
                         Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE);
-                            }
-                        })
+                        .setAction("OK", view -> ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE))
                         .show();
             } else {
                 Snackbar.make(rootLayout, "We do not have permission.", Snackbar.LENGTH_SHORT).show();
@@ -343,7 +324,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     .checkStatus(imei_number, mMacAddress)
                     .enqueue(new Callback<NetworkResponse>() {
                         @Override
-                        public void onResponse(Call<NetworkResponse> call, Response<NetworkResponse> response) {
+                        public void onResponse(@NonNull Call<NetworkResponse> call, @NonNull Response<NetworkResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_MSG, response.body().getMsg());
                                 if (response.body().isStatus()) {
@@ -360,13 +341,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                 }
 
                             } else {
-//something went wrong
+                                //something went wrong
                                 Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<NetworkResponse> call, Throwable t) {
+                        public void onFailure(@NonNull Call<NetworkResponse> call, @NonNull Throwable t ) {
                             Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
                         }
                     });
@@ -413,13 +394,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             } else {
                 new AlertDialog.Builder(this).
                         setTitle("Permission denied")
-                        .setMessage("Please allow the premission for application to run").setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                        addExpiryDate();
-                    }
-                }).show();
+                        .setMessage("Please allow the premission for application to run").setPositiveButton("Allow", (dialogInterface, i) -> {
+                            dialogInterface.cancel();
+                            addExpiryDate();
+                        }).show();
             }
         }
 
@@ -427,12 +405,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void createNoNetworkDialog() {
-        noNetworkDialog = new AlertDialog.Builder(this).setTitle("Please check your internet connection").setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-                addExpiryDate();
-            }
+        noNetworkDialog = new AlertDialog.Builder(this).setTitle("Please check your internet connection").setPositiveButton("Retry", (dialogInterface, i) -> {
+            dialogInterface.cancel();
+            addExpiryDate();
         }).create();
     }
 
@@ -552,6 +527,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     // start Code settings activity if the code password entered is correct
 
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
+                    dialogInterface.dismiss();
                 } else {
                     Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
                 }
@@ -566,7 +542,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
         if (currentVersion != null)
-            new GetVersionCode().execute();
+            new GetVersionCode(currentVersion).execute();
 
     }
 
@@ -588,27 +564,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 }, new SettingsModel(activity));
 
             }
-            settingsPresenter.showAlertDialog(input, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
-                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
 
-                    if (input.getText().toString().
-                            equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                    KEY_MAIN_PASSWORD))) {
-                        // if password is right then allow user to change it
-                        Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-                        setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-                        activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+                if (input.getText().toString().
+                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                                KEY_MAIN_PASSWORD))) {
+                    // if password is right then allow user to change it
+                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
-                    } else {
-                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-                    }
                 }
             }, null, activity.getString(R.string.please_enter_current_encrypted_password));
         }
@@ -624,9 +597,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
                 activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
             })
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    })
+                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
                     .show();
 
         } else {
@@ -640,27 +611,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 }, new SettingsModel(activity));
 
             }
-            settingsPresenter.showAlertDialog(input, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
-                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
 
-                    if (input.getText().toString().
-                            equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                    AppConstants.KEY_DURESS_PASSWORD))) {
-                        // if password is right then allow user to change it
-                        Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-                        setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                        activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+                if (input.getText().toString().
+                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                                AppConstants.KEY_DURESS_PASSWORD))) {
+                    // if password is right then allow user to change it
+                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
-                    } else {
-                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-                    }
                 }
             }, null, activity.getString(R.string.please_enter_current_duress_password));
         }
@@ -721,7 +689,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                 if (isChecked) {
 
-
+                    Toast.makeText(this, "unckeked", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "unckeked", Toast.LENGTH_SHORT).show();
 
@@ -764,7 +732,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onNetworkChange(boolean status) {
-        Log.d("networkStatus", "onNetworkChange: " + status);
         networkStatus = status;
 
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
@@ -787,18 +754,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public void forceCrash(View view) {
-        throw new RuntimeException("This is a crash");
-    }
-
-
-    private class GetVersionCode extends AsyncTask<Void, String, String> {
+    private static class GetVersionCode extends AsyncTask<Void, String, String> {
+        private  String mCurrentVersion;
+        private GetVersionCode(String string){
+            mCurrentVersion = string;
+        }
         @Override
         protected String doInBackground(Void... voids) {
 
-            String newVersion = null;
+            String newVersion;
             try {
-                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + SettingsActivity.this.getPackageName() + "&hl=it")
+                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName() + "&hl=it")
                         .timeout(30000)
                         .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                         .referrer("http://www.google.com")
@@ -808,7 +774,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         .ownText();
                 return newVersion;
             } catch (Exception e) {
-                return newVersion;
+                return null;
             }
         }
 
@@ -816,16 +782,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         protected void onPostExecute(String onlineVersion) {
             super.onPostExecute(onlineVersion);
             if (onlineVersion != null && !onlineVersion.isEmpty()) {
-                if (Float.valueOf(currentVersion) < Float.valueOf(onlineVersion)) {
+                if (Float.valueOf(mCurrentVersion) < Float.valueOf(onlineVersion)) {
                     //show dialog
-                    Toast.makeText(SettingsActivity.this, "update is available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApplication.getAppContext(), "update is available", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SettingsActivity.this, " no update is available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApplication.getAppContext(), " no update is available", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(SettingsActivity.this, " no update is available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyApplication.getAppContext(), " no update is available", Toast.LENGTH_SHORT).show();
             }
-            Timber.d("Current version " + currentVersion + "playstore version " + onlineVersion);
+            Timber.d("Current version " + mCurrentVersion + "playstore version " + onlineVersion);
         }
 
     }
@@ -845,7 +811,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         TextView tvVersionCode = aboutDialog.findViewById(R.id.tvVersionCode);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            tvVersionCode.setText("v" + String.valueOf(pInfo.versionName));
+            tvVersionCode.setText(String.format("v%s", String.valueOf(pInfo.versionName)));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             tvVersionCode.setText("");
@@ -990,26 +956,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             dialog.cancel();
         });
-        dialog.findViewById(R.id.btCancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                dialog.cancel();
-            }
+        dialog.findViewById(R.id.btCancel).setOnClickListener(view -> {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            dialog.cancel();
         });
         dialog.show();
-    }
-
-
-    public static void resetPreferredLauncherAndOpenChooser(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        ComponentName componentName = new ComponentName(context, com.screenlocker.secure.launcher.FakeLauncherActivity.class);
-        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-        Intent selector = new Intent(Intent.ACTION_MAIN);
-        selector.addCategory(Intent.CATEGORY_HOME);
-        selector.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(selector);
-        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
 
@@ -1028,7 +979,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             case REQUEST_CODE_PASSWORD:
                 if (resultCode == RESULT_OK) {
-                    //TODO handle things when password change or updated
                     Snackbar.make(rootLayout, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(rootLayout, R.string.password_not_changed, Snackbar.LENGTH_SHORT).show();
@@ -1038,7 +988,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
-                    Timber.e("onActivityResult: BG_CHANGER : " + resultUri);
+                    Timber.e("onActivityResult: BG_CHANGER : %s", resultUri);
                     if (isEncryptedChecked) {
                         Toast.makeText(this, "Background saved for encrypted", Toast.LENGTH_SHORT).show();
                         PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
@@ -1047,9 +997,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         Toast.makeText(this, "Background saved for guest", Toast.LENGTH_SHORT).show();
                         PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
                     }
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Exception error = result.getError();
                 }
+//                 else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                    //Exception error = result.getError();
+//                }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

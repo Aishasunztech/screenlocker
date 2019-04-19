@@ -71,7 +71,6 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
     private AppListAdapter adapter;
     private SelectionPresenter selectionPresenter;
     private String packageName;
-    private WorkManager mWorkManager;
     private boolean isBackPressed = false;
 
 

@@ -58,7 +58,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer,battery_container,sound_container,
-            language_container,dateTimeContainer;
+            language_container,dateTimeContainer,mobile_container,dataRoamingContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -185,6 +185,9 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery", battery_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound", sound_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming",dataRoamingContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data",mobile_container);
+
 
 
     }
@@ -215,6 +218,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         sound_container = findViewById(R.id.sound_container);
         language_container = findViewById(R.id.language_container);
         dateTimeContainer = findViewById(R.id.dateTime_container);
+        mobile_container  = findViewById(R.id.mobile_data_cotainer);
+        dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
 
     }
@@ -311,10 +316,11 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
             }
         });
 
-        findViewById(R.id.data_roaming_cotainer).setOnClickListener(new View.OnClickListener() {
+        dataRoamingContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Settings.Global.putInt(getContentResolver(), Settings.Global.DATA_ROAMING, 1);
+                Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+                startActivity(intent);
             }
         });
         findViewById(R.id.screen_lock_container).setOnClickListener(new View.OnClickListener() {
@@ -350,6 +356,15 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        mobile_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
                 startActivity(intent);
             }
         });

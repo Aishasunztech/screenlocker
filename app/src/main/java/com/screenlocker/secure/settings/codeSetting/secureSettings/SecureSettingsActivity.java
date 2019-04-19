@@ -46,7 +46,8 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 
-public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView, CompoundButton.OnCheckedChangeListener {
+public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView,
+        CompoundButton.OnCheckedChangeListener, Adapter.MenuChecklistener {
 
     private boolean isBackPressed;
     private ConstraintLayout containerLayout;
@@ -78,7 +79,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         // setting checks
         setChecks();
 
-        populateApps();
+//        populateApps();
     }
 
 
@@ -104,7 +105,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     private void setRecyclerView(List<SubExtension> subExtensions) {
 
         adapter = new Adapter(subExtensions, this);
-
         rvSubExtensions.setAdapter(adapter);
     }
 
@@ -198,6 +198,8 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     @Override
     protected void onResume() {
         super.onResume();
+        populateApps();
+
         isBackPressed = false;
     }
 
@@ -216,7 +218,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.extension_select_menu, menu);
 
-//        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
+        MyDao myDao = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -242,20 +244,55 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 //            }
 //        }).start();
 
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                int guestStatus = myDao.checkGuestStatus(false);
+                AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(guestStatus == 0)
+                        {
+                            menu.findItem(R.id.extension_guest_all).setChecked(true);
 
-        if (PrefUtils.getBooleanPref(this, EXTENSION_GUEST_CHECKED)) {
-            menu.findItem(R.id.extension_guest_all).setChecked(true);
-        } else {
-            menu.findItem(R.id.extension_guest_all).setChecked(false);
+                        }else{
+                            menu.findItem(R.id.extension_guest_all).setChecked(false);
+                        }
+                    }
+                });
 
-        }
+                int encryptedStatus = myDao.checkEncryptedStatus(false);
+                AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(encryptedStatus == 0)
+                        {
+                            menu.findItem(R.id.extension_encryption_all).setChecked(true);
 
-        if (PrefUtils.getBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED)) {
-            menu.findItem(R.id.extension_encryption_all).setChecked(true);
-        } else {
-            menu.findItem(R.id.extension_encryption_all).setChecked(false);
+                        }else{
+                            menu.findItem(R.id.extension_encryption_all).setChecked(false);
 
-        }
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+//        if (PrefUtils.getBooleanPref(this, EXTENSION_GUEST_CHECKED)) {
+//            menu.findItem(R.id.extension_guest_all).setChecked(true);
+//        } else {
+//            menu.findItem(R.id.extension_guest_all).setChecked(false);
+//
+//        }
+//
+//        if (PrefUtils.getBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED)) {
+//            menu.findItem(R.id.extension_encryption_all).setChecked(true);
+//        } else {
+//            menu.findItem(R.id.extension_encryption_all).setChecked(false);
+//
+//        }
 
 
         return true;
@@ -436,5 +473,11 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                 setSecurePermissions(guest, encrypted, enable);
                 break;
         }
+    }
+
+    @Override
+    public void updateMenu() {
+        Log.d("UPdateMenu", "updateMenu: ");
+        invalidateOptionsMenu();
     }
 }

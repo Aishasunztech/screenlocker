@@ -47,11 +47,6 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
     @Override
     public void addAppsToList(PackageManager packageManager,
                               ArrayList<AppInfo> appsList, List<AppInfo> dbApps) {
-//                    appSelected.clear();
-//                for (int i = 0; i < apps.size(); i++) {
-//                   adapter appSelected.add(apps.get(i).getPackageName());
-//                }
-        //List<ResolveInfo> appsFromSystem = getTheAppListFromSystem(packageManager);
         Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         String settingPackageName = null;

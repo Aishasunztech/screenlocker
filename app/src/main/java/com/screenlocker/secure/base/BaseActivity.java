@@ -240,8 +240,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-//    public void enableScreenShotBlocker(boolean isChecked) {
+    }
+    //    public void enableScreenShotBlocker(boolean isChecked) {
 //
 //        if (mWindowManager == null)
 //            mWindowManager = getWindowManager();
