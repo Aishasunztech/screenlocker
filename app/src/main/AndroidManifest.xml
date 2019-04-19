@@ -65,8 +65,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
+        <activity android:name=".permissions.WelcomeScreenActivity"></activity>
         <activity
             android:name=".settings.codeSetting.ExitActivity"
             android:screenOrientation="portrait" />
@@ -109,37 +108,19 @@
         <!-- </intent-filter> -->
         <!-- </activity-alias> -->
         <activity
-            android:name=".launcher.FakeLauncherActivity"
-            android:enabled="false"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".settings.SettingsActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
-
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.screenlocker.secure.permissions.SteppersActivity"
+            android:name=".permissions.SteppersActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".settings.SetUpLockActivity"
             android:screenOrientation="portrait"
@@ -266,8 +247,6 @@
         <activity
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
             android:screenOrientation="portrait" />
-
-
         <activity android:name=".settings.codeSetting.Sim.SimActivity" />
         <activity
             android:name=".mdm.MainActivity"
@@ -287,7 +266,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
-
     </application>
 
 </manifest>

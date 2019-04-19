@@ -5,8 +5,6 @@ import android.os.Bundle;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
-import com.github.fcannizzaro.materialstepper.style.TabStepper;
-import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -24,7 +22,9 @@ public class SteppersActivity extends DotStepper {
 
         setTitle("Permissions");
 
-
+        /**
+         * if user has completed setup wizard move to Home Activity
+         */
         boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
 
         if (tour_status) {
@@ -34,40 +34,34 @@ public class SteppersActivity extends DotStepper {
         }
 
 
-
-
-        addStep(createFragment(new PermissionStep()));
-        addStep(createFragment(new GuestPassword()));
-        addStep(createFragment(new EncryptedPassword()));
-        addStep(createFragment(new DuressPassword()));
-        addStep(createFragment(new LinkDevice()));
-        addStep(createFragment(new DefaultLauncher()));
-        addStep(createFragment(new Finish()));
-
+        addStep(new PermissionStepFragment());
+        addStep(new SetGuestPasswordFragment());
+        addStep(new SetEncryptedPasswordFragment());
+        addStep(new SetDuressPasswordFragment());
+        addStep(new LinkDeviceFragment());
+        addStep(new SetDefaultLauncherFragment());
+        addStep(new FinishFragment());
 
 
         super.onCreate(savedInstanceState);
-        int position =PrefUtils.getIntegerPref(getApplication(),DEF_PAGE_NO);
+        //move user to position were he/she left
+        int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
         mSteps.current(position);
         onUpdate();
 
 
-
-
     }
 
-    private AbstractStep createFragment(AbstractStep fragment) {
-        Bundle b = new Bundle();
-        b.putInt("position", i++);
-        return fragment;
-    }
-
-
+    /**
+     * User has complected all steps and ready to move welcome screen
+     * @param data bundle sent by last fragment
+     */
     @Override
     public void onComplete(Bundle data) {
         super.onComplete(data);
+        //save the tour complete status in database
         PrefUtils.saveBooleanPref(SteppersActivity.this, TOUR_STATUS, true);
-        Intent intent = new Intent(SteppersActivity.this, SettingsActivity.class);
+        Intent intent = new Intent(SteppersActivity.this, WelcomeScreenActivity.class);
         startActivity(intent);
         finish();
     }

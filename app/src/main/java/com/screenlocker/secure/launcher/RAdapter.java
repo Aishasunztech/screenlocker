@@ -4,11 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +18,9 @@ import com.screenlocker.secure.app.MyApplication;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
 
@@ -30,11 +28,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
         final ImageView img;
-
-
-        //This is the subclass ViewHolder which simply
-
-        //'holds the views' for us to show on each row
         ViewHolder(View itemView) {
             super(itemView);
 
@@ -94,7 +87,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     }
 
 
-    public RAdapter() {
+    RAdapter() {
 
 //        this.context = context;
     }
@@ -105,7 +98,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         //Here we use the information in the list we created to define the views
 
         String appLabel = appsList.get(i).getLabel();
-        String appPackage = appsList.get(i).getPackageName();
         // Drawable appIcon = appsList.get(i).getIcon();
 
         TextView textView = viewHolder.textView;

@@ -35,6 +35,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
      * button to validate the password and save it
      */
     private AppCompatButton btnConfirm;
+    private AppCompatButton btnDisableDuress;
 
     private String from;
 
@@ -60,6 +61,10 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 // setting toolbar name for guest type
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.set_duress_code);
+                if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD)!=null){
+
+                    btnDisableDuress.setVisibility(View.VISIBLE );
+                }
                 etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
                 etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
             } else if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_CODE)) {
@@ -93,6 +98,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
         etEnterPin = findViewById(R.id.etEnterPin);
         etConfirmPin = findViewById(R.id.etConfirmPin);
         btnConfirm = findViewById(R.id.btnConfirm);
+        btnDisableDuress = findViewById(R.id.disable_duress);
+        btnDisableDuress.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
     }
 
@@ -112,6 +119,11 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
+        if (view.getId() == R.id.disable_duress){
+            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD,null);
+            btnDisableDuress.setEnabled(false);
+            btnDisableDuress.setText("Duress PIN Disabled");
+        }
         if (view.getId() == R.id.btnConfirm) {
 
 

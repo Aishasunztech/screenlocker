@@ -7,8 +7,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.chip.Chip;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
 public class ManagePasswords extends BaseActivity implements View.OnClickListener {
     private ConstraintLayout rootLayout;
@@ -16,12 +19,17 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
     private SettingsActivity settingsActivity;
     private Toolbar mToolbar;
+    private Chip duressStatus ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_passwords);
         setIds();
+        if(PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) !=null) {
+            duressStatus.setText("Activated");
+        }
+        else duressStatus.setText("Not Set");
         setListeners();
         settingsActivity = new SettingsActivity();
 
@@ -48,6 +56,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     private void setIds() {
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
+        duressStatus = findViewById(R.id.chip_status);
     }
 
     private void setToolbar(Toolbar mToolbar) {
@@ -101,5 +110,13 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         }
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) !=null) {
+            duressStatus.setText("Activated");
+        }
+        else duressStatus.setText("Not Set");
+        setListeners();
+    }
 }
