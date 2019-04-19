@@ -20,9 +20,11 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements SettingContract.SettingsMvpView {
@@ -50,6 +52,7 @@ public class SocketService extends Service implements SettingContract.SettingsMv
         if (intent != null) {
             String action = intent.getAction();
             if (action != null) {
+
 //                if (action.equals("refresh")) {
 //                    if (!isSocketConnected()) {
 //                        String macAddress = CommonUtils.getMacAddress();
@@ -58,12 +61,16 @@ public class SocketService extends Service implements SettingContract.SettingsMv
 //                    }
 //
 //                }
+
+
                 if (action.equals("restart") || action.equals("refresh")) {
+
                     String device_id = PrefUtils.getStringPref(this, AppConstants.DEVICE_ID);
                     SocketSingleton.closeSocket(device_id);
                     String macAddress = CommonUtils.getMacAddress();
                     String serialNo = DeviceIdUtils.getSerialNumber();
                     apiUtils = new ApiUtils(SocketService.this, macAddress, serialNo);
+
                 }
             }
         }
@@ -95,11 +102,13 @@ public class SocketService extends Service implements SettingContract.SettingsMv
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null)
                 if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
-//                    List<AppInfo> appInfos = intent.getParcelableArrayListExtra("apps_list");
+
+                    String action = intent.getStringExtra(KEY_DATABASE_CHANGE);
+
                     if (apiUtils != null) {
                         SocketUtils su = apiUtils.getSocketUtils();
                         if (su != null) {
-                            su.setApps();
+                            su.syncDatabaseChange(action);
                         }
                     }
                 }

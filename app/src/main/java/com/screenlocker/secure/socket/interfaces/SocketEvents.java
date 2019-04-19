@@ -24,4 +24,8 @@ public interface SocketEvents {
 
     void connectSocket();
 
+    void sendAppsWithoutIcons();
+
+    void sendExtensionsWithoutIcons();
+
 }

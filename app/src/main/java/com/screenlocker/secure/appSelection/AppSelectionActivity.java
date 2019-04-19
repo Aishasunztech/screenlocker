@@ -29,10 +29,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -323,9 +325,11 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                         selectionPresenter.updateAppInDB(model);
                     }
                     PrefUtils.saveBooleanPref(AppSelectionActivity.this, APPS_SETTING_CHANGE, true);
+
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
-//                    intent.putParcelableArrayListExtra("apps_list", mAppsList);
+                    intent.putExtra(KEY_DATABASE_CHANGE, "apps");
                     LocalBroadcastManager.getInstance(AppSelectionActivity.this).sendBroadcast(intent);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();

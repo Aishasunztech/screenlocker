@@ -22,7 +22,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevcie;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
@@ -105,7 +105,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                         Timber.d("<<< device expired >>>");
                                         break;
                                     case "unlinked":
-                                        unlinkDevcie(context);
+                                        unlinkDevice(context);
                                         break;
                                     case "Device not linked":
                                         context.stopService(socketIntent);
@@ -146,7 +146,7 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                                 break;
                             case "unliked":
-                                unlinkDevcie(context);
+                                unlinkDevice(context);
                                 break;
                         }
 

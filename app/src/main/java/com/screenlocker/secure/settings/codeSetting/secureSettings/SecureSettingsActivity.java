@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.secureSettings;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -33,11 +34,16 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.EXTENSION_ENCRYPTED_CHECKED;
 import static com.screenlocker.secure.utils.AppConstants.EXTENSION_GUEST_CHECKED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 
 public class SecureSettingsActivity extends BaseActivity implements SelectionContract.SelectionMvpView, CompoundButton.OnCheckedChangeListener {
@@ -193,9 +199,17 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     protected void onResume() {
         super.onResume();
         isBackPressed = false;
+    }
 
+    @Override
+    protected void onStop() {
 
+        Intent intent = new Intent(BROADCAST_APPS_ACTION);
+        intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
+        LocalBroadcastManager.getInstance(SecureSettingsActivity.this).sendBroadcast(intent);
 
+        PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+        super.onStop();
     }
 
     @Override
@@ -244,7 +258,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         }
 
 
-
         return true;
     }
 
@@ -259,14 +272,14 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                 if (item.isChecked()) {
                     for (SubExtension subExtension : extensionsList) {
-                        if(subExtension.isGuest())
-                        subExtension.setGuest(false);
+                        if (subExtension.isGuest())
+                            subExtension.setGuest(false);
                     }
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE,false);
-                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE, false);
+                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -277,18 +290,18 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,false);
+                    PrefUtils.saveBooleanPref(this, EXTENSION_GUEST_CHECKED, false);
                     item.setChecked(false);
                 } else {
                     for (SubExtension subExtension : extensionsList) {
-                        if(!subExtension.isGuest())
-                        subExtension.setGuest(true);
+                        if (!subExtension.isGuest())
+                            subExtension.setGuest(true);
                     }
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE,true);
-                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -299,7 +312,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-                    PrefUtils.saveBooleanPref(this,EXTENSION_GUEST_CHECKED,true);
+                    PrefUtils.saveBooleanPref(this, EXTENSION_GUEST_CHECKED, true);
 
                     item.setChecked(true);
                 }
@@ -311,13 +324,13 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                 if (item.isChecked()) {
 
                     for (SubExtension subExtension : extensionsList) {
-                        if(subExtension.isEncrypted())
+                        if (subExtension.isEncrypted())
                             subExtension.setEncrypted(false);
                     }
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE,false);
+                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, false);
 
                             extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
 
@@ -331,21 +344,21 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,false);
+                    PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, false);
 
 
                     item.setChecked(false);
                 } else {
                     for (SubExtension subExtension : extensionsList) {
-                        if(!subExtension.isEncrypted())
+                        if (!subExtension.isEncrypted())
                             subExtension.setEncrypted(true);
                     }
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
 
-                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE,true);
-                            extensionsList=myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -356,7 +369,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-                    PrefUtils.saveBooleanPref(this,EXTENSION_ENCRYPTED_CHECKED,true);
+                    PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, true);
                     item.setChecked(true);
                 }
 

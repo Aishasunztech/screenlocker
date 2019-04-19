@@ -9,6 +9,9 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -28,8 +31,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -104,19 +105,6 @@ public class utils {
 
     }
 
-    public static void unlockDevice(AppCompatActivity activity) {
-    }
-
-    public static void getAppsList(final Context context, final GetApplications listener) {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (listener != null)
-                    listener.onAppsReady(MyApplication.getAppDatabase(context).getDao().getApps());
-            }
-        }.start();
-    }
 
     public static void updateAppsList(final Context context, final JSONArray apps, final GetApplications listener) {
 
@@ -124,34 +112,24 @@ public class utils {
             @Override
             public void run() {
                 super.run();
-                List<AppInfo> appsList = new ArrayList<>();
+
                 for (int i = 0; i < apps.length(); i++) {
+
                     try {
+
                         JSONObject app = apps.getJSONObject(i);
                         boolean guest = (boolean) app.get("guest");
                         String uniqueName = app.getString("uniqueName");
-                        String label = app.getString("label");
-                        String packageName = app.getString("packageName");
                         boolean enable = (boolean) app.get("enable");
                         boolean encrypted = (boolean) app.get("encrypted");
-                        AppInfo checkApp = MyApplication.getAppDatabase(context).getDao().getParticularApp(uniqueName);
-                        if (checkApp != null) {
-                            byte[] icon = MyApplication.getAppDatabase(context).getDao().getParticularApp(uniqueName).getIcon();
-                            AppInfo info = new AppInfo();
-                            info.setIcon(icon);
-                            info.setGuest(guest);
-                            info.setUniqueName(uniqueName);
-                            info.setLabel(label);
-                            info.setPackageName(packageName);
-                            info.setEnable(enable);
-                            info.setEncrypted(encrypted);
-                            MyApplication.getAppDatabase(context).getDao().updateApps(info);
-                            info.setIcon(null);
-                            appsList.add(info);
-                        }
+
+                        MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, uniqueName);
+
                         if (i == apps.length() - 1) {
-                            listener.onAppsReady(appsList);
+                            listener.onAppsReady();
                         }
+
+
                     } catch (JSONException e) {
                         Timber.d("error : %s", e.getMessage());
                     }
@@ -327,16 +305,23 @@ public class utils {
         }
     }
 
-    public static void unlinkDevcie(Context context) {
+    public static void unlinkDevice(Context context) {
 
         PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
+        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
+        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
 
 
         String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
-
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
 
 
@@ -349,30 +334,17 @@ public class utils {
         }
 
 
-//        PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, null);
-//        PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
+        Intent socketService = new Intent(context, SocketService.class);
+        context.stopService(socketService);
+        Intent lockScreen = new Intent(context, LockScreenService.class);
+        lockScreen.setAction("unlinked");
 
-        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
-
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
-
-
-        try {
-            Intent socketService = new Intent(context, SocketService.class);
-            context.stopService(socketService);
-            Intent lockScreen = new Intent(context, LockScreenService.class);
-            lockScreen.setAction("unlinked");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(lockScreen);
-            } else {
-                context.startService(lockScreen);
-            }
-
-        } catch (Exception ignored) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(lockScreen);
+        } else {
+            context.startService(lockScreen);
         }
+
 
     }
 
@@ -462,7 +434,6 @@ public class utils {
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, settings);
 
     }
-
 
 
 }

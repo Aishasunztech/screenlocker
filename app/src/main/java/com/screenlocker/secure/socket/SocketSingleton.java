@@ -25,6 +25,9 @@ public class SocketSingleton {
             opts.forceNew = true;
             opts.reconnectionDelay = 1000;
             opts.reconnection = true;
+
+            Timber.d("device_id %S", device_id);
+
             opts.query = "device_id=" + device_id + "&token=" + token;
             try {
                 socket = IO.socket(SOCKET_SERVER_URL, opts);
@@ -51,6 +54,7 @@ public class SocketSingleton {
                 socket.off(Socket.EVENT_CONNECT);
                 socket.off(Socket.EVENT_DISCONNECT);
                 socket.disconnect();
+                socket = null;
             }
 
         } catch (Exception e) {

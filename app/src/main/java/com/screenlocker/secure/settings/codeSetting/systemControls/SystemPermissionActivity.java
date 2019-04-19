@@ -27,6 +27,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -41,9 +42,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
@@ -72,6 +78,8 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
 
     private ImageView appImage;
+
+
     private static ChangeSettings listener;
 
     public void setListener(ChangeSettings settingsChangeListener) {
@@ -292,6 +300,12 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                         appInfo.setEnable(switchDisable.isChecked());
                     }
                     MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateApps(appInfo);
+                    Intent intent = new Intent(BROADCAST_APPS_ACTION);
+                    intent.putExtra(KEY_DATABASE_CHANGE, "settings");
+                    LocalBroadcastManager.getInstance(SystemPermissionActivity.this).sendBroadcast(intent);
+                    PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SECURE_SETTINGS_CHANGE, true);
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

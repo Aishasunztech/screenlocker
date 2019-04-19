@@ -12,11 +12,17 @@ import androidx.room.Update;
 
 @Dao
 public interface MyDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertApps(AppInfo appsModel);
 
-    @Query("select * from AppInfo")
+    @Query("SELECT * from AppInfo")
     List<AppInfo> getApps();
+
+
+    @Query("SELECT * from SubExtension ")
+    List<SubExtension> getAllSubExtensions();
+
 
     @Query("select * from AppInfo where guest= :isGuest and enable =:isEnable ")
     List<AppInfo> getGuestApps(boolean isGuest, boolean isEnable);
@@ -26,6 +32,14 @@ public interface MyDao {
 
     @Query("select uniqueName ,label, packageName, guest ,enable ,encrypted,extension from AppInfo ")
     List<AppInfo> getAppsWithoutIcons();
+
+    @Query("select uniqueName ,label, uniqueExtension, guest  ,encrypted from SubExtension ")
+    List<AppInfo> getExtensionsWithoutIcons();
+
+
+    @Query("UPDATE AppInfo SET guest=:guest  , enable=:enable , encrypted =:encrypted WHERE uniqueName=:uniqueName ")
+    int updateAppStatusFromServer(boolean guest, boolean encrypted, boolean enable, String uniqueName);
+
 
     @Query("select * from AppInfo where extension = :extension")
     List<AppInfo> getAppsOrExtensions(boolean extension);
@@ -51,9 +65,6 @@ public interface MyDao {
     @Query("SELECT * from SubExtension  WHERE uniqueName=:uniqueName")
     List<SubExtension> getSubExtensions(String uniqueName);
 
-    @Query("SELECT * from SubExtension ")
-    List<SubExtension> getAllSubExtensions();
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSubExtensions(SubExtension subExtensionModal);
@@ -64,7 +75,6 @@ public interface MyDao {
     @Query("UPDATE SubExtension set encrypted=:encrypted WHERE uniqueExtension=:uniqueExtension")
     void setEncrypted(boolean encrypted, String uniqueExtension);
 
-
     @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
     List<SubExtension> getGuestExtensions(String uniqueName, boolean status);
 
@@ -74,15 +84,8 @@ public interface MyDao {
     @Query("UPDATE subextension set guest=:status WHERE uniqueName=:uniqueName ")
     void setAllGuest(String uniqueName, boolean status);
 
-
     @Query("UPDATE subextension set encrypted=:status WHERE uniqueName=:uniqueName ")
     void setAllEncrypted(String uniqueName, boolean status);
-
-    @Query("SELECT COUNT(guest)FROM subextension WHERE guest = :status")
-    int checkGuestStatus(boolean status);
-
-    @Query("SELECT COUNT(encrypted)FROM subextension WHERE encrypted = :status")
-    int checkEncryptedStatus(boolean status);
 
 
 }

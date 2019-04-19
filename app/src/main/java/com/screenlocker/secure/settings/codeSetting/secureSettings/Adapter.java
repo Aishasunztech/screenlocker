@@ -61,7 +61,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d( "run:Enc " ,subExtensionList.get(getAdapterPosition()).isEncrypted() + "");
                             MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
@@ -76,7 +75,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         this.subExtensionList = subExtensions;
         this.context = context;
+
+
+
     }
+
+
 
 
     @Override

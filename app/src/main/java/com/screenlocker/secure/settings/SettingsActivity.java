@@ -160,16 +160,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         init();
 
         boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
-        if (linkStatus && networkStatus) {
-            final Intent intent = new Intent(this, SocketService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                intent.setAction("refresh");
-                startForegroundService(intent);
-            } else {
-                intent.setAction("refresh");
-                startService(intent);
-            }
-        }
+
+//        if (linkStatus && networkStatus) {
+//            final Intent intent = new Intent(this, SocketService.class);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                intent.setAction("refresh");
+//                startForegroundService(intent);
+//            } else {
+//                intent.setAction("refresh");
+//                startService(intent);
+//            }
+//        }
     }
 
 

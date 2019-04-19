@@ -56,7 +56,7 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         String settingPackageName = null;
         if (resolveInfos != null) {
-            settingPackageName = resolveInfos.get(0).activityInfo.packageName + String.valueOf(resolveInfos.get(0).loadLabel(packageManager));
+            settingPackageName = resolveInfos.get(0).activityInfo.packageName + resolveInfos.get(0).loadLabel(packageManager);
         }
 
 

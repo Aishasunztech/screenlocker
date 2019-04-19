@@ -18,6 +18,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.CommonUtils.setSecureSettingsMenu;
@@ -44,6 +45,12 @@ public class BlurWorker extends Worker {
             Intent i = new Intent(Intent.ACTION_MAIN, null);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
+
+            Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            String settingPackageName = resolveInfos.get(0).activityInfo.packageName + resolveInfos.get(0).loadLabel(pm);
+
             // adding data to the model
             //getRunningApps(pm);
 
@@ -68,10 +75,16 @@ public class BlurWorker extends Worker {
                         app.setEnable(true);
                         app.setExtension(false);
                     } else {
+
                         app.setEncrypted(false);
                         app.setGuest(true);
                         app.setEnable(false);
                         app.setExtension(false);
+
+                        if (app.getUniqueName().equals(settingPackageName)) {
+                            app.setGuest(false);
+                        }
+
                     }
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
                 }

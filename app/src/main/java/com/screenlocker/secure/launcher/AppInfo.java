@@ -3,6 +3,7 @@ package com.screenlocker.secure.launcher;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -10,26 +11,26 @@ public class AppInfo {
 
     @NonNull
     @PrimaryKey
-    String uniqueName;
+    private String uniqueName;
 
     private String label;
     private String packageName;
+
+    public boolean isExtension() {
+        return extension;
+    }
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
     private boolean guest;
     private boolean enable;
     private boolean encrypted;
-    private boolean extension;
-
-    public boolean isExtension() {
-        return extension;
-    }
 
     public void setExtension(boolean extension) {
         this.extension = extension;
     }
 
+    private boolean extension;
 
     @NonNull
     public String getUniqueName() {
@@ -49,6 +50,7 @@ public class AppInfo {
         this.encrypted = encrypted;
     }
 
+    @Ignore
     public AppInfo() {
 
     }
@@ -121,6 +123,4 @@ public class AppInfo {
         // Custom equality check here.
         return this.uniqueName.equals(that.uniqueName);
     }
-
-
 }
