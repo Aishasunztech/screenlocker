@@ -38,6 +38,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
+import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
@@ -67,6 +68,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,6 +85,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
@@ -136,6 +139,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -156,6 +161,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 });
 
 
+        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            Intent intent = new Intent(this, SteppersActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         init();
 
@@ -207,7 +218,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
-
         final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
         lockScreenIntent.setAction("lock screen");
         //  check for the can draw over permission ,is it enabled or not
@@ -238,12 +248,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mInstallReciever != null) {
-            unregisterReceiver(mInstallReciever);
+        try {
+            if (mInstallReciever != null) {
+                unregisterReceiver(mInstallReciever);
+            }
+            if (networkReceiver != null) {
+                unregisterReceiver(networkReceiver);
+            }
+        } catch (Exception ignored) {
         }
-        if (networkReceiver != null) {
-            unregisterReceiver(networkReceiver);
-        }
+
     }
 
 
@@ -347,7 +361,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<NetworkResponse> call, @NonNull Throwable t ) {
+                        public void onFailure(@NonNull Call<NetworkResponse> call, @NonNull Throwable t) {
                             Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
                         }
                     });
@@ -395,9 +409,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 new AlertDialog.Builder(this).
                         setTitle("Permission denied")
                         .setMessage("Please allow the premission for application to run").setPositiveButton("Allow", (dialogInterface, i) -> {
-                            dialogInterface.cancel();
-                            addExpiryDate();
-                        }).show();
+                    dialogInterface.cancel();
+                    addExpiryDate();
+                }).show();
             }
         }
 
@@ -755,10 +769,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private static class GetVersionCode extends AsyncTask<Void, String, String> {
-        private  String mCurrentVersion;
-        private GetVersionCode(String string){
+        private String mCurrentVersion;
+
+        private GetVersionCode(String string) {
             mCurrentVersion = string;
         }
+
         @Override
         protected String doInBackground(Void... voids) {
 

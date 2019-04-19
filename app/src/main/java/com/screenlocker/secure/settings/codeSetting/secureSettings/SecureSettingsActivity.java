@@ -280,21 +280,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         });
 
 
-//        if (PrefUtils.getBooleanPref(this, EXTENSION_GUEST_CHECKED)) {
-//            menu.findItem(R.id.extension_guest_all).setChecked(true);
-//        } else {
-//            menu.findItem(R.id.extension_guest_all).setChecked(false);
-//
-//        }
-//
-//        if (PrefUtils.getBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED)) {
-//            menu.findItem(R.id.extension_encryption_all).setChecked(true);
-//        } else {
-//            menu.findItem(R.id.extension_encryption_all).setChecked(false);
-//
-//        }
-
-
         return true;
     }
 

@@ -110,17 +110,18 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".permissions.SteppersActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".permissions.SteppersActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".settings.SetUpLockActivity"
             android:screenOrientation="portrait"
