@@ -203,6 +203,31 @@ public class CommonUtils {
         sim_card.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards");
         subExtensions.add(sim_card);
 
+        //DATA ROAMING
+        Drawable data_roaming_drawable = context.getResources().getDrawable(R.drawable.ic_roaming);
+        byte[] data_roaming_icon = CommonUtils.convertDrawableToByteArray(data_roaming_drawable);
+        SubExtension dataRoaming = new SubExtension();
+        dataRoaming.setLabel("Data Roaming");
+        dataRoaming.setIcon(data_roaming_icon);
+        dataRoaming.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        dataRoaming.setGuest(false);
+        dataRoaming.setEncrypted(false);
+        dataRoaming.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming");
+        subExtensions.add(dataRoaming);
+
+        // MOBILE DATA
+        Drawable mobile_data_drawable = context.getResources().getDrawable(R.drawable.ic_mobile_data);
+        byte[] mobile_data_icon = CommonUtils.convertDrawableToByteArray(mobile_data_drawable);
+        SubExtension mobileData = new SubExtension();
+        mobileData.setLabel("Mobile Data");
+        mobileData.setIcon(mobile_data_icon);
+        mobileData.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        mobileData.setGuest(false);
+        mobileData.setEncrypted(false);
+        mobileData.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data");
+        subExtensions.add(mobileData);
+
+
         // HOT SPOT
         Drawable hotspot_drawable = context.getResources().getDrawable(R.drawable.ic_wifi_hotspot);
         byte[] hotspot_icon = CommonUtils.convertDrawableToByteArray(hotspot_drawable);
@@ -286,6 +311,10 @@ public class CommonUtils {
         dateTime.setEncrypted(false);
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
+
+
+
+
         
         
         for (SubExtension subExtension : subExtensions) {

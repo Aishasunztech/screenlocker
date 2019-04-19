@@ -178,9 +178,8 @@
 
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/data_roaming_cotainer"
+            android:id="@+id/mobile_data_cotainer"
             style="@style/MainActivityItemsStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,8 +193,50 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:tint="@android:color/black"
-                android:src="@drawable/sim_card_icon"
-                android:visibility="invisible" />
+                android:src="@drawable/ic_mobile_data"
+                 />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Mobil Data"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/data_roaming_cotainer"
+            style="@style/MainActivityItemsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/mobile_data_cotainer">
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:tint="@android:color/black"
+                android:src="@drawable/ic_roaming"
+                android:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

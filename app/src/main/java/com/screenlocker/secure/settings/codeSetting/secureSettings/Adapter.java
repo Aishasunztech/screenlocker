@@ -15,6 +15,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private final List<SubExtension> subExtensionList;
 
     private Context context;
+    private int guestChecked = 0,encryptionChecked = 0;
+    private MenuChecklistener checklistener;
+    private boolean isFirstTime = true;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tv;
@@ -48,6 +53,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            checklistener.updateMenu();
                             MyApplication.getAppDatabase(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
@@ -61,7 +67,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d( "run:Enc " ,subExtensionList.get(getAdapterPosition()).isEncrypted() + "");
+                            checklistener.updateMenu();
                             MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
@@ -76,6 +82,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         this.subExtensionList = subExtensions;
         this.context = context;
+        if(context instanceof MenuChecklistener)
+        {
+            checklistener = (MenuChecklistener) context;
+        }
     }
 
 
@@ -119,5 +129,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         View v = inflater.inflate(R.layout.selectable_app_list_item, parent, false);
 
         return new Adapter.ViewHolder(v);
+    }
+
+    public interface MenuChecklistener{
+        void updateMenu();
     }
 }
