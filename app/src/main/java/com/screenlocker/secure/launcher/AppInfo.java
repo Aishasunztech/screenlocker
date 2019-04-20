@@ -32,6 +32,9 @@ public class AppInfo {
 
     private boolean extension;
 
+    private boolean visible;
+
+
     @NonNull
     public String getUniqueName() {
         return uniqueName;
@@ -50,9 +53,19 @@ public class AppInfo {
         this.encrypted = encrypted;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     @Ignore
     public AppInfo() {
 
+    }
+
+
+
+    public boolean isVisible() {
+        return visible;
     }
 
     public AppInfo(String label, String packageName, byte[] icon) {

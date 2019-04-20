@@ -30,10 +30,10 @@ public interface MyDao {
     @Query("select * from AppInfo where encrypted= :isEncrypted and enable =:isEnable ")
     List<AppInfo> getEncryptedApps(boolean isEncrypted, boolean isEnable);
 
-    @Query("select uniqueName ,label, packageName, guest ,enable ,encrypted,extension from AppInfo ")
+    @Query("select uniqueName ,label, packageName, guest ,enable ,encrypted,extension,visible from AppInfo ")
     List<AppInfo> getAppsWithoutIcons();
 
-    @Query("select uniqueName ,label, uniqueExtension, guest  ,encrypted from SubExtension ")
+    @Query("select uniqueName ,label, uniqueExtension, guest ,encrypted from SubExtension ")
     List<SubExtension> getExtensionsWithoutIcons();
 
 
@@ -62,7 +62,7 @@ public interface MyDao {
     @Query("UPDATE AppInfo SET guest=:guest , encrypted=:encrypted, enable=:enable WHERE uniqueName=:uniqueName")
     void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);
 
-    @Query("SELECT guest,encrypted,enable,extension,uniqueName from AppInfo  WHERE uniqueName=:uniqueName")
+    @Query("SELECT guest,encrypted,enable,extension,uniqueName , visible from AppInfo  WHERE uniqueName=:uniqueName")
     AppInfo getAppStatus(String uniqueName);
 
     @Query("SELECT * from SubExtension  WHERE uniqueName=:uniqueName")

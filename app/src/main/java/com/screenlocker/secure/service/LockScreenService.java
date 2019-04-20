@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -22,7 +24,6 @@ import com.screenlocker.secure.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
@@ -82,11 +83,23 @@ public class LockScreenService extends Service {
     @Override
     public void onDestroy() {
 
-        Timber.d("screen locker distorting.");
-        unregisterReceiver(screenOffReceiver);
-        LocalBroadcastManager.getInstance(this)
-                .unregisterReceiver(notificationRefreshedListener);
-        PrefUtils.saveToPref(this, false);
+        try {
+            Timber.d("screen locker distorting.");
+            unregisterReceiver(screenOffReceiver);
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(notificationRefreshedListener);
+            PrefUtils.saveToPref(this, false);
+
+            Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
 
 
         super.onDestroy();
@@ -125,6 +138,9 @@ public class LockScreenService extends Service {
                     case "unlocked":
                         removeLockScreenView();
                         break;
+                    case "locked":
+                        startLockScreen();
+                        break;
                 }
             }
         }
@@ -132,23 +148,6 @@ public class LockScreenService extends Service {
 
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
-    }
-
-    private void stopLockScreen() {
-
-        try {
-
-            removeLockScreenView();
-            if (mLayout != null) {
-                mLayout = null;
-            }
-            if (notificationItems != null) {
-                notificationItems.clear();
-            }
-            stopSelf();
-        } catch (Exception e) {
-            Timber.d(e);
-        }
     }
 
     private void startLockScreen() {
@@ -184,11 +183,11 @@ public class LockScreenService extends Service {
 
     public void removeLockScreenView() {
         setTimeRemaining(getAppContext());
-
         try {
             windowManager.removeView(mLayout);
             mLayout = null;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 

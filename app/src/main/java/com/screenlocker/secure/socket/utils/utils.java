@@ -131,7 +131,7 @@ public class utils {
                         }
 
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         Timber.d("error : %s", e.getMessage());
                     }
                 }
@@ -152,18 +152,23 @@ public class utils {
                     try {
 
                         JSONObject app = extensions.getJSONObject(i);
-                        boolean guest = (boolean) app.get("guest");
-                        String uniqueExtension = app.getString("uniqueExtension");
-                        boolean encrypted = (boolean) app.get("encrypted");
 
-                        MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest, encrypted, uniqueExtension);
+                        int guest = (int) app.get("guest");
+
+
+                        String uniqueExtension = app.getString("uniqueExtension");
+
+
+                        int encrypted = (int) app.get("encrypted");
+
+                        MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
 
                         if (i == extensions.length() - 1) {
                             listener.onExtensionsReady();
                         }
 
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         Timber.d("error : %s", e.getMessage());
                     }
                 }
@@ -210,8 +215,9 @@ public class utils {
                 Timber.d("admin pass : %s", admin_pass);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
             }
-        } catch (JSONException ignored) {
+        } catch (Exception e) {
 
+            Timber.d(e);
         }
 
     }

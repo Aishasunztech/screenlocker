@@ -161,6 +161,7 @@ public class Utils {
 
         ConstraintLayout constraintLayout = keypadView.findViewById(R.id.device_status_labels);
 
+        TextView decice_status = keypadView.findViewById(R.id.device_status);
         if (!PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
             constraintLayout.setVisibility(View.INVISIBLE);
         } else {
@@ -169,7 +170,6 @@ public class Utils {
             exDate.setText(getRemainingDays(context));
             TextView deviceId = keypadView.findViewById(R.id.device_id);
             deviceId.setText(PrefUtils.getStringPref(context, DEVICE_ID));
-            TextView decice_status = keypadView.findViewById(R.id.device_status);
 
             String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS) == null ? "active" : PrefUtils.getStringPref(context, DEVICE_STATUS);
             decice_status.setText(device_status);
@@ -208,7 +208,8 @@ public class Utils {
         deviceStatusReceiver.setListener(status -> {
             if (status == null) {
                 keyboardView.clearWaringText();
-//                    loginAsGuest(context);
+                decice_status.setText("active");
+
             } else {
                 if (status.equals("suspended")) {
                     if (device_id != null) {
@@ -226,30 +227,7 @@ public class Utils {
             }
 
         });
-//        ConstraintLayout backgroundLayout = keypadView.findViewById(R.id.background);
-//        backgroundLayout.setBackground(BitmapDrawable.createFromPath(PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE)));
 
-        //   final ImageView backgroundView = keypadView.findViewById(R.id.background);
-//        final Random random = new Random();
-//        final Handler handler = new Handler();
-//        final int[] imageList = new int[]{
-//                R.drawable.ic_image_2,
-//                R.drawable.ic_image_1,
-//                R.drawable.ic_image_3
-//        };
-//
-//
-//        final Runnable runnable = new Runnable() {
-//            public void run() {
-//                int randomNum = random.nextInt(3);
-//                backgroundView.setImageDrawable(ContextCompat.getDrawable(context, imageList[randomNum]));
-//                handler.postDelayed(this, TIME_BACKGROUND_IMAGE_SHUFFLE);
-//            }
-//        };
-//        backgroundView.setImageDrawable(ContextCompat.getDrawable(context, imageList[random.nextInt(3)]));
-//        handler.postDelayed(runnable, TIME_BACKGROUND_IMAGE_SHUFFLE);
-        //backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-        //  backgroundView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.lock_background));
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
         long time_remaining = getTimeRemaining(context);
 

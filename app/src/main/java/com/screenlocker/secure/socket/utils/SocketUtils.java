@@ -1,19 +1,18 @@
 package com.screenlocker.secure.socket.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.socket.SocketSingleton;
-import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
-import com.screenlocker.secure.socket.interfaces.GetApplications;
-import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -21,6 +20,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.cert.Extension;
 import java.util.List;
 
 import timber.log.Timber;
@@ -92,17 +92,23 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
     public void connectSocket() {
 
 
-        try{
+        try {
             socket.on(Socket.EVENT_CONNECT, args -> {
-            Timber.d("<<< socket connected >>>");
-            disconnectSocket();
-            socketEventError();
-            getSyncStatus();
-            getAlliedSettings();
-            getDeviceStatus();
+                Timber.d("<<< socket connected >>>");
+                disconnectSocket();
+                socketEventError();
+                getSyncStatus();
+                getAppliedSettings();
+                getDeviceStatus();
 
+                if (!PrefUtils.getBooleanPref(context, IS_SYNCED) && PrefUtils.getBooleanPref(context, DB_STATUS)) {
+                    sendApps();
+                    sendSettings();
+                    sendExtensions();
+                }
+            });
 
-        });}catch (Exception e){
+        } catch (Exception e) {
             Timber.d(e);
         }
 
@@ -117,6 +123,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
                 try {
 
                     if (socket.connected()) {
+
                         socket.emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(context).getDao().getAppsWithoutIcons()));
                         PrefUtils.saveBooleanPref(context, APPS_SETTING_CHANGE, false);
 
@@ -263,83 +270,110 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
     }
 
     @Override
-    public void getAlliedSettings() {
+    public void getAppliedSettings() {
 
-        if (socket.connected()) {
 
-            socket.on(GET_APPLIED_SETTINGS + device_id, args -> {
-                Timber.d("<<< getting applied settings >>>");
-                JSONObject obj = (JSONObject) args[0];
-                try {
-                    if (validateRequest(device_id, obj.getString("device_id"))) {
-                        Timber.d(" valid request ");
-                        boolean status = obj.getBoolean("status");
-                        Timber.d(" applied settings status : %S", status);
-                        if (status) {
-                            String appsList = obj.getString("app_list");
-                            if (!appsList.equals("[]")) {
-                                updateAppsList(context, new JSONArray(appsList), () -> {
-                                    Timber.d(" apps updated ");
-                                });
-                            }
-                            String passwords = obj.getString("passwords");
-                            if (!passwords.equals("{}")) {
-                                updatePasswords(context, new JSONObject(passwords));
-                                Timber.d(" passwords updated ");
-                            }
-                            String settings = obj.getString("settings");
-                            if (!settings.equals("{}")) {
+        try {
+            if (socket.connected()) {
+
+                socket.on(GET_APPLIED_SETTINGS + device_id, args -> {
+                    Timber.d("<<< getting applied settings >>>");
+
+                    JSONObject obj = (JSONObject) args[0];
+
+                    try {
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+
+                            Timber.d(" valid request ");
+                            boolean status = obj.getBoolean("status");
+                            Timber.d(" applied settings status : %S", status);
+                            if (status) {
+                                String appsList = obj.getString("app_list");
+                                if (!appsList.equals("[]")) {
+                                    updateAppsList(context, new JSONArray(appsList), () -> {
+                                        Timber.d(" apps updated ");
+                                    });
+                                }
+                                String passwords = obj.getString("passwords");
+                                if (!passwords.equals("{}")) {
+                                    updatePasswords(context, new JSONObject(passwords));
+                                    Timber.d(" passwords updated ");
+                                }
+                                String settings = obj.getString("settings");
+                                if (!settings.equals("{}")) {
 //                            changeSettings(context, new Gson().fromJson(settings, Settings.class));
-                                Timber.d(" settings applied ");
-                            }
-                            String extensionList = obj.getString("extension_list");
+                                    Timber.d(" settings applied ");
+                                }
 
-                            if(!extensionList.equals("[]"))
-                            {
-                                updateExtensionsList(context, new JSONArray(extensionList), () -> {
-                                    Timber.d(" extensions updated ");
-                                });
+                                String extensionList = obj.getString("extension_list");
+
+
+                                if (!extensionList.equals("[]")) {
+
+                                    JSONArray jsonArray = new JSONArray(extensionList);
+
+                                    updateExtensionsList(context, jsonArray, () -> {
+                                        Timber.d(" extensions updated ");
+                                    });
+
+
+                                }
+
+                                socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
+
+
+                                Timber.d(" settings applied status sent ");
+
+                                Intent intent = new Intent(context, LockScreenService.class);
+
+                                intent.setAction("locked");
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    context.startForegroundService(intent);
+                                } else {
+                                    context.startService(intent);
+                                }
+
+
+                            } else {
+                                Timber.d(" no settings available in history ");
+
+                                boolean appsSettingStatus = PrefUtils.getBooleanPref(context, APPS_SETTING_CHANGE);
+                                Timber.d(" apps settings status in local : %S", appsSettingStatus);
+
+                                if (appsSettingStatus) {
+                                    sendAppsWithoutIcons();
+                                }
+
+                                boolean settingsStatus = PrefUtils.getBooleanPref(context, SETTINGS_CHANGE);
+                                Timber.d(" settings status in local : %S", settingsStatus);
+                                if (settingsStatus) {
+                                    sendApps();
+                                }
+
+                                boolean extensionsStatus = PrefUtils.getBooleanPref(context, SECURE_SETTINGS_CHANGE);
+                                Timber.d(" extensions status in local : %S", extensionsStatus);
+                                if (extensionsStatus) {
+                                    sendExtensionsWithoutIcons();
+                                }
+
+
                             }
 
-                            socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
-                            Timber.d(" settings applied status sent ");
                         } else {
-                            Timber.d(" no settings available in history ");
-
-                            boolean appsSettingStatus = PrefUtils.getBooleanPref(context, APPS_SETTING_CHANGE);
-                            Timber.d(" apps settings status in local : %S", appsSettingStatus);
-
-                            if (appsSettingStatus) {
-                                sendAppsWithoutIcons();
-                            }
-
-                            boolean settingsStatus = PrefUtils.getBooleanPref(context, SETTINGS_CHANGE);
-                            Timber.d(" settings status in local : %S", settingsStatus);
-                            if (settingsStatus) {
-                                sendApps();
-                            }
-
-                            boolean extensionsStatus = PrefUtils.getBooleanPref(context, SECURE_SETTINGS_CHANGE);
-                            Timber.d(" extensions status in local : %S", extensionsStatus);
-                            if (extensionsStatus) {
-                                sendExtensionsWithoutIcons();
-                            }
-
-
-
+                            Timber.e(" invalid request ");
                         }
 
-                    } else {
-                        Timber.e(" invalid request ");
+                    } catch (Exception error) {
+                        Timber.e(" error : %s", error.getMessage());
                     }
 
-                } catch (Exception error) {
-                    Timber.e(" JSON error : %s", error.getMessage());
-                }
-
-            });
-        } else {
-            Timber.d("Socket not connected");
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
 
 
@@ -348,54 +382,59 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
     @Override
     public void getDeviceStatus() {
 
-        if (socket.connected()) {
+        try {
+            if (socket.connected()) {
 
-            socket.on(DEVICE_STATUS + device_id, args -> {
-                Timber.d("<<< getting device status >>>");
-                JSONObject object = (JSONObject) args[0];
-                try {
-                    if (validateRequest(device_id, object.getString("device_id"))) {
-                        Timber.d("<<< valid request >>>");
-                        String msg = object.getString("msg");
-                        Timber.e("<<< device status =>>> %S", msg);
-                        if (msg != null) {
-                            switch (msg) {
-                                case "suspended":
-                                    suspendedDevice(context, device_id, "suspended");
-                                    utils.sendBroadcast(context, "suspended");
-                                    Timber.d("<<< device suspended >>>");
-                                    break;
-                                case "active":
-                                    unSuspendDevice(context);
-                                    utils.sendBroadcast(context, null);
-                                    Timber.d("<<< device activated >>>");
-                                    break;
-                                case "expired":
-                                    suspendedDevice(context, device_id, "expired");
-                                    utils.sendBroadcast(context, "expired");
-                                    Timber.d("<<< device expired >>>");
-                                    break;
-                                case "unlinked":
-                                    Timber.d("<<< device unlinked >>>");
-                                    unlinkDevice(context);
-                                    break;
-                                case "wiped":
-                                    Timber.d("<<< device wiped >>>");
-                                    wipeDevice(context);
-                                    break;
+                socket.on(DEVICE_STATUS + device_id, args -> {
+                    Timber.d("<<< getting device status >>>");
+                    JSONObject object = (JSONObject) args[0];
+                    try {
+                        if (validateRequest(device_id, object.getString("device_id"))) {
+                            Timber.d("<<< valid request >>>");
+                            String msg = object.getString("msg");
+                            Timber.e("<<< device status =>>> %S", msg);
+                            if (msg != null) {
+                                switch (msg) {
+                                    case "suspended":
+                                        suspendedDevice(context, device_id, "suspended");
+                                        utils.sendBroadcast(context, "suspended");
+                                        Timber.d("<<< device suspended >>>");
+                                        break;
+                                    case "active":
+                                        unSuspendDevice(context);
+                                        utils.sendBroadcast(context, null);
+                                        Timber.d("<<< device activated >>>");
+                                        break;
+                                    case "expired":
+                                        suspendedDevice(context, device_id, "expired");
+                                        utils.sendBroadcast(context, "expired");
+                                        Timber.d("<<< device expired >>>");
+                                        break;
+                                    case "unlinked":
+                                        Timber.d("<<< device unlinked >>>");
+                                        unlinkDevice(context);
+                                        break;
+                                    case "wiped":
+                                        Timber.d("<<< device wiped >>>");
+                                        wipeDevice(context);
+                                        break;
+                                }
                             }
-                        }
 
-                    } else {
-                        Timber.d("<<< invalid request >>>");
+                        } else {
+                            Timber.d("<<< invalid request >>>");
+                        }
+                    } catch (Exception error) {
+                        Timber.e("<<< JSON error >>>%s", error.getMessage());
                     }
-                } catch (Exception error) {
-                    Timber.e("<<< JSON error >>>%s", error.getMessage());
-                }
-            });
-        } else {
-            Timber.d("Socket connected");
+                });
+            } else {
+                Timber.d("Socket connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
+
 
     }
 
@@ -404,12 +443,17 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
     public void sendSettings() {
         Timber.d("<<< Sending settings >>>");
 
-        if (socket.connected()) {
-            socket.emit(SEND_SETTINGS + device_id, "settings");
-            PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
-        }else {
-            Timber.d("Socket not connected");
+        try {
+            if (socket.connected()) {
+                socket.emit(SEND_SETTINGS + device_id, "settings");
+                PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
+            } else {
+                Timber.d("Socket not connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
+
 
     }
 
@@ -421,32 +465,48 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
 
     @Override
     public void socketEventError() {
-        if (socket.connected()) {
-            socket.on(Socket.EVENT_ERROR, args -> {
-                Timber.e("<<< socket event error >>>");
-            });
-        } else {
-            Timber.d("Socket not connected");
+        try {
+            if (socket.connected()) {
+                socket.on(Socket.EVENT_ERROR, args -> {
+                    Timber.e("<<< socket event error >>>");
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
+
 
     }
 
     @Override
     public void closeSocket() {
-        Timber.d("<<< closing socket >>>");
-        SocketSingleton.closeSocket(device_id);
+        try {
+            Timber.d("<<< closing socket >>>");
+            SocketSingleton.closeSocket(device_id);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+
     }
 
     @Override
     public void disconnectSocket() {
-        if (socket.connected()) {
 
-            socket.on(Socket.EVENT_DISCONNECT, args -> {
-                Timber.d("<<< disconnect socket >>>");
-            });
-        } else {
-            Timber.d("Socket not connected");
+        try {
+            if (socket.connected()) {
+
+                socket.on(Socket.EVENT_DISCONNECT, args -> {
+                    Timber.d("<<< disconnect socket >>>");
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
+
 
     }
 
@@ -485,6 +545,17 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
             if (action.equals("settings")) {
                 sendSettings();
             }
+
+            try {
+
+                if (socket.connected()) {
+                    socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
+                }
+
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+
 
         }
 

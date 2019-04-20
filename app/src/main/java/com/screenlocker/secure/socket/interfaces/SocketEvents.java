@@ -4,7 +4,7 @@ public interface SocketEvents {
 
     void getSyncStatus();
 
-    void getAlliedSettings();
+    void getAppliedSettings();
 
     void sendApps();
 

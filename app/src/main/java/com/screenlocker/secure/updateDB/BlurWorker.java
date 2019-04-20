@@ -80,9 +80,11 @@ public class BlurWorker extends Worker {
                         app.setGuest(true);
                         app.setEnable(false);
                         app.setExtension(false);
+                        app.setVisible(true);
 
                         if (app.getUniqueName().equals(settingPackageName)) {
                             app.setGuest(false);
+                            app.setVisible(false);
                         }
 
                     }
@@ -103,6 +105,7 @@ public class BlurWorker extends Worker {
                 wifiExtension.setGuest(true);
                 wifiExtension.setEncrypted(true);
                 wifiExtension.setEnable(true);
+                wifiExtension.setVisible(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
             }
 

@@ -57,6 +57,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jsoup.Jsoup;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -139,7 +142,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
