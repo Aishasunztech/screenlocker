@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +121,6 @@ public class Utils {
 
     public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
                                                                    List<NotificationItem> notifications, final Context context) {
-
 
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -160,6 +160,8 @@ public class LockScreenService extends Service {
                 mLayout = new RelativeLayout(LockScreenService.this);
             }
             notificationItems.clear();
+
+
             if (mNM != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));

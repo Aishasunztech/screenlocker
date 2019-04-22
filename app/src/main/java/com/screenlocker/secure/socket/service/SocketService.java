@@ -71,6 +71,7 @@ public class SocketService extends Service implements SettingContract.SettingsMv
                     String serialNo = DeviceIdUtils.getSerialNumber();
                     apiUtils = new ApiUtils(SocketService.this, macAddress, serialNo);
 
+
                 }
             }
         }
