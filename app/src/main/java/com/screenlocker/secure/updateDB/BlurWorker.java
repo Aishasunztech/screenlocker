@@ -63,31 +63,49 @@ public class BlurWorker extends Worker {
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
                 app.setUniqueName(app.getPackageName() + app.getLabel());
-//                Glide.with(applicationContext)
-//                        .load(app.getIcon())
-//                        .apply(new RequestOptions().centerCrop())
-//                        .into(viewHolder.img);
+
                 if (!dbApps.contains(app)) {
-                    app.setGuest(false);
-                    // own app && uem app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name)) || app.getPackageName().equals("com.rim.mobilefusion.client")) {
+
+                    // own app
+                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {
+
+                        app.setGuest(false);
                         app.setEncrypted(true);
                         app.setEnable(true);
                         app.setExtension(false);
-                    } else {
+                        app.setVisible(true);
+                        app.setDefaultApp(true);
 
-                        app.setEncrypted(false);
-                        app.setGuest(true);
+
+                    } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
+
+                        app.setEncrypted(true);
+                        app.setGuest(false);
                         app.setEnable(false);
                         app.setExtension(false);
                         app.setVisible(true);
+                        app.setDefaultApp(false);
 
-                        if (app.getUniqueName().equals(settingPackageName)) {
-                            app.setGuest(false);
-                            app.setVisible(false);
-                        }
+                    } else if (app.getUniqueName().equals(settingPackageName)) {
+
+                        app.setGuest(false);
+                        app.setVisible(false);
+                        app.setDefaultApp(false);
+                        app.setEncrypted(false);
+                        app.setExtension(false);
+
+                    } else {
+
+                        app.setGuest(true);
+                        app.setEncrypted(false);
+                        app.setEnable(false);
+                        app.setExtension(false);
+                        app.setVisible(true);
+                        app.setDefaultApp(false);
 
                     }
+
+
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
                 }
 
@@ -106,6 +124,8 @@ public class BlurWorker extends Worker {
                 wifiExtension.setEncrypted(true);
                 wifiExtension.setEnable(true);
                 wifiExtension.setVisible(true);
+                wifiExtension.setDefaultApp(false);
+
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
             }
 

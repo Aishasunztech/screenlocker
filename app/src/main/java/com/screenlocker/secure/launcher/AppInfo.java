@@ -34,6 +34,15 @@ public class AppInfo {
 
     private boolean visible;
 
+    public boolean isDefaultApp() {
+        return defaultApp;
+    }
+
+    private boolean defaultApp;
+
+    public void setDefaultApp(boolean defaultApp) {
+        this.defaultApp = defaultApp;
+    }
 
     @NonNull
     public String getUniqueName() {
@@ -61,7 +70,6 @@ public class AppInfo {
     public AppInfo() {
 
     }
-
 
 
     public boolean isVisible() {

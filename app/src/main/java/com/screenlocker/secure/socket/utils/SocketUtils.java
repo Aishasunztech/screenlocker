@@ -14,6 +14,7 @@ import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.SocketSingleton;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
+import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -26,6 +27,8 @@ import java.util.List;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.SocketSingleton.getSocket;
+import static com.screenlocker.secure.socket.utils.utils.changeSettings;
+import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
@@ -300,8 +303,9 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
                                     Timber.d(" passwords updated ");
                                 }
                                 String settings = obj.getString("settings");
+
                                 if (!settings.equals("{}")) {
-//                            changeSettings(context, new Gson().fromJson(settings, Settings.class));
+                                    changeSettings(context, new Gson().fromJson(settings, Settings.class));
                                     Timber.d(" settings applied ");
                                 }
 
@@ -445,7 +449,7 @@ public class SocketUtils implements SocketEvents, DatabaseStatus {
 
         try {
             if (socket.connected()) {
-                socket.emit(SEND_SETTINGS + device_id, "settings");
+                socket.emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(context)));
                 PrefUtils.saveBooleanPref(context, SETTINGS_CHANGE, false);
             } else {
                 Timber.d("Socket not connected");

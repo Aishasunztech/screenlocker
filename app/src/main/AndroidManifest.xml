@@ -103,7 +103,7 @@
         <!-- android:targetActivity=".launcher.MdmMainActivity"> -->
         <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.HOME" /> -->
+        <!-- <category android:name="android.intent.category.HOME" /> -->run command
         <!-- <category android:name="android.intent.category.DEFAULT" /> -->
         <!-- </intent-filter> -->
         <!-- </activity-alias> -->

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 
 import com.screenlocker.secure.launcher.AppInfo;
 
-@Database(entities = {AppInfo.class, SubExtension.class}, version = 7)
+@Database(entities = {AppInfo.class, SubExtension.class}, version = 8)
 public abstract class MyAppDatabase extends RoomDatabase {
     public abstract MyDao getDao();
 

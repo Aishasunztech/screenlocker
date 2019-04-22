@@ -86,7 +86,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
-            return;
+
+
         }
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ShareCompat;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -336,7 +338,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                 File f = getFileStreamPath(appName);
                 Uri apkUri = FileProvider.getUriForFile(InstallAppsActivity.this,
                         /*getApplicationContext().getPackageName() + ".provider"*/ BuildConfig.APPLICATION_ID, f);
-                Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath())+"  "+apkUri  );
+                Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath()) + "  " + apkUri);
 
                 Intent intent = ShareCompat.IntentBuilder.from(InstallAppsActivity.this)
                         .setStream(apkUri) // uri from FileProvider
@@ -346,16 +348,17 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                         .setDataAndType(apkUri, "application/vnd.android.package-archive")
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivity(intent);
-                /*try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (installPackage(InstallAppsActivity.this,f.getAbsolutePath(),"com.nemo.vidmate")) {
-                            Toast.makeText(InstallAppsActivity.this,"Installed", Toast.LENGTH_LONG).show();
-                        }else
-                            Toast.makeText(InstallAppsActivity.this,"went wrong", Toast.LENGTH_LONG).show();
-                    }
-                } catch (IOException e) {
-                    Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: "+e.getMessage());
-                }*/
+
+//                try {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        if (installPackage(InstallAppsActivity.this, f.getAbsolutePath(), "com.nemo.vidmate")) {
+//                            Toast.makeText(InstallAppsActivity.this, "Installed", Toast.LENGTH_LONG).show();
+//                        } else
+//                            Toast.makeText(InstallAppsActivity.this, "went wrong", Toast.LENGTH_LONG).show();
+//                    }
+//                } catch (IOException e) {
+//                    Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: " + e.getMessage());
+//                }
 
 
                 isInstallDialogOpen = true;
@@ -445,8 +448,9 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         super.onBackPressed();
         isBackPressed = true;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public  boolean installPackage(Context context, String abspath, String packageName)
+    public boolean installPackage(Context context, String abspath, String packageName)
             throws IOException {
         PackageInstaller packageInstaller = getPackageManager().getPackageInstaller();
         PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
@@ -469,7 +473,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         session.commit(createIntentSender(context, sessionId));
         return true;
     }
-
 
 
     private IntentSender createIntentSender(Context context, int sessionId) {

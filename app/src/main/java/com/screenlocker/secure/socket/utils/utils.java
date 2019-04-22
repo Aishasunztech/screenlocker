@@ -184,17 +184,7 @@ public class utils {
         } else return arg1.equals(arg2);
     }
 
-    public static List<AppInfo> getAppsWithoutIcons(List<AppInfo> appsList) {
-        if (appsList != null) {
-            List<AppInfo> appInfos = new ArrayList<>();
-            for (AppInfo info : appsList) {
-                info.setIcon(null);
-                appInfos.add(info);
-            }
-            return appInfos;
-        }
-        return null;
-    }
+
 
     public static void updatePasswords(Context context, JSONObject object) {
         try {
@@ -227,6 +217,7 @@ public class utils {
     }
 
     public static Settings getCurrentSettings(Context context) {
+
         //Calls setting
         Settings settings = new Settings();
         boolean callStatus = PrefUtils.getBooleanPref(context, AppConstants.KEY_DISABLE_CALLS);
@@ -257,6 +248,7 @@ public class utils {
         settings.setScreenshot_status(false);
         //Hotspot setting
         settings.setHotspot_status(false);
+
         return settings;
     }
 
@@ -304,6 +296,7 @@ public class utils {
 //        } else {
 //            disableScreenShotBlocker(true);
 //        }
+
         //HotSpotSetting
         boolean hotSpotStatus = settings.isHotspot_status();
         try {
