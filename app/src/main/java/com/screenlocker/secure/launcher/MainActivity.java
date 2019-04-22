@@ -12,7 +12,9 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -42,6 +44,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
+import static android.view.KeyEvent.KEYCODE_POWER;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -79,7 +82,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
         super.onCreate(savedInstanceState);
+
+        Log.d("hnhihiihh", "onCreate: ");
 
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -217,6 +223,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
     };
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode== KEYCODE_POWER){
+            Log.d(TAG, "onKeyDown: power button");
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 
     public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
@@ -285,8 +298,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onResume() {
-        super.onResume();
 
+        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
+
+
+        super.onResume();
+        Log.d("hnhihiihh", "onResume: ");
 
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
         if (!mainPresenter.isServiceRunning()) {
@@ -297,7 +314,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
         }
-        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
+        //allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
 
     private void setBackground(String message) {
@@ -381,7 +398,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                if (!powerManager.isInteractive()) {
+                if (!powerManager.isScreenOn()) {
                     appExecutor.getMainThread().execute(this::drawOverLay);
                     return;
 

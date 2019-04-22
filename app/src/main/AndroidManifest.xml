@@ -53,8 +53,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
     <uses-permission
-        android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
+        android:name="android.permission.PACKAGE_USAGE_STATS" />
 
     <application
         android:name=".app.MyApplication"
@@ -88,15 +87,21 @@
 
         <activity
             android:name=".launcher.MainActivity"
-            android:enabled="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:taskAffinity="a.s.s">
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="nosensor"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:resumeWhilePausing="true"
+            android:taskAffinity=""
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity> <!-- <activity-alias -->
         <!-- android:name=".launcher.FakeLauncherActivity" -->

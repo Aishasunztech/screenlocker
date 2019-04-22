@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.graphics.PixelFormat;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,6 +17,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -29,6 +33,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -53,12 +58,12 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private PopupWindow popupWindow;
 
     private TextView bluetoothName, brightnessLevel, sleepTime,
-            wifiName,battery_status;
+            wifiName, battery_status;
 
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
-            sleepContainer,battery_container,sound_container,
-            language_container,dateTimeContainer,mobile_container,dataRoamingContainer;
+            sleepContainer, battery_container, sound_container,
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -73,14 +78,13 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 
     };
 
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctxt, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
             int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-            String batteryStatus ="";
-            if(status == BatteryManager.BATTERY_STATUS_CHARGING)
-            {
+            String batteryStatus = "";
+            if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
                 batteryStatus = "Charging";
             }
             battery_status.setText(String.valueOf(level) + "% " + batteryStatus);
@@ -90,7 +94,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     // showing allowed menu for each user type
     private void showMenus() {
         String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-        if(userType != null) {
+        if (userType != null) {
             switch (userType) {
                 // encrypted user
                 case KEY_MAIN_PASSWORD:
@@ -161,7 +165,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
 
-        registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
 //        permissionModify(SecureSettingsMain.this);
@@ -185,9 +189,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery", battery_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound", sound_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming",dataRoamingContainer);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data",mobile_container);
-
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
 
 
     }
@@ -218,11 +221,13 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         sound_container = findViewById(R.id.sound_container);
         language_container = findViewById(R.id.language_container);
         dateTimeContainer = findViewById(R.id.dateTime_container);
-        mobile_container  = findViewById(R.id.mobile_data_cotainer);
+        mobile_container = findViewById(R.id.mobile_data_cotainer);
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
 
     }
+    WindowManager wm;
+    FrameLayout mView;
 
     private void clickListeners() {
 
@@ -331,8 +336,17 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
             }
         });
         battery_container.setOnClickListener(v -> {
+
             Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
-            startActivity(intent);
+            startActivityForResult(intent,3);
+             mView = new FrameLayout(this);
+            getOverLayLayoutParams();
+            createLayoutParams();
+
+             wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            mView.setBackgroundColor(getResources().getColor(R.color.textColorPrimary));
+            wm.addView(mView, localLayoutParams);
+
         });
 
         sound_container.setOnClickListener(new View.OnClickListener() {
@@ -389,9 +403,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 //        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
 
 
-
     }
-
 
 
     @Override
@@ -405,4 +417,43 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     }
 
 
+    private WindowManager.LayoutParams localLayoutParams;
+
+    private void createLayoutParams() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+
+        } else {
+
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+
+        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+// this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+// Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        localLayoutParams.y = (int) (25 * getResources().getDisplayMetrics().scaledDensity);;
+        localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
+
+        localLayoutParams.format = PixelFormat.OPAQUE;
+
+    }
+
+    public void getOverLayLayoutParams() {
+        if (localLayoutParams == null) {
+            localLayoutParams = new WindowManager.LayoutParams();
+            createLayoutParams();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 3){
+            wm.removeViewImmediate(mView);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.view.KeyEvent.KEYCODE_POWER;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -338,15 +341,15 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                         /*getApplicationContext().getPackageName() + ".provider"*/ BuildConfig.APPLICATION_ID, f);
                 Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath())+"  "+apkUri  );
 
-                Intent intent = ShareCompat.IntentBuilder.from(InstallAppsActivity.this)
+                /*Intent intent = ShareCompat.IntentBuilder.from(InstallAppsActivity.this)
                         .setStream(apkUri) // uri from FileProvider
                         .setType("text/html")
                         .getIntent()
                         .setAction(Intent.ACTION_VIEW) //Change if needed
                         .setDataAndType(apkUri, "application/vnd.android.package-archive")
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);
-                /*try {
+                startActivity(intent);*/
+                try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (installPackage(InstallAppsActivity.this,f.getAbsolutePath(),"com.nemo.vidmate")) {
                             Toast.makeText(InstallAppsActivity.this,"Installed", Toast.LENGTH_LONG).show();
@@ -355,7 +358,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                     }
                 } catch (IOException e) {
                     Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: "+e.getMessage());
-                }*/
+                }
 
 
                 isInstallDialogOpen = true;
@@ -427,6 +430,14 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             }
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode== KEYCODE_POWER){
+            Log.d(TAG, "onKeyDown: power button");
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
