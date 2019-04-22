@@ -140,6 +140,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 

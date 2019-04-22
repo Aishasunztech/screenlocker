@@ -1,9 +1,11 @@
 package com.screenlocker.secure.launcher;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +40,35 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             img.setOnClickListener(this);
         }
 
-        @SuppressLint("StaticFieldLeak")
+
         @Override
         public void onClick(final View v) {
             final Context context = v.getContext();
+            AppInfo info = appsList.get(getAdapterPosition());
+            if (info.isEnable()) {
+                try {
+                    if (info.isExtension()) {
+                        Intent intent = new Intent(context, Class.forName(info.getPackageName()));
+                        context.startActivity(intent);
+                    } else {
+                        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                        launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
+                        context.startActivity(launchIntent);
+                    }
 
-            new AsyncTask<Integer, Void, Boolean>() {
+                } catch (Exception e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(context, "App is disabled", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+            /*new AsyncTask<Integer, Void, Boolean>() {
                 @Override
                 protected Boolean doInBackground(Integer... pos) {
                     AppInfo appInfo = MyApplication
@@ -61,26 +86,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 @Override
                 protected void onPostExecute(Boolean presentApp) {
                     super.onPostExecute(presentApp);
-                    if (presentApp) {
-                        try {
-                            if (appsList.get(getAdapterPosition()).isExtension()) {
-                                Intent intent = new Intent(context, Class.forName(appsList.get(getAdapterPosition()).getPackageName()));
-                                context.startActivity(intent);
-                            } else {
-                                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appsList.get(getAdapterPosition()).getPackageName());
 
-                                context.startActivity(launchIntent);
-                            }
-
-                        } catch (Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(context, "App is disabled", Toast.LENGTH_SHORT).show();
-                    }
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getAdapterPosition());
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getAdapterPosition());*/
 
         }
 
