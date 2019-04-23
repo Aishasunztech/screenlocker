@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.screenlocker.secure">
 
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
@@ -52,12 +55,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
-    <uses-permission
-        android:name="android.permission.PACKAGE_USAGE_STATS" />
-
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
 
     <application
         android:name=".app.MyApplication"
@@ -91,20 +88,21 @@
 
         <activity
             android:name=".launcher.MainActivity"
-            android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:enabled="true"
+            android:launchMode="singleTask"
             android:resumeWhilePausing="true"
+            android:screenOrientation="nosensor"
+            android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:enabled="true">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity> <!-- <activity-alias -->
@@ -147,7 +145,8 @@
         <service
             android:name=".service.LockScreenService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="" />
         <service
             android:name=".service.DeviceNotificationListener"
             android:enabled="true"
@@ -181,7 +180,9 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.AlarmReceiver" />
-        <receiver android:name=".socket.receiver.MdmEventReciever">
+        <receiver
+            android:name=".socket.receiver.MdmEventReciever"
+            android:permission="">
             <intent-filter>
                 <action android:name="com.secureportal.barryapp.app_linked_success" />
             </intent-filter>
@@ -257,7 +258,9 @@
         <activity
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.codeSetting.Sim.SimActivity" />
+        <activity
+            android:name=".settings$codeSetting$Sim$SimActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mdm.MainActivity"
             android:label="@string/app_name"
@@ -276,6 +279,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+
+
     </application>
 
 </manifest>

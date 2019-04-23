@@ -1,279 +1,334 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <LinearLayout
-        android:padding="@dimen/_16sdp"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:padding="@dimen/_16sdp">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Active Device Admin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Enable Overlay Permission"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_drawoverlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Modify System State"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_modify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Usage Access"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_usage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Run time Permission"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_runtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Install Packages"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_unknown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Notification Access"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <LinearLayout
-            android:layout_marginTop="@dimen/_16sdp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="horizontal">
+
             <ImageView
-                android:contentDescription="TODO" android:src="@drawable/ic_admin"
                 android:layout_width="@dimen/_24sdp"
-                android:layout_height="@dimen/_24sdp" />
+                android:layout_height="@dimen/_24sdp"
+
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_admin" />
 
             <TextView
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingEnd="@dimen/_8sdp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
                 android:text="Allow Access Battery Optimization"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
             <Switch
                 android:id="@+id/active_battery_optimization"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
         <TextView
-            android:paddingEnd="@dimen/_48sdp"
-            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/_48sdp"
+            android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/colorPrimary"/>
-        
+            android:background="@color/colorPrimary" />
+
     </LinearLayout>
     <!--Allow Usage Access-->
-
 
 
 </ScrollView>

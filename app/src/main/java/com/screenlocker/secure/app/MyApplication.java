@@ -2,13 +2,17 @@ package com.screenlocker.secure.app;
 
 import android.app.Application;
 import android.app.admin.DevicePolicyManager;
+
 import androidx.room.Room;
+
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -59,6 +63,9 @@ public class MyApplication extends Application implements NetworkListener {
         return appContext;
     }
 
+
+    BroadcastReceiver broadcastReceiver;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -74,6 +81,9 @@ public class MyApplication extends Application implements NetworkListener {
 
         compName = new ComponentName(this, MyAdmin.class);
         screenShotView = createScreenShotView();
+
+
+        // your oncreate code should be
 
 
 //        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
@@ -94,6 +104,8 @@ public class MyApplication extends Application implements NetworkListener {
                         .build();
             }
         };
+
+
         thread.start();
         Timber.plant(new Timber.DebugTree());
 

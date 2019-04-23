@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -35,55 +34,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.mdm.MainActivity;
-import com.screenlocker.secure.networkResponseModels.Data;
-import com.screenlocker.secure.networkResponseModels.NetworkResponse;
-import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
-import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
-import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
-import com.screenlocker.secure.socket.interfaces.NetworkListener;
-import com.screenlocker.secure.socket.interfaces.RefreshListener;
-import com.screenlocker.secure.socket.model.Settings;
-import com.screenlocker.secure.socket.receiver.NetworkReceiver;
-import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.updateDB.BlurWorker;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReciever;
-import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PermissionUtils;
-import com.screenlocker.secure.utils.PrefUtils;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
-import org.jsoup.Jsoup;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Random;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -95,6 +45,45 @@ import androidx.core.content.FileProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.BuildConfig;
+import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.mdm.MainActivity;
+import com.screenlocker.secure.networkResponseModels.NetworkResponse;
+import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
+import com.screenlocker.secure.socket.interfaces.NetworkListener;
+import com.screenlocker.secure.socket.interfaces.RefreshListener;
+import com.screenlocker.secure.socket.receiver.NetworkReceiver;
+import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.updateDB.BlurWorker;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.AppInstallReciever;
+import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PermissionUtils;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -267,6 +256,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             // request user to enable over lay permission for our app
             PermissionUtils.requestOverlayPermission(SettingsActivity.this);
         }
+
+
     }
 
     AppInstallReciever mInstallReciever;
@@ -588,20 +579,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         if (currentVersion != null)
             if (CommonUtils.isNetworkAvailable(this)) {
-                String appname = getResources().getString(R.string.app_name).replaceAll(" ", "");
+
                 ((MyApplication) getApplicationContext())
                         .getApiOneCaller()
-                        .getUpdate("getUpdate/" + currentVersion + "/" + "apk-" + appname + "-v" + currentVersion)
+                        .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName())
                         .enqueue(new Callback<UpdateModel>() {
                             @Override
                             public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
                                 dialog.dismiss();
                                 if (response.body() != null) {
-                                    Log.d("ddddsssfff", "onResponse: "+ response.body().isApkStatus()+ "  "+response.body().getApkUrl());
+
                                     if (response.body().isApkStatus()) {
                                         AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
                                                 .setTitle("Update Available")
-                                                .setMessage("New Update is available. Do you want to update?")
+                                                .setMessage("New update available! Press OK to update your system.")
                                                 .setPositiveButton("OK", (dialog12, which) -> {
                                                     String url = response.body().getApkUrl();
                                                     DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, AppConstants.STAGING_BASE_URL + "/getApk/" + CommonUtils.splitName(url));
@@ -613,13 +604,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
                                     } else
-                                        Toast.makeText(SettingsActivity.this, "Up To date", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingsActivity.this, "you are currently up to date", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(SettingsActivity.this, "you are currently up to date", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-                                Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter" + t.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter.", Toast.LENGTH_LONG).show();
 
                             }
                         });
@@ -834,51 +827,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
             }
         }
-    }
-
-
-    private static class GetVersionCode extends AsyncTask<Void, String, String> {
-        private String mCurrentVersion;
-
-        private GetVersionCode(String string) {
-            mCurrentVersion = string;
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            String newVersion;
-            try {
-                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName() + "&hl=it")
-                        .timeout(30000)
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get()
-                        .select("div[itemprop=softwareVersion]")
-                        .first()
-                        .ownText();
-                return newVersion;
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String onlineVersion) {
-            super.onPostExecute(onlineVersion);
-            if (onlineVersion != null && !onlineVersion.isEmpty()) {
-                if (Float.valueOf(mCurrentVersion) < Float.valueOf(onlineVersion)) {
-                    //show dialog
-                    Toast.makeText(MyApplication.getAppContext(), "update is available", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MyApplication.getAppContext(), " no update is available", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(MyApplication.getAppContext(), " no update is available", Toast.LENGTH_SHORT).show();
-            }
-            Timber.d("Current version " + mCurrentVersion + "playstore version " + onlineVersion);
-        }
-
     }
 
 
@@ -1203,7 +1151,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             } catch (IOException e) {
                 Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
             }*/
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(),BuildConfig.APPLICATION_ID, f);
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
 
             Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
                     .setStream(apkUri) // uri from FileProvider
@@ -1215,7 +1163,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             contextWeakReference.get().startActivity(intent);
         }
-        private  void installPackage(String inputStream)
+
+        private void installPackage(String inputStream)
                 throws IOException {
 
             PackageInstaller packageInstaller = contextWeakReference.get().getPackageManager().getPackageInstaller();
@@ -1246,7 +1195,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         private IntentSender createIntentSender(int sessionId) {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:0123456789"));
-            PendingIntent pendingIntent = PendingIntent.getActivity(contextWeakReference.get(),sessionId,intent,0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(contextWeakReference.get(), sessionId, intent, 0);
             return pendingIntent.getIntentSender();
         }
     }

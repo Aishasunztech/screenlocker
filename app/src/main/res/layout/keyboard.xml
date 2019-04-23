@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/password_field"
         app:layout_constraintEnd_toEndOf="@+id/password_field"
         app:layout_constraintTop_toTopOf="@+id/password_field"
-        android:contentDescription="TODO" android:src="@drawable/img" />
+        android:src="@drawable/img" />
 
 
     <TableLayout
