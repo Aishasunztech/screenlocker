@@ -42,6 +42,7 @@ import androidx.core.graphics.drawable.IconCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import timber.log.Timber;
 
 import static android.view.KeyEvent.KEYCODE_POWER;
@@ -82,10 +83,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
         super.onCreate(savedInstanceState);
-
-        Log.d("hnhihiihh", "onCreate: ");
 
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -224,9 +223,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
     };
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode== KEYCODE_POWER){
+        if (keyCode == KEYCODE_POWER) {
             Log.d(TAG, "onKeyDown: power button");
         }
         return super.onKeyDown(keyCode, event);
@@ -300,11 +300,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onResume() {
 
-        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
 
 
         super.onResume();
-        Log.d("hnhihiihh", "onResume: ");
 
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
         if (!mainPresenter.isServiceRunning()) {

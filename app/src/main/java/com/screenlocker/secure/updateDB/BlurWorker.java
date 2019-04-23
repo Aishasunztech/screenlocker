@@ -81,7 +81,7 @@ public class BlurWorker extends Worker {
 
                         app.setEncrypted(true);
                         app.setGuest(false);
-                        app.setEnable(false);
+                        app.setEnable(true);
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(false);

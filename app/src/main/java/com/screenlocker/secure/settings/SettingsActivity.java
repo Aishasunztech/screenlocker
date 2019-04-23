@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -58,6 +59,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import org.jsoup.Jsoup;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
@@ -140,14 +142,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in,R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
-
 
         WorkManager.getInstance().enqueue(insertionWork);
 
