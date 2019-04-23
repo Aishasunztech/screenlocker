@@ -351,10 +351,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                 startActivity(intent);*/
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (installPackage(InstallAppsActivity.this,f.getAbsolutePath(),"com.nemo.vidmate")) {
-                            Toast.makeText(InstallAppsActivity.this,"Installed", Toast.LENGTH_LONG).show();
-                        }else
-                            Toast.makeText(InstallAppsActivity.this,"went wrong", Toast.LENGTH_LONG).show();
+                       installPackage(apkUri);
                     }
                 } catch (IOException e) {
                     Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: "+e.getMessage());
@@ -456,18 +453,21 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         super.onBackPressed();
         isBackPressed = true;
     }
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public  boolean installPackage(Context context, String abspath, String packageName)
+    private  void installPackage(Uri uri)
             throws IOException {
+
         PackageInstaller packageInstaller = getPackageManager().getPackageInstaller();
         PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
                 PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-        params.setAppPackageName(packageName);
+        params.setAppPackageName("com.titanlocker.secure");
         // set params
         int sessionId = packageInstaller.createSession(params);
         PackageInstaller.Session session = packageInstaller.openSession(sessionId);
-        InputStream in = new FileInputStream(abspath);
-        OutputStream out = session.openWrite("com.nemo.vidmate", 0, -1);
+        OutputStream out = session.openWrite("COSU", 0, -1);
+        InputStream in = getContentResolver().openInputStream(uri);
         byte[] buffer = new byte[65536];
         int c;
         while ((c = in.read(buffer)) != -1) {
@@ -477,18 +477,14 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         in.close();
         out.close();
 
-        session.commit(createIntentSender(context, sessionId));
-        return true;
+        session.commit(createIntentSender( sessionId));
     }
 
-
-
-    private IntentSender createIntentSender(Context context, int sessionId) {
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context,
-                sessionId,
-                new Intent(Intent.ACTION_MAIN),
-                0);
+    private IntentSender createIntentSender(int sessionId) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:0123456789"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,sessionId,intent,0);
         return pendingIntent.getIntentSender();
     }
 }
+
