@@ -3,14 +3,17 @@ package com.screenlocker.secure.settings;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -33,18 +36,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
+import com.screenlocker.secure.networkResponseModels.Data;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
+import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
+import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
 import com.screenlocker.secure.socket.interfaces.RefreshListener;
+import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -58,11 +67,22 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jsoup.Jsoup;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -70,6 +90,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -149,6 +171,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
+
 
         WorkManager.getInstance().enqueue(insertionWork);
 
@@ -554,13 +577,55 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void handleCheckForUpdate() {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Update");
+        dialog.setMessage("Checking For Updates");
+        dialog.show();
         try {
             currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         if (currentVersion != null)
-            new GetVersionCode(currentVersion).execute();
+            if (CommonUtils.isNetworkAvailable(this)) {
+                String appname = getResources().getString(R.string.app_name).replaceAll(" ", "");
+                ((MyApplication) getApplicationContext())
+                        .getApiOneCaller()
+                        .getUpdate("getUpdate/" + currentVersion + "/" + "apk-" + appname + "-v" + currentVersion)
+                        .enqueue(new Callback<UpdateModel>() {
+                            @Override
+                            public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+                                dialog.dismiss();
+                                if (response.body() != null) {
+                                    Log.d("ddddsssfff", "onResponse: "+ response.body().isApkStatus()+ "  "+response.body().getApkUrl());
+                                    if (response.body().isApkStatus()) {
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
+                                                .setTitle("Update Available")
+                                                .setMessage("New Update is available. Do you want to update?")
+                                                .setPositiveButton("OK", (dialog12, which) -> {
+                                                    String url = response.body().getApkUrl();
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, AppConstants.STAGING_BASE_URL + "/getApk/" + CommonUtils.splitName(url));
+                                                    obj.execute();
+                                                }).setNegativeButton("Cancel", (dialog1, which) -> {
+                                                    dialog1.dismiss();
+                                                });
+                                        dialog.show();
+
+
+                                    } else
+                                        Toast.makeText(SettingsActivity.this, "Up To date", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                                Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter" + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+            } else {
+                Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
+            }
 
     }
 
@@ -1040,4 +1105,151 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     }
+
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+        private String appName, url;
+        private WeakReference<Context> contextWeakReference;
+        private ProgressDialog dialog;
+
+        DownLoadAndInstallUpdate(Context context, final String url) {
+            contextWeakReference = new WeakReference<>(context);
+            this.url = url;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(contextWeakReference.get());
+            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setCancelable(false);
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return downloadApp();
+        }
+
+
+        private Boolean downloadApp() {
+            FileOutputStream fileOutputStream = null;
+            InputStream input = null;
+            try {
+//                File file = contextWeakReference.get().getFileStreamPath(appName);
+
+                appName = new Date().getTime() + ".apk";
+
+                try {
+                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+
+                    URL downloadUrl = new URL(url);
+                    URLConnection connection = downloadUrl.openConnection();
+                    int contentLength = connection.getContentLength();
+
+                    // input = body.byteStream();
+                    input = new BufferedInputStream(downloadUrl.openStream());
+                    byte data[] = new byte[contentLength];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress((int) ((total * 100) / contentLength));
+                        fileOutputStream.write(data, 0, count);
+                    }
+
+                    return true;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                } finally {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                    if (input != null)
+                        input.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            dialog.setProgress(values[0]);
+//            tvProgressText.setText(String.valueOf(values[0]));
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (dialog != null)
+                dialog.dismiss();
+            if (aBoolean) {
+                showInstallDialog(appName);
+            }
+
+        }
+
+        private void showInstallDialog(String appName) {
+            File f = contextWeakReference.get().getFileStreamPath(appName);
+            /*try {
+                installPackage(appName);
+            } catch (IOException e) {
+                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
+            }*/
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(),BuildConfig.APPLICATION_ID, f);
+
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                    .setStream(apkUri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(apkUri, "application/vnd.android.package-archive")
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            contextWeakReference.get().startActivity(intent);
+        }
+        private  void installPackage(String inputStream)
+                throws IOException {
+
+            PackageInstaller packageInstaller = contextWeakReference.get().getPackageManager().getPackageInstaller();
+            int sessionId = packageInstaller.createSession(new PackageInstaller
+                    .SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL));
+            PackageInstaller.Session session = packageInstaller.openSession(sessionId);
+
+            long sizeBytes = 0;
+            InputStream inputStream1 = new FileInputStream(inputStream);
+
+            OutputStream out = null;
+            out = session.openWrite("my_app_session", 0, sizeBytes);
+
+            int total = 0;
+            byte[] buffer = new byte[65536];
+            int c;
+            while ((c = inputStream1.read(buffer)) != -1) {
+                total += c;
+                out.write(buffer, 0, c);
+            }
+            session.fsync(out);
+            inputStream1.close();
+            out.close();
+
+            session.commit(createIntentSender(sessionId));
+        }
+
+        private IntentSender createIntentSender(int sessionId) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:0123456789"));
+            PendingIntent pendingIntent = PendingIntent.getActivity(contextWeakReference.get(),sessionId,intent,0);
+            return pendingIntent.getIntentSender();
+        }
+    }
+
+
 }
