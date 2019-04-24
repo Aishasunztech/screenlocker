@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -161,6 +162,22 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
+//
+//        if ((this.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+//            Toast.makeText(this, "This is system app", Toast.LENGTH_LONG).show();
+//
+//        } else {
+//            Toast.makeText(this, "This is not system app", Toast.LENGTH_LONG).show();
+//        }
+//
+//        if (getApplicationContext().checkCallingOrSelfPermission("android.permission.INSTALL_PACKAGES") == PackageManager.PERMISSION_GRANTED) {
+//            Toast.makeText(this, "I have android.permission.INSTALL_PACKAGES", Toast.LENGTH_LONG).show();
+//
+//        } else {
+//            Toast.makeText(this, "I have not android.permission.INSTALL_PACKAGES", Toast.LENGTH_LONG).show();
+//        }
+
+
 
 
         WorkManager.getInstance().enqueue(insertionWork);
