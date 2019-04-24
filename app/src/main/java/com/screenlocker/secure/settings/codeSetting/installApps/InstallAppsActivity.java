@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -259,6 +260,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @SuppressLint("StaticFieldLeak")
     private void downloadToDisk(/*final ResponseBody body, */final String appName, final String url) {
+
+
         new AsyncTask<Void, Integer, Boolean>() {
             @Override
             protected void onPreExecute() {
@@ -270,7 +273,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             protected Boolean doInBackground(Void... voids) {
                 return downloadApp();
             }
-
 
             private Boolean downloadApp() {
                 FileOutputStream fileOutputStream = null;
