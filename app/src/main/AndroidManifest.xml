@@ -39,6 +39,9 @@
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
     <uses-permission android:name="android.permission.INTERNET" /> <!-- bluetooth permission -->
     <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -214,7 +217,7 @@
             android:priority="100">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
                 <data android:scheme="package" />
@@ -239,7 +242,6 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>-->
-
 
 
         <receiver
