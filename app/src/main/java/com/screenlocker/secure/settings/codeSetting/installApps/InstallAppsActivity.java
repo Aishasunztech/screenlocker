@@ -2,6 +2,7 @@ package com.screenlocker.secure.settings.codeSetting.installApps;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -47,9 +48,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -255,117 +258,114 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
         }
     }
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+        private String appName, url;
+        private WeakReference<Context> contextWeakReference;
+        private ProgressDialog dialog;
+
+        DownLoadAndInstallUpdate(Context context, final String url, String appName) {
+            contextWeakReference = new WeakReference<>(context);
+            this.url = url;
+            this.appName = appName;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(contextWeakReference.get());
+            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setCancelable(false);
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return downloadApp();
+        }
 
 
-    @SuppressLint("StaticFieldLeak")
-    private void downloadToDisk(/*final ResponseBody body, */final String appName, final String url) {
-        new AsyncTask<Void, Integer, Boolean>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog.show();
-            }
+        private Boolean downloadApp() {
+            FileOutputStream fileOutputStream = null;
+            InputStream input = null;
+            try {
+                File file = contextWeakReference.get().getFileStreamPath(appName);
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                return downloadApp();
-            }
-
-
-            private Boolean downloadApp() {
-                FileOutputStream fileOutputStream = null;
-                InputStream input = null;
+                if (file.exists())
+                    return true;
                 try {
-                    File file = getFileStreamPath(appName);
+                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+                    URL downloadUrl = new URL(url);
+                    URLConnection connection = downloadUrl.openConnection();
+                    int contentLength = connection.getContentLength();
 
-                    if (file.exists())
-                        return true;
-                    try {
-                        fileOutputStream = openFileOutput(appName, MODE_PRIVATE);
-                        URL downloadUrl = new URL(url);
-                        URLConnection connection = downloadUrl.openConnection();
-                        int contentLength = connection.getContentLength();
-
-                        // input = body.byteStream();
-                        input = new BufferedInputStream(downloadUrl.openStream());
-                        byte data[] = new byte[contentLength];
-                        long total = 0;
-                        int count;
-                        while ((count = input.read(data)) != -1) {
-                            total += count;
-                            publishProgress((int) ((total * 100) / contentLength));
-                            fileOutputStream.write(data, 0, count);
-                        }
-
-                        return true;
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    } finally {
-                        if (fileOutputStream != null) {
-                            fileOutputStream.flush();
-                            fileOutputStream.close();
-                        }
-                        if (input != null)
-                            input.close();
+                    // input = body.byteStream();
+                    input = new BufferedInputStream(downloadUrl.openStream());
+                    byte data[] = new byte[contentLength];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress((int) ((total * 100) / contentLength));
+                        fileOutputStream.write(data, 0, count);
                     }
+
+                    return true;
+
                 } catch (Exception e) {
                     e.printStackTrace();
-
+                    return false;
+                } finally {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                    if (input != null)
+                        input.close();
                 }
-                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            return false;
+        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            dialog.setProgress(values[0]);
+//            tvProgressText.setText(String.valueOf(values[0]));
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (dialog != null)
+                dialog.dismiss();
+            if (aBoolean) {
+                showInstallDialog(appName);
             }
 
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                super.onProgressUpdate(values);
-                mProgressBar.setProgress(values[0]);
-                tvProgressText.setText(String.valueOf(values[0]));
-            }
+        }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    showInstallDialog(appName);
-                }
-                if (progressDialog != null)
-                    progressDialog.dismiss();
-            }
+        private void showInstallDialog(String appName) {
+            File f = contextWeakReference.get().getFileStreamPath(appName);
+            /*try {
+                installPackage(appName);
+            } catch (IOException e) {
+                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
+            }*/
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
 
-            private void showInstallDialog(String appName) {
-                File f = getFileStreamPath(appName);
-                Uri apkUri = FileProvider.getUriForFile(InstallAppsActivity.this,
-                        /*getApplicationContext().getPackageName() + ".provider"*/ BuildConfig.APPLICATION_ID, f);
-                Timber.e("showInstallDialog:  app path " + getAppLabel(getPackageManager(), f.getAbsolutePath()) + "  " + apkUri);
-
-                Intent intent = ShareCompat.IntentBuilder.from(InstallAppsActivity.this)
-                        .setStream(apkUri) // uri from FileProvider
-                        .setType("text/html")
-                        .getIntent()
-                        .setAction(Intent.ACTION_VIEW) //Change if needed
-                        .setDataAndType(apkUri, "application/vnd.android.package-archive")
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);
-
-//                try {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        if (installPackage(InstallAppsActivity.this, f.getAbsolutePath(), "com.nemo.vidmate")) {
-//                            Toast.makeText(InstallAppsActivity.this, "Installed", Toast.LENGTH_LONG).show();
-//                        } else
-//                            Toast.makeText(InstallAppsActivity.this, "went wrong", Toast.LENGTH_LONG).show();
-//                    }
-//                } catch (IOException e) {
-//                    Log.d("gjmhioghiohfgiofhgii8", "gjmhioghiohfgiofhgii8: " + e.getMessage());
-//                }
+            final Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri,
+                    "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 
-                isInstallDialogOpen = true;
-            }
+            contextWeakReference.get().startActivity(intent);
+        }
 
 
-        }.execute();
     }
 
     public String getAppLabel(PackageManager pm, String pathToApk) {
@@ -389,8 +389,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        downloadToDisk(app.getApk(), AppConstants.STAGING_BASE_URL + "/getApk/" + CommonUtils.splitName(app.getApk()));
 
+
+        DownLoadAndInstallUpdate async = new DownLoadAndInstallUpdate(this,AppConstants.STAGING_BASE_URL + "/getApk/" + CommonUtils.splitName(app.getApk()),app.getApk());
+        async.execute();
     }
 
     @Override

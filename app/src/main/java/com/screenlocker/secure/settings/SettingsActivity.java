@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -561,7 +562,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
                     dialogInterface.dismiss();
                 } else {
-                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(SettingsActivity.this);
                 }
             }, null, getString(R.string.please_enter_code_admin_password));
         }
@@ -612,6 +613,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                             @Override
                             public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                                dialog.dismiss();
                                 Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter.", Toast.LENGTH_LONG).show();
 
                             }
@@ -656,7 +658,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(activity);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_encrypted_password));
@@ -703,7 +705,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(activity);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_duress_password));
@@ -747,12 +749,26 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    Snackbar.make(rootLayout, activity.getString(R.string.wrong_password_entered), Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(activity);
                 }
             }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
         }
 
 
+    }
+
+    private void showAlertDialog(AppCompatActivity activity) {
+        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+        alertDialog.setTitle("Wrong Password");
+        alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+        alertDialog.setMessage("You have entered wrong Password");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 
@@ -1153,13 +1169,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }*/
             Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
 
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                    .setStream(apkUri) // uri from FileProvider
-                    .setType("text/html")
-                    .getIntent()
-                    .setAction(Intent.ACTION_VIEW) //Change if needed
-                    .setDataAndType(apkUri, "application/vnd.android.package-archive")
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            final Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri,
+            "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
 
             contextWeakReference.get().startActivity(intent);
         }

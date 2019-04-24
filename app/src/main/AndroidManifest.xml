@@ -218,11 +218,12 @@
             android:priority="100">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
                 <data android:scheme="package" />
             </intent-filter>
+
         </receiver> <!-- reciever to block calls -->
         <receiver
             android:name=".settings.disableCalls.PhoneCallReceiver"
@@ -232,6 +233,19 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
+        <!--<receiver android:name="com.screenlocker.secure.settings.codeSetting.installApps.UpdateReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>-->
+
+
+
         <receiver
             android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"

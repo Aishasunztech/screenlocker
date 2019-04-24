@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.screenlocker.secure.settings.SettingsActivity;
+
 import timber.log.Timber;
 
 public class AppInstallReciever extends BroadcastReceiver {
@@ -15,7 +17,13 @@ public class AppInstallReciever extends BroadcastReceiver {
 public void onReceive(Context context, Intent intent) {
  
     this.context = context;
- 
+ if (!intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED) &&
+            intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)){
+     Toast.makeText(context, "broadcast receiver: " + context, Toast.LENGTH_LONG).show();
+     Intent i = new Intent(context, SettingsActivity.class);
+     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+     context.startActivity(i);
+ }
     // when package removed 
   if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
       Timber.tag(" BroadcastReceiver ").e("onReceive called "
