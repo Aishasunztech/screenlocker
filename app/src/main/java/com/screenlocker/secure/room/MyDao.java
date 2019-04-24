@@ -8,6 +8,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
 @Dao
@@ -30,9 +31,11 @@ public interface MyDao {
     @Query("select * from AppInfo where encrypted= :isEncrypted and enable =:isEnable ")
     List<AppInfo> getEncryptedApps(boolean isEncrypted, boolean isEnable);
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("select uniqueName ,label, packageName, guest ,enable ,defaultApp,encrypted,extension,visible from AppInfo ")
     List<AppInfo> getAppsWithoutIcons();
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("select uniqueName ,label, uniqueExtension, guest ,encrypted from SubExtension ")
     List<SubExtension> getExtensionsWithoutIcons();
 
@@ -62,6 +65,7 @@ public interface MyDao {
     @Query("UPDATE AppInfo SET guest=:guest , encrypted=:encrypted, enable=:enable WHERE uniqueName=:uniqueName")
     void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,enable,extension,uniqueName ,defaultApp, visible from AppInfo  WHERE uniqueName=:uniqueName")
     AppInfo getAppStatus(String uniqueName);
 
@@ -78,9 +82,11 @@ public interface MyDao {
     @Query("UPDATE SubExtension set encrypted=:encrypted WHERE uniqueExtension=:uniqueExtension")
     void setEncrypted(boolean encrypted, String uniqueExtension);
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
     List<SubExtension> getGuestExtensions(String uniqueName, boolean status);
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
     List<SubExtension> getEncryptedExtensions(String uniqueName, boolean status);
 

@@ -16,7 +16,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.titanlocker.secure"
+        applicationId "com.vortexlocker.app"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -25,10 +25,32 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("my-release-key.keystore")
+            storePassword 'vortex@sunztech786'
+            keyAlias 'release-key'
+            keyPassword 'vortex@sunztech786'
+        }
+    }
+
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
         }
     }
     compileOptions {
@@ -69,8 +91,9 @@ dependencies {
 // Room
 
 // implementation "android.arch.persistence.room:runtime:1.0.0"
-    annotationProcessor 'androidx.room:room-compiler:2.1.0-alpha06'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'androidx.room:room-runtime:2.1.0-alpha04'
+    annotationProcessor 'androidx.room:room-compiler:2.1.0-alpha04'
+
     implementation 'com.github.bumptech.glide:glide:4.8.0'
 
 //location service
