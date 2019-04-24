@@ -97,10 +97,9 @@ public class PermissionUtils {
             return;
         }
 
-        Set<String> notificationListenerSet = NotificationManagerCompat
-                .getEnabledListenerPackages(context);
 
-        if (!notificationListenerSet.contains(context.getPackageName())) {
+
+        if (!isNotificationAccess(context)) {
             Intent intent;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
@@ -246,6 +245,11 @@ public class PermissionUtils {
             }
         }
         return false;
+    }
+    public static boolean isNotificationAccess(Context context){
+        Set<String> notificationListenerSet = NotificationManagerCompat
+                .getEnabledListenerPackages(context);
+        return notificationListenerSet.contains(context.getPackageName());
     }
 
 }
