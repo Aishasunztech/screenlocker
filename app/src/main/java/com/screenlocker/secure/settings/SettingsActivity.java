@@ -178,8 +178,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        }
 
 
-
-
         WorkManager.getInstance().enqueue(insertionWork);
 
         WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
@@ -776,15 +774,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void showAlertDialog(AppCompatActivity activity) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setTitle("Wrong Password");
+        alertDialog.setTitle("Invalid password");
         alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-        alertDialog.setMessage("You have entered wrong Password");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        alertDialog.setMessage("The password you entered is incorrect.");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
 
@@ -1188,7 +1182,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             final Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(apkUri,
-            "application/vnd.android.package-archive");
+                    "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 
