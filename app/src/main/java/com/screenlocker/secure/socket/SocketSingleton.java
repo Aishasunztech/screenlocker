@@ -32,6 +32,8 @@ public class SocketSingleton {
                 Timber.d("device_id %S", device_id);
 
                 opts.query = "device_id=" + device_id + "&token=" + token;
+
+
                 try {
                     socket = IO.socket(SOCKET_SERVER_URL, opts);
                     socket.connect();
