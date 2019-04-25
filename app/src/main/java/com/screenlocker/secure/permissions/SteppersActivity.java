@@ -2,6 +2,7 @@ package com.screenlocker.secure.permissions;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
@@ -19,7 +20,7 @@ public class SteppersActivity extends DotStepper {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle("Permissions");
 
         /**

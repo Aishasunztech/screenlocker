@@ -1,10 +1,12 @@
 package com.screenlocker.secure.permissions;
 
+        import android.content.Context;
         import android.os.Bundle;
         import android.text.TextUtils;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.view.inputmethod.InputMethodManager;
 
         import com.github.fcannizzaro.materialstepper.AbstractStep;
         import com.screenlocker.secure.R;
@@ -33,12 +35,19 @@ public class SetEncryptedPasswordFragment extends AbstractStep implements View.O
 
     @Override
     public void onNext() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,3);
+
     }
+    private View v;
+    private Context mContext;
 
     @Override
     public boolean nextIf() {
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,3);
+
+                InputMethodManager imm =(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
             return true;
         }
         return false;
@@ -75,7 +84,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep implements View.O
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.guess_password_layout,container, false);
+        v =  inflater.inflate(R.layout.guess_password_layout,container, false);
         ButterKnife.bind(this,v);
         etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
         etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
@@ -123,6 +132,12 @@ public class SetEncryptedPasswordFragment extends AbstractStep implements View.O
 
             }
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        mContext = context;
+        super.onAttach(context);
     }
 }
 

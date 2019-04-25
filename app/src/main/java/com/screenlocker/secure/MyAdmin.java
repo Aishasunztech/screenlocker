@@ -25,7 +25,7 @@ public class MyAdmin extends DeviceAdminReceiver {
 
     @Override
     public void onEnabled(Context context, Intent intent) {
-        showToast(context, "Sample Device Admin: enabled");
+//        showToast(context, "Sample Device Admin: enabled");
     }
 
     @Override
