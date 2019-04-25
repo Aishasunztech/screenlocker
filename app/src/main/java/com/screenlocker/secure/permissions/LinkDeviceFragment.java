@@ -34,10 +34,7 @@ public class LinkDeviceFragment extends AbstractStep {
         // Required empty public constructor
     }
     //save the status of this step as completed
-    @Override
-    public void onNext() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,5);
-    }
+
 
     @Override
     public void onSkip() {
@@ -48,7 +45,12 @@ public class LinkDeviceFragment extends AbstractStep {
     //next only if device is linked other wise skip
     @Override
     public boolean nextIf() {
-        return PrefUtils.getBooleanPref(MyApplication.getAppContext(),DEVICE_LINKED_STATUS);
+        if (PrefUtils.getBooleanPref(MyApplication.getAppContext(),DEVICE_LINKED_STATUS)) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+            return true;
+
+        }
+        return false;
     }
     //if user try to next without linking device
     @Override

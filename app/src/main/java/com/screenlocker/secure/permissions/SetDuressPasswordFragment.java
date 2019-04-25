@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
@@ -21,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,10 +39,7 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
         return "Duress Pin";
     }
 
-    @Override
-    public void onNext() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
-    }
+
 
     @Override
     public void onSkip() {
@@ -49,6 +50,7 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
     @Override
     public boolean nextIf() {
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_DURESS_PASSWORD) != null) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
             return true;
         }
         return false;
@@ -67,19 +69,8 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
     @Override
     public void onStepVisible() {
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null && mContext != null) {
-            new AlertDialog.Builder(mContext).
-                    setTitle("Warning!")
-                    .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.")
-                    .setPositiveButton("Ok", (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    })
 
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> {
-//                        dialogInterface.cancel();
-                        dialogInterface.dismiss();
-
-                    })
-                    .show();
+           builder.show();
         }
     }
 
@@ -97,7 +88,7 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
+private  AlertDialog builder;
     @BindView(R.id.etEnterPin)
     AppCompatEditText etEnterPin;
 
@@ -118,8 +109,36 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.guess_password_layout, container, false);
         ButterKnife.bind(this, v);
+         builder =  new AlertDialog.Builder(getContext()).
+                setTitle("Warning!")
+                .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.")
+                .setPositiveButton("Ok", (dialogInterface, i) -> {
+                    dialogInterface.cancel();
+                })
+
+                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+//                        dialogInterface.cancel();
+                    dialogInterface.dismiss();
+
+                }).create();
+         builder.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
+        etEnterPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v1) {
+                etEnterPin.clearFocus();
+                etEnterPin.requestFocus();
+                etEnterPin.postDelayed(new Runnable(){
+                                      @Override public void run(){
+                                          InputMethodManager keyboard=(InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                          keyboard.showSoftInput(etEnterPin,0);
+                                      }
+                                  }
+                        ,100);
+            }
+        });
         etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+
         btnConfirm.setOnClickListener(this);
 
         return v;
@@ -163,6 +182,7 @@ public class SetDuressPasswordFragment extends AbstractStep implements View.OnCl
             }
         }
     }
+
 }
 
 

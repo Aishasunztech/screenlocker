@@ -28,17 +28,15 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 public class SetGuestPasswordFragment extends AbstractStep implements View.OnClickListener {
     @Override
     public String name() {
-        return "Guess Password";
+        return "Guest Password";
     }
 
-    @Override
-    public void onNext() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,2);
-    }
+
 
     @Override
     public boolean nextIf() {
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null ) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,2);
             return true;
         }
         return false;
