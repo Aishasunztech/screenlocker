@@ -147,9 +147,10 @@
 
         <service android:name=".utils.LifecycleReceiverService" />
         <service
-            android:name=".service.LockScreenService" android:permission="" 
+            android:name=".service.LockScreenService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="" />
         <service
             android:name=".service.DeviceNotificationListener"
             android:enabled="true"
@@ -183,7 +184,9 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.AlarmReceiver" />
-        <receiver android:name=".socket.receiver.MdmEventReciever" android:permission="">
+        <receiver
+            android:name=".socket.receiver.MdmEventReciever"
+            android:permission="">
             <intent-filter>
                 <action android:name="com.secureportal.barryapp.app_linked_success" />
             </intent-filter>
@@ -197,8 +200,6 @@
         <service
             android:name=".MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service android:name=".socket.service.SocketService" />
 
         <activity
             android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
