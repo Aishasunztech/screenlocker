@@ -33,7 +33,9 @@ import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
@@ -45,12 +47,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.utils.AppConstants.AUTH_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.AUTO_LOGIN_PIN;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
+import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_INVALID;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_NOT_PROVIDED;
@@ -222,13 +227,25 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful()) {
                             // if status is true that means dealer is valid so login is allowed
 
-                            Timber.d("status %s", response.body().getStatus());
+
+                            String msg = response.body().getMsg();
+
                             if (response.body().getStatus()) {
-                                autologin();
+                                if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
+                                    currentStatus();
+
+                                    setResult(RESULT_OK);
+                                    finish();
+                                } else {
+                                    autologin();
+                                }
+
 
                             } else {
                                 // status was false show failed message
-                                showContactDealer();
+                                currentStatus();
+                                Timber.d(msg);
+//                                showContactDealer();
                             }
                         } else {
                             // if any error occurred show error view
@@ -251,9 +268,24 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
+
+    private void currentStatus() {
+
+        String macAddress = CommonUtils.getMacAddress();
+        String serialNo = DeviceIdUtils.getSerialNumber();
+        if (macAddress != null && serialNo != null) {
+            new ApiUtils(MainActivity.this, macAddress, serialNo);
+        }
+        setResult(RESULT_OK);
+        finish();
+
+    }
+
+
     /**
      * login api for dealer auto login
      */
+
     private void autologin() {
 
         final String autoLoginPin = PrefUtils.getStringPref(this, AUTO_LOGIN_PIN);
@@ -284,6 +316,7 @@ public class MainActivity extends BaseActivity {
                                             .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
 
                                     Log.e(TAG, "onResponse: login_if");
+
                                     checkCurrentStatusAndProceedAutoLogin(autoLoginId);
 
                                 } else {
@@ -391,10 +424,7 @@ public class MainActivity extends BaseActivity {
 
 
             if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-
-
                 initLayout();
-
             } else {
 
                 requestPermission(Manifest.permission.READ_PHONE_STATE, PERMISSION_REQUEST_READ_PHONE_STATE);
@@ -407,6 +437,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initLayout() {
+
+
         IMEI = DeviceIdUtils.getIMEI(MainActivity.this);
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
         showLoading();
@@ -419,9 +451,22 @@ public class MainActivity extends BaseActivity {
                     public void onResponse(Call<CheckStatusResponse> call, Response<CheckStatusResponse> response) {
                         if (response.isSuccessful()) {
                             if (response.body().getStatus()) {
-                                showMainContent();
+
+
+                                String msg = response.body().getMsg();
+                                if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
+                                    checkCurrentStatusAndProceed();
+                                } else {
+                                    showMainContent();
+                                }
+
+
                             } else {
-                                showContactDealer();
+
+                                currentStatus();
+                                setResult(RESULT_OK);
+                                finish();
+//                                showContactDealer();
                             }
                         } else {
                             showError();
@@ -472,7 +517,6 @@ public class MainActivity extends BaseActivity {
 
         final String dealerPin = etPin.getText().toString().trim();
 
-
         if (dealerPin.length() == 6) {
 
             request(1, dealerPin);
@@ -482,6 +526,7 @@ public class MainActivity extends BaseActivity {
         } else {
             etPin.setError("Invalid Dealer or Code");
         }
+
 
     }
 
@@ -602,7 +647,7 @@ public class MainActivity extends BaseActivity {
                                         } else {
                                             new AlertDialog.Builder(MainActivity.this)
                                                     .setTitle(R.string.info)
-                                                    .setMessage(getString(R.string.device_already_linked) + dIdLinked)
+                                                    .setMessage(getString(R.string.device_already_linked))
                                                     .setPositiveButton(R.string.ok, null)
                                                     .create()
                                                     .show();

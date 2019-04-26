@@ -8,11 +8,9 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -20,11 +18,9 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -42,9 +38,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -55,16 +50,16 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.socket.interfaces.DatabaseStatus;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
-import com.screenlocker.secure.socket.interfaces.RefreshListener;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReciever;
@@ -93,6 +88,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_DATABASE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -140,17 +136,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TelephonyManager telephonyManager;
     NetworkReceiver networkReceiver;
 
-    private static RefreshListener listener;
-    private static DatabaseStatus listener1;
     private TextView tvlinkDevice;
-
-    public void setDatabaseStatus(DatabaseStatus databaseStatus) {
-        listener1 = databaseStatus;
-    }
-
-    public void setRefreshListener(RefreshListener refreshListener) {
-        listener = refreshListener;
-    }
 
 
     @Override
@@ -185,9 +171,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     // Do something with the status
                     if (workInfo != null && workInfo.getState().isFinished()) {
                         Timber.d("work completed");
-                        if (listener1 != null) {
-                            listener1.onDataInserted();
-                        }
+                        LocalBroadcastManager.getInstance(SettingsActivity.this).sendBroadcast(new Intent(BROADCAST_DATABASE));
                         PrefUtils.saveBooleanPref(this, DB_STATUS, true);
                     }
                 });
@@ -202,18 +186,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         init();
 
-        boolean linkStatus = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
 
-//        if (linkStatus && networkStatus) {
-//            final Intent intent = new Intent(this, SocketService.class);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                intent.setAction("refresh");
-//                startForegroundService(intent);
-//            } else {
-//                intent.setAction("refresh");
-//                startService(intent);
-//            }
-//        }
     }
 
 
@@ -236,7 +209,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
 
-        setSwipeToApiRequest();
+//        setSwipeToApiRequest();
 
         // switch change listener(on off service for vpn)
         switchEnableVpn.setOnCheckedChangeListener(this);
@@ -307,14 +280,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    private SwipeRefreshLayout swipeToApiRequest;
-
-
     private void setIds() {
         switchEnableVpn = findViewById(R.id.switchEnableVpn);
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
-        swipeToApiRequest = findViewById(R.id.swipe_to_api_request);
+
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
@@ -475,24 +445,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (tvlinkDevice != null) {
                 tvlinkDevice.setVisibility(View.GONE);
             }
-
-            if (networkStatus) {
-                Intent intent = new Intent(this, SocketService.class);
-                if (networkStatus) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        intent.setAction("refresh");
-                        startForegroundService(intent);
-                    } else {
-                        intent.setAction("refresh");
-                        startService(intent);
-                    }
-                } else {
-                    stopService(intent);
-                    Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
-                }
-
-            }
-
 
         }
 
@@ -802,58 +754,25 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private boolean networkStatus = false;
-
-    private void setSwipeToApiRequest() {
-
-        final Intent intent = new Intent(this, SocketService.class);
-
-        swipeToApiRequest.setOnRefreshListener(() -> {
-            if (networkStatus) {
-                boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-                if (linkStatus) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        intent.setAction("restart");
-                        startForegroundService(intent);
-                    } else {
-                        intent.setAction("restart");
-                        startService(intent);
-                    }
-                    if (listener != null) {
-                        listener.onSwipe();
-                    }
-                }
-
-            } else {
-                stopService(intent);
-                Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
-            }
-
-            swipeToApiRequest.setRefreshing(false);
-        });
-    }
-
     @Override
     public void onNetworkChange(boolean status) {
-        networkStatus = status;
 
-        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
 
-        if (linkStatus) {
             Intent intent = new Intent(this, SocketService.class);
-            if (networkStatus) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    intent.setAction("refresh");
-                    startForegroundService(intent);
-                } else {
-                    intent.setAction("refresh");
-                    startService(intent);
+            if (status) {
+                String macAddress = CommonUtils.getMacAddress();
+                String serialNo = DeviceIdUtils.getSerialNumber();
+                if (macAddress != null && serialNo != null) {
+                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
                 }
             } else {
                 stopService(intent);
                 Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
             }
+
         }
+
     }
 
 

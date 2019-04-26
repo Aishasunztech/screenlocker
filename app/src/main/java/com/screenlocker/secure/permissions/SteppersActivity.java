@@ -47,7 +47,10 @@ public class SteppersActivity extends DotStepper implements LinkDeviceFragment.P
         super.onCreate(savedInstanceState);
         //move user to position were he/she left
         int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
+
+
         mSteps.current(position);
+
         onUpdate();
 
 

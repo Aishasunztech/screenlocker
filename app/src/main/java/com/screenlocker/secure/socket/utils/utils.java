@@ -9,12 +9,10 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
@@ -26,11 +24,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.WifiApControl;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 

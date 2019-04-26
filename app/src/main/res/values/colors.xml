@@ -16,7 +16,6 @@
 
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
-    <color name="SettingsColorPrimaryDark">#00574B</color>
     <color name="SettingsColorAccent">#D81B60</color>
 
 

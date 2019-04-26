@@ -19,6 +19,7 @@ public class AppConstants {
     public static final String BROADCAST_ACTION = "intentKey";
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
+    public static final String BROADCAST_DATABASE = "broadcast_database";
 
 
     public static final String BROADCAST_KEY = "key";
@@ -66,11 +67,11 @@ public class AppConstants {
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
     public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-//    public static final String STAGING_BASE_URL = "http://192.168.18.219:3000/mobile/";//for localhost real device
+//    public static final String STAGING_BASE_URL = "http://192.168.1.143:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
     public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.18.219:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://192.168.1.143:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -196,6 +197,17 @@ public class AppConstants {
     public static int attempt_8 = 15;
     public static int attempt_9 = 30;
     public static int attempt_10 = 30;
+
+
+//
+//    DEVICE_ACTIVATED: "Active",
+//    DEVICE_SUSPENDED: "Suspended",
+//    DEVICE_EXPIRED: "Expired",
+//    DEVICE_UNLINKED: "Unlinked",
+//    DEVICE_PENDING_ACTIVATION: "Pending activation",
+
+
+//    NEW_DEVICE: "new device",
 
 
 }

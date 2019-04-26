@@ -3,8 +3,10 @@ package com.screenlocker.secure.mdm.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -352,7 +354,7 @@ public class LinkDeviceActivity extends BaseActivity {
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
         if (btnLinkDevice.getText().equals("Next")) {
-            PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+            setResult(RESULT_OK);
             finish();
         } else {
             processingLinkViewState();
@@ -421,7 +423,7 @@ public class LinkDeviceActivity extends BaseActivity {
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .stopLinkingDevice(
-                        MAC,SerialNo,
+                        MAC, SerialNo,
                         PrefUtils.getStringPref(LinkDeviceActivity.this, AUTH_TOKEN)
 //                                +"INVALID_TOKEN"
                 )
@@ -479,13 +481,28 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setVisibility(View.VISIBLE);
     }
 
+
+    boolean linked = false;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (linked) {
+            setResult(RESULT_OK);
+            finish();
+        }
+
+    }
+
     private void approvedLinkViewState() {
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         btnLinkDevice.setText("Next");
         btnLinkDevice.setEnabled(true);
+        linked = true;
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
+        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
         tvLinkedStatus.setVisibility(View.VISIBLE);
         // pgp Email
         String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);

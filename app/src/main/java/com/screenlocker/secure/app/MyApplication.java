@@ -17,15 +17,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.MyAdmin;
 
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
 import com.screenlocker.secure.socket.receiver.MdmEventReciever;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 
@@ -135,6 +140,7 @@ public class MyApplication extends Application implements NetworkListener {
      * @param context
      * @return room database object
      */
+
     public static MyAppDatabase getAppDatabase(Context context) {
         return ((MyApplication) context.getApplicationContext()).myAppDatabase;
     }
@@ -164,16 +170,15 @@ public class MyApplication extends Application implements NetworkListener {
     public void onNetworkChange(boolean status) {
         boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
 
-
         if (linkStatus) {
+
             Intent intent = new Intent(this, SocketService.class);
             if (status) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    intent.setAction("restart");
-                    startForegroundService(intent);
-                } else {
-                    intent.setAction("restart");
-                    startService(intent);
+                String macAddress = CommonUtils.getMacAddress();
+                String serialNo = DeviceIdUtils.getSerialNumber();
+
+                if(serialNo != null){
+                    new ApiUtils(MyApplication.this,macAddress,serialNo);
                 }
             } else {
                 stopService(intent);

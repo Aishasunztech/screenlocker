@@ -16,14 +16,6 @@ public interface SocketEvents {
 
     void sendAppliedStatus();
 
-    void socketEventError();
-
-    void closeSocket();
-
-    void disconnectSocket();
-
-    void connectSocket();
-
     void sendAppsWithoutIcons();
 
     void sendExtensionsWithoutIcons();

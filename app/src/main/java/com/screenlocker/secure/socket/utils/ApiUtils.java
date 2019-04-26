@@ -2,19 +2,20 @@ package com.screenlocker.secure.socket.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
-import com.screenlocker.secure.socket.interfaces.RefreshListener;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,25 +31,19 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RE
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
-public class ApiUtils implements ApiRequests, RefreshListener {
+public class ApiUtils implements ApiRequests {
 
     private Context context;
     private String macAddress;
     private String serialNo;
 
-    public SocketUtils getSocketUtils() {
-        return socketUtils;
-    }
-
-    private SocketUtils socketUtils = null;
 
 
     public ApiUtils(Context context, String macAddress, String serialNo) {
         this.context = context;
         this.macAddress = macAddress;
         this.serialNo = serialNo;
-        SettingsActivity settingsActivity = new SettingsActivity();
-        settingsActivity.setRefreshListener(this);
+
         Timber.d("serialNo :%s", serialNo);
         Timber.d("macAddress :%s", macAddress);
 
@@ -81,9 +76,25 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                                 PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
                             }
                             PrefUtils.saveStringPref(context, TOKEN, token);
+
                             if (device_id != null && token != null) {
-                                socketUtils = new SocketUtils(device_id, context, token);
+
+                                Intent intent = new Intent(context, SocketService.class);
+                                intent.setAction("start");
+
+                                PrefUtils.saveStringPref(context,DEVICE_ID,device_id);
+                                PrefUtils.saveStringPref(context,TOKEN,token);
+
+                                PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS,true);
+
+                                if (Build.VERSION.SDK_INT >= 26) {
+                                    context.startForegroundService(intent);
+                                } else {
+                                    context.startService(intent);
+                                }
+
                             }
+
                             String msg = response.body().getMsg();
                             Intent socketIntent = new Intent(context, SocketService.class);
                             Timber.d(" msg : %S", msg);
@@ -154,14 +165,6 @@ public class ApiUtils implements ApiRequests, RefreshListener {
                     }
                 });
 
-    }
-
-    @Override
-    public void onSwipe() {
-        Timber.d("<<< swipe to refresh >>>");
-//        String device_id = PrefUtils.getStringPref(context, AppConstants.DEVICE_ID);
-////        SocketSingleton.closeSocket(device_id);
-//        getDeviceId();
     }
 
 

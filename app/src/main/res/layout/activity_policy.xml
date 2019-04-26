@@ -58,7 +58,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginBottom="16dp"
-         android:scaleType="centerCrop"
+         android:contentDescription="TODO" android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/edtTxtPin"
         app:layout_constraintDimensionRatio="w,1:1"
         app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"

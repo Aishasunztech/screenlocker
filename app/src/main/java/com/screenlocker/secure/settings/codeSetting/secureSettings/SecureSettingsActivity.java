@@ -206,11 +206,14 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     @Override
     protected void onStop() {
 
+
         Intent intent = new Intent(BROADCAST_APPS_ACTION);
         intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
         LocalBroadcastManager.getInstance(SecureSettingsActivity.this).sendBroadcast(intent);
 
         PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+
+
         super.onStop();
     }
 
