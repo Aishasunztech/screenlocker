@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
-public class SteppersActivity extends DotStepper {
+public class SteppersActivity extends DotStepper implements LinkDeviceFragment.PageUpdate {
     private int i = 1;
 
     @Override
@@ -76,5 +76,11 @@ public class SteppersActivity extends DotStepper {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onPageUpdate(int pageNo) {
+        mSteps.current(pageNo);
+        onUpdate();
     }
 }

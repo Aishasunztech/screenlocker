@@ -1,6 +1,7 @@
 package com.screenlocker.secure.permissions;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,7 +29,13 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
  * A simple {@link Fragment} subclass.
  */
 public class LinkDeviceFragment extends AbstractStep {
+    public static final int REQUEST_LINK_DEVICE= 5;
 
+    private PageUpdate pageUpdate;
+
+    public interface PageUpdate {
+        void onPageUpdate(int pageNo);
+    }
 
     public LinkDeviceFragment() {
         // Required empty public constructor
@@ -92,4 +99,26 @@ public class LinkDeviceFragment extends AbstractStep {
         return "Link Device";
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        try {
+            pageUpdate = (PageUpdate)context;
+        } catch (Exception ignored) {
+
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_LINK_DEVICE ){
+            if(PrefUtils.getBooleanPref(MyApplication.getAppContext(),DEVICE_LINKED_STATUS)){
+                /**
+                 * @param 6 is launcher fragment page no
+                 */
+                pageUpdate.onPageUpdate(6);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
