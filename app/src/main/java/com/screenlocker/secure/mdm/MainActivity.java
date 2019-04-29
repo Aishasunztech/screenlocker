@@ -1,6 +1,7 @@
 package com.screenlocker.secure.mdm;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
@@ -38,6 +39,8 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import butterknife.BindView;
@@ -236,7 +239,10 @@ public class MainActivity extends BaseActivity {
 
                                     setResult(RESULT_OK);
                                     finish();
-                                } else {
+                                }else if (msg.equals("new device")){
+                                    showMainContent();
+                                }
+                                else {
                                     autologin();
                                 }
 
@@ -812,5 +818,7 @@ public class MainActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+
     }
+
 }

@@ -65,6 +65,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean gotoSystemControl;
     private boolean goToInstallApps;
     private boolean goToPolicyMenu;
+    private boolean goToIMEIMenu;
     private boolean goToSettingsAppPermission;
 
     @Override
@@ -182,6 +183,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tvInstallApps).setOnClickListener(this);
         findViewById(R.id.tvSim).setOnClickListener(this);
         findViewById(R.id.tvPolicyMenu).setOnClickListener(this);
+        findViewById(R.id.tvIMEIMenu).setOnClickListener(this);
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
     }
@@ -213,6 +215,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tvSettingsControl:
                 handleSettingsApp();
                 break;
+            case R.id.tvIMEIMenu:
+                goToIMEIMenu = true;
+                startActivity(new Intent(CodeSettingActivity.this,IMEIActivity.class));
+
         }
     }
 
@@ -311,6 +317,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         goToInstallApps = false;
         goToPolicyMenu = false;
         goToSettingsAppPermission = false;
+        goToIMEIMenu = false;
         Intent intent = new Intent(LIFECYCLE_ACTION);
         intent.putExtra(STATE, FOREGROUND);
         sendBroadcast(intent);
@@ -320,7 +327,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu) {
             Intent intent = new Intent(LIFECYCLE_ACTION);
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
@@ -330,7 +337,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu) {
 
             hideKeyboard(CodeSettingActivity.this);
 

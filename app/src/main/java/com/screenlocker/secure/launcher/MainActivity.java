@@ -33,6 +33,8 @@ import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -93,6 +95,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             finish();
 
 
+        }
+
+        try {
+            puk(this);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -421,6 +431,31 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
     }
+    private void puk(Context context) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+//
+//        String fileName = PAKAGE_FILE_NAME ;
+//        String dir_type = Environment.DIRECTORY_DOWNLOADS;
+//
+//        File dir= Environment.getExternalStoragePublicDirectory(dir_type);
+//        java.io.File file = new java.io.File(dir ,fileName);
+//        Uri packageUri = Uri.fromFile(file);
+
+        PackageManager pm = context.getPackageManager();
+
+        Class<? extends PackageManager> o = pm.getClass();
+        Method[] allMethods=o.getMethods();
+
+        for (Method m : allMethods) {
+            Log.d("hjjdgfjhgfdjkagf", "puk: "+m.getName());
+            if (m.getName().equals("installPackage")) {
+
+                //m.invoke(pm,new Object[] { packageUri, null, 1, "com.mic.zapp"});
+                break;
+            }
+        }
+
+    }
+
 }
 
 

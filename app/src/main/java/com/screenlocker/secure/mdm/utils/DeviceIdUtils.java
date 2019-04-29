@@ -139,10 +139,8 @@ public class DeviceIdUtils {
     public static List<String> getIMEI(Context context) {
 
         List<String> imies = new ArrayList<>();
-        Log.d("xmdkmdkb", "getIMEI: ");
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            Log.d("xmdkmdkb", "getIMEI: " + tm);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (tm != null) {
                     int sims = tm.getPhoneCount();
