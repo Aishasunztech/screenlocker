@@ -161,19 +161,7 @@ public class Utils {
 
         ConstraintLayout constraintLayout = keypadView.findViewById(R.id.device_status_labels);
 
-        TextView decice_status = keypadView.findViewById(R.id.device_status);
-        if (!PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
-            constraintLayout.setVisibility(View.INVISIBLE);
-        } else {
-            constraintLayout.setVisibility(View.VISIBLE);
-            TextView exDate = keypadView.findViewById(R.id.device_exp_date);
-            exDate.setText(getRemainingDays(context));
-            TextView deviceId = keypadView.findViewById(R.id.device_id);
-            deviceId.setText(PrefUtils.getStringPref(context, DEVICE_ID));
 
-            String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS) == null ? "active" : PrefUtils.getStringPref(context, DEVICE_STATUS);
-            decice_status.setText(device_status);
-        }
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
         final String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
@@ -208,7 +196,7 @@ public class Utils {
         deviceStatusReceiver.setListener(status -> {
             if (status == null) {
                 keyboardView.clearWaringText();
-                decice_status.setText("active");
+
 
             } else {
                 if (status.equals("suspended")) {

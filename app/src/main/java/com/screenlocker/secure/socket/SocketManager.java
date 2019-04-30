@@ -17,6 +17,8 @@ import com.github.nkzawa.socketio.client.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 
 public class SocketManager {
 
@@ -85,18 +87,18 @@ public class SocketManager {
                     @Override
                     public void call(Object... args) {
                         fireSocketStatus(SocketManager.STATE_CONNECTED);
-                        Log.i(TAG, "socket connected");
+                        Timber.i("socket connected");
                     }
                 }).on(Socket.EVENT_RECONNECTING, new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
-                        Log.e(TAG, "Socket reconnecting");
+                        Timber.e("Socket reconnecting");
                         fireSocketStatus(SocketManager.STATE_CONNECTING);
                     }
                 }).on(Socket.EVENT_RECONNECT_FAILED, new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
-                        Log.e(TAG, "Socket reconnection failed");
+                        Timber.e("Socket reconnection failed");
                         fireSocketStatus(SocketManager.STATE_DISCONNECTED);
                     }
                 }).on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener() {
@@ -138,15 +140,10 @@ public class SocketManager {
                                 }
                             }
                         } catch (Exception e) {
-                            Log.e(TAG, e.getMessage() != null ? e.getMessage() : "");
+                            Timber.e(e.getMessage() != null ? e.getMessage() : "");
                         }
                     }
-                }).on("Error", new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.d(TAG, " Error");
-                    }
-                });
+                }).on("Error", args -> Timber.d(" Error"));
                 socket.connect();
             } else if (!socket.connected()) {
                 socket.connect();

@@ -1,8 +1,12 @@
 package com.screenlocker.secure.permissions;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,9 +36,10 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
  * A simple {@link Fragment} subclass.
  */
 public class LinkDeviceFragment extends AbstractStep {
-    public static final int REQUEST_LINK_DEVICE = 5;
+    public static final int REQUEST_LINK_DEVICE = 7;
 
     private PageUpdate pageUpdate;
+    private AlertDialog.Builder dialogh;
 
     public interface PageUpdate {
         void onPageUpdate(int pageNo);
@@ -50,7 +55,7 @@ public class LinkDeviceFragment extends AbstractStep {
     public void onSkip() {
         super.onSkip();
         //save the status of this step as completed
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
     }
 
     //next only if device is linked other wise skip
@@ -59,7 +64,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
 
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
             return true;
         }
         return false;
@@ -99,6 +104,16 @@ public class LinkDeviceFragment extends AbstractStep {
                 startActivityForResult(intent, REQUEST_LINK_DEVICE);
             }
         });
+        dialogh = new AlertDialog.Builder(getContext())
+                .setTitle("Network Not Connected!")
+                .setMessage("You are not connected to internet. Please go to Previous page or Skip and continue offline mode.")
+                .setNegativeButton("PREVOIUS", (dialog, which) -> {
+                    pageUpdate.onPageUpdate(4);
+//                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
+                }).setPositiveButton("SKIP", ((dialog, which) -> {
+                    pageUpdate.onPageUpdate(6);
+                    onSkip();
+                })).setCancelable(false);
 
     }
 
@@ -125,9 +140,30 @@ public class LinkDeviceFragment extends AbstractStep {
                 /**
                  * @param 5 is launcher fragment page no
                  */
-                pageUpdate.onPageUpdate(5);
+                pageUpdate.onPageUpdate(6);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onStepVisible() {
+        super.onStepVisible();
+        ConnectivityManager cm =
+                (ConnectivityManager) MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+        if (!isConnected) {
+            if (dialogh != null)
+                dialogh.show();
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 }
