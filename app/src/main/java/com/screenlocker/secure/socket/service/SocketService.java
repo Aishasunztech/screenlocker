@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -21,11 +20,11 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.socket.OnSocketConnectionListener;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.utils;
-import com.screenlocker.secure.socket.OnSocketConnectionListener;
-import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -49,10 +48,7 @@ import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_DATABASE;
-import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
@@ -81,7 +77,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         SocketManager.getInstance().setSocketConnectionListener(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
-        LocalBroadcastManager.getInstance(this).registerReceiver(databaseBroadcast, new IntentFilter(BROADCAST_DATABASE));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(databaseBroadcast, new IntentFilter(BROADCAST_DATABASE));
 
     }
 
@@ -93,32 +89,32 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-    BroadcastReceiver databaseBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            try {
-                if (PrefUtils.getBooleanPref(SocketService.this, DEVICE_LINKED_STATUS)) {
-                    if (socket != null) {
-                        if (socket.connected()) {
-                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
-                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
-                                    sendApps();
-                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
-                                    sendExtensions();
-                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
-                                    sendSettings();
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception ignored) {
-            }
-
-        }
-    };
+//    BroadcastReceiver databaseBroadcast = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//
+//            try {
+//                if (PrefUtils.getBooleanPref(SocketService.this, DEVICE_LINKED_STATUS)) {
+//                    if (socket != null) {
+//                        if (socket.connected()) {
+//                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
+//                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
+//                                    sendApps();
+//                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
+//                                    sendExtensions();
+//                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
+//                                    sendSettings();
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            } catch (Exception ignored) {
+//            }
+//
+//        }
+//    };
 
     Socket socket;
     String device_id;
@@ -199,29 +195,28 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void onSocketConnectionStateChange(int socketState) {
-        switch (socketState) {
-            case 1:
-                Timber.d("Socket is connecting");
-                break;
-            case 2:
-                Timber.d("Socket is connected");
-                socket = SocketManager.getInstance().getSocket();
-                getSyncStatus();
-                getDeviceStatus();
-                sendAppliedStatus();
 
-                break;
-            case 3:
-                Timber.d("Socket is disconnected");
-                try {
-                    socket.off(GET_APPLIED_SETTINGS + device_id);
-                    socket.off(GET_SYNC_STATUS + device_id);
-                    socket.off(DEVICE_STATUS + device_id);
-                } catch (Exception e) {
-                    Timber.d(e.getMessage());
-                }
-                break;
+
+        if (socketState == 1) {
+            Timber.d("Socket is connecting");
+
+        } else if (socketState == 2) {
+            Timber.d("Socket is connected");
+            socket = SocketManager.getInstance().getSocket();
+            getSyncStatus();
+            getDeviceStatus();
+            sendAppliedStatus();
+        } else if (socketState == 3) {
+            Timber.d("Socket is disconnected");
+            try {
+                socket.off(GET_APPLIED_SETTINGS + device_id);
+                socket.off(GET_SYNC_STATUS + device_id);
+                socket.off(DEVICE_STATUS + device_id);
+            } catch (Exception e) {
+                Timber.d(e.getMessage());
+            }
         }
+
     }
 
     @Override
@@ -231,7 +226,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 Timber.d("Socket is connecting");
                 break;
             case 2:
-                Timber.d("Socket is connected");
+//                Timber.d("Socket is connected");
 
                 break;
             case 3:
@@ -259,21 +254,21 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             boolean extensions = obj.getBoolean("extensions_status");
                             boolean settings = obj.getBoolean("settings_status");
 
-                            if (PrefUtils.getBooleanPref(SocketService.this, DB_STATUS)) {
+                            syncDevice(SocketService.this, is_synced, apps, extensions, settings);
 
-                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
-                                    if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
-                                        sendApps();
-                                    } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
-                                        sendExtensions();
-                                    } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
-                                        sendSettings();
-                                    }
+                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
+
+                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
+                                    sendApps();
+                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
+                                    sendExtensions();
+                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
+                                    sendSettings();
                                 }
+
 
                             }
 
-                            syncDevice(SocketService.this, is_synced, apps, extensions, settings);
 
                         } else {
                             Timber.e(" invalid request ");
@@ -295,6 +290,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void getAppliedSettings() {
 
     }
+
 
     @Override
     public void sendApps() {
@@ -321,11 +317,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
 
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(databaseBroadcast);
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(databaseBroadcast);
 
 
         if (socket != null) {
@@ -334,6 +329,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             socket.off(DEVICE_STATUS + device_id);
             SocketManager.getInstance().destroy();
         }
+
+
+        super.onDestroy();
 
     }
 
@@ -452,6 +450,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             Timber.d(" valid request ");
                             boolean status = obj.getBoolean("status");
                             Timber.d(" applied settings status : %S", status);
+
                             if (status) {
                                 String appsList = obj.getString("app_list");
                                 if (!appsList.equals("[]")) {

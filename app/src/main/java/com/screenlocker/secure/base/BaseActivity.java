@@ -7,9 +7,11 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,11 +24,12 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 
 @SuppressLint("Registered")
 public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
-//    customViewGroup view;
+    //    customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
 //    private static WindowManager manager, mWindowManager;
@@ -68,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             if (alertDialog == null) {
                 createAlertDialog();
             } else {
-                if (!alertDialog.isShowing())
+                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this,DEVICE_LINKED_STATUS))
                     alertDialog.show();
             }
 
@@ -234,7 +237,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             if (alertDialog == null) {
                 createAlertDialog();
             } else {
-                if (!alertDialog.isShowing())
+                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this, DEVICE_LINKED_STATUS))
                     alertDialog.show();
             }
         }
@@ -328,7 +331,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             }
         }
     }
-
 
 
 }

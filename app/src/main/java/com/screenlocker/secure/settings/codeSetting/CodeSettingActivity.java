@@ -338,9 +338,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     protected void onPause() {
         super.onPause();
         if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu) {
-
             hideKeyboard(CodeSettingActivity.this);
-
             finish();
         }
 

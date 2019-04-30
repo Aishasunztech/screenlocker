@@ -76,7 +76,7 @@ public class SocketManager {
                 IO.Options opts = new IO.Options();
                 opts.forceNew = true;
                 opts.reconnection = true;
-                opts.reconnectionAttempts = 5;
+//                opts.reconnectionAttempts = 5;
                 opts.secure = true;
 
                 opts.query = "device_id=" + device_id + "&token=" + token;
@@ -220,6 +220,9 @@ public class SocketManager {
      * Destroy.
      */
     public void destroy() {
+
+        Log.d("kljfeijieijoieret", "distro");
+
         if (socket != null) {
             socket.off();
             socket.disconnect();

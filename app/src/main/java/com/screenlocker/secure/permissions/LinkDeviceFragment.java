@@ -109,7 +109,7 @@ public class LinkDeviceFragment extends AbstractStep {
                 .setMessage("You are not connected to internet. Please go to Previous page or Skip and continue offline mode.")
                 .setNegativeButton("PREVOIUS", (dialog, which) -> {
                     pageUpdate.onPageUpdate(4);
-//                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 4);
                 }).setPositiveButton("SKIP", ((dialog, which) -> {
                     pageUpdate.onPageUpdate(6);
                     onSkip();

@@ -159,8 +159,6 @@ public class Utils {
 
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
 
-        ConstraintLayout constraintLayout = keypadView.findViewById(R.id.device_status_labels);
-
 
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
@@ -177,16 +175,17 @@ public class Utils {
             switch (device_status) {
                 case "suspended":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
                     } else {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
                     }
                     break;
                 case "expired":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
                     } else {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+
                     }
                     break;
             }
@@ -197,19 +196,19 @@ public class Utils {
             if (status == null) {
                 keyboardView.clearWaringText();
 
-
             } else {
                 if (status.equals("suspended")) {
                     if (device_id != null) {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
                     } else {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
                     }
                 } else if (status.equals("expired")) {
                     if (device_id != null) {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
                     } else {
-                        keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", "not found");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+
                     }
                 }
             }
@@ -275,16 +274,17 @@ public class Utils {
                     switch (device_status1) {
                         case "suspended":
                             if (device_id != null) {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", device_id);
+                                keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
                             } else {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: SUSPENDED ", "N/A");
+                                keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
                             }
                             break;
                         case "expired":
                             if (device_id != null) {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", device_id);
+                                keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
                             } else {
-                                keyboardView.setWarningText("Please contact Admin. \nAccount: EXPIRED ", "N/A");
+                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+
                             }
                             break;
                     }

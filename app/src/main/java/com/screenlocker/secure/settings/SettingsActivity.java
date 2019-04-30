@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -15,17 +16,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -39,7 +44,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -80,6 +84,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -88,10 +93,10 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_DATABASE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -139,52 +144,45 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView tvlinkDevice;
 
 
+    private ConstraintLayout constraintLayout;
+
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+        constraintLayout = findViewById(R.id.rootLayout);
+        constraintLayout.setVisibility(View.GONE);
+        progressBar = findViewById(R.id.progress);
+        progressBar.setVisibility(View.VISIBLE);
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
-//
-//        if ((this.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-//            Toast.makeText(this, "This is system app", Toast.LENGTH_LONG).show();
-//
-//        } else {
-//            Toast.makeText(this, "This is not system app", Toast.LENGTH_LONG).show();
-//        }
-//
-//        if (getApplicationContext().checkCallingOrSelfPermission("android.permission.INSTALL_PACKAGES") == PackageManager.PERMISSION_GRANTED) {
-//            Toast.makeText(this, "I have android.permission.INSTALL_PACKAGES", Toast.LENGTH_LONG).show();
-//
-//        } else {
-//            Toast.makeText(this, "I have not android.permission.INSTALL_PACKAGES", Toast.LENGTH_LONG).show();
-//        }
-
-
         WorkManager.getInstance().enqueue(insertionWork);
 
         WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
                 .observe(this, workInfo -> {
                     // Do something with the status
                     if (workInfo != null && workInfo.getState().isFinished()) {
-                        Timber.d("work completed");
-                        LocalBroadcastManager.getInstance(SettingsActivity.this).sendBroadcast(new Intent(BROADCAST_DATABASE));
-                        PrefUtils.saveBooleanPref(this, DB_STATUS, true);
+                        PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
+                        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                            Intent intent = new Intent(this, SteppersActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+                            constraintLayout.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            init();
+                            if (!linkStatus) {
+                                tvlinkDevice.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
                 });
-
-
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-            Intent intent = new Intent(this, SteppersActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
-
-        init();
 
 
     }
@@ -271,6 +269,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onPause() {
         hideKeyboard(SettingsActivity.this);
+
+        if (tvlinkDevice != null) {
+            tvlinkDevice.setVisibility(View.GONE);
+        }
 
         super.onPause();
     }
@@ -431,8 +433,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onResume() {
-        super.onResume();
+
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+
         if (linkStatus) {
             if (devicePolicyManager != null && compName != null) {
                 permissionAdmin(SettingsActivity.this, devicePolicyManager, compName);
@@ -442,12 +445,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
             }
 
+
+        } else {
             if (tvlinkDevice != null) {
-                tvlinkDevice.setVisibility(View.GONE);
+                tvlinkDevice.setVisibility(View.VISIBLE);
             }
-
         }
-
+        super.onResume();
 
     }
 
@@ -498,8 +502,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     //Crashlytics.getInstance().crash(); // Force a crash
                     break;
                 case R.id.tvlinkDevice:
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+
+                    ConnectivityManager cm =
+                            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                    boolean isConnected = activeNetwork != null &&
+                            activeNetwork.isConnected();
+
+                    if (isConnected) {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        showNetworkDialog();
+                    }
+
+
                     break;
             }
         } else {
@@ -509,6 +526,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     }
+
 
     private void handleCodeAdmin() {
 
@@ -724,6 +742,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    private void showNetworkDialog() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Network Not Connected!");
+        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+
+        alertDialog.setMessage("You are not connected to internet. Please connect to internet.");
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "WIFI", (dialog, which) -> {
+            Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+            startActivity(wifiIntent);
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "MOBILE DATA",
+                (dialog, which) -> {
+                    Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
+                    startActivity(intent);
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CANCEL",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
+
+    }
+
     private void showAlertDialog(AppCompatActivity activity) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle("Invalid password");
@@ -754,8 +797,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+
     @Override
     public void onNetworkChange(boolean status) {
+
+
+        Log.d("ekfjiogijer", "onNetworkChange: " + status);
 
         if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
 
@@ -848,6 +895,37 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             textView20.setVisibility(View.VISIBLE);
             tvSimId.setVisibility(View.VISIBLE);
             tvSimId.setText(simId);
+        }
+
+
+        List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
+
+        // IMEI 1
+        TextView tvImei1 = aboutDialog.findViewById(R.id.tvImei1);
+        TextView textViewImei = aboutDialog.findViewById(R.id.textViewImei);
+
+        if (imeis.size() > 0) {
+            String imei = imeis.get(0);
+            if (imei != null) {
+                tvImei1.setVisibility(View.VISIBLE);
+                textViewImei.setVisibility(View.VISIBLE);
+                tvImei1.setText(imei);
+            }
+        }
+
+        // IMEI 2
+
+        // IMEI 1
+        TextView tvImei2 = aboutDialog.findViewById(R.id.tvImei2);
+        TextView textViewImei2 = aboutDialog.findViewById(R.id.textViewImei2);
+
+        if (imeis.size() > 1) {
+            String imei2 = imeis.get(1);
+            if (imei2 != null) {
+                tvImei2.setVisibility(View.VISIBLE);
+                textViewImei2.setVisibility(View.VISIBLE);
+                tvImei2.setText(imei2);
+            }
         }
 
 
@@ -989,12 +1067,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onBackPressed() {
 
-        if (settingsPresenter.isMyLauncherDefault()) {
-            Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
-            startActivity(home);
-            finish();
-        } else {
-            super.onBackPressed();
+        try {
+            if (settingsPresenter.isMyLauncherDefault()) {
+                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
+                startActivity(home);
+                finish();
+            } else {
+                super.onBackPressed();
+            }
+        } catch (Exception ignored) {
         }
 
 

@@ -170,15 +170,18 @@ public class MyApplication extends Application implements NetworkListener {
     public void onNetworkChange(boolean status) {
         boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
 
+
         if (linkStatus) {
+            Timber.d("ikgiogjrgjrgrgjoi %s", linkStatus);
+            Timber.d("ikgiogjrgjrgrgjoi %s", status);
 
             Intent intent = new Intent(this, SocketService.class);
             if (status) {
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
-                if(serialNo != null){
-                    new ApiUtils(MyApplication.this,macAddress,serialNo);
+                if (serialNo != null) {
+                    new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
             } else {
                 stopService(intent);

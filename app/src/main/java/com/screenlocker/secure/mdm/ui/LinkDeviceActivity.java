@@ -23,7 +23,9 @@ import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
@@ -494,12 +496,22 @@ public class LinkDeviceActivity extends BaseActivity {
 
     }
 
+
+    private void currentStatus() {
+        String macAddress = CommonUtils.getMacAddress();
+        String serialNo = DeviceIdUtils.getSerialNumber();
+        if (macAddress != null && serialNo != null) {
+            new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
+        }
+    }
+
     private void approvedLinkViewState() {
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         btnLinkDevice.setText("Next");
         btnLinkDevice.setEnabled(true);
         linked = true;
+        currentStatus();
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);

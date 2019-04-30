@@ -21,7 +21,6 @@ import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.utils.WifiApControl;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -95,6 +94,7 @@ public class utils {
             boolean adminActive = devicePolicyManager.isAdminActive(compName);
             if (adminActive) {
                 devicePolicyManager.wipeData(0);
+
             }
         }
 
@@ -248,58 +248,58 @@ public class utils {
 
     public static void changeSettings(Context context, Settings settings) {
 
-        Timber.d("changeSettings: ");
-        //Calls setting
-        boolean callStatus = settings.isCall_status();
-        Timber.d("callStatus: %s", callStatus);
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, callStatus);
-        //Bluetooth setting
-        boolean bluetoothStatus = settings.isBluetooth_status();
-        try {
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothStatus) {
-                mBluetoothAdapter.enable();
-            } else {
-                mBluetoothAdapter.disable();
-            }
-        } catch (Exception ignored) {
-
-        }
-
-        Timber.d("bluetoothStatus: %s", bluetoothStatus);
-
-        //wifi setting
-        boolean wifiStatus = settings.isWifi_status();
-        try {
-            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager != null) {
-                if (wifiManager.isWifiEnabled())
-                    wifiManager.setWifiEnabled(wifiStatus);
-            }
-        } catch (Exception ignored) {
-        }
-
-        Timber.d("wifiStatus: %s", wifiStatus);
-
-
-        //screenshot setting
-        boolean screenShotStatus = settings.isScreenshot_status();
-
-//        if (screenShotStatus) {
-//            enableScreenShotBlocker(true);
-//        } else {
-//            disableScreenShotBlocker(true);
+//        Timber.d("changeSettings: ");
+//        //Calls setting
+//        boolean callStatus = settings.isCall_status();
+//        Timber.d("callStatus: %s", callStatus);
+//        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, callStatus);
+//        //Bluetooth setting
+//        boolean bluetoothStatus = settings.isBluetooth_status();
+//        try {
+//            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//            if (bluetoothStatus) {
+//                mBluetoothAdapter.enable();
+//            } else {
+//                mBluetoothAdapter.disable();
+//            }
+//        } catch (Exception ignored) {
+//
 //        }
-
-        //HotSpotSetting
-        boolean hotSpotStatus = settings.isHotspot_status();
-        try {
-            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            WifiApControl.turnOnOffHotspot(false, wifiManager);
-            Timber.d("hotSpotStatus: %s", hotSpotStatus);
-
-        } catch (Exception ignored) {
-        }
+//
+//        Timber.d("bluetoothStatus: %s", bluetoothStatus);
+//
+//        //wifi setting
+//        boolean wifiStatus = settings.isWifi_status();
+//        try {
+//            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//            if (wifiManager != null) {
+//                if (wifiManager.isWifiEnabled())
+//                    wifiManager.setWifiEnabled(wifiStatus);
+//            }
+//        } catch (Exception ignored) {
+//        }
+//
+//        Timber.d("wifiStatus: %s", wifiStatus);
+//
+//
+//        //screenshot setting
+//        boolean screenShotStatus = settings.isScreenshot_status();
+//
+////        if (screenShotStatus) {
+////            enableScreenShotBlocker(true);
+////        } else {
+////            disableScreenShotBlocker(true);
+////        }
+//
+//        //HotSpotSetting
+//        boolean hotSpotStatus = settings.isHotspot_status();
+//        try {
+//            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//            WifiApControl.turnOnOffHotspot(false, wifiManager);
+//            Timber.d("hotSpotStatus: %s", hotSpotStatus);
+//
+//        } catch (Exception ignored) {
+//        }
     }
 
     public static void suspendedDevice(final Context context, String device_id, String msg) {

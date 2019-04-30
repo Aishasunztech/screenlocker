@@ -236,7 +236,6 @@ public class MainActivity extends BaseActivity {
                             if (response.body().getStatus()) {
                                 if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
                                     currentStatus();
-
                                     setResult(RESULT_OK);
                                     finish();
                                 }else if (msg.equals("new device")){
@@ -276,7 +275,6 @@ public class MainActivity extends BaseActivity {
 
 
     private void currentStatus() {
-
         String macAddress = CommonUtils.getMacAddress();
         String serialNo = DeviceIdUtils.getSerialNumber();
         if (macAddress != null && serialNo != null) {

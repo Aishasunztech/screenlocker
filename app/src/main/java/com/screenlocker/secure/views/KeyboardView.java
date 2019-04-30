@@ -3,7 +3,9 @@ package com.screenlocker.secure.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+
 import androidx.annotation.IdRes;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
@@ -192,6 +194,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 
     public void setWarningText(String msg, String device_id) {
         txtWarning.setVisibility(VISIBLE);
+
 //        if(!msg.equals(getResources().getString(R.string.wrong_password_try_again))){
 //            txtWarning.setBackgroundResource(R.drawable.error_msg);
 //        }
@@ -199,7 +202,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
         if (device_id == null) {
             txtWarning.setText(msg);
         } else {
-            txtWarning.setText(msg + " ID: " + device_id);
+            txtWarning.setText(msg);
         }
 
     }
