@@ -341,7 +341,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
                     } else {
                         Glide.with(MainActivity.this)
-                                .load(bg)
+                                .load(Integer.parseInt(bg))
                                 .apply(new RequestOptions().centerCrop())
                                 .into(background);
                     }
@@ -355,7 +355,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
                     } else {
                         Glide.with(MainActivity.this)
-                                .load(bg)
+                                .load(Integer.parseInt(bg))
                                 .apply(new RequestOptions().centerCrop())
                                 .into(background);
                     }

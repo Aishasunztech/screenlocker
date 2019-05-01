@@ -11,6 +11,7 @@ public class AppConstants {
     public static final String KEY_DURESS_PASSWORD = "duress_password";
     public static final String KEY_GUEST_IMAGE = "guest_image";
     public static final String KEY_MAIN_IMAGE = "main_image";
+    public static final String KEY_LOCK_IMAGE = "lock_image";
     public static final String CURRENT_KEY = "current_key";
     public static final String DATABASE_NAME = "app_db";
     public static final String KEY_MAIN = "main";

@@ -25,8 +25,11 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
@@ -159,7 +162,14 @@ public class Utils {
 
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
 
+        ConstraintLayout rootView = keypadView.findViewById(R.id.background);
+        String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
+        if (bg == null || bg.equals("")) {
+            rootView.setBackgroundResource(R.drawable.background_icon);
 
+        } else {
+            rootView.setBackgroundResource(Integer.parseInt(bg));
+        }
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
         final String device_id = PrefUtils.getStringPref(context, DEVICE_ID);

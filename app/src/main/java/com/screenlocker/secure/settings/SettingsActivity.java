@@ -57,6 +57,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
@@ -490,7 +491,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     startActivity(passwordsIntent);
                     break;
                 case R.id.tvChooseBackground:     // handle the choose apps click event
-                    handleChooseABackground();
+//                    handleChooseABackground();
+                    Intent cwi = new Intent(this, WallpaperActivity.class);
+                    startActivity(cwi);
                     break;
 
                 case R.id.tvCode:
