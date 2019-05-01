@@ -58,8 +58,12 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.codeSetting.IMEIActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name="com.secureClear.SecureClearActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme"></activity>
+        <activity
+            android:name=".settings.codeSetting.IMEIActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".permissions.InstallAppSilently" />
         <activity android:name=".permissions.WelcomeScreenActivity" />
         <activity

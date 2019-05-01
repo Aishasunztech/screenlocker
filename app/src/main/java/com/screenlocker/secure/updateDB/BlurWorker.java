@@ -129,6 +129,26 @@ public class BlurWorker extends Worker {
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
             }
 
+            AppInfo secureCleanInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_CLEAR_UNIQUE);
+
+            if (secureCleanInfo == null) {
+                //Secure clear Extension
+                Drawable clear_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_clear);
+                byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
+                AppInfo clearExtension = new AppInfo("Secure Clear", AppConstants.SECURE_CLEAR_PACKAGE, secure_clear_icon);
+                clearExtension.setUniqueName(clearExtension.getPackageName() + clearExtension.getLabel());
+                clearExtension.setExtension(true);
+                clearExtension.setGuest(true);
+                clearExtension.setEncrypted(true);
+                clearExtension.setEnable(true);
+                clearExtension.setVisible(true);
+                clearExtension.setDefaultApp(false);
+
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
+            }
+
+
+
 
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
 
