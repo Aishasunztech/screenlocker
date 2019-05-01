@@ -315,8 +315,7 @@ public class CommonUtils {
 
 
 
-        
-        
+
         for (SubExtension subExtension : subExtensions) {
             MyApplication.getAppDatabase(context).getDao().insertSubExtensions(subExtension);
         }

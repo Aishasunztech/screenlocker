@@ -1,7 +1,10 @@
 package com.screenlocker.secure.service;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
@@ -18,6 +21,8 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class DeviceNotificationListener extends NotificationListenerService {
 
+    private NLServiceReceiver nlservicereciver;
+
     public static final String ACTION_NOTIFICATION_REFRESH = BuildConfig.APPLICATION_ID + ".notification_refresh";
 
     @Override
@@ -30,6 +35,15 @@ public class DeviceNotificationListener extends NotificationListenerService {
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
         refreshList();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        nlservicereciver = new NLServiceReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.example.clearNotificaiton.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+        registerReceiver(nlservicereciver,filter);
     }
 
     private void refreshList() {
@@ -46,4 +60,15 @@ public class DeviceNotificationListener extends NotificationListenerService {
         }
 
     }
+
+    class NLServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getStringExtra("command").equals("clearall")) {
+                DeviceNotificationListener.this.cancelAllNotifications();
+            }
+        }
+    }
+
 }

@@ -175,6 +175,10 @@ public class AppConstants {
     public static final String SECURE_SETTINGS_PACKAGE = "com.secureSetting.SecureSettingsMain";
 
 
+    //unique name for secure clear
+    public static final String SECURE_CLEAR_UNIQUE = "com.secureClear.SecureClearActivitySecure Clear";
+    public static final String SECURE_CLEAR_PACKAGE = "com.secureClear.SecureClearActivity";
+
     // secure app
 
     public static final int LOCATION_SETTINGS_CODE = 111;
@@ -197,6 +201,9 @@ public class AppConstants {
     public static int attempt_8 = 15;
     public static int attempt_9 = 30;
     public static int attempt_10 = 30;
+
+
+    // acure xlear
 
 
 //

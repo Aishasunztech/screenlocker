@@ -29,14 +29,17 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureClear.SecureClearActivity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -63,7 +66,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer
+            ;
 
     private ConstraintLayout settingsLayout;
 
