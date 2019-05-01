@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -96,9 +95,9 @@ import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
@@ -158,6 +157,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -197,6 +197,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setIds();
         setToolbar(mToolbar);
         setListeners();
+
 
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
@@ -474,6 +475,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvCode).setOnClickListener(this);
         findViewById(R.id.tvCheckForUpdate).setOnClickListener(this);
         findViewById(R.id.tvlinkDevice).setOnClickListener(this);
+        findViewById(R.id.tvAccount).setOnClickListener(this);
+        findViewById(R.id.tvAccount).setVisibility(View.VISIBLE);
+        findViewById(R.id.tvAccount).setOnClickListener(this);
     }
 
 
@@ -496,6 +500,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvAbout:
                     //handle the about click event
                     createAboutDialog();
+                    break;
+                case R.id.tvAccount:
+                    createAccountDialog();
                     break;
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
@@ -748,7 +755,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         alertDialog.setTitle("Network Not Connected!");
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage("You are not connected to internet. Please connect to internet.");
+        alertDialog.setMessage("Please connect to the internet before proceeding.");
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "WIFI", (dialog, which) -> {
             Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
@@ -843,7 +850,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvVersionCode.setText("");
         }
 
-        // Expiry Date
+        /*// Expiry Date
         TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
         TextView textView16 = aboutDialog.findViewById(R.id.textView16);
 
@@ -856,9 +863,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //            else {
 //                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
 //            }
-        }
+        }*/
 
-        // Device ID
+        /*// Device ID
         TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
         TextView textView17 = aboutDialog.findViewById(R.id.textView17);
         String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
@@ -867,7 +874,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             textView17.setVisibility(View.VISIBLE);
             tvDeviceId.setText(device_id);
         }
-
+*/
         // PGP Email
         TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
         TextView textView18 = aboutDialog.findViewById(R.id.textView18);
@@ -898,6 +905,61 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
+        aboutDialog.show();
+
+    }
+    private void createAccountDialog() {
+//        account device dialog
+
+        Dialog aboutDialog = new Dialog(this);
+        aboutDialog.setContentView(R.layout.dialoge_account);
+        WindowManager.LayoutParams params = Objects.requireNonNull(aboutDialog.getWindow()).getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        aboutDialog.getWindow().setAttributes(params);
+        aboutDialog.setCancelable(true);
+
+        // Device ID
+        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
+        TextView textView17 = aboutDialog.findViewById(R.id.textViewDeviceId);
+        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
+        if (device_id != null) {
+            tvDeviceId.setVisibility(View.VISIBLE);
+            textView17.setVisibility(View.VISIBLE);
+            tvDeviceId.setText(device_id);
+        }
+
+        /*Status*/
+        TextView tvStatus = aboutDialog.findViewById(R.id.tvDeviceStatus);
+        TextView textView18 = aboutDialog.findViewById(R.id.textViewStatus);
+        String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
+        boolean b = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
+        if (b) {
+            tvStatus.setVisibility(View.VISIBLE);
+            textView18.setVisibility(View.VISIBLE);
+
+            if(device_status  == null){
+                tvStatus.setText("Active");
+            }else
+                tvStatus.setText(device_status);
+        }
+
+
+        // Expiry Date
+        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
+        TextView textView16 = aboutDialog.findViewById(R.id.textViewExpiry);
+
+        String remaining_days = getRemainingDays(SettingsActivity.this);
+
+        if (remaining_days != null) {
+            textView16.setVisibility(View.VISIBLE);
+            tvExpiresIn.setVisibility(View.VISIBLE);
+            tvExpiresIn.setText(remaining_days);
+//            else {
+//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
+//            }
+        }
+
+
         List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
 
         // IMEI 1
@@ -914,8 +976,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         // IMEI 2
-
-        // IMEI 1
         TextView tvImei2 = aboutDialog.findViewById(R.id.tvImei2);
         TextView textViewImei2 = aboutDialog.findViewById(R.id.textViewImei2);
 
@@ -927,6 +987,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 tvImei2.setText(imei2);
             }
         }
+
+
+
+
 
 
         aboutDialog.show();

@@ -39,10 +39,10 @@ public class SteppersActivity extends DotStepper implements LinkDeviceFragment.P
         addStep(new SetGuestPasswordFragment());//1
         addStep(new SetEncryptedPasswordFragment());//2
         addStep(new SetDuressPasswordFragment());//3
-        addStep(new ConnectivityFragment());//4
-        addStep(new LinkDeviceFragment());//5
-        addStep(new SetDefaultLauncherFragment());//6
-        addStep(new FinishFragment());//7
+//        addStep(new ConnectivityFragment());//4
+        addStep(new LinkDeviceFragment());//4
+        addStep(new SetDefaultLauncherFragment());//5
+        addStep(new FinishFragment());//6
 
 
         super.onCreate(savedInstanceState);
