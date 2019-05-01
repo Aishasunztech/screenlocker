@@ -19,8 +19,8 @@ android {
         applicationId "com.vortexlocker.app"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 465
-        versionName "4.65"
+        versionCode 466
+        versionName "4.66"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -145,6 +145,11 @@ dependencies {
 //ssp
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'pub.devrel:easypermissions:2.0.1'
+
+
+    // progress library
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+
 
     implementation project(':Stepper')
 }

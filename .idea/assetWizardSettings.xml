@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_signal_cellular_3_bar_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/75/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_done_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -35,11 +35,11 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="height" value="48" />
-                            <entry key="outputName" value="ic_roaming" />
+                            <entry key="height" value="12" />
+                            <entry key="outputName" value="ic_checked_symbol" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/roaming.svg" />
-                            <entry key="width" value="48" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/checked-symbol.svg" />
+                            <entry key="width" value="12" />
                           </map>
                         </option>
                       </PersistentState>

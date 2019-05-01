@@ -19,7 +19,9 @@ import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.MainActivity;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -157,19 +159,17 @@ public class LinkDeviceFragment extends AbstractStep {
 
         alertDialog.setMessage("Please connect to the internet before proceeding.");
 
-        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, "WIFI", (dialog, which) -> {
-            Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-            startActivity(wifiIntent);
+        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, "NETWORK SETUP", (dialog, which) -> {
+            Intent intent = new Intent(context, SecureSettingsMain.class);
+            intent.putExtra("show_default", "show_default");
+            startActivity(intent);
+
         });
 
 
-        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, "MOBILE DATA",
-                (dialog, which) -> {
-                    Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
-                    startActivity(intent);
-                });
-        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, "CANCEL",
+        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, "CANCEL",
                 (dialog, which) -> dialog.dismiss());
+
         alertDialog.show();
 
     }

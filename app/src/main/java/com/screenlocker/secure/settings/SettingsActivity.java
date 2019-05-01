@@ -70,6 +70,7 @@ import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -150,7 +151,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         constraintLayout = findViewById(R.id.rootLayout);
@@ -198,7 +199,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setIds();
         setToolbar(mToolbar);
         setListeners();
-
 
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
@@ -760,18 +760,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         alertDialog.setMessage("Please connect to the internet before proceeding.");
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "WIFI", (dialog, which) -> {
-            Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-            startActivity(wifiIntent);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "NETWORK SETUP", (dialog, which) -> {
+            Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
+            intent.putExtra("show_default", "show_default");
+            startActivity(intent);
+
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "MOBILE DATA",
-                (dialog, which) -> {
-                    Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
-                    startActivity(intent);
-                });
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -911,6 +908,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         aboutDialog.show();
 
     }
+
     private void createAccountDialog() {
 //        account device dialog
 
@@ -940,9 +938,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvStatus.setVisibility(View.VISIBLE);
             textView18.setVisibility(View.VISIBLE);
 
-            if(device_status  == null){
+            if (device_status == null) {
                 tvStatus.setText("Active");
-            }else
+            } else
                 tvStatus.setText(device_status);
         }
 
@@ -990,10 +988,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 tvImei2.setText(imei2);
             }
         }
-
-
-
-
 
 
         aboutDialog.show();

@@ -30,9 +30,13 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
+
     <uses-permission android:name="android.permission.INTERNET" /> <!-- bluetooth permission -->
     <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -301,6 +305,13 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+
+
+        <activity
+            android:name="com.secureClear.SecureClearActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme"></activity>
+
     </application>
 
 </manifest>
