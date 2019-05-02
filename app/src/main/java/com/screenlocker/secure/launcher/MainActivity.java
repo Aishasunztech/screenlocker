@@ -97,17 +97,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
-
-
+            return;
         }
 
-        try {
-            puk(this);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -122,7 +114,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-
 
             Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
             shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -165,25 +156,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (!mainPresenter.isServiceRunning()) {
                 mainPresenter.startLockService(lockScreenIntent);
             }
-            try {
-                sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-            } catch (Exception ignored) {
+        }
+        //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
+        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
+            startActivityForResult(intent, RESULT_ENABLE);
 
-            }
-            //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
-            if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
-                startActivityForResult(intent, RESULT_ENABLE);
-
-            } else {
-                if (devicePolicyManager != null) {
-                    devicePolicyManager.lockNow();
-                }
+        } else {
+            if (devicePolicyManager != null) {
+                devicePolicyManager.lockNow();
             }
         }
-
     }
 
 
@@ -202,8 +187,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public void clearRecentApp() {
 
         try {
-
-
             ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             if (activityManager != null) {
                 activityManager.moveTaskToFront(getTaskId(), 0);
@@ -217,7 +200,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            sheduleScreenOffMonitor();
+
+            if (PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
+                sheduleScreenOffMonitor();
+            }
+
+
             clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
@@ -317,10 +305,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
 
-        super.onResume();
-
-        Intent lockScreenIntent = new Intent(this, LockScreenService.class);
-        if (!mainPresenter.isServiceRunning()) {
+        if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
+            Intent lockScreenIntent = new Intent(this, LockScreenService.class);
             mainPresenter.startLockService(lockScreenIntent);
         }
 
@@ -328,6 +314,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
         }
+
+        super.onResume();
         //allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
 
@@ -432,31 +420,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             unregisterReceiver(screenOffReceiver);
         } catch (Exception ignored) {
             //
-        }
-
-    }
-
-    private void puk(Context context) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-//
-//        String fileName = PAKAGE_FILE_NAME ;
-//        String dir_type = Environment.DIRECTORY_DOWNLOADS;
-//
-//        File dir= Environment.getExternalStoragePublicDirectory(dir_type);
-//        java.io.File file = new java.io.File(dir ,fileName);
-//        Uri packageUri = Uri.fromFile(file);
-
-        PackageManager pm = context.getPackageManager();
-
-        Class<? extends PackageManager> o = pm.getClass();
-        Method[] allMethods = o.getMethods();
-
-        for (Method m : allMethods) {
-            Log.d("hjjdgfjhgfdjkagf", "puk: " + m.getName());
-            if (m.getName().equals("installPackage")) {
-
-                //m.invoke(pm,new Object[] { packageUri, null, 1, "com.mic.zapp"});
-                break;
-            }
         }
 
     }

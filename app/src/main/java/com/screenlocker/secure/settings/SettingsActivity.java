@@ -174,6 +174,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             Intent intent = new Intent(this, SteppersActivity.class);
                             startActivity(intent);
                             finish();
+
                         } else {
                             boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
                             constraintLayout.setVisibility(View.VISIBLE);
@@ -548,7 +549,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             final EditText input = new EditText(SettingsActivity.this);
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(SettingsActivity.this, "Invalid Password!", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
                     return;
                 }
                 if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
@@ -557,7 +559,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
                     dialogInterface.dismiss();
                 } else {
-                    showAlertDialog(SettingsActivity.this);
+                    showAlertDialog(SettingsActivity.this, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
                 }
             }, null, getString(R.string.please_enter_code_admin_password));
         }
@@ -640,7 +642,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -653,7 +655,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity);
+                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_encrypted_password));
@@ -687,7 +689,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -700,7 +702,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity);
+                    showAlertDialog(activity, "Invalid password!", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_duress_password));
@@ -729,8 +731,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-//                        Toast.makeText(SettingsActivity.this, R.string.please_enter_your_current_password, Toast.LENGTH_SHORT).show();
+                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -744,7 +745,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity);
+                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
                 }
             }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
         }
@@ -774,42 +775,28 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void showAlertDialog(AppCompatActivity activity) {
+    private void showAlertDialog(AppCompatActivity activity, String title, String msg, int icon) {
+
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setTitle("Invalid password");
-        alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-        alertDialog.setMessage("The password you entered is incorrect.");
+        alertDialog.setTitle(title);
+        alertDialog.setIcon(icon);
+        alertDialog.setMessage(msg);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
+
     }
 
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, final boolean isChecked) {
 
-        switch (compoundButton.getId()) {
-
-            case R.id.switchEnableVpn:
-
-                if (isChecked) {
-
-                    Toast.makeText(this, "unckeked", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "unckeked", Toast.LENGTH_SHORT).show();
-
-                }
-
-                break;
-        }
     }
 
 
     @Override
     public void onNetworkChange(boolean status) {
 
-
-        Log.d("ekfjiogijer", "onNetworkChange: " + status);
 
         if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
 
@@ -994,93 +981,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    /**
-     * handle the background image setup for the pin locker
-     */
-    private void handleChooseABackground() {
-
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_choose_background);
-        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.getWindow().setAttributes(params);
-
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
-        //dialog.setCancelable(false);
-        RadioGroup rgUserType = dialog.findViewById(R.id.rgUserType);
-        RadioButton rbGuest = dialog.findViewById(R.id.rbGuest);
-        RadioButton rbEncrypted = dialog.findViewById(R.id.rbEncrypted);
-        final EditText etPassword = dialog.findViewById(R.id.etPassword);
-        if (isEncryptedChecked) {
-            rbEncrypted.setChecked(true);
-
-
-        } else {
-            rbGuest.setChecked(true);
-
-        }
-
-        rgUserType.setOnCheckedChangeListener((radioGroup, checkedId) -> {
-            switch (checkedId) {
-                case R.id.rbGuest:
-                    isEncryptedChecked = false;
-                    break;
-                case R.id.rbEncrypted:
-                    isEncryptedChecked = true;
-                    break;
-            }
-        });
-        dialog.findViewById(R.id.btOk).setOnClickListener(view -> {
-
-            String enteredPassword = etPassword.getText().toString().toLowerCase();
-            if (TextUtils.isEmpty(enteredPassword)) {
-                Toast.makeText(SettingsActivity.this, "Please enter your Password", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (isEncryptedChecked) {
-                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
-                    Toast.makeText(SettingsActivity.this, "Please set Encrypted Password First.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD))) {
-                    // allow him to set background for encrypted user
-                    CropImage.activity()
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(SettingsActivity.this);
-                } else {
-                    // dont allow him to set background because password was wrong
-                    Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
-                }
-
-            } else {
-                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD) == null) {
-                    Toast.makeText(SettingsActivity.this, "Please set Guest Password First.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (enteredPassword.equals(PrefUtils.getStringPref(SettingsActivity.this, KEY_GUEST_PASSWORD))) {
-                    // allow him to set background for encrypted user
-
-                    CropImage.activity()
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(SettingsActivity.this);
-                } else {
-                    // dont allow him to set background because password was wrong
-                    Toast.makeText(SettingsActivity.this, "Entered Wrong Password.", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            dialog.cancel();
-        });
-        dialog.findViewById(R.id.btCancel).setOnClickListener(view -> {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            dialog.cancel();
-        });
-        dialog.show();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1097,9 +997,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             case REQUEST_CODE_PASSWORD:
                 if (resultCode == RESULT_OK) {
-                    Snackbar.make(rootLayout, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(rootLayout, R.string.password_not_changed, Snackbar.LENGTH_SHORT).show();
+                    showAlertDialog(SettingsActivity.this, "Password Changed!", "Password Successfully Changed.", R.drawable.ic_checked);
+//                    Snackbar.make(rootLayout, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
                 }
                 break;
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:

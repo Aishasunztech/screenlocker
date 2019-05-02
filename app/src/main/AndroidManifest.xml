@@ -62,9 +62,10 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.Wallpaper.ChangeWallpaper"
+        <activity
+            android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name="com.secureClear.SecureClearActivity"
             android:screenOrientation="portrait"
@@ -135,8 +136,7 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".permissions.SteppersActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -305,12 +305,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
-
-
-        <activity
-            android:name="com.secureClear.SecureClearActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme"></activity>
 
     </application>
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class ReBootReciever extends BroadcastReceiver {
     private static final String TAG = ReBootReciever.class.getSimpleName();
@@ -31,27 +32,25 @@ public class ReBootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
 
-        try {
-            context.sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-        } catch (Exception ignored) {
-
-        }
 
         if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                 Timber.d("<<< device status >>>%S", device_status);
 
-                if (device_status != null) {
-                    Intent lockScreenIntent = new Intent(context, LockScreenService.class);
-                    lockScreenIntent.setAction("reboot");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        context.startForegroundService(lockScreenIntent);
-                    } else {
-                        context.startService(lockScreenIntent);
-                    }
+                if (PrefUtils.getBooleanPref(context, TOUR_STATUS)) {
+                    if (device_status != null) {
+                        Intent lockScreenIntent = new Intent(context, LockScreenService.class);
+                        lockScreenIntent.setAction("reboot");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(lockScreenIntent);
+                        } else {
+                            context.startService(lockScreenIntent);
+                        }
 
+                    }
                 }
+
 
                 Toast.makeText(context, "on boot completed", Toast.LENGTH_LONG).show();
                 PrefUtils.saveStringPref(context, AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_FALSE);

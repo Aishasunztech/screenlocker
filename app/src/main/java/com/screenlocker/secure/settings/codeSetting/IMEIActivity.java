@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -97,6 +98,8 @@ public class IMEIActivity extends AppCompatActivity {
         intent.putExtra("setting", "write.imei");
         intent.putExtra("simSlotId", String.valueOf(slot));
         intent.putExtra("imei", imei);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setPackage("com.omegamoon.sysadmin");
 
         sendBroadcast(intent);
     }

@@ -61,6 +61,13 @@ public class DeviceNotificationListener extends NotificationListenerService {
 
     }
 
+    @Override
+    public void onDestroy() {
+
+        unregisterReceiver(nlservicereciver);
+        super.onDestroy();
+    }
+
     class NLServiceReceiver extends BroadcastReceiver {
 
         @Override

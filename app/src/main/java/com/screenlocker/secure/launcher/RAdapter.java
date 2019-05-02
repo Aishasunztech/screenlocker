@@ -108,7 +108,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         alertDialog.setTitle("Clear Cache");
         alertDialog.setIcon(android.R.drawable.stat_sys_warning);
 
-        alertDialog.setMessage("Proceed with clear cache?");
+        alertDialog.setMessage("Proceed with clearing cache?");
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
             listener.clearCache(context);
