@@ -34,6 +34,7 @@ import com.secureClear.SecureClearActivity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,12 +67,11 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer
-            ;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
 
     private ConstraintLayout settingsLayout;
 
-    HashMap<String, LinearLayout> extensions;
+    WeakHashMap<String, LinearLayout> extensions;
 
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -179,10 +179,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 //            turnOnLocation(this);
 //        }
 
-        clickListeners();
-        showMenus();
+        extensions = new WeakHashMap<>();
 
-        extensions = new HashMap<>();
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "wi-fi", wifiContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Bluetooth", bluetoothContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards", simCardContainer);
@@ -196,8 +194,10 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
 
+        clickListeners();
 
     }
+
 
     private void setToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -230,6 +230,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         settingsLayout = findViewById(R.id.settings_layout);
 
     }
+
     WindowManager wm;
     FrameLayout mView;
 
@@ -342,12 +343,12 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         battery_container.setOnClickListener(v -> {
 
             Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
-            startActivityForResult(intent,3);
-             mView = new FrameLayout(this);
+            startActivityForResult(intent, 3);
+            mView = new FrameLayout(this);
             getOverLayLayoutParams();
             createLayoutParams();
 
-             wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            wm = (WindowManager) getSystemService(WINDOW_SERVICE);
             mView.setBackgroundColor(getResources().getColor(R.color.textColorPrimary));
             wm.addView(mView, localLayoutParams);
 
@@ -399,10 +400,28 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     @Override
     protected void onResume() {
         super.onResume();
+
+
         bluetoothName.setText(getBlueToothStatus());
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
         sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this)) + " of inactivity");
         wifiName.setText(getWifiStatus(this));
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            String msg = intent.getStringExtra("show_default");
+            if (msg != null && msg.equals("show_default")) {
+                simCardContainer.setVisibility(View.VISIBLE);
+                wifiContainer.setVisibility(View.VISIBLE);
+                mobile_container.setVisibility(View.VISIBLE);
+                dataRoamingContainer.setVisibility(View.VISIBLE);
+            } else {
+                showMenus();
+            }
+        } else {
+            showMenus();
+        }
+
 
 //        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
 
@@ -438,7 +457,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (25 * getResources().getDisplayMetrics().scaledDensity);;
+        localLayoutParams.y = (int) (25 * getResources().getDisplayMetrics().scaledDensity);
+        ;
         localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
         localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
 
@@ -455,7 +475,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 3){
+        if (requestCode == 3) {
             wm.removeViewImmediate(mView);
         }
         super.onActivityResult(requestCode, resultCode, data);

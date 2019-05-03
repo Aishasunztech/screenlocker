@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
@@ -36,7 +37,10 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -56,7 +60,7 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView {
+public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -85,7 +89,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -185,7 +189,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     private void setRecyclerView() {
         RecyclerView rvApps = findViewById(R.id.rvApps);
-        adapter = new RAdapter();
+        adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
         rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
         rvApps.setAdapter(adapter);
@@ -310,7 +314,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onResume() {
 
-        overridePendingTransition(R.anim.fade_in, R.anim.fasdein);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
 
         super.onResume();
@@ -431,6 +435,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
     }
+
     private void puk(Context context) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 //
 //        String fileName = PAKAGE_FILE_NAME ;
@@ -443,10 +448,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         PackageManager pm = context.getPackageManager();
 
         Class<? extends PackageManager> o = pm.getClass();
-        Method[] allMethods=o.getMethods();
+        Method[] allMethods = o.getMethods();
 
         for (Method m : allMethods) {
-            Log.d("hjjdgfjhgfdjkagf", "puk: "+m.getName());
+            Log.d("hjjdgfjhgfdjkagf", "puk: " + m.getName());
             if (m.getName().equals("installPackage")) {
 
                 //m.invoke(pm,new Object[] { packageUri, null, 1, "com.mic.zapp"});
@@ -456,6 +461,62 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     }
 
+    @Override
+    public void clearCache(Context context) {
+        final KProgressHUD hud = KProgressHUD.create(MainActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Clearing cache")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
+        hud.show();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                clearNotif();
+                appCache();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        hud.dismiss();
+                        clearCacheSuccess();
+                    }
+                });
+            }
+        }, 2000);
+    }
+
+    private void clearNotif() {
+        Intent i = new Intent("com.example.clearNotificaiton.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
+        i.putExtra("command", "clearall");
+        sendBroadcast(i);
+    }
+
+
+    private void appCache() {
+        try {
+            Intent intent = new Intent("com.freeme.intent.action.pfw.STOPPED_PACKAGE");
+            sendBroadcast(intent);
+        } catch (Exception ignored) {
+
+
+        }
+    }
+
+    private void clearCacheSuccess() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Cache successfully cleared");
+        alertDialog.setIcon(R.drawable.ic_checked);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+            alertDialog.dismiss();
+
+        });
+
+        alertDialog.show();
+
+    }
 }
 
 

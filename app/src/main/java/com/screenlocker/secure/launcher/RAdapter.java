@@ -1,11 +1,7 @@
 package com.screenlocker.secure.launcher;
 
-import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +12,24 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.utils.AppConstants;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
+    private Context context;
+    private ClearCacheListener listener;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
         final ImageView img;
+
         ViewHolder(View itemView) {
             super(itemView);
 
@@ -48,8 +48,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             if (info.isEnable()) {
                 try {
                     if (info.isExtension()) {
-                        Intent intent = new Intent(context, Class.forName(info.getPackageName()));
-                        context.startActivity(intent);
+                        String unique = info.getUniqueName();
+                        if (unique.equals(AppConstants.SECURE_CLEAR_UNIQUE)) {
+                            showCacheDialog();
+                        } else {
+                            Intent intent = new Intent(context, Class.forName(info.getPackageName()));
+                            context.startActivity(intent);
+                        }
+
+
                     } else {
                         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
@@ -95,9 +102,34 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     }
 
 
-    RAdapter() {
+    private void showCacheDialog() {
 
-//        this.context = context;
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Clear Cache");
+        alertDialog.setIcon(android.R.drawable.stat_sys_warning);
+
+        alertDialog.setMessage("Proceed with clear cache?");
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+            listener.clearCache(context);
+
+
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
+
+    }
+
+    RAdapter(Context context) {
+
+        this.context = context;
+        if (context instanceof ClearCacheListener) {
+            listener = (ClearCacheListener) context;
+        }
+
     }
 
     @Override
@@ -140,5 +172,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
 //        context = parent.getContext();
         return new ViewHolder(view);
+    }
+
+
+    public interface ClearCacheListener {
+        void clearCache(Context context);
     }
 }

@@ -68,11 +68,11 @@ public class AppConstants {
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
     public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
-//    public static final String STAGING_BASE_URL = "http://192.168.1.147:3000/mobile/";//for localhost real device
+//    public static final String STAGING_BASE_URL = "http://192.168.0.102:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
     public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.1.147:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.102:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -197,11 +197,11 @@ public class AppConstants {
 
 
     public static int attempt_5 = 1;
-    public static int attempt_6 = 5;
-    public static int attempt_7 = 10;
-    public static int attempt_8 = 15;
-    public static int attempt_9 = 30;
-    public static int attempt_10 = 30;
+    public static int attempt_6 = 1;
+    public static int attempt_7 = 3;
+    public static int attempt_8 = 5;
+    public static int attempt_9 = 5;
+    public static int attempt_10 = 5;
 
 
     // acure xlear
