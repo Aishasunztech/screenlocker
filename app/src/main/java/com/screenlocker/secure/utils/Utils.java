@@ -147,7 +147,11 @@ public class Utils {
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                        | WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                |WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                |WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 
 
                 PixelFormat.TRANSLUCENT);

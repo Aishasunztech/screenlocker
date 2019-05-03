@@ -100,6 +100,7 @@
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
             android:taskAffinity=""
+            android:theme="@style/HomeScreen"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
