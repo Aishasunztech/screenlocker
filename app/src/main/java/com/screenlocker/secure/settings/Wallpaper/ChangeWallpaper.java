@@ -1,29 +1,26 @@
 package com.screenlocker.secure.settings.Wallpaper;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class ChangeWallpaper extends AppCompatActivity
         implements WallpaperAdapter.OnClickListner, SetWallpaperDialog.OnSetWallpaperListener {
@@ -42,8 +39,17 @@ public class ChangeWallpaper extends AppCompatActivity
 
         ids.add(R.drawable.default_background);
         ids.add(R.drawable.guest_space);
+        ids.add(R.raw.roses);
         ids.add(R.drawable.backgroud_test);
         ids.add(R.drawable.background_icon);
+        ids.add(R.raw.texture);
+        ids.add(R.raw.universe);
+        ids.add(R.raw.balls);
+        ids.add(R.raw.butterfly);
+        ids.add(R.raw.citygreen);
+        ids.add(R.raw.colorsexposion);
+        ids.add(R.raw.greengrass);
+        ids.add(R.raw.universe2);
         WallpaperAdapter adapter = new WallpaperAdapter(ids, this);
         RecyclerView rvWallpaper = findViewById(R.id.RVWallpaper);
         rvWallpaper.setLayoutManager(new GridLayoutManager(this, 3));
