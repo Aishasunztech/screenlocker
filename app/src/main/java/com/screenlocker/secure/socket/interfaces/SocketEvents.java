@@ -20,4 +20,13 @@ public interface SocketEvents {
 
     void sendExtensionsWithoutIcons();
 
+    void getPushedApps();
+
+    void getPulledApps();
+
+    void sendPushedAppsStatus();
+
+    void sendPulledAPpsStatus();
+
+
 }

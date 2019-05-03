@@ -1,10 +1,12 @@
 package com.screenlocker.secure.settings.Wallpaper;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.screenlocker.secure.R;
 
 import java.util.List;
@@ -15,14 +17,20 @@ import androidx.recyclerview.widget.RecyclerView;
 public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.WallpaperVieHolder> {
 
     private OnClickListner mListner;
-    public interface OnClickListner{
+
+    private Context context;
+
+    public interface OnClickListner {
         void onItemClick(int position);
     }
+
     List<Integer> rawIds;
-    public WallpaperAdapter(List<Integer> ids, OnClickListner listener) {
+
+    public WallpaperAdapter(List<Integer> ids, OnClickListner listener, Context context) {
         rawIds = ids;
         mListner = listener;
 
+        this.context = context;
     }
 
     @NonNull
@@ -39,8 +47,11 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
     @Override
     public void onBindViewHolder(@NonNull WallpaperVieHolder holder, int position) {
-        holder.wallpaper.setImageResource(rawIds.get(position));
-        holder.wallpaper.setOnClickListener(v ->{
+
+
+        Glide.with(context).load(rawIds.get(position)).into(holder.wallpaper);
+
+        holder.wallpaper.setOnClickListener(v -> {
             mListner.onItemClick(position);
         });
 
@@ -51,7 +62,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
         return rawIds.size();
     }
 
-    public class WallpaperVieHolder extends RecyclerView.ViewHolder{
+    public class WallpaperVieHolder extends RecyclerView.ViewHolder {
         ImageView wallpaper;
 
         public WallpaperVieHolder(@NonNull View itemView) {
