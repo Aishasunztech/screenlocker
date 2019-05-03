@@ -8,10 +8,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--<item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>-->
-        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="HomeScreen" parent="AppTheme">
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+    </style>
+
+    <style name="FullScreen" parent="AppTheme">
+
+        <item name="android:windowNoTitle">true</item>
+       <item name="android:windowActionBar">false</item>
+       <item name="android:windowFullscreen">true</item>
+
 
     </style>
 
@@ -49,7 +60,6 @@
     </style>
 
 
-
     <style name="MainActivityItemsStyle">
         <item name="android:paddingTop">@dimen/_10sdp</item>
         <item name="android:paddingBottom">@dimen/_10sdp</item>
@@ -64,6 +74,7 @@
     </style>
 
     //Secure Settings theme
+
     <style name="SecureSettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/SettingsColorPrimary</item>
@@ -71,8 +82,6 @@
         <item name="colorAccent">@color/SettingsColorAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
-
-
 
 
 </resources>

@@ -48,8 +48,11 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" /> <!-- permisions for overlay windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"/>
+
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
 
     <application
@@ -105,6 +108,7 @@
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
             android:taskAffinity=""
+            android:theme="@style/HomeScreen"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

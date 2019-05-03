@@ -194,23 +194,17 @@ public class PermissionUtils {
 
     public static boolean isAccessGranted(Context context) {
         try {
-            if (Build.VERSION.SDK_INT >= 19) {
-                PackageManager packageManager = context.getPackageManager();
-                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-                AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-                int mode = 0;
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                    if (appOpsManager != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                                    applicationInfo.uid, applicationInfo.packageName);
-                        }
-                    }
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (appOpsManager != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                            applicationInfo.uid, applicationInfo.packageName);
                 }
-                return (mode == AppOpsManager.MODE_ALLOWED);
-            } else {
-                return true;
             }
+            return (mode == AppOpsManager.MODE_ALLOWED);
 
         } catch (PackageManager.NameNotFoundException e) {
             return false;
