@@ -32,7 +32,7 @@ import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 
-public class SetDuressPasswordFragment extends AbstractStep implements View.OnClickListener {
+public class SetDuressPasswordFragment extends AbstractStep  {
 
     @Override
     public String name() {
@@ -139,14 +139,12 @@ private  AlertDialog builder;
         });
         etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
 
-        btnConfirm.setOnClickListener(this);
 
         return v;
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btnConfirm) {
+
+    public void setPassword( ) {
 
 
             String enteredPassword = etEnterPin.getText().toString().trim();
@@ -180,7 +178,7 @@ private  AlertDialog builder;
                 }
 
             }
-        }
+
     }
 
 }
