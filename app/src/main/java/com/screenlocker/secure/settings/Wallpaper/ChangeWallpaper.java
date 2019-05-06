@@ -27,6 +27,7 @@ public class ChangeWallpaper extends AppCompatActivity
     List<Integer> ids = new ArrayList<>();
     private String type;
     private FragmentManager fragmentManager;
+    private boolean isBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,21 @@ public class ChangeWallpaper extends AppCompatActivity
                 Toast.makeText(this, "Background set for lock screen", Toast.LENGTH_SHORT).show();
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(id));
                 break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(!isBackPressed)
+        {
+            this.finish();
         }
     }
 }

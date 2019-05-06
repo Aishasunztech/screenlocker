@@ -70,6 +70,8 @@ public class MainActivity extends BaseActivity {
     private static final int PERMISSION_REQUEST_READ_PHONE_STATE = 100;
     private static final int PERMISSION_REQUEST_ACCESS_WIFI_STATE = 101;
 
+    private boolean isBackPressed = false;
+
 
     /**
      * main view for the app in which dealers enter pin
@@ -819,4 +821,24 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(!isBackPressed)
+        {
+            this.finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        isBackPressed = true;
+    }
 }

@@ -623,136 +623,136 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public void handleSetMainPassword(AppCompatActivity activity, View rootLayout) {
-
-        if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
-            Intent i = new Intent(activity, SetUpLockActivity.class);
-            i.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-            activity.startActivityForResult(i, REQUEST_CODE_PASSWORD);
-        } else {
-            final EditText input = new EditText(activity);
-            if (settingsPresenter == null) {
-                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                    @Override
-                    public int hashCode() {
-                        return super.hashCode();
-                    }
-                }, new SettingsModel(activity));
-
-            }
-            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-
-                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-                    return;
-                }
-
-                if (input.getText().toString().
-                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                KEY_MAIN_PASSWORD))) {
-                    // if password is right then allow user to change it
-                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
-
-                } else {
-                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-//                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-                }
-            }, null, activity.getString(R.string.please_enter_current_encrypted_password));
-        }
-
-    }
-
-    public void handleSetDuressPassword(AppCompatActivity activity, View rootLayout) {
-        if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
-            new AlertDialog.Builder(activity).
-                    setTitle("Warning!")
-                    .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.").setPositiveButton("Ok", (dialogInterface, i) -> {
-                Intent intent = new Intent(activity, SetUpLockActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-            })
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
-                    .show();
-
-        } else {
-            final EditText input = new EditText(activity);
-            if (settingsPresenter == null) {
-                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                    @Override
-                    public int hashCode() {
-                        return super.hashCode();
-                    }
-                }, new SettingsModel(activity));
-
-            }
-            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-
-                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-                    return;
-                }
-
-                if (input.getText().toString().
-                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                AppConstants.KEY_DURESS_PASSWORD))) {
-                    // if password is right then allow user to change it
-                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
-
-                } else {
-                    showAlertDialog(activity, "Invalid password!", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-//                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-                }
-            }, null, activity.getString(R.string.please_enter_current_duress_password));
-        }
-    }
-
-    public void handleSetGuestPassword(AppCompatActivity activity, View rootLayout) {
-
-        if (PrefUtils.getStringPref(activity, KEY_GUEST_PASSWORD) == null) {
-            Intent intent = new Intent(activity, SetUpLockActivity.class);
-            intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-            activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-        } else {
-            final EditText input = new EditText(activity);
-
-            if (settingsPresenter == null) {
-                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                    @Override
-                    public int hashCode() {
-                        return super.hashCode();
-                    }
-                }, new SettingsModel(activity));
-
-            }
-
-            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-
-                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-                    return;
-                }
-
-                if (input.getText().toString().
-                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                                KEY_GUEST_PASSWORD))) {
-                    // if password is right then allow user to change it
-
-                    Intent intent = new Intent(activity, SetUpLockActivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-                    activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-
-                } else {
-                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-                }
-            }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
-        }
-
-
-    }
+//    public void handleSetMainPassword(AppCompatActivity activity, View rootLayout) {
+//
+//        if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
+//            Intent i = new Intent(activity, SetUpLockActivity.class);
+//            i.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+//            activity.startActivityForResult(i, REQUEST_CODE_PASSWORD);
+//        } else {
+//            final EditText input = new EditText(activity);
+//            if (settingsPresenter == null) {
+//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+//                    @Override
+//                    public int hashCode() {
+//                        return super.hashCode();
+//                    }
+//                }, new SettingsModel(activity));
+//
+//            }
+//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+//
+//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+//                    return;
+//                }
+//
+//                if (input.getText().toString().
+//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+//                                KEY_MAIN_PASSWORD))) {
+//                    // if password is right then allow user to change it
+//                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+//                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+//                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+//
+//                } else {
+//                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+////                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
+//                }
+//            }, null, activity.getString(R.string.please_enter_current_encrypted_password));
+//        }
+//
+//    }
+//
+//    public void handleSetDuressPassword(AppCompatActivity activity, View rootLayout) {
+//        if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
+//            new AlertDialog.Builder(activity).
+//                    setTitle("Warning!")
+//                    .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.").setPositiveButton("Ok", (dialogInterface, i) -> {
+//                Intent intent = new Intent(activity, SetUpLockActivity.class);
+//                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+//                activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+//            })
+//                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
+//                    .show();
+//
+//        } else {
+//            final EditText input = new EditText(activity);
+//            if (settingsPresenter == null) {
+//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+//                    @Override
+//                    public int hashCode() {
+//                        return super.hashCode();
+//                    }
+//                }, new SettingsModel(activity));
+//
+//            }
+//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+//
+//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+//                    return;
+//                }
+//
+//                if (input.getText().toString().
+//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+//                                AppConstants.KEY_DURESS_PASSWORD))) {
+//                    // if password is right then allow user to change it
+//                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+//                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+//                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+//
+//                } else {
+//                    showAlertDialog(activity, "Invalid password!", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+////                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
+//                }
+//            }, null, activity.getString(R.string.please_enter_current_duress_password));
+//        }
+//    }
+//
+//    public void handleSetGuestPassword(AppCompatActivity activity, View rootLayout) {
+//
+//        if (PrefUtils.getStringPref(activity, KEY_GUEST_PASSWORD) == null) {
+//            Intent intent = new Intent(activity, SetUpLockActivity.class);
+//            intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+//            activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+//        } else {
+//            final EditText input = new EditText(activity);
+//
+//            if (settingsPresenter == null) {
+//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+//                    @Override
+//                    public int hashCode() {
+//                        return super.hashCode();
+//                    }
+//                }, new SettingsModel(activity));
+//
+//            }
+//
+//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+//
+//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+//                    return;
+//                }
+//
+//                if (input.getText().toString().
+//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+//                                KEY_GUEST_PASSWORD))) {
+//                    // if password is right then allow user to change it
+//
+//                    Intent intent = new Intent(activity, SetUpLockActivity.class);
+//                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+//                    activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+//
+//                } else {
+//                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+//                }
+//            }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
+//        }
+//
+//
+//    }
 
     private void showNetworkDialog() {
 

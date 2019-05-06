@@ -11,17 +11,21 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +36,10 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.SetUpLockActivity;
+import com.screenlocker.secure.settings.SettingContract;
+import com.screenlocker.secure.settings.SettingsModel;
+import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.views.KeyboardView;
 
@@ -40,6 +48,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.settings.ManagePasswords.REQUEST_CODE_PASSWORD;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
 import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
@@ -49,6 +58,8 @@ import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -411,6 +422,7 @@ public class Utils {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
     }
+
 
 
 }

@@ -31,8 +31,8 @@
     <string name="hint_please_enter_duress_pin">Please enter duress pin</string>
     <string name="hint_please_confirm_your_pin">Please confirm your pin</string>
     <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
-    <string name="empty">Empty!</string>
-    <string name="password_dont_match">Oops password dont match!!</string>
+    <string name="empty">Password field is empty.</string>
+    <string name="password_dont_match">Password don\'t match.</string>
     <string name="toolbar_title">Screen Locker</string>
     <string name="set_guest_code">Guest Pin Code</string>
     <string name="set_duress_code">Duress Pin Code</string>
@@ -96,5 +96,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
+    <string name="install_app_activity">installAppActivity</string>
+    <string name="secure_market_activity">secureMarketActivity</string>
 
 </resources>
