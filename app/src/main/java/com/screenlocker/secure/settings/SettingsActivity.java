@@ -94,7 +94,6 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
-import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.blockSimCard;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -149,6 +148,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private ConstraintLayout constraintLayout;
 
     private ProgressBar progressBar;
+
+    private Dialog aboutDialog = null,accountDialog  = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,6 +277,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         if (tvlinkDevice != null) {
             tvlinkDevice.setVisibility(View.GONE);
+        }
+        if(aboutDialog!=null)
+        {
+            aboutDialog.dismiss();
+        }
+        if(accountDialog!= null)
+        {
+            accountDialog.dismiss();
         }
 
         super.onPause();
@@ -821,7 +830,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private void createAboutDialog() {
 //        about device dialog
 
-        Dialog aboutDialog = new Dialog(this);
+        aboutDialog = new Dialog(this);
         aboutDialog.setContentView(R.layout.dialog_about_background);
         WindowManager.LayoutParams params = Objects.requireNonNull(aboutDialog.getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -900,16 +909,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private void createAccountDialog() {
 //        account device dialog
 
-        Dialog aboutDialog = new Dialog(this);
-        aboutDialog.setContentView(R.layout.dialoge_account);
-        WindowManager.LayoutParams params = Objects.requireNonNull(aboutDialog.getWindow()).getAttributes();
+        accountDialog = new Dialog(this);
+        accountDialog.setContentView(R.layout.dialoge_account);
+        WindowManager.LayoutParams params = Objects.requireNonNull(accountDialog.getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        aboutDialog.getWindow().setAttributes(params);
-        aboutDialog.setCancelable(true);
+        accountDialog.getWindow().setAttributes(params);
+        accountDialog.setCancelable(true);
 
         // Device ID
-        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
-        TextView textView17 = aboutDialog.findViewById(R.id.textViewDeviceId);
+        TextView tvDeviceId = accountDialog.findViewById(R.id.tvDeviceId);
+        TextView textView17 = accountDialog.findViewById(R.id.textViewDeviceId);
         String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
         if (device_id != null) {
             tvDeviceId.setVisibility(View.VISIBLE);
@@ -918,8 +927,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         /*Status*/
-        TextView tvStatus = aboutDialog.findViewById(R.id.tvDeviceStatus);
-        TextView textView18 = aboutDialog.findViewById(R.id.textViewStatus);
+        TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
+        TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
         boolean b = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
         if (b) {
@@ -934,8 +943,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
         // Expiry Date
-        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
-        TextView textView16 = aboutDialog.findViewById(R.id.textViewExpiry);
+        TextView tvExpiresIn = accountDialog.findViewById(R.id.tvExpiresIn);
+        TextView textView16 = accountDialog.findViewById(R.id.textViewExpiry);
 
         String remaining_days = getRemainingDays(SettingsActivity.this);
 
@@ -952,8 +961,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
 
         // IMEI 1
-        TextView tvImei1 = aboutDialog.findViewById(R.id.tvImei1);
-        TextView textViewImei = aboutDialog.findViewById(R.id.textViewImei);
+        TextView tvImei1 = accountDialog.findViewById(R.id.tvImei1);
+        TextView textViewImei = accountDialog.findViewById(R.id.textViewImei);
 
         if (imeis.size() > 0) {
             String imei = imeis.get(0);
@@ -965,8 +974,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         // IMEI 2
-        TextView tvImei2 = aboutDialog.findViewById(R.id.tvImei2);
-        TextView textViewImei2 = aboutDialog.findViewById(R.id.textViewImei2);
+        TextView tvImei2 = accountDialog.findViewById(R.id.tvImei2);
+        TextView textViewImei2 = accountDialog.findViewById(R.id.textViewImei2);
 
         if (imeis.size() > 1) {
             String imei2 = imeis.get(1);
@@ -978,7 +987,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
-        aboutDialog.show();
+        accountDialog.show();
 
     }
 

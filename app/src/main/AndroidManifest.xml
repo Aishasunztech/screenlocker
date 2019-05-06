@@ -306,6 +306,10 @@
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />
 
+        <activity android:name="com.secureMarket.SecureMarketActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />

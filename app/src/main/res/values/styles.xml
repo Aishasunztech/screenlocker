@@ -79,7 +79,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/SettingsColorPrimary</item>
         <item name="colorPrimaryDark">@color/switchContainerColor</item>
-        <item name="colorAccent">@color/SettingsColorAccent</item>
+        <item name="colorAccent">@color/SettingsColorPrimary</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 

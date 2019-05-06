@@ -11,6 +11,7 @@ import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
+import com.screenlocker.secure.settings.codeSetting.Models.IMEIModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
@@ -123,4 +124,10 @@ public interface ApiOneCaller {
     Call<CheckStatusResponse> checkDeviceStatus(
             @Body CheckStatusModel checkStatusModel
     );
+
+    @POST("imeiChanged")
+    Call<Boolean> checkIMEIstatus(@Body IMEIModel imeiModel);
+
+    @GET("admin/marketApplist")
+    Call<InstallAppModel>  getAdminApps();
 }

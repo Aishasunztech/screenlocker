@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
 
@@ -102,6 +104,7 @@ public class IMEIActivity extends AppCompatActivity {
     private void sendIntent(int slot, String imei) {
         if (isValidImei(imei)) {
 
+            PrefUtils.saveBooleanPref(this, AppConstants.IMEI_CHANGED,true);
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");
             intent.putExtra("simSlotId", String.valueOf(slot));

@@ -1,6 +1,7 @@
 package com.secureMarket;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,6 +19,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,15 +79,21 @@ public class MarketFragment extends Fragment implements
     public void onResume() {
         super.onResume();
 
+
+
+
+
         if (CommonUtils.isNetworkAvailable(getActivity())) {
             ((MyApplication) getActivity().getApplicationContext())
                     .getApiOneCaller()
-                    .getApps()
+                    .getAdminApps()
+
                     .enqueue(new Callback<InstallAppModel>() {
                         @Override
                         public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
                             if (response.body() != null) {
                                 if (response.body().isSuccess()) {
+
                                     appModelList.clear();
                                     appModelList.addAll(response.body().getList());
                                     installedApps.clear();
@@ -92,6 +101,7 @@ public class MarketFragment extends Fragment implements
 
                                     checkAppInstalledOrNot(appModelList);
                                     for (List app : appModelList) {
+                                        Log.d("AppsList",app.getApkName());
                                         if (app.isInstalled()) {
                                             installedApps.add(app);
                                         } else {
@@ -123,6 +133,7 @@ public class MarketFragment extends Fragment implements
                         @Override
                         public void onFailure(Call<InstallAppModel> call, Throwable t) {
                             Toast.makeText(getActivity(), "list is empty", Toast.LENGTH_SHORT).show();
+
                             progressBar.setVisibility(View.GONE);
                         }
                     });
@@ -180,7 +191,7 @@ public class MarketFragment extends Fragment implements
     public void onInstallClick(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setTitle("Download");
-        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+        alertDialog.setIcon(R.drawable.ic_info_black_24dp);
 
         alertDialog.setMessage("Are you sure you want to download this app?");
 

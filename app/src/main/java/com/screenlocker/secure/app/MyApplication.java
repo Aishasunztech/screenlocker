@@ -24,6 +24,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.settings.codeSetting.Models.IMEIModel;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
 import com.screenlocker.secure.socket.receiver.MdmEventReciever;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
@@ -34,7 +35,12 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 
+import java.util.List;
+
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -178,6 +184,7 @@ public class MyApplication extends Application implements NetworkListener {
             Intent intent = new Intent(this, SocketService.class);
 
             if (status) {
+                setIMEIstatus();
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
@@ -192,6 +199,44 @@ public class MyApplication extends Application implements NetworkListener {
 
     }
 
+    private void setIMEIstatus() {
+        Log.d("jksdfh","called");
+        boolean imeiChanged = PrefUtils.getBooleanPref(getAppContext(), AppConstants.IMEI_CHANGED);
+        if(imeiChanged)
+        {
+            boolean rebootStatus = PrefUtils.getBooleanPref(getAppContext(),AppConstants.REBOOT_STATUS);
+            if(rebootStatus) {
+
+
+                String deviceId = PrefUtils.getStringPref(getAppContext(), AppConstants.DEVICE_ID);
+                String serial = DeviceIdUtils.getSerialNumber();
+                String mac = DeviceIdUtils.getMacAddress();
+                List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
+                IMEIModel imeiModel = new IMEIModel(deviceId, serial, mac, imei);
+
+                getApiOneCaller().checkIMEIstatus(imeiModel).enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.body()) {
+                            PrefUtils.saveBooleanPref(getAppContext(), AppConstants.IMEI_CHANGED, false);
+                            PrefUtils.saveBooleanPref(getAppContext(),AppConstants.REBOOT_STATUS,false);
+
+                        } else {
+                            Log.d("IMEIRESPONSE", response + "");
+                        }
+                        Log.d("IMEIRESPONSE", response + "");
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.d("IMEIRESPONSE", t.toString());
+                    }
+                });
+            }
+        }
+    }
+
     @Override
     public void onTerminate() {
         unregisterReceiver(networkReceiver);
@@ -199,6 +244,7 @@ public class MyApplication extends Application implements NetworkListener {
 
         super.onTerminate();
     }
+
 
 
 }

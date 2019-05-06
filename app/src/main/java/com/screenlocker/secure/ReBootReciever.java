@@ -32,6 +32,8 @@ public class ReBootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
 
+        PrefUtils.saveBooleanPref(context,AppConstants.REBOOT_STATUS,true);
+
 
         if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
