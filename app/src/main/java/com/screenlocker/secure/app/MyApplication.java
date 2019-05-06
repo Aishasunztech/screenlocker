@@ -176,9 +176,11 @@ public class MyApplication extends Application implements NetworkListener {
             Timber.d("ikgiogjrgjrgrgjoi %s", status);
 
             Intent intent = new Intent(this, SocketService.class);
+
             if (status) {
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
+
 
                 if (serialNo != null) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);

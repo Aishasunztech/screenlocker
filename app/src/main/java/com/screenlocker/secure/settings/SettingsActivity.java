@@ -94,6 +94,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.blockSimCard;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;

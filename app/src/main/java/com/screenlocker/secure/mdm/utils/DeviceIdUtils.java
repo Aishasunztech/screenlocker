@@ -5,12 +5,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -193,5 +197,46 @@ public class DeviceIdUtils {
     }
 
 
-//    public static boolean isDualSim()
+    public static boolean isValidImei(String s) {
+        long n = Long.parseLong(s);
+        int l = s.length();
+
+        if (l != 15) // If length is not 15 then IMEI is Invalid
+            return false;
+        else {
+            int d = 0, sum = 0;
+            for (int i = 15; i >= 1; i--) {
+                d = (int) (n % 10);
+
+                if (i % 2 == 0) {
+                    d = 2 * d; // Doubling every alternate digit
+                }
+
+                sum = sum + sumDig(d); // Finding sum of the digits
+
+                n = n / 10;
+            }
+
+            System.out.println("Output : Sum = " + sum);
+
+            if (sum % 10 == 0 && sum != 0)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    private static int sumDig(int n) // Function for finding and returning sum of digits of a number
+    {
+        int a = 0;
+        while (n > 0) {
+            a = a + n % 10;
+            n = n / 10;
+        }
+        return a;
+    }
+
+
+
+
 }
