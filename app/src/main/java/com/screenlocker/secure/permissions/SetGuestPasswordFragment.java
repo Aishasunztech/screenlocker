@@ -26,7 +26,8 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SetGuestPasswordFragment extends AbstractStep {
-    private volatile String error = "Please Enter Password";
+    private volatile String error = "Please Enter Password.";
+
     @Override
     public String name() {
         return "Guest Password";
@@ -35,12 +36,12 @@ public class SetGuestPasswordFragment extends AbstractStep {
 
     @Override
     public boolean nextIf() {
-        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
-            if (setPassword()){
+        if (setPassword()) {
+
+            if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null) {
+                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
                 return true;
             }
-            return false;
         }
         return false;
     }
@@ -69,11 +70,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
     @BindView(R.id.etConfirmPin)
     AppCompatEditText etConfirmPin;
 
-    /**
-     * button to validate the password and save it
-     */
-    @BindView(R.id.btnConfirm)
-    AppCompatButton btnConfirm;
 
     @Nullable
     @Override
@@ -86,39 +82,39 @@ public class SetGuestPasswordFragment extends AbstractStep {
         return v;
     }
 
-    public boolean setPassword() {
+    private boolean setPassword() {
 
 
-            String enteredPassword = etEnterPin.getText().toString().trim();
-            String reEnteredPassword = etConfirmPin.getText().toString().trim();
+        String enteredPassword = etEnterPin.getText().toString().trim();
+        String reEnteredPassword = etConfirmPin.getText().toString().trim();
 
-            boolean isValid = Validator.validAndMatch(enteredPassword, reEnteredPassword);
+        boolean isValid = Validator.validAndMatch(enteredPassword, reEnteredPassword);
 
-            if (isValid) {
 
-                boolean keyOk = passwordsOk(getContext(), reEnteredPassword);
+        if (isValid) {
 
-                if (keyOk) {
-                    PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
-                    return true;
+            boolean keyOk = passwordsOk(getContext(), reEnteredPassword);
 
-                } else {
-                    etConfirmPin.setError("This password is taken please try again");
-                    error = "This password is taken please try again";
-                    return false;
-                }
+            if (keyOk) {
+                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                return true;
+
             } else {
-                if (TextUtils.isEmpty(enteredPassword)) {
-                    etEnterPin.setError(getString(R.string.empty));
-                } else if (reEnteredPassword.equals("")) {
-                    etConfirmPin.setError(getString(R.string.empty));
-                } else {
-                    etConfirmPin.setError(getString(R.string.password_dont_match));
-                    error = getString(R.string.password_dont_match);
-                }
+                error = "This password is already taken please try again.";
                 return false;
-
             }
 
+
+        } else {
+            if (TextUtils.isEmpty(enteredPassword)) {
+                error = getString(R.string.empty);
+            } else if (reEnteredPassword.equals("")) {
+                error = getString(R.string.empty);
+            } else {
+                error = getString(R.string.password_dont_match);
+            }
+            return false;
+
+        }
     }
 }

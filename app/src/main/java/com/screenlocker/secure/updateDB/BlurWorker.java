@@ -138,7 +138,7 @@ public class BlurWorker extends Worker {
                 AppInfo clearExtension = new AppInfo("Secure Clear", AppConstants.SECURE_CLEAR_PACKAGE, secure_clear_icon);
                 clearExtension.setUniqueName(clearExtension.getPackageName() + clearExtension.getLabel());
                 clearExtension.setExtension(true);
-                clearExtension.setGuest(true);
+                clearExtension.setGuest(false);
                 clearExtension.setEncrypted(true);
                 clearExtension.setEnable(true);
                 clearExtension.setVisible(true);
@@ -146,8 +146,6 @@ public class BlurWorker extends Worker {
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
             }
-
-
 
 
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);

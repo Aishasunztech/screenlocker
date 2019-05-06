@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CODE_MODIFY_SYSTEMS_STATE;
@@ -92,11 +94,11 @@ public class PermissionUtils {
             }
         }
     }
-    public static void requestNotificationAccessibilityPermission1(Context context,Fragment fragment) {
+
+    public static void requestNotificationAccessibilityPermission1(Context context, Fragment fragment) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return;
         }
-
 
 
         if (!isNotificationAccess(context)) {
@@ -133,7 +135,9 @@ public class PermissionUtils {
         }
 
 
-    }public static void permissionModify1(Activity activity, Fragment fragment) {
+    }
+
+    public static void permissionModify1(Activity activity, Fragment fragment) {
         boolean permission;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permission = Settings.System.canWrite(activity);
@@ -163,7 +167,9 @@ public class PermissionUtils {
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
             activity.startActivityForResult(intent, RESULT_ENABLE);
         }
-    }public static void permissionAdmin(AppCompatActivity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
+    }
+
+    public static void permissionAdmin(AppCompatActivity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
 
         boolean adminActive = devicePolicyManager.isAdminActive(compName);
 
@@ -178,12 +184,12 @@ public class PermissionUtils {
     public static boolean isPermissionGranted1(Activity activity, Fragment fragment) {
 
         if (Build.VERSION.SDK_INT >= 23) {
-            if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&  activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED  && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (activity.checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Timber.v("Permission is granted");
                 return true;
             } else {
                 Timber.v("Permission is revoked");
-                fragment.requestPermissions( new String[]{Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_READ_PHONE_STATE);
+                fragment.requestPermissions(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_READ_PHONE_STATE);
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
@@ -193,24 +199,19 @@ public class PermissionUtils {
     }
 
     public static boolean isAccessGranted(Context context) {
+
         try {
-            if (Build.VERSION.SDK_INT >= 19) {
-                PackageManager packageManager = context.getPackageManager();
-                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-                AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-                int mode = 0;
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                    if (appOpsManager != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                                    applicationInfo.uid, applicationInfo.packageName);
-                        }
-                    }
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (appOpsManager != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                            applicationInfo.uid, applicationInfo.packageName);
                 }
-                return (mode == AppOpsManager.MODE_ALLOWED);
-            } else {
-                return true;
             }
+            return (mode == AppOpsManager.MODE_ALLOWED);
 
         } catch (PackageManager.NameNotFoundException e) {
             return false;
@@ -222,10 +223,11 @@ public class PermissionUtils {
         if (!isAccessGranted(context)) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             //intent.setData(Uri.parse("package:" + context.getPackageName()));
-            fragment.startActivityForResult(intent,CODE_USAGE_ACCESS);
+            fragment.startActivityForResult(intent, CODE_USAGE_ACCESS);
         }
     }
-    public  static  boolean isMyLauncherDefault(Context context) {
+
+    public static boolean isMyLauncherDefault(Context context) {
         final IntentFilter filter = new IntentFilter(Intent.ACTION_MAIN);
         filter.addCategory(Intent.CATEGORY_HOME);
 
@@ -246,7 +248,8 @@ public class PermissionUtils {
         }
         return false;
     }
-    public static boolean isNotificationAccess(Context context){
+
+    public static boolean isNotificationAccess(Context context) {
         Set<String> notificationListenerSet = NotificationManagerCompat
                 .getEnabledListenerPackages(context);
         return notificationListenerSet.contains(context.getPackageName());

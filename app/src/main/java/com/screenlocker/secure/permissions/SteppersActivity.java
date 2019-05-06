@@ -12,6 +12,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_STEP;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
@@ -59,6 +60,7 @@ public class SteppersActivity extends DotStepper implements LinkDeviceFragment.P
 
     /**
      * User has complected all steps and ready to move welcome screen
+     *
      * @param data bundle sent by last fragment
      */
     @Override
@@ -86,5 +88,10 @@ public class SteppersActivity extends DotStepper implements LinkDeviceFragment.P
     public void onPageUpdate(int pageNo) {
         mSteps.current(pageNo);
         onUpdate();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 }

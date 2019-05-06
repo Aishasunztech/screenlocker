@@ -16,7 +16,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.vortexlocker.ap"
+        applicationId "com.vortexlocker.app"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 467
@@ -86,7 +86,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
-    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
 
 // Room
 
@@ -145,6 +144,8 @@ dependencies {
 //ssp
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'pub.devrel:easypermissions:2.0.1'
+
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
 
     implementation project(':Stepper')
 }

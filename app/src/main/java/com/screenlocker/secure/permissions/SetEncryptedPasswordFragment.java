@@ -28,6 +28,8 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SetEncryptedPasswordFragment extends AbstractStep {
+    private String error = "Please Set Encrypted Password";
+
     @Override
     public String name() {
         return "Encrypted Password";
@@ -43,13 +45,15 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     @Override
     public boolean nextIf() {
-        if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 3);
+        if (setPassword()) {
+            if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
+                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 3);
 
-            InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-            return true;
+                return true;
+            }
         }
         return false;
     }
@@ -61,7 +65,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     @Override
     public String error() {
-        return "Please Set Encrypted Password";
+        return error;
     }
 
     @Override
@@ -78,11 +82,6 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     @BindView(R.id.etConfirmPin)
     AppCompatEditText etConfirmPin;
 
-    /**
-     * button to validate the password and save it
-     */
-    @BindView(R.id.btnConfirm)
-    AppCompatButton btnConfirm;
 
     @Nullable
     @Override
@@ -96,7 +95,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     }
 
 
-    public void setPassword() {
+    private boolean setPassword() {
 
 
         String enteredPassword = etEnterPin.getText().toString().trim();
@@ -109,25 +108,25 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
             boolean keyOk = passwordsOk(getContext(), reEnteredPassword);
 
-            //Password password = new Password();
-            // password.setUserPassword(reEnteredPassword);
             if (keyOk) {
                 PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
-                btnConfirm.setText("Pin Confirmed");
-                btnConfirm.setEnabled(false);
+                return true;
+
             } else {
-                etConfirmPin.setError("This password is taken please try again");
+                error = "This password is already taken please try again.";
+                return false;
             }
 
 
         } else {
             if (TextUtils.isEmpty(enteredPassword)) {
-                etEnterPin.setError(getString(R.string.empty));
+                error = getString(R.string.empty);
             } else if (reEnteredPassword.equals("")) {
-                etConfirmPin.setError(getString(R.string.empty));
+                error = getString(R.string.empty);
             } else {
-                etConfirmPin.setError(getString(R.string.password_dont_match));
+                error = getString(R.string.password_dont_match);
             }
+            return false;
 
         }
     }

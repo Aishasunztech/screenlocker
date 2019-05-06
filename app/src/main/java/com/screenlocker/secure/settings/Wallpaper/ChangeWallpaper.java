@@ -50,7 +50,7 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.colorsexposion);
         ids.add(R.raw.greengrass);
         ids.add(R.raw.universe2);
-        WallpaperAdapter adapter = new WallpaperAdapter(ids, this);
+        WallpaperAdapter adapter = new WallpaperAdapter(ids, this, this);
         RecyclerView rvWallpaper = findViewById(R.id.RVWallpaper);
         rvWallpaper.setLayoutManager(new GridLayoutManager(this, 3));
         rvWallpaper.setAdapter(adapter);
@@ -67,7 +67,7 @@ public class ChangeWallpaper extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-         fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         SetWallpaperDialog newFragment = new SetWallpaperDialog();
 
         Bundle bundle = new Bundle();
@@ -86,8 +86,7 @@ public class ChangeWallpaper extends AppCompatActivity
     @Override
     public void onWallpaperSelected(int id) {
         fragmentManager.popBackStack();
-        Log.d("khihihihih", "onWallpaperSelected: "+ type);
-        switch (type){
+        switch (type) {
             case KEY_MAIN:
                 Toast.makeText(this, "Background set for encrypted", Toast.LENGTH_SHORT).show();
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(id));

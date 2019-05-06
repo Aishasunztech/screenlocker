@@ -1,4 +1,4 @@
-package com.screenlocker.secure.socket;
+package com.screenlocker.secure.socket.interfaces;
 
 public interface OnSocketConnectionListener {
     void onSocketEventFailed();

@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,24 +14,30 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.socket.OnSocketConnectionListener;
+import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -51,6 +58,7 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
@@ -60,6 +68,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
@@ -205,7 +214,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
             socket = SocketManager.getInstance().getSocket();
             getSyncStatus();
             getDeviceStatus();
-            sendAppliedStatus();
+            getAppliedSettings();
+            getPushedApps();
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
             try {
@@ -289,6 +299,104 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void getAppliedSettings() {
 
+
+        if (socket.connected()) {
+            socket.on(GET_APPLIED_SETTINGS + device_id, args -> {
+                Timber.d("<<< getting applied settings >>>");
+
+                JSONObject obj = (JSONObject) args[0];
+
+                try {
+                    if (validateRequest(device_id, obj.getString("device_id"))) {
+
+                        Timber.d(" valid request ");
+                        boolean status = obj.getBoolean("status");
+                        Timber.d(" applied settings status : %S", status);
+
+                        if (status) {
+
+                            String appsList = obj.getString("app_list");
+                            if (!appsList.equals("[]")) {
+                                updateAppsList(SocketService.this, new JSONArray(appsList), () -> {
+                                    Timber.d(" apps updated ");
+                                });
+                            }
+                            String passwords = obj.getString("passwords");
+                            if (!passwords.equals("{}")) {
+                                updatePasswords(SocketService.this, new JSONObject(passwords));
+                                Timber.d(" passwords updated ");
+                            }
+                            String settings = obj.getString("settings");
+
+                            if (!settings.equals("{}")) {
+                                changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
+                                Timber.d(" settings applied ");
+                            }
+
+                            String extensionList = obj.getString("extension_list");
+
+
+                            if (!extensionList.equals("[]")) {
+
+                                JSONArray jsonArray = new JSONArray(extensionList);
+
+                                updateExtensionsList(SocketService.this, jsonArray, () -> {
+                                    Timber.d(" extensions updated ");
+                                });
+
+
+                            }
+
+                            sendAppliedStatus();
+
+                            Timber.d(" settings applied status sent ");
+
+                            Intent intent = new Intent(SocketService.this, LockScreenService.class);
+
+                            intent.setAction("locked");
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(intent);
+                            } else {
+                                startService(intent);
+                            }
+
+
+                        } else {
+                            Timber.d(" no settings available in history ");
+
+                            boolean appsSettingStatus = PrefUtils.getBooleanPref(SocketService.this, APPS_SETTING_CHANGE);
+                            Timber.d(" apps settings status in local : %S", appsSettingStatus);
+
+                            if (appsSettingStatus) {
+                                sendAppsWithoutIcons();
+                            }
+
+                            boolean settingsStatus = PrefUtils.getBooleanPref(SocketService.this, SETTINGS_CHANGE);
+                            Timber.d(" settings status in local : %S", settingsStatus);
+                            if (settingsStatus) {
+                                sendApps();
+                            }
+
+                            boolean extensionsStatus = PrefUtils.getBooleanPref(SocketService.this, SECURE_SETTINGS_CHANGE);
+                            Timber.d(" extensions status in local : %S", extensionsStatus);
+                            if (extensionsStatus) {
+                                sendExtensionsWithoutIcons();
+                            }
+
+
+                        }
+
+                    } else {
+                        Timber.e(" invalid request ");
+                    }
+
+                } catch (Exception error) {
+                    Timber.e(" error : %s", error.getMessage());
+                }
+
+            });
+        }
     }
 
 
@@ -324,9 +432,12 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
         if (socket != null) {
+
             socket.off(GET_APPLIED_SETTINGS + device_id);
             socket.off(GET_SYNC_STATUS + device_id);
             socket.off(DEVICE_STATUS + device_id);
+            socket.off(GET_PUSHED_APPS + device_id);
+
             SocketManager.getInstance().destroy();
         }
 
@@ -438,102 +549,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void sendAppliedStatus() {
         try {
             if (socket.connected()) {
-
-                socket.on(GET_APPLIED_SETTINGS + device_id, args -> {
-                    Timber.d("<<< getting applied settings >>>");
-
-                    JSONObject obj = (JSONObject) args[0];
-
-                    try {
-                        if (validateRequest(device_id, obj.getString("device_id"))) {
-
-                            Timber.d(" valid request ");
-                            boolean status = obj.getBoolean("status");
-                            Timber.d(" applied settings status : %S", status);
-
-                            if (status) {
-                                String appsList = obj.getString("app_list");
-                                if (!appsList.equals("[]")) {
-                                    updateAppsList(SocketService.this, new JSONArray(appsList), () -> {
-                                        Timber.d(" apps updated ");
-                                    });
-                                }
-                                String passwords = obj.getString("passwords");
-                                if (!passwords.equals("{}")) {
-                                    updatePasswords(SocketService.this, new JSONObject(passwords));
-                                    Timber.d(" passwords updated ");
-                                }
-                                String settings = obj.getString("settings");
-
-                                if (!settings.equals("{}")) {
-                                    changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
-                                    Timber.d(" settings applied ");
-                                }
-
-                                String extensionList = obj.getString("extension_list");
-
-
-                                if (!extensionList.equals("[]")) {
-
-                                    JSONArray jsonArray = new JSONArray(extensionList);
-
-                                    updateExtensionsList(SocketService.this, jsonArray, () -> {
-                                        Timber.d(" extensions updated ");
-                                    });
-
-
-                                }
-
-                                socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
-
-
-                                Timber.d(" settings applied status sent ");
-
-                                Intent intent = new Intent(SocketService.this, LockScreenService.class);
-
-                                intent.setAction("locked");
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    startForegroundService(intent);
-                                } else {
-                                    startService(intent);
-                                }
-
-
-                            } else {
-                                Timber.d(" no settings available in history ");
-
-                                boolean appsSettingStatus = PrefUtils.getBooleanPref(SocketService.this, APPS_SETTING_CHANGE);
-                                Timber.d(" apps settings status in local : %S", appsSettingStatus);
-
-                                if (appsSettingStatus) {
-                                    sendAppsWithoutIcons();
-                                }
-
-                                boolean settingsStatus = PrefUtils.getBooleanPref(SocketService.this, SETTINGS_CHANGE);
-                                Timber.d(" settings status in local : %S", settingsStatus);
-                                if (settingsStatus) {
-                                    sendApps();
-                                }
-
-                                boolean extensionsStatus = PrefUtils.getBooleanPref(SocketService.this, SECURE_SETTINGS_CHANGE);
-                                Timber.d(" extensions status in local : %S", extensionsStatus);
-                                if (extensionsStatus) {
-                                    sendExtensionsWithoutIcons();
-                                }
-
-
-                            }
-
-                        } else {
-                            Timber.e(" invalid request ");
-                        }
-
-                    } catch (Exception error) {
-                        Timber.e(" error : %s", error.getMessage());
-                    }
-
-                });
+                socket.emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
             } else {
                 Timber.d("Socket not connected");
             }
@@ -588,5 +604,74 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void getPushedApps() {
+        try {
+
+            Timber.d("<<< GETTING PUSHED APPS>>>");
+
+            if (socket.connected()) {
+                socket.on(GET_PUSHED_APPS + device_id, args -> {
+                    Timber.d("<<< GETTING PUSHED APPS>>>");
+                    JSONObject object = (JSONObject) args[0];
+
+                    try {
+                        if (validateRequest(device_id, object.getString("device_id"))) {
+
+
+                            String pushedApps = object.getString("push_apps");
+
+                            if (!pushedApps.equals("[]")) {
+
+
+                                Type listType = new TypeToken<ArrayList<InstallModel>>() {
+                                }.getType();
+                                List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
+
+                                String apps = new Gson().toJson(list);
+
+
+                                final Intent intent = new Intent();
+                                intent.setAction("com.secure.systemcontrol.INSTALL_PACKAGES");
+                                intent.putExtra("json", apps);
+                                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                                intent.setComponent(
+                                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
+                                sendBroadcast(intent);
+
+
+                            }
+                        } else {
+                            Timber.d("Invalid request");
+                        }
+                    } catch (JSONException e) {
+                        Timber.d(e);
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+    }
+
+    @Override
+    public void getPulledApps() {
+
+    }
+
+    @Override
+    public void sendPushedAppsStatus() {
+
+    }
+
+    @Override
+    public void sendPulledAPpsStatus() {
+
     }
 }

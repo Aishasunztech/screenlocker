@@ -13,6 +13,7 @@ import android.util.Log;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 
 import java.util.ArrayList;
 import java.util.List;
