@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -198,24 +199,21 @@ public class PermissionUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean isAccessGranted(Context context) {
 
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            int mode = 0;
-            if (appOpsManager != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                            applicationInfo.uid, applicationInfo.packageName);
-                }
-            }
-            return (mode == AppOpsManager.MODE_ALLOWED);
+        boolean granted ;
+        AppOpsManager appOps = (AppOpsManager) context
+                .getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), context.getPackageName());
 
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            granted = (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            granted = (mode == AppOpsManager.MODE_ALLOWED);
         }
+        return granted;
     }
 
 

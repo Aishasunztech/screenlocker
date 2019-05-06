@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
+import static android.view.View.GONE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_BATERY_OPTIMIZATION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_MODIFY_SYSTEMS_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_UNKNOWN_RESOURCES;
@@ -129,6 +131,14 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     Switch notificationAccess;
     @BindView(R.id.active_battery_optimization)
     Switch batteryOptimization;
+    @BindView(R.id.layout_allow_overlay) LinearLayout layoutOverLay;
+    @BindView(R.id.layout_allow_usage) LinearLayout layoutUsage;
+    @BindView(R.id.layout_allow_admin) LinearLayout layoutAdmin;
+    @BindView(R.id.layout_allow_ignorebattery) LinearLayout layoutIgnore;
+    @BindView(R.id.layout_allow_modify_sytem) LinearLayout layoutModifySystem;
+    @BindView(R.id.layout_allow_installPackages) LinearLayout layoutInstall;
+    @BindView(R.id.layout_allow_runtime) LinearLayout layoutRuntime;
+    @BindView(R.id.layout_allow_notification_acces) LinearLayout layoutNotification;
 
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -146,18 +156,21 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, false);
         activeAdmin.setOnCheckedChangeListener(this);
         if (Settings.canDrawOverlays(getContext())) {
+            layoutOverLay.setVisibility(GONE);
             drawoverlay.setChecked(true);
             drawoverlay.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, false);
         drawoverlay.setOnCheckedChangeListener(this);
         if (Settings.System.canWrite(getActivity())) {
+            layoutModifySystem.setVisibility(GONE);
             modifiSystemState.setChecked(true);
             modifiSystemState.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_MODIFIY, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_MODIFIY, false);
         modifiSystemState.setOnCheckedChangeListener(this);
         if (isAccessGranted(getContext())) {
+            layoutUsage.setVisibility(GONE);
             usageAccess.setChecked(true);
             usageAccess.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, true);
@@ -173,12 +186,14 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
         runtimePermissions.setOnCheckedChangeListener(this);
         if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
+            layoutInstall.setVisibility(GONE);
             unknownResources.setChecked(true);
             unknownResources.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
         unknownResources.setOnCheckedChangeListener(this);
         if (isNotificationAccess(getContext())) {
+            layoutNotification.setVisibility(GONE);
             notificationAccess.setChecked(true);
             notificationAccess.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION, true);
