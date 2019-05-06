@@ -625,22 +625,18 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             if (!pushedApps.equals("[]")) {
 
-
                                 Type listType = new TypeToken<ArrayList<InstallModel>>() {
                                 }.getType();
                                 List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
                                 String apps = new Gson().toJson(list);
 
-
                                 final Intent intent = new Intent();
                                 intent.setAction("com.secure.systemcontrol.INSTALL_PACKAGES");
                                 intent.putExtra("json", apps);
                                 intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                                intent.setComponent(
-                                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
+                                intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
                                 sendBroadcast(intent);
-
 
                             }
                         } else {

@@ -222,8 +222,6 @@ public class SocketManager {
      */
     public void destroy() {
 
-        Log.d("kljfeijieijoieret", "distro");
-
         if (socket != null) {
             socket.off();
             socket.disconnect();

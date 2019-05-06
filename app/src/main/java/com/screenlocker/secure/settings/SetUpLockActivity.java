@@ -36,6 +36,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
      */
     private AppCompatButton btnConfirm;
     private AppCompatButton btnDisableDuress;
+    private boolean isBackPressed = false;
 
     private String from;
 
@@ -114,6 +115,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        isBackPressed = true;
         setResult(RESULT_CANCELED);
     }
 
@@ -195,6 +197,22 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 }
 
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(!isBackPressed)
+        {
+            this.finish();
         }
     }
 

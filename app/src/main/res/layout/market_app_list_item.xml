@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_4sdp"
+    android:elevation="@dimen/_5sdp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/_10sdp"
+    android:paddingLeft="@dimen/_10sdp"
+    android:paddingRight="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
+
+    >
+
+    <ImageView
+        android:id="@+id/marketImageView"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/marketImageView"
+        app:layout_constraintLeft_toRightOf="@+id/marketImageView"
+        app:layout_constraintBottom_toBottomOf="@+id/marketImageView"
+        >
+
+        <TextView
+            android:id="@+id/market_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+
+            android:textSize="@dimen/_14ssp"
+            android:layout_marginLeft="@dimen/_10sdp"
+
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            />
+
+
+        <ImageView
+            android:id="@+id/size_icon"
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:src="@drawable/ic_size"
+            app:layout_constraintTop_toBottomOf="@+id/market_app_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_10sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="24Mb"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="@+id/size_icon"
+            app:layout_constraintLeft_toRightOf="@+id/size_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/size_icon"
+            android:layout_marginLeft="@dimen/_5sdp"
+
+
+
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/market_app_name"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:textStyle="bold"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/marketImageView"-->
+
+        <!--android:textSize="@dimen/_14ssp"-->
+        <!--android:layout_marginLeft="@dimen/_10sdp"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/marketImageView"-->
+        <!--android:ellipsize="marquee"-->
+        <!--android:singleLine="true"-->
+        <!--/>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/size_icon"-->
+        <!--android:layout_width="@dimen/_10sdp"-->
+        <!--android:layout_height="@dimen/_10sdp"-->
+        <!--android:src="@drawable/ic_size"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/marketImageView"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/market_app_name"-->
+        <!--android:layout_marginTop="@dimen/_2sdp"-->
+        <!--android:layout_marginLeft="@dimen/_10sdp"/>-->
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="24Mb"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/size_icon"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/size_icon"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/size_icon"-->
+        <!--android:layout_marginLeft="@dimen/_5sdp"-->
+
+
+
+        <!--/>-->
+
+    <TextView
+        android:id="@+id/btnInstall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:background="@drawable/install_button_bg"
+        android:text="Download"
+        android:visibility="gone"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/btnUnInstall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:background="@drawable/install_button_bg"
+        android:text="Uninstall"
+        android:visibility="gone"
+        android:gravity="center"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

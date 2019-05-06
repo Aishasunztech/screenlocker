@@ -33,6 +33,7 @@ import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.SecureMarketActivity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

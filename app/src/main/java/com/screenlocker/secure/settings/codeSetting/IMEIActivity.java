@@ -22,6 +22,8 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 
 import java.util.List;
 
+import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
+
 public class IMEIActivity extends AppCompatActivity {
 
     @BindView(R.id.radio_group)
@@ -66,10 +68,14 @@ public class IMEIActivity extends AppCompatActivity {
             int id = radioGroup.getCheckedRadioButtonId();
             switch (id) {
                 case R.id.slote1:
+
                     sendIntent(0, editTextIMEI.getText().toString());
+
                     break;
                 case R.id.slote2:
+
                     sendIntent(1, editTextIMEI.getText().toString());
+
                     break;
                 default:
                     Toast.makeText(this, "Please Select A Slot", Toast.LENGTH_SHORT).show();
@@ -94,14 +100,21 @@ public class IMEIActivity extends AppCompatActivity {
     }
 
     private void sendIntent(int slot, String imei) {
-        Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
-        intent.putExtra("setting", "write.imei");
-        intent.putExtra("simSlotId", String.valueOf(slot));
-        intent.putExtra("imei", imei);
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.setPackage("com.omegamoon.sysadmin");
+        if (isValidImei(imei)) {
 
-        sendBroadcast(intent);
+            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+            intent.putExtra("setting", "write.imei");
+            intent.putExtra("simSlotId", String.valueOf(slot));
+            intent.putExtra("imei", imei);
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+            sendBroadcast(intent);
+
+            Toast.makeText(this, "Restart your device", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Please enter a valid IMEI", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
@@ -109,6 +122,8 @@ public class IMEIActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+
         finish();
+
     }
 }
