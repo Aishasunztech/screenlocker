@@ -78,7 +78,7 @@ public interface ApiOneCaller {
     );
 
     @GET("apklist")
-    Call<InstallAppModel> getApps();
+    Call<InstallAppModel>  getApps();
 
 
     @GET

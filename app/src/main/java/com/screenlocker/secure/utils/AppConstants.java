@@ -184,6 +184,10 @@ public class AppConstants {
     public static final String SECURE_CLEAR_UNIQUE = "com.secureClear.SecureClearActivitySecure Clear";
     public static final String SECURE_CLEAR_PACKAGE = "com.secureClear.SecureClearActivity";
 
+    //unique name for secure market
+    public static final String SECURE_MARKET_UNIQUE = "com.secureMarket.SecureMarketActivitySecure Market";
+    public static final String SECURE_MARKET_PACKAGE = "com.secureMarket.SecureMarketActivity";
+
     // secure app
 
     public static final int LOCATION_SETTINGS_CODE = 111;

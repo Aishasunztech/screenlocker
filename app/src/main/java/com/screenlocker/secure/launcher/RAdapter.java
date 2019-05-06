@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
+import com.secureMarket.SecureMarketActivity;
 
 import java.util.List;
 
@@ -51,7 +52,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         String unique = info.getUniqueName();
                         if (unique.equals(AppConstants.SECURE_CLEAR_UNIQUE)) {
                             showCacheDialog();
-                        } else {
+                        } else if(unique.equals(AppConstants.SECURE_MARKET_UNIQUE)) {
+                            Intent intent = new Intent(context, SecureMarketActivity.class);
+                            context.startActivity(intent);
+                        }else{
                             Intent intent = new Intent(context, Class.forName(info.getPackageName()));
                             context.startActivity(intent);
                         }

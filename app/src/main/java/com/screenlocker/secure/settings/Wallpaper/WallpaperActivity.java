@@ -27,6 +27,9 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 
 public class WallpaperActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private boolean isBackPressed = false;
+    private boolean goToGuest,goToEncrypt,goToLockScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,10 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btnGuestWallpaper).setOnClickListener(this);
         findViewById(R.id.btnEncryptedWallpaper).setOnClickListener(this);
         findViewById(R.id.btnLockScreenWallpaer).setOnClickListener(this);
+
+        goToGuest = false;
+        goToEncrypt = false;
+        goToLockScreen = false;
     }
 
     @Override
@@ -114,6 +121,8 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
             case KEY_GUEST:
                 if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_GUEST_PASSWORD))) {
                     //
+
+                    goToGuest = true;
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_GUEST);
                     startActivity(intent);
@@ -122,6 +131,9 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
                 break;
             case KEY_MAIN:
                 if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+
+                    goToEncrypt = true;
+
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_MAIN);
                     startActivity(intent);
@@ -132,6 +144,9 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
                 break;
             case KEY_CODE:
                 if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+
+                    goToLockScreen = true;
+
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_CODE);
                     startActivity(intent);
@@ -151,5 +166,30 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(!isBackPressed)
+        {
+            if(!goToGuest && !goToEncrypt && !goToLockScreen)
+            {
+                this.finish();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        isBackPressed = true;
     }
 }

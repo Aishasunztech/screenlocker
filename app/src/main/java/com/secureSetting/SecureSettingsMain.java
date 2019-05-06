@@ -30,6 +30,7 @@ import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureClear.SecureClearActivity;
+import com.secureMarket.SecureMarketActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -387,6 +388,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
                 startActivity(intent);
             }
         });
+
     }
 
 

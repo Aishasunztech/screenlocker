@@ -48,11 +48,8 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" /> <!-- permisions for overlay windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"/>
-
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
 
     <application
@@ -65,10 +62,9 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".settings.Wallpaper.ChangeWallpaper"
+        <activity android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="com.secureClear.SecureClearActivity"
             android:screenOrientation="portrait"
@@ -108,7 +104,6 @@
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:theme="@style/HomeScreen"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -140,7 +135,8 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            />
         <activity
             android:name=".permissions.SteppersActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -304,11 +300,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
 
+        <activity android:name="com.secureMarket.SecureMarketActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme"/>
+
         <service android:name=".mdm.utils.LifecycleReceiverService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+
 
     </application>
 
