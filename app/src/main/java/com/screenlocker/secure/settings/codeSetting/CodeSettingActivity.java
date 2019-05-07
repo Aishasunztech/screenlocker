@@ -66,7 +66,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean goToInstallApps;
     private boolean goToPolicyMenu;
     private boolean goToIMEIMenu;
-    private boolean goToSettingsAppPermission;
+    private boolean goToSettingsAppPermission,goToSimActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,6 +223,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void handleSim() {
+        goToSimActivity = true;
         startActivity(new Intent(this, SimActivity.class));
     }
 
@@ -318,6 +319,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         goToPolicyMenu = false;
         goToSettingsAppPermission = false;
         goToIMEIMenu = false;
+        goToSimActivity = false;
         Intent intent = new Intent(LIFECYCLE_ACTION);
         intent.putExtra(STATE, FOREGROUND);
         sendBroadcast(intent);
@@ -327,7 +329,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu && !goToSimActivity) {
             Intent intent = new Intent(LIFECYCLE_ACTION);
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
@@ -337,7 +339,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu) {
+        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu && !goToSimActivity) {
             hideKeyboard(CodeSettingActivity.this);
             finish();
         }

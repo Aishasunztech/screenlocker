@@ -20,6 +20,8 @@ import java.util.List;
 
 public class SimActivity extends BaseActivity {
 
+    private boolean isBackPressed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,28 @@ public class SimActivity extends BaseActivity {
         setRecyclerView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(!isBackPressed)
+        {
+            this.finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        isBackPressed = true;
+    }
 
     private void setRecyclerView() {
         RecyclerView rvSim = findViewById(R.id.rvSim);

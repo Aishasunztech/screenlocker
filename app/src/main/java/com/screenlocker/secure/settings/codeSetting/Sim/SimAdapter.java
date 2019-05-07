@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.screenlocker.secure.R;
@@ -32,18 +33,32 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        holder.tvSimLabel.setText("Sim " + ++position);
+
+        if(holder.btnRegister.getText().toString().contains("Edit"))
+        {
+            holder.guestSwitch.setVisibility(View.VISIBLE);
+            holder.encryptedSwitch.setVisibility(View.VISIBLE);
+            holder.enableSwitch.setVisibility(View.VISIBLE);
+        }
         holder.btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.btnRegister.getText().toString().contains("Register"))
                 {
                     holder.btnRegister.setText("Edit");
+                    holder.guestSwitch.setVisibility(View.VISIBLE);
+                    holder.encryptedSwitch.setVisibility(View.VISIBLE);
+                    holder.enableSwitch.setVisibility(View.VISIBLE);
 
                 }
                 else if(holder.btnRegister.getText().toString().contains("Edit"))
                 {
                     EditSimDialog editSimDialog = new EditSimDialog(context);
                     editSimDialog.show();
+
+
                 }
             }
         });
@@ -57,14 +72,19 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSimName;
+        TextView tvSimName,tvSimLabel;
         Button btnRegister;
+        Switch guestSwitch,encryptedSwitch,enableSwitch;
         public MyViewHolder(View itemView) {
 
             super(itemView);
 
+            tvSimLabel = itemView.findViewById(R.id.simName);
             tvSimName = itemView.findViewById(R.id.tvSimName);
             btnRegister = itemView.findViewById(R.id.btSimRegister);
+            guestSwitch = itemView.findViewById(R.id.guest_sim_switch);
+            encryptedSwitch = itemView.findViewById(R.id.encrypted_sim_switch);
+            enableSwitch = itemView.findViewById(R.id.enable_sim_switch);
         }
     }
 

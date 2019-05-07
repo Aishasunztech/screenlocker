@@ -7,21 +7,31 @@
     android:paddingBottom="8dp">
 
     <TextView
+        android:id="@+id/simName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sim"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@+id/btSimRegister"
+        app:layout_constraintLeft_toLeftOf="@+id/tvSimName"
+        android:paddingLeft="@dimen/_16sdp"/>
+
+    <TextView
         android:id="@+id/tvSimName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:paddingLeft="@dimen/_16sdp"
+        android:paddingTop="@dimen/_3sdp"
         android:paddingRight="@dimen/_16sdp"
-        android:paddingTop="@dimen/_5sdp"
         android:paddingBottom="@dimen/_5sdp"
         android:text="SIM: 8900000000000000000"
         android:textSize="@dimen/_13ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/btSimRegister"
         app:layout_constraintEnd_toStartOf="@+id/btSimRegister"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btSimRegister"
-        app:layout_constraintBottom_toBottomOf="@+id/btSimRegister"/>
+        app:layout_constraintTop_toBottomOf="@+id/simName" />
 
     <Button
         android:id="@+id/btSimRegister"
@@ -35,23 +45,36 @@
 
 
     <Switch
+        android:id="@+id/guest_sim_switch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:switchPadding="8dp"
-        android:text="guest"
+        android:text="Guest"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/switch1"
-        app:layout_constraintEnd_toStartOf="@+id/switch1"
-        app:layout_constraintTop_toTopOf="@+id/switch1" />
+        app:layout_constraintBottom_toBottomOf="@+id/encrypted_sim_switch"
+        app:layout_constraintEnd_toStartOf="@+id/encrypted_sim_switch"
+        app:layout_constraintTop_toTopOf="@+id/encrypted_sim_switch" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/encrypted_sim_switch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp" android:switchPadding="8dp"
         android:text="Encrypted"
+        app:layout_constraintEnd_toStartOf="@+id/enable_sim_switch"
+        app:layout_constraintTop_toBottomOf="@+id/tvSimName"
+        android:visibility="gone"
+        />
+
+    <Switch
+        android:id="@+id/enable_sim_switch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp" android:switchPadding="8dp"
+        android:text="Enabled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSimName"
         android:visibility="gone"
