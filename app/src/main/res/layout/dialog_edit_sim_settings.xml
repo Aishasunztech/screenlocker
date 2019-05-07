@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_sim_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:layout_height="wrap_content">
+
+<TextView
+    android:id="@+id/tv_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Edit Sim"
+    android:textStyle="bold"
+    android:gravity="center_horizontal"
+    android:textSize="@dimen/_14ssp"
+    android:padding="@dimen/_10sdp"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"/>
+
+
+    <EditText
+        android:id="@+id/et_sim_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        app:layout_constraintTop_toBottomOf="@id/tv_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_sim_name">
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:text="Guest"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Encrypted"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Enabled"
+            android:layout_marginLeft="@dimen/_20sdp"/>
+    </LinearLayout>
+
+    <!--<Switch-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Guest"-->
+        <!--android:layout_marginTop="@dimen/_5sdp"-->
+        <!--android:switchPadding="@dimen/_5sdp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/et_sim_name"-->
+        <!--app:layout_constraintRight_toLeftOf="@+id/sw_encrypted"-->
+        <!--/>-->
+
+    <!--<Switch-->
+        <!--android:id="@+id/sw_encrypted"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Encrypted"-->
+        <!--android:padding="@dimen/_5sdp"-->
+        <!--android:layout_marginTop="@dimen/_5sdp"-->
+
+        <!--android:switchPadding="@dimen/_5sdp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/et_sim_name"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--/>-->
+
+    <!--<Switch-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Enabled"-->
+        <!--android:layout_marginTop="@dimen/_5sdp"-->
+
+        <!--android:switchPadding="@dimen/_5sdp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/et_sim_name"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/sw_encrypted"-->
+        <!--/>-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        app:layout_constraintTop_toBottomOf="@+id/sw_encrypted"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,13 +11,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:padding="16dp"
-        android:text="Sim Name"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="SIM: 8900000000000000000"
+        android:textSize="@dimen/_13ssp"
         app:layout_constraintEnd_toStartOf="@+id/btSimRegister"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/btSimRegister"
+        app:layout_constraintBottom_toBottomOf="@+id/btSimRegister"/>
 
     <Button
         android:id="@+id/btSimRegister"
@@ -33,8 +37,10 @@
     <Switch
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp" android:switchPadding="8dp"
+        android:layout_marginEnd="8dp"
+        android:switchPadding="8dp"
         android:text="guest"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/switch1"
         app:layout_constraintEnd_toStartOf="@+id/switch1"
         app:layout_constraintTop_toTopOf="@+id/switch1" />
@@ -47,13 +53,15 @@
         android:layout_marginEnd="8dp" android:switchPadding="8dp"
         android:text="Encrypted"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSimName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSimName"
+        android:visibility="gone"
+        />
 
 
-    <androidx.constraintlayout.widget.Group
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="switch1" />
+    <!--<androidx.constraintlayout.widget.Group-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:visibility="visible"-->
+        <!--app:constraint_referenced_ids="switch1" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

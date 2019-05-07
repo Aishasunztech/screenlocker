@@ -289,7 +289,7 @@
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings$codeSetting$Sim$SimActivity"
+            android:name=".settings.codeSetting.Sim.SimActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mdm.MainActivity"

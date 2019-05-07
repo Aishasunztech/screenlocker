@@ -7,12 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".settings.codeSetting.Sim.SimActivity">
 
+
+
     <include
         android:id="@+id/include"
         layout="@layout/main_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSim"
