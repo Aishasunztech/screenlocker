@@ -125,8 +125,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
 //        }
 //    };
 
-    Socket socket;
-    String device_id;
+    private Socket socket;
+    private String device_id;
 
 
     private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
@@ -210,21 +210,17 @@ public class SocketService extends Service implements OnSocketConnectionListener
             Timber.d("Socket is connecting");
 
         } else if (socketState == 2) {
+
             Timber.d("Socket is connected");
             socket = SocketManager.getInstance().getSocket();
+
             getSyncStatus();
             getDeviceStatus();
             getAppliedSettings();
             getPushedApps();
+
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
-            try {
-                socket.off(GET_APPLIED_SETTINGS + device_id);
-                socket.off(GET_SYNC_STATUS + device_id);
-                socket.off(DEVICE_STATUS + device_id);
-            } catch (Exception e) {
-                Timber.d(e.getMessage());
-            }
         }
 
     }
@@ -430,18 +426,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
 //        LocalBroadcastManager.getInstance(this).unregisterReceiver(databaseBroadcast);
 
-
-        if (socket != null) {
-
-            socket.off(GET_APPLIED_SETTINGS + device_id);
-            socket.off(GET_SYNC_STATUS + device_id);
-            socket.off(DEVICE_STATUS + device_id);
-            socket.off(GET_PUSHED_APPS + device_id);
-
-            SocketManager.getInstance().destroy();
-        }
-
-
         super.onDestroy();
 
     }
@@ -637,6 +621,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                 intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                                 intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
                                 sendBroadcast(intent);
+
+
 
                             }
                         } else {

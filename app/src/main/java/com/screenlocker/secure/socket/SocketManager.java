@@ -75,6 +75,7 @@ public class SocketManager {
         try {
             if (socket == null) {
                 IO.Options opts = new IO.Options();
+                opts.reconnectionDelay = 0;
                 opts.forceNew = true;
                 opts.reconnection = true;
 //                opts.reconnectionAttempts = 5;
