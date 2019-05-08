@@ -47,6 +47,7 @@ public class BlurWorker extends Worker {
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
 
             Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+
             List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
             String settingPackageName = resolveInfos.get(0).activityInfo.packageName + resolveInfos.get(0).loadLabel(pm);
@@ -61,6 +62,7 @@ public class BlurWorker extends Worker {
 
 
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
+
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
                 app.setUniqueName(app.getPackageName() + app.getLabel());
 

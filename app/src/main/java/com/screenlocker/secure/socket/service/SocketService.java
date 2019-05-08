@@ -10,22 +10,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
+import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.utils;
@@ -38,12 +40,16 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
+import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
+import static com.screenlocker.secure.socket.utils.utils.sendIntent;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
@@ -53,26 +59,42 @@ import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
+import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
+import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
+import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.IMEI1;
+import static com.screenlocker.secure.utils.AppConstants.IMEI2;
+import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
+import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.CommonUtils.getInstallList;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
+
+    private SocketManager socketManager;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -83,10 +105,19 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void onCreate() {
         super.onCreate();
         startService();
-        SocketManager.getInstance().setSocketConnectionListener(this);
+        socketManager = SocketManager.getInstance();
+
+        socketManager.setSocketConnectionListener(this);
+
 
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
-//        LocalBroadcastManager.getInstance(this).registerReceiver(databaseBroadcast, new IntentFilter(BROADCAST_DATABASE));
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_PUSH_APPS);
+        intentFilter.addAction(ACTION_PULL_APPS);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
+
 
     }
 
@@ -98,32 +129,40 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-//    BroadcastReceiver databaseBroadcast = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//
-//            try {
-//                if (PrefUtils.getBooleanPref(SocketService.this, DEVICE_LINKED_STATUS)) {
-//                    if (socket != null) {
-//                        if (socket.connected()) {
-//                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
-//                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
-//                                    sendApps();
-//                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
-//                                    sendExtensions();
-//                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
-//                                    sendSettings();
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//
-//            } catch (Exception ignored) {
-//            }
-//
-//        }
-//    };
+    BroadcastReceiver pushPullBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent != null) {
+
+                if (intent.getAction() != null && intent.getAction().equals(ACTION_PUSH_APPS)) {
+                    boolean finishStatus = intent.getBooleanExtra("finish_status", false);
+                    String packageName = intent.getStringExtra("PackageName");
+                    boolean status = intent.getBooleanExtra("Status", false);
+                    Map<String, Boolean> map = new HashMap<>();
+                    map.put(packageName, status);
+                    sendPushedAppsStatus(map);
+                    if (finishStatus) {
+                        finishPushedApps();
+                    }
+                } else if (intent.getAction() != null && intent.getAction().equals(ACTION_PULL_APPS)) {
+
+                    boolean finishStatus = intent.getBooleanExtra("finish_status", false);
+                    String packageName = intent.getStringExtra("PackageName");
+                    boolean status = intent.getBooleanExtra("Status", false);
+                    Map<String, Boolean> map = new HashMap<>();
+                    map.put(packageName, status);
+                    sendPulledAPpsStatus(map);
+                    if (finishStatus) {
+                        finishPulledApps();
+                    }
+                }
+
+
+            }
+
+        }
+    };
 
     private Socket socket;
     private String device_id;
@@ -183,7 +222,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 switch (action) {
                     case "start":
                         // connecting to socket
-                        SocketManager.getInstance().connectSocket(token, device_id, AppConstants.SOCKET_SERVER_URL);
+                        socketManager.connectSocket(token, device_id, AppConstants.SOCKET_SERVER_URL);
                         break;
                 }
             } else {
@@ -212,15 +251,39 @@ public class SocketService extends Service implements OnSocketConnectionListener
         } else if (socketState == 2) {
 
             Timber.d("Socket is connected");
-            socket = SocketManager.getInstance().getSocket();
+
+            socket = socketManager.getSocket();
 
             getSyncStatus();
             getDeviceStatus();
             getAppliedSettings();
             getPushedApps();
+            getPulledApps();
+            imeiChanged();
+
+            imeiHistory();
+
+            if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
+                    != null) {
+                Type type = new TypeToken<HashMap<String, Boolean>>() {
+                }.getType();
+                String hashmap = PrefUtils.getStringPref(this, APPS_HASH_MAP);
+                HashMap<String, Boolean> map = new Gson().fromJson(hashmap, type);
+                sendPushedAppsStatus(map);
+                PrefUtils.saveStringPref(this, APPS_HASH_MAP, null);
+            }
 
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
+
+            socket.off(GET_SYNC_STATUS + device_id);
+            socket.off(GET_APPLIED_SETTINGS + device_id);
+            socket.off(DEVICE_STATUS + device_id);
+            socket.off(GET_PUSHED_APPS + device_id);
+            socket.off(WRITE_IMEI + device_id);
+            socket.off(GET_PUSHED_APPS + device_id);
+            socket.off(GET_PULLED_APPS + device_id);
+
         }
 
     }
@@ -343,6 +406,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             }
 
+
                             sendAppliedStatus();
 
                             Timber.d(" settings applied status sent ");
@@ -424,7 +488,14 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(databaseBroadcast);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
+
+        Log.d("SocketService", "service destroy");
+
+        socketManager.destroy();
+
+        socketManager.removeSocketConnectionListener(this);
+        socketManager.removeAllSocketConnectionListener();
 
         super.onDestroy();
 
@@ -593,9 +664,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void getPushedApps() {
         try {
-
-            Timber.d("<<< GETTING PUSHED APPS>>>");
-
             if (socket.connected()) {
                 socket.on(GET_PUSHED_APPS + device_id, args -> {
                     Timber.d("<<< GETTING PUSHED APPS>>>");
@@ -606,14 +674,17 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
                             String pushedApps = object.getString("push_apps");
+                            Timber.d(pushedApps);
 
                             if (!pushedApps.equals("[]")) {
 
                                 Type listType = new TypeToken<ArrayList<InstallModel>>() {
                                 }.getType();
+
                                 List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
-                                String apps = new Gson().toJson(list);
+
+                                String apps = new Gson().toJson(getInstallList(list));
 
                                 final Intent intent = new Intent();
                                 intent.setAction("com.secure.systemcontrol.INSTALL_PACKAGES");
@@ -621,8 +692,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                 intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                                 intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
                                 sendBroadcast(intent);
-
-
 
                             }
                         } else {
@@ -645,15 +714,235 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void getPulledApps() {
 
+        try {
+            if (socket.connected()) {
+                socket.on(GET_PULLED_APPS + device_id, args -> {
+                    Timber.d("<<< GETTING PUSHED APPS>>>");
+                    JSONObject object = (JSONObject) args[0];
+
+                    try {
+                        if (validateRequest(device_id, object.getString("device_id"))) {
+
+
+                            String pushedApps = object.getString("push_apps");
+                            Timber.d(pushedApps);
+
+                            if (!pushedApps.equals("[]")) {
+                                Type listType = new TypeToken<ArrayList<InstallModel>>() {
+                                }.getType();
+                                List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
+                                String apps = new Gson().toJson(getInstallList(list));
+                                final Intent intent = new Intent();
+                                intent.setAction("com.secure.systemcontrol.INSTALL_PACKAGES");
+                                intent.putExtra("json", apps);
+                                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                                intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackageUninstallReceiver"));
+                                sendBroadcast(intent);
+
+                            }
+                        } else {
+                            Timber.d("Invalid request");
+                        }
+                    } catch (JSONException e) {
+                        Timber.d(e);
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     @Override
-    public void sendPushedAppsStatus() {
+    public void sendPushedAppsStatus(Map<String, Boolean> hashMap) {
+
+        Timber.d("<<< Pushed apps status sending >>>");
+
+        if (socket != null) {
+            if (socket.connected()) {
+                try {
+                    JSONArray jsonArray = new JSONArray();
+
+                    for (Map.Entry<String, Boolean> entry : hashMap.entrySet()) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("package_name", entry.getKey());
+                        jsonObject.put("status", entry.getValue());
+                        jsonArray.put(jsonObject);
+                    }
+
+                    socket.emit(SEND_PUSHED_APPS_STATUS + device_id, jsonArray.toString());
+                } catch (JSONException e) {
+                    Timber.d(e);
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void sendPulledAPpsStatus(Map<String, Boolean> hashMap) {
+        Timber.d("<<< Pulled apps status sending >>>");
+
+        if (socket != null) {
+            if (socket.connected()) {
+                try {
+                    JSONArray jsonArray = new JSONArray();
+
+                    for (Map.Entry<String, Boolean> entry : hashMap.entrySet()) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("package_name", entry.getKey());
+                        jsonObject.put("status", entry.getValue());
+                        jsonArray.put(jsonObject);
+                    }
+
+                    socket.emit(SEND_PULLED_APPS_STATUS + device_id, jsonArray.toString());
+                } catch (JSONException e) {
+                    Timber.d(e);
+                }
+
+            }
+        }
+    }
+
+
+    @Override
+    public void finishPushedApps() {
+        Timber.d("<<<Finish pushed apps>>>");
+        if (socket != null) {
+            if (socket.connected()) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("status", true);
+                    socket.emit(FINISHED_PUSHED_APPS + device_id, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void finishPulledApps() {
+        Timber.d("<<<Finish pulled apps>>>");
+        if (socket != null) {
+            if (socket.connected()) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("status", true);
+                    socket.emit(FINISHED_PULLED_APPS + device_id, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void imeiChanged() {
+
+        try {
+            if (socket.connected()) {
+                socket.on(WRITE_IMEI + device_id, args -> {
+                    Timber.d("<<< WRITE IMEI>>>");
+                    JSONObject object = (JSONObject) args[0];
+
+                    try {
+                        if (validateRequest(device_id, object.getString("device_id"))) {
+                            String pushedApps = object.getString("imei");
+                            Timber.d(pushedApps);
+                            if (!pushedApps.equals("{}")) {
+
+                                Type imeiModel = new TypeToken<ImeiModel>() {
+                                }.getType();
+
+                                ImeiModel imeis = new Gson().fromJson(pushedApps, imeiModel);
+
+
+                                if (imeis.getImei1() != null) {
+                                    sendIntent(1, imeis.getImei1(), this);
+                                }
+                                if (imeis.getImei2() != null) {
+                                    sendIntent(2, imeis.getImei2(), this);
+                                }
+
+                                imeiApplied();
+                            }
+                        } else {
+                            Timber.d("Invalid request");
+                        }
+                    } catch (JSONException e) {
+                        Timber.d(e);
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+
+        } catch (Exception e) {
+            Timber.d(e);
+        }
 
     }
 
     @Override
-    public void sendPulledAPpsStatus() {
+    public void imeiApplied() {
+        Timber.d("<<<Imei applied >>>");
+        if (socket != null) {
+            if (socket.connected()) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("status", true);
+                    jsonObject.put("device_id", device_id);
+                    socket.emit(IMEI_APPLIED + device_id, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void imeiHistory() {
+        Timber.d("<<<Imei History >>>");
+
+        if (checkIMei(this)) {
+            if (socket != null) {
+                if (socket.connected()) {
+
+                    String imei1 = PrefUtils.getStringPref(this, IMEI1);
+                    String imei2 = PrefUtils.getStringPref(this, IMEI2);
+
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("device_id", device_id);
+                        if (imei1 != null) {
+                            jsonObject.put("imei1", imei1);
+                        }
+                        if (imei2 != null) {
+                            jsonObject.put("imei2", imei2);
+                        }
+
+                        String serial = DeviceIdUtils.getSerialNumber();
+                        String mac = DeviceIdUtils.getMacAddress();
+
+                        jsonObject.put("serial", serial);
+                        jsonObject.put("mac", mac);
+
+                        socket.emit(IMEI_HISTORY + device_id, jsonObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
 
     }
+
+
 }

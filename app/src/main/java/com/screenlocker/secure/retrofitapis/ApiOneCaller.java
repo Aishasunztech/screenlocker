@@ -1,7 +1,6 @@
 package com.screenlocker.secure.retrofitapis;
 
 
-import com.screenlocker.secure.R;
 import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
@@ -11,9 +10,7 @@ import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
-import com.screenlocker.secure.settings.codeSetting.Models.IMEIModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
-import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 
 import java.util.Map;
@@ -31,7 +28,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
@@ -124,9 +120,6 @@ public interface ApiOneCaller {
     Call<CheckStatusResponse> checkDeviceStatus(
             @Body CheckStatusModel checkStatusModel
     );
-
-    @POST("imeiChanged")
-    Call<Boolean> checkIMEIstatus(@Body IMEIModel imeiModel);
 
     @GET("admin/marketApplist")
     Call<InstallAppModel>  getAdminApps();

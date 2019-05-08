@@ -2,30 +2,22 @@ package com.screenlocker.secure.app;
 
 import android.app.Application;
 import android.app.admin.DevicePolicyManager;
-
-import androidx.room.Room;
-
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.MyAdmin;
+import androidx.room.Room;
 
+import com.crashlytics.android.Crashlytics;
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
-import com.screenlocker.secure.socket.receiver.MdmEventReciever;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -33,9 +25,13 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.IMEI1;
+import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 
 /**
  * application class to get the database instance
@@ -52,10 +48,9 @@ public class MyApplication extends Application implements NetworkListener {
     PrefManager preferenceManager;
     NetworkReceiver networkReceiver;
 
-    MdmEventReciever mdmEventReciever;
-
 
     private static Context appContext;
+
 
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
@@ -69,8 +64,6 @@ public class MyApplication extends Application implements NetworkListener {
     }
 
 
-    BroadcastReceiver broadcastReceiver;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,9 +71,19 @@ public class MyApplication extends Application implements NetworkListener {
         appContext = getApplicationContext();
 
 
+        List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
+
+        if (imei != null && imei.size() == 1) {
+            PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
+        }
+
+        if (imei != null && imei.size() >= 2) {
+            PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
+        }
+
+
         try {
             Fabric.with(this, new Crashlytics());
-            sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
         } catch (Exception ignored) {
         }
 
@@ -124,12 +127,9 @@ public class MyApplication extends Application implements NetworkListener {
         networkReceiver = new NetworkReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction("com.secure.systemcontroll.PackageAdded");
+        filter.addAction("com.secure.systemcontrol.PACKAGE_DELETED");
         registerReceiver(networkReceiver, filter);
-        mdmEventReciever = new MdmEventReciever();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.secureportal.barryapp.app_linked_success");
-        registerReceiver(mdmEventReciever, intentFilter);
-
 
     }
 
@@ -172,8 +172,6 @@ public class MyApplication extends Application implements NetworkListener {
 
 
         if (linkStatus) {
-            Timber.d("ikgiogjrgjrgrgjoi %s", linkStatus);
-            Timber.d("ikgiogjrgjrgrgjoi %s", status);
 
             Intent intent = new Intent(this, SocketService.class);
 
@@ -181,10 +179,10 @@ public class MyApplication extends Application implements NetworkListener {
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
-
                 if (serialNo != null) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
+
             } else {
                 stopService(intent);
             }
@@ -195,7 +193,7 @@ public class MyApplication extends Application implements NetworkListener {
     @Override
     public void onTerminate() {
         unregisterReceiver(networkReceiver);
-        unregisterReceiver(mdmEventReciever);
+
 
         super.onTerminate();
     }

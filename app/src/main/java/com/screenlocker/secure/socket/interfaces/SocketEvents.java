@@ -1,5 +1,7 @@
 package com.screenlocker.secure.socket.interfaces;
 
+import java.util.Map;
+
 public interface SocketEvents {
 
     void getSyncStatus();
@@ -24,9 +26,19 @@ public interface SocketEvents {
 
     void getPulledApps();
 
-    void sendPushedAppsStatus();
+    void sendPushedAppsStatus(Map<String, Boolean> hashMap);
 
-    void sendPulledAPpsStatus();
+    void sendPulledAPpsStatus(Map<String, Boolean> hashMap);
+
+    void finishPushedApps();
+
+    void finishPulledApps();
+
+    void imeiChanged();
+
+    void imeiApplied();
+
+    void imeiHistory();
 
 
 }

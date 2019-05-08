@@ -20,7 +20,6 @@ public interface MyDao {
     @Query("SELECT * from AppInfo")
     List<AppInfo> getApps();
 
-
     @Query("SELECT * from SubExtension ")
     List<SubExtension> getAllSubExtensions();
 
@@ -57,10 +56,10 @@ public interface MyDao {
     AppInfo getParticularApp(String value);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateApps(AppInfo appsModel);
+    int updateApps(AppInfo appsModel);
 
-    @Query("DELETE FROM AppInfo where uniqueName=:packageName")
-    void deleteOne(String packageName);
+    @Query("DELETE FROM AppInfo where uniqueName=:uniqueName")
+    void deleteOne(String uniqueName);
 
     @Query("UPDATE AppInfo SET guest=:guest , encrypted=:encrypted, enable=:enable WHERE uniqueName=:uniqueName")
     void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);

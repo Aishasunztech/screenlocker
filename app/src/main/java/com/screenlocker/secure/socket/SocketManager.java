@@ -20,6 +20,11 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
+
 
 public class SocketManager {
 
@@ -71,7 +76,7 @@ public class SocketManager {
      * @param device_id the device id
      * @param url       the host url
      */
-    public void connectSocket(String token, String device_id, String url) {
+    public synchronized void connectSocket(String token, String device_id, String url) {
         try {
             if (socket == null) {
                 IO.Options opts = new IO.Options();
@@ -114,7 +119,8 @@ public class SocketManager {
                     public void call(Object... args) {
                         Log.e(TAG, "Socket connect error");
                         fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                        socket.disconnect();
+                        if (socket != null)
+                            socket.disconnect();
                     }
                 }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                     @Override
@@ -223,8 +229,8 @@ public class SocketManager {
      */
     public void destroy() {
 
+        Log.d("SocketManager","destroy");
         if (socket != null) {
-            socket.off();
             socket.disconnect();
             socket.close();
             socket = null;

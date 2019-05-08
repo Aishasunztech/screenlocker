@@ -51,7 +51,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"/>
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
 
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
 
@@ -197,14 +197,6 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".alarm.AlarmReceiver" />
-        <receiver
-            android:name=".socket.receiver.MdmEventReciever"
-            android:permission="">
-            <intent-filter>
-                <action android:name="com.secureportal.barryapp.app_linked_success" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
@@ -306,13 +298,15 @@
 
         <service android:name=".mdm.utils.LifecycleReceiverService" />
 
-        <activity android:name="com.secureMarket.SecureMarketActivity"
+        <activity
+            android:name="com.secureMarket.SecureMarketActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme"/>
+            android:theme="@style/SecureSettingsTheme" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+
 
     </application>
 

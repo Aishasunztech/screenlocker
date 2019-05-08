@@ -66,8 +66,10 @@ public class AppConstants {
 
 
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
-//        public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
+
+//    public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
+
     public static final String STAGING_BASE_URL = "http://192.168.0.105:3000/mobile/";//for localhost real device
 
     //  SocketUtils constants
@@ -90,6 +92,8 @@ public class AppConstants {
     public static final String GET_PULLED_APPS = "get_pulled_apps_";
     public static final String SEND_PULLED_APPS_STATUS = "send_pulled_apps_status_";
     public static final String SEND_PUSHED_APPS_STATUS = "send_pushed_apps_status_";
+    public static final String FINISHED_PUSHED_APPS = "finished_push_apps_";
+    public static final String FINISHED_PULLED_APPS = "finished_pulled_apps_";
 
 
     public static final String GET_APPLIED_SETTINGS = "get_applied_settings_";
@@ -227,5 +231,19 @@ public class AppConstants {
 
 //    NEW_DEVICE: "new device",
 
+
+    // push pulled apps
+
+    public static final String ACTION_PUSH_APPS = "action_push_apps";
+    public static final String ACTION_PULL_APPS = "action_pull_apps";
+    public static final String APPS_HASH_MAP = "apps_hash_map";
+    public static final String DELETE_HASH_MAP = "delete_hash_map";
+    public static final String WRITE_IMEI = "write_imei_";
+    public static final String IMEI_APPLIED = "imei_applied_";
+    public static final String IMEI_HISTORY = "imei_changed_";
+
+
+    public static final String IMEI1 = "imei1";
+    public static final String IMEI2 = "imei2";
 
 }

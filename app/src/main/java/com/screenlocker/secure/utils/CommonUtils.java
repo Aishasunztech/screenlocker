@@ -16,6 +16,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.model.InstallModel;
 
 import java.io.ByteArrayOutputStream;
 import java.net.NetworkInterface;
@@ -159,6 +160,19 @@ public class CommonUtils {
         }
     }
 
+
+    public static List<InstallModel> getInstallList(List<InstallModel> list) {
+
+        List<InstallModel> installModelList = new ArrayList<>();
+
+        for (InstallModel installModel : list) {
+            String apk = CommonUtils.splitName(installModel.getApk());
+            InstallModel finalApp = new InstallModel(apk, installModel.getApk_name(), installModel.getPackage_name(), installModel.getVersion_name(), installModel.isGuest(), installModel.isEncrypted(), installModel.isEnable());
+            installModel.setApk(apk);
+            installModelList.add(finalApp);
+        }
+        return installModelList;
+    }
 
     // adding secure settings menus
 
@@ -311,9 +325,6 @@ public class CommonUtils {
         dateTime.setEncrypted(false);
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
-
-
-
 
 
         for (SubExtension subExtension : subExtensions) {

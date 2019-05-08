@@ -8,6 +8,17 @@ public class InstallModel {
     private String version_name;
     private boolean guest;
     private boolean encrypted;
+
+    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, boolean enable) {
+        this.apk = apk;
+        this.apk_name = apk_name;
+        this.package_name = package_name;
+        this.version_name = version_name;
+        this.guest = guest;
+        this.encrypted = encrypted;
+        this.enable = enable;
+    }
+
     private boolean enable;
 
     public InstallModel() {

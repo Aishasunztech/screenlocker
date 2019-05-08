@@ -105,6 +105,7 @@ public class IMEIActivity extends AppCompatActivity {
         if (isValidImei(imei)) {
 
             PrefUtils.saveBooleanPref(this, AppConstants.IMEI_CHANGED,true);
+
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");
             intent.putExtra("simSlotId", String.valueOf(slot));

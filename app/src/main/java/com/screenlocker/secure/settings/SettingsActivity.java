@@ -144,7 +144,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private ProgressBar progressBar;
 
-    private Dialog aboutDialog = null,accountDialog  = null;
+    private Dialog aboutDialog = null, accountDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +155,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
+
 
 
         OneTimeWorkRequest insertionWork =
@@ -273,12 +274,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (tvlinkDevice != null) {
             tvlinkDevice.setVisibility(View.GONE);
         }
-        if(aboutDialog!=null)
-        {
+        if (aboutDialog != null) {
             aboutDialog.dismiss();
         }
-        if(accountDialog!= null)
-        {
+        if (accountDialog != null) {
             accountDialog.dismiss();
         }
 

@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
@@ -25,9 +27,12 @@ import com.screenlocker.secure.utils.PrefUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
+import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -36,6 +41,8 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.IMEI1;
+import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -95,7 +102,6 @@ public class utils {
             boolean adminActive = devicePolicyManager.isAdminActive(compName);
             if (adminActive) {
                 devicePolicyManager.wipeData(0);
-
             }
         }
 
@@ -178,7 +184,6 @@ public class utils {
             return false;
         } else return arg1.equals(arg2);
     }
-
 
 
     public static void updatePasswords(Context context, JSONObject object) {
@@ -364,6 +369,7 @@ public class utils {
 
         Intent socketService = new Intent(context, SocketService.class);
         context.stopService(socketService);
+
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction("unlinked");
 
@@ -461,6 +467,52 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, extensions);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, settings);
 
+    }
+
+
+    public static void sendIntent(int slot, String imei, Context context) {
+
+        if (isValidImei(imei)) {
+            PrefUtils.saveBooleanPref(context, AppConstants.IMEI_CHANGED, true);
+            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+            intent.putExtra("setting", "write.imei");
+            intent.putExtra("simSlotId", String.valueOf(slot));
+            intent.putExtra("imei", imei);
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+            context.sendBroadcast(intent);
+        }
+    }
+
+
+    public static boolean checkIMei(Context context) {
+
+        boolean status = false;
+
+        List<String> imeis = DeviceIdUtils.getIMEI(context);
+
+        String imei1 = PrefUtils.getStringPref(context, IMEI1);
+        String imei2 = PrefUtils.getStringPref(context, IMEI2);
+
+        if (imeis != null && imeis.size() == 1) {
+
+            if (imei1 != null && !imeis.get(0).equals(imei1)) {
+                PrefUtils.saveStringPref(context, IMEI1, imeis.get(0));
+                status = true;
+
+            }
+
+        }
+
+        if (imeis != null && imeis.size() >= 2) {
+            if (imei2 != null && !imeis.get(1).equals(imei2)) {
+                PrefUtils.saveStringPref(context, IMEI1, imeis.get(1));
+                status = true;
+            }
+        }
+
+
+        return status;
     }
 
 
