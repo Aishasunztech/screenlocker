@@ -30,7 +30,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
@@ -167,9 +166,9 @@ public class SecureMarketActivity extends BaseActivity implements SecureMarketAd
 
     @Override
     public void onInstallClick(List app) {
-        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
-                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
-        downLoadAndInstallUpdate.execute();
+//        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
+//                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
+//        downLoadAndInstallUpdate.execute();
     }
 
     @Override

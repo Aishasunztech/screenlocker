@@ -140,6 +140,8 @@ public class LinkDeviceActivity extends BaseActivity {
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
         connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
 
+        Log.d("ConnectedDealerId",connectedDid);
+
         linkedDealerPin = DEALER_ID_DEFAULT;
 
         //get imei of device
@@ -516,6 +518,8 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
         tvLinkedStatus.setVisibility(View.VISIBLE);
+
+        PrefUtils.saveStringPref(this,AppConstants.KEY_DEVICE_LINKED,PrefUtils.getStringPref(LinkDeviceActivity.this,AUTO_LOGIN_PIN));
         // pgp Email
         String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
         if (pgp_Email != null) {

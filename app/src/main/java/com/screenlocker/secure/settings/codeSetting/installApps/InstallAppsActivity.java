@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -8,17 +9,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -34,11 +40,16 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -245,115 +256,122 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
         }
     }
-//    public static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
-//        private String appName, url;
-//        private WeakReference<Context> contextWeakReference;
-//        private ProgressDialog dialog;
-//
-//        DownLoadAndInstallUpdate(Context context, final String url, String appName) {
-//            contextWeakReference = new WeakReference<>(context);
-//            this.url = url;
-//            this.appName = appName;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            dialog = new ProgressDialog(contextWeakReference.get());
-//            dialog.setTitle("Downloading Update, Please Wait");
-//            dialog.setCancelable(false);
-//            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//            dialog.show();
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... voids) {
-//            return downloadApp();
-//        }
-//
-//
-//        private Boolean downloadApp() {
-//            FileOutputStream fileOutputStream = null;
-//            InputStream input = null;
-//            try {
-//                File file = contextWeakReference.get().getFileStreamPath(appName);
-//
-//                if (file.exists())
-//                    return true;
-//                try {
-//                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
-//                    URL downloadUrl = new URL(url);
-//                    URLConnection connection = downloadUrl.openConnection();
-//                    int contentLength = connection.getContentLength();
-//
-//                    // input = body.byteStream();
-//                    input = new BufferedInputStream(downloadUrl.openStream());
-//                    byte data[] = new byte[contentLength];
-//                    long total = 0;
-//                    int count;
-//                    while ((count = input.read(data)) != -1) {
-//                        total += count;
-//                        publishProgress((int) ((total * 100) / contentLength));
-//                        fileOutputStream.write(data, 0, count);
-//                    }
-//
-//                    return true;
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    return false;
-//                } finally {
-//                    if (fileOutputStream != null) {
-//                        fileOutputStream.flush();
-//                        fileOutputStream.close();
-//                    }
-//                    if (input != null)
-//                        input.close();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//
-//            }
-//            return false;
-//        }
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            super.onProgressUpdate(values);
-//            dialog.setProgress(values[0]);
-////            tvProgressText.setText(String.valueOf(values[0]));
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean aBoolean) {
-//            super.onPostExecute(aBoolean);
-//            if (dialog != null)
-//                dialog.dismiss();
-//            if (aBoolean) {
-//                showInstallDialog(appName);
-//            }
-//
-//        }
-//
-//        private void showInstallDialog(String appName) {
-//            File f = contextWeakReference.get().getFileStreamPath(appName);
-//            /*try {
-//                installPackage(appName);
-//            } catch (IOException e) {
-//                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
-//            }*/
-//            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
-//
-//            final Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setDataAndType(apkUri,
-//                    "application/vnd.android.package-archive");
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//
-//            contextWeakReference.get().startActivity(intent);
-//        }
-//
-//
-//    }
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+        private String appName, url;
+        private WeakReference<Context> contextWeakReference;
+        private ProgressDialog dialog;
+
+        DownLoadAndInstallUpdate(Context context, final String url, String appName) {
+            contextWeakReference = new WeakReference<>(context);
+            this.url = url;
+            this.appName = appName;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(contextWeakReference.get());
+            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setCancelable(false);
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return downloadApp();
+        }
+
+
+        private Boolean downloadApp() {
+            FileOutputStream fileOutputStream = null;
+            InputStream input = null;
+            try {
+                appName = appName.substring(0,(appName.length() -4));
+                File file = contextWeakReference.get().getFileStreamPath(appName);
+//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+
+                if (file.exists())
+                    return true;
+                try {
+                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+                    URL downloadUrl = new URL(url);
+                    URLConnection connection = downloadUrl.openConnection();
+                    int contentLength = connection.getContentLength();
+
+                    // input = body.byteStream();
+                    input = new BufferedInputStream(downloadUrl.openStream());
+                    byte data[] = new byte[contentLength];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress((int) ((total * 100) / contentLength));
+                        fileOutputStream.write(data, 0, count);
+                    }
+
+                    return true;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                } finally {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                    if (input != null)
+                        input.close();
+                    file.setReadable(true, false);
+
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            return false;
+        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            dialog.setProgress(values[0]);
+//            tvProgressText.setText(String.valueOf(values[0]));
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (dialog != null)
+                dialog.dismiss();
+            if (aBoolean) {
+                showInstallDialog(appName);
+            }
+
+        }
+
+        private void showInstallDialog(String appName) {
+            File f = contextWeakReference.get().getFileStreamPath(appName);
+            /*try {
+                installPackage(appName);
+            } catch (IOException e) {
+                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
+            }*/
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
+
+
+            final Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri,
+                    "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+
+            contextWeakReference.get().startActivity(intent);
+        }
+
+
+    }
 
     public String getAppLabel(PackageManager pm, String pathToApk) {
         PackageInfo packageInfo = pm.getPackageArchiveInfo(pathToApk, 0);
@@ -377,10 +395,15 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
 
+        String url = AppConstants.STAGING_BASE_URL + "/getApk/" +
+                CommonUtils.splitName(app.getApk());
+        Log.d("DownloadUrl",url);
+        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
+                new DownLoadAndInstallUpdate(this,AppConstants.STAGING_BASE_URL + "/getApk/" +
+                        CommonUtils.splitName(app.getApk()),app.getApk());
+        downLoadAndInstallUpdate.execute();
 
-        DownLoadAndInstallUpdate async = new DownLoadAndInstallUpdate(this,AppConstants.STAGING_BASE_URL + "/getApk/" +
-                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.install_app_activity));
-        async.execute();
+
     }
 
     @Override

@@ -131,6 +131,6 @@ public interface ApiOneCaller {
     @GET("admin/marketApplist")
     Call<InstallAppModel>  getAdminApps();
 
-    @GET("admin/marketApplist")
-    Call<InstallAppModel>  getAllApps();
+    @GET
+    Call<InstallAppModel>  getAllApps(@Url String url);
 }

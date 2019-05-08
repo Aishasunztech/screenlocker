@@ -64,6 +64,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         FileOutputStream fileOutputStream = null;
         InputStream input = null;
         try {
+            appName = appName.substring(0,(appName.length() -4));
             File file = contextWeakReference.get().getFileStreamPath(appName);
 
             if (file.exists())
