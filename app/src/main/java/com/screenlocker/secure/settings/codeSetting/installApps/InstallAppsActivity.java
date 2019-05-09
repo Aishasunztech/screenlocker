@@ -411,7 +411,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        File fileApk = getFileStreamPath(app.getApk());
+        String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+        File fileApk = getFileStreamPath(fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
