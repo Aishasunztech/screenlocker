@@ -260,7 +260,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
             getPushedApps();
             getPulledApps();
             imeiChanged();
-
             imeiHistory();
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -908,7 +907,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void imeiHistory() {
-        Timber.d("<<<Imei History >>>");
+        Timber.d("<<<Imei History >>> %s", checkIMei(this));
+
 
         if (checkIMei(this)) {
             if (socket != null) {
@@ -918,6 +918,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     String imei2 = PrefUtils.getStringPref(this, IMEI2);
 
                     JSONObject jsonObject = new JSONObject();
+
                     try {
                         jsonObject.put("device_id", device_id);
                         if (imei1 != null) {
@@ -934,6 +935,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         jsonObject.put("mac", mac);
 
                         socket.emit(IMEI_HISTORY + device_id, jsonObject);
+
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
