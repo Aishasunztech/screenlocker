@@ -16,13 +16,18 @@ import timber.log.Timber;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -34,17 +39,22 @@ import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.secureClear.SecureClearActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class SecureMarketActivity extends BaseActivity implements SecureMarketAdapter.AppInstallUpdateListener {
+import static com.screenlocker.secure.utils.Utils.hideKeyboard;
+
+public class SecureMarketActivity extends BaseActivity
+        implements SecureMarketAdapter.AppInstallUpdateListener {
 
     private Toolbar toolbar;
     private PackageManager mPackageManager;
     private ViewPager container;
     private TabLayout tabLayout;
     private EditText et_market_search;
+    private LinearLayout root_layout;
     private SearchQueryListener listener;
 
     @Override
@@ -58,6 +68,24 @@ public class SecureMarketActivity extends BaseActivity implements SecureMarketAd
         container = findViewById(R.id.marketContainer);
         tabLayout = findViewById(R.id.marketTabLayout);
         et_market_search = findViewById(R.id.et_marketSearch);
+        root_layout = findViewById(R.id.root_layou_market);
+//
+//        container.setOnTouchListener(this);
+//        tabLayout.setOnTouchListener(this);
+//        et_market_search.setOnTouchListener(this);
+
+        et_market_search.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+
+        });
+
+
+
+
+
 
         et_market_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -182,8 +210,48 @@ public class SecureMarketActivity extends BaseActivity implements SecureMarketAd
         }
     }
 
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//            if (v.getId() != R.id.et_marketSearch) {
+//                et_market_search.clearFocus();
+//                et_market_search.setFocusable(false);
+//                hideKeyboard(SecureMarketActivity.this);
+//            }
+//        return false;
+//    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            View view = getCurrentFocus();
+            int id = view.getId();
+            int searchId = R.id.root_layou_market;
+            if((view instanceof EditText))
+            {
+                Rect outRect = new Rect();
+                view.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)ev.getRawX(), (int)ev.getRawY())) {
+                    view.clearFocus();
+                    hideKeyboard(SecureMarketActivity.this);
+                }
+            }
+
+
+//            if(view.getId() != R.id.et_marketSearch)
+//            {
+//                et_market_search.setFocusable(false);
+//                hideKeyboard(SecureMarketActivity.this);
+//            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     public interface SearchQueryListener{
         void searchOnSubmit(String query);
         void searchOnQueryChange(String query);
     }
+
+
+
 }

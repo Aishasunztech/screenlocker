@@ -474,6 +474,14 @@ public class utils {
 
         if (isValidImei(imei)) {
 
+//            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+//            intent.putExtra("setting", "write.imei");
+//            intent.putExtra("simSlotId", String.valueOf(slot));
+//            intent.putExtra("imei", imei);
+//            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+//            context.sendBroadcast(intent);
+
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");
             intent.putExtra("simSlotId", String.valueOf(slot));

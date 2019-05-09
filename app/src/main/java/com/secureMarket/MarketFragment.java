@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.screenlocker.secure.BuildConfig;
@@ -61,6 +62,7 @@ public class MarketFragment extends Fragment implements
     private String fragmentType;
     private RecyclerView rc;
     private ProgressBar progressBar;
+    private TextView tvInfo;
     private java.util.List<List> appModelList;
     private PackageManager mPackageManager;
     private java.util.List<List> installedApps = new ArrayList<>();
@@ -84,6 +86,7 @@ public class MarketFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View view = inflater.from(getActivity()).inflate(R.layout.fragment_market, container, false);
         rc = view.findViewById(R.id.appList);
+        tvInfo = view.findViewById(R.id.tvNoDataFound);
         progressBar = view.findViewById(R.id.marketFragmentProgress);
         // Inflate the layout for this fragment
         return view;
@@ -92,6 +95,7 @@ public class MarketFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        tvInfo.setVisibility(View.GONE);
 
         String dealerId = PrefUtils.getStringPref(getActivity(),AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
@@ -141,11 +145,13 @@ public class MarketFragment extends Fragment implements
                                         rc.setAdapter(new SecureMarketAdapter(unInstalledApps, getActivity(), MarketFragment.this, fragmentType));
                                     }
                                     rc.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-
+                                    tvInfo.setVisibility(View.GONE);
 
                                 } else {
                                     if (response.body().getList() == null) {
                                         appModelList.clear();
+                                        tvInfo.setVisibility(View.VISIBLE);
+
 
                                     }
                                 }
@@ -216,7 +222,6 @@ public class MarketFragment extends Fragment implements
 
                         @Override
                         public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                            Toast.makeText(getActivity(), "list is empty", Toast.LENGTH_SHORT).show();
 
                             progressBar.setVisibility(View.GONE);
                         }
