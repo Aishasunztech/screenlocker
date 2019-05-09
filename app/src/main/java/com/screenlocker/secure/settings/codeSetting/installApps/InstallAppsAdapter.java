@@ -101,7 +101,9 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
                 btInstall.setVisibility(View.VISIBLE);
             }
 
+
             //if app is installed then show app uninstall button else show install button
+
 //            if (isAppInstalled(app.getAppPackage())) {
 //                btUnInstall.setVisibility(View.VISIBLE);
 //                btInstall.setVisibility(View.INVISIBLE);

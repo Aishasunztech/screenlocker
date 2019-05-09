@@ -102,7 +102,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             }
 
 
-            if (SocketManager.getInstance().getSocket().connected()) {
+            if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                 Intent pushedIntent = intent.setAction(ACTION_PUSH_APPS);
                 pushedIntent.putExtra("PackageName", installModel.getPackage_name());
@@ -147,7 +147,7 @@ public class NetworkReceiver extends BroadcastReceiver {
 
                 boolean isLast = intent.getBooleanExtra("isLast", false);
 
-                if (SocketManager.getInstance().getSocket().connected()) {
+                if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                     Intent pushedIntent = intent.setAction(ACTION_PULL_APPS);
                     pushedIntent.putExtra("PackageName", aPackageName);
