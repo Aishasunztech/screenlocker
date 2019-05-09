@@ -230,7 +230,8 @@ public class MarketFragment extends Fragment implements
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                File file = getActivity().getFileStreamPath(app.getApk());
+                String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+                File file = getActivity().getFileStreamPath(fileName);
                 if (file.exists()) {
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
                     if (appPackageName != null)
