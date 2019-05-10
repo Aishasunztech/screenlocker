@@ -11,9 +11,11 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.github.nkzawa.socketio.client.Socket;
@@ -26,6 +28,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.TransparentActivity;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
@@ -89,6 +92,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_SERVER_URL;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
 import static com.screenlocker.secure.utils.CommonUtils.getInstallList;
@@ -886,6 +890,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                 if (imei != null && imei.size() >= 2) {
                                     PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
                                 }
+
+                                Intent intent = new Intent(SocketService.this, TransparentActivity.class);
+                                startActivity(intent);
                                 imeiApplied();
                             }
                         } else {

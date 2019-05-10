@@ -30,13 +30,10 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
-
-
     <uses-permission android:name="android.permission.INTERNET" /> <!-- bluetooth permission -->
     <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -48,11 +45,9 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" /> <!-- permisions for overlay windows -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
 
     <application
@@ -65,6 +60,11 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".socket.TransparentActivity" >
+            <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.HOME" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </activity>
         <activity
             android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait"
@@ -306,8 +306,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
-
-
     </application>
 
 </manifest>
