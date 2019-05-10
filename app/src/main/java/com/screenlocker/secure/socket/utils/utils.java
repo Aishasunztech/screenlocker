@@ -350,7 +350,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-        PrefUtils.saveStringPref(context,KEY_DEVICE_LINKED,"");
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, "");
 
 
         String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
@@ -473,7 +473,15 @@ public class utils {
     public static void sendIntent(int slot, String imei, Context context) {
 
         if (isValidImei(imei)) {
-            PrefUtils.saveBooleanPref(context, AppConstants.IMEI_CHANGED, true);
+
+//            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+//            intent.putExtra("setting", "write.imei");
+//            intent.putExtra("simSlotId", String.valueOf(slot));
+//            intent.putExtra("imei", imei);
+//            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+//            context.sendBroadcast(intent);
+
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");
             intent.putExtra("simSlotId", String.valueOf(slot));
@@ -481,6 +489,8 @@ public class utils {
             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
             intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
             context.sendBroadcast(intent);
+
+
         }
     }
 

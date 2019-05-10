@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: android.arch.work:work-runtime:1.0.0-beta02@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-work-runtime-1.0.0-beta02.aar/05500e49c754c8ac2214d487e26f9b92/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-work-runtime-1.0.0-beta02.aar/05500e49c754c8ac2214d487e26f9b92/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-work-runtime-1.0.0-beta02.aar/791d8ce1bd03ab3d02c2e6735f1999f6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-work-runtime-1.0.0-beta02.aar/791d8ce1bd03ab3d02c2e6735f1999f6/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

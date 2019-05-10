@@ -71,15 +71,7 @@ public class MyApplication extends Application implements NetworkListener {
         appContext = getApplicationContext();
 
 
-        List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
 
-        if (imei != null && imei.size() == 1) {
-            PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
-        }
-
-        if (imei != null && imei.size() >= 2) {
-            PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
-        }
 
 
         try {

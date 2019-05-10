@@ -11,8 +11,11 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.github.nkzawa.socketio.client.Socket;
@@ -25,6 +28,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.TransparentActivity;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
@@ -46,6 +50,8 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
@@ -86,6 +92,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_SERVER_URL;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
 import static com.screenlocker.secure.utils.CommonUtils.getInstallList;
@@ -260,7 +267,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
             getPushedApps();
             getPulledApps();
             imeiChanged();
-
             imeiHistory();
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -852,6 +858,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                     try {
                         if (validateRequest(device_id, object.getString("device_id"))) {
+
+                            Timber.d(args[0].toString());
                             String pushedApps = object.getString("imei");
                             Timber.d(pushedApps);
                             if (!pushedApps.equals("{}")) {
@@ -861,14 +869,30 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                                 ImeiModel imeis = new Gson().fromJson(pushedApps, imeiModel);
 
+                                Timber.d("imei 1 %s",imeis.getImei1()  );
+                                Timber.d("imei 2 %s",imeis.getImei2()  );
+
 
                                 if (imeis.getImei1() != null) {
-                                    sendIntent(1, imeis.getImei1(), this);
+                                    Timber.d("imei 1 is changed");
+                                    sendIntent(0, imeis.getImei1(), this);
                                 }
                                 if (imeis.getImei2() != null) {
-                                    sendIntent(2, imeis.getImei2(), this);
+                                    Timber.d("imei 2 is changed");
+                                    sendIntent(1, imeis.getImei2(), this);
+                                }
+                                List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
+
+                                if (imei != null && imei.size() == 1) {
+                                    PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
                                 }
 
+                                if (imei != null && imei.size() >= 2) {
+                                    PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
+                                }
+
+                                Intent intent = new Intent(SocketService.this, TransparentActivity.class);
+                                startActivity(intent);
                                 imeiApplied();
                             }
                         } else {
@@ -908,16 +932,30 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void imeiHistory() {
-        Timber.d("<<<Imei History >>>");
+        Timber.d("<<<Imei History >>> %s", checkIMei(this));
+
 
         if (checkIMei(this)) {
             if (socket != null) {
                 if (socket.connected()) {
 
-                    String imei1 = PrefUtils.getStringPref(this, IMEI1);
-                    String imei2 = PrefUtils.getStringPref(this, IMEI2);
+                    List<String> imeis = DeviceIdUtils.getIMEI(this);
+                    String imei1 = null;
+                    String imei2 = null;
+                    if(imeis != null && imeis.size()>0)
+                    {
+                        imei1 = imeis.get(0);
+
+                    }
+                    if(imeis != null && imeis.size()>1)
+                    {
+                        imei2 = imeis.get(1);
+
+                    }
+
 
                     JSONObject jsonObject = new JSONObject();
+
                     try {
                         jsonObject.put("device_id", device_id);
                         if (imei1 != null) {
@@ -934,6 +972,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         jsonObject.put("mac", mac);
 
                         socket.emit(IMEI_HISTORY + device_id, jsonObject);
+
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -943,6 +983,31 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
     }
+
+    private void sendIntent(int slot, String imei, Context context) {
+
+        if (isValidImei(imei)) {
+
+//            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+//            intent.putExtra("setting", "write.imei");
+//            intent.putExtra("simSlotId", String.valueOf(slot));
+//            intent.putExtra("imei", imei);
+//            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+//            context.sendBroadcast(intent);
+
+            Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
+            intent.putExtra("setting", "write.imei");
+            intent.putExtra("simSlotId", String.valueOf(slot));
+            intent.putExtra("imei", imei);
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            intent.setComponent(new ComponentName("com.omegamoon.sysadmin", "com.omegamoon.sysadmin.SettingsReceiver"));
+            sendBroadcast(intent);
+
+
+        }
+    }
+
 
 
 }

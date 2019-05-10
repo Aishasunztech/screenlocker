@@ -135,8 +135,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                                 if (appModelList.size() == 0) {
 
                                 }
-                                mAdapter.notifyDataSetChanged();
                                 checkAppInstalledOrNot(appModelList);
+                                mAdapter.notifyDataSetChanged();
                             }
 
                         }
@@ -154,11 +154,14 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
 
     private void checkAppInstalledOrNot(List<com.screenlocker.secure.settings.codeSetting.installApps.List> list) {
+        Log.d("CheckAppInstalledOrNot","called");
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                File file = getFileStreamPath(app.getApk());
+                String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+                File file = getFileStreamPath(fileName);
                 if (file.exists()) {
+                    Log.d("FileExists","Yes");
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
                     if (appPackageName != null)
                         app.setInstalled(appInstalledOrNot(appPackageName));
@@ -408,7 +411,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        File fileApk = getFileStreamPath(app.getApk());
+        String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+        File fileApk = getFileStreamPath(fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
