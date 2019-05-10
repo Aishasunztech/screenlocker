@@ -67,6 +67,7 @@ public class MarketFragment extends Fragment implements
     private PackageManager mPackageManager;
     private java.util.List<List> installedApps = new ArrayList<>();
     private java.util.List<List> unInstalledApps = new ArrayList<>();
+    private ProgressDialog progressDialog;
 
     public MarketFragment() {
         // Required empty public constructor
@@ -79,6 +80,7 @@ public class MarketFragment extends Fragment implements
         fragmentType = getArguments().getString("check");
         appModelList = new ArrayList<>();
         mPackageManager = getActivity().getPackageManager();
+        progressDialog = new ProgressDialog(getActivity());
     }
 
     @Override
@@ -288,7 +290,7 @@ public class MarketFragment extends Fragment implements
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
             DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(getActivity(), AppConstants.STAGING_BASE_URL + "/getApk/" +
-                    CommonUtils.splitName(app.getApk()), app.getApk());
+                    CommonUtils.splitName(app.getApk()), app.getApk(),progressDialog);
             downLoadAndInstallUpdate.execute();
 
         });
@@ -380,17 +382,19 @@ public class MarketFragment extends Fragment implements
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
 
-        DownLoadAndInstallUpdate(Context context, final String url, String appName) {
+
+        DownLoadAndInstallUpdate(Context context, final String url, String appName,ProgressDialog dialog) {
             contextWeakReference = new WeakReference<>(context);
             this.url = url;
             this.appName = appName;
+            this.dialog = dialog;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new ProgressDialog(contextWeakReference.get());
-            dialog.setTitle("Downloading Update, Please Wait");
+//            dialog = new ProgressDialog(contextWeakReference.get());
+            dialog.setTitle("Downloading App, Please Wait");
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dialog.show();
@@ -490,5 +494,17 @@ public class MarketFragment extends Fragment implements
         }
 
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        progressDialog.dismiss();
     }
 }
