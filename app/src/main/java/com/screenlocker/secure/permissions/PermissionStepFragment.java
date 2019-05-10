@@ -76,7 +76,12 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     private ComponentName compName;
 
 
-    //only next if user has allowed all permissions
+    /**
+    * This method is called when user clicks the next button.
+     *
+     *  User is only allowed to move to next step if he/she has granted all the permissions
+     *
+    */
     @Override
     public boolean nextIf() {
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ADMIN) &&
@@ -88,6 +93,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION) &&
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_BATTERY)) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
+            //all the permissions are granted, can move t0o next
             return true;
         }
         return false;
@@ -114,23 +120,20 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         return "Please Grant all permissions";
     }
 
-
-    @BindView(R.id.active_admin)
-    Switch activeAdmin;
-    @BindView(R.id.active_drawoverlay)
-    Switch drawoverlay;
-    @BindView(R.id.active_modify)
-    Switch modifiSystemState;
-    @BindView(R.id.active_usage)
-    Switch usageAccess;
-    @BindView(R.id.active_runtime)
-    Switch runtimePermissions;
-    @BindView(R.id.active_unknown)
-    Switch unknownResources;
-    @BindView(R.id.active_notification)
-    Switch notificationAccess;
-    @BindView(R.id.active_battery_optimization)
-    Switch batteryOptimization;
+    /**
+    * Bind all views
+    */
+    @BindView(R.id.active_admin) Switch activeAdmin;
+    @BindView(R.id.active_drawoverlay) Switch drawoverlay;
+    @BindView(R.id.active_modify) Switch modifiSystemState;
+    @BindView(R.id.active_usage) Switch usageAccess;
+    @BindView(R.id.active_runtime) Switch runtimePermissions;
+    @BindView(R.id.active_unknown) Switch unknownResources;
+    @BindView(R.id.active_notification) Switch notificationAccess;
+    @BindView(R.id.active_battery_optimization) Switch batteryOptimization;
+    /**
+    * Layout references to hide permission which are already granted
+    */
     @BindView(R.id.layout_allow_overlay) LinearLayout layoutOverLay;
     @BindView(R.id.layout_allow_usage) LinearLayout layoutUsage;
     @BindView(R.id.layout_allow_admin) LinearLayout layoutAdmin;
@@ -153,6 +156,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             activeAdmin.setChecked(true);
             activeAdmin.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, true);
+            layoutAdmin.setVisibility(GONE);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, false);
         activeAdmin.setOnCheckedChangeListener(this);
         if (Settings.canDrawOverlays(getContext())) {

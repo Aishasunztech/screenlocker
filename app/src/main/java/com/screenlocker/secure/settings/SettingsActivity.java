@@ -8,20 +8,24 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -38,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -88,6 +93,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
@@ -151,11 +157,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
-
 
 
         OneTimeWorkRequest insertionWork =
@@ -190,6 +196,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     public void init() {
+        Intent receiver = getIntent();
+        if (receiver != null && receiver.hasExtra("update")){
+            new AlertDialog.Builder(this)
+                    .setTitle("Success")
+                    .setMessage("App Updated Successfully")
+                    .setPositiveButton("DISMISS", (dialog, which) -> {
+                        dialog.dismiss();
+                    }).show();
+        }
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -597,7 +612,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                 .setMessage("New update available! Press OK to update your system.")
                                                 .setPositiveButton("OK", (dialog12, which) -> {
                                                     String url = response.body().getApkUrl();
-                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, AppConstants.STAGING_BASE_URL + "/getApk/" + CommonUtils.splitName(url));
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, AppConstants.STAGING_BASE_URL + "getApk/" + CommonUtils.splitName(url));
                                                     obj.execute();
                                                 }).setNegativeButton("Cancel", (dialog1, which) -> {
                                                     dialog1.dismiss();
@@ -620,142 +635,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             }
                         });
             } else {
+                dialog.dismiss();
                 Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
             }
 
     }
-
-
-//    public void handleSetMainPassword(AppCompatActivity activity, View rootLayout) {
-//
-//        if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
-//            Intent i = new Intent(activity, SetUpLockActivity.class);
-//            i.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-//            activity.startActivityForResult(i, REQUEST_CODE_PASSWORD);
-//        } else {
-//            final EditText input = new EditText(activity);
-//            if (settingsPresenter == null) {
-//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-//                    @Override
-//                    public int hashCode() {
-//                        return super.hashCode();
-//                    }
-//                }, new SettingsModel(activity));
-//
-//            }
-//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-//
-//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-//                    return;
-//                }
-//
-//                if (input.getText().toString().
-//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-//                                KEY_MAIN_PASSWORD))) {
-//                    // if password is right then allow user to change it
-//                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-//                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-//                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
-//
-//                } else {
-//                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-////                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-//                }
-//            }, null, activity.getString(R.string.please_enter_current_encrypted_password));
-//        }
-//
-//    }
-//
-//    public void handleSetDuressPassword(AppCompatActivity activity, View rootLayout) {
-//        if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
-//            new AlertDialog.Builder(activity).
-//                    setTitle("Warning!")
-//                    .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.").setPositiveButton("Ok", (dialogInterface, i) -> {
-//                Intent intent = new Intent(activity, SetUpLockActivity.class);
-//                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-//                activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-//            })
-//                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
-//                    .show();
-//
-//        } else {
-//            final EditText input = new EditText(activity);
-//            if (settingsPresenter == null) {
-//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-//                    @Override
-//                    public int hashCode() {
-//                        return super.hashCode();
-//                    }
-//                }, new SettingsModel(activity));
-//
-//            }
-//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-//
-//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-//                    return;
-//                }
-//
-//                if (input.getText().toString().
-//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-//                                AppConstants.KEY_DURESS_PASSWORD))) {
-//                    // if password is right then allow user to change it
-//                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
-//                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-//                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
-//
-//                } else {
-//                    showAlertDialog(activity, "Invalid password!", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-////                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-//                }
-//            }, null, activity.getString(R.string.please_enter_current_duress_password));
-//        }
-//    }
-//
-//    public void handleSetGuestPassword(AppCompatActivity activity, View rootLayout) {
-//
-//        if (PrefUtils.getStringPref(activity, KEY_GUEST_PASSWORD) == null) {
-//            Intent intent = new Intent(activity, SetUpLockActivity.class);
-//            intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-//            activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-//        } else {
-//            final EditText input = new EditText(activity);
-//
-//            if (settingsPresenter == null) {
-//                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-//                    @Override
-//                    public int hashCode() {
-//                        return super.hashCode();
-//                    }
-//                }, new SettingsModel(activity));
-//
-//            }
-//
-//            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-//
-//                if (TextUtils.isEmpty(input.getText().toString().trim())) {
-//                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
-//                    return;
-//                }
-//
-//                if (input.getText().toString().
-//                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
-//                                KEY_GUEST_PASSWORD))) {
-//                    // if password is right then allow user to change it
-//
-//                    Intent intent = new Intent(activity, SetUpLockActivity.class);
-//                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-//                    activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-//
-//                } else {
-//                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
-//                }
-//            }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
-//        }
-//
-//
-//    }
 
     private void showNetworkDialog() {
 
@@ -1045,7 +929,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
@@ -1066,21 +950,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Uri doInBackground(Void... voids) {
             return downloadApp();
         }
 
 
-        private Boolean downloadApp() {
+        private Uri downloadApp() {
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-//                File file = contextWeakReference.get().getFileStreamPath(appName);
-
                 appName = new Date().getTime() + ".apk";
+                File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
+                File file = new File(apksPath, appName);
+                if (!apksPath.exists()) {
+                    apksPath.mkdir();
+                }
 
                 try {
-                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+                    fileOutputStream = new FileOutputStream(file);
 
                     URL downloadUrl = new URL(url);
                     URLConnection connection = downloadUrl.openConnection();
@@ -1096,12 +983,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         publishProgress((int) ((total * 100) / contentLength));
                         fileOutputStream.write(data, 0, count);
                     }
+                    Uri contentUri = FileProvider.getUriForFile(contextWeakReference.get(), "com.vortexlocker.app.fileprovider", file);
 
-                    return true;
+                    //Uri uri =  FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                    Log.d("downloadApp", "downloadApp: "+contentUri.toString());
+                    return contentUri;
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return false;
+                    return null;
                 } finally {
                     if (fileOutputStream != null) {
                         fileOutputStream.flush();
@@ -1114,7 +1005,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 e.printStackTrace();
 
             }
-            return false;
+            return null;
         }
 
         @Override
@@ -1125,60 +1016,34 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Uri uri) {
+            super.onPostExecute(uri);
             if (dialog != null)
                 dialog.dismiss();
-            if (aBoolean) {
-                showInstallDialog(appName);
+            if (uri != null) {
+                showInstallDialog(uri);
+            }else {
+                Toast.makeText(contextWeakReference.get(), "Some Error Occured", Toast.LENGTH_SHORT).show();
             }
 
         }
 
-        private void showInstallDialog(String appName) {
-            File f = contextWeakReference.get().getFileStreamPath(appName);
-            /*try {
-                installPackage(appName);
-            } catch (IOException e) {
-                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
-            }*/
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
-
-            final Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(apkUri,
-                    "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        private void showInstallDialog(Uri apkUri) {
 
 
-            contextWeakReference.get().startActivity(intent);
-        }
+//            contextWeakReference.get().grantUriPermission("com.secure.systemcontrol",apkUri,
+//                    FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//
+//            contextWeakReference.get().revokeUriPermission(apkUri,FLAG_GRANT_READ_URI_PERMISSION |Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            Intent launchIntent = contextWeakReference.get().getPackageManager().getLaunchIntentForPackage("com.secure.systemcontrol");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            launchIntent.setData(apkUri);
+            launchIntent.putExtra("package", contextWeakReference.get().getPackageName());
+            launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
 
-        private void installPackage(String inputStream)
-                throws IOException {
-
-            PackageInstaller packageInstaller = contextWeakReference.get().getPackageManager().getPackageInstaller();
-            int sessionId = packageInstaller.createSession(new PackageInstaller
-                    .SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL));
-            PackageInstaller.Session session = packageInstaller.openSession(sessionId);
-
-            long sizeBytes = 0;
-            InputStream inputStream1 = new FileInputStream(inputStream);
-
-            OutputStream out = null;
-            out = session.openWrite("my_app_session", 0, sizeBytes);
-
-            int total = 0;
-            byte[] buffer = new byte[65536];
-            int c;
-            while ((c = inputStream1.read(buffer)) != -1) {
-                total += c;
-                out.write(buffer, 0, c);
-            }
-            session.fsync(out);
-            inputStream1.close();
-            out.close();
-
-            session.commit(createIntentSender(sessionId));
+          contextWeakReference.get().startActivity(launchIntent);
         }
 
         private IntentSender createIntentSender(int sessionId) {
