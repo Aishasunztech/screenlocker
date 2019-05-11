@@ -115,13 +115,17 @@ public class MyApplication extends Application implements NetworkListener {
                 .build();
 
         apiOneCaller = component.getApiOneCaller();
+
+
+
 //   startService(new Intent(this,LifecycleReceiverService.class));
         networkReceiver = new NetworkReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction("com.secure.systemcontroll.PackageAdded");
-        filter.addAction("com.secure.systemcontrol.PACKAGE_DELETED");
+        filter.addAction("com.secure.systemcontroll.PackageDeleted");
         registerReceiver(networkReceiver, filter);
+
 
     }
 

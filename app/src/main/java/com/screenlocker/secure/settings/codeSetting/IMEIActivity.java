@@ -104,7 +104,7 @@ public class IMEIActivity extends AppCompatActivity {
     private void sendIntent(int slot, String imei) {
         if (isValidImei(imei)) {
 
-            PrefUtils.saveBooleanPref(this, AppConstants.IMEI_CHANGED,true);
+            PrefUtils.saveBooleanPref(this, AppConstants.IMEI_CHANGED, true);
 
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");
@@ -122,11 +122,31 @@ public class IMEIActivity extends AppCompatActivity {
     }
 
 
+    private boolean backPress = false;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        backPress = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        backPress = true;
+
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-
-
+        if (!backPress) {
+            if (CodeSettingActivity.codeSettingsInstance != null) {
+                //  finish previous activity and this activity
+                CodeSettingActivity.codeSettingsInstance.finish();
+            }
+        }
         finish();
 
     }

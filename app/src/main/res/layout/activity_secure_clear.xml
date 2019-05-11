@@ -40,7 +40,7 @@
             android:layout_height="@dimen/_20sdp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_secure_clear"
+            android:contentDescription="TODO" android:src="@drawable/ic_secure_clear"
             android:tint="@android:color/black" />
 
         <LinearLayout

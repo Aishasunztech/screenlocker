@@ -42,6 +42,7 @@ public class NetworkReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
             if (noConnectivity) {
@@ -82,7 +83,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                         appInfo.setEnable(installModel.isEnable());
                         appInfo.setLabel(label);
                         appInfo.setPackageName(installModel.getPackage_name());
-                        appInfo.setUniqueName(installModel.getApk_name() + label);
+                        appInfo.setUniqueName(installModel.getPackage_name() + label);
                         appInfo.setIcon(icon);
                         int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
                         Timber.d("result :%s", i);
@@ -133,51 +134,44 @@ public class NetworkReceiver extends BroadcastReceiver {
 
             }
 
-        } else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PACKAGE_DELETED")) {
+        } else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageDeleted")) {
 
+            Timber.d("packageDeleted");
 
-            try {
+            String aPackageName = intent.getStringExtra("package");
+            Timber.d("package %s", aPackageName);
 
-                PackageManager pm = context.getPackageManager();
+            String label = intent.getStringExtra("label");
+            Timber.d("label %s", label);
 
-                String aPackageName = intent.getStringExtra("package");
-                ApplicationInfo applicationInfo = pm.getApplicationInfo(aPackageName, 0);
+            new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
 
-                String label = pm.getApplicationLabel(applicationInfo).toString();
+            boolean isLast = intent.getBooleanExtra("isLast", false);
 
-                boolean isLast = intent.getBooleanExtra("isLast", false);
+            if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+                Intent pulledIntent = intent.setAction(ACTION_PULL_APPS);
+                pulledIntent.putExtra("PackageName", aPackageName);
+                pulledIntent.putExtra("Status", true);
 
-                if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-                    Intent pushedIntent = intent.setAction(ACTION_PULL_APPS);
-                    pushedIntent.putExtra("PackageName", aPackageName);
-                    pushedIntent.putExtra("Status", true);
-
-                    if (isLast) {
-                        pushedIntent.putExtra("finish_status", true);
-                    }
-
-                    localBroadcastManager.sendBroadcast(pushedIntent);
-                } else {
-                    String hashMApGson = PrefUtils.getStringPref(context, DELETE_HASH_MAP);
-                    if (hashMApGson == null) {
-                        HashMap<String, Boolean> h = new HashMap<>();
-                        h.put(aPackageName, true);
-                        PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
-                    } else {
-                        Type hashType = new TypeToken<HashMap<String, Boolean>>() {
-                        }.getType();
-                        HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
-                        h.put(aPackageName, true);
-                        PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
-                    }
+                if (isLast) {
+                    pulledIntent.putExtra("finish_status", true);
                 }
 
-                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
-
-
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+                localBroadcastManager.sendBroadcast(pulledIntent);
+            } else {
+                String hashMApGson = PrefUtils.getStringPref(context, DELETE_HASH_MAP);
+                if (hashMApGson == null) {
+                    HashMap<String, Boolean> h = new HashMap<>();
+                    h.put(aPackageName, true);
+                    PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
+                } else {
+                    Type hashType = new TypeToken<HashMap<String, Boolean>>() {
+                    }.getType();
+                    HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
+                    h.put(aPackageName, true);
+                    PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
+                }
             }
 
 

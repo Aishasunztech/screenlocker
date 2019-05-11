@@ -26,7 +26,7 @@
         android:layout_width="@dimen/_250sdp"
         android:layout_height="wrap_content"
         android:hint="Name"
-        app:layout_constraintTop_toBottomOf="@id/tv_label"
+        app:layout_constraintTop_toBottomOf="@id/tv_label" android:inputType="" 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="@dimen/_10sdp"

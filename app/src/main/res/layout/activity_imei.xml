@@ -61,7 +61,7 @@
         android:hint="IMEI"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+        app:layout_constraintTop_toBottomOf="@+id/radio_group" android:inputType=""  />
 
     <Button
         android:id="@+id/save_imei"

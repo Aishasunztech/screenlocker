@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,8 +51,10 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,13 +102,11 @@ public class MarketFragment extends Fragment implements
         super.onResume();
         tvInfo.setVisibility(View.GONE);
 
-        String dealerId = PrefUtils.getStringPref(getActivity(),AppConstants.KEY_DEVICE_LINKED);
+        String dealerId = PrefUtils.getStringPref(getActivity(), AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
-        if(dealerId == null || dealerId.equals(""))
-        {
+        if (dealerId == null || dealerId.equals("")) {
             getAdminApps();
-        }
-        else{
+        } else {
             getAllApps(dealerId);
         }
 
@@ -131,7 +132,7 @@ public class MarketFragment extends Fragment implements
 
                                     checkAppInstalledOrNot(appModelList);
                                     for (List app : appModelList) {
-                                        Log.d("AppsList",app.getApkName());
+                                        Log.d("AppsList", app.getApkName());
                                         if (app.isInstalled()) {
                                             installedApps.add(app);
                                         } else {
@@ -193,7 +194,7 @@ public class MarketFragment extends Fragment implements
 
                                     checkAppInstalledOrNot(appModelList);
                                     for (List app : appModelList) {
-                                        Log.d("AppsList",app.getApkName());
+                                        Log.d("AppsList", app.getApkName());
                                         if (app.isInstalled()) {
                                             installedApps.add(app);
                                         } else {
@@ -237,7 +238,7 @@ public class MarketFragment extends Fragment implements
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+                String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
                 File file = getActivity().getFileStreamPath(fileName);
                 if (file.exists()) {
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
@@ -290,7 +291,7 @@ public class MarketFragment extends Fragment implements
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
             DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(getActivity(), AppConstants.STAGING_BASE_URL + "/getApk/" +
-                    CommonUtils.splitName(app.getApk()), app.getApk(),progressDialog);
+                    CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog);
             downLoadAndInstallUpdate.execute();
 
         });
@@ -303,7 +304,7 @@ public class MarketFragment extends Fragment implements
 
     @Override
     public void onUnInstallClick(List app) {
-        String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+        String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
         File fileApk = getActivity().getFileStreamPath(fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
@@ -377,13 +378,13 @@ public class MarketFragment extends Fragment implements
         }
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
 
 
-        DownLoadAndInstallUpdate(Context context, final String url, String appName,ProgressDialog dialog) {
+        DownLoadAndInstallUpdate(Context context, final String url, String appName, ProgressDialog dialog) {
             contextWeakReference = new WeakReference<>(context);
             this.url = url;
             this.appName = appName;
@@ -401,23 +402,27 @@ public class MarketFragment extends Fragment implements
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Uri doInBackground(Void... voids) {
             return downloadApp();
         }
 
 
-        private Boolean downloadApp() {
+        private Uri downloadApp() {
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-                appName = appName.substring(0,(appName.length() -4));
-//                File file = contextWeakReference.get().getFileStreamPath(appName);
-                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+
+                File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
+                File file = new File(apksPath, appName);
+//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+                if (!apksPath.exists()){
+                    apksPath.mkdir();
+                }
 
                 if (file.exists())
-                    return true;
+                    return null;
                 try {
-                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+                    fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
                     URLConnection connection = downloadUrl.openConnection();
                     int contentLength = connection.getContentLength();
@@ -433,11 +438,10 @@ public class MarketFragment extends Fragment implements
                         fileOutputStream.write(data, 0, count);
                     }
 
-                    return true;
-
+                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return false;
+                    return null;
                 } finally {
                     if (fileOutputStream != null) {
                         fileOutputStream.flush();
@@ -453,8 +457,9 @@ public class MarketFragment extends Fragment implements
                 e.printStackTrace();
 
             }
-            return false;
+            return null;
         }
+
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
@@ -463,34 +468,27 @@ public class MarketFragment extends Fragment implements
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Uri uri) {
+            super.onPostExecute(uri);
+            Log.d("kikhfihfihdihso", "onPostExecute: "+uri);
             if (dialog != null)
                 dialog.dismiss();
-            if (aBoolean) {
-                showInstallDialog(appName);
+            if (uri !=null) {
+                showInstallDialog(uri);
             }
 
         }
 
-        private void showInstallDialog(String appName) {
-            File f = contextWeakReference.get().getFileStreamPath(appName);
-            /*try {
-                installPackage(appName);
-            } catch (IOException e) {
-                Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
-            }*/
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
-
+        private void showInstallDialog(Uri uri) {
 
             final Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(apkUri,
+            intent.setDataAndType(uri,
                     "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 
             contextWeakReference.get().startActivity(intent);
+
         }
 
 

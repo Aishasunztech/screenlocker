@@ -723,23 +723,23 @@ public class SocketService extends Service implements OnSocketConnectionListener
         try {
             if (socket.connected()) {
                 socket.on(GET_PULLED_APPS + device_id, args -> {
-                    Timber.d("<<< GETTING PUSHED APPS>>>");
+                    Timber.d("<<< GETTING PULLED APPS>>>");
                     JSONObject object = (JSONObject) args[0];
 
                     try {
                         if (validateRequest(device_id, object.getString("device_id"))) {
 
 
-                            String pushedApps = object.getString("push_apps");
-                            Timber.d(pushedApps);
+                            String pullApps = object.getString("pull_apps");
+                            Timber.d(pullApps);
 
-                            if (!pushedApps.equals("[]")) {
+                            if (!pullApps.equals("[]")) {
                                 Type listType = new TypeToken<ArrayList<InstallModel>>() {
                                 }.getType();
-                                List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
+                                List<InstallModel> list = new Gson().fromJson(pullApps, listType);
                                 String apps = new Gson().toJson(getInstallList(list));
                                 final Intent intent = new Intent();
-                                intent.setAction("com.secure.systemcontrol.INSTALL_PACKAGES");
+                                intent.setAction("com.secure.systemcontrol.DELETE_PACKAGES");
                                 intent.putExtra("json", apps);
                                 intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                                 intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackageUninstallReceiver"));
@@ -869,8 +869,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                                 ImeiModel imeis = new Gson().fromJson(pushedApps, imeiModel);
 
-                                Timber.d("imei 1 %s",imeis.getImei1()  );
-                                Timber.d("imei 2 %s",imeis.getImei2()  );
+                                Timber.d("imei 1 %s", imeis.getImei1());
+                                Timber.d("imei 2 %s", imeis.getImei2());
 
 
                                 if (imeis.getImei1() != null) {
@@ -942,13 +942,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     List<String> imeis = DeviceIdUtils.getIMEI(this);
                     String imei1 = null;
                     String imei2 = null;
-                    if(imeis != null && imeis.size()>0)
-                    {
+                    if (imeis != null && imeis.size() > 0) {
                         imei1 = imeis.get(0);
 
                     }
-                    if(imeis != null && imeis.size()>1)
-                    {
+                    if (imeis != null && imeis.size() > 1) {
                         imei2 = imeis.get(1);
 
                     }
@@ -1007,7 +1005,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         }
     }
-
 
 
 }

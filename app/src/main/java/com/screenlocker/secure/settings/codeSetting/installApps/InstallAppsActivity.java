@@ -154,14 +154,14 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
 
     private void checkAppInstalledOrNot(List<com.screenlocker.secure.settings.codeSetting.installApps.List> list) {
-        Log.d("CheckAppInstalledOrNot","called");
+        Log.d("CheckAppInstalledOrNot", "called");
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+                String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
                 File file = getFileStreamPath(fileName);
                 if (file.exists()) {
-                    Log.d("FileExists","Yes");
+                    Log.d("FileExists", "Yes");
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
                     if (appPackageName != null)
                         app.setInstalled(appInstalledOrNot(appPackageName));
@@ -259,6 +259,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
         }
     }
+
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
@@ -290,7 +291,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-                appName = appName.substring(0,(appName.length() -4));
+                appName = appName.substring(0, (appName.length() - 4));
                 File file = contextWeakReference.get().getFileStreamPath(appName);
 //                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
 
@@ -335,6 +336,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             }
             return false;
         }
+
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
@@ -345,11 +347,16 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if (dialog != null)
-                dialog.dismiss();
-            if (aBoolean) {
-                showInstallDialog(appName);
+            try {
+                if (dialog != null)
+                    dialog.dismiss();
+                if (aBoolean) {
+                    showInstallDialog(appName);
+                }
+            } catch (Exception e) {
+                Timber.d(e);
             }
+
 
         }
 
@@ -360,7 +367,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             } catch (IOException e) {
                 Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
             }*/
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", f);
 
 
             final Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -398,12 +405,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
 
-        String url = AppConstants.STAGING_BASE_URL + "/getApk/" +
-                CommonUtils.splitName(app.getApk());
-        Log.d("DownloadUrl",url);
         DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(this,AppConstants.STAGING_BASE_URL + "/getApk/" +
-                        CommonUtils.splitName(app.getApk()),app.getApk());
+                new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
+                        CommonUtils.splitName(app.getApk()), app.getApk());
+
         downLoadAndInstallUpdate.execute();
 
 
@@ -411,7 +416,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        String fileName = app.getApk().substring(0,(app.getApk().length()-4));
+        String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
         File fileApk = getFileStreamPath(fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
@@ -429,7 +434,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         checkAppInstalledOrNot(appModelList);
         mAdapter.notifyDataSetChanged();
     }
-
 
     @Override
     protected void onPause() {

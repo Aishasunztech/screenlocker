@@ -60,10 +60,13 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".socket.TransparentActivity">
-        </activity>
         <activity
-            android:name=".settings.Wallpaper.ChangeWallpaper"
+            android:name=".socket.TransparentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name=".settings$Wallpaper$ChangeWallpaper"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -87,7 +90,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -135,7 +138,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.Wallpaper.WallpaperActivity"
+            android:name=".settings$Wallpaper$WallpaperActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -160,8 +163,7 @@
         <service
             android:name=".service.LockScreenService"
             android:enabled="true"
-            android:exported="true"
-            android:permission="" />
+            android:exported="true" />
         <service
             android:name=".service.DeviceNotificationListener"
             android:enabled="true"
@@ -278,7 +280,7 @@
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.Sim.SimActivity"
+            android:name=".settings$codeSetting$Sim$SimActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mdm.MainActivity"
@@ -303,6 +305,19 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+
+        <activity
+            android:name=".settings.codeSetting.Sim.SimActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".settings.Wallpaper.WallpaperActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".settings.Wallpaper.ChangeWallpaper"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
