@@ -730,6 +730,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         if (validateRequest(device_id, object.getString("device_id"))) {
 
 
+
                             String pullApps = object.getString("pull_apps");
                             Timber.d(pullApps);
 

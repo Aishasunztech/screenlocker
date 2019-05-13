@@ -1,6 +1,7 @@
 package com.secureMarket;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -238,8 +240,10 @@ public class MarketFragment extends Fragment implements
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
-                File file = getActivity().getFileStreamPath(fileName);
+                String fileName = app.getApk();
+//                File file = getActivity().getFileStreamPath(fileName);
+                File apksPath = new File(getActivity().getFilesDir(), "apk");
+                File file = new File(apksPath, fileName);
                 if (file.exists()) {
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
                     if (appPackageName != null)
@@ -304,8 +308,10 @@ public class MarketFragment extends Fragment implements
 
     @Override
     public void onUnInstallClick(List app) {
-        String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
-        File fileApk = getActivity().getFileStreamPath(fileName);
+        String fileName = app.getApk();
+        File dir = new File(getActivity().getFilesDir(),"apk");
+
+        File fileApk = new File(dir,fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
@@ -420,7 +426,7 @@ public class MarketFragment extends Fragment implements
                 }
 
                 if (file.exists())
-                    return null;
+                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
@@ -480,13 +486,13 @@ public class MarketFragment extends Fragment implements
         }
 
         private void showInstallDialog(Uri uri) {
-
-            final Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri,
-                    "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             contextWeakReference.get().startActivity(intent);
 
         }

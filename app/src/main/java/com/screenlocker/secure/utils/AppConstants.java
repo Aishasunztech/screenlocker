@@ -67,13 +67,13 @@ public class AppConstants {
 
     public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
 
-//    public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.0.109:3000/mobile/";//for localhost real device
+    public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.0.109:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.109:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.109:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";

@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -158,8 +160,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
-                File file = getFileStreamPath(fileName);
+                String fileName = app.getApk();
+//                File file = getActivity().getFileStreamPath(fileName);
+                File apksPath = new File(getFilesDir(), "apk");
+                File file = new File(apksPath, fileName);
                 if (file.exists()) {
                     Log.d("FileExists", "Yes");
                     String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
@@ -260,7 +264,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
@@ -282,23 +286,27 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Uri doInBackground(Void... voids) {
             return downloadApp();
         }
 
 
-        private Boolean downloadApp() {
+        private Uri downloadApp() {
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-                appName = appName.substring(0, (appName.length() - 4));
-                File file = contextWeakReference.get().getFileStreamPath(appName);
+
+                File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
+                File file = new File(apksPath, appName);
 //                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+                if (!apksPath.exists()) {
+                    apksPath.mkdir();
+                }
 
                 if (file.exists())
-                    return true;
+                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 try {
-                    fileOutputStream = contextWeakReference.get().openFileOutput(appName, MODE_PRIVATE);
+                    fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
                     URLConnection connection = downloadUrl.openConnection();
                     int contentLength = connection.getContentLength();
@@ -314,11 +322,11 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                         fileOutputStream.write(data, 0, count);
                     }
 
-                    return true;
+                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return false;
+                    return null;
                 } finally {
                     if (fileOutputStream != null) {
                         fileOutputStream.flush();
@@ -334,7 +342,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                 e.printStackTrace();
 
             }
-            return false;
+            return null;
         }
 
         @Override
@@ -345,13 +353,13 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Uri uri) {
+            super.onPostExecute(uri);
             try {
                 if (dialog != null)
                     dialog.dismiss();
-                if (aBoolean) {
-                    showInstallDialog(appName);
+                if (uri != null) {
+                    showInstallDialog(uri);
                 }
             } catch (Exception e) {
                 Timber.d(e);
@@ -360,27 +368,23 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
         }
 
-        private void showInstallDialog(String appName) {
-            File f = contextWeakReference.get().getFileStreamPath(appName);
+        private void showInstallDialog(Uri uri) {
             /*try {
                 installPackage(appName);
             } catch (IOException e) {
                 Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
             }*/
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", f);
-
-
-            final Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(apkUri,
-                    "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             contextWeakReference.get().startActivity(intent);
+
+
         }
-
-
     }
 
     public String getAppLabel(PackageManager pm, String pathToApk) {
@@ -406,7 +410,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
 
         DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
+                new DownLoadAndInstallUpdate(InstallAppsActivity.this, AppConstants.STAGING_BASE_URL + "getApk/" +
                         CommonUtils.splitName(app.getApk()), app.getApk());
 
         downLoadAndInstallUpdate.execute();
@@ -416,8 +420,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        String fileName = app.getApk().substring(0, (app.getApk().length() - 4));
-        File fileApk = getFileStreamPath(fileName);
+        String fileName = app.getApk();
+        File dir = new File(getFilesDir(),"apk");
+
+        File fileApk = new File(dir,fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));

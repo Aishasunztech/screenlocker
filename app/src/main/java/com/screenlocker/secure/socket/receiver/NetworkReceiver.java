@@ -145,8 +145,13 @@ public class NetworkReceiver extends BroadcastReceiver {
             Timber.d("label %s", label);
 
             new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+            if (intent.hasExtra("isLast")){
+                Timber.d("ISLAST AVAILABLE : ");
+            }
 
             boolean isLast = intent.getBooleanExtra("isLast", false);
+
+            Timber.d("isLast : %s", isLast);
 
             if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
@@ -164,12 +169,14 @@ public class NetworkReceiver extends BroadcastReceiver {
                 if (hashMApGson == null) {
                     HashMap<String, Boolean> h = new HashMap<>();
                     h.put(aPackageName, true);
+                    h.put("isLastAvailable",isLast);
                     PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
                 } else {
                     Type hashType = new TypeToken<HashMap<String, Boolean>>() {
                     }.getType();
                     HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
                     h.put(aPackageName, true);
+                    h.put("isLastAvailable",isLast);
                     PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
                 }
             }
