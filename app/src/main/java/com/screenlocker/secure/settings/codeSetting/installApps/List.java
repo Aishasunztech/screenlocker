@@ -22,6 +22,10 @@ public class List {
     @Expose
     private String apkStatus;
 
+    @SerializedName("package_name")
+    @Expose
+    private String packageName;
+
 private boolean installed;
 
     public boolean isInstalled() {
@@ -63,5 +67,15 @@ private boolean installed;
     public void setApkStatus(String apkStatus) {
         this.apkStatus = apkStatus;
     }
+
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
 
 }

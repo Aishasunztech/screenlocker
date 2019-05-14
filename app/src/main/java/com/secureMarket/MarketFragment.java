@@ -240,16 +240,18 @@ public class MarketFragment extends Fragment implements
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk();
-//                File file = getActivity().getFileStreamPath(fileName);
-                File apksPath = new File(getActivity().getFilesDir(), "apk");
-                File file = new File(apksPath, fileName);
-                if (file.exists()) {
-                    String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
+//                String fileName = app.getApk();
+//                Log.d("APKNAME",app.getApk() + ": " + app.getPackageName());
+////                File file = getActivity().getFileStreamPath(fileName);
+//                File apksPath = new File(getActivity().getFilesDir(), "apk");
+//                File file = new File(apksPath, fileName);
+//                if (file.exists()) {
+//                    String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
+                String appPackageName = app.getPackageName();
                     if (appPackageName != null)
                         app.setInstalled(appInstalledOrNot(appPackageName));
                 }
-            }
+//            }
         }
 
     }
@@ -294,7 +296,7 @@ public class MarketFragment extends Fragment implements
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
-            DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(getActivity(), AppConstants.STAGING_BASE_URL + "/getApk/" +
+            DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(getActivity(), AppConstants.STAGING_BASE_URL + "getApk/" +
                     CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog);
             downLoadAndInstallUpdate.execute();
 
@@ -308,16 +310,17 @@ public class MarketFragment extends Fragment implements
 
     @Override
     public void onUnInstallClick(List app) {
-        String fileName = app.getApk();
-        File dir = new File(getActivity().getFilesDir(),"apk");
-
-        File fileApk = new File(dir,fileName);
-        if (fileApk.exists()) {
+//        String fileName = app.getApk();
+//        File dir = new File(getActivity().getFilesDir(),"apk");
+//
+//        File fileApk = new File(dir,fileName);
+//        if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+            intent.setData(Uri.parse("package:" +app.getPackageName()));
 
             getActivity().startActivity(intent);
-        }
+//        }
     }
 
     @Override
