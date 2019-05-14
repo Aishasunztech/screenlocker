@@ -19,8 +19,8 @@ android {
         applicationId "com.vortexlocker.app"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 467
-        versionName "4.67"
+        versionCode 468
+        versionName "4.68"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

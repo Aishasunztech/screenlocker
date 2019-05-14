@@ -611,9 +611,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
                                     } else
-                                        Toast.makeText(SettingsActivity.this, "you are currently up to date", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(SettingsActivity.this, "you are currently up to date", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
                                 }
                             }
 
