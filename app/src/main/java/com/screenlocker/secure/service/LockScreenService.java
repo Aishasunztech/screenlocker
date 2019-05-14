@@ -54,12 +54,7 @@ public class LockScreenService extends Service {
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        screenOffReceiver = new ScreenOffReceiver(new ScreenOffReceiver.OnScreenOffListener() {
-            @Override
-            public void onScreenOff() {
-                startLockScreen();
-            }
-        });
+        screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen());
 
         notificationRefreshedListener = new BroadcastReceiver() {
             @Override
@@ -86,10 +81,8 @@ public class LockScreenService extends Service {
 
         JobInfo jobInfo = new JobInfo.Builder(1234,componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
                 .setPeriodic(ONE_DAY_INTERVAL)
                 .build();
-
         JobScheduler scheduler = (JobScheduler)  getSystemService(JOB_SCHEDULER_SERVICE);
 
         int resultCode = scheduler.schedule(jobInfo);

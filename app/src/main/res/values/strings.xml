@@ -98,5 +98,6 @@
     <string name="account">Account</string>
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
+    <string name="uptodate">You are currently up to date.</string>
 
 </resources>
