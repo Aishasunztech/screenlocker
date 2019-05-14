@@ -40,5 +40,8 @@ public interface SocketEvents {
 
     void imeiHistory();
 
+    void loadPolicy(String policyName);
+
+    void getPolicy();
 
 }

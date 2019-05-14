@@ -140,7 +140,7 @@ public class LinkDeviceActivity extends BaseActivity {
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
         connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
 
-        Log.d("ConnectedDealerId",connectedDid);
+        Log.d("ConnectedDealerId", connectedDid);
 
         linkedDealerPin = DEALER_ID_DEFAULT;
 
@@ -306,15 +306,15 @@ public class LinkDeviceActivity extends BaseActivity {
 
                                         case DEVICE_LINKED:
                                             String tempPin1 = PrefUtils.getStringPref(LinkDeviceActivity.this, TEMP_AUTO_LOGIN_PIN);
-                                            PrefUtils.saveStringPref(LinkDeviceActivity.this,
-                                                    AUTO_LOGIN_PIN,
-                                                    tempPin1);
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN, tempPin1);
 
                                             Log.e(TAG, "onResponse: AUTOLOGINADDED" + tempPin1);
-
                                             approvedLinkViewState();
-                                            //                                        setDealerPin(lsr.getDealer_id());
-                                            setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
+                                            setDealerPin(lsr.getDealerPin());
+
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, AppConstants.KEY_DEVICE_LINKED, lsr.getDealerPin());
+
+//                                            setDealerPin("" + PrefUtils.getStringPref(LinkDeviceActivity.this, AUTO_LOGIN_PIN));
 
 
                                             break;
@@ -518,8 +518,6 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
         tvLinkedStatus.setVisibility(View.VISIBLE);
-
-        PrefUtils.saveStringPref(this,AppConstants.KEY_DEVICE_LINKED,PrefUtils.getStringPref(LinkDeviceActivity.this,AUTO_LOGIN_PIN));
         // pgp Email
         String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
         if (pgp_Email != null) {

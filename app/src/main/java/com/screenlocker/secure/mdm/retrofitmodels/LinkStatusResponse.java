@@ -14,9 +14,22 @@ public class LinkStatusResponse {
     @SerializedName("dealer_id")
     @Expose
     private String dealer_id;
+
     @SerializedName("device_id")
     @Expose
     private String deviceId;
+
+    @SerializedName("dealer_pin")
+    @Expose
+    private String dealerPin;
+
+    public String getDealerPin() {
+        return dealerPin;
+    }
+
+    public void setDealerPin(String dealerPin) {
+        this.dealerPin = dealerPin;
+    }
 
     public String getDeviceId() {
         return deviceId;

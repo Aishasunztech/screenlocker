@@ -1,7 +1,9 @@
 package com.screenlocker.secure.base;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
@@ -17,14 +19,22 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.BlockStatusBar;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
+
+import org.jsoup.Connection;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 
 @SuppressLint("Registered")
@@ -34,8 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     private boolean overlayIsAllowed;
 //    private static WindowManager manager, mWindowManager;
 
-    private Window mWindow;
-    private WindowManager.LayoutParams screenShotParams;
 
     private boolean statusViewAdded;
     private LifecycleReceiver lifecycleReceiver;
@@ -57,25 +65,25 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        manager = ((WindowManager) BaseActivity.this.getSystemService(Context.WINDOW_SERVICE));
-//        mWindowManager = getWindowManager();
-        mWindow = getWindow();
+
         localLayoutParams = new WindowManager.LayoutParams();
-//        disablePullNotificationTouch();
+
         createAlertDialog();
 
         if (PermissionUtils.canDrawOver(this)) {
-//            addStatusOverlay();
+
             statusViewAdded = true;
         } else {
             if (alertDialog == null) {
                 createAlertDialog();
             } else {
-                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this,DEVICE_LINKED_STATUS))
+                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this, DEVICE_LINKED_STATUS))
                     alertDialog.show();
             }
 
         }
+
+
         lifecycleReceiver = new LifecycleReceiver();            //<---
 //
         registerReceiver(lifecycleReceiver, new IntentFilter(LIFECYCLE_ACTION));
@@ -84,22 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     }
 
-
-    public WindowManager.LayoutParams getOverLayLayoutParams() {
-        if (localLayoutParams == null) {
-            localLayoutParams = new WindowManager.LayoutParams();
-            createLayoutParams();
-        }
-        return localLayoutParams;
-    }
-
-    void removeStatusOverlay() {
-//        manager.removeView(getOverLayView());
-    }
-
-    void addStatusOverlay() {
-//        manager.addView(getOverLayView(), getOverLayLayoutParams());
-    }
 
     private void createAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -115,20 +107,24 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 }).create();
     }
 
-    protected void allowScreenShot(boolean isAllowed) {
-        if (isAllowed) {
-            mWindow.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        } else {
-            mWindow.clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+
+    private ProgressDialog policyDialog;
+
+    public ProgressDialog getPolicyDialog() {
+        if (policyDialog == null) {
+            policyDialog();
         }
+        return policyDialog;
     }
 
-//
-//    public void disablePullNotificationTouch() {
-//        createLayoutParams();
-//        view = new customViewGroup(this);
-//
-//    }
+    private void policyDialog() {
+        policyDialog = new ProgressDialog(this);
+        policyDialog.setTitle("Loading policy");
+        policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes, do not turn of your Device.");
+        policyDialog.setCancelable(false);
+        policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    }
+
 
     private void createLayoutParams() {
 
@@ -151,13 +147,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         localLayoutParams.height = (int) (25 * getResources().getDisplayMetrics().scaledDensity);
         localLayoutParams.format = PixelFormat.TRANSPARENT;
     }
-
-//    public customViewGroup getOverLayView() {
-//        if (view == null) {
-//            view = new customViewGroup(this);
-//        }
-//        return view;
-//    }
 
 
     @Override
@@ -192,32 +181,23 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-//    //Add this class in your project
-//    public class customViewGroup extends ViewGroup {
-//
-//        public customViewGroup(Context context) {
-//            super(context);
-//        }
-//
-//
-//        @Override
-//        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//        }
-//
-//        @Override
-//        public boolean onInterceptTouchEvent(MotionEvent ev) {
-//
-//            Timber.v("**********Intercepted");
-//            return true;
-//        }
-//
-//    }
-
     @Override
     protected void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        boolean status = PrefUtils.getBooleanPref(BaseActivity.this, LOADING_POLICY);
+        if (status) {
+            if (!getPolicyDialog().isShowing()) {
+                getPolicyDialog().show();
+            }
+        } else {
+            if (getPolicyDialog().isShowing()) {
+                getPolicyDialog().dismiss();
+            }
+        }
+
         if (PermissionUtils.canDrawOver(this)) {
             overlayIsAllowed = true;
             if (!statusViewAdded) {
@@ -246,89 +226,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
+        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
 
-    }
-    //    public void enableScreenShotBlocker(boolean isChecked) {
-//
-//        if (mWindowManager == null)
-//            mWindowManager = getWindowManager();
-//
-//        if (isChecked) {
-////            mWindowManager.addView(getScreenShotView(), getLayoutParams());
-//            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-//        } else {
-//            PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_ENABLE);
-//            Toast.makeText(BaseActivity.this, "already screenshot enabled", Toast.LENGTH_SHORT).show();
-//        }
-//
-//
-//    }
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Policy Loaded!");
+            alertDialog.setIcon(R.drawable.ic_done_white_18dp);
 
-//    public void disableScreenShotBlocker(boolean isChecked) {
-//        if (mWindowManager == null)
-//            mWindowManager = getWindowManager();
-//        if (isChecked) {
-//            try {
-////                mWindowManager.removeView(getScreenShotView());
-//                PrefUtils.saveStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, AppConstants.VALUE_SCREENSHOT_DISABLE);
-//            } catch (Exception ignored) {
-//            }
-//        } else {
-//            Toast.makeText(this, "already screenshot disabled", Toast.LENGTH_SHORT).show();
-//            String name = "\uD83E\uDD23";
-//        }
-//
-//    }
+            alertDialog.setMessage("Policy successfully loaded.");
 
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+                dialog.dismiss();
 
-//    @NonNull
-//    private LinearLayout getScreenShotView() {
-////
-////        if (mScreenShotView == null)
-////            mScreenShotView = createScreenShotView();
-////        return mScreenShotView;
-//        return MyApplication.getScreenShotView(getApplicationContext());
-//    }
-/*
+            });
 
-    @NonNull
-    private WindowManager.LayoutParams getLayoutParams() {
-        if (screenShotParams == null) {
-            screenShotParams = createScreenShotParams();
-        }
-        return screenShotParams;
-    }*/
-
-//    private WindowManager.LayoutParams createScreenShotParams() {
-//
-//        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-//        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
-//        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-//        else
-//            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-//        params.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_SECURE;
-//        params.format = PixelFormat.TRANSPARENT;
-//        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-//        params.gravity = Gravity.CENTER;
-//
-//        return params;
-//    }
-
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            if (!hasFocus) {
-//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-//                sendBroadcast(closeDialog);
-//                Method that handles loss of window focus
-//                new BlockStatusBar(this, false).collapseNow();
-            }
+            alertDialog.show();
         }
     }
 
