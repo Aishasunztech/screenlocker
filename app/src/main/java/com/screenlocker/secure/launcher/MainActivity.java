@@ -227,15 +227,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     };
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KEYCODE_POWER) {
-            Log.d(TAG, "onKeyDown: power button");
+
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
     public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
 
     public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
@@ -298,6 +297,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             Timber.d("removeOverlay: %s", e.getMessage());
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        super.onPause();
     }
 
     @Override
