@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.screenlocker.secure.settings.codeSetting.IMEIActivity">
+
     <include
         android:id="@+id/include"
         layout="@layout/main_toolbar"
@@ -59,9 +60,10 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:hint="IMEI"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radio_group" android:inputType=""  />
+        app:layout_constraintTop_toBottomOf="@+id/radio_group" />
 
     <Button
         android:id="@+id/save_imei"

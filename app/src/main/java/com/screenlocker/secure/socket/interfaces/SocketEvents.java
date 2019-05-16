@@ -44,4 +44,6 @@ public interface SocketEvents {
 
     void getPolicy();
 
+    void forceUpdateCheck();
+
 }

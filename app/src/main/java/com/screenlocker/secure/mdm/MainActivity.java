@@ -240,10 +240,9 @@ public class MainActivity extends BaseActivity {
                                     currentStatus();
                                     setResult(RESULT_OK);
                                     finish();
-                                }else if (msg.equals("new device")){
+                                } else if (msg.equals("new device")) {
                                     showMainContent();
-                                }
-                                else {
+                                } else {
                                     autologin();
                                 }
 
@@ -830,8 +829,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isBackPressed)
-        {
+        if (!isBackPressed) {
             this.finish();
         }
     }

@@ -68,9 +68,6 @@ public class LockScreenService extends Service {
         };
 
 
-
-
-
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(notificationRefreshedListener,
@@ -79,11 +76,11 @@ public class LockScreenService extends Service {
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
         ComponentName componentName = new ComponentName(this, UpdateTriggerService.class);
 
-        JobInfo jobInfo = new JobInfo.Builder(1234,componentName)
+        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(ONE_DAY_INTERVAL)
                 .build();
-        JobScheduler scheduler = (JobScheduler)  getSystemService(JOB_SCHEDULER_SERVICE);
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
         int resultCode = scheduler.schedule(jobInfo);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
@@ -203,7 +200,8 @@ public class LockScreenService extends Service {
     public void removeLockScreenView() {
         setTimeRemaining(getAppContext());
         try {
-            windowManager.removeView(mLayout);
+            if (mLayout != null)
+                windowManager.removeView(mLayout);
             mLayout = null;
         } catch (Exception e) {
             Timber.d(e);

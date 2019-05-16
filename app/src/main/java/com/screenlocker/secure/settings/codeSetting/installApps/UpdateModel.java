@@ -7,6 +7,16 @@ public class UpdateModel {
 
     public UpdateModel() {
     }
+    @SerializedName("success")
+    boolean success;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
     @SerializedName("apk_status")
     @Expose

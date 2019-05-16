@@ -59,7 +59,6 @@ public class NetworkReceiver extends BroadcastReceiver {
             boolean isLast = intent.getBooleanExtra("isLast", false);
             InstallModel installModel = new Gson().fromJson(model, InstallModel.class);
 
-
             Timber.d("isLast %s", isLast);
             Timber.d("packageName %s", installModel.getPackage_name());
 

@@ -9,6 +9,8 @@ import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
 import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
+import com.screenlocker.secure.networkResponseModels.LoginModel;
+import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
@@ -75,11 +77,11 @@ public interface ApiOneCaller {
     );
 
     @GET("apklist")
-    Call<InstallAppModel>  getApps();
+    Call<InstallAppModel> getApps();
 
 
     @GET
-    Call<UpdateModel> getUpdate(@Url String url);
+    Call<UpdateModel> getUpdate(@Url String url,@Header("authorization") String authHeader);
 
     @Streaming
     @GET
@@ -122,8 +124,15 @@ public interface ApiOneCaller {
     );
 
     @GET("admin/marketApplist")
-    Call<InstallAppModel>  getAdminApps();
+    Call<InstallAppModel> getAdminApps();
 
     @GET
-    Call<InstallAppModel>  getAllApps(@Url String url);
+    Call<InstallAppModel> getAllApps(@Url String url);
+
+    @Headers("Content-Type: application/json")
+    @POST("systemlogin")
+    Call<LoginResponse> login(
+            @Body LoginModel loginModel
+    );
+
 }

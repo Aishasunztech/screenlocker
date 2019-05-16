@@ -65,15 +65,15 @@ public class AppConstants {
     public static final String TOKEN = "token";
 
 
-    public static final String LOGO_URL = "http://134.209.124.196:3000/users/getFile/";
+    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
-    //    public static final String STAGING_BASE_URL = "http://134.209.124.196:3000/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.0.106:3000/mobile/";//for localhost real device
+        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.0.106:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://134.209.124.196:3000";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.106:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.106:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -127,6 +127,7 @@ public class AppConstants {
     public static final String KEY_CONNECTED_ID = "connectedDid";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
+
     public static String AUTO_LOGIN_PIN = "com.secureportal.barryapp.utils.auto_login_pin";
     public static String TEMP_AUTO_LOGIN_PIN = "com.secureportal.barryapp.utils.temp_auto_login_pin";
     public static final String TOKEN_INVALID = "TOKEN_INVALID";
@@ -249,5 +250,9 @@ public class AppConstants {
     public static final String IMEI1 = "imei1";
     public static final String IMEI2 = "imei2";
 
+
+    public static final String SYSTEM_LOGIN_TOKEN = "system_login_token";
+
+    public static final String FORCE_UPDATE_CHECK = "force_update_check_";
 
 }

@@ -161,18 +161,7 @@ public class CommonUtils {
     }
 
 
-    public static List<InstallModel> getInstallList(List<InstallModel> list) {
 
-        List<InstallModel> installModelList = new ArrayList<>();
-
-        for (InstallModel installModel : list) {
-            String apk = CommonUtils.splitName(installModel.getApk());
-            InstallModel finalApp = new InstallModel(apk, installModel.getApk_name(), installModel.getPackage_name(), installModel.getVersion_name(), installModel.isGuest(), installModel.isEncrypted(), installModel.isEnable());
-            installModel.setApk(apk);
-            installModelList.add(finalApp);
-        }
-        return installModelList;
-    }
 
     // adding secure settings menus
 

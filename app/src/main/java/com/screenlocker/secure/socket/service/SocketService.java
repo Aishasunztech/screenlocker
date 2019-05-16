@@ -34,6 +34,7 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
@@ -71,6 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
@@ -94,9 +96,9 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.STAGING_BASE_URL;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
-import static com.screenlocker.secure.utils.CommonUtils.getInstallList;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
@@ -290,6 +292,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             imeiChanged();
             imeiHistory();
             getPolicy();
+            forceUpdateCheck();
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
                     != null) {
@@ -312,6 +315,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             socket.off(GET_PUSHED_APPS + device_id);
             socket.off(GET_PULLED_APPS + device_id);
             socket.off(GET_POLICY + device_id);
+            socket.off(FORCE_UPDATE_CHECK + device_id);
 
         }
 
@@ -410,7 +414,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             updateExtensions(obj);
 
+
                             updateApps(obj);
+
 
                             sendAppliedStatus();
 
@@ -721,7 +727,19 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     }.getType();
 
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
-                    String apps = new Gson().toJson(getInstallList(list));
+                    for (int i = 0; i < list.size(); i++) {
+                        InstallModel item = list.get(i);
+                        String apk = item.getApk();
+                        String url = STAGING_BASE_URL + "getApk/" + CommonUtils.splitName(apk);
+                        item.setApk(url);
+                        item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(SocketService.this, TOKEN)));
+                        list.set(i, item);
+                    }
+
+
+                    String apps = new Gson().toJson(list);
+
+
                     final Intent intent = new Intent();
                     intent.setAction(s);
                     intent.putExtra("json", apps);
@@ -1060,6 +1078,39 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
+    @Override
+    public void forceUpdateCheck() {
+
+
+        if (socket != null && socket.connected()) {
+            socket.on(FORCE_UPDATE_CHECK + device_id, args -> {
+                Timber.d("<<< CHECKING FORCE UPDATE >>>");
+                JSONObject jsonObject = (JSONObject) args[0];
+                try {
+
+                    if (validateRequest(device_id, jsonObject.getString("device_id"))) {
+
+                        boolean status = jsonObject.getBoolean("status");
+                        if (status) {
+                            final Intent intent = new Intent();
+                            intent.setAction("com.secure.systemcontrol.CHECK_FOR_UPDATE");
+                            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                            intent.putExtra("packageName", getPackageName());
+                            intent.putExtra("isForce", true);
+                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
+                            sendBroadcast(intent);
+                        }
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
     private void updateExtensions(JSONObject object) throws JSONException {
         String extensionList = object.getString("extension_list");
 
@@ -1075,7 +1126,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     private void updateApps(JSONObject object) throws JSONException {
         String appsList = object.getString("app_list");
-        String pushed_apps = object.getString("push_apps");
 
         if (!appsList.equals("[]")) {
             updateAppsList(SocketService.this, new JSONArray(appsList), () -> {
@@ -1083,9 +1133,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
             });
         }
 
-        if (pushed_apps.equals("[]")) {
-            PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
-            setScreenLock();
+        try {
+            String pushed_apps = object.getString("push_apps");
+
+            if (pushed_apps.equals("[]")) {
+                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
+                setScreenLock();
+            }
+
+        } catch (JSONException e) {
+            Timber.d(e);
         }
 
     }

@@ -226,17 +226,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
-        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
 
+        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Policy Loaded!");
             alertDialog.setIcon(R.drawable.ic_done_white_18dp);
-
+            alertDialog.setCancelable(false);
             alertDialog.setMessage("Policy successfully loaded.");
-
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 dialog.dismiss();
-
             });
 
             alertDialog.show();
