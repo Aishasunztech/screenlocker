@@ -116,16 +116,23 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
-            Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
-            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-            ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(MainActivity.this, "Manage Passwords")
-                    .setShortLabel("Manage Passwords")
-                    .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.settings_icon))
-                    .setIntent(shortcutIntent)
-                    .build();
-            ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
+            try {
+
+
+                Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
+                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                shortcutIntent.setAction(Intent.ACTION_MAIN);
+                ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(MainActivity.this, "Manage Passwords")
+                        .setShortLabel("Manage Passwords")
+                        .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.settings_icon))
+                        .setIntent(shortcutIntent)
+                        .build();
+                ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
+            }catch (Exception e)
+            {
+
+            }
         }
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         mainPresenter = new MainPresenter(this, new MainModel(this));

@@ -315,6 +315,18 @@ public class CommonUtils {
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
 
+        // Air Plane Mode
+        Drawable airplane_drawable = context.getResources().getDrawable(R.drawable.ic_airplane_mode);
+        byte[] airplane_icon = CommonUtils.convertDrawableToByteArray(airplane_drawable);
+        SubExtension airPlane = new SubExtension();
+        airPlane.setLabel("Airplan mode");
+        airPlane.setIcon(airplane_icon);
+        airPlane.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        airPlane.setGuest(false);
+        airPlane.setEncrypted(false);
+        airPlane.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode");
+        subExtensions.add(airPlane);
+
 
         for (SubExtension subExtension : subExtensions) {
             MyApplication.getAppDatabase(context).getDao().insertSubExtensions(subExtension);
