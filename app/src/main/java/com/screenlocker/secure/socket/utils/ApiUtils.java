@@ -28,6 +28,7 @@ import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
@@ -36,7 +37,6 @@ public class ApiUtils implements ApiRequests {
     private Context context;
     private String macAddress;
     private String serialNo;
-
 
 
     public ApiUtils(Context context, String macAddress, String serialNo) {
@@ -77,15 +77,21 @@ public class ApiUtils implements ApiRequests {
                             }
                             PrefUtils.saveStringPref(context, TOKEN, token);
 
+                            if (response.body().getDealer_pin() != null) {
+                                Timber.d("dealer pin %s", response.body().getDealer_pin());
+                                PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, response.body().getDealer_pin());
+                            }
+
+
                             if (device_id != null && token != null) {
 
                                 Intent intent = new Intent(context, SocketService.class);
                                 intent.setAction("start");
 
-                                PrefUtils.saveStringPref(context,DEVICE_ID,device_id);
-                                PrefUtils.saveStringPref(context,TOKEN,token);
+                                PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
+                                PrefUtils.saveStringPref(context, TOKEN, token);
 
-                                PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS,true);
+                                PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
 
                                 if (Build.VERSION.SDK_INT >= 26) {
                                     context.startForegroundService(intent);

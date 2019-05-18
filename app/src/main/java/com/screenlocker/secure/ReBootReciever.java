@@ -23,7 +23,7 @@ public class ReBootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
 
-        PrefUtils.saveBooleanPref(context,AppConstants.REBOOT_STATUS,true);
+        PrefUtils.saveBooleanPref(context, AppConstants.REBOOT_STATUS, true);
 
 
         if (intent.getAction() != null)
@@ -44,8 +44,6 @@ public class ReBootReciever extends BroadcastReceiver {
                     }
                 }
 
-
-                Toast.makeText(context, "on boot completed", Toast.LENGTH_LONG).show();
                 PrefUtils.saveStringPref(context, AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_FALSE);
 
 

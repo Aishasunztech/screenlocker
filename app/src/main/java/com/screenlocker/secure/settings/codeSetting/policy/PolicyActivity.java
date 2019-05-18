@@ -336,7 +336,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void successView() {
-        PrefUtils.saveBooleanPref(this, LOADING_POLICY, true);
+
         progressBar.setVisibility(View.GONE);
         if (!getPolicyDialog().isShowing()) {
             getPolicyDialog().show();

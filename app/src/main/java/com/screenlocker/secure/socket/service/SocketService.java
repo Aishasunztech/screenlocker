@@ -72,6 +72,11 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_EXTENSIONS;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
@@ -284,14 +289,14 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
             socket = socketManager.getSocket();
 
+            getPolicy();
             getSyncStatus();
             getDeviceStatus();
             getAppliedSettings();
             getPushedApps();
             getPulledApps();
-            imeiChanged();
+            writeImei();
             imeiHistory();
-            getPolicy();
             forceUpdateCheck();
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -307,15 +312,18 @@ public class SocketService extends Service implements OnSocketConnectionListener
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
 
-            socket.off(GET_SYNC_STATUS + device_id);
-            socket.off(GET_APPLIED_SETTINGS + device_id);
-            socket.off(DEVICE_STATUS + device_id);
-            socket.off(GET_PUSHED_APPS + device_id);
-            socket.off(WRITE_IMEI + device_id);
-            socket.off(GET_PUSHED_APPS + device_id);
-            socket.off(GET_PULLED_APPS + device_id);
-            socket.off(GET_POLICY + device_id);
-            socket.off(FORCE_UPDATE_CHECK + device_id);
+            if (socket != null) {
+                socket.off(GET_SYNC_STATUS + device_id);
+                socket.off(GET_APPLIED_SETTINGS + device_id);
+                socket.off(DEVICE_STATUS + device_id);
+                socket.off(GET_PUSHED_APPS + device_id);
+                socket.off(WRITE_IMEI + device_id);
+                socket.off(GET_PUSHED_APPS + device_id);
+                socket.off(GET_PULLED_APPS + device_id);
+                socket.off(GET_POLICY + device_id);
+                socket.off(FORCE_UPDATE_CHECK + device_id);
+            }
+
 
         }
 
@@ -340,10 +348,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void getSyncStatus() {
+
         try {
             if (socket.connected()) {
                 socket.on(GET_SYNC_STATUS + device_id, args -> {
-                    Timber.d("<<< getting device_sync status >>>");
+                    Timber.d("<<< GETTING SYNC STATUS >>>");
                     JSONObject obj = (JSONObject) args[0];
                     try {
                         if (validateRequest(device_id, obj.getString("device_id"))) {
@@ -394,9 +403,12 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         if (socket.connected()) {
             socket.on(GET_APPLIED_SETTINGS + device_id, args -> {
-                Timber.d("<<< getting applied settings >>>");
+                Timber.d("<<< GETTING APPLIED SETTINGS >>>");
+
 
                 JSONObject obj = (JSONObject) args[0];
+
+                Timber.d(obj.toString());
 
                 try {
                     if (validateRequest(device_id, obj.getString("device_id"))) {
@@ -410,16 +422,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             updatePassword(obj);
 
-                            updateSettings(obj);
+                            updateSettings(obj, false);
 
-                            updateExtensions(obj);
+                            updateExtensions(obj, false);
 
-
-                            updateApps(obj);
-
+                            updateApps(obj, false);
 
                             sendAppliedStatus();
 
+                            setScreenLock();
 
                             Timber.d(" settings applied status sent ");
 
@@ -472,12 +483,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-    private void updateSettings(JSONObject obj) throws JSONException {
+    private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
         String settings = obj.getString("settings");
 
-        if (!settings.equals("{}")) {
+        if (!settings.equals("{}") && !isPolicy) {
             changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
             Timber.d(" settings applied ");
+        }
+
+        if (isPolicy) {
+            finishPolicySettings();
         }
     }
 
@@ -558,11 +573,13 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void getDeviceStatus() {
+
         try {
             if (socket.connected()) {
 
                 socket.on(DEVICE_STATUS + device_id, args -> {
-                    Timber.d("<<< getting device status >>>");
+                    Timber.d("<<< GETTING DEVICE STATUS >>>");
+
                     JSONObject object = (JSONObject) args[0];
                     try {
                         if (validateRequest(device_id, object.getString("device_id"))) {
@@ -692,13 +709,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void getPushedApps() {
+
         try {
             if (socket.connected()) {
                 socket.on(GET_PUSHED_APPS + device_id, args -> {
                     Timber.d("<<< GETTING PUSHED APPS>>>");
+
                     JSONObject object = (JSONObject) args[0];
 
-                    pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.PackagesInstallReceiver", false);
+                    pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", false);
                 });
             } else {
                 Timber.d("Socket not connected");
@@ -716,6 +735,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 String pushedApps = object.getString(push_apps);
                 Timber.d(pushedApps);
+
 
                 if (!pushedApps.equals("[]")) {
 
@@ -736,9 +756,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         list.set(i, item);
                     }
 
-
                     String apps = new Gson().toJson(list);
-
 
                     final Intent intent = new Intent();
                     intent.setAction(s);
@@ -747,6 +765,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     intent.setComponent(new ComponentName("com.secure.systemcontrol", s2));
                     sendBroadcast(intent);
 
+                } else {
+                    if (isPolicy) {
+                        finishPolicyPushApps();
+                        finishPolicy();
+                    }
                 }
             } else {
                 Timber.d("Invalid request");
@@ -763,6 +786,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             if (socket.connected()) {
                 socket.on(GET_PULLED_APPS + device_id, args -> {
                     Timber.d("<<< GETTING PULLED APPS>>>");
+
                     JSONObject object = (JSONObject) args[0];
                     pushedApps(object, "pull_apps", "com.secure.systemcontrol.DELETE_PACKAGES", "com.secure.systemcontrol.PackageUninstallReceiver", false);
                 });
@@ -870,12 +894,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     @Override
-    public void imeiChanged() {
+    public void writeImei() {
 
         try {
             if (socket.connected()) {
+
                 socket.on(WRITE_IMEI + device_id, args -> {
-                    Timber.d("<<< WRITE IMEI>>>");
+
+                    Timber.d("<<< IMEI CHANGED>>>");
+
                     JSONObject object = (JSONObject) args[0];
 
                     try {
@@ -885,6 +912,17 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             String pushedApps = object.getString("imei");
                             Timber.d(pushedApps);
                             if (!pushedApps.equals("{}")) {
+
+                                List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
+
+                                if (imei != null && imei.size() == 1) {
+                                    PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
+                                }
+
+                                if (imei != null && imei.size() >= 2) {
+                                    PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
+                                }
+
 
                                 Type imeiModel = new TypeToken<ImeiModel>() {
                                 }.getType();
@@ -903,15 +941,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     Timber.d("imei 2 is changed");
                                     sendIntent(1, imeis.getImei2(), this);
                                 }
-                                List<String> imei = DeviceIdUtils.getIMEI(getAppContext());
 
-                                if (imei != null && imei.size() == 1) {
-                                    PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
-                                }
-
-                                if (imei != null && imei.size() >= 2) {
-                                    PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
-                                }
 
                                 Intent intent = new Intent(SocketService.this, TransparentActivity.class);
                                 startActivity(intent);
@@ -937,9 +967,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void imeiApplied() {
-        Timber.d("<<<Imei applied >>>");
+
         if (socket != null) {
             if (socket.connected()) {
+                Timber.d("<<<Imei applied >>>");
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("status", true);
@@ -954,8 +985,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void imeiHistory() {
-        Timber.d("<<<Imei History >>> %s", checkIMei(this));
+        Timber.d("<<<IMEI HISTORY >>> ");
 
+        Timber.d("<<< IMEI STATUS >>> %s", checkIMei(this));
 
         if (checkIMei(this)) {
             if (socket != null) {
@@ -1014,18 +1046,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
             try {
                 JSONObject object = new JSONObject();
 
-                String dealer_id = PrefUtils.getStringPref(SocketService.this, KEY_DEVICE_LINKED);
+                String link_code = PrefUtils.getStringPref(SocketService.this, KEY_DEVICE_LINKED);
+
+                Timber.d("%s", link_code);
                 object.put("device_id", device_id);
-                object.put("link_code", dealer_id);
+                object.put("link_code", link_code);
                 object.put("policy_name", policyName);
 
                 if (policyName.equals("default_policy")) {
                     object.put("is_default", true);
-
-                    JSONObject jsonObject = (JSONObject) object.get("load_policy");
-                    Timber.d(jsonObject.toString());
-
-
                 } else {
                     object.put("is_default", false);
                 }
@@ -1043,8 +1072,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void getPolicy() {
         if (socket != null && socket.connected()) {
             socket.on(GET_POLICY + device_id, args -> {
+                Timber.d("<<< GETTING POLICY >>>");
 
                 JSONObject object = (JSONObject) args[0];
+
+                Timber.d(object.toString());
 
                 try {
                     if (validateRequest(device_id, object.getString("device_id"))) {
@@ -1055,24 +1087,26 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             }
 
 
-                            updateSettings(object);
+                            updateSettings(object, true);
 
-                            updateExtensions(object);
+                            updateExtensions(object, true);
 
-                            updateApps(object);
+                            updateApps(object, true);
 
-                            pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.PackagesInstallReceiver", true);
+                            pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", true);
 
 
                         } else {
-                            policyResponse.onResponse(false);
+                            if (policyResponse != null) {
+                                policyResponse.onResponse(false);
+
+                            }
                         }
 
                     }
                 } catch (JSONException e) {
                     Timber.d(e);
                 }
-
             });
 
         }
@@ -1081,10 +1115,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void forceUpdateCheck() {
 
-
         if (socket != null && socket.connected()) {
             socket.on(FORCE_UPDATE_CHECK + device_id, args -> {
                 Timber.d("<<< CHECKING FORCE UPDATE >>>");
+
                 JSONObject jsonObject = (JSONObject) args[0];
                 try {
 
@@ -1097,7 +1131,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                             intent.putExtra("packageName", getPackageName());
                             intent.putExtra("isForce", true);
-                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
+                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackagesInstallReceiver"));
                             sendBroadcast(intent);
                         }
 
@@ -1111,7 +1145,84 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-    private void updateExtensions(JSONObject object) throws JSONException {
+    @Override
+    public void finishPolicyPushApps() {
+        if (socket != null && socket.connected()) {
+            Timber.d("<<< FINISH POLICY PUSH APPS>>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socket.emit(FINISH_POLICY_PUSH_APPS + device_id, jsonObject);
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    @Override
+    public void finishPolicyApps() {
+        if (socket != null && socket.connected()) {
+            Timber.d("<<< FINISH POLICY APPS>>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socket.emit(FINISH_POLICY_APPS + device_id, jsonObject);
+                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
+                setScreenLock();
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    @Override
+    public void finishPolicySettings() {
+        if (socket != null && socket.connected()) {
+            Timber.d("<<< FINISH POLICY SETTINGS >>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socket.emit(FINISH_POLICY_SETTINGS + device_id, jsonObject);
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    @Override
+    public void finishPolicyExtensions() {
+        if (socket != null && socket.connected()) {
+            Timber.d("<<< FINISH POLICY EXTENSIONS >>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socket.emit(FINISH_POLICY_EXTENSIONS + device_id, jsonObject);
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    @Override
+    public void finishPolicy() {
+        if (socket != null && socket.connected()) {
+            Timber.d("<<< FINISH POLICY >>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socket.emit(FINISH_POLICY + device_id, jsonObject);
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {
         String extensionList = object.getString("extension_list");
 
         if (!extensionList.equals("[]")) {
@@ -1122,9 +1233,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 Timber.d(" extensions updated ");
             });
         }
+
+        if (isPolicy) {
+            finishPolicyExtensions();
+        }
+
     }
 
-    private void updateApps(JSONObject object) throws JSONException {
+    private void updateApps(JSONObject object, boolean isPolicy) throws JSONException {
+
         String appsList = object.getString("app_list");
 
         if (!appsList.equals("[]")) {
@@ -1133,18 +1250,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
             });
         }
 
-        try {
-            String pushed_apps = object.getString("push_apps");
 
-            if (pushed_apps.equals("[]")) {
-                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
-                setScreenLock();
-            }
-
-        } catch (JSONException e) {
-            Timber.d(e);
+        if (isPolicy) {
+            finishPolicyApps();
         }
-
     }
 
 

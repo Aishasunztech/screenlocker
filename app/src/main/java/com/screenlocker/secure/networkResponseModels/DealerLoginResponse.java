@@ -12,14 +12,21 @@ public class DealerLoginResponse {
     private String msg;
     @SerializedName("dId")
     private int dId;
+    @SerializedName("dealer_pin")
+    private String dealer_pin;
+
+    public String getDealer_pin() {
+        return dealer_pin;
+    }
+
+    public void setDealer_pin(String dealer_pin) {
+        this.dealer_pin = dealer_pin;
+    }
+
     @SerializedName("device_id")
     String device_id;
     @SerializedName("expiresIn")
     String expiresIn;
-
-
-
-
 
 
     public int getdId() {

@@ -184,10 +184,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onStart() {
         super.onStart();
+
+        showpolicyConfirmstion();
+
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
         boolean status = PrefUtils.getBooleanPref(BaseActivity.this, LOADING_POLICY);
+
         if (status) {
             if (!getPolicyDialog().isShowing()) {
                 getPolicyDialog().show();
@@ -223,10 +228,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+    private void showpolicyConfirmstion() {
         if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Policy Loaded!");
@@ -235,6 +237,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             alertDialog.setMessage("Policy successfully loaded.");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 dialog.dismiss();
+                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
             });
 
             alertDialog.show();

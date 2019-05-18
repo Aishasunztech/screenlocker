@@ -13,7 +13,7 @@ public class UpdateTriggerService extends JobService {
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra("packageName", getPackageName());
         intent.putExtra("isForce", false);
-        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.PackagesInstallReceiver"));
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackagesInstallReceiver"));
         sendBroadcast(intent);
 
         return false;

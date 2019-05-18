@@ -34,7 +34,7 @@ public interface SocketEvents {
 
     void finishPulledApps();
 
-    void imeiChanged();
+    void writeImei();
 
     void imeiApplied();
 
@@ -45,5 +45,15 @@ public interface SocketEvents {
     void getPolicy();
 
     void forceUpdateCheck();
+
+    void finishPolicyPushApps();
+
+    void finishPolicyApps();
+
+    void finishPolicySettings();
+
+    void finishPolicyExtensions();
+
+    void finishPolicy();
 
 }

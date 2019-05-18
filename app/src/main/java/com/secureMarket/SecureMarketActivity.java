@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,10 +84,6 @@ public class SecureMarketActivity extends BaseActivity
         });
 
 
-
-
-
-
         et_market_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,8 +93,7 @@ public class SecureMarketActivity extends BaseActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 MarketFragment marketFragment = (MarketFragment) getSupportFragmentManager().getFragments().get(container.getCurrentItem());
-                if(marketFragment != null)
-                {
+                if (marketFragment != null) {
                     listener = marketFragment;
                 }
                 listener.searchOnQueryChange(et_market_search.getText().toString());
@@ -117,12 +113,11 @@ public class SecureMarketActivity extends BaseActivity
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                switch (position)
-                {
+                switch (position) {
                     case 0:
                         MarketFragment fragment = new MarketFragment();
                         Bundle b = new Bundle();
-                        b.putString("check","install");
+                        b.putString("check", "install");
                         fragment.setArguments(b);
 
                         return fragment;
@@ -130,18 +125,18 @@ public class SecureMarketActivity extends BaseActivity
                     case 1:
                         MarketFragment fragmentUninstall = new MarketFragment();
                         Bundle b1 = new Bundle();
-                        b1.putString("check","uninstall");
+                        b1.putString("check", "uninstall");
                         fragmentUninstall.setArguments(b1);
 
                         return fragmentUninstall;
-                        default:
-                            MarketFragment fragmentDefault = new MarketFragment();
-                            Bundle b2 = new Bundle();
-                            b2.putString("check","install");
+                    default:
+                        MarketFragment fragmentDefault = new MarketFragment();
+                        Bundle b2 = new Bundle();
+                        b2.putString("check", "install");
 
-                            fragmentDefault.setArguments(b2);
+                        fragmentDefault.setArguments(b2);
 
-                            return fragmentDefault;
+                        return fragmentDefault;
                 }
 
             }
@@ -154,14 +149,13 @@ public class SecureMarketActivity extends BaseActivity
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                switch (position)
-                {
+                switch (position) {
                     case 0:
                         return "Install";
                     case 1:
                         return "UnInstall";
-                        default:
-                            return "Install";
+                    default:
+                        return "Install";
 
                 }
 
@@ -191,6 +185,10 @@ public class SecureMarketActivity extends BaseActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void onInstallClick(List app) {
@@ -222,16 +220,14 @@ public class SecureMarketActivity extends BaseActivity
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(ev.getAction() == MotionEvent.ACTION_DOWN)
-        {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View view = getCurrentFocus();
             int id = view.getId();
             int searchId = R.id.root_layou_market;
-            if((view instanceof EditText))
-            {
+            if ((view instanceof EditText)) {
                 Rect outRect = new Rect();
                 view.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)ev.getRawX(), (int)ev.getRawY())) {
+                if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
                     view.clearFocus();
                     hideKeyboard(SecureMarketActivity.this);
                 }
@@ -247,11 +243,11 @@ public class SecureMarketActivity extends BaseActivity
         return super.dispatchTouchEvent(ev);
     }
 
-    public interface SearchQueryListener{
+    public interface SearchQueryListener {
         void searchOnSubmit(String query);
+
         void searchOnQueryChange(String query);
     }
-
 
 
 }

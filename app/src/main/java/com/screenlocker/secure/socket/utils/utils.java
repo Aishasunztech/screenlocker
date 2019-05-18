@@ -350,8 +350,6 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, "");
-
 
         String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);

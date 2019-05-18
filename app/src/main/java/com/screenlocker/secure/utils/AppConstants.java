@@ -67,13 +67,13 @@ public class AppConstants {
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
-        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-//    public static final String STAGING_BASE_URL = "http://192.168.0.106:3000/mobile/";//for localhost real device
+    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.0.111:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
     public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.0.106:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.111:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -254,5 +254,13 @@ public class AppConstants {
     public static final String SYSTEM_LOGIN_TOKEN = "system_login_token";
 
     public static final String FORCE_UPDATE_CHECK = "force_update_check_";
+
+
+    public static final String FINISH_POLICY_PUSH_APPS = "finish_policy_push_apps_";
+    public static final String FINISH_POLICY_APPS = "finish_policy_apps_";
+    public static final String FINISH_POLICY_SETTINGS = "finish_policy_settings_";
+    public static final String FINISH_POLICY_EXTENSIONS = "finish_policy_extensions_";
+    public static final String FINISH_POLICY = "finish_policy_";
+
 
 }

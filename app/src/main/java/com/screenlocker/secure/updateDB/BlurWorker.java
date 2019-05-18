@@ -41,9 +41,11 @@ public class BlurWorker extends Worker {
         try {
 
             PackageManager pm = applicationContext.getPackageManager();
+
             List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getAppsForBlurWorker(false);
             Intent i = new Intent(Intent.ACTION_MAIN, null);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
+
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
 
             Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
@@ -65,6 +67,9 @@ public class BlurWorker extends Worker {
 
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
                 app.setUniqueName(app.getPackageName() + app.getLabel());
+
+                Timber.d("app package %s", ri.loadLabel(pm));
+
 
                 if (!dbApps.contains(app)) {
 

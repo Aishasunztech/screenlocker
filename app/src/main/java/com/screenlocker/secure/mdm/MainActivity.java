@@ -386,6 +386,7 @@ public class MainActivity extends BaseActivity {
                                     case DEVICE_LINKED:
 
                                         if (dIdLinked.equals("" + autoLoginId)) {
+                                            PrefUtils.saveStringPref(MainActivity.this, AppConstants.KEY_DEVICE_LINKED, dIdLinked);
                                             startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
                                             finish();
                                         } else {
