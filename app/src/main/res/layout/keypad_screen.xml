@@ -32,6 +32,10 @@
         android:text="@string/unlock"
         android:textColor="@color/textColorPrimary"
         android:textSize="18sp"
+        android:shadowColor="#000000"
+        android:shadowDy="5"
+        android:shadowDx="5"
+        android:shadowRadius="5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/keypad" />

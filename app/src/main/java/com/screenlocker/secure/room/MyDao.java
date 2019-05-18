@@ -102,4 +102,7 @@ public interface MyDao {
     @Query("SELECT COUNT(encrypted)FROM subextension WHERE encrypted = :status")
     int checkEncryptedStatus(boolean status);
 
+    @Query("SELECT guest from Appinfo where packageName = :packageName")
+    boolean getAppUserSpace(String packageName);
+
 }

@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/market_app_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_100sdp"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textStyle="bold"

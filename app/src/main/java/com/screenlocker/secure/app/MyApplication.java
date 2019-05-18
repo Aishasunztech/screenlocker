@@ -124,6 +124,7 @@ public class MyApplication extends Application implements NetworkListener {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction("com.secure.systemcontroll.PackageAdded");
         filter.addAction("com.secure.systemcontroll.PackageDeleted");
+        filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
         registerReceiver(networkReceiver, filter);
 
 

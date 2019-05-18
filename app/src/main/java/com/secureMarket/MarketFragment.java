@@ -3,8 +3,11 @@ package com.secureMarket;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -35,12 +38,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
+import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -57,6 +62,10 @@ import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,11 +80,55 @@ public class MarketFragment extends Fragment implements
     private java.util.List<List> appModelList;
     private PackageManager mPackageManager;
     private java.util.List<List> installedApps = new ArrayList<>();
+    private java.util.List<List> guestApps = new ArrayList<>();
+    private java.util.List<List> encryptedApps = new ArrayList<>();
+
     private java.util.List<List> unInstalledApps = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private String userSpace;
+
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction() != null && intent.getAction().equals("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET")){
+                String appName = intent.getStringExtra("appName");
+                Snackbar snackbar = Snackbar.make(
+                        ((ViewGroup) getActivity().findViewById(android.R.id.content))
+                                .getChildAt(0)
+                        , appName + " is installed"
+                        , 3000);
+                snackbar.setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                snackbar.show();
+            }
+        }
+    };
 
     public MarketFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(getActivity() != null)
+        {
+            getActivity().registerReceiver(broadcastReceiver,new IntentFilter("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET"));
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(getActivity() !=null)
+        {
+            getActivity().unregisterReceiver(broadcastReceiver);
+        }
     }
 
     @Override
@@ -86,6 +139,7 @@ public class MarketFragment extends Fragment implements
         appModelList = new ArrayList<>();
         mPackageManager = getActivity().getPackageManager();
         progressDialog = new ProgressDialog(getActivity());
+        userSpace = PrefUtils.getStringPref(getActivity(),CURRENT_KEY);
     }
 
     @Override
@@ -116,6 +170,7 @@ public class MarketFragment extends Fragment implements
     }
 
     private void getAllApps(String dealerId) {
+        Log.d("lakshdf","getallApps");
         if (CommonUtils.isNetworkAvailable(getActivity())) {
             ((MyApplication) getActivity().getApplicationContext())
                     .getApiOneCaller()
@@ -136,8 +191,25 @@ public class MarketFragment extends Fragment implements
                                     for (List app : appModelList) {
                                         Log.d("AppsList", app.getApkName());
                                         if (app.isInstalled()) {
-                                            installedApps.add(app);
+
+                                            boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().getAppUserSpace(app.getPackageName());
+                                            Log.d("ISGUEST",isGuest + "");
+                                            if(userSpace.equals(KEY_GUEST_PASSWORD))
+                                            {
+                                                if(isGuest)
+                                                {
+                                                    installedApps.add(app);
+                                                }
+                                            }else if(userSpace.equals(KEY_MAIN_PASSWORD))
+                                            {
+                                                if(!isGuest)
+                                                {
+                                                    installedApps.add(app);
+                                                }
+                                            }
+
                                         } else {
+
                                             unInstalledApps.add(app);
                                         }
                                     }
@@ -145,7 +217,42 @@ public class MarketFragment extends Fragment implements
                                     if (fragmentType.equals("install")) {
                                         rc.setAdapter(new SecureMarketAdapter(unInstalledApps, getActivity(), MarketFragment.this, fragmentType));
                                     } else if (fragmentType.equals("uninstall")) {
-                                        rc.setAdapter(new SecureMarketAdapter(installedApps, getActivity(), MarketFragment.this, fragmentType));
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                for(List app: installedApps)
+                                                {
+                                                    boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().getAppUserSpace(app.getPackageName());
+                                                    Log.d("Guest","CheckGuest");
+                                                    if(isGuest)
+                                                    {
+                                                        guestApps.add(app);
+                                                    }
+                                                    else{
+                                                        encryptedApps.add(app);
+                                                    }
+
+                                                    switch (userSpace)
+                                                    {
+                                                        case KEY_GUEST_PASSWORD:
+                                                            getActivity().runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    rc.setAdapter(new SecureMarketAdapter(guestApps, getActivity(), MarketFragment.this, fragmentType));
+
+                                                                }
+                                                            });
+                                                            break;
+                                                        case KEY_MAIN_PASSWORD:
+                                                            rc.setAdapter(new SecureMarketAdapter(encryptedApps, getActivity(), MarketFragment.this, fragmentType));
+
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }).start();
                                     } else {
                                         rc.setAdapter(new SecureMarketAdapter(unInstalledApps, getActivity(), MarketFragment.this, fragmentType));
                                     }
@@ -198,7 +305,28 @@ public class MarketFragment extends Fragment implements
                                     for (List app : appModelList) {
                                         Log.d("AppsList", app.getApkName());
                                         if (app.isInstalled()) {
+//                                            new Thread(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().getAppUserSpace(app.getPackageName());
+//                                                    Log.d("ISGUEST",isGuest + "");
+//                                                    if(userSpace.equals(KEY_GUEST_PASSWORD))
+//                                                    {
+//                                                        if(isGuest)
+//                                                        {
+//                                                            installedApps.add(app);
+//                                                        }
+//                                                    }else if(userSpace.equals(KEY_MAIN_PASSWORD))
+//                                                    {
+//                                                        if(!isGuest)
+//                                                        {
+//                                                            installedApps.add(app);
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }).start();
                                             installedApps.add(app);
+
                                         } else {
                                             unInstalledApps.add(app);
                                         }
@@ -290,7 +418,7 @@ public class MarketFragment extends Fragment implements
     public void onInstallClick(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setTitle("Download");
-        alertDialog.setIcon(R.drawable.ic_info_black_24dp);
+        alertDialog.setIcon(android.R.drawable.stat_sys_download);
 
         alertDialog.setMessage("Are you sure you want to download this app?");
 
@@ -299,6 +427,8 @@ public class MarketFragment extends Fragment implements
             DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(getActivity(), AppConstants.STAGING_BASE_URL + "getApk/" +
                     CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog);
             downLoadAndInstallUpdate.execute();
+            AppConstants.INSTALLING_APP_NAME = app.getApkName();
+            AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
 
         });
 
@@ -389,15 +519,18 @@ public class MarketFragment extends Fragment implements
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
-        private WeakReference<Context> contextWeakReference;
+        private WeakReference<Activity> contextWeakReference;
         private ProgressDialog dialog;
+        private String userType;
 
 
-        DownLoadAndInstallUpdate(Context context, final String url, String appName, ProgressDialog dialog) {
+
+        DownLoadAndInstallUpdate(Activity context, final String url, String appName, ProgressDialog dialog) {
             contextWeakReference = new WeakReference<>(context);
             this.url = url;
             this.appName = appName;
             this.dialog = dialog;
+            userType = PrefUtils.getStringPref(contextWeakReference.get(), CURRENT_KEY);
         }
 
         @Override
@@ -489,14 +622,51 @@ public class MarketFragment extends Fragment implements
         }
 
         private void showInstallDialog(Uri uri) {
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                    .setStream(uri) // uri from FileProvider
-                    .setType("text/html")
-                    .getIntent()
-                    .setAction(Intent.ACTION_VIEW) //Change if needed
-                    .setDataAndType(uri, "application/vnd.android.package-archive")
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            contextWeakReference.get().startActivity(intent);
+            if(!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+
+
+                alertDialog.setMessage("Are you sure you want to install this app?");
+
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+
+                    Intent launchIntent = new Intent();
+                    ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                    launchIntent.setAction(Intent.ACTION_MAIN);
+                    launchIntent.setComponent(componentName);
+                    launchIntent.setData(uri);
+                    launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                    launchIntent.putExtra("user_space", userType);
+                    launchIntent.putExtra("SecureMarket",true);
+                    launchIntent.putExtra("appName",AppConstants.INSTALLING_APP_NAME);
+                    launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                    contextWeakReference.get().startActivity(launchIntent);
+                    Snackbar snackbar = Snackbar.make(
+                            ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                    .getChildAt(0)
+                            , contextWeakReference.get().getString(R.string.install_app_message)
+                            , 3000);
+
+                    snackbar.show();
+
+                });
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
+            }
+//            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+//                    .setStream(uri) // uri from FileProvider
+//                    .setType("text/html")
+//                    .getIntent()
+//                    .setAction(Intent.ACTION_VIEW) //Change if needed
+//                    .setDataAndType(uri, "application/vnd.android.package-archive")
+//                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().startActivity(intent);
 
         }
 

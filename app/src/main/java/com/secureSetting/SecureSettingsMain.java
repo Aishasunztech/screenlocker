@@ -68,7 +68,8 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer
+            ,airplaneContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -194,6 +195,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode",airplaneContainer);
 
         clickListeners();
 
@@ -229,6 +231,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         mobile_container = findViewById(R.id.mobile_data_cotainer);
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
+        airplaneContainer = findViewById(R.id.airplane_container);
 
     }
 
@@ -386,6 +389,35 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
                 Intent intent = new Intent();
                 intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
                 startActivity(intent);
+            }
+        });
+        airplaneContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                boolean isEnabled = Settings.System.getInt(
+//                        getContentResolver(),
+//                        Settings.System.AIRPLANE_MODE_ON, 0) == 1;
+//
+//// toggle airplane mode
+//                Settings.System.putInt(
+//                        getContentResolver(),
+//                        Settings.System.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
+
+                final Intent intent=new Intent();
+                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
+                intent.putExtra("isEnabled",true);
+                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intent.setComponent(
+                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+                sendBroadcast(intent);
+
+//                boolean isEnabled = true;
+//                Settings.Global.putInt(getContentResolver(),
+//                        Settings.Global.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
+
+//                Intent intent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
             }
         });
 

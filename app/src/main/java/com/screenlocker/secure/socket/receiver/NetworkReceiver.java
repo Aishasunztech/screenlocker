@@ -29,6 +29,8 @@ import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.DELETE_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class NetworkReceiver extends BroadcastReceiver {
 
@@ -86,6 +88,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                         appInfo.setIcon(icon);
                         int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
                         Timber.d("result :%s", i);
+
 
                         if (i == 0) {
                             MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
@@ -181,6 +184,56 @@ public class NetworkReceiver extends BroadcastReceiver {
             }
 
 
+        }else if(intent.getAction().equals("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET"))
+        {
+//            String appName = intent.getStringExtra("appName");
+            String packageName = intent.getStringExtra("packageName");
+            String userSpace = intent.getStringExtra("userSpace");
+
+            PackageManager pm = context.getPackageManager();
+
+            try {
+                ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
+
+                Drawable ic = pm.getApplicationIcon(applicationInfo);
+                byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
+                String label = pm.getApplicationLabel(applicationInfo).toString();
+
+
+
+                new Thread(() -> {
+                    AppInfo appInfo = new AppInfo();
+                    appInfo.setDefaultApp(false);
+                    appInfo.setExtension(false);
+                    if(userSpace.equals(KEY_MAIN_PASSWORD)){
+                        appInfo.setEncrypted(true);
+                        appInfo.setGuest(false);
+
+                    }else if(userSpace.equals(KEY_GUEST_PASSWORD))
+                    {
+                        appInfo.setGuest(true);
+                        appInfo.setEncrypted(false);
+
+                    }
+
+                    appInfo.setEnable(true);
+                    appInfo.setLabel(label);
+                    appInfo.setPackageName(packageName);
+                    appInfo.setUniqueName(packageName + label);
+                    appInfo.setIcon(icon);
+                    int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+                    Timber.d("result :%s", i);
+
+
+                    if (i == 0) {
+                        MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
+                    }
+
+                }).start();
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -52,6 +52,10 @@
 
     <style name="keyboard_number_button" parent="keyboard_button">
         <item name="android:tag">number_button</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
 
     </style>
 

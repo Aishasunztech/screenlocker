@@ -34,6 +34,10 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:singleLine="true"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/textColorPrimary"
         android:textColorHint="@color/textColorPrimary"
@@ -144,6 +148,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
