@@ -7,6 +7,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -59,10 +61,13 @@ public class NetworkReceiver extends BroadcastReceiver {
             boolean status = intent.getBooleanExtra("status", false);
             String model = intent.getStringExtra("packageAdded");
             boolean isLast = intent.getBooleanExtra("isLast", false);
+            boolean isPolicy = intent.getBooleanExtra("isPolicy", false);
             InstallModel installModel = new Gson().fromJson(model, InstallModel.class);
+
 
             Timber.d("isLast %s", isLast);
             Timber.d("packageName %s", installModel.getPackage_name());
+            Timber.d("isPolicy %s", isPolicy);
 
 
             if (status) {
@@ -110,6 +115,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                 Intent pushedIntent = intent.setAction(ACTION_PUSH_APPS);
                 pushedIntent.putExtra("PackageName", installModel.getPackage_name());
                 pushedIntent.putExtra("Status", status);
+                pushedIntent.putExtra("isPolicy", isPolicy);
 
                 if (isLast) {
                     pushedIntent.putExtra("finish_status", true);
@@ -145,9 +151,15 @@ public class NetworkReceiver extends BroadcastReceiver {
 
             String label = intent.getStringExtra("label");
             Timber.d("label %s", label);
+            boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
+
+            if (SecureMarket) {
+                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+                return;
+            }
 
             new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
-            if (intent.hasExtra("isLast")){
+            if (intent.hasExtra("isLast")) {
                 Timber.d("ISLAST AVAILABLE : ");
             }
 
@@ -171,21 +183,20 @@ public class NetworkReceiver extends BroadcastReceiver {
                 if (hashMApGson == null) {
                     HashMap<String, Boolean> h = new HashMap<>();
                     h.put(aPackageName, true);
-                    h.put("isLastAvailable",isLast);
+                    h.put("isLastAvailable", isLast);
                     PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
                 } else {
                     Type hashType = new TypeToken<HashMap<String, Boolean>>() {
                     }.getType();
                     HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
                     h.put(aPackageName, true);
-                    h.put("isLastAvailable",isLast);
+                    h.put("isLastAvailable", isLast);
                     PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
                 }
             }
 
 
-        }else if(intent.getAction().equals("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET"))
-        {
+        } else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET")) {
 //            String appName = intent.getStringExtra("appName");
             String packageName = intent.getStringExtra("packageName");
             String userSpace = intent.getStringExtra("userSpace");
@@ -200,17 +211,15 @@ public class NetworkReceiver extends BroadcastReceiver {
                 String label = pm.getApplicationLabel(applicationInfo).toString();
 
 
-
                 new Thread(() -> {
                     AppInfo appInfo = new AppInfo();
                     appInfo.setDefaultApp(false);
                     appInfo.setExtension(false);
-                    if(userSpace.equals(KEY_MAIN_PASSWORD)){
+                    if (userSpace.equals(KEY_MAIN_PASSWORD)) {
                         appInfo.setEncrypted(true);
                         appInfo.setGuest(false);
 
-                    }else if(userSpace.equals(KEY_GUEST_PASSWORD))
-                    {
+                    } else if (userSpace.equals(KEY_GUEST_PASSWORD)) {
                         appInfo.setGuest(true);
                         appInfo.setEncrypted(false);
 

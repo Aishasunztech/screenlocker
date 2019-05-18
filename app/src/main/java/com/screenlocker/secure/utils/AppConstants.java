@@ -263,4 +263,6 @@ public class AppConstants {
     public static final String FINISH_POLICY = "finish_policy_";
 
 
+    public static String INSTALLING_APP_NAME;
+    public static String INSTALLING_APP_PACKAGE;
 }

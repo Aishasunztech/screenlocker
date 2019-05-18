@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
@@ -502,7 +504,7 @@ public class utils {
         String imei1 = PrefUtils.getStringPref(context, IMEI1);
         String imei2 = PrefUtils.getStringPref(context, IMEI2);
 
-        if (imeis != null && imeis.size() == 1) {
+        if (imeis != null && imeis.size() >= 1) {
 
             if (imei1 != null && !imeis.get(0).equals(imei1)) {
                 PrefUtils.saveStringPref(context, IMEI1, imeis.get(0));

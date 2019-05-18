@@ -306,14 +306,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     public void onResponse(boolean status) {
         Timber.d("Policy status %s", status);
         if (status) {
-            if (!PrefUtils.getBooleanPref(this, LOADING_POLICY)) {
-                AppExecutor.getInstance().getMainThread().execute(this::successView);
-            } else {
-                if (!getPolicyDialog().isShowing()) {
-                    getPolicyDialog().show();
-                }
-            }
-
+            PrefUtils.saveBooleanPref(this, LOADING_POLICY, true);
+            AppExecutor.getInstance().getMainThread().execute(this::successView);
         } else {
             AppExecutor.getInstance().getMainThread().execute(this::errorView);
         }
@@ -336,12 +330,10 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void successView() {
-
         progressBar.setVisibility(View.GONE);
         if (!getPolicyDialog().isShowing()) {
             getPolicyDialog().show();
         }
-
     }
 
 }

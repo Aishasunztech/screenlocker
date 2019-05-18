@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -57,7 +58,7 @@ import static com.secureSetting.UtilityFunctions.pxFromDp;
 import static com.secureSetting.UtilityFunctions.secondsToMintues;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
-public class SecureSettingsMain extends AppCompatActivity implements BrightnessDialog.BrightnessChangeListener
+public class SecureSettingsMain extends BaseActivity implements BrightnessDialog.BrightnessChangeListener
         , SleepDialog.SleepChangerListener {
 
     private PopupWindow popupWindow;
@@ -68,8 +69,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer
-            ,airplaneContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, airplaneContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -195,7 +195,7 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode",airplaneContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode", airplaneContainer);
 
         clickListeners();
 
@@ -403,12 +403,12 @@ public class SecureSettingsMain extends AppCompatActivity implements BrightnessD
 //                        getContentResolver(),
 //                        Settings.System.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
 
-                final Intent intent=new Intent();
+                final Intent intent = new Intent();
                 intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
-                intent.putExtra("isEnabled",true);
+                intent.putExtra("isEnabled", true);
                 intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                 intent.setComponent(
-                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
                 sendBroadcast(intent);
 
 //                boolean isEnabled = true;

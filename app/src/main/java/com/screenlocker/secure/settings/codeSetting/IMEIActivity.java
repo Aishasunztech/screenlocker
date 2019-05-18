@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -26,7 +27,7 @@ import java.util.List;
 
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 
-public class IMEIActivity extends AppCompatActivity {
+public class IMEIActivity extends BaseActivity {
 
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;

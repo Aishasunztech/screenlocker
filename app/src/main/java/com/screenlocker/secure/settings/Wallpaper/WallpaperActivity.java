@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -25,7 +26,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 
-public class WallpaperActivity extends AppCompatActivity implements View.OnClickListener {
+public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean isBackPressed = false;
     private boolean goToGuest,goToEncrypt,goToLockScreen;

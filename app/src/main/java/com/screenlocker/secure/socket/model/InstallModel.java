@@ -19,6 +19,8 @@ public class InstallModel {
         this.token = token;
     }
 
+
+
     public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable) {
         this.apk = apk;
         this.apk_name = apk_name;

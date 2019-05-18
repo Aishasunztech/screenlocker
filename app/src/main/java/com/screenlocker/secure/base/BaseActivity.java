@@ -2,6 +2,8 @@ package com.screenlocker.secure.base;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.view.Gravity;
 import android.view.Window;
@@ -32,6 +35,7 @@ import org.jsoup.Connection;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
@@ -61,6 +65,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
         return alertDialog;
     }
+
+
+    BroadcastReceiver loadingPolicyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null && intent.getAction().equals(FINISH_POLICY)) {
+                if (getPolicyDialog().isShowing()) {
+                    getPolicyDialog().dismiss();
+                }
+                showpolicyConfirmstion();
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,16 +200,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingPolicyReceiver);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-
         showpolicyConfirmstion();
 
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(loadingPolicyReceiver, new IntentFilter(FINISH_POLICY));
 
         boolean status = PrefUtils.getBooleanPref(BaseActivity.this, LOADING_POLICY);
+//       PrefUtils.saveBooleanPref(BaseActivity.this, LOADING_POLICY,false);
 
         if (status) {
             if (!getPolicyDialog().isShowing()) {
@@ -202,6 +224,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 getPolicyDialog().dismiss();
             }
         }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
 
         if (PermissionUtils.canDrawOver(this)) {
             overlayIsAllowed = true;
@@ -228,19 +253,32 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
     }
 
-    private void showpolicyConfirmstion() {
-        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle("Policy Loaded!");
-            alertDialog.setIcon(R.drawable.ic_done_white_18dp);
-            alertDialog.setCancelable(false);
-            alertDialog.setMessage("Policy successfully loaded.");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+    private AlertDialog policyConfirmation;
+
+
+    public AlertDialog getPolicyConfirmation() {
+
+        if (policyConfirmation == null) {
+            policyConfirmation = new AlertDialog.Builder(this).create();
+            policyConfirmation.setTitle("Policy Loaded!");
+            policyConfirmation.setIcon(R.drawable.ic_done_white_18dp);
+            policyConfirmation.setCancelable(false);
+            policyConfirmation.setMessage("Policy successfully loaded.");
+            policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 dialog.dismiss();
                 PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
             });
+        }
 
-            alertDialog.show();
+        return policyConfirmation;
+    }
+
+    private void showpolicyConfirmstion() {
+
+        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
+            if (!getPolicyConfirmation().isShowing()) {
+                getPolicyConfirmation().show();
+            }
         }
     }
 
