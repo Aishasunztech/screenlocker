@@ -49,8 +49,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
                 PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 3);
 
-                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
                 return true;
             }

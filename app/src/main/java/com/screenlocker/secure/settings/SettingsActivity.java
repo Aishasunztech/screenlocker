@@ -441,6 +441,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+
+
     private void createNoNetworkDialog() {
         noNetworkDialog = new AlertDialog.Builder(this).setTitle("Please check your internet connection").setPositiveButton("Retry", (dialogInterface, i) -> {
             dialogInterface.cancel();

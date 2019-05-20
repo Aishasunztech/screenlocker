@@ -1,6 +1,8 @@
 package com.secureSetting;
 
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,6 +31,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureClear.SecureClearActivity;
 import com.secureMarket.SecureMarketActivity;
@@ -44,6 +47,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -391,34 +395,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 startActivity(intent);
             }
         });
-        airplaneContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                boolean isEnabled = Settings.System.getInt(
-//                        getContentResolver(),
-//                        Settings.System.AIRPLANE_MODE_ON, 0) == 1;
-//
-//// toggle airplane mode
-//                Settings.System.putInt(
-//                        getContentResolver(),
-//                        Settings.System.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
+        airplaneContainer.setOnClickListener(v -> {
 
-                final Intent intent = new Intent();
-                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
-                intent.putExtra("isEnabled", true);
-                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                intent.setComponent(
-                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-                sendBroadcast(intent);
-
-//                boolean isEnabled = true;
-//                Settings.Global.putInt(getContentResolver(),
-//                        Settings.Global.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
-
-//                Intent intent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-            }
         });
 
     }

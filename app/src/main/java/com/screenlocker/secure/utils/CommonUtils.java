@@ -1,5 +1,7 @@
 package com.screenlocker.secure.utils;
 
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -357,5 +359,24 @@ public class CommonUtils {
         }
 
         return daysLeft;
+    }
+
+    public static List<UsageStats> getCurrentApp(Context context) {
+
+        try {
+            UsageStatsManager usm =(UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+
+            if (usm != null) {
+                return usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
+            }
+
+
+            return null;
+        } catch (Exception e) {
+            Log.d("getCurrentApp: %s", e.getMessage());
+
+            return null;
+        }
     }
 }

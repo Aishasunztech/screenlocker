@@ -158,11 +158,14 @@ public class utils {
 
                         int guest = (int) app.get("guest");
 
-
                         String uniqueExtension = app.getString("uniqueExtension");
+
+                        Timber.d(uniqueExtension);
 
 
                         int encrypted = (int) app.get("encrypted");
+
+
 
                         MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
 
@@ -172,7 +175,7 @@ public class utils {
 
 
                     } catch (Exception e) {
-                        Timber.d("error : %s", e.getMessage());
+                        Timber.e("error : %s", e.getMessage());
                     }
                 }
             }

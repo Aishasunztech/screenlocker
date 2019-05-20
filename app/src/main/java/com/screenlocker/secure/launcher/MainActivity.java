@@ -2,6 +2,7 @@ package com.screenlocker.secure.launcher;
 
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,12 +33,15 @@ import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
+import com.secureSetting.SecureSettingsMain;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -449,6 +453,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
+                clearRecenttasks();
                 clearNotif();
                 appCache();
                 runOnUiThread(new Runnable() {
@@ -460,6 +465,20 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 });
             }
         }, 2000);
+    }
+
+
+    private void clearRecenttasks(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<UsageStats> list = CommonUtils.getCurrentApp(this);
+        if (list != null) {
+            for (UsageStats usageStats : list) {
+                if (!usageStats.getPackageName().equals(getPackageName()))
+                    Timber.d( "Cleaning: " + usageStats.getPackageName());
+                assert activityManager != null;
+                activityManager.killBackgroundProcesses(usageStats.getPackageName());
+            }
+        }
     }
 
     private void clearNotif() {

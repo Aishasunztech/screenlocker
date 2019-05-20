@@ -1085,6 +1085,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                 policyResponse.onResponse(true);
                             }
 
+                            Timber.d(object.toString());
+
                             updateSettings(object, true);
 
                             updateExtensions(object, true);
