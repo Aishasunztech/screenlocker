@@ -100,5 +100,6 @@
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">You are currently up to date.</string>
     <string name="install_app_message">App is installing</string>
+    <string name="permissions">Application Permission</string>
 
 </resources>

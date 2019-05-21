@@ -39,6 +39,7 @@ import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 
 @SuppressLint("Registered")
@@ -138,7 +139,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     private void policyDialog() {
         policyDialog = new ProgressDialog(this);
         policyDialog.setTitle("Loading policy");
-        policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes, do not turn of your Device.");
+        policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes , Do not turn OFF device.");
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
@@ -259,14 +260,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     public AlertDialog getPolicyConfirmation() {
 
         if (policyConfirmation == null) {
+
+            String policyName = PrefUtils.getStringPref(BaseActivity.this, POLICY_NAME);
+
+            if (policyName == null) {
+                policyName = "#default_policy";
+            }
             policyConfirmation = new AlertDialog.Builder(this).create();
             policyConfirmation.setTitle("Policy Loaded!");
             policyConfirmation.setIcon(R.drawable.ic_done_white_18dp);
             policyConfirmation.setCancelable(false);
-            policyConfirmation.setMessage("Policy successfully loaded.");
+            policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
             policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 dialog.dismiss();
                 PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
+                PrefUtils.saveStringPref(this, POLICY_NAME, null);
             });
         }
 

@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.secureMarket.SecureMarketActivity;
+import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
 
@@ -48,26 +49,32 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             AppInfo info = appsList.get(getAdapterPosition());
             if (info.isEnable()) {
                 try {
-                    if (info.isExtension()) {
-                        String unique = info.getUniqueName();
-                        if (unique.equals(AppConstants.SECURE_CLEAR_UNIQUE)) {
+
+                    String unique = info.getUniqueName();
+
+                    switch (unique) {
+                        case AppConstants.SECURE_SETTINGS_UNIQUE:
+                            Intent i = new Intent(context, SecureSettingsMain.class);
+                            context.startActivity(i);
+                            break;
+                        case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
-                        } else if(unique.equals(AppConstants.SECURE_MARKET_UNIQUE)) {
+                            break;
+                        case AppConstants.SECURE_MARKET_UNIQUE: {
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
-                        }else{
-                            Intent intent = new Intent(context, Class.forName(info.getPackageName()));
-                            context.startActivity(intent);
+                            break;
                         }
-
-
-                    } else {
-                        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
+                        default: {
+                            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
-                        launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                        /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
-                        context.startActivity(launchIntent);
+                            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                            /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
+                            context.startActivity(launchIntent);
+                            break;
+                        }
                     }
+
 
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

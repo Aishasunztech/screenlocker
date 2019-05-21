@@ -9,11 +9,13 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
@@ -33,6 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -92,6 +95,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         btnLoadPolicy = findViewById(R.id.btnLoadPolicy);
         btnLoadPolicy.setOnClickListener(this);
         etPolicyName = findViewById(R.id.edtTxtPin);
+
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
     }
@@ -132,6 +136,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
             if (mService != null) {
                 mService.onLoadPolicy(policyName);
+                PrefUtils.saveStringPref(PolicyActivity.this,POLICY_NAME,policyName);
                 processingView();
             }
 
@@ -335,5 +340,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             getPolicyDialog().show();
         }
     }
+
 
 }

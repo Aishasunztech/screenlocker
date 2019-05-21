@@ -1235,7 +1235,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
             updateExtensionsList(SocketService.this, jsonArray, () -> {
                 Timber.d(" extensions updated ");
-            });
+            },isPolicy);
         }
 
         if (isPolicy) {
@@ -1251,7 +1251,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         if (!appsList.equals("[]")) {
             updateAppsList(SocketService.this, new JSONArray(appsList), () -> {
                 Timber.d(" apps updated ");
-            });
+            },isPolicy);
         }
 
         if (isPolicy) {

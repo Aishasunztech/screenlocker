@@ -110,12 +110,16 @@ public class utils {
     }
 
 
-    public static void updateAppsList(final Context context, final JSONArray apps, final GetApplications listener) {
+    public static void updateAppsList(final Context context, final JSONArray apps, final GetApplications listener, boolean isPolicy) {
 
         new Thread() {
             @Override
             public void run() {
                 super.run();
+
+                if (isPolicy) {
+//                    MyApplication.getAppDatabase(context).getDao().updateAllApps(false, false, false);
+                }
 
                 for (int i = 0; i < apps.length(); i++) {
 
@@ -143,12 +147,16 @@ public class utils {
     }
 
 
-    public static void updateExtensionsList(final Context context, final JSONArray extensions, final GetExtensions listener) {
+    public static void updateExtensionsList(final Context context, final JSONArray extensions, final GetExtensions listener,boolean isPolicy) {
 
         new Thread() {
             @Override
             public void run() {
                 super.run();
+
+                if(isPolicy){
+//                    MyApplication.getAppDatabase(context).getDao().updateAllExtensions(false,false);
+                }
 
                 for (int i = 0; i < extensions.length(); i++) {
 
@@ -164,7 +172,6 @@ public class utils {
 
 
                         int encrypted = (int) app.get("encrypted");
-
 
 
                         MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);

@@ -846,6 +846,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
 
+
+
         // IMEI 1
         TextView tvImei1 = accountDialog.findViewById(R.id.tvImei1);
         TextView textViewImei = accountDialog.findViewById(R.id.textViewImei);
@@ -872,8 +874,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         }
 
-
-        accountDialog.show();
+        if(!PrefUtils.getBooleanPref(SettingsActivity.this,DEVICE_LINKED_STATUS) && imeis.size()==0){
+            Toast.makeText(this, "Device not linked", Toast.LENGTH_SHORT).show();
+        }else {
+            accountDialog.show();
+        }
 
     }
 

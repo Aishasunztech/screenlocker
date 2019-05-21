@@ -144,7 +144,7 @@ public class BlurWorker extends Worker {
                 byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
                 AppInfo clearExtension = new AppInfo("Secure Clear", AppConstants.SECURE_CLEAR_PACKAGE, secure_clear_icon);
                 clearExtension.setUniqueName(clearExtension.getPackageName() + clearExtension.getLabel());
-                clearExtension.setExtension(true);
+                clearExtension.setExtension(false);
                 clearExtension.setGuest(false);
                 clearExtension.setEncrypted(true);
                 clearExtension.setEnable(true);
@@ -152,24 +152,29 @@ public class BlurWorker extends Worker {
                 clearExtension.setDefaultApp(false);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
+            }else {
+                secureCleanInfo.setExtension(false);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
 
             AppInfo secureMarketInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_MARKET_UNIQUE);
 
             if (secureMarketInfo == null) {
-                //Secure clear Extension
+                //Secure Market Extension
                 Drawable market_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_app_store);
                 byte[] secure_market_icon = CommonUtils.convertDrawableToByteArray(market_drawable);
                 AppInfo marketExtension = new AppInfo("Secure Market", AppConstants.SECURE_MARKET_PACKAGE, secure_market_icon);
                 marketExtension.setUniqueName(marketExtension.getPackageName() + marketExtension.getLabel());
-                marketExtension.setExtension(true);
+                marketExtension.setExtension(false);
                 marketExtension.setGuest(true);
                 marketExtension.setEncrypted(true);
                 marketExtension.setEnable(true);
                 marketExtension.setVisible(true);
                 marketExtension.setDefaultApp(false);
-
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(marketExtension);
+            } else {
+                secureMarketInfo.setExtension(false);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
             }
 
 
