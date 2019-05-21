@@ -651,12 +651,13 @@ public class MainActivity extends BaseActivity {
                                             startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
                                             finish();
                                         } else {
-                                            new AlertDialog.Builder(MainActivity.this)
-                                                    .setTitle(R.string.info)
-                                                    .setMessage(getString(R.string.device_already_linked))
-                                                    .setPositiveButton(R.string.ok, null)
-                                                    .create()
-                                                    .show();
+                                            currentStatus();
+//                                            new AlertDialog.Builder(MainActivity.this)
+//                                                    .setTitle(R.string.info)
+//                                                    .setMessage(getString(R.string.device_already_linked))
+//                                                    .setPositiveButton(R.string.ok, null)
+//                                                    .create()
+//                                                    .show();
                                         }
                                         break;
 

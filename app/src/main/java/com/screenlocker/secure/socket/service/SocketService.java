@@ -431,6 +431,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                         if (status) {
 
+                            Timber.d(obj.toString());
 
                             updatePassword(obj);
 

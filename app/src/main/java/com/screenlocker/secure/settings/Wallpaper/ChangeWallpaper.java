@@ -51,6 +51,7 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.colorsexposion);
         ids.add(R.raw.greengrass);
         ids.add(R.raw.universe2);
+        ids.add(R.raw.secure_scan_screen);
         WallpaperAdapter adapter = new WallpaperAdapter(ids, this, this);
         RecyclerView rvWallpaper = findViewById(R.id.RVWallpaper);
         rvWallpaper.setLayoutManager(new GridLayoutManager(this, 3));
