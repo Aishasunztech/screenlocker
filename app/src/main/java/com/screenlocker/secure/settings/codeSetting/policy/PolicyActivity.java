@@ -12,9 +12,11 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.screenlocker.secure.R;
@@ -98,6 +100,16 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
+        etPolicyName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submit();
+                    return  true;
+                }
+                return false;
+            }
+        });
     }
 
     private void setToolbar() {
@@ -114,15 +126,19 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
                 handleLoadPolicy("default_policy", "This will push the default Policy set by your Dealer.");
                 break;
             case R.id.btnLoadPolicy:
-                String policyName = etPolicyName.getText().toString();
-                if (TextUtils.isEmpty(policyName)) {
-                    etPolicyName.setError("please enter policy name.");
-                } else {
-                    handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
-                }
+                submit();
                 break;
         }
 
+    }
+
+    private void submit() {
+        String policyName = etPolicyName.getText().toString();
+        if (TextUtils.isEmpty(policyName)) {
+            etPolicyName.setError("please enter policy name.");
+        } else {
+            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
+        }
     }
 
 

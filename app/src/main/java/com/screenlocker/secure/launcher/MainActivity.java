@@ -238,14 +238,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     };
 
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KEYCODE_POWER) {
-
-        }
-        return super.onKeyDown(keyCode, event);
-    }
     public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
 
     public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
@@ -418,6 +410,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 if (!powerManager.isScreenOn()) {
+                    Log.d(TAG, "Screen Is Off: ");
                     appExecutor.getMainThread().execute(this::drawOverLay);
                     return;
 

@@ -9,12 +9,14 @@ import butterknife.ButterKnife;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.screenlocker.secure.R;
@@ -39,6 +41,8 @@ public class IMEIActivity extends BaseActivity {
     Toolbar mToolbar;
     @BindView(R.id.slote1)
     RadioButton slot1;
+    @BindView(R.id.link_to_generate)
+    TextView linkToGenerate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,7 @@ public class IMEIActivity extends BaseActivity {
 
             }
         });
+        linkToGenerate.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setToolbar() {

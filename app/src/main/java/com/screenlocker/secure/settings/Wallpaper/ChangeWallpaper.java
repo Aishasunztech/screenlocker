@@ -38,10 +38,13 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setTitle("Wallpapers");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ids.add(R.raw.wolf);
+        ids.add(R.raw.parrot);
         ids.add(R.drawable.default_background);
         ids.add(R.drawable.guest_space);
         ids.add(R.raw.roses);
         ids.add(R.drawable.backgroud_test);
+        ids.add(R.raw.royal_enfield);
         ids.add(R.drawable.background_icon);
         ids.add(R.raw.texture);
         ids.add(R.raw.universe);
@@ -52,6 +55,17 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.greengrass);
         ids.add(R.raw.universe2);
         ids.add(R.raw.secure_scan_screen);
+        ids.add(R.raw.audiblack);
+        ids.add(R.raw.blackwallpaper);
+        ids.add(R.raw.bookandbloon);
+        ids.add(R.raw.faster);
+        ids.add(R.raw.fhdanimals);
+        ids.add(R.raw.groot);
+        ids.add(R.raw.gun);
+        ids.add(R.raw.pikachu);
+        ids.add(R.raw.red_flowrs);
+        ids.add(R.raw.stadium);
+
         WallpaperAdapter adapter = new WallpaperAdapter(ids, this, this);
         RecyclerView rvWallpaper = findViewById(R.id.RVWallpaper);
         rvWallpaper.setLayoutManager(new GridLayoutManager(this, 3));
