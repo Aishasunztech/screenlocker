@@ -1,13 +1,13 @@
 package com.secureSetting;
 
-import android.app.ActivityManager;
+import android.Manifest;
 import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.BatteryManager;
@@ -28,31 +28,23 @@ import android.widget.TextView;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureClear.SecureClearActivity;
-import com.secureMarket.SecureMarketActivity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.secureSetting.UtilityFunctions.getBatteryLevel;
 import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
 import static com.secureSetting.UtilityFunctions.getScreenBrightness;
 import static com.secureSetting.UtilityFunctions.getSleepTime;
@@ -62,7 +54,7 @@ import static com.secureSetting.UtilityFunctions.pxFromDp;
 import static com.secureSetting.UtilityFunctions.secondsToMintues;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
-public class SecureSettingsMain extends BaseActivity implements BrightnessDialog.BrightnessChangeListener
+public class SecureSettingsMain extends AppCompatActivity implements BrightnessDialog.BrightnessChangeListener
         , SleepDialog.SleepChangerListener {
 
     private PopupWindow popupWindow;
@@ -73,7 +65,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, airplaneContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer
+            ,airplaneContainer, rebootContainer,shutdownContainer,clearMemoryContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -199,7 +192,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode", airplaneContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode",airplaneContainer);
 
         clickListeners();
 
@@ -236,6 +229,9 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
         airplaneContainer = findViewById(R.id.airplane_container);
+        rebootContainer = findViewById(R.id.reboot_container);
+        shutdownContainer = findViewById(R.id.shutdown_container);
+        clearMemoryContainer = findViewById(R.id.clear_container);
 
     }
 
@@ -395,8 +391,80 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 startActivity(intent);
             }
         });
-        airplaneContainer.setOnClickListener(v -> {
+        airplaneContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                boolean isEnabled = Settings.System.getInt(
+//                        getContentResolver(),
+//                        Settings.System.AIRPLANE_MODE_ON, 0) == 1;
+//
+//// toggle airplane mode
+//                Settings.System.putInt(
+//                        getContentResolver(),
+//                        Settings.System.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
 
+//                final Intent intent=new Intent();
+//                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
+//                intent.putExtra("isEnabled",true);
+//                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//                intent.setComponent(
+//                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+//                sendBroadcast(intent);
+
+                boolean isEnabled = Settings.Global.getInt(
+                        getContentResolver(),
+                        Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
+
+                    Settings.Global.putInt(getContentResolver(),
+                            Settings.Global.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
+                    Log.d("SecureSettingsMain", "HAs permissions");
+            Intent intent1 = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            intent1.putExtra("state", !isEnabled);
+            sendBroadcast(intent1);
+
+//                boolean isEnabled = true;
+//                Settings.Global.putInt(getContentResolver(),
+//                        Settings.Global.AIRPLANE_MODE_ON, isEnabled ? 0 : 1);
+
+//                Intent intent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+            }
+        });
+
+        rebootContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent=new Intent();
+                intent.setAction("com.secure.systemcontrol.SYSTEM_REBOOT");
+                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intent.setComponent(
+                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+                sendBroadcast(intent);
+            }
+        });
+        shutdownContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent=new Intent();
+                intent.setAction("com.secure.systemcontrol.SYSTEM_SHUTDOWN");
+                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intent.setComponent(
+                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+                sendBroadcast(intent);
+            }
+        });
+
+        clearMemoryContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent=new Intent();
+                intent.setAction("com.secure.systemcontrol.SYSTEM_CLEAN");
+                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intent.setComponent(
+                        new ComponentName("com.secure.systemcontrol","com.secure.systemcontrol.receivers.SettingsReceiver"));
+                sendBroadcast(intent);
+            }
         });
 
     }

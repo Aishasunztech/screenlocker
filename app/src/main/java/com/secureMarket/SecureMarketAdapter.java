@@ -2,6 +2,7 @@ package com.secureMarket;
 
 import android.content.Context;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +17,33 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapter.MyViewHolder> {
     private java.util.List<List> appModelList;
     private Context context;
     private AppInstallUpdateListener listener;
-    private String installOrNot;
+    private String userSpace;
+
 
     public interface AppInstallUpdateListener{
         void onInstallClick(List app);
         void onUnInstallClick(List app);
     }
 
-    public SecureMarketAdapter(java.util.List<List> appModelList, Context context, AppInstallUpdateListener listener, String fragmentType) {
+    public SecureMarketAdapter(java.util.List<List> appModelList, Context context, AppInstallUpdateListener listener) {
         this.appModelList = appModelList;
         this.context = context;
         this.listener = listener;
-        installOrNot = fragmentType;
+        userSpace = PrefUtils.getStringPref(context,CURRENT_KEY);
+
 
     }
 
@@ -50,6 +58,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         List app = appModelList.get(position);
+        holder.apkSize.setText(app.getApk_size());
 
         if(app.isInstalled())
         {
@@ -81,9 +90,28 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         holder.btnUnInstall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onUnInstallClick(app);
+                if(app.isGuest())
+                {
+                    if(userSpace.equals(KEY_GUEST_PASSWORD))
+                    {
+                        if(app.getIs_restrict_uninstall() == 1)
+                        {
+                            listener.onUnInstallClick(app);
+                        }
+                    }
+                }
+                else{
+                    if(userSpace.equals(KEY_MAIN_PASSWORD))
+                    {
+                        if(app.getIs_restrict_uninstall() == 1)
+                        {
+                            listener.onUnInstallClick(app);
+                        }
+                    }
+                }
             }
         });
+
     }
 
     @Override
@@ -95,7 +123,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
         ImageView imageView;
-        TextView tv_name,btnInstall,btnUnInstall,btnDownload;
+        TextView tv_name,btnInstall,btnUnInstall,btnDownload,apkSize;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,6 +132,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             tv_name = itemView.findViewById(R.id.market_app_name);
             btnInstall = itemView.findViewById(R.id.btnInstall);
             btnUnInstall = itemView.findViewById(R.id.btnUnInstall);
+            apkSize = itemView.findViewById(R.id.apkSize);
 //            btnDownload = itemView.findViewById(R.id.btnDownload);
         }
     }

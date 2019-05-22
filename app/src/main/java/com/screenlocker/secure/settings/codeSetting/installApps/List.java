@@ -26,7 +26,41 @@ public class List {
     @Expose
     private String packageName;
 
-private boolean installed;
+    public String getApk_size() {
+        return apk_size;
+    }
+
+    public void setApk_size(String apk_size) {
+        this.apk_size = apk_size;
+    }
+
+    @SerializedName("apk_size")
+    @Expose
+    private String apk_size;
+
+    @SerializedName("is_restrict_uninstall")
+    @Expose
+    private int is_restrict_uninstall;
+
+    private boolean isGuest;
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(boolean guest) {
+        isGuest = guest;
+    }
+
+    public int getIs_restrict_uninstall() {
+        return is_restrict_uninstall;
+    }
+
+    public void setIs_restrict_uninstall(int is_restrict_uninstall) {
+        this.is_restrict_uninstall = is_restrict_uninstall;
+    }
+
+    private boolean installed;
 
     public boolean isInstalled() {
         return installed;
