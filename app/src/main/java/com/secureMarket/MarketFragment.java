@@ -191,24 +191,48 @@ public class MarketFragment extends Fragment implements
                                     for (List app : appModelList) {
                                         if (app.isInstalled()) {
 
+                                            new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().getAppUserSpace(app.getPackageName());
+                                                    app.setGuest(isGuest);
 
-                                            boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().getAppUserSpace(app.getPackageName());
-                                            if(userSpace.equals(KEY_GUEST_PASSWORD))
-                                            {
-                                                if(isGuest)
-                                                {
-                                                    installedApps.add(app);
                                                 }
-                                            }else if(userSpace.equals(KEY_MAIN_PASSWORD))
-                                            {
-                                                if(!isGuest)
-                                                {
-                                                    installedApps.add(app);
-                                                }
-                                            }
+                                            }).start();
+////                                            if(userSpace.equals(KEY_GUEST_PASSWORD))
+////                                            {
+////                                                if(isGuest)
+////                                                {
+////                                                    installedApps.add(app);
+////                                                }
+////                                            }else if(userSpace.equals(KEY_MAIN_PASSWORD))
+////                                            {
+////                                                if(!isGuest)
+////                                                {
+////                                                    installedApps.add(app);
+////                                                }
+////                                            }
+//                                                    if(userSpace.equals(KEY_GUEST_PASSWORD))
+//                                                    {
+//                                                        if(isGuest)
+//                                                        {
+//                                                            installedApps.add(app);
+//                                                        }
+//                                                    }else if(userSpace.equals(KEY_MAIN_PASSWORD))
+//                                                    {
+//                                                        if(!isGuest)
+//                                                        {
+//                                                            installedApps.add(app);
+//                                                        }
+//                                                    }
 
-                                        } else {
+                                            installedApps.add(app);
 
+                                        }
+
+
+
+                                 else {
                                             unInstalledApps.add(app);
                                         }
                                     }
