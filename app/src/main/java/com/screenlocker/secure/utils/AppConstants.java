@@ -208,11 +208,11 @@ public class AppConstants {
     public static final String SECURE_SETTINGS_CHANGE = "secure_settings_change";
 
     public static int attempt_5 = 1;
-    public static int attempt_6 = 5;
-    public static int attempt_7 = 10;
-    public static int attempt_8 = 15;
-    public static int attempt_9 = 30;
-    public static int attempt_10 = 30;
+    public static int attempt_6 = 1;
+    public static int attempt_7 = 3;
+    public static int attempt_8 = 5;
+    public static int attempt_9 = 5;
+    public static int attempt_10 = 5;
 
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";
