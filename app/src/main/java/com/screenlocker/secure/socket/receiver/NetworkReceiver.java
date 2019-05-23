@@ -153,12 +153,15 @@ public class NetworkReceiver extends BroadcastReceiver {
             Timber.d("label %s", label);
             boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
 
-            if (SecureMarket) {
+            if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
                 new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
                 return;
             }
 
-            new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+            if(!aPackageName.equals(context.getPackageName())){
+                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+            }
+
             if (intent.hasExtra("isLast")) {
                 Timber.d("ISLAST AVAILABLE : ");
             }

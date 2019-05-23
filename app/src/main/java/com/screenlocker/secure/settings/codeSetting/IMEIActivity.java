@@ -41,8 +41,6 @@ public class IMEIActivity extends BaseActivity {
     Toolbar mToolbar;
     @BindView(R.id.slote1)
     RadioButton slot1;
-    @BindView(R.id.link_to_generate)
-    TextView linkToGenerate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +87,6 @@ public class IMEIActivity extends BaseActivity {
 
             }
         });
-        linkToGenerate.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setToolbar() {

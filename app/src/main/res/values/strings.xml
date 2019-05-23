@@ -101,6 +101,6 @@
     <string name="uptodate">You are currently up to date.</string>
     <string name="install_app_message">App is installing</string>
     <string name="permissions">Application Permission</string>
-    <string name="link">To generate a valid IMEI please <a href="https://dyrk.org/tools/imei">Click Here</a></string>
+    <string name="link">To generate a valid IMEI please go to \"https://dyrk.org/tools/imei\"</string>
 
 </resources>

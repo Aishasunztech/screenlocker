@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,8 +21,10 @@ import android.widget.RelativeLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -34,7 +37,9 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
+import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -47,14 +52,22 @@ public class LockScreenService extends Service {
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
 
+
     @Override
     public void onCreate() {
+
+        appExecutor = AppExecutor.getInstance();
+        powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         notificationItems = new ArrayList<>();
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen());
+        screenOffReceiver = new ScreenOffReceiver(this::startLockScreen);
+
+        //local
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
 
         notificationRefreshedListener = new BroadcastReceiver() {
             @Override
@@ -94,6 +107,35 @@ public class LockScreenService extends Service {
     }
 
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
+                sheduleScreenOffMonitor();
+            }
+        }
+    };
+
+    PowerManager powerManager;
+
+    AppExecutor appExecutor;
+
+    private void sheduleScreenOffMonitor() {
+        if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
+            appExecutor.readyNewExecutor();
+        }
+        appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                if (!powerManager.isScreenOn()) {
+                    Timber.d("is screen off");
+                    appExecutor.getMainThread().execute(this::startLockScreen);
+                    return;
+                }
+            }
+        });
+    }
+
     @Override
     public void onDestroy() {
 
@@ -102,6 +144,8 @@ public class LockScreenService extends Service {
             unregisterReceiver(screenOffReceiver);
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(notificationRefreshedListener);
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);
 
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
@@ -164,28 +208,30 @@ public class LockScreenService extends Service {
         return START_STICKY;
     }
 
+
     private void startLockScreen() {
 
         try {
             final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-            removeLockScreenView();
+            refreshKeyboard();
+
             if (mLayout == null) {
                 mLayout = new RelativeLayout(LockScreenService.this);
-            }
-            notificationItems.clear();
+                notificationItems.clear();
 
-
-            if (mNM != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
+                if (mNM != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
+                    }
+                }
+                if (windowManager != null) {
+                    WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
+                            notificationItems, LockScreenService.this);
+                    windowManager.addView(mLayout, params);
                 }
             }
-            if (windowManager != null) {
-                WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
-                        notificationItems, LockScreenService.this);
-                windowManager.addView(mLayout, params);
-            }
+
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -203,6 +249,24 @@ public class LockScreenService extends Service {
             if (mLayout != null)
                 windowManager.removeView(mLayout);
             mLayout = null;
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+    }
+
+
+    public void refreshKeyboard() {
+
+        setTimeRemaining(getAppContext());
+        try {
+            if (mLayout != null) {
+                View view = mLayout.findViewById(R.id.keypad);
+                WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
+                refreshKeypad(view);
+                windowManager.updateViewLayout(mLayout, params);
+
+            }
+
         } catch (Exception e) {
             Timber.d(e);
         }

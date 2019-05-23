@@ -328,6 +328,17 @@ public class CommonUtils {
         airPlane.setEncrypted(false);
         airPlane.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode");
         subExtensions.add(airPlane);
+        // Air Plane Mode
+        Drawable language_drawable = context.getResources().getDrawable(R.drawable.ic_language);
+        byte[] language_icon = CommonUtils.convertDrawableToByteArray(airplane_drawable);
+        SubExtension language = new SubExtension();
+        language.setLabel("Languages");
+        language.setIcon(airplane_icon);
+        language.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        language.setGuest(false);
+        language.setEncrypted(false);
+        language.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages");
+        subExtensions.add(language);
 
 
         for (SubExtension subExtension : subExtensions) {
