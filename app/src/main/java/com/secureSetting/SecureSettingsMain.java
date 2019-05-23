@@ -20,10 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.screenlocker.secure.R;
@@ -47,6 +49,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -62,7 +65,7 @@ import static com.secureSetting.UtilityFunctions.pxFromDp;
 import static com.secureSetting.UtilityFunctions.secondsToMintues;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
-public class SecureSettingsMain extends BaseActivity implements BrightnessDialog.BrightnessChangeListener
+public class SecureSettingsMain extends BaseActivity implements BrightnessDialog.BrightnessChangeListener, CompoundButton.OnCheckedChangeListener
         , SleepDialog.SleepChangerListener {
 
     private PopupWindow popupWindow;
@@ -79,6 +82,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     WeakHashMap<String, LinearLayout> extensions;
 
+    private Switch switch_airplane;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -236,7 +240,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
         airplaneContainer = findViewById(R.id.airplane_container);
-
+        switch_airplane = findViewById(R.id.switch_airplane);
+        switch_airplane.setOnCheckedChangeListener(this);
     }
 
     WindowManager wm;
@@ -491,5 +496,20 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             wm.removeViewImmediate(mView);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.switch_airplane:
+                final Intent intent = new Intent();
+                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
+                intent.putExtra("isEnabled", isChecked);
+                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intent.setComponent(
+                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+                sendBroadcast(intent);
+                break;
+        }
     }
 }

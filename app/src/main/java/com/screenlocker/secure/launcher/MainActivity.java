@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         });
 
 
-        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                         .build();
                 ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
             } catch (Exception e) {
-
+                Timber.d(e);
             }
         }
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -234,7 +234,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
 
     public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
-
 
 
     public void removeOverlay() {

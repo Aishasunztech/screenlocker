@@ -81,7 +81,7 @@ public class LockScreenService extends Service {
         };
 
 
-        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(notificationRefreshedListener,
                         new IntentFilter(DeviceNotificationListener.ACTION_NOTIFICATION_REFRESH));
