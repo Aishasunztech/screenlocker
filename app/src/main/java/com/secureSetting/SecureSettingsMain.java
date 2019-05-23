@@ -204,6 +204,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode", airplaneContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages", language_container);
 
         clickListeners();
 
@@ -240,7 +241,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
         airplaneContainer = findViewById(R.id.airplane_container);
-        switch_airplane = findViewById(R.id.switch_airplane);
+        switch_airplane = findViewById(R.id.switch_air);
         switch_airplane.setOnCheckedChangeListener(this);
     }
 
@@ -378,7 +379,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.LanguageAndInputSettingsActivity");
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$LanguageAndInputSettingsActivity");
                 intent.setComponent(cn);
                 startActivity(intent);
 
@@ -501,7 +502,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.switch_airplane:
+            case R.id.switch_air:
                 final Intent intent = new Intent();
                 intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
                 intent.putExtra("isEnabled", isChecked);
