@@ -113,10 +113,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
 
-        screenOffReceiver = new ScreenOffReceiver(this::clearRecentApp);
+        screenOffReceiver = new ScreenOffReceiver(() -> {
+            Glide.with(MainActivity.this).load(R.color.colorPrimary).apply(new RequestOptions().centerCrop()).into(background);
+            clearRecentApp();
+            adapter.appsList.clear();
+            adapter.notifyDataSetChanged();
+        });
 
 
-        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
@@ -133,8 +138,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                         .setIntent(shortcutIntent)
                         .build();
                 ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
 
             }
         }
@@ -212,19 +216,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-
-            if (PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
-                sheduleScreenOffMonitor();
-            }
-
-
-            clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
-            adapter.appsList.clear();
-            adapter.notifyDataSetChanged();
-
-
             Thread t2 = new Thread() {
                 @Override
                 public void run() {
@@ -242,49 +235,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
 
-    public void drawOverLay() {
-
-        Timber.d("drawOverLay: ");
-
-
-        try {
-            int windowType;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                windowType = WindowManager.LayoutParams.TYPE_TOAST |
-                        WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-            } else {
-                windowType = WindowManager.LayoutParams.TYPE_PHONE;
-            }
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    windowType,
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                            | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                            | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                    PixelFormat.TRANSLUCENT);
-            params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-            params.gravity = Gravity.CENTER;
-
-
-            if (layout != null) {
-                layout.setBackgroundColor(MyApplication.getAppContext().getResources().getColor(R.color.colorPrimary));
-            }
-
-            if (windowManager != null) {
-                if (layout != null && layout.getId() != R.id.splash_id) {
-                    layout.setId(R.id.splash_id);
-                    windowManager.addView(layout, params);
-
-                }
-            }
-        } catch (Exception e) {
-
-            Timber.d("drawOverLay: %s", e.getMessage());
-        }
-    }
 
 
     public void removeOverlay() {
@@ -404,22 +354,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     };
 
 
-    private void sheduleScreenOffMonitor() {
-
-
-        appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                if (!powerManager.isScreenOn()) {
-                    Log.d(TAG, "Screen Is Off: ");
-                    appExecutor.getMainThread().execute(this::drawOverLay);
-                    return;
-
-                }
-            }
-        });
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -461,13 +395,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     }
 
 
-    private void clearRecenttasks(){
+    private void clearRecenttasks() {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<UsageStats> list = CommonUtils.getCurrentApp(this);
         if (list != null) {
             for (UsageStats usageStats : list) {
                 if (!usageStats.getPackageName().equals(getPackageName()))
-                    Timber.d( "Cleaning: " + usageStats.getPackageName());
+                    Timber.d("Cleaning: " + usageStats.getPackageName());
                 assert activityManager != null;
                 activityManager.killBackgroundProcesses(usageStats.getPackageName());
             }

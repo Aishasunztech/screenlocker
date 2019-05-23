@@ -18,9 +18,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +50,7 @@ import com.screenlocker.secure.views.KeyboardView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -164,8 +168,8 @@ public class Utils {
                         | WindowManager.LayoutParams.FLAG_FULLSCREEN
                         | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                         | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-                |WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-                |WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                        | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 
                 PixelFormat.TRANSLUCENT);
 
@@ -187,6 +191,7 @@ public class Utils {
         } else {
             rootView.setBackgroundResource(Integer.parseInt(bg));
         }
+
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
         final String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
@@ -415,6 +420,51 @@ public class Utils {
 //        handler.removeCallbacks(runnable);
 //    }
 
+    public static void refreshKeypad(View view) {
+
+
+        TextView k0 = view.findViewById(R.id.t9_key_0),
+                k1 = view.findViewById(R.id.t9_key_1),
+                k2 = view.findViewById(R.id.t9_key_2),
+                k3 = view.findViewById(R.id.t9_key_3),
+                k4 = view.findViewById(R.id.t9_key_4),
+                k5 = view.findViewById(R.id.t9_key_5),
+                k6 = view.findViewById(R.id.t9_key_6),
+                k7 = view.findViewById(R.id.t9_key_7),
+                k8 = view.findViewById(R.id.t9_key_8),
+                k9 = view.findViewById(R.id.t9_key_9);
+
+        int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+        setUpRandomizedArray(arr);
+
+        k0.setText(String.valueOf(arr[0]));
+        k1.setText(String.valueOf(arr[1]));
+        k2.setText(String.valueOf(arr[2]));
+        k3.setText(String.valueOf(arr[3]));
+        k4.setText(String.valueOf(arr[4]));
+        k5.setText(String.valueOf(arr[5]));
+        k6.setText(String.valueOf(arr[6]));
+        k7.setText(String.valueOf(arr[7]));
+        k8.setText(String.valueOf(arr[8]));
+        k9.setText(String.valueOf(arr[9]));
+
+
+    }
+
+    private static void setUpRandomizedArray(int[] arr) {
+
+        for (int i = 0; i < 9; ++i) {
+
+            Random r = new Random();
+            int pos = i + r.nextInt(9 - i);
+
+            int temp = arr[i];
+            arr[i] = arr[pos];
+            arr[pos] = temp;
+        }
+    }
+
 
     public static void sendMessageToActivity(String msg, Context context) {
 
@@ -435,7 +485,6 @@ public class Utils {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 
 
 }
