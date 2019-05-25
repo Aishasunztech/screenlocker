@@ -9,9 +9,9 @@ import com.screenlocker.secure.launcher.AppInfo;
 public abstract class MyAppDatabase extends RoomDatabase {
     public abstract MyDao getDao();
 
-    @Override
-    public void clearAllTables() {
-
-    }
+//    @Override
+//    public void clearAllTables() {
+//
+//    }
 
 }

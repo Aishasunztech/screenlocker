@@ -22,6 +22,7 @@ import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -32,6 +33,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLING_APP_NAME;
 
 /**
  * application class to get the database instance
@@ -69,9 +71,6 @@ public class MyApplication extends Application implements NetworkListener {
         super.onCreate();
 
         appContext = getApplicationContext();
-
-
-
 
 
         try {
@@ -115,7 +114,6 @@ public class MyApplication extends Application implements NetworkListener {
                 .build();
 
         apiOneCaller = component.getApiOneCaller();
-
 
 
 //   startService(new Intent(this,LifecycleReceiverService.class));

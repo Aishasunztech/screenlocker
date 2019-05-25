@@ -258,16 +258,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    AppInstallReciever mInstallReciever;
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
-            if (mInstallReciever != null) {
-                unregisterReceiver(mInstallReciever);
-            }
             if (networkReceiver != null) {
                 unregisterReceiver(networkReceiver);
             }
@@ -440,7 +435,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     }
-
 
 
     private void createNoNetworkDialog() {
@@ -847,7 +841,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
 
 
-
         // IMEI 1
         TextView tvImei1 = accountDialog.findViewById(R.id.tvImei1);
         TextView textViewImei = accountDialog.findViewById(R.id.textViewImei);
@@ -874,9 +867,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         }
 
-        if(!PrefUtils.getBooleanPref(SettingsActivity.this,DEVICE_LINKED_STATUS) && imeis.size()==0){
+        if (!PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS) && imeis.size() == 0) {
             Toast.makeText(this, "Device not linked", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             accountDialog.show();
         }
 
@@ -1002,7 +995,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                     //Uri uri =  FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                     Timber.d("downloadApp: %s ", contentUri.toString());
-
 
 
                     return contentUri;

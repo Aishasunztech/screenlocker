@@ -19,8 +19,8 @@ android {
         applicationId "com.vortexlocker.app"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 471
-        versionName "4.71"
+        versionCode 475
+        versionName "4.75"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -89,6 +89,8 @@ dependencies {
 //    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
 
 // Room
+    implementation 'androidx.room:room-runtime:2.1.0-beta01'
+    annotationProcessor 'androidx.room:room-compiler:2.1.0-beta01'
 
 // implementation "android.arch.persistence.room:runtime:1.0.0"
 

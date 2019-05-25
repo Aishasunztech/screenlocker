@@ -26,6 +26,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
@@ -57,15 +58,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 import static android.view.KeyEvent.KEYCODE_POWER;
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener {
+public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener, OnAppsRefreshListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -113,12 +117,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
 
-        screenOffReceiver = new ScreenOffReceiver(() -> {
-            Glide.with(MainActivity.this).load(R.color.colorPrimary).apply(new RequestOptions().centerCrop()).into(background);
-            clearRecentApp();
-            adapter.appsList.clear();
-            adapter.notifyDataSetChanged();
-        });
+        screenOffReceiver = new ScreenOffReceiver(this::clearRecentApp);
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -218,6 +217,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         public void onReceive(final Context context, Intent intent) {
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
+            adapter.appsList.clear();
+            adapter.notifyDataSetChanged();
             Thread t2 = new Thread() {
                 @Override
                 public void run() {
@@ -272,6 +273,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
         }
+
+        refreshApps(this);
 
         super.onResume();
         //allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
@@ -332,25 +335,28 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null)
                 if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
-
-                    String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
-                    adapter.appsList.clear();
-                    adapter.notifyDataSetChanged();
-
-
-                    Thread t2 = new Thread() {
-                        @Override
-                        public void run() {
-                            mainPresenter.addDataToList(pm, current_user, adapter);
-                            runOnUiThread(() -> adapter.notifyDataSetChanged());
-                        }
-                    };
-                    t2.start();
-
-
+                    refreshAppsList();
                 }
         }
     };
+
+    private void refreshAppsList() {
+
+
+        String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
+        adapter.appsList.clear();
+        adapter.notifyDataSetChanged();
+        Thread t2 = new Thread() {
+            @Override
+            public void run() {
+                mainPresenter.addDataToList(pm, current_user, adapter);
+                runOnUiThread(() -> adapter.notifyDataSetChanged());
+            }
+        };
+        t2.start();
+
+
+    }
 
 
     @Override
@@ -436,7 +442,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         });
 
         alertDialog.show();
+    }
 
+    @Override
+    public void onAppsRefresh() {
+        AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
     }
 }
 

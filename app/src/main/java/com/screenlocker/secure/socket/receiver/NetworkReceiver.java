@@ -30,6 +30,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DELETE_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -98,6 +99,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                         if (i == 0) {
                             MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                         }
+                        sendMessage(context);
 
                     }).start();
 
@@ -155,11 +157,17 @@ public class NetworkReceiver extends BroadcastReceiver {
 
             if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
                 new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+                sendMessage(context);
                 return;
             }
 
-            if(!aPackageName.equals(context.getPackageName())){
-                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+            if (!aPackageName.equals(context.getPackageName())) {
+
+                new Thread(() -> {
+                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label);
+                    sendMessage(context);
+                }).start();
+
             }
 
             if (intent.hasExtra("isLast")) {
@@ -241,6 +249,8 @@ public class NetworkReceiver extends BroadcastReceiver {
                         MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                     }
 
+                    sendMessage(context);
+
                 }).start();
 
             } catch (PackageManager.NameNotFoundException e) {
@@ -249,5 +259,8 @@ public class NetworkReceiver extends BroadcastReceiver {
         }
     }
 
+    private void sendMessage(Context context) {
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
+    }
 
 }

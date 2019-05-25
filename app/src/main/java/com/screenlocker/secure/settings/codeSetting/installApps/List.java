@@ -18,6 +18,7 @@ public class List {
     @Expose
     private String apk;
 
+
     @SerializedName("apk_status")
     @Expose
     private String apkStatus;
@@ -42,15 +43,6 @@ public class List {
     @Expose
     private int is_restrict_uninstall;
 
-    private boolean isGuest;
-
-    public boolean isGuest() {
-        return isGuest;
-    }
-
-    public void setGuest(boolean guest) {
-        isGuest = guest;
-    }
 
     public int getIs_restrict_uninstall() {
         return is_restrict_uninstall;

@@ -1076,7 +1076,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 JSONObject object = (JSONObject) args[0];
 
-                Timber.d(object.toString());
 
                 try {
                     if (validateRequest(device_id, object.getString("device_id"))) {
@@ -1085,8 +1084,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             if (policyResponse != null) {
                                 policyResponse.onResponse(true);
                             }
-
-                            Timber.d(object.toString());
 
                             updateSettings(object, true);
 

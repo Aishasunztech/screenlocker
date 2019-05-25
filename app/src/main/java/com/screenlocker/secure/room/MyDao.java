@@ -23,7 +23,6 @@ public interface MyDao {
     @Query("SELECT * from SubExtension ")
     List<SubExtension> getAllSubExtensions();
 
-
     @Query("select * from AppInfo where guest= :isGuest and enable =:isEnable ")
     List<AppInfo> getGuestApps(boolean isGuest, boolean isEnable);
 
@@ -46,7 +45,7 @@ public interface MyDao {
     void updateAllApps(boolean guest, boolean enable, boolean encrypted);
 
     @Query("UPDATE AppInfo SET extension=:extension WHERE uniqueName=:uniqueName")
-    void updateExtension(boolean extension,String uniqueName);
+    void updateExtension(boolean extension, String uniqueName);
 
     @Query("UPDATE SubExtension SET guest=:guest  , encrypted =:encrypted WHERE uniqueExtension=:uniqueExtension ")
     int updateExtensionStatusFromServer(boolean guest, boolean encrypted, String uniqueExtension);
@@ -68,6 +67,10 @@ public interface MyDao {
 
     @Query("DELETE FROM AppInfo where uniqueName=:uniqueName")
     void deleteOne(String uniqueName);
+
+    @Query("DELETE FROM AppInfo where packageName=:packageName")
+    void deletePackage(String packageName);
+
 
     @Query("UPDATE AppInfo SET guest=:guest , encrypted=:encrypted, enable=:enable WHERE uniqueName=:uniqueName")
     void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);
@@ -111,6 +114,9 @@ public interface MyDao {
     int checkEncryptedStatus(boolean status);
 
     @Query("SELECT guest from Appinfo where packageName = :packageName")
-    boolean getAppUserSpace(String packageName);
+    boolean checkGuest(String packageName);
+
+    @Query("SELECT encrypted from Appinfo where packageName = :packageName")
+    boolean checkEncrypt(String packageName);
 
 }

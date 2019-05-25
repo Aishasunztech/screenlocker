@@ -25,6 +25,7 @@ import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -51,6 +52,8 @@ public class LockScreenService extends Service {
     private BroadcastReceiver notificationRefreshedListener;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
+
+
 
 
     @Override
@@ -142,6 +145,7 @@ public class LockScreenService extends Service {
         try {
             Timber.d("screen locker distorting.");
             unregisterReceiver(screenOffReceiver);
+
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(notificationRefreshedListener);
             LocalBroadcastManager.getInstance(this)
