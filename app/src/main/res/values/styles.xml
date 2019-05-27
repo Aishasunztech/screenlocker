@@ -96,5 +96,7 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="downloadDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert"></style>
+
 
 </resources>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -78,6 +79,7 @@ public class MarketFragment extends Fragment implements
     private java.util.List<List> unInstalledApps = new ArrayList<>();
     private ProgressDialog progressDialog;
     private String userSpace;
+    private DownLoadAndInstallUpdate downLoadAndInstallUpdate;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
@@ -366,7 +368,7 @@ public class MarketFragment extends Fragment implements
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
-            DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate((Activity) activity, AppConstants.STAGING_BASE_URL + "getApk/" +
+            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate((Activity) activity, AppConstants.STAGING_BASE_URL + "getApk/" +
                     CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
             downLoadAndInstallUpdate.execute();
             AppConstants.INSTALLING_APP_NAME = app.getApkName();
@@ -515,6 +517,8 @@ public class MarketFragment extends Fragment implements
         private WeakReference<Activity> contextWeakReference;
         private ProgressDialog dialog;
         private String userType, packageName;
+        private boolean isCanceled = false;
+        private File file;
 
 
         DownLoadAndInstallUpdate(Activity context, final String url, String appName, ProgressDialog dialog, String packageName) {
@@ -533,6 +537,14 @@ public class MarketFragment extends Fragment implements
             dialog.setTitle("Downloading App, Please Wait");
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    isCanceled = true;
+                }
+            });
+//
             dialog.show();
         }
 
@@ -548,7 +560,7 @@ public class MarketFragment extends Fragment implements
             try {
 
                 File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
-                File file = new File(apksPath, appName);
+                file = new File(apksPath, appName);
 //                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
@@ -567,10 +579,17 @@ public class MarketFragment extends Fragment implements
                     byte data[] = new byte[contentLength];
                     long total = 0;
                     int count;
+
                     while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress((int) ((total * 100) / contentLength));
-                        fileOutputStream.write(data, 0, count);
+                        if(!isCanceled) {
+                            total += count;
+                            int value = (int) ((total * 100) / contentLength);
+                            publishProgress(value);
+                            fileOutputStream.write(data, 0, count);
+                        }else{
+                            file.delete();
+                            break;
+                        }
                     }
 
                     return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
@@ -608,7 +627,7 @@ public class MarketFragment extends Fragment implements
             Log.d("kikhfihfihdihso", "onPostExecute: " + uri);
             if (dialog != null)
                 dialog.dismiss();
-            if (uri != null) {
+            if (uri != null  && !isCanceled) {
                 showInstallDialog(uri, packageName);
             }
 

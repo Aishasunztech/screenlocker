@@ -132,7 +132,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                             boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
 
                             if (isGuest) {
-                                if (app.getIs_restrict_uninstall() == 1) {
+                                if (app.getIs_restrict_uninstall() == 0) {
                                     listener.onUnInstallClick(app, true);
                                 } else {
                                     listener.onUnInstallClick(app, false);
@@ -149,7 +149,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                         new Thread(() -> {
                             boolean isEncrypted = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
                             if (isEncrypted) {
-                                if (app.getIs_restrict_uninstall() == 1) {
+                                if (app.getIs_restrict_uninstall() == 0) {
                                     listener.onUnInstallClick(app, true);
                                 } else {
                                     listener.onUnInstallClick(app, false);
