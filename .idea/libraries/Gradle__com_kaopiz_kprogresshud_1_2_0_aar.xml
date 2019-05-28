@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.kaopiz:kprogresshud:1.2.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kprogresshud-1.2.0.aar/6b768358604533553f6321f9ab617c1b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kprogresshud-1.2.0.aar/6b768358604533553f6321f9ab617c1b/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kprogresshud-1.2.0.aar/b0af00f0b34d4bc3055765f6f17b395b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kprogresshud-1.2.0.aar/b0af00f0b34d4bc3055765f6f17b395b/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -574,7 +574,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_15sdp"
-                        android:text="Languages"
+                        android:text="Languages &amp; Input"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
