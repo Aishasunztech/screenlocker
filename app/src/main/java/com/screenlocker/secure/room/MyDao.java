@@ -4,7 +4,9 @@ import com.screenlocker.secure.launcher.AppInfo;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -46,7 +48,7 @@ public interface MyDao {
     void updateAllApps(boolean guest, boolean enable, boolean encrypted);
 
     @Query("UPDATE AppInfo SET extension=:extension WHERE uniqueName=:uniqueName")
-    void updateExtension(boolean extension,String uniqueName);
+    void updateExtension(boolean extension, String uniqueName);
 
     @Query("UPDATE SubExtension SET guest=:guest  , encrypted =:encrypted WHERE uniqueExtension=:uniqueExtension ")
     int updateExtensionStatusFromServer(boolean guest, boolean encrypted, String uniqueExtension);
@@ -112,5 +114,19 @@ public interface MyDao {
 
     @Query("SELECT guest from Appinfo where packageName = :packageName")
     boolean getAppUserSpace(String packageName);
+
+    @Insert
+    void insertSim(SimEntry entry);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateSim(SimEntry sim);
+
+    @Delete
+    void deleteSim(SimEntry entry);
+
+    @Query("SELECT * FROM sim")
+    LiveData<List<SimEntry>> getAllSims();
+    @Query("SELECT * FROM sim")
+    List<SimEntry> getAllSimInService();
 
 }

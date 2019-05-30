@@ -21,8 +21,10 @@ import android.widget.RelativeLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -30,13 +32,20 @@ import com.screenlocker.secure.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
+import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
@@ -195,6 +204,7 @@ public class LockScreenService extends Service {
                         break;
                     case "unlocked":
                         removeLockScreenView();
+                        simPermissionsCheck();
                         break;
                     case "locked":
                         startLockScreen();
@@ -254,6 +264,91 @@ public class LockScreenService extends Service {
         }
     }
 
+    private void simPermissionsCheck() {
+        String iccid0 = PrefUtils.getStringPref(this, SIM_0_ICCID);
+        String iccid1 = PrefUtils.getStringPref(this, SIM_1_ICCID);
+        String space = PrefUtils.getStringPref(this, CURRENT_KEY);
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            List<SimEntry> simEntries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                assert simEntries != null;
+                Optional<SimEntry> op = simEntries.stream()
+                        .filter(a -> a.getIccid().equals(iccid0))
+                        .findAny();
+                if (op.isPresent()) {
+                    SimEntry entry1 = op.get();
+                    spaceWiseEnableDisable(space, entry1,0);
+                }else{
+                    byDefaultBehaviour(space,0);
+                }
+                Optional<SimEntry> op1 = simEntries.stream()
+                        .filter(a -> a.getIccid().equals(iccid1))
+                        .findAny();
+                if (op1.isPresent()) {
+                    SimEntry entry1 = op1.get();
+                    spaceWiseEnableDisable(space, entry1,1);
+                }
+                else {
+                    byDefaultBehaviour(space,1);
+                }
+            }
+        });
+
+    }
+
+    private void byDefaultBehaviour(String space,int slot) {
+        switch (space){
+            case KEY_GUEST_PASSWORD:
+                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)){
+                    broadCastIntent(true,slot);
+                }else{
+                    broadCastIntent(false,slot);
+                }
+                break;
+            case KEY_MAIN_PASSWORD:
+                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)){
+                    broadCastIntent(true,slot);
+                }else{
+                    broadCastIntent(false,slot);
+                }
+                break;
+        }
+    }
+
+    private void spaceWiseEnableDisable(String space, SimEntry entry1, int slot) {
+        switch (space) {
+            case KEY_GUEST_PASSWORD:
+                if (entry1.isEnable()) {
+                    if (entry1.isGuest()) {
+                        //enable sim slot 1 for this user
+                        broadCastIntent(true, slot);
+                    } else {
+                        broadCastIntent(false, slot);
+                        //disable sim slote for this user
+                    }
+                } else {
+                    //disable in any case
+                    broadCastIntent(false, slot);
+                }
+                break;
+            case KEY_MAIN_PASSWORD:
+                if (entry1.isEnable()) {
+                    if (entry1.isEncrypted()) {
+                        //enable sim slot 1 for this user
+                        broadCastIntent(true, slot);
+                    } else {
+                        //disable sim slote for this user
+                        broadCastIntent(false, slot);
+                    }
+                } else {
+                    //disable in any case
+                    broadCastIntent(false, slot);
+                }
+                break;
+
+        }
+    }
+
 
     public void refreshKeyboard() {
 
@@ -270,6 +365,14 @@ public class LockScreenService extends Service {
         } catch (Exception e) {
             Timber.d(e);
         }
+    }
+    void broadCastIntent(boolean enabled, int slot) {
+        Intent intent = new Intent("com.secure.systemcontrol.SYSTEM_SETTINGS");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.putExtra("isEnabled", enabled);
+        intent.putExtra("slot", slot);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
     }
 
 
