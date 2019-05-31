@@ -184,6 +184,18 @@ public class CommonUtils {
         wifi.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "wi-fi");
         subExtensions.add(wifi);
 
+        // Air Plane Mode
+        Drawable airplane_drawable = context.getResources().getDrawable(R.drawable.ic_airplane_mode);
+        byte[] airplane_icon = CommonUtils.convertDrawableToByteArray(airplane_drawable);
+        SubExtension airPlane = new SubExtension();
+        airPlane.setLabel("Airplane mode");
+        airPlane.setIcon(airplane_icon);
+        airPlane.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        airPlane.setGuest(false);
+        airPlane.setEncrypted(false);
+        airPlane.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplane mode");
+        subExtensions.add(airPlane);
+
         // bluetooth menu
         Drawable bluetooth_drawable = context.getResources().getDrawable(R.drawable.ic_bluetooth);
         byte[] bluetooth_icon = CommonUtils.convertDrawableToByteArray(bluetooth_drawable);
@@ -317,17 +329,7 @@ public class CommonUtils {
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
 
-        // Air Plane Mode
-        Drawable airplane_drawable = context.getResources().getDrawable(R.drawable.ic_airplane_mode);
-        byte[] airplane_icon = CommonUtils.convertDrawableToByteArray(airplane_drawable);
-        SubExtension airPlane = new SubExtension();
-        airPlane.setLabel("Airplane mode");
-        airPlane.setIcon(airplane_icon);
-        airPlane.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
-        airPlane.setGuest(false);
-        airPlane.setEncrypted(false);
-        airPlane.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplane mode");
-        subExtensions.add(airPlane);
+
 
         // Languages and input
 
