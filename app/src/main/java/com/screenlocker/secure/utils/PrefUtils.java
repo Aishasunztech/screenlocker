@@ -35,6 +35,10 @@ public class PrefUtils {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, false);
     }
+    public static boolean getBooleanPrefWithDefTrue(Context context, String key) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(key, true);
+    }
 
     public static void saveBooleanPref(Context context, String key, boolean value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);

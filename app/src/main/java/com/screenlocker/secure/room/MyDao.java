@@ -4,7 +4,9 @@ import com.screenlocker.secure.launcher.AppInfo;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -118,5 +120,19 @@ public interface MyDao {
 
     @Query("SELECT encrypted from Appinfo where packageName = :packageName")
     boolean checkEncrypt(String packageName);
+
+    @Insert
+    void insertSim(SimEntry entry);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateSim(SimEntry sim);
+
+    @Delete
+    void deleteSim(SimEntry entry);
+
+    @Query("SELECT * FROM sim")
+    LiveData<List<SimEntry>> getAllSims();
+    @Query("SELECT * FROM sim")
+    List<SimEntry> getAllSimInService();
 
 }

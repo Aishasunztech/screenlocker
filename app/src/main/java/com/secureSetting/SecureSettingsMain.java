@@ -182,8 +182,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
-//        permissionModify(SecureSettingsMain.this);
-
+//        permissionModify(SecureSettingsMain.this)
 
 //        if (!checkLocationStatus(this)) {
 //            turnOnLocation(this);
@@ -203,8 +202,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode", airplaneContainer);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages", language_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplane mode", airplaneContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input", language_container);
 
         clickListeners();
 
@@ -393,13 +392,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         });
 
-        mobile_container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-                startActivity(intent);
-            }
+        mobile_container.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+            startActivity(intent);
         });
         airplaneContainer.setOnClickListener(v -> {
 

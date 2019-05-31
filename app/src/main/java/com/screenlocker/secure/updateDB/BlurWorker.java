@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.provider.Settings;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -35,7 +37,7 @@ public class BlurWorker extends Worker {
     @NonNull
     @Override
 
-    public Worker.Result doWork() {
+    public Result doWork() {
 
         Context applicationContext = getApplicationContext();
         try {
@@ -49,7 +51,7 @@ public class BlurWorker extends Worker {
 
             List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
 
-            Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            Intent intent = new Intent(Settings.ACTION_SETTINGS);
 
             List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -181,21 +183,45 @@ public class BlurWorker extends Worker {
 
 
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+            List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
 
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu
-                setSecureSettingsMenu(applicationContext);
+                for(SubExtension subExtension:subExtensions){
+                    MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+                }
+
+            }else {
+
+                if(dbExtensions.size() != subExtensions.size()){
+
+                    for (SubExtension subExtension : subExtensions) {
+
+                        for (SubExtension dbExtension : dbExtensions) {
+                            if (!dbExtension.getUniqueExtension().equals(subExtension.getUniqueExtension())) {
+                                MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+                            }
+                        }
+
+
+
+                    }
+                }
+
             }
 
 
-            return Worker.Result.success();
+
+
+
+            return Result.success();
         } catch (Throwable throwable) {
 
             // Technically WorkManager will return Worker.Result.FAILURE
             // but it's best to be explicit about it.
             // Thus if there were errors, we're return FAILURE
             Timber.tag(TAG).e(throwable, "Error applying blur");
-            return Worker.Result.failure();
+            return Result.failure();
         }
     }
 }

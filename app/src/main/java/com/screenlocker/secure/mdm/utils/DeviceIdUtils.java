@@ -39,7 +39,7 @@ public class DeviceIdUtils {
 //                }
 
                 if (macBytes == null) {
-                    return "";
+                    return "02:00:00:00:00:00";
                 }
 
                 StringBuilder res1 = new StringBuilder();
@@ -60,6 +60,7 @@ public class DeviceIdUtils {
                 return res1.toString();
             }
         } catch (Exception ex) {
+            return "02:00:00:00:00:00";
         }
         return "02:00:00:00:00:00";
     }
@@ -102,10 +103,10 @@ public class DeviceIdUtils {
 
             // If none of the methods above worked
             if (serialNumber.equals(""))
-                serialNumber = null;
+                serialNumber = "123456789ABCDEF";
         } catch (Exception e) {
             e.printStackTrace();
-            serialNumber = null;
+            serialNumber = "123456789ABCDEF";
         }
 
         return serialNumber;

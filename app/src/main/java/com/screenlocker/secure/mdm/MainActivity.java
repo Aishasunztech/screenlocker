@@ -21,8 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.annotations.SerializedName;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -57,6 +59,9 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
+import static com.screenlocker.secure.utils.AppConstants.MAC_DUPLICATE;
+import static com.screenlocker.secure.utils.AppConstants.SERIAL_DUPLICATE;
+import static com.screenlocker.secure.utils.AppConstants.SOME_ERROR;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
@@ -96,6 +101,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.error)
     View error;
 
+    @BindView(R.id.error_text)
+    TextView error_text;
     /**
      * rootview of the main view (in which dealer enters the pin)
      */
@@ -147,6 +154,10 @@ public class MainActivity extends BaseActivity {
 
         //get serial number
         SerialNo = DeviceIdUtils.getSerialNumber();
+
+        Timber.d("SerialNo %s", SerialNo);
+        Timber.d("MacAddress %s", MAC);
+
         SerialNo = (SerialNo == null) ? "" : SerialNo;
 
         IP = (IP == null) ? "" : IP;
@@ -183,8 +194,6 @@ public class MainActivity extends BaseActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "initAutoLoginWithPermissions: " + DeviceIdUtils.getMacAddress());
-
                 // if permission is allowed (wifi and phone state)
                 initAutoLogin();
             } else {
@@ -255,7 +264,7 @@ public class MainActivity extends BaseActivity {
                             }
                         } else {
                             // if any error occurred show error view
-                            showError();
+                            showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         }
                         Log.i(TAG, "onResponse:1 " + response);
                         if (lytSwipeRefresh.isRefreshing()) {
@@ -266,7 +275,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onFailure(Call<CheckStatusResponse> call, Throwable t) {
                         Log.i(TAG, "onFailure: " + t);
-                        showError();
+                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
                         }
@@ -308,6 +317,9 @@ public class MainActivity extends BaseActivity {
                             if (response.isSuccessful()) {
 
                                 DealerLoginResponse dlr = response.body();
+
+                                Timber.d("jkdsgjgjrgrg%s", dlr.getMsg());
+                                Timber.d("jkdsgjgjrgrg%s", dlr.getStatus());
 
                                 if (dlr.getStatus()) {
                                     //updating the prefs
@@ -377,6 +389,12 @@ public class MainActivity extends BaseActivity {
 
                                 switch (response.body().getStatus()) {
 
+                                    case SERIAL_DUPLICATE:
+
+                                        break;
+                                    case MAC_DUPLICATE:
+
+                                        break;
                                     case DEVICE_NEW:
                                         //for the first time
                                         initLayoutWithPermission();
@@ -395,7 +413,7 @@ public class MainActivity extends BaseActivity {
                                         break;
 
                                     default:
-                                        showError();
+                                        showError(SOME_ERROR);
 
                                 }
                             } else if (lsr.getMsg() != null) {
@@ -417,7 +435,7 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(Call<LinkStatusResponse> call, Throwable t) {
-                        showError();
+                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
                     }
                 });
 
@@ -458,14 +476,12 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful()) {
                             if (response.body().getStatus()) {
 
-
                                 String msg = response.body().getMsg();
                                 if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
                                     checkCurrentStatusAndProceed();
                                 } else {
                                     showMainContent();
                                 }
-
 
                             } else {
 
@@ -475,7 +491,7 @@ public class MainActivity extends BaseActivity {
 //                                showContactDealer();
                             }
                         } else {
-                            showError();
+                            showError(SOME_ERROR);
                         }
                         Log.i(TAG, "onResponse: " + response);
                         if (lytSwipeRefresh.isRefreshing()) {
@@ -486,7 +502,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onFailure(Call<CheckStatusResponse> call, Throwable t) {
                         Log.i(TAG, "onFailure: " + t);
-                        showError();
+                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
                         }
@@ -540,7 +556,7 @@ public class MainActivity extends BaseActivity {
     private void request(int type, String dealerPin) {
         disableViews();
         if (type == 1) {
-            Log.d("kldjddf", "request: " + type);
+
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
                     .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin))
@@ -620,10 +636,13 @@ public class MainActivity extends BaseActivity {
 
         final String Did_current = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID);
 
+        Timber.d("SerialNo %s", SerialNo);
+        Timber.d("MAC %s", MAC);
+
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
                 .linkDeviceStatus(
-                        new LinkStatusModel(SerialNo, DeviceIdUtils.getMacAddress()),
+                        new LinkStatusModel(SerialNo, MAC),
                         PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
                 )
                 .enqueue(new Callback<LinkStatusResponse>() {
@@ -632,6 +651,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful()) {
 
                             LinkStatusResponse lsr = response.body();
+
                             if (lsr.getStatus() != null) {
 
                                 String dIdLinked = lsr.getDealer_id();
@@ -662,7 +682,7 @@ public class MainActivity extends BaseActivity {
                                         break;
 
                                     default:
-                                        showError();
+                                        showError(SOME_ERROR);
 
                                 }
                             } else if (lsr.getMsg() != null) {
@@ -678,13 +698,13 @@ public class MainActivity extends BaseActivity {
                             }
 
                         } else {
-                            showError();
+                            showError(SOME_ERROR);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<LinkStatusResponse> call, Throwable t) {
-                        showError();
+                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
                     }
                 });
     }
@@ -771,11 +791,12 @@ public class MainActivity extends BaseActivity {
     /**
      * show error screen
      */
-    private void showError() {
+    private void showError(String message) {
         mainView.setVisibility(View.GONE);
         contactDealer.setVisibility(View.GONE);
         loading.setVisibility(View.GONE);
         error.setVisibility(View.VISIBLE);
+        error_text.setText(message);
     }
 
     /**
@@ -786,6 +807,7 @@ public class MainActivity extends BaseActivity {
         contactDealer.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
         error.setVisibility(View.GONE);
+
     }
 
     /**
