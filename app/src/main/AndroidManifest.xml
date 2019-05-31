@@ -60,21 +60,9 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver
-            android:name="com.secureSim.SimCardStateChangeBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+        <activity android:name=".settings.AboutActivity"
+            android:screenOrientation="nosensor"/>
 
-            </intent-filter>
-
-        </receiver>
-
-        <activity
-            android:name="com.secureSim.SecureSIMSettings"
-            android:label="@string/title_activity_secure_simsettings"
-            android:theme="@style/CustomThem" />
         <activity
             android:name=".socket.TransparentActivity"
             android:screenOrientation="portrait"

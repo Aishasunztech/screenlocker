@@ -303,4 +303,15 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         viewModel.getAllSimEntries().removeObservers(this);
         viewModel = null;
     }
+
+    @Override
+    protected void onStop() {
+        try {
+            fragmentManager.popBackStack();
+        }catch (Exception ignored){
+
+        }
+        this.finish();
+        super.onStop();
+    }
 }
