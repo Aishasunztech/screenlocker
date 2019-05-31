@@ -1,20 +1,8 @@
 package com.screenlocker.secure.mdm;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.app.ActivityCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -41,8 +35,6 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,18 +44,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.utils.AppConstants.AUTH_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.AUTO_LOGIN_PIN;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
-import static com.screenlocker.secure.utils.AppConstants.MAC_DUPLICATE;
-import static com.screenlocker.secure.utils.AppConstants.SERIAL_DUPLICATE;
 import static com.screenlocker.secure.utils.AppConstants.SOME_ERROR;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_INVALID;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_NOT_PROVIDED;
@@ -166,12 +153,9 @@ public class MainActivity extends BaseActivity {
 
         initAutoLoginWithPermissions();
 
-        lytSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Timber.i("<<<<<SwipedToRefresh>>>>>");
-                initAutoLogin();
-            }
+        lytSwipeRefresh.setOnRefreshListener(() -> {
+            Timber.i("<<<<<SwipedToRefresh>>>>>");
+            initAutoLogin();
         });
 
 
@@ -354,12 +338,9 @@ public class MainActivity extends BaseActivity {
             Log.e(TAG, "autologin: SKIPPED");
             initLayoutWithPermission();
 
-            lytSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    Timber.i("<<<<<SwipedToRefresh>>>>>");
-                    initLayoutWithPermission();
-                }
+            lytSwipeRefresh.setOnRefreshListener(() -> {
+                Timber.i("<<<<<SwipedToRefresh>>>>>");
+                initLayoutWithPermission();
             });
         }
     }
@@ -389,12 +370,7 @@ public class MainActivity extends BaseActivity {
 
                                 switch (response.body().getStatus()) {
 
-                                    case SERIAL_DUPLICATE:
 
-                                        break;
-                                    case MAC_DUPLICATE:
-
-                                        break;
                                     case DEVICE_NEW:
                                         //for the first time
                                         initLayoutWithPermission();

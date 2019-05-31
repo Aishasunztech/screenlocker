@@ -77,6 +77,17 @@
         <item name="android:paddingLeft">@dimen/_10sdp</item>
     </style>
 
+    <style name="CustomThem" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+
+
     //Secure Settings theme
 
     <style name="SecureSettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">

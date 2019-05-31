@@ -3,16 +3,15 @@ package com.screenlocker.secure.mdm.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -40,21 +39,16 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.AUTH_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.AUTO_LOGIN_PIN;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_STEP;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
-import static com.screenlocker.secure.utils.AppConstants.MAC_DUPLICATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
-import static com.screenlocker.secure.utils.AppConstants.SERIAL_DUPLICATE;
-import static com.screenlocker.secure.utils.AppConstants.SERIAL_MAC_DUPLICATE;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_INVALID;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_NOT_PROVIDED;
-import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 
 public class LinkDeviceActivity extends BaseActivity {
@@ -290,12 +284,6 @@ public class LinkDeviceActivity extends BaseActivity {
 
                                     switch (lsr.getStatus()) {
 
-                                        case MAC_DUPLICATE:
-                                            break;
-                                        case SERIAL_DUPLICATE:
-                                            break;
-                                        case SERIAL_MAC_DUPLICATE:
-                                            break;
                                         case DEVICE_NEW:
                                             newLinkViewState();
                                             setDealerPin(DEALER_ID_DEFAULT/*+linkedDealerPin*/);
