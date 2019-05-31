@@ -68,6 +68,7 @@ import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -89,6 +90,7 @@ import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -158,7 +160,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -179,9 +180,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
                             init();
-                            if (!linkStatus) {
-                                tvlinkDevice.setVisibility(View.VISIBLE);
-                            }
+                            tvlinkDevice.setVisibility(View.VISIBLE);
+//                            if (!linkStatus) {
+//                                tvlinkDevice.setVisibility(View.VISIBLE);
+//                            }
                         }
                     }
                 });
@@ -876,7 +878,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
-            accountDialog.show();
+        accountDialog.show();
 
 
     }

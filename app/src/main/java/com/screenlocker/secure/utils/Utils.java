@@ -271,6 +271,7 @@ public class Utils {
             Timber.d("mainkey:%s", main_key);
             String device_status1 = getDeviceStatus(context);
             Timber.d("device status %s", device_status1);
+
             if (enteredPin.length() != 0) {
                 if (getUserType(enteredPin, context).equals("guest") && device_status1 == null) {
                     loginAsGuest(context);
@@ -285,7 +286,7 @@ public class Utils {
                         context.stopService(intent);
                         PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
                     }
-                } else if (getUserType(enteredPin, context).equals("duress")) {
+                } else if (getUserType(enteredPin, context).equals("duress") && device_status1 == null) {
                     wipeDevice(context);
                 }
                 // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)

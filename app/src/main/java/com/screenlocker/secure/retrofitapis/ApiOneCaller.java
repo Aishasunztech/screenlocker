@@ -1,14 +1,15 @@
 package com.screenlocker.secure.retrofitapis;
 
 
-import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusModel;
-import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
+import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
-import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
+import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
@@ -49,8 +50,8 @@ public interface ApiOneCaller {
 
     @Headers("Content-Type: application/json")
     @POST("login")
-    Call<DealerLoginResponse> getDeviceId(
-            @Body DealerLoginModel dealerLoginModel
+    Call<DeviceLoginResponse> getDeviceId(
+            @Body DeviceLoginModle deviceLoginModle
     );
 
     @FormUrlEncoded
@@ -81,7 +82,7 @@ public interface ApiOneCaller {
 
 
     @GET
-    Call<UpdateModel> getUpdate(@Url String url,@Header("authorization") String authHeader);
+    Call<UpdateModel> getUpdate(@Url String url, @Header("authorization") String authHeader);
 
     @Streaming
     @GET
@@ -91,8 +92,8 @@ public interface ApiOneCaller {
 
     @Headers("Content-Type: application/json")
     @POST("login")
-    Call<com.screenlocker.secure.mdm.retrofitmodels.DealerLoginResponse> dealerLogin(
-            @Body DealerLoginModel dealerLoginModel
+    Call<DeviceLoginResponse> deviceLogin(
+            @Body DeviceLoginModle deviceLoginModle
     );
 
     @Headers("Content-Type: application/json")
@@ -111,17 +112,25 @@ public interface ApiOneCaller {
 
     @Headers("Content-Type: application/json")
     @DELETE("unlink/{macAddr}/{serialNo}")
-    Call<LinkDeviceResponse> stopLinkingDevice(
+    Call<DeleteDeviceResponse> stopLinkingDevice(
             @Path("macAddr") String MAC,
             @Path("serialNo") String SerialNo,
             @Header("authorization") String token
     );
+//
+//    @Headers("Content-Type: application/json")
+//    @POST("accountstatus")
+//    Call<DeviceStatusResponse> checkDeviceStatus(
+//            @Body DeviceStatusModel checkStatusModel
+//    );
+
 
     @Headers("Content-Type: application/json")
-    @POST("accountstatus")
-    Call<CheckStatusResponse> checkDeviceStatus(
-            @Body CheckStatusModel checkStatusModel
+    @POST("device_status")
+    Call<DeviceStatusResponse> checkDeviceStatus(
+            @Body DeviceStatusModel deviceStatusModel
     );
+
 
     @GET("admin/marketApplist")
     Call<InstallAppModel> getAdminApps();

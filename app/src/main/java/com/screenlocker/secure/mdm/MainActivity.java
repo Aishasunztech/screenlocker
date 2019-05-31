@@ -3,14 +3,12 @@ package com.screenlocker.secure.mdm;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -22,17 +20,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.base.BaseActivity;
-import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusModel;
-import com.screenlocker.secure.mdm.retrofitmodels.CheckStatusResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
-import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusModel;
-import com.screenlocker.secure.mdm.retrofitmodels.LinkStatusResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
@@ -44,16 +39,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-import static com.screenlocker.secure.utils.AppConstants.AUTH_TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.AUTO_LOGIN_PIN;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
-import static com.screenlocker.secure.utils.AppConstants.SOME_ERROR;
-import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN_INVALID;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN_NOT_PROVIDED;
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
+import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_KEY;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_CONNECTED_ID;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEALER_ID;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.PENDING;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
+import static com.screenlocker.secure.utils.AppConstants.TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.TRIAL;
+import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 
 public class MainActivity extends BaseActivity {
@@ -213,52 +219,94 @@ public class MainActivity extends BaseActivity {
         IMEI = DeviceIdUtils.getIMEI(MainActivity.this);
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
-
         showLoading();
         ((MyApplication) getApplicationContext())
                 .getApiOneCaller()
-                .checkDeviceStatus(new CheckStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
-                .enqueue(new Callback<CheckStatusResponse>() {
+                .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
+                .enqueue(new Callback<DeviceStatusResponse>() {
                     @Override
-                    public void onResponse(Call<CheckStatusResponse> call, Response<CheckStatusResponse> response) {
+                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                        if (response.isSuccessful()) {
-                            // if status is true that means dealer is valid so login is allowed
-
+                        if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
 
-                            if (response.body().getStatus()) {
-                                if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
-                                    currentStatus();
-                                    setResult(RESULT_OK);
-                                    finish();
-                                } else if (msg.equals("new device")) {
-                                    showMainContent();
-                                } else {
-                                    autologin();
+                            boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
+                            Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
+
+                            if (response.body().isStatus()) {
+
+                                switch (msg) {
+
+                                    case ACTIVE:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.unSuspendDevice(MainActivity.this);
+                                        intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
+                                        startActivity(intent);
+                                        PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                        finish();
+                                        break;
+                                    case EXPIRED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(MainActivity.this, "expired");
+                                        finish();
+                                        break;
+                                    case SUSPENDED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(MainActivity.this, "suspended");
+                                        finish();
+                                        break;
+                                    case TRIAL:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.unSuspendDevice(MainActivity.this);
+                                        finish();
+                                        break;
+                                    case PENDING:
+
+                                        intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
+                                        startActivity(intent);
+                                        finish();
+                                        break;
                                 }
-
-
                             } else {
-                                // status was false show failed message
-                                currentStatus();
-                                Timber.d(msg);
-//                                showContactDealer();
+                                switch (msg) {
+                                    case UNLINKED_DEVICE:
+                                        showMainContent();
+                                        break;
+                                    case NEW_DEVICE:
+                                        if (isLinked) {
+                                            utils.unlinkDevice(MainActivity.this, true);
+                                        } else {
+                                            showMainContent();
+                                        }
+                                        break;
+                                    case DUPLICATE_MAC:
+                                        showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DUPLICATE_SERIAL:
+                                        showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DUPLICATE_MAC_AND_SERIAL:
+                                        showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DEALER_NOT_FOUND:
+                                        showMainContent();
+                                        break;
+                                }
                             }
                         } else {
                             // if any error occurred show error view
                             showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         }
-                        Log.i(TAG, "onResponse:1 " + response);
+
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<CheckStatusResponse> call, Throwable t) {
-                        Log.i(TAG, "onFailure: " + t);
+                    public void onFailure(Call<DeviceStatusResponse> call, Throwable t) {
+
                         showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
@@ -266,157 +314,6 @@ public class MainActivity extends BaseActivity {
                     }
                 });
     }
-
-
-    private void currentStatus() {
-        String macAddress = CommonUtils.getMacAddress();
-        String serialNo = DeviceIdUtils.getSerialNumber();
-        if (macAddress != null && serialNo != null) {
-            new ApiUtils(MainActivity.this, macAddress, serialNo);
-        }
-        setResult(RESULT_OK);
-        finish();
-
-    }
-
-
-    /**
-     * login api for dealer auto login
-     */
-
-    private void autologin() {
-
-        final String autoLoginPin = PrefUtils.getStringPref(this, AUTO_LOGIN_PIN);
-        final String autoLoginId = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
-
-        if (autoLoginPin != null) {
-
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .dealerLogin(new DealerLoginModel(/*"856424"*/ autoLoginPin))
-                    .enqueue(new Callback<DealerLoginResponse>() {
-                        @Override
-                        public void onResponse(Call<DealerLoginResponse> call, Response<DealerLoginResponse> response) {
-
-                            if (response.isSuccessful()) {
-
-                                DealerLoginResponse dlr = response.body();
-
-                                Timber.d("jkdsgjgjrgrg%s", dlr.getMsg());
-                                Timber.d("jkdsgjgjrgrg%s", dlr.getStatus());
-
-                                if (dlr.getStatus()) {
-                                    //updating the prefs
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
-
-
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
-
-                                    Log.e(TAG, "onResponse: login_if");
-
-                                    checkCurrentStatusAndProceedAutoLogin(autoLoginId);
-
-                                } else {
-
-                                    Log.e(TAG, "onResponse: login_else");
-                                    etPin.setError(dlr.getMsg());
-                                }
-
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<DealerLoginResponse> call, Throwable t) {
-                            enableViews();
-                        }
-                    });
-        } else {
-            Log.e(TAG, "autologin: SKIPPED");
-            initLayoutWithPermission();
-
-            lytSwipeRefresh.setOnRefreshListener(() -> {
-                Timber.i("<<<<<SwipedToRefresh>>>>>");
-                initLayoutWithPermission();
-            });
-        }
-    }
-
-    /**
-     * check if its linked or  pending or un-linked
-     */
-    private void checkCurrentStatusAndProceedAutoLogin(final String autoLoginId) {
-
-
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .linkDeviceStatus(
-                        new LinkStatusModel(SerialNo, DeviceIdUtils.getMacAddress()),
-                        PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
-                )
-                .enqueue(new Callback<LinkStatusResponse>() {
-                    @Override
-                    public void onResponse(Call<LinkStatusResponse> call, Response<LinkStatusResponse> response) {
-                        if (response.isSuccessful()) {
-
-                            LinkStatusResponse lsr = response.body();
-
-                            if (lsr.getStatus() != null) {
-
-                                String dIdLinked = lsr.getDealer_id();
-
-                                switch (response.body().getStatus()) {
-
-
-                                    case DEVICE_NEW:
-                                        //for the first time
-                                        initLayoutWithPermission();
-                                        break;
-
-                                    case DEVICE_PENDING:
-                                    case DEVICE_LINKED:
-
-                                        if (dIdLinked.equals("" + autoLoginId)) {
-                                            PrefUtils.saveStringPref(MainActivity.this, AppConstants.KEY_DEVICE_LINKED, dIdLinked);
-                                            startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
-                                            finish();
-                                        } else {
-                                            initLayoutWithPermission();
-                                        }
-                                        break;
-
-                                    default:
-                                        showError(SOME_ERROR);
-
-                                }
-                            } else if (lsr.getMsg() != null) {
-
-                                switch (lsr.getMsg()) {
-
-                                    case TOKEN_EXPIRED:
-                                    case TOKEN_INVALID:
-                                    case TOKEN_NOT_PROVIDED:
-                                        Toast.makeText(MainActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
-                                        initLayoutWithPermission();
-                                }
-                            }
-
-                        } else {
-                            initLayoutWithPermission();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<LinkStatusResponse> call, Throwable t) {
-                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                    }
-                });
-
-    }
-
 
     private void initLayoutWithPermission() {
 
@@ -424,7 +321,7 @@ public class MainActivity extends BaseActivity {
 
 
             if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                initLayout();
+                initAutoLogin();
             } else {
 
                 requestPermission(Manifest.permission.READ_PHONE_STATE, PERMISSION_REQUEST_READ_PHONE_STATE);
@@ -436,55 +333,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initLayout() {
-
-
-        IMEI = DeviceIdUtils.getIMEI(MainActivity.this);
-        defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
-        showLoading();
-
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .checkDeviceStatus(new CheckStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
-                .enqueue(new Callback<CheckStatusResponse>() {
-                    @Override
-                    public void onResponse(Call<CheckStatusResponse> call, Response<CheckStatusResponse> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().getStatus()) {
-
-                                String msg = response.body().getMsg();
-                                if (msg != null && (msg.equals("Active") || msg.equals("Trial"))) {
-                                    checkCurrentStatusAndProceed();
-                                } else {
-                                    showMainContent();
-                                }
-
-                            } else {
-
-                                currentStatus();
-                                setResult(RESULT_OK);
-                                finish();
-//                                showContactDealer();
-                            }
-                        } else {
-                            showError(SOME_ERROR);
-                        }
-                        Log.i(TAG, "onResponse: " + response);
-                        if (lytSwipeRefresh.isRefreshing()) {
-                            lytSwipeRefresh.setRefreshing(false);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<CheckStatusResponse> call, Throwable t) {
-                        Log.i(TAG, "onFailure: " + t);
-                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                        if (lytSwipeRefresh.isRefreshing()) {
-                            lytSwipeRefresh.setRefreshing(false);
-                        }
-                    }
-                });
-    }
 
     @OnClick(R.id.btnSubmit)
     public void onClickSubmit() {
@@ -511,12 +359,20 @@ public class MainActivity extends BaseActivity {
 
     }
 
+
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+        PrefUtils.saveStringPref(MainActivity.this, TOKEN, token);
+        PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, device_id);
+        PrefUtils.saveStringPref(MainActivity.this, VALUE_EXPIRED, expiry_date);
+
+        PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+    }
+
     private void handleSubmit() {
 
         final String dealerPin = etPin.getText().toString().trim();
 
         if (dealerPin.length() == 6) {
-
             request(1, dealerPin);
         } else if (dealerPin.length() == 7) {
             request(2, dealerPin);
@@ -535,23 +391,23 @@ public class MainActivity extends BaseActivity {
 
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
-                    .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin))
-                    .enqueue(new Callback<DealerLoginResponse>() {
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin))
+                    .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
-                        public void onResponse(Call<DealerLoginResponse> call, Response<DealerLoginResponse> response) {
+                        public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
 
-                            if (response.isSuccessful()) {
-                                DealerLoginResponse dlr = response.body();
-                                if (dlr != null && dlr.getStatus()) {
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
-                                    PrefUtils.saveStringPref(MainActivity.this, TEMP_AUTO_LOGIN_PIN, dealerPin);
-                                    Log.e(TAG, "onResponse: TEMP_PIN_ADDED" + dealerPin);
-                                    checkCurrentStatusAndProceed();
+                            if (response.isSuccessful() && response.body() != null) {
+                                DeviceLoginResponse dlr = response.body();
+
+                                if (dlr.isStatus()) {
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, "" + dlr.getdId());
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, "" + dlr.getDealer_pin());
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, "" + dlr.getConnectedDid());
+
+                                    PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
+
+                                    startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
+                                    finish();
                                 } else {
                                     etPin.setError(dlr.getMsg());
                                 }
@@ -560,34 +416,31 @@ public class MainActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<DealerLoginResponse> call, Throwable t) {
+                        public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
                             enableViews();
                         }
                     });
         } else if (type == 2) {
 
-            Log.d("kldjddf", "request: " + type);
-            Log.d("kldjddf", "mac: " + MAC);
-
             ((MyApplication) getApplicationContext())
                     .getApiOneCaller()
-                    .dealerLogin(new DealerLoginModel(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
-                    .enqueue(new Callback<DealerLoginResponse>() {
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
+                    .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
-                        public void onResponse(Call<DealerLoginResponse> call, Response<DealerLoginResponse> response) {
+                        public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
 
-                            if (response.isSuccessful()) {
-                                DealerLoginResponse dlr = response.body();
-                                if (dlr != null && dlr.getStatus()) {
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID, "" + dlr.getData().getDId());
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AppConstants.KEY_CONNECTED_ID, "" + dlr.getData().getConnectedDealer());
-                                    PrefUtils
-                                            .saveStringPref(MainActivity.this, AUTH_TOKEN, dlr.getToken());
-                                    PrefUtils.saveStringPref(MainActivity.this, TEMP_AUTO_LOGIN_PIN, dealerPin);
-                                    Log.e(TAG, "onResponse: TEMP_PIN_ADDED" + dealerPin);
-                                    checkCurrentStatusAndProceed();
+                            if (response.isSuccessful() && response.body() != null) {
+                                DeviceLoginResponse dlr = response.body();
+
+                                if (dlr.isStatus()) {
+
+                                    Timber.d("dvjngjngjngtrgtdry" + dlr.getDealer_pin());
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, dlr.getdId());
+                                    PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, dlr.getDevice_id());
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dlr.getDealer_pin());
+                                    PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, dlr.getConnectedDid());
+                                    PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
+                                    initAutoLogin();
                                 } else {
                                     etPin.setError(dlr.getMsg());
                                 }
@@ -596,93 +449,13 @@ public class MainActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<DealerLoginResponse> call, Throwable t) {
+                        public void onFailure(Call<DeviceLoginResponse> call, Throwable t) {
                             enableViews();
                         }
                     });
         }
 
 
-    }
-
-    /**
-     * check if its linked or  pending or un-linked
-     */
-    private void checkCurrentStatusAndProceed() {
-
-        final String Did_current = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_DEALER_ID);
-
-        Timber.d("SerialNo %s", SerialNo);
-        Timber.d("MAC %s", MAC);
-
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .linkDeviceStatus(
-                        new LinkStatusModel(SerialNo, MAC),
-                        PrefUtils.getStringPref(MainActivity.this, AUTH_TOKEN)
-                )
-                .enqueue(new Callback<LinkStatusResponse>() {
-                    @Override
-                    public void onResponse(Call<LinkStatusResponse> call, Response<LinkStatusResponse> response) {
-                        if (response.isSuccessful()) {
-
-                            LinkStatusResponse lsr = response.body();
-
-                            if (lsr.getStatus() != null) {
-
-                                String dIdLinked = lsr.getDealer_id();
-
-                                switch (response.body().getStatus()) {
-
-                                    case DEVICE_NEW:
-                                        // if device is new link the device
-                                        startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
-                                        finish();
-                                        break;
-
-                                    case DEVICE_PENDING:
-                                    case DEVICE_LINKED:
-
-                                        if (dIdLinked.equals("" + Did_current)) {
-                                            startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
-                                            finish();
-                                        } else {
-                                            currentStatus();
-//                                            new AlertDialog.Builder(MainActivity.this)
-//                                                    .setTitle(R.string.info)
-//                                                    .setMessage(getString(R.string.device_already_linked))
-//                                                    .setPositiveButton(R.string.ok, null)
-//                                                    .create()
-//                                                    .show();
-                                        }
-                                        break;
-
-                                    default:
-                                        showError(SOME_ERROR);
-
-                                }
-                            } else if (lsr.getMsg() != null) {
-
-                                switch (lsr.getMsg()) {
-
-                                    case TOKEN_EXPIRED:
-                                    case TOKEN_INVALID:
-                                    case TOKEN_NOT_PROVIDED:
-                                        Toast.makeText(MainActivity.this, R.string.session_expired, Toast.LENGTH_SHORT).show();
-                                        initLayoutWithPermission();
-                                }
-                            }
-
-                        } else {
-                            showError(SOME_ERROR);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<LinkStatusResponse> call, Throwable t) {
-                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                    }
-                });
     }
 
     /**

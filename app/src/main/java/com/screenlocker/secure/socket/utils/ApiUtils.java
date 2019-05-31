@@ -4,11 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.mdm.retrofitmodels.DealerLoginModel;
-import com.screenlocker.secure.networkResponseModels.DealerLoginResponse;
+import com.screenlocker.secure.mdm.MainActivity;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
@@ -21,15 +27,30 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.startSocket;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
+import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_KEY;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.PENDING;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.TRIAL;
+import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class ApiUtils implements ApiRequests {
@@ -47,103 +68,71 @@ public class ApiUtils implements ApiRequests {
         Timber.d("serialNo :%s", serialNo);
         Timber.d("macAddress :%s", macAddress);
 
-        getDeviceId();
+        connectToSocket();
     }
 
 
     @Override
-    public void getDeviceId() {
-        Timber.d("<<< getting device id >>>");
+    public void connectToSocket() {
         ((MyApplication) context.getApplicationContext())
                 .getApiOneCaller()
-                .getDeviceId(new DealerLoginModel(serialNo, macAddress))
-                .enqueue(new Callback<DealerLoginResponse>() {
+                .checkDeviceStatus(new DeviceStatusModel(serialNo, macAddress))
+                .enqueue(new Callback<DeviceStatusResponse>() {
                     @Override
-                    public void onResponse(@NotNull Call<DealerLoginResponse> call, @NotNull Response<DealerLoginResponse> response) {
+                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
+
                         if (response.isSuccessful() && response.body() != null) {
 
-                            Timber.d("Expiresin %s", response.body().getExpiresIn());
-                            String expire_date = response.body().getExpiresIn();
-                            if (expire_date != null) {
-                                PrefUtils.saveStringPref(context, VALUE_EXPIRED, expire_date);
-                            }
-                            Timber.d(" response successful ");
-                            String device_id = response.body().getDevice_id();
-                            Timber.d(" device_id : %S", device_id);
-                            String token = response.body().getToken();
-                            Timber.d(" token : %S", token);
-                            if (device_id != null) {
-                                PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
-                            }
-                            PrefUtils.saveStringPref(context, TOKEN, token);
-
-                            if (response.body().getDealer_pin() != null) {
-                                Timber.d("dealer pin %s", response.body().getDealer_pin());
-                                PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, response.body().getDealer_pin());
-                            }
-
-
-                            if (device_id != null && token != null) {
-
-                                Intent intent = new Intent(context, SocketService.class);
-                                intent.setAction("start");
-
-                                PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
-                                PrefUtils.saveStringPref(context, TOKEN, token);
-
-                                PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
-
-                                if (Build.VERSION.SDK_INT >= 26) {
-                                    context.startForegroundService(intent);
-                                } else {
-                                    context.startService(intent);
-                                }
-
-                            }
-
                             String msg = response.body().getMsg();
-                            Intent socketIntent = new Intent(context, SocketService.class);
-                            Timber.d(" msg : %S", msg);
-                            if (msg != null) {
+
+
+                            if (response.body().isStatus()) {
+                                boolean isLinked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+                                if (isLinked) {
+                                    utils.startSocket(context, PrefUtils.getStringPref(context, DEVICE_ID), PrefUtils.getStringPref(context, TOKEN));
+
+                                }
                                 switch (msg) {
-                                    case "suspended":
-                                        suspendedDevice(context, device_id, "suspended");
-                                        utils.sendBroadcast(context, "suspended");
-                                        Timber.d("<<< device suspended >>>");
+                                    case ACTIVE:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.unSuspendDevice(context);
                                         break;
-                                    case "success":
-                                        unSuspendDevice(context);
-                                        utils.sendBroadcast(context, null);
-                                        Timber.d("<<< device activated >>>");
+                                    case EXPIRED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(context, "expired");
+
                                         break;
-                                    case "expired":
-                                        suspendedDevice(context, device_id, "expired");
-                                        utils.sendBroadcast(context, "expired");
-                                        Timber.d("<<< device expired >>>");
+                                    case SUSPENDED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(context, "suspended");
+
                                         break;
-                                    case "unlinked":
-                                        unlinkDevice(context);
+                                    case TRIAL:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.unSuspendDevice(context);
+
                                         break;
-                                    case "Device not linked":
-                                        context.stopService(socketIntent);
+
+                                }
+                            } else {
+                                switch (msg) {
+                                    case UNLINKED_DEVICE:
+                                        utils.unlinkDevice(context, true);
                                         break;
-                                    case "Invalid Device":
-                                        context.stopService(socketIntent);
+                                    case NEW_DEVICE:
+
+                                        utils.unlinkDevice(context, true);
+
                                         break;
-                                    case "wiped":
-                                        wipeDevice(context);
-                                        break;
+
                                 }
                             }
-
-                        } else {
-                            Timber.e(" response failure ");
                         }
                     }
 
                     @Override
-                    public void onFailure(@NotNull Call<DealerLoginResponse> call, @NotNull Throwable t) {
-                        Timber.d("  error : %S", t.getMessage());
+                    public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
+
                         String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                         Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
                         Intent socketIntent = new Intent(context, SocketService.class);
@@ -163,15 +152,20 @@ public class ApiUtils implements ApiRequests {
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                                 break;
                             case "unliked":
-                                unlinkDevice(context);
+                                unlinkDevice(context, true);
                                 break;
                         }
 
                         context.stopService(socketIntent);
                     }
                 });
-
     }
 
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+        PrefUtils.saveStringPref(context, TOKEN, token);
+        PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
+        PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
+    }
 
 }

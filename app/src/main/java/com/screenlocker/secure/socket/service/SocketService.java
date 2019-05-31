@@ -32,6 +32,7 @@ import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -286,6 +287,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void onSocketEventFailed() {
         Timber.d("Socket event failed");
+        new ApiUtils(SocketService.this, DeviceIdUtils.getMacAddress(), DeviceIdUtils.getSerialNumber());
     }
 
     @Override
@@ -602,23 +604,20 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             if (msg != null) {
                                 switch (msg) {
                                     case "suspended":
-                                        suspendedDevice(SocketService.this, device_id, "suspended");
-                                        utils.sendBroadcast(SocketService.this, "suspended");
+                                        suspendedDevice(SocketService.this, "suspended");
                                         Timber.d("<<< device suspended >>>");
                                         break;
                                     case "active":
                                         unSuspendDevice(SocketService.this);
-                                        utils.sendBroadcast(SocketService.this, null);
                                         Timber.d("<<< device activated >>>");
                                         break;
                                     case "expired":
-                                        suspendedDevice(SocketService.this, device_id, "expired");
-                                        utils.sendBroadcast(SocketService.this, "expired");
+                                        suspendedDevice(SocketService.this, "expired");
                                         Timber.d("<<< device expired >>>");
                                         break;
                                     case "unlinked":
                                         Timber.d("<<< device unlinked >>>");
-                                        unlinkDevice(SocketService.this);
+                                        unlinkDevice(SocketService.this, true);
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
@@ -988,53 +987,49 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void imeiHistory() {
 
 
+        if (socket.connected() && checkIMei(this)) {
 
 
-            if (socket.connected() && checkIMei(this)) {
+            Timber.d("<<<IMEI HISTORY >>> ");
+
+            List<String> imeis = DeviceIdUtils.getIMEI(this);
+            String imei1 = null;
+            String imei2 = null;
+
+            if (imeis != null && imeis.size() > 0) {
+                imei1 = imeis.get(0);
+
+            }
+            if (imeis != null && imeis.size() > 1) {
+                imei2 = imeis.get(1);
+
+            }
 
 
+            JSONObject jsonObject = new JSONObject();
 
-                Timber.d("<<<IMEI HISTORY >>> ");
-
-                List<String> imeis = DeviceIdUtils.getIMEI(this);
-                String imei1 = null;
-                String imei2 = null;
-
-                if (imeis != null && imeis.size() > 0) {
-                    imei1 = imeis.get(0);
-
+            try {
+                jsonObject.put("device_id", device_id);
+                if (imei1 != null) {
+                    jsonObject.put("imei1", imei1);
                 }
-                if (imeis != null && imeis.size() > 1) {
-                    imei2 = imeis.get(1);
-
+                if (imei2 != null) {
+                    jsonObject.put("imei2", imei2);
                 }
 
+                String serial = DeviceIdUtils.getSerialNumber();
+                String mac = DeviceIdUtils.getMacAddress();
 
-                JSONObject jsonObject = new JSONObject();
-
-                try {
-                    jsonObject.put("device_id", device_id);
-                    if (imei1 != null) {
-                        jsonObject.put("imei1", imei1);
-                    }
-                    if (imei2 != null) {
-                        jsonObject.put("imei2", imei2);
-                    }
-
-                    String serial = DeviceIdUtils.getSerialNumber();
-                    String mac = DeviceIdUtils.getMacAddress();
-
-                    jsonObject.put("serial", serial);
-                    jsonObject.put("mac", mac);
-                    socket.emit(IMEI_HISTORY + device_id, jsonObject);
+                jsonObject.put("serial", serial);
+                jsonObject.put("mac", mac);
+                socket.emit(IMEI_HISTORY + device_id, jsonObject);
 
 
-                } catch (JSONException e) {
-                    Timber.e(e);
-                }
+            } catch (JSONException e) {
+                Timber.e(e);
             }
         }
-
+    }
 
 
     @Override
@@ -1234,7 +1229,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
             updateExtensionsList(SocketService.this, jsonArray, () -> {
                 Timber.d(" extensions updated ");
-            },isPolicy);
+            }, isPolicy);
         }
 
         if (isPolicy) {
@@ -1250,7 +1245,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         if (!appsList.equals("[]")) {
             updateAppsList(SocketService.this, new JSONArray(appsList), () -> {
                 Timber.d(" apps updated ");
-            },isPolicy);
+            }, isPolicy);
         }
 
         if (isPolicy) {
