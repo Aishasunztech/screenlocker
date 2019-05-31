@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,81 +11,170 @@
         android:id="@+id/simName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sim"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="@+id/btSimRegister"
-        app:layout_constraintLeft_toLeftOf="@+id/tvSimName"
-        android:paddingLeft="@dimen/_16sdp"/>
-
-    <TextView
-        android:id="@+id/tvSimName"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingLeft="@dimen/_16sdp"
-        android:paddingTop="@dimen/_3sdp"
-        android:paddingRight="@dimen/_16sdp"
-        android:paddingBottom="@dimen/_5sdp"
-        android:text="SIM: 8900000000000000000"
-        android:textSize="@dimen/_13ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/btSimRegister"
-        app:layout_constraintEnd_toStartOf="@+id/btSimRegister"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simName" />
-
-    <Button
-        android:id="@+id/btSimRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Register"
+        android:text="@string/simtext"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSimICCID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        tools:text="8900000000000000000"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/simName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/simName"
+        app:layout_constraintTop_toTopOf="@+id/simName" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSimICCID">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slot" />
+
+        <TextView
+            android:id="@+id/tvSlote"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1" />
+
+        <TextView
+            android:layout_marginRight="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name" />
+
+        <TextView
+            android:id="@+id/tvSimName"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Vortex" />
+
+        <TextView
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/apn" />
+
+        <TextView
+            android:id="@+id/tvApn"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Internet" />
+    </LinearLayout>
 
 
     <Switch
         android:id="@+id/guest_sim_switch"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:switchPadding="8dp"
-        android:text="Guest"
-        android:visibility="gone"
+        android:text="@string/guest"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/encrypted_sim_switch"
         app:layout_constraintEnd_toStartOf="@+id/encrypted_sim_switch"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/encrypted_sim_switch" />
 
     <Switch
         android:id="@+id/encrypted_sim_switch"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" android:switchPadding="8dp"
-        android:text="Encrypted"
-        app:layout_constraintEnd_toStartOf="@+id/enable_sim_switch"
-        app:layout_constraintTop_toBottomOf="@+id/tvSimName"
-        android:visibility="gone"
-        />
+        android:layout_marginEnd="8dp"
+        android:switchPadding="8dp"
+        android:text="@string/encrypted"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <Switch
         android:id="@+id/enable_sim_switch"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" android:switchPadding="8dp"
-        android:text="Enabled"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:switchPadding="8dp"
+        android:text="@string/enabled"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/encrypted_sim_switch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSimName"
-        android:visibility="gone"
-        />
+        app:layout_constraintStart_toEndOf="@+id/encrypted_sim_switch"
+        app:layout_constraintTop_toTopOf="@+id/encrypted_sim_switch" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/encrypted_sim_switch">
 
-    <!--<androidx.constraintlayout.widget.Group-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:visibility="visible"-->
-        <!--app:constraint_referenced_ids="switch1" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/status" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Active" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="9dp"
+        android:background="@color/colorLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

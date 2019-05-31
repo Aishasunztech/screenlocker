@@ -38,6 +38,14 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setTitle("Wallpapers");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ids.add(R.raw.beatifulhome);
+        ids.add(R.raw.bulbul);
+        ids.add(R.raw.bus1234);
+        ids.add(R.raw.carssas);
+        ids.add(R.raw.colorsspalsh);
+        ids.add(R.raw.remountan);
+        ids.add(R.raw.tower);
+        ids.add(R.raw.tower2);
         ids.add(R.raw.wolf);
         ids.add(R.raw.parrot);
         ids.add(R.drawable.default_background);
@@ -85,7 +93,6 @@ public class ChangeWallpaper extends AppCompatActivity
     public void onItemClick(int position) {
         fragmentManager = getSupportFragmentManager();
         SetWallpaperDialog newFragment = new SetWallpaperDialog();
-
         Bundle bundle = new Bundle();
         bundle.putInt("RAWID", ids.get(position));
         newFragment.setArguments(bundle);

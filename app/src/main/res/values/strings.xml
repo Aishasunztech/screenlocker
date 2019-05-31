@@ -102,5 +102,22 @@
     <string name="install_app_message">App is installing</string>
     <string name="permissions">Application Permission</string>
     <string name="link">To generate a valid IMEI please go to \"https://dyrk.org/tools/imei\"</string>
+    <string name="simtext">SIM:</string>
+    <string name="slot">Slot :</string>
+    <string name="name">/ Name :</string>
+    <string name="apn">/ Apn :</string>
+    <string name="guest">Guest</string>
+    <string name="encrypted">Encrypted</string>
+    <string name="enabled">Enabled</string>
+    <string name="status">Status :</string>
+    <string name="status_active">Active</string>
+    <string name="status_disabled">Disabled</string>
+    <string name="status_not_inserted">Not Inserted</string>
+    <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="sim_1">SIM 1</string>
+    <string name="sim_2">SIM 2</string>
+    <string name="add">ADD +</string>
 
 </resources>

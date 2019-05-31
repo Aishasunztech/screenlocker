@@ -1,10 +1,18 @@
 package com.screenlocker.secure;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
@@ -13,12 +21,15 @@ import com.screenlocker.secure.utils.PrefUtils;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class ReBootReciever extends BroadcastReceiver {
     private static final String TAG = ReBootReciever.class.getSimpleName();
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
@@ -43,8 +54,32 @@ public class ReBootReciever extends BroadcastReceiver {
 
                     }
                 }
-
+                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_FALSE);
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    Activity#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for Activity#requestPermissions for more details.
+                    return;
+                }
+                SubscriptionInfo si0 = sm.getActiveSubscriptionInfoForSimSlotIndex(0);
+                SubscriptionInfo si1 = sm.getActiveSubscriptionInfoForSimSlotIndex(1);
+                if (si0 != null) {
+                    PrefUtils.saveStringPref(context, SIM_0_ICCID, si0.getIccId());
+                    Log.d("onstatuschanged", "onReceive: "+si0.getIccId());
+                } else
+                    PrefUtils.saveStringPref(context, SIM_0_ICCID, null);
+                if (si1 != null) {
+                    PrefUtils.saveStringPref(context, SIM_1_ICCID, si1.getIccId());
+                    Log.d("onstatuschanged", "onReceive: "+si1.getIccId());
+
+                } else
+                    PrefUtils.saveStringPref(context, SIM_1_ICCID, null);
+
 
 
             }
