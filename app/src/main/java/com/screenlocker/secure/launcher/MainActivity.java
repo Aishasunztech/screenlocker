@@ -27,6 +27,7 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.offline.AlarmTimeSet;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
@@ -82,6 +83,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 //    public static Activity context = null;
 
 
+
+
     PowerManager powerManager;
 
     AppExecutor appExecutor;
@@ -100,6 +103,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
+
+       // AlarmTimeSet.at_(MainActivity.this,"20000");
+
 
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
