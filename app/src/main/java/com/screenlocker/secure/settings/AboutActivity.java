@@ -20,6 +20,7 @@ import java.util.List;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity {
@@ -37,16 +38,16 @@ public class AboutActivity extends AppCompatActivity {
         systemId.setText("N/A");
 
         TextView onlineStatus = findViewById(R.id.tvLinkedStatus);
-        if (isMyServiceRunning()){
+        if (isMyServiceRunning()) {
             onlineStatus.setText(getResources().getString(R.string.status_online));
-        }else{
+        } else {
             onlineStatus.setText(getResources().getString(R.string.status_disconnected));
         }
         TextView tvDeviceId = findViewById(R.id.tvDeviceId);
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
             tvDeviceId.setText("N/A");
-        }else {
+        } else {
             tvDeviceId.setText(device_id);
         }
 
@@ -59,10 +60,15 @@ public class AboutActivity extends AppCompatActivity {
             tvStatus.setVisibility(View.VISIBLE);
             textView18.setVisibility(View.VISIBLE);
 
-            if (device_status == null) {
-                tvStatus.setText("Active");
-            } else
-                tvStatus.setText(device_status);
+            if (PrefUtils.getBooleanPref(AboutActivity.this, DEVICE_LINKED_STATUS)) {
+                if (device_status == null) {
+                    tvStatus.setText("Active");
+                } else
+                    tvStatus.setText(device_status);
+            } else {
+                tvStatus.setText("N/A");
+            }
+
         }
 
 
@@ -74,7 +80,7 @@ public class AboutActivity extends AppCompatActivity {
 
         if (remaining_days != null) {
             tvExpiresIn.setText(remaining_days);
-        }else {
+        } else {
             tvExpiresIn.setText("N/A");
         }
 
@@ -90,7 +96,7 @@ public class AboutActivity extends AppCompatActivity {
             String imei = imeis.get(0);
             if (imei != null) {
                 tvImei1.setText(imei);
-            }else {
+            } else {
                 tvImei1.setText("N/A");
             }
         }
@@ -103,7 +109,7 @@ public class AboutActivity extends AppCompatActivity {
             String imei2 = imeis.get(1);
             if (imei2 != null) {
                 tvImei2.setText(imei2);
-            }else {
+            } else {
                 tvImei2.setText("N/A");
             }
         }

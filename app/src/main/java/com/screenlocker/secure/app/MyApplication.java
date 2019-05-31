@@ -14,31 +14,29 @@ import androidx.room.Room;
 
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.interfaces.AsyncResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
-import com.screenlocker.secure.socket.interfaces.NetworkListener;
-import com.screenlocker.secure.socket.receiver.NetworkReceiver;
+import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-
-import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
-import static com.screenlocker.secure.utils.AppConstants.IMEI1;
-import static com.screenlocker.secure.utils.AppConstants.IMEI2;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLING_APP_NAME;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkListener {
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener , AsyncResponse {
 
 
     public static boolean recent = false;
@@ -48,11 +46,12 @@ public class MyApplication extends Application implements NetworkListener {
     private LinearLayout screenShotView;
     ApiOneCaller apiOneCaller;
     PrefManager preferenceManager;
-    NetworkReceiver networkReceiver;
+    AppsStatusReceiver appsStatusReceiver;
 
 
     private static Context appContext;
 
+    private NetworkChangeReceiver networkChangeReceiver;
 
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
@@ -72,6 +71,10 @@ public class MyApplication extends Application implements NetworkListener {
 
         appContext = getApplicationContext();
 
+        networkChangeReceiver = new NetworkChangeReceiver();
+        networkChangeReceiver.setNetworkChangeListener(this);
+
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         try {
             Fabric.with(this, new Crashlytics());
@@ -117,13 +120,13 @@ public class MyApplication extends Application implements NetworkListener {
 
 
 //   startService(new Intent(this,LifecycleReceiverService.class));
-        networkReceiver = new NetworkReceiver(this);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction("com.secure.systemcontroll.PackageAdded");
         filter.addAction("com.secure.systemcontroll.PackageDeleted");
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
-        registerReceiver(networkReceiver, filter);
+        registerReceiver(appsStatusReceiver, filter);
 
 
     }
@@ -162,36 +165,43 @@ public class MyApplication extends Application implements NetworkListener {
 
 
     @Override
-    public void onNetworkChange(boolean status) {
-        boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+    public void onTerminate() {
+        unregisterReceiver(appsStatusReceiver);
+        unregisterReceiver(networkChangeReceiver);
+        networkChangeReceiver.unsetNetworkChangeListener();
+
+        super.onTerminate();
+    }
 
 
-        if (linkStatus) {
+    @Override
+    public void isConnected(boolean state) {
 
-            Intent intent = new Intent(this, SocketService.class);
 
-            if (status) {
+        if(state){
+            new AsyncCalls(this, this).execute();
+        }else {
+            if(utils.isMyServiceRunning(SocketService.class,appContext)){
+                Intent intent = new Intent(this, SocketService.class);
+                stopService(intent);
+            }
+        }
+    }
+
+    @Override
+    public void processFinish(String output) {
+
+        if(output!=null){
+            PrefUtils.saveStringPref(appContext,LIVE_URL,output);
+            boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+            if(linkStatus){
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
                 if (serialNo != null) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
-
-            } else {
-                stopService(intent);
             }
         }
-
     }
-
-    @Override
-    public void onTerminate() {
-        unregisterReceiver(networkReceiver);
-
-
-        super.onTerminate();
-    }
-
-
 }

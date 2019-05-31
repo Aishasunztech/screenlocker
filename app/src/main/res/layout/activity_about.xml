@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="16dp">
+
     <include
         android:id="@+id/appBar"
         layout="@layout/main_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewSystemId"
         android:layout_width="wrap_content"
@@ -19,8 +21,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="System Id"
-        android:visibility="visible"
         android:textSize="@dimen/textTitle"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBar" />
 
@@ -29,12 +31,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        tools:text="368768BHH7"
-        android:visibility="visible"
         android:textSize="@dimen/textSize"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/textViewSystemId"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewSystemId" />
+        app:layout_constraintTop_toTopOf="@+id/textViewSystemId"
+        tools:text="368768BHH7" />
 
     <View
         android:id="@+id/divider14"
@@ -42,9 +44,11 @@
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorLine"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSystemId" />
+
     <TextView
         android:id="@+id/textViewDeviceId"
         android:layout_width="wrap_content"
@@ -53,8 +57,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="Device Id"
-        android:visibility="visible"
         android:textSize="@dimen/textTitle"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider14" />
 
@@ -63,9 +67,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="368768BHH7"
-        android:visibility="visible"
+        android:text="N/A"
         android:textSize="@dimen/textSize"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/textViewDeviceId"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textViewDeviceId"
@@ -80,15 +84,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDeviceId" />
+
     <TextView
         android:id="@+id/textLinkStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Device Status"
+        android:text="Mode"
         android:textSize="@dimen/textTitle"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider15" />
 
@@ -118,11 +123,11 @@
         android:id="@+id/textViewStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Link Status"
+        android:text="Status"
         android:textSize="@dimen/textTitle"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider12" />
 
@@ -131,7 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="Expired"
+        android:text="N/A"
         android:textSize="@dimen/textSize"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/textViewStatus"

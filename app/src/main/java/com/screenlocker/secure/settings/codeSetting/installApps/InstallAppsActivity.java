@@ -41,6 +41,7 @@ import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -60,6 +61,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -409,8 +412,11 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
 
+
+        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),LIVE_URL);
+
         DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(InstallAppsActivity.this, AppConstants.STAGING_BASE_URL + "getApk/" +
+                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url+MOBILE_END_POINT + "getApk/" +
                         CommonUtils.splitName(app.getApk()), app.getApk());
 
         downLoadAndInstallUpdate.execute();

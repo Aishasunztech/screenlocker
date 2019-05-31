@@ -33,7 +33,6 @@ import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.ApiUtils;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -91,8 +90,10 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
@@ -102,7 +103,6 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.STAGING_BASE_URL;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
 import static com.screenlocker.secure.utils.Utils.getNotification;
@@ -759,7 +759,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     for (int i = 0; i < list.size(); i++) {
                         InstallModel item = list.get(i);
                         String apk = item.getApk();
-                        String url = STAGING_BASE_URL + "getApk/" + CommonUtils.splitName(apk);
+
+                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),LIVE_URL);
+
+                        String url = live_url+MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(apk);
                         item.setApk(url);
                         item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(SocketService.this, TOKEN)));
                         list.set(i, item);

@@ -21,7 +21,10 @@ import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +33,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
@@ -48,6 +53,34 @@ public class CommonUtils {
         return isAvailable;
     }
 
+
+    public static boolean IsReachable(Context context, String host) {
+        // First, check we have any sort of connectivity
+        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
+        boolean isReachable = false;
+
+        if (netInfo != null && netInfo.isConnected()) {
+            // Some sort of connection is open, check if server is reachable
+            try {
+                URL url = new URL(host);
+                //URL url = new URL("http://10.0.2.2");
+                HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+                urlc.setRequestProperty("User-Agent", "Android Application");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(10 * 1000);
+                urlc.connect();
+                isReachable = (urlc.getResponseCode() == 200);
+
+                Timber.d("Response code :%s", urlc.getResponseCode());
+
+            } catch (IOException e) {
+                Timber.e(e);
+            }
+        }
+
+        return isReachable;
+    }
     public static String getMacAddress() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());

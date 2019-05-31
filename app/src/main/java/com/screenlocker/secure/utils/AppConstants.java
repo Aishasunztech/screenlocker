@@ -75,15 +75,29 @@ public class AppConstants {
     public static final String TOKEN = "token";
 
 
-    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
+    //servers links
 
-    //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
+    public static final String URL_1 = "http://api.lockmesh.com";
+    public static final String URL_2 = "http://securenet.guru";
+
+
+    //for logos
+    public static final String LOGO_END_POINT = "/users/getFile/";
+
+
+    //available live host
+    public static final String LIVE_URL = "live_url";
+
+    //mobile Api endpoint
+    public static final String MOBILE_END_POINT ="/mobile/";
+
+        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";

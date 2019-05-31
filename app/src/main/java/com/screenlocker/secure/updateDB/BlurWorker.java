@@ -189,7 +189,6 @@ public class BlurWorker extends Worker {
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu
                 for (SubExtension subExtension : subExtensions) {
-                    Log.d("Daksdfh", "DB IS EMPTY");
                     MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
                 }
 
@@ -200,7 +199,7 @@ public class BlurWorker extends Worker {
                     for (SubExtension subExtension : subExtensions) {
 
                         for (SubExtension dbExtension : dbExtensions) {
-                            Log.d("alksjdhf", dbExtension.getUniqueExtension() + " /subExtension" + subExtension.getUniqueExtension());
+
                             if (dbExtension.getUniqueExtension().equals(subExtension.getUniqueExtension())) {
                                 isPresent = true;
                                 break;
@@ -208,8 +207,7 @@ public class BlurWorker extends Worker {
                         }
                         if (!isPresent) {
                             MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
-                        }
-                        else{
+                        } else {
                             isPresent = false;
                         }
 
