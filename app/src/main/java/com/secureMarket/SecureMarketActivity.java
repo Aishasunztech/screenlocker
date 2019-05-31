@@ -9,7 +9,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,7 +51,7 @@ import java.util.ArrayList;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 
 public class SecureMarketActivity extends BaseActivity
-        implements SecureMarketAdapter.AppInstallUpdateListener {
+       {
 
     private Toolbar toolbar;
     private PackageManager mPackageManager;
@@ -61,7 +60,6 @@ public class SecureMarketActivity extends BaseActivity
     private EditText et_market_search;
     private LinearLayout root_layout;
     private SearchQueryListener listener;
-
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -72,18 +70,9 @@ public class SecureMarketActivity extends BaseActivity
     };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secure_market);
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
 
         mPackageManager = getPackageManager();
 
@@ -92,19 +81,22 @@ public class SecureMarketActivity extends BaseActivity
         tabLayout = findViewById(R.id.marketTabLayout);
         et_market_search = findViewById(R.id.et_marketSearch);
         root_layout = findViewById(R.id.root_layou_market);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+
 //
 //        container.setOnTouchListener(this);
 //        tabLayout.setOnTouchListener(this);
 //        et_market_search.setOnTouchListener(this);
 
-        et_market_search.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-
-        });
-
+//        et_market_search.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return false;
+//            }
+//
+//        });
 
         et_market_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -115,7 +107,8 @@ public class SecureMarketActivity extends BaseActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 MarketFragment marketFragment = (MarketFragment) getSupportFragmentManager().getFragments().get(container.getCurrentItem());
-                if (marketFragment != null) {
+                if(marketFragment != null)
+                {
                     listener = marketFragment;
                 }
                 listener.searchOnQueryChange(et_market_search.getText().toString());
@@ -135,11 +128,12 @@ public class SecureMarketActivity extends BaseActivity
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                switch (position) {
+                switch (position)
+                {
                     case 0:
                         MarketFragment fragment = new MarketFragment();
                         Bundle b = new Bundle();
-                        b.putString("check", "install");
+                        b.putString("check","install");
                         fragment.setArguments(b);
 
                         return fragment;
@@ -147,18 +141,18 @@ public class SecureMarketActivity extends BaseActivity
                     case 1:
                         MarketFragment fragmentUninstall = new MarketFragment();
                         Bundle b1 = new Bundle();
-                        b1.putString("check", "uninstall");
+                        b1.putString("check","uninstall");
                         fragmentUninstall.setArguments(b1);
 
                         return fragmentUninstall;
-                    default:
-                        MarketFragment fragmentDefault = new MarketFragment();
-                        Bundle b2 = new Bundle();
-                        b2.putString("check", "install");
+                        default:
+                            MarketFragment fragmentDefault = new MarketFragment();
+                            Bundle b2 = new Bundle();
+                            b2.putString("check","install");
 
-                        fragmentDefault.setArguments(b2);
+                            fragmentDefault.setArguments(b2);
 
-                        return fragmentDefault;
+                            return fragmentDefault;
                 }
 
             }
@@ -171,13 +165,14 @@ public class SecureMarketActivity extends BaseActivity
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                switch (position) {
+                switch (position)
+                {
                     case 0:
                         return "Install";
                     case 1:
                         return "UnInstall";
-                    default:
-                        return "Install";
+                        default:
+                            return "Install";
 
                 }
 
@@ -188,47 +183,43 @@ public class SecureMarketActivity extends BaseActivity
     }
 
 
-    private String getAppLabel(PackageManager pm, String pathToApk) {
-        PackageInfo packageInfo = pm.getPackageArchiveInfo(pathToApk, 0);
-        if (packageInfo != null) {
+//    private String getAppLabel(PackageManager pm, String pathToApk) {
+//        PackageInfo packageInfo = pm.getPackageArchiveInfo(pathToApk, 0);
+//        if (packageInfo != null) {
+//
+//            if (Build.VERSION.SDK_INT >= 8) {
+//                // those two lines do the magic:
+//                packageInfo.applicationInfo.sourceDir = pathToApk;
+//                packageInfo.applicationInfo.publicSourceDir = pathToApk;
+//            }
+//
+//            CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
+//            Timber.e("getAppLabel: package name is " + packageInfo.packageName);
+//            return packageInfo.packageName;
+//
+//        } else {
+//            return null;
+//        }
+//    }
 
-            if (Build.VERSION.SDK_INT >= 8) {
-                // those two lines do the magic:
-                packageInfo.applicationInfo.sourceDir = pathToApk;
-                packageInfo.applicationInfo.publicSourceDir = pathToApk;
-            }
 
-            CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
-            Timber.e("getAppLabel: package name is " + packageInfo.packageName);
-            return packageInfo.packageName;
+//    @Override
+//    public void onInstallClick(List app) {
+////        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
+////                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
+////        downLoadAndInstallUpdate.execute();
+//    }
 
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onInstallClick(List app) {
-//        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
-//                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
-//        downLoadAndInstallUpdate.execute();
-    }
-
-    @Override
-    public void onUnInstallClick(List app) {
-        File fileApk = getFileStreamPath(app.getApk());
-        if (fileApk.exists()) {
-            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-
-            startActivity(intent);
-        }
-    }
+//    @Override
+//    public void onUnInstallClick(List app) {
+//        File fileApk = getFileStreamPath(app.getApk());
+//        if (fileApk.exists()) {
+//            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+//
+//            startActivity(intent);
+//        }
+//    }
 
 //    @Override
 //    public boolean onTouch(View v, MotionEvent event) {
@@ -242,14 +233,16 @@ public class SecureMarketActivity extends BaseActivity
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN)
+        {
             View view = getCurrentFocus();
             int id = view.getId();
             int searchId = R.id.root_layou_market;
-            if ((view instanceof EditText)) {
+            if((view instanceof EditText))
+            {
                 Rect outRect = new Rect();
                 view.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                if (!outRect.contains((int)ev.getRawX(), (int)ev.getRawY())) {
                     view.clearFocus();
                     hideKeyboard(SecureMarketActivity.this);
                 }
@@ -265,11 +258,11 @@ public class SecureMarketActivity extends BaseActivity
         return super.dispatchTouchEvent(ev);
     }
 
-    public interface SearchQueryListener {
+    public interface SearchQueryListener{
         void searchOnSubmit(String query);
-
         void searchOnQueryChange(String query);
     }
+
 
 
 }

@@ -987,11 +987,12 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void imeiHistory() {
 
-        Timber.d("<<< IMEI STATUS >>> %s", checkIMei(this));
 
-        if (checkIMei(this)) {
 
-            if (socket != null && socket.connected()) {
+
+            if (socket.connected() && checkIMei(this)) {
+
+
 
                 Timber.d("<<<IMEI HISTORY >>> ");
 
@@ -1033,7 +1034,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 }
             }
         }
-    }
+
 
 
     @Override
@@ -1076,7 +1077,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 JSONObject object = (JSONObject) args[0];
 
-                Timber.d(object.toString());
 
                 try {
                     if (validateRequest(device_id, object.getString("device_id"))) {
@@ -1085,8 +1085,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             if (policyResponse != null) {
                                 policyResponse.onResponse(true);
                             }
-
-                            Timber.d(object.toString());
 
                             updateSettings(object, true);
 

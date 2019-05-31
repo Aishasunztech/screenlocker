@@ -64,6 +64,7 @@
             android:layout_marginLeft="@dimen/_10sdp"/>
 
         <TextView
+            android:id="@+id/apkSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="24Mb"

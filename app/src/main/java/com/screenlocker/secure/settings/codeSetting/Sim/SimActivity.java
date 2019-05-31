@@ -9,12 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import androidx.annotation.RequiresApi;
@@ -29,17 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SimEntry;
-import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.settings.Wallpaper.SetWallpaperDialog;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-
-import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
@@ -52,6 +42,7 @@ import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 
 public class SimActivity extends BaseActivity implements AddSimDialog.OnRegisterSimListener, SimAdapter.OnSimPermissionChangeListener {
+
 
     private boolean isBackPressed;
     private Switch allowGuest , allowEncrypted;

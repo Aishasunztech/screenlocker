@@ -6,6 +6,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
@@ -16,6 +19,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
@@ -24,6 +30,7 @@ import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
@@ -45,6 +52,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RE
 import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -53,6 +61,7 @@ import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
 
@@ -147,14 +156,100 @@ public class utils {
     }
 
 
-    public static void updateExtensionsList(final Context context, final JSONArray extensions, final GetExtensions listener,boolean isPolicy) {
+    public static void refreshApps(Context context) {
+
+        OnAppsRefreshListener listener = (OnAppsRefreshListener) context;
+
+        String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
+
+        if (unInstalledPackage != null) {
+            String[] data = unInstalledPackage.split(",");
+
+            PackageManager pm = context.getPackageManager();
+            for (int i = 0; i < data.length; i++) {
+                String packageName = data[i].split(":")[0];
+                String space = data[i].split(":")[1];
+                try {
+                    pm.getPackageInfo(packageName, 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                    int finalI = i;
+                    new Thread(() -> {
+                        MyApplication.getAppDatabase(context).getDao().deletePackage(packageName);
+                        if (finalI == data.length - 1) {
+                            listener.onAppsRefresh();
+                            PrefUtils.saveStringPref(context, UNINSTALLED_PACKAGES, null);
+                        }
+                    }).start();
+                }
+            }
+        }
+        String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
+
+        if (installedPackages != null) {
+            String[] data = installedPackages.split(",");
+
+            PackageManager pm = context.getPackageManager();
+            for (int i = 0; i < data.length; i++) {
+                String packageName = data[i].split(":")[0];
+                String space = data[i].split(":")[1];
+                try {
+                    pm.getPackageInfo(packageName, 0);
+                    Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+                    List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
+
+                    for (ResolveInfo ri : allApps) {
+                        if (ri.activityInfo.packageName.equals(packageName)) {
+                            int finalI = i;
+                            AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
+                                    ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
+                            app.setUniqueName(app.getPackageName() + app.getLabel());
+                            app.setExtension(false);
+                            app.setDefaultApp(false);
+                            app.setEncrypted(false);
+                            app.setGuest(false);
+                            switch (space) {
+                                case KEY_GUEST_PASSWORD:
+                                    app.setGuest(true);
+                                    break;
+                                case KEY_MAIN_PASSWORD:
+                                    app.setEncrypted(true);
+                                    break;
+                            }
+
+                            app.setEnable(true);
+                            new Thread(() -> {
+                                MyApplication.getAppDatabase(context).getDao().insertApps(app);
+                                if (finalI == data.length - 1) {
+                                    listener.onAppsRefresh();
+                                    PrefUtils.saveStringPref(context, INSTALLED_PACKAGES, null);
+                                }
+                            }).start();
+                        }
+                    }
+
+
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }
+
+
+    }
+
+
+    public static void updateExtensionsList(final Context context, final JSONArray extensions, final GetExtensions listener, boolean isPolicy) {
 
         new Thread() {
             @Override
             public void run() {
                 super.run();
 
-                if(isPolicy){
+                if (isPolicy) {
 //                    MyApplication.getAppDatabase(context).getDao().updateAllExtensions(false,false);
                 }
 
