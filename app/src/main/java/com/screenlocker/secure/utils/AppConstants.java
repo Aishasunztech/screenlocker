@@ -5,7 +5,17 @@ public class AppConstants {
     public static final long ONE_DAY_INTERVAL = 15 * 60 * 1000L;
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
+    public static final String ALLOW_GUEST_ALL = "allow_guest_all";
+    public static final String SOME_ERROR = "Some Error Occurred";
+    public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
+    public static final String SIM_0_ICCID = "sim_0_iccid";
+    public static final String SIM_1_ICCID ="sim_1_iccid" ;
+    public static final String ALLOW_ENCRYPTED_ALL = "allow_encrypted_all";
     public static final String KEY_GUEST = "guest";
+    public static final String KEY_ENCRYPTED = "encrypted";
+    public static final String KEY_ENABLE = "key_enable";
+    public static final String INSTALLED_PACKAGES = "installed_packages";
+    public static final String UNINSTALLED_PACKAGES = "uninstalled_packages";
     public static final String KEY_GUEST_PASSWORD = "guest_password";
     public static final String KEY_MAIN_PASSWORD = "main_password";
     public static final String KEY_DURESS_PASSWORD = "duress_password";
@@ -68,12 +78,12 @@ public class AppConstants {
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
 //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.0.115:3000/mobile/";//for localhost real device
+    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
 //    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.115:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
