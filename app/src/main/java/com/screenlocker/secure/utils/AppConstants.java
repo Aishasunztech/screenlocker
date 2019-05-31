@@ -67,13 +67,13 @@ public class AppConstants {
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
-    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-//    public static final String STAGING_BASE_URL = "http://192.168.0.115:3000/mobile/";//for localhost real device
+//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.0.115:3000";//local host with real device
+//    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -137,6 +137,13 @@ public class AppConstants {
     public static final String DEVICE_NEW = "-1";
     public static final String DEVICE_PENDING = "0";
     public static final String DEVICE_LINKED = "1";
+    public static final String SERIAL_DUPLICATE = "322";
+    public static final String MAC_DUPLICATE = "321";
+    public static final String SERIAL_MAC_DUPLICATE = "323";
+    public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
+    public static final String SOME_ERROR = "Some Error Occurred!";
+
+
     public static final String DEVICE_LINKED_STATUS = "device_linked_status";
 
 

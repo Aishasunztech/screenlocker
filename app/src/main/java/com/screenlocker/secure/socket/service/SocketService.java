@@ -987,11 +987,12 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void imeiHistory() {
 
-        Timber.d("<<< IMEI STATUS >>> %s", checkIMei(this));
 
-        if (checkIMei(this)) {
 
-            if (socket != null && socket.connected()) {
+
+            if (socket.connected() && checkIMei(this)) {
+
+
 
                 Timber.d("<<<IMEI HISTORY >>> ");
 
@@ -1033,7 +1034,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 }
             }
         }
-    }
+
 
 
     @Override

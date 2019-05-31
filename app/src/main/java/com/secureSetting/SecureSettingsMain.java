@@ -203,8 +203,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplan mode", airplaneContainer);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages", language_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplane mode", airplaneContainer);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input", language_container);
 
         clickListeners();
 

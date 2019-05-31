@@ -45,7 +45,10 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_NEW;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_PENDING;
+import static com.screenlocker.secure.utils.AppConstants.MAC_DUPLICATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
+import static com.screenlocker.secure.utils.AppConstants.SERIAL_DUPLICATE;
+import static com.screenlocker.secure.utils.AppConstants.SERIAL_MAC_DUPLICATE;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_AUTO_LOGIN_PIN;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN_EXPIRED;
@@ -287,6 +290,12 @@ public class LinkDeviceActivity extends BaseActivity {
 
                                     switch (lsr.getStatus()) {
 
+                                        case MAC_DUPLICATE:
+                                            break;
+                                        case SERIAL_DUPLICATE:
+                                            break;
+                                        case SERIAL_MAC_DUPLICATE:
+                                            break;
                                         case DEVICE_NEW:
                                             newLinkViewState();
                                             setDealerPin(DEALER_ID_DEFAULT/*+linkedDealerPin*/);
