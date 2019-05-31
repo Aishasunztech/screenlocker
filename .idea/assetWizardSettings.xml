@@ -14,11 +14,9 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="250" />
-                            <entry key="outputName" value="ic_check" />
+                            <entry key="outputName" value="ic_reset" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\nadee\Downloads\res\check.svg" />
-                            <entry key="width" value="250" />
+                            <entry key="sourceFile" value="C:\Users\nadee\Downloads\res\reset.svg" />
                           </map>
                         </option>
                       </PersistentState>

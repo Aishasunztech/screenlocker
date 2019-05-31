@@ -59,6 +59,7 @@ import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.interfaces.NetworkListener;
+import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -518,7 +519,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     createAboutDialog();
                     break;
                 case R.id.tvAccount:
-                    createAccountDialog();
+                    Intent account = new Intent(SettingsActivity.this, AboutActivity.class);
+                    startActivity(account);
                     break;
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
@@ -729,31 +731,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvVersionCode.setText("");
         }
 
-        /*// Expiry Date
-        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
-        TextView textView16 = aboutDialog.findViewById(R.id.textView16);
 
-        String remaining_days = getRemainingDays(SettingsActivity.this);
-
-        if (remaining_days != null) {
-            textView16.setVisibility(View.VISIBLE);
-            tvExpiresIn.setVisibility(View.VISIBLE);
-            tvExpiresIn.setText(remaining_days);
-//            else {
-//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
-//            }
-        }*/
-
-        /*// Device ID
-        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
-        TextView textView17 = aboutDialog.findViewById(R.id.textView17);
-        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
-        if (device_id != null) {
-            tvDeviceId.setVisibility(View.VISIBLE);
-            textView17.setVisibility(View.VISIBLE);
-            tvDeviceId.setText(device_id);
-        }
-*/
         // PGP Email
         TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
         TextView textView18 = aboutDialog.findViewById(R.id.textView18);
@@ -788,7 +766,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void createAccountDialog() {
+   /* private void createAccountDialog() {
 //        account device dialog
 
         accountDialog = new Dialog(this);
@@ -808,7 +786,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvDeviceId.setText(device_id);
         }
 
-        /*Status*/
+        *//*Status*//*
         TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
         TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
@@ -881,7 +859,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         accountDialog.show();
 
 
-    }
+    }*/
 
 
     @Override
