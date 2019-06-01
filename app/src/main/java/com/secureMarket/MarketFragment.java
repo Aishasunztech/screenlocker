@@ -58,6 +58,8 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.secureMarket.MarketUtils.savePackages;
 
@@ -368,7 +370,9 @@ public class MarketFragment extends Fragment implements
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
-            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate((Activity) activity, AppConstants.STAGING_BASE_URL + "getApk/" +
+            String live_url = PrefUtils.getStringPref(activity,LIVE_URL);
+
+            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url+MOBILE_END_POINT + "getApk/" +
                     CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
             downLoadAndInstallUpdate.execute();
             AppConstants.INSTALLING_APP_NAME = app.getApkName();

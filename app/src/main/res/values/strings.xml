@@ -119,5 +119,7 @@
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
+    <string name="status_online">Online</string>
+    <string name="status_disconnected">Offline</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.screenlocker.secure.socket.utils;
 
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
@@ -61,6 +62,7 @@ import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
@@ -415,9 +417,11 @@ public class utils {
 //        }
     }
 
-    public static void suspendedDevice(final Context context, String device_id, String msg) {
+    public static void suspendedDevice(final Context context, String msg) {
         Timber.d("%s device", msg);
 
+        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String token = PrefUtils.getStringPref(context, TOKEN);
 
         switch (msg) {
             case "suspended":
@@ -433,6 +437,8 @@ public class utils {
             PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
         }
 
+        sendBroadcast(context, msg);
+
         Intent lockScreenIntent = new Intent(context, LockScreenService.class);
         lockScreenIntent.setAction(msg);
 
@@ -442,9 +448,14 @@ public class utils {
         } else {
             context.startService(lockScreenIntent);
         }
+
+        if (!isMyServiceRunning(SocketService.class, context)) {
+            startSocket(context, device_id, token);
+        }
+
     }
 
-    public static void unlinkDevice(Context context) {
+    public static void unlinkDevice(Context context, boolean status) {
 
         PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
@@ -478,24 +489,74 @@ public class utils {
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction("unlinked");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(lockScreen);
-        } else {
-            context.startService(lockScreen);
+        if(status){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(lockScreen);
+            } else {
+                context.startService(lockScreen);
+            }
         }
+
+
 
 
     }
 
+
+    public static void startSocket(Context context, String device_id, String token) {
+
+        if (device_id != null && token != null) {
+
+            Intent intent = new Intent(context, SocketService.class);
+            intent.setAction("start");
+
+            PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
+            PrefUtils.saveStringPref(context, TOKEN, token);
+
+            PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
+
+            if (Build.VERSION.SDK_INT >= 26) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
+
+        }
+
+    }
+
+
+    public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void unSuspendDevice(Context context) {
+
+        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String token = PrefUtils.getStringPref(context, TOKEN);
 
         boolean lock_screen_status = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
         if (lock_screen_status) {
             Intent intent = new Intent(context, LockScreenService.class);
             context.stopService(intent);
         }
+
+        sendBroadcast(context, null);
         Timber.d("activeDevice");
+
+        if (!isMyServiceRunning(SocketService.class, context)) {
+            startSocket(context, device_id, token);
+        }
+
         PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
+
+
     }
 
     public static String getDeviceStatus(Context context) {

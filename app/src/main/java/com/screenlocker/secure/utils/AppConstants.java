@@ -9,7 +9,7 @@ public class AppConstants {
     public static final String SOME_ERROR = "Some Error Occurred";
     public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
     public static final String SIM_0_ICCID = "sim_0_iccid";
-    public static final String SIM_1_ICCID ="sim_1_iccid" ;
+    public static final String SIM_1_ICCID = "sim_1_iccid";
     public static final String ALLOW_ENCRYPTED_ALL = "allow_encrypted_all";
     public static final String KEY_GUEST = "guest";
     public static final String KEY_ENCRYPTED = "encrypted";
@@ -75,15 +75,29 @@ public class AppConstants {
     public static final String TOKEN = "token";
 
 
-    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
+    //servers links
 
-//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
+    public static final String URL_1 = "http://api.lockmesh.com";
+    public static final String URL_2 = "http://securenet.guru";
+
+
+    //for logos
+    public static final String LOGO_END_POINT = "/users/getFile/";
+
+
+    //available live host
+    public static final String LIVE_URL = "live_url";
+
+    //mobile Api endpoint
+    public static final String MOBILE_END_POINT ="/mobile/";
+
+        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.121:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -278,4 +292,26 @@ public class AppConstants {
 
     public static String INSTALLING_APP_NAME;
     public static String INSTALLING_APP_PACKAGE;
+
+
+    // Device Status and errors
+    public static final String ACTIVE = "Active";
+    public static final String EXPIRED = "Expired";
+    public static final String SUSPENDED = "Suspended";
+    public static final String TRIAL = "Trial";
+    public static final String PENDING = "Pending activation";
+    public static final String NEW_DEVICE = "new device";
+    public static final String UNLINKED_DEVICE = "Unlinked";
+
+    public static final String DUPLICATE_MAC = "duplicate_mac";
+    public static final String DUPLICATE_SERIAL = "duplicate_serial";
+    public static final String DUPLICATE_MAC_AND_SERIAL = "duplicate_mac_and_serial";
+    public static final String DEALER_NOT_FOUND = "dealer_not_found";
+
+
+    public static final String DEVICE_STATUS_KEY = "device_status_key";
+    public static final String PENDING_STATE = "pending_state";
+    public static final String ACTIVE_STATE = "active_state";
+
+
 }

@@ -21,7 +21,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -49,22 +48,19 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.socket.interfaces.NetworkListener;
-import com.screenlocker.secure.socket.receiver.NetworkReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -79,7 +75,6 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -92,18 +87,16 @@ import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
-import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
@@ -112,7 +105,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkListener {
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener , NetworkChangeReceiver.NetworkChangeListener {
 
     private AlertDialog isActiveDialog;
     private AlertDialog noNetworkDialog;
@@ -136,7 +129,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private String currentVersion;
     private String mMacAddress;
     private TelephonyManager telephonyManager;
-    NetworkReceiver networkReceiver;
+
 
     private TextView tvlinkDevice;
 
@@ -148,16 +141,32 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Dialog aboutDialog = null, accountDialog = null;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        networkChangeReceiver.setNetworkChangeListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(networkChangeReceiver);
+        networkChangeReceiver.unsetNetworkChangeListener();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
+        networkChangeReceiver = new NetworkChangeReceiver();
+
+
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
-
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
@@ -179,6 +188,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
                             init();
+
                             if (!linkStatus) {
                                 tvlinkDevice.setVisibility(View.VISIBLE);
                             }
@@ -212,11 +222,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 
-        networkReceiver = new NetworkReceiver(this);
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkReceiver, filter);
 
 //        setSwipeToApiRequest();
 
@@ -255,19 +260,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             PermissionUtils.requestOverlayPermission(SettingsActivity.this);
         }
 
-
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            if (networkReceiver != null) {
-                unregisterReceiver(networkReceiver);
-            }
-        } catch (Exception ignored) {
-        }
 
     }
 
@@ -516,7 +508,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     createAboutDialog();
                     break;
                 case R.id.tvAccount:
-                    createAccountDialog();
+                    Intent account = new Intent(SettingsActivity.this, AboutActivity.class);
+                    startActivity(account);
                     break;
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
@@ -616,7 +609,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                             .setMessage("New update available! Press OK to update your system.")
                                             .setPositiveButton("OK", (dialog12, which) -> {
                                                 String url = response.body().getApkUrl();
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, AppConstants.STAGING_BASE_URL + "getApk/" + CommonUtils.splitName(url));
+
+                                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),LIVE_URL);
+                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url+MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url));
                                                 obj.execute();
                                             }).setNegativeButton("Cancel", (dialog1, which) -> {
                                                 dialog1.dismiss();
@@ -684,29 +679,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    @Override
-    public void onNetworkChange(boolean status) {
-
-
-        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-
-            Intent intent = new Intent(this, SocketService.class);
-            if (status) {
-                String macAddress = CommonUtils.getMacAddress();
-                String serialNo = DeviceIdUtils.getSerialNumber();
-                if (macAddress != null && serialNo != null) {
-                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
-                }
-            } else {
-                stopService(intent);
-                Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
-            }
-
-        }
-
-    }
-
-
     private void createAboutDialog() {
 //        about device dialog
 
@@ -727,31 +699,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvVersionCode.setText("");
         }
 
-        /*// Expiry Date
-        TextView tvExpiresIn = aboutDialog.findViewById(R.id.tvExpiresIn);
-        TextView textView16 = aboutDialog.findViewById(R.id.textView16);
 
-        String remaining_days = getRemainingDays(SettingsActivity.this);
-
-        if (remaining_days != null) {
-            textView16.setVisibility(View.VISIBLE);
-            tvExpiresIn.setVisibility(View.VISIBLE);
-            tvExpiresIn.setText(remaining_days);
-//            else {
-//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
-//            }
-        }*/
-
-        /*// Device ID
-        TextView tvDeviceId = aboutDialog.findViewById(R.id.tvDeviceId);
-        TextView textView17 = aboutDialog.findViewById(R.id.textView17);
-        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
-        if (device_id != null) {
-            tvDeviceId.setVisibility(View.VISIBLE);
-            textView17.setVisibility(View.VISIBLE);
-            tvDeviceId.setText(device_id);
-        }
-*/
         // PGP Email
         TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
         TextView textView18 = aboutDialog.findViewById(R.id.textView18);
@@ -786,7 +734,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private void createAccountDialog() {
+   /* private void createAccountDialog() {
 //        account device dialog
 
         accountDialog = new Dialog(this);
@@ -806,7 +754,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvDeviceId.setText(device_id);
         }
 
-        /*Status*/
+        *//*Status*//*
         TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
         TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
@@ -876,10 +824,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
-            accountDialog.show();
+        accountDialog.show();
 
 
-    }
+    }*/
 
 
     @Override
@@ -924,6 +872,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    private NetworkChangeReceiver networkChangeReceiver;
     @Override
     public void onBackPressed() {
 
@@ -939,6 +888,26 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
 
+    }
+
+    @Override
+    public void isConnected(boolean state) {
+
+        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
+
+            Intent intent = new Intent(this, SocketService.class);
+            if (state) {
+                String macAddress = CommonUtils.getMacAddress();
+                String serialNo = DeviceIdUtils.getSerialNumber();
+                if (macAddress != null && serialNo != null) {
+                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                }
+            } else {
+                stopService(intent);
+                Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {

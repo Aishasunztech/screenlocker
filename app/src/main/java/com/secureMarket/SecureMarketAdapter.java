@@ -27,6 +27,8 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.LOGO_END_POINT;
 
 public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapter.MyViewHolder> {
     private java.util.List<List> appModelList;
@@ -72,9 +74,10 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             holder.btnUnInstall.setVisibility(View.GONE);
         }
 
+        String live_url = PrefUtils.getStringPref(context,LIVE_URL);
 
         Glide.with(context)
-                .load(AppConstants.LOGO_URL + appModelList.get(position).getLogo())
+                .load(live_url+LOGO_END_POINT + appModelList.get(position).getLogo())
                 .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
                 .into(holder.imageView);
 

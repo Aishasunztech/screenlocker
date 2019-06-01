@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.screenlocker.secure.async.InternetCheck;
+
 /**
  * to check the network state
  */
@@ -30,34 +32,19 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         if (listener!=null)
             try
             {
-                if (isOnline(context)) {
-                    listener.isConnected(true);
-                    Log.e(TAG, "You are Online !");
-                } else {
-                    listener.isConnected(false);
-                    Log.e(TAG, "You are Offline ! ");
-                }
+                new InternetCheck(internet -> {
+                    if (internet) {
+                        listener.isConnected(true);
+                        Log.e(TAG, "You are Online !");
+                    } else {
+                        listener.isConnected(false);
+                        Log.e(TAG, "You are Offline ! ");
+                    }
+                });
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
     }
-
-    private boolean isOnline(Context context) {
-
-        try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = null;
-            if (cm != null) {
-                netInfo = cm.getActiveNetworkInfo();
-            }
-            //should check null because in airplane mode it will be null
-            return (netInfo != null && netInfo.isConnected());
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public interface NetworkChangeListener{
 
         void isConnected(boolean state);

@@ -128,28 +128,20 @@ public class SocketManager {
                         Log.e(TAG, "Socket disconnect event");
                         fireSocketStatus(SocketManager.STATE_DISCONNECTED);
                     }
-                }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        try {
-                            final String error = (String) args[0];
-                            Log.e(TAG + " error EVENT_ERROR ", error);
-                            if (error.contains("Unauthorized") && !socket.connected()) {
-                                if (onSocketConnectionListenerList != null) {
-                                    for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                                        new Handler(Looper.getMainLooper())
-                                                .post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        listener.onSocketEventFailed();
-                                                    }
-                                                });
-                                    }
+                }).on(Socket.EVENT_ERROR, args -> {
+                    try {
+                        final String error = (String) args[0];
+                        Log.e(TAG + " error EVENT_ERROR ", error);
+                        if (error.contains("Unauthorized") && !socket.connected()) {
+                            if (onSocketConnectionListenerList != null) {
+                                for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                                    new Handler(Looper.getMainLooper())
+                                            .post(listener::onSocketEventFailed);
                                 }
                             }
-                        } catch (Exception e) {
-                            Timber.e(e.getMessage() != null ? e.getMessage() : "");
                         }
+                    } catch (Exception e) {
+                        Timber.e(e.getMessage() != null ? e.getMessage() : "");
                     }
                 }).on("Error", args -> Timber.d(" Error"));
                 socket.connect();

@@ -35,29 +35,12 @@ import static com.screenlocker.secure.utils.AppConstants.DELETE_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
-public class NetworkReceiver extends BroadcastReceiver {
-
-    private final NetworkListener listener;
-
-    public NetworkReceiver(NetworkListener listener) {
-        this.listener = listener;
-    }
-
+public class AppsStatusReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-            boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            if (noConnectivity) {
-                if (listener != null)
-                    listener.onNetworkChange(false);
-            } else {
-                if (listener != null)
-                    listener.onNetworkChange(true);
-            }
-        } else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageAdded")) {
+ if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageAdded")) {
 
             boolean status = intent.getBooleanExtra("status", false);
             String model = intent.getStringExtra("packageAdded");

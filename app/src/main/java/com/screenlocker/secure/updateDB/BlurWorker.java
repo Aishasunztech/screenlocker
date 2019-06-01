@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -156,7 +157,7 @@ public class BlurWorker extends Worker {
                 clearExtension.setDefaultApp(false);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
-            }else {
+            } else {
                 secureCleanInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
@@ -184,34 +185,37 @@ public class BlurWorker extends Worker {
 
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
-
+            boolean isPresent = false;
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu
-                for(SubExtension subExtension:subExtensions){
+                for (SubExtension subExtension : subExtensions) {
                     MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
                 }
 
-            }else {
+            } else {
 
-                if(dbExtensions.size() != subExtensions.size()){
+                if (dbExtensions.size() != subExtensions.size()) {
 
                     for (SubExtension subExtension : subExtensions) {
 
                         for (SubExtension dbExtension : dbExtensions) {
-                            if (!dbExtension.getUniqueExtension().equals(subExtension.getUniqueExtension())) {
-                                MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+
+                            if (dbExtension.getUniqueExtension().equals(subExtension.getUniqueExtension())) {
+                                isPresent = true;
+                                break;
                             }
                         }
-
+                        if (!isPresent) {
+                            MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+                        } else {
+                            isPresent = false;
+                        }
 
 
                     }
                 }
 
             }
-
-
-
 
 
             return Result.success();

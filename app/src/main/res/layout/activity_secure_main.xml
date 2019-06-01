@@ -90,12 +90,57 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/airplane_container"
+                style="@style/MainActivityItemsStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/wif_container_layout">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_airplane_mode"
+                    android:tint="@android:color/black" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:text="Airplane mode"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/switch_air"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:layout_weight="1"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/bluetooth_container_layout"
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/wif_container_layout">
+                app:layout_constraintTop_toBottomOf="@id/airplane_container">
 
 
                 <ImageView
@@ -633,50 +678,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/airplane_container"
-                style="@style/MainActivityItemsStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/dateTime_container">
 
-
-                <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_airplane_mode"
-                    android:tint="@android:color/black" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_15sdp"
-                        android:text="Airplane mode"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-
-                </LinearLayout>
-
-                <Switch
-                    android:id="@+id/switch_air"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="25dp"
-                    android:layout_weight="1"
-                    android:visibility="visible" />
-            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
