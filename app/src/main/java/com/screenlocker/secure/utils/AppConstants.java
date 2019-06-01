@@ -76,22 +76,18 @@ public class AppConstants {
 
 
     //servers links
-
-    public static final String URL_1 = "http://api.lockmesh.com";
+    public static final String URL_1 = "http://api.lockmesh.com";//live
+    //    public static final String URL_1 = "http://192.168.0.121:3000";//local
     public static final String URL_2 = "http://securenet.guru";
 
-
-    //for logos
+    //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-
+    public static final String MOBILE_END_POINT = "/mobile/";
 
     //available live host
     public static final String LIVE_URL = "live_url";
 
-    //mobile Api endpoint
-    public static final String MOBILE_END_POINT ="/mobile/";
-
-        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
 //    public static final String STAGING_BASE_URL = "http://192.168.0.121:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
@@ -312,6 +308,12 @@ public class AppConstants {
     public static final String DEVICE_STATUS_KEY = "device_status_key";
     public static final String PENDING_STATE = "pending_state";
     public static final String ACTIVE_STATE = "active_state";
+
+    public static final String HOST_ERROR = "Some Error Occurred!";
+
+
+    public static volatile boolean isProgress = false;
+    public static volatile boolean result = false;
 
 
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -15,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
@@ -159,7 +161,6 @@ public class LinkDeviceActivity extends BaseActivity {
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
         connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
 
-        Log.d("ConnectedDealerId", connectedDid);
 
         linkedDealerPin = DEALER_ID_DEFAULT;
 
@@ -228,7 +229,6 @@ public class LinkDeviceActivity extends BaseActivity {
         }
 
 
-
         tvCurrentDealerID.setText(currentDealerID);
 
 
@@ -244,92 +244,95 @@ public class LinkDeviceActivity extends BaseActivity {
             String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
 
             if (device_id != null) {
+                new CheckInstance(internet -> {
+                    if (internet) {
+                        MyApplication.oneCaller
+                                .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
+                                .enqueue(new Callback<DeviceStatusResponse>() {
+                                    @Override
+                                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                ((MyApplication) getApplicationContext())
-                        .getApiOneCaller()
-                        .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
-                        .enqueue(new Callback<DeviceStatusResponse>() {
-                            @Override
-                            public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
+                                        if (response.isSuccessful() && response.body() != null) {
 
-                                if (response.isSuccessful() && response.body() != null) {
-
-                                    String msg = response.body().getMsg();
+                                            String msg = response.body().getMsg();
 
 
-                                    boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
-                                    if (response.body().isStatus()) {
+                                            boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
+                                            if (response.body().isStatus()) {
 
-                                        switch (msg) {
-                                            case ACTIVE:
-                                                DeviceStatusResponse deviceStatusResponse = response.body();
-                                                saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
-                                                utils.unSuspendDevice(LinkDeviceActivity.this);
-                                                PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                approvedLinkViewState();
-                                                break;
-                                            case EXPIRED:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                utils.suspendedDevice(LinkDeviceActivity.this, "expired");
-                                                finish();
-                                                break;
-                                            case SUSPENDED:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
-                                                finish();
-                                                break;
-                                            case TRIAL:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                utils.unSuspendDevice(LinkDeviceActivity.this);
-                                                finish();
-                                                break;
-                                            case PENDING:
-                                                Intent intent = new Intent(LinkDeviceActivity.this, LinkDeviceActivity.class);
-                                                intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
-                                                startActivity(intent);
-                                                finish();
-                                                break;
-                                        }
-                                    } else {
-                                        switch (msg) {
-                                            case UNLINKED_DEVICE:
-                                                finish();
-                                                break;
-                                            case NEW_DEVICE:
-                                                if (isLinked) {
-                                                    utils.unlinkDevice(LinkDeviceActivity.this, false);
-                                                    finish();
-                                                } else {
-                                                    finish();
+                                                switch (msg) {
+                                                    case ACTIVE:
+                                                        DeviceStatusResponse deviceStatusResponse = response.body();
+                                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                                        utils.unSuspendDevice(LinkDeviceActivity.this);
+                                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                                        finishedRefreshing();
+                                                        approvedLinkViewState();
+                                                        break;
+                                                    case EXPIRED:
+                                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                        utils.suspendedDevice(LinkDeviceActivity.this, "expired");
+                                                        finish();
+                                                        break;
+                                                    case SUSPENDED:
+                                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                        utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
+                                                        finish();
+                                                        break;
+                                                    case TRIAL:
+                                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                        utils.unSuspendDevice(LinkDeviceActivity.this);
+                                                        finish();
+                                                        break;
+                                                    case PENDING:
+                                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                        finishedRefreshing();
+                                                        pendingLinkViewState();
+                                                        break;
                                                 }
-                                                break;
-                                            case DUPLICATE_MAC:
+                                            } else {
+                                                switch (msg) {
+                                                    case UNLINKED_DEVICE:
+                                                        finish();
+                                                        break;
+                                                    case NEW_DEVICE:
+                                                        if (isLinked) {
+                                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                                            finish();
+                                                        } else {
+                                                            finish();
+                                                        }
+                                                        break;
+                                                    case DUPLICATE_MAC:
 //                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                break;
-                                            case DUPLICATE_SERIAL:
+                                                        break;
+                                                    case DUPLICATE_SERIAL:
 //                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                break;
-                                            case DUPLICATE_MAC_AND_SERIAL:
+                                                        break;
+                                                    case DUPLICATE_MAC_AND_SERIAL:
 //                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                break;
-                                            case DEALER_NOT_FOUND:
+                                                        break;
+                                                    case DEALER_NOT_FOUND:
 //                                            showMainContent();
-                                                break;
-                                        }
-                                    }
-                                } else {
-                                    // if any error occurred show error view
+                                                        break;
+                                                }
+                                            }
+                                        } else {
+                                            // if any error occurred show error view
 //                                showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                                }
+                                        }
 
 
-                            }
+                                    }
 
-                            @Override
-                            public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
+                                    @Override
+                                    public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
 
-                            }
-                        });
+                                    }
+                                });
+                    }
+                });
+
 
             } else {
                 finishedRefreshing();
@@ -360,35 +363,40 @@ public class LinkDeviceActivity extends BaseActivity {
         } else {
             processingLinkViewState();
 
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .linkDeviceToDealer(
-                            new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
-                            PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+            new CheckInstance(internet -> {
+                if (internet) {
+                    MyApplication.oneCaller
+                            .linkDeviceToDealer(
+                                    new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
+                                    PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
-                    )
-                    .enqueue(new Callback<LinkDeviceResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
+                            )
+                            .enqueue(new Callback<LinkDeviceResponse>() {
+                                @Override
+                                public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
 
-                            if (response.isSuccessful() && response.body() != null) {
-                                LinkDeviceResponse ldr = response.body();
-                                if (ldr.isStatus()) {
-                                    PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
-                                    PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
-                                    pendingLinkViewState();
-                                } else {
-
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        LinkDeviceResponse ldr = response.body();
+                                        if (ldr.isStatus()) {
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
+                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
+                                            pendingLinkViewState();
+                                        } else {
+                                            Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
                                 }
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
+                                @Override
+                                public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
 //                        newLinkViewState();
 //                            checkLinkDeviceStatus();
-                        }
-                    });
+                                }
+                            });
+                }
+            });
+
         }
 
     }
@@ -397,38 +405,42 @@ public class LinkDeviceActivity extends BaseActivity {
     public void onClickBtnUnlinkDevice() {
         processingUnlinkViewState();
 
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .stopLinkingDevice(
-                        MAC, SerialNo,
-                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+        new CheckInstance(internet -> {
+            if (internet) {
+
+                MyApplication.oneCaller
+                        .stopLinkingDevice(
+                                MAC, SerialNo,
+                                PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
-                )
-                .enqueue(new Callback<DeleteDeviceResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<DeleteDeviceResponse> call, @NonNull Response<DeleteDeviceResponse> response) {
+                        )
+                        .enqueue(new Callback<DeleteDeviceResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<DeleteDeviceResponse> call, @NonNull Response<DeleteDeviceResponse> response) {
 
-                        if (response.isSuccessful() && response.body() != null) {
+                                if (response.isSuccessful() && response.body() != null) {
 
-                            DeleteDeviceResponse dDr = response.body();
+                                    DeleteDeviceResponse dDr = response.body();
 
-                            if (dDr.isStatus()) {
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
-                                newLinkViewState();
-                            } else {
-                                pendingLinkViewState();
+                                    if (dDr.isStatus()) {
+                                        PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
+                                        PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
+                                        newLinkViewState();
+                                    } else {
+                                        pendingLinkViewState();
+                                    }
+
+                                }
                             }
 
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<DeleteDeviceResponse> call, @NonNull Throwable t) {
+                            @Override
+                            public void onFailure(@NonNull Call<DeleteDeviceResponse> call, @NonNull Throwable t) {
 
 
-                    }
-                });
+                            }
+                        });
+            }
+        });
 
 
     }
@@ -466,9 +478,9 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setText("Next");
         btnLinkDevice.setEnabled(true);
         linked = true;
-        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this,DEVICE_ID));
+        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 
-        tvLinkedDealerPin.setText(PrefUtils.getStringPref(LinkDeviceActivity.this,KEY_DEVICE_LINKED));
+        tvLinkedDealerPin.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
 
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
@@ -495,6 +507,9 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void pendingLinkViewState() {
+
+        Timber.d("dikjgiosdijgdsig%s", PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
+
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);

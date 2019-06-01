@@ -185,7 +185,9 @@ public class BlurWorker extends Worker {
 
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
+
             boolean isPresent = false;
+
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu
                 for (SubExtension subExtension : subExtensions) {

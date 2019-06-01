@@ -35,6 +35,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.InternetCheck;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
@@ -57,6 +60,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.HOST_ERROR;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -199,135 +203,148 @@ public class MarketFragment extends Fragment implements
     private void getAllApps(String dealerId) {
 
         if (CommonUtils.isNetworkAvailable(activity)) {
-            ((MyApplication) activity.getApplicationContext())
-                    .getApiOneCaller()
-                    .getAllApps("marketApplist/" + dealerId)
 
-                    .enqueue(new Callback<InstallAppModel>() {
-                        @Override
-                        public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                            if (response.body() != null) {
-                                if (response.body().isSuccess()) {
+            new CheckInstance(internet -> {
+                if (internet) {
+                    MyApplication.oneCaller
+                            .getAllApps("marketApplist/" + dealerId)
+                            .enqueue(new Callback<InstallAppModel>() {
+                                @Override
+                                public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
+                                    if (response.body() != null) {
+                                        if (response.body().isSuccess()) {
 
-                                    appModelList.clear();
-                                    appModelList.addAll(response.body().getList());
-                                    installedApps.clear();
-                                    unInstalledApps.clear();
+                                            appModelList.clear();
+                                            appModelList.addAll(response.body().getList());
+                                            installedApps.clear();
+                                            unInstalledApps.clear();
 
-                                    checkAppInstalledOrNot(appModelList);
-                                    for (List app : appModelList) {
-                                        if (app.isInstalled()) {
+                                            checkAppInstalledOrNot(appModelList);
+                                            for (List app : appModelList) {
+                                                if (app.isInstalled()) {
 
-                                            if (isShow(app.getPackageName(), activity)) {
-                                                installedApps.add(app);
+                                                    if (isShow(app.getPackageName(), activity)) {
+                                                        installedApps.add(app);
+                                                    }
+
+                                                } else {
+
+                                                    if (isShow(app.getPackageName(), activity)) {
+                                                        unInstalledApps.add(app);
+
+                                                    }
+                                                }
                                             }
 
-                                        } else {
+                                            if (fragmentType.equals("install")) {
+                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
+                                            } else if (fragmentType.equals("uninstall")) {
+                                                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
+                                            }
+                                            rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                                            tvInfo.setVisibility(View.GONE);
 
-                                            if (isShow(app.getPackageName(), activity)) {
-                                                unInstalledApps.add(app);
+                                        } else {
+                                            if (response.body().getList() == null) {
+                                                appModelList.clear();
+                                                tvInfo.setVisibility(View.VISIBLE);
 
                                             }
                                         }
-                                    }
-
-                                    if (fragmentType.equals("install")) {
-                                        rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                    } else if (fragmentType.equals("uninstall")) {
-                                        rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
-                                    }
-                                    rc.setLayoutManager(new GridLayoutManager(activity, 1));
-                                    tvInfo.setVisibility(View.GONE);
-
-                                } else {
-                                    if (response.body().getList() == null) {
-                                        appModelList.clear();
-                                        tvInfo.setVisibility(View.VISIBLE);
 
                                     }
+                                    progressBar.setVisibility(View.GONE);
                                 }
 
-                            }
-                            progressBar.setVisibility(View.GONE);
-                        }
+                                @Override
+                                public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
+                                    Toast.makeText(activity, "list is empty", Toast.LENGTH_SHORT).show();
 
-                        @Override
-                        public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                            Toast.makeText(activity, "list is empty", Toast.LENGTH_SHORT).show();
-
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                } else {
+                    Toast.makeText(activity, HOST_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
     }
+
 
     private void getAdminApps() {
         if (CommonUtils.isNetworkAvailable(activity)) {
-            ((MyApplication) activity.getApplicationContext())
-                    .getApiOneCaller()
-                    .getAdminApps()
 
-                    .enqueue(new Callback<InstallAppModel>() {
-                        @Override
-                        public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
-                            if (response.body() != null) {
-                                if (response.body().isSuccess()) {
+            new CheckInstance(internet -> {
+                if (internet) {
+                    MyApplication.oneCaller
+                            .getAdminApps()
+                            .enqueue(new Callback<InstallAppModel>() {
+                                @Override
+                                public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
+                                    if (response.body() != null) {
+                                        if (response.body().isSuccess()) {
 
-                                    appModelList.clear();
-                                    appModelList.addAll(response.body().getList());
-                                    installedApps.clear();
-                                    unInstalledApps.clear();
+                                            appModelList.clear();
+                                            appModelList.addAll(response.body().getList());
+                                            installedApps.clear();
+                                            unInstalledApps.clear();
 
-                                    checkAppInstalledOrNot(appModelList);
-                                    for (List app : appModelList) {
+                                            checkAppInstalledOrNot(appModelList);
+                                            for (List app : appModelList) {
 
-                                        if (app.isInstalled()) {
+                                                if (app.isInstalled()) {
 
-                                            if (isShow(app.getPackageName(), activity)) {
-                                                installedApps.add(app);
+                                                    if (isShow(app.getPackageName(), activity)) {
+                                                        installedApps.add(app);
+                                                    }
+
+                                                } else {
+                                                    if (isShow(app.getPackageName(), activity)) {
+                                                        unInstalledApps.add(app);
+                                                    }
+
+                                                }
                                             }
+
+                                            if (fragmentType.equals("install")) {
+                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
+                                            } else if (fragmentType.equals("uninstall")) {
+                                                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
+                                            } else {
+                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
+                                            }
+                                            rc.setLayoutManager(new GridLayoutManager(activity, 1));
+
 
                                         } else {
-                                            if (isShow(app.getPackageName(), activity)) {
-                                                unInstalledApps.add(app);
+                                            if (response.body().getList() == null) {
+                                                appModelList.clear();
+
                                             }
-
                                         }
-                                    }
-
-                                    if (fragmentType.equals("install")) {
-                                        rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                    } else if (fragmentType.equals("uninstall")) {
-                                        rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
-                                    } else {
-                                        rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                    }
-                                    rc.setLayoutManager(new GridLayoutManager(activity, 1));
-
-
-                                } else {
-                                    if (response.body().getList() == null) {
-                                        appModelList.clear();
 
                                     }
+                                    progressBar.setVisibility(View.GONE);
                                 }
 
-                            }
-                            progressBar.setVisibility(View.GONE);
-                        }
+                                @Override
+                                public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
 
-                        @Override
-                        public void onFailure(Call<InstallAppModel> call, Throwable t) {
-
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                } else {
+                    Toast.makeText(activity, HOST_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
 
 
         }
+
+
     }
+
 
     private void checkAppInstalledOrNot(java.util.List<List> list) {
         if (list != null && list.size() > 0) {
@@ -370,9 +387,9 @@ public class MarketFragment extends Fragment implements
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
-            String live_url = PrefUtils.getStringPref(activity,LIVE_URL);
+            String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
 
-            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url+MOBILE_END_POINT + "getApk/" +
+            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url + MOBILE_END_POINT + "getApk/" +
                     CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
             downLoadAndInstallUpdate.execute();
             AppConstants.INSTALLING_APP_NAME = app.getApkName();
@@ -585,12 +602,12 @@ public class MarketFragment extends Fragment implements
                     int count;
 
                     while ((count = input.read(data)) != -1) {
-                        if(!isCanceled) {
+                        if (!isCanceled) {
                             total += count;
                             int value = (int) ((total * 100) / contentLength);
                             publishProgress(value);
                             fileOutputStream.write(data, 0, count);
-                        }else{
+                        } else {
                             file.delete();
                             break;
                         }
@@ -631,7 +648,7 @@ public class MarketFragment extends Fragment implements
             Log.d("kikhfihfihdihso", "onPostExecute: " + uri);
             if (dialog != null)
                 dialog.dismiss();
-            if (uri != null  && !isCanceled) {
+            if (uri != null && !isCanceled) {
                 showInstallDialog(uri, packageName);
             }
 

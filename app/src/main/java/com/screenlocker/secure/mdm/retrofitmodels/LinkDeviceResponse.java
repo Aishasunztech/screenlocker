@@ -20,9 +20,19 @@ public class LinkDeviceResponse {
     @Expose
     String dealer_pin;
 
+    @SerializedName("success")
+    @Expose
+    boolean success;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
     public boolean isStatus() {
         return status;
     }
+
+
 
     public String getMsg() {
         return msg;

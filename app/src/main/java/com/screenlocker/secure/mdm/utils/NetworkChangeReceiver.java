@@ -34,9 +34,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             {
                 new InternetCheck(internet -> {
                     if (internet) {
+                        if(listener!=null)
                         listener.isConnected(true);
                         Log.e(TAG, "You are Online !");
                     } else {
+                        if(listener!=null)
                         listener.isConnected(false);
                         Log.e(TAG, "You are Offline ! ");
                     }

@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.utils.AppConstants;
@@ -126,31 +127,37 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
     private void getAllApps() {
         if (CommonUtils.isNetworkAvailable(this)) {
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .getApps()
-                    .enqueue(new Callback<InstallAppModel>() {
-                        @Override
-                        public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
 
-                            if (response.body() != null && response.body().isSuccess()) {
+            new CheckInstance(internet -> {
+                if (internet) {
+                    MyApplication.oneCaller
+                            .getApps()
+                            .enqueue(new Callback<InstallAppModel>() {
+                                @Override
+                                public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
+
+                                    if (response.body() != null && response.body().isSuccess()) {
 
 
-                                appModelList.addAll(response.body().getList());
-                                if (appModelList.size() == 0) {
+                                        appModelList.addAll(response.body().getList());
+                                        if (appModelList.size() == 0) {
+
+                                        }
+                                        checkAppInstalledOrNot(appModelList);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
 
                                 }
-                                checkAppInstalledOrNot(appModelList);
-                                mAdapter.notifyDataSetChanged();
-                            }
 
-                        }
+                                @Override
+                                public void onFailure(Call<InstallAppModel> call, Throwable t) {
+                                    Toast.makeText(InstallAppsActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            });
 
-                        @Override
-                        public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                            Toast.makeText(InstallAppsActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+
         } else {
             Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
         }
@@ -231,35 +238,39 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         if (view.getId() == R.id.fabRefresh) {
 
             if (CommonUtils.isNetworkAvailable(this)) {
-                ((MyApplication) getApplicationContext())
-                        .getApiOneCaller()
-                        .getApps()
-                        .enqueue(new Callback<InstallAppModel>() {
-                            @Override
-                            public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
-                                if (response.body() != null) {
-                                    if (response.body().isSuccess()) {
-                                        appModelList.clear();
-                                        appModelList.addAll(response.body().getList());
-                                        mAdapter.notifyDataSetChanged();
-                                        checkAppInstalledOrNot(appModelList);
-                                    } else {
-                                        if (response.body().getList() == null) {
+
+                new CheckInstance(internet -> {
+                    MyApplication.oneCaller
+                            .getApps()
+                            .enqueue(new Callback<InstallAppModel>() {
+                                @Override
+                                public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
+                                    if (response.body() != null) {
+                                        if (response.body().isSuccess()) {
                                             appModelList.clear();
+                                            appModelList.addAll(response.body().getList());
                                             mAdapter.notifyDataSetChanged();
+                                            checkAppInstalledOrNot(appModelList);
+                                        } else {
+                                            if (response.body().getList() == null) {
+                                                appModelList.clear();
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+
+
                                         }
 
-
                                     }
+                                }
+
+                                @Override
+                                public void onFailure(Call<InstallAppModel> call, Throwable t) {
 
                                 }
-                            }
+                            });
+                });
 
-                            @Override
-                            public void onFailure(Call<InstallAppModel> call, Throwable t) {
 
-                            }
-                        });
             } else {
                 Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
             }
@@ -413,10 +424,10 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     public void onInstallClick(View v, final com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
 
 
-        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),LIVE_URL);
+        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
 
         DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url+MOBILE_END_POINT + "getApk/" +
+                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
                         CommonUtils.splitName(app.getApk()), app.getApk());
 
         downLoadAndInstallUpdate.execute();
@@ -427,9 +438,9 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
         String fileName = app.getApk();
-        File dir = new File(getFilesDir(),"apk");
+        File dir = new File(getFilesDir(), "apk");
 
-        File fileApk = new File(dir,fileName);
+        File fileApk = new File(dir, fileName);
         if (fileApk.exists()) {
             Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
             intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));

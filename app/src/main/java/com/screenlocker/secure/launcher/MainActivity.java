@@ -33,6 +33,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
+import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -54,6 +55,8 @@ import androidx.core.graphics.drawable.IconCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import timber.log.Timber;
 
@@ -100,7 +103,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
@@ -108,6 +110,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             finish();
             return;
         }
+
+        OneTimeWorkRequest insertionWork =
+                new OneTimeWorkRequest.Builder(BlurWorker.class)
+                        .build();
+        WorkManager.getInstance().enqueue(insertionWork);
+
 
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -262,7 +270,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
 
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);

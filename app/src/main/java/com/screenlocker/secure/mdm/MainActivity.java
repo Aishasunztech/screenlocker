@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
@@ -220,99 +221,104 @@ public class MainActivity extends BaseActivity {
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
         showLoading();
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
-                .enqueue(new Callback<DeviceStatusResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                        if (response.isSuccessful() && response.body() != null) {
+        new CheckInstance(internet -> {
+            if (internet) {
+                MyApplication.oneCaller
+                        .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
+                        .enqueue(new Callback<DeviceStatusResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                            String msg = response.body().getMsg();
+                                if (response.isSuccessful() && response.body() != null) {
 
-                            boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
-                            Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
+                                    String msg = response.body().getMsg();
 
-                            if (response.body().isStatus()) {
+                                    boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
+                                    Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
 
-                                switch (msg) {
+                                    if (response.body().isStatus()) {
 
-                                    case ACTIVE:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.unSuspendDevice(MainActivity.this);
-                                        intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
-                                        startActivity(intent);
-                                        PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
-                                        finish();
-                                        break;
-                                    case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.suspendedDevice(MainActivity.this, "expired");
-                                        finish();
-                                        break;
-                                    case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.suspendedDevice(MainActivity.this, "suspended");
-                                        finish();
-                                        break;
-                                    case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.unSuspendDevice(MainActivity.this);
-                                        finish();
-                                        break;
-                                    case PENDING:
+                                        switch (msg) {
 
-                                        intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
-                                        startActivity(intent);
-                                        finish();
-                                        break;
-                                }
-                            } else {
-                                switch (msg) {
-                                    case UNLINKED_DEVICE:
-                                        showMainContent();
-                                        break;
-                                    case NEW_DEVICE:
-                                        if (isLinked) {
-                                            utils.unlinkDevice(MainActivity.this, true);
-                                        } else {
-                                            showMainContent();
+                                            case ACTIVE:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.unSuspendDevice(MainActivity.this);
+                                                intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
+                                                startActivity(intent);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                                finish();
+                                                break;
+                                            case EXPIRED:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.suspendedDevice(MainActivity.this, "expired");
+                                                finish();
+                                                break;
+                                            case SUSPENDED:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.suspendedDevice(MainActivity.this, "suspended");
+                                                finish();
+                                                break;
+                                            case TRIAL:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.unSuspendDevice(MainActivity.this);
+                                                finish();
+                                                break;
+                                            case PENDING:
+//                                        pending = true;
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
+                                                startActivity(intent);
+                                                break;
                                         }
-                                        break;
-                                    case DUPLICATE_MAC:
-                                        showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                        break;
-                                    case DUPLICATE_SERIAL:
-                                        showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                        break;
-                                    case DUPLICATE_MAC_AND_SERIAL:
-                                        showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                        break;
-                                    case DEALER_NOT_FOUND:
-                                        showMainContent();
-                                        break;
+                                    } else {
+                                        switch (msg) {
+                                            case UNLINKED_DEVICE:
+                                                showMainContent();
+                                                break;
+                                            case NEW_DEVICE:
+                                                if (isLinked) {
+                                                    utils.unlinkDevice(MainActivity.this, true);
+                                                } else {
+                                                    showMainContent();
+                                                }
+                                                break;
+                                            case DUPLICATE_MAC:
+                                                showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                break;
+                                            case DUPLICATE_SERIAL:
+                                                showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                break;
+                                            case DUPLICATE_MAC_AND_SERIAL:
+                                                showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                break;
+                                            case DEALER_NOT_FOUND:
+                                                showMainContent();
+                                                break;
+                                        }
+                                    }
+                                } else {
+                                    // if any error occurred show error view
+                                    showError(AppConstants.SEVER_NOT_RESPONSIVE);
+                                }
+
+                                if (lytSwipeRefresh.isRefreshing()) {
+                                    lytSwipeRefresh.setRefreshing(false);
                                 }
                             }
-                        } else {
-                            // if any error occurred show error view
-                            showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                        }
 
-                        if (lytSwipeRefresh.isRefreshing()) {
-                            lytSwipeRefresh.setRefreshing(false);
-                        }
-                    }
+                            @Override
+                            public void onFailure(Call<DeviceStatusResponse> call, Throwable t) {
 
-                    @Override
-                    public void onFailure(Call<DeviceStatusResponse> call, Throwable t) {
+                                showError(AppConstants.SEVER_NOT_RESPONSIVE);
+                                if (lytSwipeRefresh.isRefreshing()) {
+                                    lytSwipeRefresh.setRefreshing(false);
+                                }
+                            }
+                        });
+            }
+        });
 
-                        showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                        if (lytSwipeRefresh.isRefreshing()) {
-                            lytSwipeRefresh.setRefreshing(false);
-                        }
-                    }
-                });
     }
 
     private void initLayoutWithPermission() {
@@ -364,7 +370,6 @@ public class MainActivity extends BaseActivity {
         PrefUtils.saveStringPref(MainActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(MainActivity.this, VALUE_EXPIRED, expiry_date);
-
         PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dealer_pin);
     }
 
@@ -389,70 +394,78 @@ public class MainActivity extends BaseActivity {
         disableViews();
         if (type == 1) {
 
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin))
-                    .enqueue(new Callback<DeviceLoginResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
+            new CheckInstance(internet -> {
+                if (internet) {
+                    MyApplication.oneCaller
+                            .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin))
+                            .enqueue(new Callback<DeviceLoginResponse>() {
+                                @Override
+                                public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
 
-                            if (response.isSuccessful() && response.body() != null) {
-                                DeviceLoginResponse dlr = response.body();
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        DeviceLoginResponse dlr = response.body();
 
-                                if (dlr.isStatus()) {
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, "" + dlr.getdId());
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, "" + dlr.getDealer_pin());
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, "" + dlr.getConnectedDid());
+                                        if (dlr.isStatus()) {
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, "" + dlr.getdId());
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, "" + dlr.getDealer_pin());
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, "" + dlr.getConnectedDid());
 
-                                    PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
+                                            PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
 
-                                    startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
-                                    finish();
-                                } else {
-                                    etPin.setError(dlr.getMsg());
+                                            link = true;
+                                            startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
+                                        } else {
+                                            etPin.setError(dlr.getMsg());
+                                        }
+                                    }
+                                    enableViews();
                                 }
-                            }
-                            enableViews();
-                        }
 
-                        @Override
-                        public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
-                            enableViews();
-                        }
-                    });
+                                @Override
+                                public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
+                                    enableViews();
+                                }
+                            });
+                }
+            });
+
         } else if (type == 2) {
 
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
-                    .enqueue(new Callback<DeviceLoginResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
+            new CheckInstance(internet -> {
+                if (internet) {
+                    ((MyApplication) getApplicationContext())
+                            .getApiOneCaller()
+                            .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
+                            .enqueue(new Callback<DeviceLoginResponse>() {
+                                @Override
+                                public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
 
-                            if (response.isSuccessful() && response.body() != null) {
-                                DeviceLoginResponse dlr = response.body();
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        DeviceLoginResponse dlr = response.body();
 
-                                if (dlr.isStatus()) {
+                                        if (dlr.isStatus()) {
 
-                                    Timber.d("dvjngjngjngtrgtdry" + dlr.getDealer_pin());
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, dlr.getdId());
-                                    PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, dlr.getDevice_id());
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dlr.getDealer_pin());
-                                    PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, dlr.getConnectedDid());
-                                    PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
-                                    initAutoLogin();
-                                } else {
-                                    etPin.setError(dlr.getMsg());
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, dlr.getdId());
+                                            PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, dlr.getDevice_id());
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dlr.getDealer_pin());
+                                            PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, dlr.getConnectedDid());
+                                            PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
+                                            initAutoLogin();
+                                        } else {
+                                            etPin.setError(dlr.getMsg());
+                                        }
+                                    }
+                                    enableViews();
                                 }
-                            }
-                            enableViews();
-                        }
 
-                        @Override
-                        public void onFailure(Call<DeviceLoginResponse> call, Throwable t) {
-                            enableViews();
-                        }
-                    });
+                                @Override
+                                public void onFailure(Call<DeviceLoginResponse> call, Throwable t) {
+                                    enableViews();
+                                }
+                            });
+                }
+            });
+
         }
 
 
@@ -597,7 +610,12 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         isBackPressed = false;
+        pending = false;
+        link = false;
     }
+
+    private boolean pending = false;
+    private boolean link = false;
 
     @Override
     protected void onPause() {

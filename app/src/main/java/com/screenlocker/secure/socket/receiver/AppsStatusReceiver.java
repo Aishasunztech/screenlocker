@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -17,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.socket.SocketManager;
-import com.screenlocker.secure.socket.interfaces.NetworkListener;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -40,7 +36,10 @@ public class AppsStatusReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
- if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageAdded")) {
+
+        Timber.d("dklfggidgfdr");
+
+        if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageAdded")) {
 
             boolean status = intent.getBooleanExtra("status", false);
             String model = intent.getStringExtra("packageAdded");

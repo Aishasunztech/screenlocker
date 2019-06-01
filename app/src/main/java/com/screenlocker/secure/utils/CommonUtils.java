@@ -69,7 +69,12 @@ public class CommonUtils {
                 urlc.setRequestProperty("User-Agent", "Android Application");
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(10 * 1000);
-                urlc.connect();
+                try {
+                    urlc.connect();
+
+                } catch (Exception e) {
+                    Timber.d(e);
+                }
                 isReachable = (urlc.getResponseCode() == 200);
 
                 Timber.d("Response code :%s", urlc.getResponseCode());
@@ -81,6 +86,7 @@ public class CommonUtils {
 
         return isReachable;
     }
+
     public static String getMacAddress() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -194,8 +200,6 @@ public class CommonUtils {
         } catch (Exception ignored) {
         }
     }
-
-
 
 
     // adding secure settings menus
@@ -363,7 +367,6 @@ public class CommonUtils {
         subExtensions.add(dateTime);
 
 
-
         // Languages and input
 
         Drawable language_drawable = context.getResources().getDrawable(R.drawable.ic_language);
@@ -410,7 +413,7 @@ public class CommonUtils {
     public static List<UsageStats> getCurrentApp(Context context) {
 
         try {
-            UsageStatsManager usm =(UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
             long time = System.currentTimeMillis();
 
             if (usm != null) {

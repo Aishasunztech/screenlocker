@@ -60,8 +60,9 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.AboutActivity"
-            android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".settings.AboutActivity"
+            android:screenOrientation="nosensor" />
 
         <activity
             android:name=".socket.TransparentActivity"
@@ -201,6 +202,15 @@
         <receiver android:name=".ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".socket.receiver.AppsStatusReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.secure.systemcontroll.PackageAdded"/>
+                <action android:name="com.secure.systemcontroll.PackageDeleted"/>
+                <action android:name="com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET"/>
             </intent-filter>
         </receiver>
 

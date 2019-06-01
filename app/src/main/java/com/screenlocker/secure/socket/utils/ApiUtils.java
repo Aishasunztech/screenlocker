@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
@@ -74,91 +75,96 @@ public class ApiUtils implements ApiRequests {
 
     @Override
     public void connectToSocket() {
-        ((MyApplication) context.getApplicationContext())
-                .getApiOneCaller()
-                .checkDeviceStatus(new DeviceStatusModel(serialNo, macAddress))
-                .enqueue(new Callback<DeviceStatusResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
+        new CheckInstance(internet -> {
+            if (internet) {
+                MyApplication.oneCaller
+                        .checkDeviceStatus(new DeviceStatusModel(serialNo, macAddress))
+                        .enqueue(new Callback<DeviceStatusResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                        if (response.isSuccessful() && response.body() != null) {
+                                if (response.isSuccessful() && response.body() != null) {
 
-                            String msg = response.body().getMsg();
+                                    String msg = response.body().getMsg();
 
 
-                            if (response.body().isStatus()) {
-                                boolean isLinked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
-                                if (isLinked) {
-                                    utils.startSocket(context, PrefUtils.getStringPref(context, DEVICE_ID), PrefUtils.getStringPref(context, TOKEN));
+                                    if (response.body().isStatus()) {
+                                        boolean isLinked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+                                        if (isLinked) {
+                                            utils.startSocket(context, PrefUtils.getStringPref(context, DEVICE_ID), PrefUtils.getStringPref(context, TOKEN));
 
-                                }
-                                switch (msg) {
-                                    case ACTIVE:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.unSuspendDevice(context);
-                                        break;
-                                    case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.suspendedDevice(context, "expired");
+                                        }
+                                        switch (msg) {
+                                            case ACTIVE:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.unSuspendDevice(context);
+                                                break;
+                                            case EXPIRED:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.suspendedDevice(context, "expired");
 
-                                        break;
-                                    case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.suspendedDevice(context, "suspended");
+                                                break;
+                                            case SUSPENDED:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.suspendedDevice(context, "suspended");
 
-                                        break;
-                                    case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                        utils.unSuspendDevice(context);
+                                                break;
+                                            case TRIAL:
+                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                                utils.unSuspendDevice(context);
 
-                                        break;
+                                                break;
 
-                                }
-                            } else {
-                                switch (msg) {
-                                    case UNLINKED_DEVICE:
-                                        utils.unlinkDevice(context, true);
-                                        break;
-                                    case NEW_DEVICE:
+                                        }
+                                    } else {
+                                        switch (msg) {
+                                            case UNLINKED_DEVICE:
+                                                utils.unlinkDevice(context, true);
+                                                break;
+                                            case NEW_DEVICE:
 
-                                        utils.unlinkDevice(context, true);
+                                                utils.unlinkDevice(context, true);
 
-                                        break;
+                                                break;
 
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
+                            @Override
+                            public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
 
-                        String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
-                        Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
-                        Intent socketIntent = new Intent(context, SocketService.class);
-                        if (device_status == null) {
-                            intent.putExtra("device_status", (String) null);
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                            context.stopService(socketIntent);
-                            return;
-                        }
-                        switch (device_status) {
-                            case "expired":
-                                intent.putExtra("device_status", "expired");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                break;
-                            case "suspended":
-                                intent.putExtra("device_status", "suspended");
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                                break;
-                            case "unliked":
-                                unlinkDevice(context, true);
-                                break;
-                        }
+                                String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
+                                Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
+                                Intent socketIntent = new Intent(context, SocketService.class);
+                                if (device_status == null) {
+                                    intent.putExtra("device_status", (String) null);
+                                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                    context.stopService(socketIntent);
+                                    return;
+                                }
+                                switch (device_status) {
+                                    case "expired":
+                                        intent.putExtra("device_status", "expired");
+                                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                        break;
+                                    case "suspended":
+                                        intent.putExtra("device_status", "suspended");
+                                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                        break;
+                                    case "unliked":
+                                        unlinkDevice(context, true);
+                                        break;
+                                }
 
-                        context.stopService(socketIntent);
-                    }
-                });
+                                context.stopService(socketIntent);
+                            }
+                        });
+            }
+        });
+
+
     }
 
     private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {

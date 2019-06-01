@@ -6,20 +6,30 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
 
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.interfaces.AsyncResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
+import com.screenlocker.secure.networkResponseModels.LoginModel;
+import com.screenlocker.secure.networkResponseModels.LoginResponse;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -29,14 +39,19 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener , AsyncResponse {
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, AsyncResponse {
 
 
     public static boolean recent = false;
@@ -59,6 +74,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         linearLayout.addView(btn);
         return linearLayout;
     }
+
+
+    public static ApiOneCaller oneCaller = null;
 
     public static Context getAppContext() {
         return appContext;
@@ -122,10 +140,11 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 //   startService(new Intent(this,LifecycleReceiverService.class));
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
         filter.addAction("com.secure.systemcontroll.PackageAdded");
         filter.addAction("com.secure.systemcontroll.PackageDeleted");
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
+
         registerReceiver(appsStatusReceiver, filter);
 
 
@@ -178,10 +197,12 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     public void isConnected(boolean state) {
 
 
-        if(state){
+        if (state) {
+            AppConstants.isProgress = true;
+            AppConstants.result = false;
             new AsyncCalls(this, this).execute();
-        }else {
-            if(utils.isMyServiceRunning(SocketService.class,appContext)){
+        } else {
+            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
                 Intent intent = new Intent(this, SocketService.class);
                 stopService(intent);
             }
@@ -191,10 +212,15 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     @Override
     public void processFinish(String output) {
 
-        if(output!=null){
-            PrefUtils.saveStringPref(appContext,LIVE_URL,output);
+        if (output != null) {
+            PrefUtils.saveStringPref(appContext, LIVE_URL, output);
+            String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+            oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT, this).create(ApiOneCaller.class);
+
+            checkForDownload();
+
             boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-            if(linkStatus){
+            if (linkStatus) {
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
@@ -202,6 +228,92 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
             }
+
+            AppConstants.result = true;
+
         }
+
+        AppConstants.isProgress = false;
+
     }
+
+
+    private void checkForDownload() {
+        new CheckInstance(internet -> {
+
+
+            if (internet) {
+
+                String currentVersion = "1";
+                try {
+                    currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Timber.d(e);
+                }
+
+                MyApplication.oneCaller
+                        .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                        .enqueue(new Callback<UpdateModel>() {
+                            @Override
+                            public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+
+                                if (response.body() != null) {
+                                    if (response.body().isSuccess()) {
+                                        if (response.body().isApkStatus()) {
+                                            String url = response.body().getApkUrl();
+                                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                            DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true);
+                                            obj.execute();
+
+                                        } else {
+//                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } else {
+                                        saveToken();
+                                        checkForDownload();
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+
+                            }
+                        });
+            }
+        });
+
+    }
+
+
+    public static void saveToken() {
+
+
+        new CheckInstance(internet -> {
+            if (internet) {
+                MyApplication.oneCaller
+                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress(), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                        if (response.body() != null) {
+                            if (response.body().isStatus()) {
+                                PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+
+    }
+
 }

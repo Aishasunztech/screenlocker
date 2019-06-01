@@ -45,6 +45,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -83,6 +85,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
@@ -105,7 +108,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener , NetworkChangeReceiver.NetworkChangeListener {
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
 
     private AlertDialog isActiveDialog;
     private AlertDialog noNetworkDialog;
@@ -201,15 +204,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     public void init() {
-        Intent receiver = getIntent();
-        if (receiver != null && receiver.hasExtra("update")) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Success")
-                    .setMessage("App Updated Successfully")
-                    .setPositiveButton("DISMISS", (dialog, which) -> {
-                        dialog.dismiss();
-                    }).show();
-        }
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -590,52 +584,58 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void requestCheckForUpdate(ProgressDialog dialog) {
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                .enqueue(new Callback<UpdateModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-                        if (dialog != null && dialog.isShowing()) {
-                            dialog.dismiss();
 
-                        }
+        new CheckInstance(internet -> {
+            if (internet) {
+                MyApplication.oneCaller
+                        .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                        .enqueue(new Callback<UpdateModel>() {
+                            @Override
+                            public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+                                if (dialog != null && dialog.isShowing()) {
+                                    dialog.dismiss();
 
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
-                                            .setTitle("Update Available")
-                                            .setMessage("New update available! Press OK to update your system.")
-                                            .setPositiveButton("OK", (dialog12, which) -> {
-                                                String url = response.body().getApkUrl();
-
-                                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),LIVE_URL);
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url+MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url));
-                                                obj.execute();
-                                            }).setNegativeButton("Cancel", (dialog1, which) -> {
-                                                dialog1.dismiss();
-                                            });
-                                    dialog.show();
-                                } else {
-                                    Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
                                 }
 
-                            } else {
-                                saveToken();
-                                requestCheckForUpdate(dialog);
+                                if (response.body() != null) {
+                                    if (response.body().isSuccess()) {
+                                        if (response.body().isApkStatus()) {
+                                            AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
+                                                    .setTitle("Update Available")
+                                                    .setMessage("New update available! Press OK to update your system.")
+                                                    .setPositiveButton("OK", (dialog12, which) -> {
+                                                        String url = response.body().getApkUrl();
+
+                                                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false);
+                                                        obj.execute();
+                                                    }).setNegativeButton("Cancel", (dialog1, which) -> {
+                                                        dialog1.dismiss();
+                                                    });
+                                            dialog.show();
+                                        } else {
+                                            Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } else {
+                                        saveToken();
+                                        requestCheckForUpdate(dialog);
+                                    }
+
+                                }
                             }
 
-                        }
-                    }
+                            @Override
+                            public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                                dialog.dismiss();
+                                Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter.", Toast.LENGTH_LONG).show();
 
-                    @Override
-                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-                        dialog.dismiss();
-                        Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+        });
 
-                    }
-                });
+
     }
 
     private void showNetworkDialog() {
@@ -873,6 +873,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private NetworkChangeReceiver networkChangeReceiver;
+
     @Override
     public void onBackPressed() {
 
@@ -899,169 +900,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (state) {
                 String macAddress = CommonUtils.getMacAddress();
                 String serialNo = DeviceIdUtils.getSerialNumber();
-                if (macAddress != null && serialNo != null) {
+                if (serialNo != null) {
                     new ApiUtils(SettingsActivity.this, macAddress, serialNo);
                 }
             } else {
                 stopService(intent);
-                Snackbar.make(rootLayout, "no internet", Snackbar.LENGTH_SHORT).show();
+
             }
 
         }
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
-        private String appName, url;
-        private WeakReference<Context> contextWeakReference;
-        private ProgressDialog dialog;
-
-        DownLoadAndInstallUpdate(Context context, final String url) {
-            contextWeakReference = new WeakReference<>(context);
-            this.url = url;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(contextWeakReference.get());
-            dialog.setTitle("Downloading Update, Please Wait");
-            dialog.setCancelable(false);
-            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            dialog.show();
-        }
-
-        @Override
-        protected Uri doInBackground(Void... voids) {
-            return downloadApp();
-        }
-
-
-        private Uri downloadApp() {
-            FileOutputStream fileOutputStream = null;
-            InputStream input = null;
-            try {
-                appName = new Date().getTime() + ".apk";
-                File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
-                File file = new File(apksPath, appName);
-                if (!apksPath.exists()) {
-                    apksPath.mkdir();
-                }
-
-                try {
-                    fileOutputStream = new FileOutputStream(file);
-
-                    URL downloadUrl = new URL(url);
-                    URLConnection connection = downloadUrl.openConnection();
-                    connection.setRequestProperty("authorization", PrefUtils.getStringPref(contextWeakReference.get(), SYSTEM_LOGIN_TOKEN));
-                    int contentLength = connection.getContentLength();
-                    Timber.d("downloadUrl: %s ", downloadUrl.toString());
-                    Timber.d("downloadUrl: %s ", url);
-                    // input = body.byteStream();
-                    input = new BufferedInputStream(downloadUrl.openStream());
-                    byte data[] = new byte[contentLength];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress((int) ((total * 100) / contentLength));
-                        fileOutputStream.write(data, 0, count);
-                    }
-                    Uri contentUri = FileProvider.getUriForFile(contextWeakReference.get(), "com.vortexlocker.app.fileprovider", file);
-
-                    //Uri uri =  FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-                    Timber.d("downloadApp: %s ", contentUri.toString());
-
-
-                    return contentUri;
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                } finally {
-                    if (fileOutputStream != null) {
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-                    }
-                    if (input != null)
-                        input.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            dialog.setProgress(values[0]);
-//            tvProgressText.setText(String.valueOf(values[0]));
-        }
-
-        @Override
-        protected void onPostExecute(Uri uri) {
-            super.onPostExecute(uri);
-            if (dialog != null)
-                dialog.dismiss();
-            if (uri != null) {
-                showInstallDialog(uri);
-            } else {
-                Toast.makeText(contextWeakReference.get(), "Some Error Occured", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-
-        private void showInstallDialog(Uri apkUri) {
-
-
-//            contextWeakReference.get().grantUriPermission("com.secure.systemcontrol",apkUri,
-//                    FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//
-//            contextWeakReference.get().revokeUriPermission(apkUri,FLAG_GRANT_READ_URI_PERMISSION |Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            Intent launchIntent = new Intent();
-            ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
-            launchIntent.setAction(Intent.ACTION_MAIN);
-            launchIntent.setComponent(componentName);
-            launchIntent.setData(apkUri);
-            launchIntent.putExtra("package", contextWeakReference.get().getPackageName());
-            launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//            contextWeakReference.get().sendBroadcast(sender);
-
-            contextWeakReference.get().startActivity(launchIntent);
-        }
-
-        private IntentSender createIntentSender(int sessionId) {
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:0123456789"));
-            PendingIntent pendingIntent = PendingIntent.getActivity(contextWeakReference.get(), sessionId, intent, 0);
-            return pendingIntent.getIntentSender();
-        }
-    }
-
-
-    private void saveToken() {
-
-
-        ((MyApplication) getApplicationContext())
-                .getApiOneCaller()
-                .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress(), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.body() != null) {
-                    if (response.body().isStatus()) {
-                        PrefUtils.saveStringPref(SettingsActivity.this, SYSTEM_LOGIN_TOKEN, response.body().getToken());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-
-            }
-        });
-    }
 
 }
