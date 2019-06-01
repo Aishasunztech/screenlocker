@@ -48,9 +48,14 @@ import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.views.KeyboardView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
@@ -487,5 +492,52 @@ public class Utils {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+
+
+
+
+    public static String twoDatesBetweenTime(String oldtime) {
+        // TODO Auto-generated method stub
+        int day = 0;
+        int hh = 0;
+        int mm = 0;
+        try
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date oldDate = dateFormat.parse(oldtime);
+            Date cDate = new Date();
+            Long timeDiff = cDate.getTime() - oldDate.getTime();
+            day = (int) TimeUnit.MILLISECONDS.toDays(timeDiff);
+            hh = (int) (TimeUnit.MILLISECONDS.toHours(timeDiff) - TimeUnit.DAYS.toHours(day));
+            mm = (int) (TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        if(day==0)
+        {
+            return hh + " hour " + mm + " min";
+        }
+        else if(hh==0)
+        {
+            return mm + " min";
+        }
+        else
+        {
+            return day + " days " + hh + " hour " + mm + " min";
+        }
+    }
+
+
+    public static String getDate(long milliSeconds) {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
 
 }

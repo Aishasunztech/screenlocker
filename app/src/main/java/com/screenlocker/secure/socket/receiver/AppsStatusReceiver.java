@@ -245,4 +245,6 @@ public class AppsStatusReceiver extends BroadcastReceiver {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
     }
 
+
+
 }
