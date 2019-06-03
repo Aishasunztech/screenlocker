@@ -21,11 +21,15 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
 
     private AsyncResponse response;
 
-    public AsyncCalls(AsyncResponse mresponse,Context context){
+    private String[] urls;
 
-            response = mresponse;
+    public AsyncCalls(AsyncResponse mresponse, Context context, String[] urls) {
+
+        response = mresponse;
 
         contextRef = new WeakReference<>(context);
+
+        this.urls = urls;
 
     }
 
@@ -33,16 +37,9 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... voids) {
 
         Context context = contextRef.get();
-
-        List<String> hosts  = new ArrayList<>();
-
-        hosts.add(URL_1);
-        hosts.add(URL_2);
-
-        for (String host:hosts){
-            Timber.d(host);
-            if((IsReachable(context,host))){
-                return host;
+        for (String url : urls) {
+            if ((IsReachable(context, url))) {
+                return url;
             }
         }
 

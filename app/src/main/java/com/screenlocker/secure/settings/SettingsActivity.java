@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -171,6 +172,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName deviceAdmin = new ComponentName(this, MyAdmin.class);
+        try {
+            devicePolicyManager.addUserRestriction(deviceAdmin,
+                    UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
+        } catch (SecurityException ex) {
+            Timber.d(ex);
+        }
+
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -188,6 +199,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                         } else {
                             boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
                             init();

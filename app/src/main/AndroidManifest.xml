@@ -51,7 +51,6 @@
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
 
 
-
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -211,9 +210,9 @@
             android:name=".socket.receiver.AppsStatusReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.secure.systemcontroll.PackageAdded"/>
-                <action android:name="com.secure.systemcontroll.PackageDeleted"/>
-                <action android:name="com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET"/>
+                <action android:name="com.secure.systemcontroll.PackageAdded" />
+                <action android:name="com.secure.systemcontroll.PackageDeleted" />
+                <action android:name="com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET" />
             </intent-filter>
         </receiver>
 
@@ -334,21 +333,13 @@
             android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait" />
 
-        <receiver android:name=".offline.MyAlarmBroadcastReceiver" >
+        <receiver
+            android:name=".offline.MyAlarmBroadcastReceiver"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.vortexlocker.app.alarm_time_completed" />
             </intent-filter>
 
-        </receiver>
-
-        <receiver android:name=".offline.AlarmMonitorReceiver"
-            android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </receiver>
 
     </application>

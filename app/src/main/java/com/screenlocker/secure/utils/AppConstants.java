@@ -80,6 +80,12 @@ public class AppConstants {
     //    public static final String URL_1 = "http://192.168.0.121:3000";//local
     public static final String URL_2 = "http://securenet.guru";
 
+    //super admin domain
+//    public static final String super_admin = "http://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
+    public static final String SUPER_END_POINT = "/api/v1/mobile/";
+
+
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
     public static final String MOBILE_END_POINT = "/mobile/";
@@ -315,5 +321,8 @@ public class AppConstants {
     public static volatile boolean isProgress = false;
     public static volatile boolean result = false;
 
+    public static final String ALARM_TIME_COMPLETED = "com.vortexlocker.app.alarm_time_completed";
 
+
+    public static final String CHECK_OFFLINE_EXPIRY = "check_offline_expiry";
 }

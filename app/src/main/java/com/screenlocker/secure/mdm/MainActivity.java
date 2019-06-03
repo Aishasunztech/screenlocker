@@ -22,7 +22,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusModel;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -42,6 +42,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
+import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -225,7 +226,7 @@ public class MainActivity extends BaseActivity {
         new CheckInstance(internet -> {
             if (internet) {
                 MyApplication.oneCaller
-                        .checkDeviceStatus(new DeviceStatusModel(SerialNo, DeviceIdUtils.getMacAddress()))
+                        .checkDeviceStatus(new DeviceModel(SerialNo, DeviceIdUtils.getMacAddress()))
                         .enqueue(new Callback<DeviceStatusResponse>() {
                             @Override
                             public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -247,21 +248,28 @@ public class MainActivity extends BaseActivity {
                                                 intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                                 startActivity(intent);
                                                 PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                 finish();
                                                 break;
                                             case EXPIRED:
                                                 saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.suspendedDevice(MainActivity.this, "expired");
+                                                PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                 finish();
                                                 break;
                                             case SUSPENDED:
                                                 saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.suspendedDevice(MainActivity.this, "suspended");
+                                                PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                 finish();
                                                 break;
                                             case TRIAL:
                                                 saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.unSuspendDevice(MainActivity.this);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
+                                                PrefUtils.saveBooleanPref(MainActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                 finish();
                                                 break;
                                             case PENDING:
@@ -269,6 +277,7 @@ public class MainActivity extends BaseActivity {
                                                 saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
                                                 startActivity(intent);
+                                                finish();
                                                 break;
                                         }
                                     } else {

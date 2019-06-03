@@ -37,13 +37,19 @@ import com.screenlocker.secure.utils.PrefUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -115,6 +121,8 @@ public class utils {
             boolean adminActive = devicePolicyManager.isAdminActive(compName);
             if (adminActive) {
                 devicePolicyManager.wipeData(0);
+
+
             }
         }
 
@@ -468,6 +476,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, CHECK_OFFLINE_EXPIRY, false);
 
         String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -489,15 +498,13 @@ public class utils {
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction("unlinked");
 
-        if(status){
+        if (status) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(lockScreen);
             } else {
                 context.startService(lockScreen);
             }
         }
-
-
 
 
     }
@@ -689,6 +696,43 @@ public class utils {
 
 
         return status;
+    }
+
+
+    public static String twoDatesBetweenTime(String oldtime) {
+
+        int day = 0;
+        int hh = 0;
+        int mm = 0;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date oldDate = dateFormat.parse(oldtime);
+            Date cDate = new Date();
+            Long timeDiff = cDate.getTime() - oldDate.getTime();
+            day = (int) TimeUnit.MILLISECONDS.toDays(timeDiff);
+            hh = (int) (TimeUnit.MILLISECONDS.toHours(timeDiff) - TimeUnit.DAYS.toHours(day));
+            mm = (int) (TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (day == 0) {
+            return hh + " hour " + mm + " min";
+        } else if (hh == 0) {
+            return mm + " min";
+        } else {
+            return day + " days " + hh + " hour " + mm + " min";
+        }
+    }
+
+
+    public static String getDate(long milliSeconds) {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
 

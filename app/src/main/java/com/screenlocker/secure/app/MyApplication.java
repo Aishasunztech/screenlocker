@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -21,11 +20,13 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
-import com.screenlocker.secure.interfaces.AsyncResponse;
+import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
+import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
@@ -44,14 +45,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
+import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
+import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, AsyncResponse {
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener {
 
 
     public static boolean recent = false;
@@ -67,6 +74,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     private static Context appContext;
 
     private NetworkChangeReceiver networkChangeReceiver;
+    private MyAlarmBroadcastReceiver myAlarmBroadcastReceiver;
 
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
@@ -93,6 +101,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         networkChangeReceiver.setNetworkChangeListener(this);
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
+
 
         try {
             Fabric.with(this, new Crashlytics());
@@ -188,7 +199,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(networkChangeReceiver);
         networkChangeReceiver.unsetNetworkChangeListener();
-
+        unregisterReceiver(myAlarmBroadcastReceiver);
         super.onTerminate();
     }
 
@@ -198,9 +209,14 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
         if (state) {
-            AppConstants.isProgress = true;
-            AppConstants.result = false;
-            new AsyncCalls(this, this).execute();
+
+            onlineConnection();
+
+            boolean offlineExpiry = PrefUtils.getBooleanPref(this, CHECK_OFFLINE_EXPIRY);
+            if (!offlineExpiry) {
+                checkOfflineExpiry();
+            }
+
         } else {
             if (utils.isMyServiceRunning(SocketService.class, appContext)) {
                 Intent intent = new Intent(this, SocketService.class);
@@ -209,39 +225,74 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
     }
 
-    @Override
-    public void processFinish(String output) {
 
-        if (output != null) {
-            PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-            String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-            oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT, this).create(ApiOneCaller.class);
+    private void onlineConnection() {
 
-            checkForDownload();
+        AppConstants.isProgress = true;
+        AppConstants.result = false;
 
-            boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-            if (linkStatus) {
-                String macAddress = CommonUtils.getMacAddress();
-                String serialNo = DeviceIdUtils.getSerialNumber();
+        String[] urls = {URL_1, URL_2};
 
-                if (serialNo != null) {
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+        new AsyncCalls(output -> {
+
+            if (output != null) {
+                PrefUtils.saveStringPref(appContext, LIVE_URL, output);
+                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                checkForDownload();
+                boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+                if (linkStatus) {
+                    String macAddress = CommonUtils.getMacAddress();
+                    String serialNo = DeviceIdUtils.getSerialNumber();
+                    if (serialNo != null) {
+                        new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    }
                 }
+                AppConstants.result = true;
             }
+            AppConstants.isProgress = false;
+        }, this, urls).execute();// checking hosts
+    }
 
-            AppConstants.result = true;
+    private void checkOfflineExpiry() {
 
-        }
+        Timber.d("Checking offline Expiry");
 
-        AppConstants.isProgress = false;
+        String[] urls = {SUPER_ADMIN, URL_2};
 
+        new AsyncCalls(output -> {
+            if (output != null) {
+                String url = output + SUPER_END_POINT;
+                ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
+                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress())).enqueue(new Callback<DeviceExpiryResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<DeviceExpiryResponse> call, @NonNull Response<DeviceExpiryResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+
+                            DeviceExpiryResponse deviceExpiryResponse = response.body();
+                            Timber.d("EspiresIn : %s", deviceExpiryResponse.getExpiresIn());
+                            Timber.d("StartDate : %s", deviceExpiryResponse.getStartDate());
+                            Timber.d("EndDate : %s", deviceExpiryResponse.getEndDate());
+
+                            if (deviceExpiryResponse.isStatus()) {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<DeviceExpiryResponse> call, @NonNull Throwable t) {
+                        Timber.d(t.getMessage());
+                    }
+                });
+
+            }
+        }, this, urls).execute();
     }
 
 
     private void checkForDownload() {
         new CheckInstance(internet -> {
-
-
             if (internet) {
 
                 String currentVersion = "1";
@@ -265,9 +316,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                                             DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true);
                                             obj.execute();
 
-                                        } else {
-//                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-                                        }
+                                        }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+
 
                                     } else {
                                         saveToken();
@@ -315,5 +365,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
     }
+
 
 }
