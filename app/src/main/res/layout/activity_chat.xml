@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.contactSupport.ChatActivity">
+    tools:context="com.contactSupport.ChatActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <include
         android:id="@+id/appBar"
         layout="@layout/main_toolbar"
@@ -24,10 +23,6 @@
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:inputButtonBackground="@drawable/chat_input_background"
-        app:showAttachmentButton="false"
-        app:inputTextColor="@android:color/white"
-        app:inputHint="Type a message"/>
+        android:layout_gravity="bottom"/>
 
 </LinearLayout>

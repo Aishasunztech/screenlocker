@@ -5,11 +5,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.SweepGradient;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import androidx.annotation.RequiresApi;
@@ -45,7 +50,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
 
 
     private boolean isBackPressed;
-    private Switch allowGuest , allowEncrypted;
+    private Switch allowGuest , allowEncrypted,allowRegisterAllGuest, allowRegisterAllEncrypted;
     private SimViewModel viewModel;
     private List<SimEntry> entries;
     private SimAdapter adapter;
@@ -117,11 +122,58 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         entries = new ArrayList<>();
         allowGuest = findViewById(R.id.allowAllGuest);
         allowEncrypted = findViewById(R.id.allowAllEncrypted);
+        allowRegisterAllGuest = findViewById(R.id.allowRegisterAllGuest);
+        allowRegisterAllEncrypted= findViewById(R.id.allowRegisterAllEncrypted);
+        allowRegisterAllGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Switch s = (Switch) v;
+                if (s.isChecked()){
+                    for (SimEntry entry : entries) {
+                        entry.setGuest(true);
+                        viewModel.updateSimEntry(entry);
+                    }
+                }else{
+                    for (SimEntry entry : entries) {
+                        entry.setGuest(false);
+                        viewModel.updateSimEntry(entry);
+                    }
+                }
+            }
+        });
+        allowRegisterAllEncrypted.setOnClickListener((view)->{
+            Switch a = (Switch) view;
+            if (a.isChecked()){
+                for (SimEntry entry : entries) {
+                    entry.setEncrypted(true);
+                    viewModel.updateSimEntry(entry);
+                }
+            }else{
+                for (SimEntry entry : entries) {
+                    entry.setEncrypted(false);
+                    viewModel.updateSimEntry(entry);
+                }
+            }
+        });
         RecyclerView rvSim = findViewById(R.id.rvSim);
         rvSim.setLayoutManager(new LinearLayoutManager(this));
         adapter = new SimAdapter(this, entries, this);
         rvSim.setAdapter(adapter);
-        findViewById(R.id.addSim).setOnClickListener(v -> {
+        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)){
+            allowGuest.setChecked(true);
+        }else
+            allowGuest.setChecked(false);
+        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)){
+            allowEncrypted.setChecked(true);
+        }else
+            allowEncrypted.setChecked(false);
+        allowGuest.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL,isChecked);
+        });
+        allowEncrypted.setOnCheckedChangeListener((buttonView, isChecked) ->{
+            PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL,isChecked);
+        });
+        findViewById(R.id.btnadd).setOnClickListener(v -> {
             fragmentManager = getSupportFragmentManager();
             AddSimDialog newFragment = new AddSimDialog();
             Bundle bundle = new Bundle();
@@ -141,20 +193,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
             transaction.add(android.R.id.content, newFragment)
                     .addToBackStack(null).commit();
         });
-        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)){
-            allowGuest.setChecked(true);
-        }else
-            allowGuest.setChecked(false);
-        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)){
-            allowEncrypted.setChecked(true);
-        }else
-            allowEncrypted.setChecked(false);
-        allowGuest.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL,isChecked);
-        });
-        allowEncrypted.setOnCheckedChangeListener((buttonView, isChecked) ->{
-            PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL,isChecked);
-        });
     }
 
     private void setToolbar() {
@@ -164,6 +202,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -179,7 +218,14 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         viewModel.getAllSimEntries().observe(this, simEntries -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 entries.clear();
+                boolean guestAll= true , encryptedAll = true;
                 for (SimEntry simEntry : simEntries) {
+                    if (!simEntry.isGuest()){
+                        guestAll = false;
+                    }
+                    if (!simEntry.isEncrypted()){
+                        encryptedAll = false;
+                    }
                     if (simEntry.getIccid().equals(iccid0)) {
                         boolean update = false;
                         isFirstRegister = true;
@@ -227,6 +273,8 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                     }
                     entries.add(simEntry);
                 }
+                allowRegisterAllGuest.setChecked(guestAll);
+                allowRegisterAllEncrypted.setChecked(encryptedAll);
             }
             adapter.notifyDataSetChanged();
 
