@@ -152,6 +152,7 @@ public class LinkDeviceActivity extends BaseActivity {
         if (status != null && status.equals(PENDING_STATE)) {
             pendingLinkViewState();
         } else if (status != null && status.equals(ACTIVE_STATE)) {
+            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
             approvedLinkViewState();
         } else {
             newLinkViewState();

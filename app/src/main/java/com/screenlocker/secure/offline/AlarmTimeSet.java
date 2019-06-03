@@ -7,9 +7,9 @@ import android.content.Intent;
 
 import static android.content.Context.ALARM_SERVICE;
 
-public class AlarmTimeSet {
+class AlarmTimeSet {
 
-    public static void at_(Context context, String time_milli){
+    static void at_(Context context, String time_milli){
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(context, MyAlarmBroadcastReceiver.class);
@@ -29,8 +29,5 @@ public class AlarmTimeSet {
             alarmManager.set(AlarmManager.RTC_WAKEUP, l, pendingIntent);
         }
 
-        if(pendingIntent!=null){
-
-        }
     }
 }
