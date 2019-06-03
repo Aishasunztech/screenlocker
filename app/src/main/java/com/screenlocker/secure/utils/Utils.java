@@ -11,55 +11,33 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.SetUpLockActivity;
-import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.settings.SettingsModel;
-import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.views.KeyboardView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-import static com.screenlocker.secure.settings.ManagePasswords.REQUEST_CODE_PASSWORD;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
 import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
@@ -67,15 +45,9 @@ import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
-import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
-import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
 
 public class Utils {
@@ -293,6 +265,8 @@ public class Utils {
                     }
                 } else if (getUserType(enteredPin, context).equals("duress") && device_status1 == null) {
                     wipeDevice(context);
+
+
                 }
                 // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
             /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
@@ -495,49 +469,5 @@ public class Utils {
 
 
 
-
-    public static String twoDatesBetweenTime(String oldtime) {
-        // TODO Auto-generated method stub
-        int day = 0;
-        int hh = 0;
-        int mm = 0;
-        try
-        {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date oldDate = dateFormat.parse(oldtime);
-            Date cDate = new Date();
-            Long timeDiff = cDate.getTime() - oldDate.getTime();
-            day = (int) TimeUnit.MILLISECONDS.toDays(timeDiff);
-            hh = (int) (TimeUnit.MILLISECONDS.toHours(timeDiff) - TimeUnit.DAYS.toHours(day));
-            mm = (int) (TimeUnit.MILLISECONDS.toMinutes(timeDiff) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)));
-        }
-        catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
-        if(day==0)
-        {
-            return hh + " hour " + mm + " min";
-        }
-        else if(hh==0)
-        {
-            return mm + " min";
-        }
-        else
-        {
-            return day + " days " + hh + " hour " + mm + " min";
-        }
-    }
-
-
-    public static String getDate(long milliSeconds) {
-        // Create a DateFormatter object for displaying date in specified format.
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        // Create a calendar object that will convert the date and time value in milliseconds to date.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliSeconds);
-        return formatter.format(calendar.getTime());
-    }
 
 }

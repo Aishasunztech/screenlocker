@@ -1,6 +1,7 @@
 package com.screenlocker.secure.networkResponseModels;
 
 public class NetworkResponse {
+
     private boolean status;
     private String msg;
     private String start_date;

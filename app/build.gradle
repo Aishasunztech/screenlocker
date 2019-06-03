@@ -16,7 +16,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.vortexlocker.app"
+        applicationId "com.vortexlocker.ap"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 478
@@ -153,7 +153,7 @@ dependencies {
 
 
     implementation project(':Stepper')
-    implementation project(path: ':chatkit')
+
 }
 repositories {
     mavenCentral()

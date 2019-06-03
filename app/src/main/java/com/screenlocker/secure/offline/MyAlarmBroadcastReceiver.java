@@ -11,7 +11,7 @@ public class MyAlarmBroadcastReceiver extends BroadcastReceiver {
 
         Toast.makeText(context, "Alarm....", Toast.LENGTH_LONG).show();
 
-        //new LockScreenService().stopSelf();
+
     }
 
 }
