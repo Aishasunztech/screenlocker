@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SimEntry;
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
  * @author Muhammad Nadeem
  * @Date 5/24/2019.
  */
-public class AddSimDialog extends DialogFragment {
+public class AddSimDialog extends Fragment {
     private OnRegisterSimListener mListener;
 
     public interface OnRegisterSimListener {
@@ -140,7 +141,7 @@ public class AddSimDialog extends DialogFragment {
     /**
      * The system calls this only when creating the layout in a dialog.
      */
-    @NonNull
+    /*@NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // The only reason you might override this method when using onCreateView() is
@@ -150,7 +151,7 @@ public class AddSimDialog extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
-    }
+    }*/
 
 
     @Override

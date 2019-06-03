@@ -332,6 +332,8 @@
         <activity
             android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait" />
+        <activity android:name="com.contactSupport.ChatActivity"
+            android:screenOrientation="nosensor"/>
 
         <receiver
             android:name=".offline.MyAlarmBroadcastReceiver"
