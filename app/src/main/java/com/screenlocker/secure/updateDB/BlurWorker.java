@@ -161,6 +161,26 @@ public class BlurWorker extends Worker {
                 secureCleanInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
+            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
+
+            if (supportInfo == null) {
+                //Secure clear Extension
+                Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+                byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
+                AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);
+                supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
+                supportExtension.setExtension(false);
+                supportExtension.setGuest(false);
+                supportExtension.setEncrypted(true);
+                supportExtension.setEnable(true);
+                supportExtension.setVisible(true);
+                supportExtension.setDefaultApp(false);
+
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
+            }else {
+                supportInfo.setExtension(false);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
+            }
 
             AppInfo secureMarketInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_MARKET_UNIQUE);
 

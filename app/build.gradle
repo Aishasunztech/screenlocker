@@ -153,6 +153,7 @@ dependencies {
 
 
     implementation project(':Stepper')
+    implementation project(path: ':chatkit')
 }
 repositories {
     mavenCentral()

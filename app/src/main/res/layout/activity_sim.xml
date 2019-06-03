@@ -15,7 +15,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_16sdp"
+        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:orientation="horizontal">
 
         <TextView
@@ -23,14 +25,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Enable All"
+            android:gravity="center"
+            android:text="@string/enable_all_unregistered"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
-            app:layout_constraintEnd_toStartOf="@+id/manualEncrypted"
+            app:layout_constraintBottom_toBottomOf="@+id/allowAllEncrypted"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/manualEncrypted" />
+            app:layout_constraintTop_toTopOf="@+id/allowAllEncrypted" />
 
         <Switch
             android:id="@+id/allowAllGuest"
@@ -56,6 +57,68 @@
             app:layout_constraintStart_toEndOf="@+id/allowAllGuest"
             app:layout_constraintTop_toTopOf="@+id/allowAllGuest" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="9dp"
+        android:background="@color/colorLine" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/allowRegisterAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/enable_all_registered"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/allowRegisterAllEncrypted"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/allowRegisterAllEncrypted" />
+
+        <Switch
+            android:id="@+id/allowRegisterAllGuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Guest"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/allowRegisterAllEncrypted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Encrypted"
+            app:layout_constraintBottom_toBottomOf="@+id/allowRegisterAllGuest"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/allowRegisterAllGuest"
+            app:layout_constraintTop_toTopOf="@+id/allowRegisterAllGuest" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="9dp"
+        android:background="@color/colorLine" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addSim"
@@ -65,12 +128,20 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/add" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:text="Registered Sim Cards"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSim"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_layout_sim" />
 
 
 </LinearLayout>

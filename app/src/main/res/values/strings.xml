@@ -120,6 +120,8 @@
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
     <string name="status_online">Online</string>
+    <string name="enable_all_unregistered">Enable All \n<small>(Unregistered)</small></string>
+    <string name="enable_all_registered">Enable All \n<small>(Registered)</small></string>
     <string name="status_disconnected">Offline</string>
 
 </resources>

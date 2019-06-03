@@ -1,1 +1,1 @@
-include ':app', ':Stepper';
+include ':app', ':Stepper', ':chatkit';
