@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#424242"
     android:orientation="vertical"
     tools:context=".settings.codeSetting.Sim.SimActivity">
 
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:gravity="center"
             android:text="@string/enable_all_unregistered"
             android:textSize="18sp"
@@ -39,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:textStyle="bold"
             android:text="Guest"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -52,20 +54,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="Encrypted"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/allowAllGuest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/allowAllGuest"
             app:layout_constraintTop_toTopOf="@+id/allowAllGuest" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="9dp"
-        android:background="@color/colorLine" />
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,6 +74,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="@string/enable_all_registered"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/allowRegisterAllEncrypted"
@@ -93,6 +88,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="Guest"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,6 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:textStyle="bold"
             android:text="Encrypted"
             app:layout_constraintBottom_toBottomOf="@+id/allowRegisterAllGuest"
             app:layout_constraintEnd_toEndOf="parent"
@@ -120,26 +117,31 @@
         android:layout_marginBottom="9dp"
         android:background="@color/colorLine" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/addSim"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/add" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:text="Registered Sim Cards"/>
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:text="Registered Sim Cards"/>
+        <Button
+            android:id="@+id/btnadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD +"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSim"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/item_layout_sim" />
 

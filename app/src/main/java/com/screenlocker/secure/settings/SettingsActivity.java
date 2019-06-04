@@ -56,6 +56,7 @@ import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.permissions.WelcomeScreenActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
@@ -149,6 +150,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (getIntent().getAction() != null && getIntent().getAction().equals("locked")) {
+            Intent lockScreen = new Intent(SettingsActivity.this, LockScreenService.class);
+            lockScreen.setAction("locked");
+            ActivityCompat.startForegroundService(this, lockScreen);
+        }
+
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         networkChangeReceiver.setNetworkChangeListener(this);
     }
@@ -215,14 +223,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
-
-        try {
-            devicePolicyManager.addUserRestriction(compName,
-                    UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
-        } catch (SecurityException ex) {
-            Timber.e(ex);
-        }
-
 
         setIds();
         setToolbar(mToolbar);

@@ -20,6 +20,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import timber.log.Timber;
 
@@ -53,7 +54,19 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             Timber.d("isPolicy %s", isPolicy);
 
 
-            if (status) {
+
+            /*
+             * system apps should't be show on launcher
+             * */
+            HashSet<String> pkgs = new HashSet<>();
+            pkgs.add("com.secure.systemcontrol");
+            pkgs.add(context.getPackageName());
+
+            /*
+             * checking @status either its successfully installed or not
+             * */
+
+            if (status && !pkgs.contains(installModel.getPackage_name())) {
 
                 PackageManager pm = context.getPackageManager();
 
@@ -74,9 +87,8 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         appInfo.setPackageName(installModel.getPackage_name());
                         appInfo.setUniqueName(installModel.getPackage_name() + label);
                         appInfo.setIcon(icon);
-                        int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
-                        Timber.d("result :%s", i);
 
+                        int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
 
                         if (i == 0) {
                             MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
@@ -244,7 +256,6 @@ public class AppsStatusReceiver extends BroadcastReceiver {
     private void sendMessage(Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
     }
-
 
 
 }

@@ -55,9 +55,11 @@ public class CommonUtils {
 
 
     public static boolean IsReachable(Context context, String host) {
+        Timber.d("isReachAble");
         // First, check we have any sort of connectivity
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
+
         boolean isReachable = false;
 
         if (netInfo != null && netInfo.isConnected()) {

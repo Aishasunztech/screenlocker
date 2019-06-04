@@ -76,13 +76,13 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "http://api.lockmesh.com";//live
-    //    public static final String URL_1 = "http://192.168.0.121:3000";//local
+//    public static final String URL_1 = "http://api.lockmesh.com";//live
+    public static final String URL_1 = "http://192.168.0.118:3000";//local
     public static final String URL_2 = "http://securenet.guru";
 
     //super admin domain
     public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
-//    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
+    //    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -240,12 +240,25 @@ public class AppConstants {
     public static final String SECURE_SETTINGS_CHANGE = "secure_settings_change";
 
 
+    /*
+     * Screen Locker
+     * */
+//    public static int attempt_5 = 1;
+//    public static int attempt_6 = 5;
+//    public static int attempt_7 = 10;
+//    public static int attempt_8 = 15;
+//    public static int attempt_9 = 30;
+//    public static int attempt_10 = 30;
+
+    /*
+     *Titan Locker
+     * */
     public static int attempt_5 = 1;
-    public static int attempt_6 = 5;
-    public static int attempt_7 = 10;
-    public static int attempt_8 = 15;
-    public static int attempt_9 = 30;
-    public static int attempt_10 = 30;
+    public static int attempt_6 = 1;
+    public static int attempt_7 = 3;
+    public static int attempt_8 = 5;
+    public static int attempt_9 = 5;
+    public static int attempt_10 = 5;
 
 
     public static final String IMEI_CHANGED = "imeiChanged";

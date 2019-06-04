@@ -19,30 +19,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            app:srcCompat="@mipmap/ic_launcher"
-            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvSetAppsPermission"
-            android:drawableStart="@drawable/ic_permission"
-            android:drawablePadding="@dimen/_8sdp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/ic_permission"
+            android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
             android:text="@string/permissions"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+            app:layout_constraintTop_toBottomOf="@id/include" />
 
         <View
             android:id="@+id/divider6"
@@ -58,9 +49,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_chamge_pass"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="@string/reset_guest_encrypted_pass"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
@@ -75,9 +66,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_settings"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="@string/system_controls"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
@@ -120,9 +111,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_admincode"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="@string/change_admin_panel_code"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
@@ -163,10 +154,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
-            android:text="@string/install_apps"
             android:drawableStart="@drawable/ic_install"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
+            android:text="@string/install_apps"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -184,15 +175,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tvInstallApps" />
 
 
-
         <TextView
             android:id="@+id/tvPolicyMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_policy"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="Policy"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
@@ -216,9 +206,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_imei"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="IMEI"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
@@ -241,16 +231,15 @@
             android:id="@+id/tvSim"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="16dp"
             android:drawableStart="@drawable/ic_simcard"
             android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
             android:text="@string/sim"
             android:textColor="@color/textColorPrimary"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider20" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

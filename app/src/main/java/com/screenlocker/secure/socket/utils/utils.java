@@ -682,14 +682,13 @@ public class utils {
             if (imei1 != null && !imeis.get(0).equals(imei1)) {
                 PrefUtils.saveStringPref(context, IMEI1, imeis.get(0));
                 status = true;
-
             }
 
         }
 
         if (imeis != null && imeis.size() >= 2) {
             if (imei2 != null && !imeis.get(1).equals(imei2)) {
-                PrefUtils.saveStringPref(context, IMEI1, imeis.get(1));
+                PrefUtils.saveStringPref(context, IMEI2, imeis.get(1));
                 status = true;
             }
         }

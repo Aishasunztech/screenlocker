@@ -10,6 +10,7 @@ import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
 
+import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
 
 import java.util.List;
@@ -135,6 +136,14 @@ public interface MyDao {
     LiveData<List<SimEntry>> getAllSims();
     @Query("SELECT * FROM sim")
     List<SimEntry> getAllSimInService();
+    @Query("SELECT * FROM messages order by mDate desc")
+    LiveData<List<ChatMessages>> getAllMessages();
+    @Update
+    void updateMessage(ChatMessages msg);
+    @Insert
+    void insertMessage(ChatMessages msg);
+    @Delete
+    void deleteMessage(ChatMessages msg);
 
 
 

@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Add"
+        android:id="@+id/menu_add"
+        android:title="Add +"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom|withText" />
 </menu>

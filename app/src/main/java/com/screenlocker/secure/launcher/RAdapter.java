@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import com.contactSupport.ChatActivity;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.secureMarket.SecureMarketActivity;
@@ -61,17 +62,22 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
                             break;
-                        case AppConstants.SECURE_MARKET_UNIQUE: {
+                        case AppConstants.SECURE_MARKET_UNIQUE:
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
                             break;
+                        case AppConstants.SUPPORT_UNIQUE:
 
-                        }
+                            context.startActivity(new Intent(context, ChatActivity.class));
+                            break;
+
 
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
-                            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                            if (launchIntent != null) {
+                                launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                            }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
                             context.startActivity(launchIntent);
                             break;
