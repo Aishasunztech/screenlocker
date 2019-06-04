@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.contactSupport.ChatActivity;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.secureMarket.SecureMarketActivity;
@@ -67,10 +67,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             break;
 
                         }
-                        case AppConstants.SUPPORT_UNIQUE:
-                            Intent intent = new Intent(context, ChatActivity.class);
-                            context.startActivity(intent);
-                            break;
+
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);

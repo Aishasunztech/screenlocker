@@ -99,20 +99,8 @@ public class LockScreenService extends Service {
                         new IntentFilter(DeviceNotificationListener.ACTION_NOTIFICATION_REFRESH));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
-        ComponentName componentName = new ComponentName(this, UpdateTriggerService.class);
 
-        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job scheduled");
-        } else {
-            Timber.d("Job scheduling failed");
-        }
 
         startForeground(R.string.app_name, notification);
 

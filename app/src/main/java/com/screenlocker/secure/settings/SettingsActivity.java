@@ -85,6 +85,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_PROFILE;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_NAME;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
@@ -172,15 +174,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        ComponentName deviceAdmin = new ComponentName(this, MyAdmin.class);
-        try {
-            devicePolicyManager.addUserRestriction(deviceAdmin,
-                    UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
-        } catch (SecurityException ex) {
-            Timber.d(ex);
-        }
-
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
@@ -217,10 +210,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     public void init() {
 
+
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
+
+        try {
+            devicePolicyManager.addUserRestriction(compName,
+                    UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES);
+        } catch (SecurityException ex) {
+            Timber.e(ex);
+        }
+
+
         setIds();
         setToolbar(mToolbar);
         setListeners();
@@ -619,7 +622,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                         String url = response.body().getApkUrl();
 
                                                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false);
+                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
                                                         obj.execute();
                                                     }).setNegativeButton("Cancel", (dialog1, which) -> {
                                                         dialog1.dismiss();

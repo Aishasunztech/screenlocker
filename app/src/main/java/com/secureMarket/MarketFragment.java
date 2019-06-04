@@ -645,7 +645,7 @@ public class MarketFragment extends Fragment implements
         @Override
         protected void onPostExecute(Uri uri) {
             super.onPostExecute(uri);
-            Log.d("kikhfihfihdihso", "onPostExecute: " + uri);
+
             if (dialog != null)
                 dialog.dismiss();
             if (uri != null && !isCanceled) {

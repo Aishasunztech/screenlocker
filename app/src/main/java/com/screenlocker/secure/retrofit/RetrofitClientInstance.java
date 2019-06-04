@@ -8,6 +8,7 @@ public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
     private static Retrofit retrofit1;
+    private static Retrofit retrofit2;
 
     public static Retrofit getRetrofitInstance(String url) {
         if (retrofit != null) {
@@ -29,6 +30,17 @@ public class RetrofitClientInstance {
                 .baseUrl(url)
                 .build();
         return retrofit1;
+    }
+
+    public static Retrofit getRetrofitThirdInstance(String url) {
+        if (retrofit2 != null) {
+            retrofit2 = null;
+        }
+        retrofit2 = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(url)
+                .build();
+        return retrofit2;
     }
 
 }

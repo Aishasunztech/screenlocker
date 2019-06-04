@@ -2,14 +2,14 @@ package com.screenlocker.secure.utils;
 
 public class AppConstants {
 
-    public static final long ONE_DAY_INTERVAL = 15 * 60 * 1000L;
+    public static final long ONE_DAY_INTERVAL = 12 * 60 * 60 * 1000L;
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";
     public static final String SOME_ERROR = "Some Error Occurred";
     public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
     public static final String SIM_0_ICCID = "sim_0_iccid";
-    public static final String SIM_1_ICCID ="sim_1_iccid" ;
+    public static final String SIM_1_ICCID = "sim_1_iccid";
     public static final String ALLOW_ENCRYPTED_ALL = "allow_encrypted_all";
     public static final String KEY_GUEST = "guest";
     public static final String KEY_ENCRYPTED = "encrypted";
@@ -81,8 +81,8 @@ public class AppConstants {
     public static final String URL_2 = "http://securenet.guru";
 
     //super admin domain
-//    public static final String super_admin = "http://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
+    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
+//    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -92,12 +92,11 @@ public class AppConstants {
 
     //available live host
     public static final String LIVE_URL = "live_url";
-    //End points
-    public static final String LOGO_END_POINT = "/users/getFile/";
+
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
-//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
     public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 

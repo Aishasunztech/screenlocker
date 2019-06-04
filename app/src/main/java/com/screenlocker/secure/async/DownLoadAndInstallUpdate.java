@@ -2,6 +2,8 @@ package com.screenlocker.secure.async;
 
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -35,10 +37,13 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
     private boolean isSilent;
 
-    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent) {
+    private JobParameters jobParameters;
+
+    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent, JobParameters jobParameters) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
         this.isSilent = isSilent;
+        this.jobParameters = jobParameters;
     }
 
     @Override
@@ -161,8 +166,12 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         launchIntent.putExtra("package", contextWeakReference.get().getPackageName());
         launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
 //            contextWeakReference.get().sendBroadcast(sender);
-
         contextWeakReference.get().startActivity(launchIntent);
+
+        if (jobParameters != null) {
+            JobService js = (JobService) contextWeakReference.get();
+            js.jobFinished(jobParameters, false);
+        }
     }
 
 }

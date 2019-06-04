@@ -1,7 +1,10 @@
 package com.screenlocker.secure;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,13 +18,16 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.offline.AlarmTimeSet;
+import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import timber.log.Timber;
 
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -41,8 +47,21 @@ public class ReBootReciever extends BroadcastReceiver {
         if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 
-                String time_milli = "";
-                AlarmTimeSet.at_(context, time_milli);
+//                ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
+
+
+//                JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
+//                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+//                        .setPeriodic(ONE_DAY_INTERVAL)
+//                        .build();
+//
+//                JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+//                int resultCode = scheduler.schedule(jobInfo);
+//                if (resultCode == JobScheduler.RESULT_SUCCESS) {
+//                    Timber.d("Job Scheduled");
+//                } else {
+//                    Timber.d("Job Scheduled Failed");
+//                }
 
                 String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                 Timber.d("<<< device status >>>%S", device_status);
