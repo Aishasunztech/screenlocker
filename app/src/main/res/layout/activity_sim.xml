@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#424242"
     android:orientation="vertical"
     tools:context=".settings.codeSetting.Sim.SimActivity">
 
@@ -60,16 +60,6 @@
             app:layout_constraintStart_toEndOf="@+id/allowAllGuest"
             app:layout_constraintTop_toTopOf="@+id/allowAllGuest" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="9dp"
-        android:background="@color/colorLine" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,7 +121,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -146,11 +137,11 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="#7A7A7A"
         android:id="@+id/rvSim"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/item_layout_sim" />
 
