@@ -16,7 +16,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_STEP;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
-public class SteppersActivity extends DotStepper implements LinkDeviceFragment.PageUpdate {
+public class SteppersActivity extends DotStepper implements OnPageUpdateListener.PageUpdate {
     private int i = 1;
 
     @Override

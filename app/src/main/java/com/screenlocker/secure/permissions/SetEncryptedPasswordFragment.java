@@ -59,6 +59,22 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     }
 
     @Override
+    public void onStepVisible() {
+        super.onStepVisible();
+        if (etEnterPin != null){
+            etEnterPin.setFocusable(true);
+            etEnterPin.setFocusableInTouchMode(true);
+            etEnterPin.clearFocus();
+            etEnterPin.requestFocus();
+            etEnterPin.postDelayed(() -> {
+                        InputMethodManager keyboard=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        keyboard.showSoftInput(etEnterPin,0);
+                    }
+                    ,0);
+        }
+    }
+
+    @Override
     public boolean setSkipable() {
         return false;
     }
@@ -133,8 +149,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     @Override
     public void onAttach(@NonNull Context context) {
-        mContext = context;
         super.onAttach(context);
+        mContext = context;
     }
 }
 

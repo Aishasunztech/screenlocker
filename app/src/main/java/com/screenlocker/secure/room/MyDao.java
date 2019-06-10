@@ -1,5 +1,10 @@
 package com.screenlocker.secure.room;
 
+import com.contactSupport.ChatMessages;
+import com.screenlocker.secure.launcher.AppInfo;
+
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -144,7 +149,6 @@ public interface MyDao {
     void insertMessage(ChatMessages msg);
     @Delete
     void deleteMessage(ChatMessages msg);
-
 
 
 }

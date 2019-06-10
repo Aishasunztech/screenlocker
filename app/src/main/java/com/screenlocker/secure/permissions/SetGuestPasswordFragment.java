@@ -1,10 +1,12 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
@@ -17,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,12 +30,28 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SetGuestPasswordFragment extends AbstractStep {
     private volatile String error = "Please Enter Password.";
+    private Context mContext;
 
     @Override
     public String name() {
         return "Guest Password";
     }
 
+    @Override
+    public void onStepVisible() {
+        super.onStepVisible();
+        if (etEnterPin != null){
+            etEnterPin.setFocusable(true);
+            etEnterPin.setFocusableInTouchMode(true);
+            etEnterPin.clearFocus();
+            etEnterPin.requestFocus();
+            etEnterPin.postDelayed(() -> {
+                InputMethodManager keyboard=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(etEnterPin,0);
+            }
+                    ,0);
+        }
+    }
 
     @Override
     public boolean nextIf() {
@@ -116,5 +135,11 @@ public class SetGuestPasswordFragment extends AbstractStep {
             return false;
 
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 }

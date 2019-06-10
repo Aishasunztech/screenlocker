@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
@@ -20,12 +21,15 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,12 +45,10 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 public class LinkDeviceFragment extends AbstractStep {
     public static final int REQUEST_LINK_DEVICE = 7;
 
-    private PageUpdate pageUpdate;
+    private OnPageUpdateListener.PageUpdate pageUpdate;
     private AlertDialog.Builder dialogh;
 
-    public interface PageUpdate {
-        void onPageUpdate(int pageNo);
-    }
+
 
     public LinkDeviceFragment() {
         // Required empty public constructor
@@ -119,7 +121,7 @@ public class LinkDeviceFragment extends AbstractStep {
     @Override
     public void onAttach(@NonNull Context context) {
         try {
-            pageUpdate = (PageUpdate) context;
+            pageUpdate = (OnPageUpdateListener.PageUpdate) context;
         } catch (Exception ignored) {
 
         }
@@ -142,8 +144,7 @@ public class LinkDeviceFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-
-
+        hideKeyboard(getActivity());
     }
 
     @Override
@@ -179,5 +180,21 @@ public class LinkDeviceFragment extends AbstractStep {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return  activeNetwork != null &&
                 activeNetwork.isConnected();
+    }
+    public  void hideKeyboard(FragmentActivity activity) {
+
+        try {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
+            //Find the currently focused view, so we can grab the correct window token from it.
+            View view = activity.getCurrentFocus();
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = new View(activity);
+            }
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        } catch (Exception ignored) {
+        }
     }
 }

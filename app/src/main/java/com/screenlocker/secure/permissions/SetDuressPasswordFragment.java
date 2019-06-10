@@ -67,14 +67,26 @@ public class SetDuressPasswordFragment extends AbstractStep {
     public String error() {
         return error;
     }
-
     @Override
     public void onStepVisible() {
+        super.onStepVisible();
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null && mContext != null) {
 
             builder.show();
         }
+        if (etEnterPin != null){
+            etEnterPin.setFocusable(true);
+            etEnterPin.setFocusableInTouchMode(true);
+            etEnterPin.clearFocus();
+            etEnterPin.requestFocus();
+            etEnterPin.postDelayed(() -> {
+                        InputMethodManager keyboard=(InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        keyboard.showSoftInput(etEnterPin,0);
+                    }
+                    ,0);
+        }
     }
+
 
     Context mContext = null;
 

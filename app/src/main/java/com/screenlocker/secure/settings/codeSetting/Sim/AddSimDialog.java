@@ -37,7 +37,7 @@ public class AddSimDialog extends Fragment {
     private OnRegisterSimListener mListener;
 
     public interface OnRegisterSimListener {
-        void onSimRegistered(SubscriptionInfo info);
+        void onSimRegistered(SubscriptionInfo info, String note);
         void onManualInsert(SimEntry sm);
     }
 
@@ -73,6 +73,8 @@ public class AddSimDialog extends Fragment {
     Switch manualGuest;
     @BindView(R.id.btnManualRegister)
     Button btnManualRegister;
+    @BindView(R.id.manualNote)
+    EditText etNoteManual;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -99,10 +101,12 @@ public class AddSimDialog extends Fragment {
 
         }
         btnRegister1.setOnClickListener(v -> {
-            mListener.onSimRegistered(infoSim1);
+            EditText note1 = view.findViewById(R.id.etNote1);
+            mListener.onSimRegistered(infoSim1,note1.getText().toString());
         });
         btnRegister2.setOnClickListener(v -> {
-            mListener.onSimRegistered(infoSim2);
+            EditText note2 = view.findViewById(R.id.etNote2);
+            mListener.onSimRegistered(infoSim2,note2.getText().toString());
         });
         if (infoSim2 != null) {
             layout2.setVisibility(View.VISIBLE);
@@ -129,7 +133,7 @@ public class AddSimDialog extends Fragment {
                 manualName.setError(null);
             }
             if (!isError){
-                SimEntry se = new SimEntry(iccid,name,"",1,manualGuest.isChecked(),manualEncrypted.isChecked(),manualEnable.isChecked(),getResources().getString(R.string.status_not_inserted));
+                SimEntry se = new SimEntry(iccid,name,etNoteManual.getText().toString(),1,manualGuest.isChecked(),manualEncrypted.isChecked(),manualEnable.isChecked(),getResources().getString(R.string.status_not_inserted));
                 mListener.onManualInsert(se);
             }
 
