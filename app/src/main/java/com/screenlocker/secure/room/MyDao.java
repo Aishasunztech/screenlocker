@@ -144,5 +144,4 @@ public interface MyDao {
     @Delete
     void deleteMessage(ChatMessages msg);
 
-
 }

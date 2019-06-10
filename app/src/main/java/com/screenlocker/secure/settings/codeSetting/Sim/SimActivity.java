@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.Sim;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Delete;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
@@ -283,8 +285,8 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
-    public void onSimRegistered(SubscriptionInfo info) {
-        SimEntry entry = new SimEntry(info.getIccId(), info.getCarrierName().toString(), "", info.getSimSlotIndex(), true, true, true, "Active");
+    public void onSimRegistered(SubscriptionInfo info,String note) {
+        SimEntry entry = new SimEntry(info.getIccId(), info.getCarrierName().toString(), note, info.getSimSlotIndex(), true, true, true, "Active");
         viewModel.insertSimEntry(entry);
         fragmentManager.popBackStack();
     }
@@ -324,6 +326,28 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                     broadCastIntent(isChecked, entry.getSlotNo());
                 break;
         }
+        viewModel.updateSimEntry(entry);
+    }
+
+    @Override
+    public void onDeleteEntry(SimEntry entry) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete")
+                .setIcon(android.R.drawable.ic_delete)
+                .setMessage("Do you want to delete SIM with ICCID: "+
+                        entry.getIccid()+"?")
+                .setPositiveButton("Delete",(dialog, which) -> {
+                    viewModel.deleteSimEntry(entry);
+                })
+                .setNegativeButton("Cancel",(dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+
+    }
+
+    @Override
+    public void onUpdateEntry(SimEntry entry) {
         viewModel.updateSimEntry(entry);
     }
 

@@ -1,6 +1,7 @@
 package com.screenlocker.secure.permissions;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,21 +36,33 @@ import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
  */
 public class SetDefaultLauncherFragment extends AbstractStep {
 
-    private boolean allow = false;
+
+    OnPageUpdateListener.PageUpdate mListener;
+
     public SetDefaultLauncherFragment() {
         // Required empty public constructor
     }
 
+
     @Override
     public boolean nextIf() {
-        if (isMyLauncherDefault(MyApplication.getAppContext())){
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(),DEF_PAGE_NO,6);
+        if (isMyLauncherDefault(MyApplication.getAppContext())) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
             return true;
         }
         return false;
     }
 
-
+    @Override
+    public void onStepVisible() {
+        super.onStepVisible();
+        if (isMyLauncherDefault(MyApplication.getAppContext())) {
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
+            if (mListener != null){
+                mListener.onPageUpdate(6);
+            }
+        }
+    }
 
     @Override
     public boolean setSkipable() {
@@ -70,34 +84,34 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 
     @BindView(R.id.set_launcher)
     Button setLauncher;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        setLauncher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                         Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
-                        startActivityForResult(intent,CODE_LAUNCHER);
-                    } else {
-                         Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                        startActivityForResult(intent,CODE_LAUNCHER);
-                    }
-                } catch (Exception ignored) {
+        if (isMyLauncherDefault(MyApplication.getAppContext())) {
+            setLauncher.setEnabled(false);
+        }
+        setLauncher.setOnClickListener(v -> {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                    startActivityForResult(intent, CODE_LAUNCHER);
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    startActivityForResult(intent, CODE_LAUNCHER);
                 }
+            } catch (Exception ignored) {
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext()) ){
+        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext())) {
             setLauncher.setText("Default Launcher set");
             setLauncher.setEnabled(false);
             setLauncher.setClickable(false);
-            allow = true;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -106,5 +120,14 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public String name() {
         return
                 "Set Default Launcher";
+    }
+
+    public void onAttach(@NonNull Context context) {
+        try {
+            mListener = (OnPageUpdateListener.PageUpdate) context;
+        } catch (Exception ignored) {
+
+        }
+        super.onAttach(context);
     }
 }
