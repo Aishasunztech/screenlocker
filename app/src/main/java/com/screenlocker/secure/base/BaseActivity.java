@@ -291,6 +291,4 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-
-
 }

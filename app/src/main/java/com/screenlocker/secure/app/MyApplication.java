@@ -160,6 +160,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
 
         registerReceiver(appsStatusReceiver, filter);
+
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

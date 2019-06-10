@@ -440,10 +440,10 @@ public class MainActivity extends BaseActivity {
 
         } else if (type == 2) {
 
+
             new CheckInstance(internet -> {
                 if (internet) {
-                    ((MyApplication) getApplicationContext())
-                            .getApiOneCaller()
+                    MyApplication.oneCaller
                             .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
                             .enqueue(new Callback<DeviceLoginResponse>() {
                                 @Override
@@ -453,7 +453,6 @@ public class MainActivity extends BaseActivity {
                                         DeviceLoginResponse dlr = response.body();
 
                                         if (dlr.isStatus()) {
-
                                             PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, dlr.getdId());
                                             PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, dlr.getDevice_id());
                                             PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dlr.getDealer_pin());
@@ -468,12 +467,13 @@ public class MainActivity extends BaseActivity {
                                 }
 
                                 @Override
-                                public void onFailure(Call<DeviceLoginResponse> call, Throwable t) {
+                                public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
                                     enableViews();
                                 }
                             });
                 }
             });
+
 
         }
 
