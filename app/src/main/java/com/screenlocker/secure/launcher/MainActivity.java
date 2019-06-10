@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);

@@ -77,7 +77,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, airplaneContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
 
     private ConstraintLayout settingsLayout;
 
@@ -203,7 +203,6 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time", dateTimeContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
-        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Airplane mode", airplaneContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input", language_container);
 
         clickListeners();
@@ -240,9 +239,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         mobile_container = findViewById(R.id.mobile_data_cotainer);
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
-        airplaneContainer = findViewById(R.id.airplane_container);
-        switch_airplane = findViewById(R.id.switch_air);
-        switch_airplane.setOnCheckedChangeListener(this);
+//        switch_airplane = findViewById(R.id.switch_air);
+//        switch_airplane.setOnCheckedChangeListener(this);
     }
 
     WindowManager wm;
@@ -398,9 +396,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
             startActivity(intent);
         });
-        airplaneContainer.setOnClickListener(v -> {
 
-        });
 
     }
 
@@ -501,17 +497,17 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.switch_air:
-                final Intent intent = new Intent();
-                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
-                intent.putExtra("isEnabled", isChecked);
-                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                intent.setComponent(
-                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-                sendBroadcast(intent);
-                break;
-        }
+//        switch (buttonView.getId()) {
+////            case R.id.switch_air:
+////                final Intent intent = new Intent();
+////                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
+////                intent.putExtra("isEnabled", isChecked);
+////                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+////                intent.setComponent(
+////                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+////                sendBroadcast(intent);
+//                break;
+//        }
     }
 
     @Override

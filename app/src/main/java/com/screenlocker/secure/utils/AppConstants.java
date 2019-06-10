@@ -76,8 +76,8 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "http://api.lockmesh.com";//live
-        public static final String URL_1 = "http://192.168.0.120:3000";//local
+    public static final String URL_1 = "http://api.lockmesh.com";//live
+//        public static final String URL_1 = "http://192.168.0.120:3000";//local
     public static final String URL_2 = "http://securenet.guru";
 
     //super admin domain
