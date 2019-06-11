@@ -155,6 +155,12 @@ public class AppConstants {
 
     public static final String KEY_DEALER_ID = "dId";
     public static final String KEY_CONNECTED_ID = "connectedDid";
+    public static final String COPIED_DEVICE_ID = "COPIED_DEVICE_ID";
+    public static final String COPIED_LINKED_STATUS = "COPIED_LINKED_STATUS";
+    public static final String COPIED_DEVICE_STATUS = "COPIED_DEVICE_STATUS";
+    public static final String COPIED_IMEI_1 = "COPIED_IMEI_1";
+    public static final String COPIED_IMEI_2 = "COPIED_IMEI_2";
+    public static final String COPIED_URL = "COPIED_URL";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

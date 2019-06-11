@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -20,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
@@ -464,6 +466,28 @@ public class Utils {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void startNfcSettingsActivity(Context context) {
+        try {
+
+            if (android.os.Build.VERSION.SDK_INT >= 16) {
+                context.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+            } else {
+                context.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            }
+        }catch (Exception e)
+        {
+            Toast.makeText(context, "Your phone has no NFC", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void copyToClipBoard(Context context,String label,String text)
+    {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText(label, text);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "Copy to Clipboard", Toast.LENGTH_SHORT).show();
     }
 
 

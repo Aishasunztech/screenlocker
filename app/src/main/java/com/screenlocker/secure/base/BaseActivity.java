@@ -3,10 +3,12 @@ package com.screenlocker.secure.base;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -17,12 +19,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.os.IBinder;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -36,6 +40,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_ALLOW_SCREENSHOT;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
@@ -204,6 +209,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingPolicyReceiver);
+
     }
 
     @Override
@@ -235,7 +241,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                addStatusOverlay();
                 statusViewAdded = true;
             }
-            if (PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT) == null) {
+            if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
 //                enableScreenShotBlocker(true);
             }
         } else {
@@ -252,6 +258,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                     alertDialog.show();
             }
         }
+
+
     }
 
     private AlertDialog policyConfirmation;
@@ -289,6 +297,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             }
         }
     }
+
+
 
 
 }

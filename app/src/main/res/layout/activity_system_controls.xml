@@ -298,7 +298,7 @@
         android:text="Screen Capture"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider12" />
 
@@ -309,7 +309,7 @@
         android:layout_marginEnd="8dp"
         android:text="OFF"
         android:textColor="@color/textColorPrimary"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/switchScreenShot"
         app:layout_constraintEnd_toStartOf="@+id/switchScreenShot"
         app:layout_constraintTop_toTopOf="@+id/switchScreenShot" />
@@ -320,7 +320,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/tvScreenShot"
         app:layout_constraintEnd_toStartOf="@+id/textView14"
         app:layout_constraintTop_toTopOf="@+id/tvScreenShot" />
@@ -332,7 +332,7 @@
         android:layout_marginEnd="8dp"
         android:text="ON"
         android:textColor="@color/textColorPrimary"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/switchScreenShot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/switchScreenShot" />
@@ -342,7 +342,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorLine"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvScreenShot" />
@@ -402,7 +402,6 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
-
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="NFC"

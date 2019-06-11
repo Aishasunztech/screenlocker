@@ -81,20 +81,42 @@
         app:layout_constraintTop_toBottomOf="@+id/editImei"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/link_to_generate"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:padding="@dimen/_8sdp"
-        android:text="@string/link"
-        android:textSize="14sp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/save_imei"
-        app:layout_constraintVertical_bias="0.089" />
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:padding="@dimen/_8sdp">
+
+
+        <TextView
+            android:id="@+id/link_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="@string/link_heading"
+            android:textSize="14sp"
+
+            app:layout_constraintVertical_bias="0.089" />
+
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/link"
+            android:textSize="14sp"
+
+            app:layout_constraintVertical_bias="0.089" />
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
