@@ -213,14 +213,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void init() {
 
 
-        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        //DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //ComponentName compName = new ComponentName(this, MyAdmin.class);
-        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        compName = new ComponentName(this, MyAdmin.class);
-
         setIds();
         setToolbar(mToolbar);
         setListeners();
@@ -299,176 +291,170 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
-  /*  private void addExpiryDate() {
-//if there is no data  which means user have deleted the data or its the first time so..
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            // things do here
-            String imei_number = settingsPresenter.get_IMEI_number(telephonyManager);
-            if (TextUtils.isEmpty(imei_number)) {
-                //addExpiryDate();
-            } else {
+    /*  private void addExpiryDate() {
+  //if there is no data  which means user have deleted the data or its the first time so..
+          if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                  Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+              // things do here
+              String imei_number = settingsPresenter.get_IMEI_number(telephonyManager);
+              if (TextUtils.isEmpty(imei_number)) {
+                  //addExpiryDate();
+              } else {
 
-                if (CommonUtils.isNetworkAvailable(this))
-                    apiIsExpiryDateThereOrNot(imei_number);
-                else {
-                    //TODO change this
-                    if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
-                        if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
-                            isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
-                            isActiveDialog.show();
-                        } else {
-                            if (isActiveDialog.isShowing())
-                                isActiveDialog.cancel();
-                        }
-                    } else {
-                        if (noNetworkDialog == null)
-                            createNoNetworkDialog();
-                        if (!noNetworkDialog.isShowing())
-                            noNetworkDialog.show();
-                    }
-
-
-                }
-            }
-        } else {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-//                Snackbar.make(rootLayout, "We need this permission to read hardware ids to secure your device",
-//                        Snackbar.LENGTH_INDEFINITE)
-//                        .setAction("OK", view -> ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE))
-//                        .show();
-//            } else {
-//                Snackbar.make(rootLayout, "We do not have permission.", Snackbar.LENGTH_SHORT).show();
-//               // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE);
-//            }
-        }
+                  if (CommonUtils.isNetworkAvailable(this))
+                      apiIsExpiryDateThereOrNot(imei_number);
+                  else {
+                      //TODO change this
+                      if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
+                          if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
+                              isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
+                              isActiveDialog.show();
+                          } else {
+                              if (isActiveDialog.isShowing())
+                                  isActiveDialog.cancel();
+                          }
+                      } else {
+                          if (noNetworkDialog == null)
+                              createNoNetworkDialog();
+                          if (!noNetworkDialog.isShowing())
+                              noNetworkDialog.show();
+                      }
 
 
-    }
-
-    private void apiIsExpiryDateThereOrNot(final String imei_number) {
-        if (mMacAddress != null) {
-            ((MyApplication) getApplicationContext())
-                    .getApiOneCaller()
-                    .checkStatus(imei_number, mMacAddress)
-                    .enqueue(new Callback<NetworkResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<NetworkResponse> call, @NonNull Response<NetworkResponse> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_MSG, response.body().getMsg());
-                                if (response.body().isStatus()) {
-                                    PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, AppConstants.VALUE_ACTIVE);
-                                    if (isActiveDialog.isShowing()) {
-                                        isActiveDialog.cancel();
-                                    }
-                                } else {
-                                    PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, VALUE_EXPIRED);
-                                    isActiveDialog.setTitle(response.body().getMsg());
-                                    if (!isActiveDialog.isShowing()) {
-                                        isActiveDialog.show();
-                                    }
-                                }
-
-                            } else {
-                                //something went wrong
-                                Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<NetworkResponse> call, @NonNull Throwable t) {
-                            Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-        } else {
-            Snackbar.make(rootLayout, "failed to get macAddress", Snackbar.LENGTH_SHORT).show();
-        }
-
-    }
+                  }
+              }
+          } else {
+  //            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+  //                Snackbar.make(rootLayout, "We need this permission to read hardware ids to secure your device",
+  //                        Snackbar.LENGTH_INDEFINITE)
+  //                        .setAction("OK", view -> ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE))
+  //                        .show();
+  //            } else {
+  //                Snackbar.make(rootLayout, "We do not have permission.", Snackbar.LENGTH_SHORT).show();
+  //               // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE);
+  //            }
+          }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_READ_PHONE_STATE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (TextUtils.isEmpty(settingsPresenter.get_IMEI_number(telephonyManager))) {
-                    addExpiryDate();
-                } else {
-                    if (CommonUtils.isNetworkAvailable(this))
-                        apiIsExpiryDateThereOrNot(settingsPresenter.get_IMEI_number(telephonyManager));
-                    else {
+      }
 
-                        if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
+      private void apiIsExpiryDateThereOrNot(final String imei_number) {
+          if (mMacAddress != null) {
+              ((MyApplication) getApplicationContext())
+                      .getApiOneCaller()
+                      .checkStatus(imei_number, mMacAddress)
+                      .enqueue(new Callback<NetworkResponse>() {
+                          @Override
+                          public void onResponse(@NonNull Call<NetworkResponse> call, @NonNull Response<NetworkResponse> response) {
+                              if (response.isSuccessful() && response.body() != null) {
+                                  PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_MSG, response.body().getMsg());
+                                  if (response.body().isStatus()) {
+                                      PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, AppConstants.VALUE_ACTIVE);
+                                      if (isActiveDialog.isShowing()) {
+                                          isActiveDialog.cancel();
+                                      }
+                                  } else {
+                                      PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE, VALUE_EXPIRED);
+                                      isActiveDialog.setTitle(response.body().getMsg());
+                                      if (!isActiveDialog.isShowing()) {
+                                          isActiveDialog.show();
+                                      }
+                                  }
 
-                            if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
-                                isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
-                                isActiveDialog.show();
-                            } else {
-                                if (isActiveDialog.isShowing())
-                                    isActiveDialog.cancel();
-                            }
-                        } else {
+                              } else {
+                                  //something went wrong
+                                  Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
+                              }
+                          }
 
-                            if (noNetworkDialog == null)
-                                createNoNetworkDialog();
-                            if (!noNetworkDialog.isShowing())
-                                noNetworkDialog.show();
-                        }
+                          @Override
+                          public void onFailure(@NonNull Call<NetworkResponse> call, @NonNull Throwable t) {
+                              Snackbar.make(rootLayout, "something went wrong", Snackbar.LENGTH_SHORT).show();
+                          }
+                      });
+          } else {
+              Snackbar.make(rootLayout, "failed to get macAddress", Snackbar.LENGTH_SHORT).show();
+          }
 
-
-                    }
-                }
-
-            } else {
-                new AlertDialog.Builder(this).
-                        setTitle("Permission denied")
-                        .setMessage("Please allow the premission for application to run").setPositiveButton("Allow", (dialogInterface, i) -> {
-                    dialogInterface.cancel();
-                    addExpiryDate();
-                }).show();
-            }
-        }
-
-
-    }
+      }
 
 
-    private void createNoNetworkDialog() {
-        noNetworkDialog = new AlertDialog.Builder(this).setTitle("Please check your internet connection").setPositiveButton("Retry", (dialogInterface, i) -> {
-            dialogInterface.cancel();
-            addExpiryDate();
-        }).create();
-    }
+      @Override
+      public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+          super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+          if (requestCode == PERMISSION_REQUEST_READ_PHONE_STATE) {
+              if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                  if (TextUtils.isEmpty(settingsPresenter.get_IMEI_number(telephonyManager))) {
+                      addExpiryDate();
+                  } else {
+                      if (CommonUtils.isNetworkAvailable(this))
+                          apiIsExpiryDateThereOrNot(settingsPresenter.get_IMEI_number(telephonyManager));
+                      else {
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onResume() {
-        super.onResume();
+                          if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE) != null) {
 
-        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-        if (!linkStatus) {
-            if (tvlinkDevice != null) {
-                tvlinkDevice.setVisibility(View.VISIBLE);
-            }
-        }
-        super.onResume();
+                              if (PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_DEVICE_ACTIVE).equals(VALUE_EXPIRED)) {
+                                  isActiveDialog.setTitle(PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_MSG));
+                                  isActiveDialog.show();
+                              } else {
+                                  if (isActiveDialog.isShowing())
+                                      isActiveDialog.cancel();
+                              }
+                          } else {
 
-    }
+                              if (noNetworkDialog == null)
+                                  createNoNetworkDialog();
+                              if (!noNetworkDialog.isShowing())
+                                  noNetworkDialog.show();
+                          }
 
 
-    private void setToolbar(Toolbar mToolbar) {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.toolbar_title);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-    }
+                      }
+                  }
 
-    }
+              } else {
+                  new AlertDialog.Builder(this).
+                          setTitle("Permission denied")
+                          .setMessage("Please allow the premission for application to run").setPositiveButton("Allow", (dialogInterface, i) -> {
+                      dialogInterface.cancel();
+                      addExpiryDate();
+                  }).show();
+              }
+          }
 
-    /**
-     * set listeners
-     */
+
+      }
+
+
+      private void createNoNetworkDialog() {
+          noNetworkDialog = new AlertDialog.Builder(this).setTitle("Please check your internet connection").setPositiveButton("Retry", (dialogInterface, i) -> {
+              dialogInterface.cancel();
+              addExpiryDate();
+          }).create();
+      }
+
+      @RequiresApi(api = Build.VERSION_CODES.M)
+      @Override
+      protected void onResume() {
+          super.onResume();
+
+          boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+          if (!linkStatus) {
+              if (tvlinkDevice != null) {
+                  tvlinkDevice.setVisibility(View.VISIBLE);
+              }
+          }
+          super.onResume();
+
+      }
+
+
+
+      }
+
+      /**
+       * set listeners
+       */
     private void setListeners() {
 
         findViewById(R.id.tvManagePasswords).setOnClickListener(this);
@@ -482,6 +468,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setOnClickListener(this);
     }
 
+
+    private void setToolbar(Toolbar mToolbar) {
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.toolbar_title);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+    }
 
     @Override
     public void onClick(View v) {
@@ -611,7 +604,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                         String url = response.body().getApkUrl();
 
                                                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false);
+                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
                                                         obj.execute();
                                                     }).setNegativeButton("Cancel", (dialog1, which) -> {
                                                         dialog1.dismiss();
@@ -876,7 +869,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-    private NetworkChangeReceiver networkChangeReceiver;
 
     @Override
     public void onBackPressed() {

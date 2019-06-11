@@ -23,12 +23,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -100,6 +104,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         localLayoutParams = new WindowManager.LayoutParams();
 
         createAlertDialog();
+        compName = new ComponentName(this, MyAdmin.class);
+        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+
 
         if (PermissionUtils.canDrawOver(this)) {
 
@@ -147,6 +154,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         policyDialog = new ProgressDialog(this);
         policyDialog.setTitle("Loading policy");
         policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes , Do not turn OFF device.");
+        policyDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
+            policyDialog.dismiss();
+        });
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
@@ -243,9 +253,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                addStatusOverlay();
                 statusViewAdded = true;
             }
-            if (PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT) == null) {
-//                enableScreenShotBlocker(true);
-            }
+
         } else {
             if (statusViewAdded) {
 //                removeStatusOverlay();

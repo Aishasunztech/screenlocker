@@ -14,11 +14,12 @@
     <style name="FullScreen" parent="AppTheme">
 
         <item name="android:windowNoTitle">true</item>
-       <item name="android:windowActionBar">false</item>
-       <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
 
 
     </style>
+
     <style name="HomeScreen" parent="AppTheme">
 
         <item name="android:windowTranslucentStatus">true</item>
@@ -49,6 +50,16 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textSize">30sp</item>
     </style>
+
+    <style name="icon_text">
+        <item name="android:tag">icon_text</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
+
+    </style>
+
 
     <style name="keyboard_number_button" parent="keyboard_button">
         <item name="android:tag">number_button</item>
@@ -85,7 +96,6 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
-
 
 
     //Secure Settings theme

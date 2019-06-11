@@ -42,6 +42,7 @@ import com.screenlocker.secure.utils.WifiApControl;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -279,6 +280,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
@@ -346,6 +348,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
+
             case R.id.switchWifi:
                 wifiManager.setWifiEnabled(isChecked);
                 break;

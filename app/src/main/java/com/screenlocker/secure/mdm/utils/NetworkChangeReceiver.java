@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
-import com.screenlocker.secure.async.InternetCheck;
+import com.screenlocker.secure.utils.CommonUtils;
+
+import timber.log.Timber;
 
 /**
  * to check the network state
@@ -27,28 +28,44 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
-        if (listener!=null)
-            try
-            {
-                new InternetCheck(internet -> {
-                    if (internet) {
-                        if(listener!=null)
-                        listener.isConnected(true);
-                        Log.e(TAG, "You are Online !");
-                    } else {
-                        if(listener!=null)
-                        listener.isConnected(false);
-                        Log.e(TAG, "You are Offline ! ");
-                    }
-                });
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+    public void onReceive(Context context, Intent intent) {
+
+        if (CommonUtils.isNetworkAvailable(context)) {
+            if (listener != null) {
+                listener.isConnected(true);
+                Timber.d("You are Online !");
             }
+        } else {
+            if (listener != null) {
+                listener.isConnected(false);
+                Timber.d("You are Offline ! ");
+            }
+        }
+
+
+//        if (listener!=null)
+//            try
+//            {
+//                new InternetCheck(internet -> {
+//                    if (internet) {
+//                        if(listener!=null)
+//                        listener.isConnected(true);
+//                        Log.e(TAG, "You are Online !");
+//                    } else {
+//                        if(listener!=null)
+//                        listener.isConnected(false);
+//                        Log.e(TAG, "You are Offline ! ");
+//                    }
+//                });
+//            } catch (NullPointerException e) {
+//                e.printStackTrace();
+//            }
     }
-    public interface NetworkChangeListener{
+
+    public interface NetworkChangeListener {
 
         void isConnected(boolean state);
     }
+
+
 }

@@ -289,6 +289,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             if (output != null) {
                 PrefUtils.saveStringPref(appContext, LIVE_URL, output);
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                Timber.d("live_url %s", live_url);
+
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                 checkForDownload();
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);

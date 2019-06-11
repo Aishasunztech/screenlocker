@@ -93,6 +93,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         iccid1 = PrefUtils.getStringPref(this, SIM_1_ICCID);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();

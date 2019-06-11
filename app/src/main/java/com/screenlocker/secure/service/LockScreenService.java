@@ -234,7 +234,7 @@ public class LockScreenService extends Service {
 
                 PixelFormat.TRANSLUCENT);
 
-        if(!isLayoutAdded) {
+        if (!isLayoutAdded) {
 
             windowManager.addView(frameLayout, params);
             isLayoutAdded = true;
@@ -242,8 +242,7 @@ public class LockScreenService extends Service {
     }
 
     public void startCapture() {
-        if(isLayoutAdded) {
-
+        if (isLayoutAdded) {
             windowManager.removeViewImmediate(frameLayout);
             isLayoutAdded = false;
         }

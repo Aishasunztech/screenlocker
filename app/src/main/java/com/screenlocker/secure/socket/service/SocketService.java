@@ -758,11 +758,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
                     for (int i = 0; i < list.size(); i++) {
+
                         InstallModel item = list.get(i);
                         String apk = item.getApk();
 
                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-
                         String url = live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(apk);
                         item.setApk(url);
                         item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(SocketService.this, TOKEN)));
