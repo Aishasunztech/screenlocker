@@ -10,12 +10,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -60,14 +65,24 @@ public class LockScreenService extends Service {
     private ScreenOffReceiver screenOffReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
+    private FrameLayout frameLayout;
+    private final IBinder binder = new LocalBinder();
+    private boolean isLayoutAdded = false;
 
 
-
+    public class LocalBinder extends Binder {
+        public LockScreenService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return LockScreenService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
 
         appExecutor = AppExecutor.getInstance();
+        frameLayout = new FrameLayout(this);
+
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         notificationItems = new ArrayList<>();
@@ -82,20 +97,7 @@ public class LockScreenService extends Service {
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
-        ComponentName componentName = new ComponentName(this, UpdateTriggerService.class);
 
-        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job scheduled");
-        } else {
-            Timber.d("Job scheduling failed");
-        }
 
         startForeground(R.string.app_name, notification);
 
@@ -197,9 +199,54 @@ public class LockScreenService extends Service {
             }
         }
 
+//        stopCapture();
+
 
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
+    }
+
+    public void stopCapture() {
+        int windowType;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            windowType = WindowManager.LayoutParams.TYPE_TOAST |
+                    WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        } else {
+            windowType = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                windowType,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        | WindowManager.LayoutParams.FLAG_SECURE
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
+
+                PixelFormat.TRANSLUCENT);
+
+        if(!isLayoutAdded) {
+
+            windowManager.addView(frameLayout, params);
+            isLayoutAdded = true;
+        }
+    }
+
+    public void startCapture() {
+        if(isLayoutAdded) {
+
+            windowManager.removeViewImmediate(frameLayout);
+            isLayoutAdded = false;
+        }
     }
 
 
@@ -234,7 +281,7 @@ public class LockScreenService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
     }
 
     public void removeLockScreenView() {
@@ -261,39 +308,38 @@ public class LockScreenService extends Service {
                         .findAny();
                 if (op.isPresent()) {
                     SimEntry entry1 = op.get();
-                    spaceWiseEnableDisable(space, entry1,0);
-                }else{
-                    byDefaultBehaviour(space,0);
+                    spaceWiseEnableDisable(space, entry1, 0);
+                } else {
+                    byDefaultBehaviour(space, 0);
                 }
                 Optional<SimEntry> op1 = simEntries.stream()
                         .filter(a -> a.getIccid().equals(iccid1))
                         .findAny();
                 if (op1.isPresent()) {
                     SimEntry entry1 = op1.get();
-                    spaceWiseEnableDisable(space, entry1,1);
-                }
-                else {
-                    byDefaultBehaviour(space,1);
+                    spaceWiseEnableDisable(space, entry1, 1);
+                } else {
+                    byDefaultBehaviour(space, 1);
                 }
             }
         });
 
     }
 
-    private void byDefaultBehaviour(String space,int slot) {
-        switch (space){
+    private void byDefaultBehaviour(String space, int slot) {
+        switch (space) {
             case KEY_GUEST_PASSWORD:
-                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)){
-                    broadCastIntent(true,slot);
-                }else{
-                    broadCastIntent(false,slot);
+                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)) {
+                    broadCastIntent(true, slot);
+                } else {
+                    broadCastIntent(false, slot);
                 }
                 break;
             case KEY_MAIN_PASSWORD:
-                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)){
-                    broadCastIntent(true,slot);
-                }else{
-                    broadCastIntent(false,slot);
+                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)) {
+                    broadCastIntent(true, slot);
+                } else {
+                    broadCastIntent(false, slot);
                 }
                 break;
         }
@@ -350,6 +396,7 @@ public class LockScreenService extends Service {
             Timber.d(e);
         }
     }
+
     void broadCastIntent(boolean enabled, int slot) {
         Intent intent = new Intent("com.secure.systemcontrol.SYSTEM_SETTINGS");
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);

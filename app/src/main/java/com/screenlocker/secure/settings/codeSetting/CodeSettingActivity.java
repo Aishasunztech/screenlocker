@@ -171,6 +171,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private void setToolbar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Admin Panel");
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

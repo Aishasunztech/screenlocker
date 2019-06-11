@@ -5,11 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * @author Muhammad Nadeem
- * @Date 6/3/2019.
- */
-
 public class DeviceLoginModle {
 
     @SerializedName("link_code")

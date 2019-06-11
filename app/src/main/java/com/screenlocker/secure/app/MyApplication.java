@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -160,11 +161,23 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
 
         registerReceiver(appsStatusReceiver, filter);
+        setScreenShot(true);
+
+
+    }
+
+    public void setScreenShot(boolean isEnable) {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-                        WindowManager.LayoutParams.FLAG_SECURE);
+                Window window = activity.getWindow();
+                if (isEnable) {
+
+                    window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                            WindowManager.LayoutParams.FLAG_SECURE);
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
             }
 
             @Override
@@ -197,8 +210,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
-
-
     }
 
 
@@ -353,7 +364,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                                         if (response.body().isApkStatus()) {
                                             String url = response.body().getApkUrl();
                                             String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                            DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true);
+                                            DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
                                             obj.execute();
 
                                         }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
@@ -405,8 +416,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
     }
-
-
 
 
 }

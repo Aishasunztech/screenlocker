@@ -23,19 +23,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.view.Gravity;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
+
+import org.jsoup.Connection;
 
 import timber.log.Timber;
 
@@ -43,6 +44,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -113,14 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
 
 
-        lifecycleReceiver = new LifecycleReceiver();
-        if (devicePolicyManager == null) {
-            devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        }
-        if (compName == null) {
-            compName = new ComponentName(this, MyAdmin.class);
-        }
-        //
+        lifecycleReceiver = new LifecycleReceiver();            //<---
+//
         registerReceiver(lifecycleReceiver, new IntentFilter(LIFECYCLE_ACTION));
         lifecycleReceiver.setStateChangeListener(this);
 
@@ -220,6 +216,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingPolicyReceiver);
+
     }
 
     @Override
@@ -268,6 +265,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                     alertDialog.show();
             }
         }
+
+
     }
 
     private AlertDialog policyConfirmation;
@@ -342,4 +341,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
         startActivity(a);
     }
+
+
 }

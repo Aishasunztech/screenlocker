@@ -2,11 +2,6 @@ package com.screenlocker.secure.mdm.retrofitmodels;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * @author Muhammad Nadeem
- * @Date 6/3/2019.
- */
-
 public class DeviceStatusResponse {
 
     @SerializedName("status")

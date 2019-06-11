@@ -14,6 +14,12 @@ import androidx.room.Query;
 import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
+
+import com.contactSupport.ChatMessages;
+import com.screenlocker.secure.launcher.AppInfo;
+
+import java.util.List;
+
 @Dao
 public interface MyDao {
 
@@ -143,5 +149,6 @@ public interface MyDao {
     void insertMessage(ChatMessages msg);
     @Delete
     void deleteMessage(ChatMessages msg);
+
 
 }

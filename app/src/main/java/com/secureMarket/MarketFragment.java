@@ -383,7 +383,7 @@ public class MarketFragment extends Fragment implements
         alertDialog.setTitle("Download");
         alertDialog.setIcon(android.R.drawable.stat_sys_download);
 
-        alertDialog.setMessage("Are you sure you want to download this app?");
+        alertDialog.setMessage("Are you sure you want to install this app?");
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
 
@@ -645,7 +645,7 @@ public class MarketFragment extends Fragment implements
         @Override
         protected void onPostExecute(Uri uri) {
             super.onPostExecute(uri);
-            Log.d("kikhfihfihdihso", "onPostExecute: " + uri);
+
             if (dialog != null)
                 dialog.dismiss();
             if (uri != null && !isCanceled) {

@@ -3,11 +3,6 @@ package com.screenlocker.secure.networkResponseModels;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * @author Muhammad Nadeem
- * @Date 6/3/2019.
- */
-
 public class DeviceLoginResponse {
 
     @SerializedName("token")
@@ -57,4 +52,3 @@ public class DeviceLoginResponse {
         return dealer_pin;
     }
 }
-

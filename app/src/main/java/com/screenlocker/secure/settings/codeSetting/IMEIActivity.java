@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import java.util.List;
 
@@ -41,6 +44,10 @@ public class IMEIActivity extends BaseActivity {
     Toolbar mToolbar;
     @BindView(R.id.slote1)
     RadioButton slot1;
+    @BindView(R.id.link_to_generate)
+    LinearLayout link_to_generate;
+    @BindView(R.id.link)
+    TextView link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,5 +159,11 @@ public class IMEIActivity extends BaseActivity {
         }
         finish();
 
+    }
+
+    @OnClick(R.id.link_to_generate)
+    public void linkToGenerate() {
+        String linkText = link.getText().toString().substring(1,link.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
     }
 }

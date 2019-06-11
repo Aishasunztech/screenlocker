@@ -100,15 +100,12 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
-        etPolicyName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submit();
-                    return  true;
-                }
-                return false;
+        etPolicyName.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                submit();
+                return  true;
             }
+            return false;
         });
     }
 

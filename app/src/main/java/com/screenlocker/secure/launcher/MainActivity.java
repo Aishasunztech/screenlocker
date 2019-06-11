@@ -283,9 +283,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
         refreshApps(this);
-
         super.onResume();
-        //allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
+//        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
 
     private void setBackground(String message) {
