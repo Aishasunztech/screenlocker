@@ -234,7 +234,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // switch change listener(on off service for vpn)
         switchEnableVpn.setOnCheckedChangeListener(this);
         createActiveDialog();
-        createNoNetworkDialog();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (manager != null) {
             mMacAddress = CommonUtils.getMacAddress();
