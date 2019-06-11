@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -86,8 +88,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_PROFILE;
-import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_NAME;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
@@ -105,8 +105,6 @@ import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
-import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
-import static com.screenlocker.secure.utils.PermissionUtils.permissionModify;
 
 /***
  * this activity show the settings for the app
@@ -116,11 +114,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private AlertDialog isActiveDialog;
     private AlertDialog noNetworkDialog;
-
-    private DevicePolicyManager devicePolicyManager;
-
-
-    private ComponentName compName;
+    private NetworkChangeReceiver networkChangeReceiver;
 
     private Toolbar mToolbar;
     /**
@@ -220,7 +214,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        //DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //ComponentName compName = new ComponentName(this, MyAdmin.class);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
 
@@ -237,7 +234,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // switch change listener(on off service for vpn)
         switchEnableVpn.setOnCheckedChangeListener(this);
         createActiveDialog();
-        createNoNetworkDialog();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (manager != null) {
             mMacAddress = CommonUtils.getMacAddress();
@@ -303,14 +299,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
-    private void addExpiryDate() {
+  /*  private void addExpiryDate() {
 //if there is no data  which means user have deleted the data or its the first time so..
         if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             // things do here
             String imei_number = settingsPresenter.get_IMEI_number(telephonyManager);
             if (TextUtils.isEmpty(imei_number)) {
-                addExpiryDate();
+                //addExpiryDate();
             } else {
 
                 if (CommonUtils.isNetworkAvailable(this))
@@ -336,15 +332,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-                Snackbar.make(rootLayout, "We need this permission to read hardware ids to secure your device",
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", view -> ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE))
-                        .show();
-            } else {
-                Snackbar.make(rootLayout, "We do not have permission.", Snackbar.LENGTH_SHORT).show();
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE);
-            }
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+//                Snackbar.make(rootLayout, "We need this permission to read hardware ids to secure your device",
+//                        Snackbar.LENGTH_INDEFINITE)
+//                        .setAction("OK", view -> ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE))
+//                        .show();
+//            } else {
+//                Snackbar.make(rootLayout, "We do not have permission.", Snackbar.LENGTH_SHORT).show();
+//               // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_PHONE_STATE);
+//            }
         }
 
 
@@ -445,22 +441,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }).create();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+        super.onResume();
 
         boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-
-        if (linkStatus) {
-            if (devicePolicyManager != null && compName != null) {
-                permissionAdmin(SettingsActivity.this, devicePolicyManager, compName);
-            }
-            permissionModify(SettingsActivity.this);
-            if (!PermissionUtils.canControlNotification(SettingsActivity.this)) {
-                PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
-            }
-
-
-        } else {
+        if (!linkStatus) {
             if (tvlinkDevice != null) {
                 tvlinkDevice.setVisibility(View.VISIBLE);
             }
@@ -475,6 +462,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.toolbar_title);
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+    }
+
     }
 
     /**
@@ -622,7 +611,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                         String url = response.body().getApkUrl();
 
                                                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
+                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false);
                                                         obj.execute();
                                                     }).setNegativeButton("Cancel", (dialog1, which) -> {
                                                         dialog1.dismiss();

@@ -39,6 +39,13 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ids.add(R.raw.beatifulhome);
+        ids.add(R.raw.bike);
+        ids.add(R.raw.building);
+        ids.add(R.raw.flower);
+        ids.add(R.raw.flower2);
+        ids.add(R.raw.parrot1);
+        ids.add(R.raw.pattern);
+        ids.add(R.raw.sea);
         ids.add(R.raw.bulbul);
         ids.add(R.raw.bus1234);
         ids.add(R.raw.carssas);

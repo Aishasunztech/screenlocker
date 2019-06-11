@@ -4,8 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +29,14 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.utils.WifiApControl;
 
 import java.util.List;
@@ -48,6 +53,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_ALLOW_SCREENSHOT;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
@@ -55,6 +61,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
+import static com.screenlocker.secure.utils.Utils.startNfcSettingsActivity;
 
 
 public class SystemPermissionActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -63,7 +70,9 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     private static final int REQUEST_CODE_LOCATION_GPS = 7;
     private LocationManager locationManager;
     private Switch switchDisable;
-    private Switch switchGuest, switchWifi, switchBluetooth, switchHotSpot, switchLocation, switchEncrypt, switchScreenShot;
+    private Switch switchGuest, switchWifi,
+            switchBluetooth, switchHotSpot, switchLocation,
+            switchEncrypt, switchScreenShot, switchNFC;
     private WifiManager wifiManager;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean openHotSpot;
@@ -78,6 +87,8 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
 
     private ImageView appImage;
+    private LockScreenService mService;
+    private boolean mBound = false;
 
 
     @Override
@@ -101,6 +112,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchLocation = findViewById(R.id.switchLocation);
         switchScreenShot = findViewById(R.id.switchScreenShot);
         switchBlockCall = findViewById(R.id.switchBlockCall);
+        switchNFC = findViewById(R.id.switchNFC);
         containerLayout = findViewById(R.id.container_layout);
         appImage = findViewById(R.id.appImage);
         switchWifi.setOnCheckedChangeListener(this);
@@ -109,6 +121,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchBlockCall.setOnCheckedChangeListener(this);
         switchLocation.setOnClickListener(this);
         switchScreenShot.setOnClickListener(this);
+        switchNFC.setOnClickListener(this);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -195,14 +208,15 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         } catch (Exception ignored) {
         }
 
-        String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
+
+        boolean isChecked = PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
 
         //for screenshot
-//        if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
-//            switchScreenShot.setChecked(false);
-//        } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
-//            switchScreenShot.setChecked(true);
-//        }
+        if (isChecked) {
+            switchScreenShot.setChecked(true);
+        } else {
+            switchScreenShot.setChecked(false);
+        }
 
         //for hotspot
         isHotSpotEnabled = WifiApControl.isWifiApEnabled(wifiManager);
@@ -313,6 +327,9 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             }
         }.start();
 
+        unbindService(connection);
+        mBound = false;
+
     }
 
     private ResolveInfo querySettingPkgName() {
@@ -376,15 +393,33 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 startActivityForResult(myIntent, REQUEST_CODE_LOCATION_GPS);
                 break;
             case R.id.switchScreenShot:
-                String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
-                if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
-                    switchScreenShot.setChecked(true);
-//                    disableScreenShotBlocker(true);
-                } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
-                    switchScreenShot.setChecked(false);
-//                    enableScreenShotBlocker(true);
+//                String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
+//                if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
+//                    switchScreenShot.setChecked(true);
+////                    disableScreenShotBlocker(true);
+//                } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
+//                    switchScreenShot.setChecked(false);
+////                    enableScreenShotBlocker(true);
+//                }
+
+                if (switchScreenShot.isChecked()) {
+                    if (mService != null) {
+                        mService.stopCapture();
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, false);
+
+                    }
+                } else {
+                    if (mService != null) {
+                        mService.startCapture();
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, true);
+
+                    }
+
                 }
 
+                break;
+            case R.id.switchNFC:
+                startNfcSettingsActivity(this);
                 break;
         }
 
@@ -427,7 +462,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         }
 
 
-
         PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
 
 
@@ -447,4 +481,29 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         super.onBackPressed();
         isBackPressed = true;
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, LockScreenService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 }

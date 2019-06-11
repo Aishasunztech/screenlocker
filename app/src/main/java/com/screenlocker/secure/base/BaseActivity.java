@@ -1,18 +1,24 @@
 package com.screenlocker.secure.base;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -21,7 +27,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.screenlocker.secure.BlockStatusBar;
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
@@ -36,17 +42,23 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
+import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
+import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 
 @SuppressLint("Registered")
 public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
     //    customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
+    private DevicePolicyManager devicePolicyManager;
+    private ComponentName compName;
 //    private static WindowManager manager, mWindowManager;
 
 
@@ -199,6 +211,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(loadingPolicyReceiver);
+
     }
 
     @Override
@@ -247,6 +260,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                     alertDialog.show();
             }
         }
+
+
     }
 
     private AlertDialog policyConfirmation;
@@ -286,6 +301,43 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 getPolicyConfirmation().show();
             }
         }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (!devicePolicyManager.isAdminActive(compName)) {
+            launchPermissions();
+        } else if (!Settings.canDrawOverlays(this)) {
+            launchPermissions();
+        } else if (!Settings.System.canWrite(this)) {
+            launchPermissions();
+        } else if (!isAccessGranted(this)) {
+            launchPermissions();
+        } else if (checkSelfPermission(android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            launchPermissions();
+        } else if (!getPackageManager().canRequestPackageInstalls()) {
+            launchPermissions();
+        } else if (!isNotificationAccess(this)) {
+            launchPermissions();
+        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+            launchPermissions();
+        }
+    }
+
+    private void launchPermissions() {
+        Intent a = new Intent(this, SteppersActivity.class);
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            a.putExtra("emergency", true);
+        }
+        startActivity(a);
     }
 
 

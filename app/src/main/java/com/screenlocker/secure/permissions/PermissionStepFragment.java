@@ -185,6 +185,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                 getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             runtimePermissions.setChecked(true);
+            layoutRuntime.setVisibility(GONE);
             runtimePermissions.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
@@ -205,6 +206,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         notificationAccess.setOnCheckedChangeListener(this);
         PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
         if (pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+            layoutIgnore.setVisibility(GONE);
             batteryOptimization.setChecked(true);
             batteryOptimization.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);

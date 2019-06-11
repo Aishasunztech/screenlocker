@@ -9,7 +9,7 @@ public class AppConstants {
     public static final String SOME_ERROR = "Some Error Occurred";
     public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
     public static final String SIM_0_ICCID = "sim_0_iccid";
-    public static final String SIM_1_ICCID = "sim_1_iccid";
+    public static final String SIM_1_ICCID ="sim_1_iccid" ;
     public static final String ALLOW_ENCRYPTED_ALL = "allow_encrypted_all";
     public static final String KEY_GUEST = "guest";
     public static final String KEY_ENCRYPTED = "encrypted";
@@ -97,7 +97,7 @@ public class AppConstants {
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
 
-    //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
     public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
@@ -155,6 +155,12 @@ public class AppConstants {
 
     public static final String KEY_DEALER_ID = "dId";
     public static final String KEY_CONNECTED_ID = "connectedDid";
+    public static final String COPIED_DEVICE_ID = "COPIED_DEVICE_ID";
+    public static final String COPIED_LINKED_STATUS = "COPIED_LINKED_STATUS";
+    public static final String COPIED_DEVICE_STATUS = "COPIED_DEVICE_STATUS";
+    public static final String COPIED_IMEI_1 = "COPIED_IMEI_1";
+    public static final String COPIED_IMEI_2 = "COPIED_IMEI_2";
+    public static final String COPIED_URL = "COPIED_URL";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

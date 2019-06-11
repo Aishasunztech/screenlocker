@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import java.util.List;
 
@@ -23,7 +25,9 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +41,27 @@ public class AboutActivity extends AppCompatActivity {
         TextView systemId = findViewById(R.id.tvSystemId);
         systemId.setText("N/A");
 
-        TextView onlineStatus = findViewById(R.id.tvLinkedStatus);
+        onlineStatus = findViewById(R.id.tvLinkedStatus);
+        tvDeviceId = findViewById(R.id.tvDeviceId);
+        tvStatus = findViewById(R.id.tvDeviceStatus);
+        tvExpiresIn = findViewById(R.id.tvExpiresIn);
+        tvImei1 = findViewById(R.id.tvImei1);
+        tvImei2 = findViewById(R.id.tvImei2);
+
+        onlineStatus.setOnClickListener(this);
+        tvDeviceId.setOnClickListener(this);
+        tvStatus.setOnClickListener(this);
+        tvImei1.setOnClickListener(this);
+        tvImei2.setOnClickListener(this);
+
+
         if (isMyServiceRunning()) {
             onlineStatus.setText(getResources().getString(R.string.status_online));
         } else {
             onlineStatus.setText(getResources().getString(R.string.status_disconnected));
         }
-        TextView tvDeviceId = findViewById(R.id.tvDeviceId);
+
+
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
             tvDeviceId.setText("N/A");
@@ -52,7 +70,6 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         /*Status*/
-        TextView tvStatus = findViewById(R.id.tvDeviceStatus);
         TextView textView18 = findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(this, DEVICE_STATUS);
         boolean b = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
@@ -73,7 +90,6 @@ public class AboutActivity extends AppCompatActivity {
 
 
         // Expiry Date
-        TextView tvExpiresIn = findViewById(R.id.tvExpiresIn);
         TextView textView16 = findViewById(R.id.textViewExpiry);
 
         String remaining_days = getRemainingDays(this);
@@ -89,7 +105,6 @@ public class AboutActivity extends AppCompatActivity {
 
 
         // IMEI 1
-        TextView tvImei1 = findViewById(R.id.tvImei1);
         TextView textViewImei = findViewById(R.id.textViewImei);
 
         if (imeis.size() > 0) {
@@ -102,7 +117,6 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         // IMEI 2
-        TextView tvImei2 = findViewById(R.id.tvImei2);
         TextView textViewImei2 = findViewById(R.id.textViewImei2);
 
         if (imeis.size() > 1) {
@@ -132,5 +146,30 @@ public class AboutActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvDeviceId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_ID, tvDeviceId.getText().toString());
+                break;
+            case R.id.tvLinkedStatus:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_LINKED_STATUS, onlineStatus.getText().toString());
+
+                break;
+            case R.id.tvDeviceStatus:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_STATUS, tvStatus.getText().toString());
+
+                break;
+            case R.id.tvImei1:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_1, tvImei1.getText().toString());
+
+                break;
+            case R.id.tvImei2:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_2, tvImei2.getText().toString());
+
+                break;
+        }
     }
 }
