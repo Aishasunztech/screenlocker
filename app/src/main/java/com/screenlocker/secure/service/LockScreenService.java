@@ -58,7 +58,6 @@ import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
-    private BroadcastReceiver notificationRefreshedListener;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
 
@@ -80,23 +79,7 @@ public class LockScreenService extends Service {
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
-
-        notificationRefreshedListener = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                List<NotificationItem> items = intent.getParcelableArrayListExtra("data");
-                if (items != null) {
-                    notificationItems.clear();
-                    notificationItems.addAll(items);
-                }
-            }
-        };
-
-
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(notificationRefreshedListener,
-                        new IntentFilter(DeviceNotificationListener.ACTION_NOTIFICATION_REFRESH));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
         ComponentName componentName = new ComponentName(this, UpdateTriggerService.class);
@@ -154,9 +137,6 @@ public class LockScreenService extends Service {
         try {
             Timber.d("screen locker distorting.");
             unregisterReceiver(screenOffReceiver);
-
-            LocalBroadcastManager.getInstance(this)
-                    .unregisterReceiver(notificationRefreshedListener);
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);

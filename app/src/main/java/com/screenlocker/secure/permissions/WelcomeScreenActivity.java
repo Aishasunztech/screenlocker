@@ -23,13 +23,10 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 
-       new Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               Intent intent = new Intent(WelcomeScreenActivity.this, SettingsActivity.class);
-               startActivity(intent);
-               finish();
-           }
+       new Handler().postDelayed(() -> {
+           Intent intent = new Intent(WelcomeScreenActivity.this, SettingsActivity.class);
+           startActivity(intent);
+           finish();
        },3000);
 
     }
