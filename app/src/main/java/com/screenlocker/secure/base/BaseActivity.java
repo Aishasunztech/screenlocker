@@ -118,12 +118,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 .setCancelable(false)
                 .setTitle("This app requires permission to draw overlay.")
                 .setMessage("Please allow this permission")
-                .setPositiveButton("allow", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        PermissionUtils.requestOverlayPermission(BaseActivity.this);
-                    }
-                }).create();
+                .setPositiveButton("allow", (dialogInterface, i) -> PermissionUtils.requestOverlayPermission(BaseActivity.this)).create();
     }
 
 
@@ -270,6 +265,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             policyConfirmation.setTitle("Policy Loaded!");
             policyConfirmation.setIcon(R.drawable.ic_done_white_18dp);
             policyConfirmation.setCancelable(false);
+            policyConfirmation.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
+                dialog.dismiss();
+            });
             policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
             policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
                 dialog.dismiss();
