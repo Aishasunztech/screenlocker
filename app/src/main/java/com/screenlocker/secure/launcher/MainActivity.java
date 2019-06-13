@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.pm.ShortcutInfoCompat;
@@ -118,7 +119,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         appExecutor = AppExecutor.getInstance();
@@ -134,7 +134,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
             try {
-
 
                 Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
                 shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -224,6 +223,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
+
+            clearRecentApp();
+
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
             adapter.appsList.clear();
@@ -267,6 +269,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onPause();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
 
@@ -395,12 +398,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 clearRecenttasks();
                 clearNotif();
                 appCache();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        hud.dismiss();
-                        clearCacheSuccess();
-                    }
+                runOnUiThread(() -> {
+                    hud.dismiss();
+                    clearCacheSuccess();
                 });
             }
         }, 2000);
@@ -413,8 +413,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         if (list != null) {
             for (UsageStats usageStats : list) {
                 if (!usageStats.getPackageName().equals(getPackageName()))
-                    Timber.d("Cleaning: " + usageStats.getPackageName());
-                assert activityManager != null;
+                    assert activityManager != null;
                 activityManager.killBackgroundProcesses(usageStats.getPackageName());
             }
         }

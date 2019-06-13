@@ -23,11 +23,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 
-       new Handler().postDelayed(() -> {
-           Intent intent = new Intent(WelcomeScreenActivity.this, SettingsActivity.class);
-           startActivity(intent);
-           finish();
-       },3000);
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(WelcomeScreenActivity.this, SettingsActivity.class);
+            intent.setAction("locked");
+            startActivity(intent);
+            finish();
+        }, 3000);
 
     }
 }

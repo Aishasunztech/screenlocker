@@ -16,6 +16,10 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
+import android.view.Gravity;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -23,32 +27,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.os.PowerManager;
-import android.provider.Settings;
-import android.view.Gravity;
-import android.view.Window;
-import android.view.WindowManager;
-
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.SecureSettingsMain;
-
-import org.jsoup.Connection;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -156,6 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes , Do not turn OFF device.");
         policyDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
             policyDialog.dismiss();
+            PrefUtils.saveBooleanPref(this, LOADING_POLICY, false);
         });
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -290,6 +282,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             policyConfirmation.setCancelable(false);
             policyConfirmation.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
                 dialog.dismiss();
+
             });
             policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
             policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {

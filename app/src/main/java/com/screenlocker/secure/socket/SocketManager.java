@@ -90,44 +90,26 @@ public class SocketManager {
 
                 socket = IO.socket(url, opts);
 
-                socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        fireSocketStatus(SocketManager.STATE_CONNECTED);
-                        Timber.i("socket connected");
-                    }
-                }).on(Socket.EVENT_RECONNECTING, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Timber.e("Socket reconnecting");
-                        fireSocketStatus(SocketManager.STATE_CONNECTING);
-                    }
-                }).on(Socket.EVENT_RECONNECT_FAILED, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Timber.e("Socket reconnection failed");
-                        fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                    }
-                }).on(Socket.EVENT_RECONNECT_ERROR, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.e(TAG, "Socket reconnection error");
-                        fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                    }
-                }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.e(TAG, "Socket connect error");
-                        fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                        if (socket != null)
-                            socket.disconnect();
-                    }
-                }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.e(TAG, "Socket disconnect event");
-                        fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                    }
+                socket.on(Socket.EVENT_CONNECT, args -> {
+                    fireSocketStatus(SocketManager.STATE_CONNECTED);
+                    Timber.i("socket connected");
+                }).on(Socket.EVENT_RECONNECTING, args -> {
+                    Timber.e("Socket reconnecting");
+                    fireSocketStatus(SocketManager.STATE_CONNECTING);
+                }).on(Socket.EVENT_RECONNECT_FAILED, args -> {
+                    Timber.e("Socket reconnection failed");
+                    fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+                }).on(Socket.EVENT_RECONNECT_ERROR, args -> {
+                    Log.e(TAG, "Socket reconnection error");
+                    fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+                }).on(Socket.EVENT_CONNECT_ERROR, args -> {
+                    Log.e(TAG, "Socket connect error");
+                    fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+                    if (socket != null)
+                        socket.disconnect();
+                }).on(Socket.EVENT_DISCONNECT, args -> {
+                    Log.e(TAG, "Socket disconnect event");
+                    fireSocketStatus(SocketManager.STATE_DISCONNECTED);
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
                         final String error = (String) args[0];
@@ -163,20 +145,12 @@ public class SocketManager {
     public synchronized void fireSocketStatus(final int socketState) {
         if (onSocketConnectionListenerList != null && lastState != socketState) {
             lastState = socketState;
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    for (OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                        listener.onSocketConnectionStateChange(socketState);
-                    }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                for (OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                    listener.onSocketConnectionStateChange(socketState);
                 }
             });
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    lastState = -1;
-                }
-            }, 1000);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> lastState = -1, 1000);
         }
     }
 
@@ -186,13 +160,10 @@ public class SocketManager {
      * @param socketState the socket state
      */
     public synchronized void fireInternetStatusIntent(final int socketState) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if (onSocketConnectionListenerList != null) {
-                    for (OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                        listener.onInternetConnectionStateChange(socketState);
-                    }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (onSocketConnectionListenerList != null) {
+                for (OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                    listener.onInternetConnectionStateChange(socketState);
                 }
             }
         });
