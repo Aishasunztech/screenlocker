@@ -21,4 +21,4 @@ release:
     - ./gradlew assembleRelease
   artifacts:
     paths:
-- app/build/outputs/apk/app-release.apk
+    - app/build/outputs/apk/app-release.apk
