@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.AppExecutor;
@@ -100,14 +101,19 @@ public class MainModel implements MainContract.MainMvpModel {
 
         if (message != null && !message.equals("")) {
             if (allDbApps != null) {
-                for (AppInfo model :
-                        allDbApps) {
+                for (AppInfo model : allDbApps) {
                     if (message.equals(AppConstants.KEY_GUEST_PASSWORD)) {
                         if (model.isGuest()) {
                             adapter.appsList.add(model);
                         }
 
-                    } else {
+                    }
+                    else  if (message.equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+                        if (model.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE)){
+                            adapter.appsList.add(model);
+                        }
+                    }
+                    else{
                         // for the encrypted user type
                         if (model.isEncrypted()) {
                             adapter.appsList.add(model);

@@ -17,6 +17,7 @@ public class AppConstants {
     public static final String INSTALLED_PACKAGES = "installed_packages";
     public static final String UNINSTALLED_PACKAGES = "uninstalled_packages";
     public static final String KEY_GUEST_PASSWORD = "guest_password";
+    public static final String KEY_SUPPORT_PASSWORD = "suppoert_password";
     public static final String KEY_MAIN_PASSWORD = "main_password";
     public static final String KEY_DURESS_PASSWORD = "duress_password";
     public static final String KEY_GUEST_IMAGE = "guest_image";

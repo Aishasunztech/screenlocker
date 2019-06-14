@@ -268,10 +268,14 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                         if (update) {
                             viewModel.updateSimEntry(simEntry);
                         }
-                    } else {
+                    }
+                    else {
                         if (!simEntry.getStatus().equals(getResources().getString(R.string.status_not_inserted))) {
                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
                             viewModel.updateSimEntry(simEntry);
+                        }
+                        if(simEntry.getSlotNo() != -1){
+                            simEntry.setSlotNo(-1);
                         }
                     }
                     entries.add(simEntry);
@@ -324,6 +328,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                 entry.setEnable(isChecked);
                 if (entry.getStatus().equals(getResources().getString(R.string.status_active)) ||
                         entry.getStatus().equals(getResources().getString(R.string.status_disabled)))
+                    if (entry.getSlotNo() == 0 || entry.getSlotNo()==1)
                     broadCastIntent(isChecked, entry.getSlotNo());
                 break;
         }

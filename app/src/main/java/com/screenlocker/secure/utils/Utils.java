@@ -40,6 +40,7 @@ import java.util.Random;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
 import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
@@ -227,6 +228,10 @@ public class Utils {
         });
 
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
+        TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
+        supportButton.setOnClickListener(v -> {
+            chatLogin(context);
+        });
         long time_remaining = getTimeRemaining(context);
 
 
@@ -246,11 +251,7 @@ public class Utils {
 
             String enteredPin = keyboardView.getInputText().trim();
             String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
-            Timber.d("enteredPin:%s", enteredPin);
-            Timber.d("mainkey:%s", main_key);
             String device_status1 = getDeviceStatus(context);
-            Timber.d("device status %s", device_status1);
-
             if (enteredPin.length() != 0) {
                 if (getUserType(enteredPin, context).equals("guest") && device_status1 == null) {
                     loginAsGuest(context);

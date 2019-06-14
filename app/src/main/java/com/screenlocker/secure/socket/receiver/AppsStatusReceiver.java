@@ -87,6 +87,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         appInfo.setPackageName(installModel.getPackage_name());
                         appInfo.setUniqueName(installModel.getPackage_name() + label);
                         appInfo.setIcon(icon);
+                        appInfo.setVisible(true);
 
                         int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
 
@@ -235,6 +236,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     appInfo.setPackageName(packageName);
                     appInfo.setUniqueName(packageName + label);
                     appInfo.setIcon(icon);
+                    appInfo.setVisible(true);
                     int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
                     Timber.d("result :%s", i);
 

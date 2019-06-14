@@ -67,6 +67,7 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 
@@ -224,12 +225,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         @Override
         public void onReceive(final Context context, Intent intent) {
 
-            clearRecentApp();
-
-            final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
-            setBackground(message);
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();
+            clearRecentApp();
+            final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
+            setBackground(message);
             Thread t2 = new Thread() {
                 @Override
                 public void run() {
@@ -295,7 +295,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             String bg;
             if (!message.equals("")) {
-                if (message.equals(KEY_GUEST_PASSWORD)) {
+                if (message.equals(KEY_GUEST_PASSWORD )|| message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {

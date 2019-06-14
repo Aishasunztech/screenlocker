@@ -273,7 +273,7 @@ public class LockScreenService extends Service {
             }
 
         } catch (Exception e) {
-            Timber.d(e);
+            Timber.e(e);
         }
 
     }
@@ -284,7 +284,8 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView() {
-        setTimeRemaining(getAppContext());
+        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD))
+            setTimeRemaining(getAppContext());
         try {
             if (mLayout != null)
                 windowManager.removeView(mLayout);

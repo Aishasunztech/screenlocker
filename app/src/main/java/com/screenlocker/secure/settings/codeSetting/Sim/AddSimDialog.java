@@ -38,6 +38,7 @@ public class AddSimDialog extends Fragment {
 
     public interface OnRegisterSimListener {
         void onSimRegistered(SubscriptionInfo info, String note);
+
         void onManualInsert(SimEntry sm);
     }
 
@@ -102,11 +103,11 @@ public class AddSimDialog extends Fragment {
         }
         btnRegister1.setOnClickListener(v -> {
             EditText note1 = view.findViewById(R.id.etNote1);
-            mListener.onSimRegistered(infoSim1,note1.getText().toString());
+            mListener.onSimRegistered(infoSim1, note1.getText().toString());
         });
         btnRegister2.setOnClickListener(v -> {
             EditText note2 = view.findViewById(R.id.etNote2);
-            mListener.onSimRegistered(infoSim2,note2.getText().toString());
+            mListener.onSimRegistered(infoSim2, note2.getText().toString());
         });
         if (infoSim2 != null) {
             layout2.setVisibility(View.VISIBLE);
@@ -128,35 +129,18 @@ public class AddSimDialog extends Fragment {
             if (name.length() < 2) {
                 manualName.setError("Please Enter a valid Name");
                 isError = true;
-            }
-            else {
+            } else {
                 manualName.setError(null);
             }
-            if (!isError){
-                SimEntry se = new SimEntry(iccid,name,etNoteManual.getText().toString(),1,manualGuest.isChecked(),manualEncrypted.isChecked(),manualEnable.isChecked(),getResources().getString(R.string.status_not_inserted));
+            if (!isError) {
+                SimEntry se = new SimEntry(iccid, name, etNoteManual.getText().toString(), -1, manualGuest.isChecked(), manualEncrypted.isChecked(), manualEnable.isChecked(), getResources().getString(R.string.status_not_inserted));
                 mListener.onManualInsert(se);
             }
 
-    });
+        });
 
 
-}
-
-    /**
-     * The system calls this only when creating the layout in a dialog.
-     */
-    /*@NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }*/
-
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {

@@ -29,17 +29,20 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 
-public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
+public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
     private Context context;
     private List<SimEntry> simEntries;
     private OnSimPermissionChangeListener mListener;
+
     public interface OnSimPermissionChangeListener {
-        void onSimPermissionChange(SimEntry entry, String type , boolean isChecked);
+        void onSimPermissionChange(SimEntry entry, String type, boolean isChecked);
+
         void onDeleteEntry(SimEntry entry);
+
         void onUpdateEntry(SimEntry entry);
     }
 
-    public SimAdapter(Context context, List<SimEntry> simEntries, OnSimPermissionChangeListener listener ) {
+    public SimAdapter(Context context, List<SimEntry> simEntries, OnSimPermissionChangeListener listener) {
         this.context = context;
         this.simEntries = simEntries;
         mListener = listener;
@@ -48,30 +51,33 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout_sim,parent,false));
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout_sim, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         SimEntry entry = simEntries.get(position);
         holder.tvSimICCID.setText(entry.getIccid());
-        holder.tvSlote.setText(String.valueOf(entry.getSlotNo()));
+        if (entry.getSlotNo() == -1 ) {
+            holder.tvSlote.setText("N/A");
+        } else
+            holder.tvSlote.setText(String.valueOf(entry.getSlotNo()));
         holder.tvSimName.setText(entry.getProviderName());
         holder.tvNote.setText(entry.getApn());
         holder.encrypted_sim_switch.setChecked(entry.isEncrypted());
         holder.encrypted_sim_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mListener.onSimPermissionChange(entry,  KEY_ENCRYPTED, isChecked);
+            mListener.onSimPermissionChange(entry, KEY_ENCRYPTED, isChecked);
         });
         holder.guest_sim_switch.setChecked(entry.isGuest());
         holder.guest_sim_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mListener.onSimPermissionChange(entry,  KEY_GUEST, isChecked);
+            mListener.onSimPermissionChange(entry, KEY_GUEST, isChecked);
         });
         holder.enable_sim_switch.setChecked(entry.isEnable());
         holder.enable_sim_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mListener.onSimPermissionChange(entry, KEY_ENABLE, isChecked);
         });
         holder.tvStatus.setText(entry.getStatus());
-        holder.editIcon.setOnClickListener(v->{
+        holder.editIcon.setOnClickListener(v -> {
             showDialog(entry);
         });
 
@@ -83,8 +89,8 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSimICCID ,tvSlote,tvSimName , tvStatus, tvNote;
-        Switch guest_sim_switch ,encrypted_sim_switch ,enable_sim_switch;
+        TextView tvSimICCID, tvSlote, tvSimName, tvStatus, tvNote;
+        Switch guest_sim_switch, encrypted_sim_switch, enable_sim_switch;
         ImageView editIcon;
 
         public MyViewHolder(View itemView) {
@@ -101,10 +107,11 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
             editIcon = itemView.findViewById(R.id.icon_edit);
         }
     }
-    public void showDialog(SimEntry entry){
+
+    public void showDialog(SimEntry entry) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // Get the layout inflater
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         builder.setTitle("Edit Sim Card");
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -112,12 +119,12 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
         EditText etName = view.findViewById(R.id.dialog_name);
         EditText etNote = view.findViewById(R.id.dialog_note);
         etName.setText(entry.getProviderName());
-        if (!entry.getApn().equals("")){
+        if (!entry.getApn().equals("")) {
             etNote.setText(entry.getApn());
         }
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("Save",null)
+                .setPositiveButton("Save", null)
                 .setNegativeButton("Delete", (dialog, id) -> {
                     mListener.onDeleteEntry(entry);
                 });
@@ -127,10 +134,10 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
             button.setOnClickListener(view1 -> {
                 // TODO Do something
                 boolean isOk = true;
-                if (etName.getText().toString().length()<2){
+                if (etName.getText().toString().length() < 2) {
                     isOk = false;
                     etName.setError("Name Should contain at least 3 word");
-                }else
+                } else
                     etName.setError(null);
                 if (isOk) {
                     entry.setProviderName(etName.getText().toString());
@@ -144,7 +151,6 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder>{
         });
         dialog.show();
     }
-
 
 
 }

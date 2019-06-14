@@ -220,6 +220,7 @@ public class utils {
                             app.setDefaultApp(false);
                             app.setEncrypted(false);
                             app.setGuest(false);
+                            app.setVisible(true);
                             switch (space) {
                                 case KEY_GUEST_PASSWORD:
                                     app.setGuest(true);
@@ -580,33 +581,47 @@ public class utils {
 
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+//                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
+        sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
-        } else
+        } else {
             context.startService(service);
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+        }
+    }
+    public static void chatLogin(Context context) {
+
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
-        sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
+        sendMessageToActivity(AppConstants.KEY_SUPPORT_PASSWORD, context);
+        Intent service = new Intent(context, LockScreenService.class);
+        service.setAction("unlocked");
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            context.startForegroundService(service);
+        } else {
+            context.startService(service);
+        }
     }
 
     public static void loginAsEncrypted(Context context) {
 
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
+//                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
+        sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
 
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
-        } else
+        } else {
             context.startService(service);
+        }
 
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
-//                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
-        sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
     }
 
     public static String getUserType(String enteredPin, Context context) {
