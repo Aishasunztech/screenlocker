@@ -133,27 +133,25 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         alertDialog.setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            if (imm != null) {
-                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                (dialog, which) -> {
+                    try {
+                        if (imm != null) {
+                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                         }
-
-                        if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                            Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
-                            dialog.cancel();
-                        } else {
-                            Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
-                        }
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
+                        dialog.cancel();
+                    } else {
+                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
+                    }
+
                 });
 
         alertDialog.setNegativeButton(R.string.cancel,
