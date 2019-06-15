@@ -369,10 +369,12 @@ public class LockScreenService extends Service {
                     } else {
                         //disable sim slote for this user
                         broadCastIntent(false, slot);
+
                     }
                 } else {
                     //disable in any case
                     broadCastIntent(false, slot);
+
                 }
                 break;
 
