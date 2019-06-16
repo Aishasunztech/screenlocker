@@ -1,4 +1,4 @@
-image: jangrewe/gitlab-ci-android
+image: 51systems/gitlab-ci-android
 
 stages:
   - build
