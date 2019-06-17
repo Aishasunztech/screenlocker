@@ -375,8 +375,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void requestUnknownResouirces() {
         boolean isNonPlayAppAllowed = MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls();
-
-
         if (!isNonPlayAppAllowed) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
             intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));

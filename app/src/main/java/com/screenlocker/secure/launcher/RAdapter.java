@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 
@@ -57,6 +58,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SecureSettingsMain.class);
+                            if (PrefUtils.getStringPref(context,AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+                                i.putExtra("show_default","show_default");
+                            }
                             context.startActivity(i);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:

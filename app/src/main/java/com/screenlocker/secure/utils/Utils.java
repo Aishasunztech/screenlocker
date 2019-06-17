@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,6 +16,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +34,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.views.KeyboardView;
@@ -40,6 +45,7 @@ import java.util.Random;
 
 import timber.log.Timber;
 
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
@@ -490,9 +496,21 @@ public class Utils {
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, "Copy to Clipboard", Toast.LENGTH_SHORT).show();
     }
+    public static void scheduleExpiryCheck(Context context){
+        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(24 * 60 * 60 * 1000L)
+                .build();
 
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            //Log.d(TAG, "Job scheduled");
+        } else {
+            //Log.d(TAG, "Job scheduling failed");
+        }
 
-
-
+    }
 
 }

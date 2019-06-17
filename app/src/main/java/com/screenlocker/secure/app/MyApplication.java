@@ -261,10 +261,10 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         if (state) {
 
             onlineConnection();
-
+            boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
             boolean offlineExpiry = PrefUtils.getBooleanPref(this, CHECK_OFFLINE_EXPIRY);
             if (!offlineExpiry) {
-                checkOfflineExpiry();
+               // checkOfflineExpiry();
             }
 
         } else {
@@ -306,41 +306,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }, this, urls).execute();// checking hosts
     }
 
-    private void checkOfflineExpiry() {
 
-        Timber.d("Checking offline Expiry");
-
-        String[] urls = {SUPER_ADMIN, URL_2};
-
-        new AsyncCalls(output -> {
-            if (output != null) {
-                String url = output + SUPER_END_POINT;
-                ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
-                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress())).enqueue(new Callback<DeviceExpiryResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<DeviceExpiryResponse> call, @NonNull Response<DeviceExpiryResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-
-                            DeviceExpiryResponse deviceExpiryResponse = response.body();
-                            Timber.d("EspiresIn : %s", deviceExpiryResponse.getExpiresIn());
-                            Timber.d("StartDate : %s", deviceExpiryResponse.getStartDate());
-                            Timber.d("EndDate : %s", deviceExpiryResponse.getEndDate());
-
-                            if (deviceExpiryResponse.isStatus()) {
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<DeviceExpiryResponse> call, @NonNull Throwable t) {
-                        Timber.d(t.getMessage());
-                    }
-                });
-
-            }
-        }, this, urls).execute();
-    }
 
 
     private void checkForDownload() {

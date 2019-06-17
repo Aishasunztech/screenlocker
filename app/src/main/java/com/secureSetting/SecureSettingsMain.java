@@ -428,6 +428,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 wifiContainer.setVisibility(View.VISIBLE);
                 mobile_container.setVisibility(View.VISIBLE);
                 dataRoamingContainer.setVisibility(View.VISIBLE);
+                language_container.setVisibility(View.VISIBLE);
             } else {
                 showMenus();
             }

@@ -55,6 +55,7 @@ import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
+import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -88,7 +89,7 @@ public class LockScreenService extends Service {
         notificationItems = new ArrayList<>();
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
+        scheduleExpiryCheck(this);
         screenOffReceiver = new ScreenOffReceiver(this::startLockScreen);
 
         //local
