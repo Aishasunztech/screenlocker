@@ -52,3 +52,15 @@ build_release:
     - echo "Git commit          ${CI_COMMIT_SHA}"       >> ./deliverables/info.txt
     - echo "Gitlab pipeline     ${CI_PIPELINE_ID}"      >> ./deliverables/info.txt
 
+package_develop:
+  <<: *package_template_def
+  stage: package
+  environment: Development
+  only:
+    - develop
+  script:
+    - mv app/build/outputs/apk/debug/app-debug.apk ./deliverables/ScreenLocker-v$VERSION_NAME-$VERSION_CODE-debug.apk
+  artifacts:
+    expire_in: 3 days
+    paths:
+    - deliverables
