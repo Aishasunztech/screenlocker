@@ -27,12 +27,12 @@ build_debug:
 #    paths:
 #    - app/build/outputs/apk/debug/app-debug.apk
 
-build_release:
-  stage: build
+#build_release:
+#  stage: build
 #  only:
 #    - release
-  script:
-    - ./gradlew assembleRelease
+#  script:
+#    - ./gradlew assembleRelease
 #  artifacts:
 #    paths:
 #    - app/build/outputs/apk/release/app-release.apk
