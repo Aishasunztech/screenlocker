@@ -65,4 +65,4 @@ package_debug:
     paths:
     - deliverables
   dependencies:
-    - build
+    - build_debug
