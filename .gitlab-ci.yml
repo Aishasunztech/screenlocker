@@ -23,9 +23,9 @@ build_debug:
 #    - release
   script:
     - ./gradlew assembleDebug
-#  artifacts:
-#    paths:
-#    - app/build/outputs/apk/debug/app-debug.apk
+  artifacts:
+    paths:
+    - app/build/outputs
 
 #build_release:
 #  stage: build
@@ -64,3 +64,5 @@ package_debug:
 #    expire_in: 7 days
     paths:
     - deliverables
+  dependencies:
+    - build
