@@ -7,21 +7,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
@@ -49,7 +44,6 @@ import timber.log.Timber;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -61,11 +55,11 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
@@ -430,7 +424,10 @@ public class utils {
         Timber.d("%s device", msg);
 
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
-        String token = PrefUtils.getStringPref(context, TOKEN);
+
+        if (device_id == null) {
+            device_id = PrefUtils.getStringPref(context, OFFLINE_DEVICE_ID);
+        }
 
         switch (msg) {
             case "suspended":
@@ -458,9 +455,10 @@ public class utils {
             context.startService(lockScreenIntent);
         }
 
-        if (!isMyServiceRunning(SocketService.class, context)) {
-            startSocket(context, device_id, token);
-        }
+//
+//        if (!isMyServiceRunning(SocketService.class, context)) {
+//            startSocket(context, device_id, token);
+//        }
 
     }
 
@@ -477,7 +475,6 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-        PrefUtils.saveBooleanPref(context, CHECK_OFFLINE_EXPIRY, false);
 
         String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -517,12 +514,9 @@ public class utils {
 
             Intent intent = new Intent(context, SocketService.class);
             intent.setAction("start");
-
             PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
             PrefUtils.saveStringPref(context, TOKEN, token);
-
             PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
-
             if (Build.VERSION.SDK_INT >= 26) {
                 context.startForegroundService(intent);
             } else {
@@ -546,9 +540,6 @@ public class utils {
 
     public static void unSuspendDevice(Context context) {
 
-        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
-        String token = PrefUtils.getStringPref(context, TOKEN);
-
         boolean lock_screen_status = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
         if (lock_screen_status) {
             Intent intent = new Intent(context, LockScreenService.class);
@@ -558,9 +549,9 @@ public class utils {
         sendBroadcast(context, null);
         Timber.d("activeDevice");
 
-        if (!isMyServiceRunning(SocketService.class, context)) {
-            startSocket(context, device_id, token);
-        }
+//        if (!isMyServiceRunning(SocketService.class, context)) {
+//            startSocket(context, device_id, token);
+//        }
 
         PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
 
@@ -592,6 +583,7 @@ public class utils {
             context.startService(service);
         }
     }
+
     public static void chatLogin(Context context) {
 
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);

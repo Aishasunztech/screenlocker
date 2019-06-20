@@ -8,14 +8,22 @@ public class DeviceModel {
     @SerializedName("serial_no")
     @Expose
     private String serialNo;
+    @SerializedName("ip")
+    @Expose
+    private String ip;
+
+    @SerializedName("unique_name")
+    @Expose
+    private String uniqueName;
+
     @SerializedName("mac_address")
     @Expose
     private String macAddress;
 
-    public DeviceModel(String serialNo, String macAddress) {
+    public DeviceModel(String serialNo, String ip, String uniqueName, String macAddress) {
         this.serialNo = serialNo;
+        this.ip = ip;
+        this.uniqueName = uniqueName;
         this.macAddress = macAddress;
     }
-
-
 }

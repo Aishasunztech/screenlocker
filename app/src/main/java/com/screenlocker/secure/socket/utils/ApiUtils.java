@@ -6,10 +6,12 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -58,7 +60,7 @@ public class ApiUtils implements ApiRequests {
         new CheckInstance(internet -> {
             if (internet) {
                 MyApplication.oneCaller
-                        .checkDeviceStatus(new DeviceModel(serialNo, macAddress))
+                        .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), context.getPackageName() + context.getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
                         .enqueue(new Callback<DeviceStatusResponse>() {
                             @Override
                             public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {

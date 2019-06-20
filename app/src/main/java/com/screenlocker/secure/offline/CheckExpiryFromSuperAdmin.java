@@ -8,6 +8,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -15,6 +16,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import retrofit2.Call;
@@ -22,9 +24,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
 import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
 /**
@@ -35,6 +45,10 @@ public class CheckExpiryFromSuperAdmin extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
 
+        if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
+            checkOfflineExpiry(CheckExpiryFromSuperAdmin.this);
+        }
+
         return false;
     }
 
@@ -42,7 +56,8 @@ public class CheckExpiryFromSuperAdmin extends JobService {
     public boolean onStopJob(JobParameters params) {
         return false;
     }
-    private void checkOfflineExpiry() {
+
+    private void checkOfflineExpiry(Context context) {
 
         Timber.d("Checking offline Expiry");
 
@@ -52,18 +67,61 @@ public class CheckExpiryFromSuperAdmin extends JobService {
             if (output != null) {
                 String url = output + SUPER_END_POINT;
                 ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
-                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress())).enqueue(new Callback<DeviceExpiryResponse>() {
+                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress())).enqueue(new Callback<DeviceExpiryResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<DeviceExpiryResponse> call, @NonNull Response<DeviceExpiryResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
 
                             DeviceExpiryResponse deviceExpiryResponse = response.body();
-                            Timber.d("EspiresIn : %s", deviceExpiryResponse.getExpiresIn());
-                            Timber.d("StartDate : %s", deviceExpiryResponse.getStartDate());
-                            Timber.d("EndDate : %s", deviceExpiryResponse.getEndDate());
-
+                            Timber.d("DEVICE_STATUS %s", deviceExpiryResponse.getDeviceStatus());
                             if (deviceExpiryResponse.isStatus()) {
 
+                                /*
+                                 * Offline device status
+                                 * */
+                                String of_device_status = deviceExpiryResponse.getDeviceStatus();
+                                /*
+                                 * Offline device ID for dealers to assist
+                                 * */
+                                String of_device_id = deviceExpiryResponse.getOfDeviceId();
+                                PrefUtils.saveStringPref(context, OFFLINE_DEVICE_ID, of_device_id);
+                                if (of_device_status != null) {
+
+                                    switch (of_device_status) {
+                                        case ACTIVE:
+                                            /*
+                                             * Activate device
+                                             * */
+                                            utils.unSuspendDevice(context);
+                                            break;
+                                        case EXPIRED:
+                                            /*
+                                             * Expire device
+                                             * */
+                                            utils.suspendedDevice(context, "expired");
+                                            break;
+                                        case SUSPENDED:
+                                            /*
+                                             * Suspend device
+                                             * */
+                                            utils.suspendedDevice(context, "suspended");
+                                            break;
+                                    }
+                                }
+
+                            } else {
+                                String msg = response.body().getMsg();
+                                switch (msg) {
+                                    case DUPLICATE_MAC:
+                                        utils.suspendedDevice(context, "suspended");
+                                        break;
+                                    case DUPLICATE_SERIAL:
+                                        utils.suspendedDevice(context, "suspended");
+                                        break;
+                                    case DUPLICATE_MAC_AND_SERIAL:
+                                        utils.suspendedDevice(context, "suspended");
+                                        break;
+                                }
                             }
                         }
                     }
@@ -75,11 +133,12 @@ public class CheckExpiryFromSuperAdmin extends JobService {
                 });
 
             }
-        }, this, urls).execute();
+        }, context, urls).execute();
     }
-    private void expire(Context context){
+
+    private void expire(Context context) {
         PrefUtils.saveStringPref(context, DEVICE_STATUS, "expired");
-        Intent intent =  new Intent(context, LockScreenService.class);
+        Intent intent = new Intent(context, LockScreenService.class);
         intent.setAction("expired");
         ActivityCompat.startForegroundService(context, intent);
     }

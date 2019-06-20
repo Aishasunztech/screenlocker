@@ -192,18 +192,17 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
         txtWarning.setText(null);
     }
 
-    public void setWarningText(String msg, String device_id) {
+    public void setWarningText(String msg) {
         txtWarning.setVisibility(VISIBLE);
 
 //        if(!msg.equals(getResources().getString(R.string.wrong_password_try_again))){
 //            txtWarning.setBackgroundResource(R.drawable.error_msg);
 //        }
 
-        if (device_id == null) {
+
+
             txtWarning.setText(msg);
-        } else {
-            txtWarning.setText(msg);
-        }
+
 
     }
 

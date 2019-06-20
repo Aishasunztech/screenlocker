@@ -22,6 +22,7 @@ import java.util.List;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
@@ -64,7 +65,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
-            tvDeviceId.setText("N/A");
+
+            device_id = PrefUtils.getStringPref(this, OFFLINE_DEVICE_ID);
+            if (device_id != null) {
+                tvDeviceId.setText(device_id);
+            } else {
+                tvDeviceId.setText("N/A");
+            }
         } else {
             tvDeviceId.setText(device_id);
         }
