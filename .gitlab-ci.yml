@@ -2,7 +2,7 @@ image: jangrewe/gitlab-ci-android
 
 variables:
   ANDROID_COMPILE_SDK: "27"
-  APP_NAME: "ScreenLocker"
+  APP_NAME: "TitanLocker"
   MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
 
 cache:
