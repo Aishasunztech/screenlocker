@@ -3,12 +3,8 @@ package com.screenlocker.secure.settings.codeSetting.secureSettings;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.appcompat.widget.Toolbar;
-
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +12,14 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.appSelection.AppListAdapter;
-import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.appSelection.SelectionContract;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -31,11 +31,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import timber.log.Timber;
 
@@ -142,28 +138,25 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     //set checked
     private void setChecks() {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AppInfo appInfo = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppStatus(AppConstants.SECURE_SETTINGS_UNIQUE);
+        new Thread(() -> {
+            AppInfo appInfo = MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().getAppStatus(AppConstants.SECURE_SETTINGS_UNIQUE);
 
-                if (appInfo != null) {
-                    guest = appInfo.isGuest();
-                    encrypted = appInfo.isEncrypted();
-                    enable = appInfo.isEnable();
-                }
-
-                AppExecutor.getInstance().getMainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        switchEnable.setChecked(enable);
-                        switchGuest.setChecked(guest);
-                        switchEncrypt.setChecked(encrypted);
-                    }
-                });
-
-
+            if (appInfo != null) {
+                guest = appInfo.isGuest();
+                encrypted = appInfo.isEncrypted();
+                enable = appInfo.isEnable();
             }
+
+            AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                @Override
+                public void run() {
+                    switchEnable.setChecked(enable);
+                    switchGuest.setChecked(guest);
+                    switchEncrypt.setChecked(encrypted);
+                }
+            });
+
+
         }).start();
 
 
@@ -195,6 +188,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
@@ -328,22 +322,13 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         if (subExtension.isEncrypted())
                             subExtension.setEncrypted(false);
                     }
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, false);
+                    new Thread(() -> {
+                        myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, false);
 
-                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                        extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setRecyclerView(extensionsList);
+                        runOnUiThread(() -> setRecyclerView(extensionsList));
 
-                                }
-                            });
-
-                        }
                     }).start();
                     PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, false);
 
@@ -354,21 +339,18 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         if (!subExtension.isEncrypted())
                             subExtension.setEncrypted(true);
                     }
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+                    new Thread(() -> {
 
-                            myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setRecyclerView(extensionsList);
+                        myDao.setAllEncrypted(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setRecyclerView(extensionsList);
 
-                                }
-                            });
+                            }
+                        });
 
-                        }
                     }).start();
                     PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, true);
                     item.setChecked(true);
@@ -412,12 +394,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     // set secure app permissions
     private void setSecurePermissions(boolean guest, boolean encrypted, boolean enable) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().updateParticularApp(guest, encrypted, enable, AppConstants.SECURE_SETTINGS_UNIQUE);
-            }
-        }).start();
+        new Thread(() -> MyApplication.getAppDatabase(SecureSettingsActivity.this).getDao().updateParticularApp(guest, encrypted, enable, AppConstants.SECURE_SETTINGS_UNIQUE)).start();
     }
 
 

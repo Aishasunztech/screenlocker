@@ -40,7 +40,6 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
-import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -249,7 +248,7 @@ public class LinkDeviceActivity extends BaseActivity {
                 new CheckInstance(internet -> {
                     if (internet) {
                         MyApplication.oneCaller
-                                .checkDeviceStatus(new DeviceModel(SerialNo, DeviceIdUtils.getMacAddress()))
+                                .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
                                 .enqueue(new Callback<DeviceStatusResponse>() {
                                     @Override
                                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -268,7 +267,6 @@ public class LinkDeviceActivity extends BaseActivity {
                                                         saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
                                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                         finishedRefreshing();
                                                         approvedLinkViewState();
                                                         break;
@@ -276,14 +274,12 @@ public class LinkDeviceActivity extends BaseActivity {
                                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, CHECK_OFFLINE_EXPIRY, true);
                                                         finish();
                                                         break;
                                                     case SUSPENDED:
                                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, CHECK_OFFLINE_EXPIRY, true);
 
                                                         finish();
                                                         break;
@@ -291,8 +287,6 @@ public class LinkDeviceActivity extends BaseActivity {
                                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, CHECK_OFFLINE_EXPIRY, true);
-
                                                         finish();
                                                         break;
                                                     case PENDING:

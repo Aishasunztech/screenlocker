@@ -56,6 +56,7 @@ import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
 
@@ -180,7 +181,11 @@ public class Utils {
 
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
 
-        final String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+
+        if (device_id == null) {
+            device_id = PrefUtils.getStringPref(context, OFFLINE_DEVICE_ID);
+        }
 
         final String device_status = getDeviceStatus(context);
 
@@ -193,16 +198,16 @@ public class Utils {
             switch (device_status) {
                 case "suspended":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support");
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
                     }
                     break;
                 case "expired":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
+                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ");
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
 
                     }
                     break;
@@ -210,22 +215,23 @@ public class Utils {
         }
 
 
+        String finalDevice_id = device_id;
         deviceStatusReceiver.setListener(status -> {
             if (status == null) {
                 keyboardView.clearWaringText();
 
             } else {
                 if (status.equals("suspended")) {
-                    if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
+                    if (finalDevice_id != null) {
+                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
                     }
                 } else if (status.equals("expired")) {
-                    if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
+                    if (finalDevice_id != null) {
+                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Expired. Please contact support ");
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
 
                     }
                 }
@@ -253,6 +259,7 @@ public class Utils {
         }
 
 
+        String finalDevice_id1 = device_id;
         unLockButton.setOnClickListener(v -> {
 
             String enteredPin = keyboardView.getInputText().trim();
@@ -294,17 +301,17 @@ public class Utils {
 
                     switch (device_status1) {
                         case "suspended":
-                            if (device_id != null) {
-                                keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support", device_id);
+                            if (finalDevice_id1 != null) {
+                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
                             } else {
-                                keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ", "N/A");
+                                keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
                             }
                             break;
                         case "expired":
-                            if (device_id != null) {
-                                keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ", device_id);
+                            if (finalDevice_id1 != null) {
+                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
                             } else {
-                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ", "N/A");
+                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
 
                             }
                             break;
@@ -357,7 +364,7 @@ public class Utils {
                             unLockButton.setClickable(true);
                             keyboardView.setPassword(null);
                             String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
-                            keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)), null);
+                            keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     }
 
                 }
@@ -382,7 +389,7 @@ public class Utils {
                 public void onTick(long l) {
                     String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
                     keyboardView.setPassword(null);
-                    keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)), null);
+                    keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
                 }
 
@@ -483,20 +490,19 @@ public class Utils {
             } else {
                 context.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(context, "Your phone has no NFC", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static void copyToClipBoard(Context context,String label,String text)
-    {
+    public static void copyToClipBoard(Context context, String label, String text) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText(label, text);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, "Copy to Clipboard", Toast.LENGTH_SHORT).show();
     }
-    public static void scheduleExpiryCheck(Context context){
+
+    public static void scheduleExpiryCheck(Context context) {
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)

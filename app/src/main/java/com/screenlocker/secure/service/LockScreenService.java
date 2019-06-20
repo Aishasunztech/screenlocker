@@ -29,6 +29,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
@@ -80,6 +81,38 @@ public class LockScreenService extends Service {
 
     @Override
     public void onCreate() {
+
+        ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
+
+        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(ONE_DAY_INTERVAL)
+                .build();
+
+        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode1 = scheduler1.schedule(jobInfo1);
+        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Job Scheduled");
+        } else {
+            Timber.d("Job Scheduled Failed");
+        }
+
+        ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
+
+        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(ONE_DAY_INTERVAL)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+
+        int resultCode = scheduler.schedule(jobInfo);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Job Scheduled");
+        } else {
+            Timber.d("Job Scheduled Failed");
+        }
+
 
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);

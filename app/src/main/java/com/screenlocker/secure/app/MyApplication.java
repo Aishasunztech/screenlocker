@@ -26,6 +26,7 @@ import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -49,12 +50,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
-import static com.screenlocker.secure.utils.AppConstants.CHECK_OFFLINE_EXPIRY;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
 import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -259,14 +263,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
         if (state) {
-
             onlineConnection();
-            boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-            boolean offlineExpiry = PrefUtils.getBooleanPref(this, CHECK_OFFLINE_EXPIRY);
-            if (!offlineExpiry) {
-               // checkOfflineExpiry();
-            }
-
         } else {
             if (utils.isMyServiceRunning(SocketService.class, appContext)) {
                 Intent intent = new Intent(this, SocketService.class);
@@ -305,8 +302,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             AppConstants.isProgress = false;
         }, this, urls).execute();// checking hosts
     }
-
-
 
 
     private void checkForDownload() {

@@ -79,12 +79,12 @@ public class AppConstants {
     //servers links
     public static final String URL_1 = "https://api.lockmesh.com";//live SL
     //        public static final String URL_1 = "https://165.22.82.254:3000";//live TL
-//    public static final String URL_1 = "http://192.168.0.111:3000";//local
+//    public static final String URL_1 = "http://192.168.0.122:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
     public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
-    //    public static final String SUPER_ADMIN = "http://192.168.0.109:8042";//local
+    //    public static final String SUPER_ADMIN = "http://192.168.0.120:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -350,8 +350,11 @@ public class AppConstants {
 
     public static final String ALARM_TIME_COMPLETED = "com.vortexlocker.app.alarm_time_completed";
 
-
-    public static final String CHECK_OFFLINE_EXPIRY = "check_offline_expiry";
-
     public static final String IS_EMERGANCY = "is_emergency";
+
+    public static final String OFFLINE_DEVICE_ID = "of_device_id";
+
+
+    public static final String TEXT1 = "Your account with Device ID = ";
+
 }

@@ -8,30 +8,31 @@ public class DeviceExpiryResponse {
     @SerializedName("status")
     @Expose
     private boolean status;
-    @SerializedName("start_date")
+    @SerializedName("msg")
     @Expose
-    private String startDate;
-    @SerializedName("end_date")
-    @Expose
-    private String endDate;
+    private String msg;
 
-    @SerializedName("expires_in")
+    public String getMsg() {
+        return msg;
+    }
+
+    @SerializedName("device_status")
     @Expose
-    private String expiresIn;
+    private String deviceStatus;
+
+    @SerializedName("of_device_id")
+    @Expose
+    private String ofDeviceId;
 
     public boolean isStatus() {
         return status;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getDeviceStatus() {
+        return deviceStatus;
     }
 
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public String getExpiresIn() {
-        return expiresIn;
+    public String getOfDeviceId() {
+        return ofDeviceId;
     }
 }
