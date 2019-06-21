@@ -211,10 +211,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public void clearRecentApp() {
 
         try {
-            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            if (activityManager != null) {
-                activityManager.moveTaskToFront(getTaskId(), 0);
-            }
+            Intent i = new Intent(MainActivity.this, MainActivity.class);
+//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(i);
         } catch (Exception ignored) {
 
 
@@ -295,7 +296,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             String bg;
             if (!message.equals("")) {
-                if (message.equals(KEY_GUEST_PASSWORD )|| message.equals(KEY_SUPPORT_PASSWORD)) {
+                if (message.equals(KEY_GUEST_PASSWORD) || message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
