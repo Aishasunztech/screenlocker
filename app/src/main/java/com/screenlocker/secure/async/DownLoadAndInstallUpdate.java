@@ -94,7 +94,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
                     publishProgress((int) ((total * 100) / contentLength));
                     fileOutputStream.write(data, 0, count);
                 }
-                Uri contentUri = FileProvider.getUriForFile(contextWeakReference.get(), "com.vortexlocker.app.fileprovider", file);
+                Uri contentUri = FileProvider.getUriForFile(contextWeakReference.get(), contextWeakReference.get().getPackageName() + ".fileprovider", file);
 
                 //Uri uri =  FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 Timber.d("downloadApp: %s ", contentUri.toString());
