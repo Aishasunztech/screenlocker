@@ -303,6 +303,16 @@ public class LockScreenService extends Service {
                     WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
                             notificationItems, LockScreenService.this);
                     windowManager.addView(mLayout, params);
+                    try {
+                        Intent i = new Intent(LockScreenService.this, MainActivity.class);
+//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(i);
+                    } catch (Exception ignored) {
+
+
+                    }
                 }
             }
 

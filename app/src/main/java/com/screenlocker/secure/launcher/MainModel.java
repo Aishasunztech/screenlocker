@@ -78,8 +78,10 @@ public class MainModel implements MainContract.MainMvpModel {
             // from the guest part
             if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_GUEST_PASSWORD)) {
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_GUEST_PASSWORD);
-            } else {    //  from the encrypted part
+            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_MAIN_PASSWORD)) {    //  from the encrypted part
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_MAIN_PASSWORD);
+            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
         } else {
             intent.putExtra(AppConstants.BROADCAST_KEY, "");
@@ -102,30 +104,29 @@ public class MainModel implements MainContract.MainMvpModel {
         if (message != null && !message.equals("")) {
             if (allDbApps != null) {
                 for (AppInfo model : allDbApps) {
-                    if (message.equals(AppConstants.KEY_GUEST_PASSWORD)) {
-                        if (model.isGuest()) {
-                            adapter.appsList.add(model);
-                        }
+                    switch (message) {
+                        case AppConstants.KEY_GUEST_PASSWORD:
+                            if (model.isGuest()) {
+                                adapter.appsList.add(model);
+                            }
 
-                    }
-                    else  if (message.equals(AppConstants.KEY_SUPPORT_PASSWORD)){
-                        if (model.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE)){
-                            adapter.appsList.add(model);
-                        }else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)){
-                            adapter.appsList.add(model);
-                        }
-                    }
-                    else{
-                        // for the encrypted user type
-                        if (model.isEncrypted()) {
-                            adapter.appsList.add(model);
-                        }
+                            break;
+                        case AppConstants.KEY_SUPPORT_PASSWORD:
+                            if (model.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE)) {
+                                adapter.appsList.add(model);
+                            } else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
+                                adapter.appsList.add(model);
+                            }
+                            break;
+                        case AppConstants.KEY_MAIN_PASSWORD:
+                            // for the encrypted user typemessage
+                            if (model.isEncrypted()) {
+                                adapter.appsList.add(model);
+                            }
+                            break;
                     }
                 }
             }
-        } else {
-            if (allDbApps != null)
-                adapter.appsList.addAll(allDbApps);
         }
 
         AppExecutor.getInstance().getMainThread().execute(() -> ((MainActivity) context).removeOverlay());

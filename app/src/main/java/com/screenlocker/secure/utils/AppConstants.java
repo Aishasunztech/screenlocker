@@ -21,6 +21,7 @@ public class AppConstants {
     public static final String KEY_MAIN_PASSWORD = "main_password";
     public static final String KEY_DURESS_PASSWORD = "duress_password";
     public static final String KEY_GUEST_IMAGE = "guest_image";
+    public static final String KEY_SUPPORT_IMAGE = "support_image";
     public static final String KEY_MAIN_IMAGE = "main_image";
     public static final String KEY_LOCK_IMAGE = "lock_image";
     public static final String CURRENT_KEY = "current_key";
@@ -79,7 +80,7 @@ public class AppConstants {
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
     public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-    //    public static final String URL_1 = "http://192.168.0.121:3000";//local
+    //        public static final String URL_1 = "http://192.168.0.122:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain

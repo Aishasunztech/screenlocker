@@ -455,10 +455,12 @@ public class utils {
             context.startService(lockScreenIntent);
         }
 
-//
-//        if (!isMyServiceRunning(SocketService.class, context)) {
-//            startSocket(context, device_id, token);
-//        }
+        boolean device_linked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+
+        if (!isMyServiceRunning(SocketService.class, context) && device_linked) {
+            String token = PrefUtils.getStringPref(context, TOKEN);
+            startSocket(context, device_id, token);
+        }
 
     }
 
@@ -511,7 +513,6 @@ public class utils {
     public static void startSocket(Context context, String device_id, String token) {
 
         if (device_id != null && token != null) {
-
             Intent intent = new Intent(context, SocketService.class);
             intent.setAction("start");
             PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
@@ -549,9 +550,12 @@ public class utils {
         sendBroadcast(context, null);
         Timber.d("activeDevice");
 
-//        if (!isMyServiceRunning(SocketService.class, context)) {
-//            startSocket(context, device_id, token);
-//        }
+        String token = PrefUtils.getStringPref(context, TOKEN);
+        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+
+        if (!isMyServiceRunning(SocketService.class, context)) {
+            startSocket(context, device_id, token);
+        }
 
         PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
 

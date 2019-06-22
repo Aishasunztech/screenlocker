@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.telephony.TelephonyManager;
@@ -41,6 +43,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -91,6 +94,7 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -145,7 +149,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
 
-
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         networkChangeReceiver.setNetworkChangeListener(this);
     }
@@ -157,6 +160,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         networkChangeReceiver.unsetNetworkChangeListener();
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -165,6 +169,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
+        init();
 
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
@@ -193,17 +198,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             Intent intent = new Intent(this, SteppersActivity.class);
                             startActivity(intent);
                             finish();
-
                         } else {
-                            boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
-                            init();
 
-                            if (!linkStatus) {
-                                tvlinkDevice.setVisibility(View.VISIBLE);
-                            }
+
                         }
                     }
                 });
@@ -212,19 +211,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+//        if (linkStatus) {
+//            tvlinkDevice.setVisibility(View.GONE);
+//        } else {
+//            tvlinkDevice.setVisibility(View.VISIBLE);
+//        }
+//    }
+
     public void init() {
-
-
         setIds();
         setToolbar(mToolbar);
         setListeners();
-
-
         settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
-
-
 //        setSwipeToApiRequest();
-
         // switch change listener(on off service for vpn)
         switchEnableVpn.setOnCheckedChangeListener(this);
         createActiveDialog();
@@ -234,8 +238,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         } else {
             mMacAddress = null;
         }
-
-
         final Intent lockScreenIntent = new Intent(SettingsActivity.this, LockScreenService.class);
         lockScreenIntent.setAction("lock screen");
         //  check for the can draw over permission ,is it enabled or not
@@ -267,9 +269,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onPause() {
         hideKeyboard(SettingsActivity.this);
 
-        if (tvlinkDevice != null) {
-            tvlinkDevice.setVisibility(View.GONE);
-        }
         if (aboutDialog != null) {
             aboutDialog.dismiss();
         }

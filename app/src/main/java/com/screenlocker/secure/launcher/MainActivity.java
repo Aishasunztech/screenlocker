@@ -67,6 +67,7 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
@@ -125,9 +126,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         appExecutor = AppExecutor.getInstance();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
-
-
-        screenOffReceiver = new ScreenOffReceiver(this::clearRecentApp);
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -296,7 +294,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             String bg;
             if (!message.equals("")) {
-                if (message.equals(KEY_GUEST_PASSWORD) || message.equals(KEY_SUPPORT_PASSWORD)) {
+                if (message.equals(KEY_GUEST_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
@@ -309,11 +307,24 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                                 .apply(new RequestOptions().centerCrop())
                                 .into(background);
                     }
+                } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
+                    // for the guest type user
+                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
+                    if (bg == null || bg.equals("")) {
+
+                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+
+                    } else {
+                        Glide.with(MainActivity.this)
+                                .load(Integer.parseInt(bg))
+                                .apply(new RequestOptions().centerCrop())
+                                .into(background);
+                    }
+
                 } else {
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-
                         Glide.with(MainActivity.this).load(R.drawable.default_background).apply(new RequestOptions().centerCrop()).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
 

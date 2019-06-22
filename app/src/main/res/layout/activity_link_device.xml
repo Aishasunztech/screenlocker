@@ -13,32 +13,28 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".ui.LinkDeviceActivity">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="fitXY"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <include
+                android:id="@+id/include"
+                layout="@layout/main_toolbar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <TextView
                 android:id="@+id/tvLinkedStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:textColor="@color/colorAccent"
                 android:textSize="16sp"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/tableLayout2"
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
+                app:layout_constraintTop_toBottomOf="@+id/include"
                 tools:text="Link Status"
                 tools:visibility="visible" />
 
@@ -46,11 +42,14 @@
                 android:id="@+id/tableLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkedStatus"
+                app:layout_constraintVertical_bias="0.0">
 
 
                 <TableRow
@@ -350,23 +349,25 @@
 
                 <!-- PGP Email view -->
                 <TableRow
+                    android:id="@+id/pgpEmail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/pgpEmail"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PGP Email"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" : "
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tvPgpEmail"
                         android:layout_width="wrap_content"
@@ -380,23 +381,25 @@
 
                 <!-- Chat ID view-->
                 <TableRow
+                    android:id="@+id/chatId"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/chatId"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Chat Id"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" : "
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tvChatId"
                         android:layout_width="wrap_content"
@@ -410,23 +413,25 @@
 
                 <!-- Sim ID view-->
                 <TableRow
+                    android:id="@+id/simId"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/simId"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sim Id"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" : "
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tvSimId"
                         android:layout_width="wrap_content"
@@ -460,6 +465,30 @@
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnStopLink" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Waiting for approval..."
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/progressBar"
+                app:layout_constraintStart_toStartOf="@+id/progressBar"
+                app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
