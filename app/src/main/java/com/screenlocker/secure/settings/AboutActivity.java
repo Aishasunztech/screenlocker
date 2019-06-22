@@ -22,7 +22,6 @@ import java.util.List;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
@@ -36,7 +35,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_about);
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Account");
+        getSupportActionBar().setTitle(getResources().getString(R.string.account));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView systemId = findViewById(R.id.tvSystemId);
@@ -65,13 +64,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
-
-            device_id = PrefUtils.getStringPref(this, OFFLINE_DEVICE_ID);
-            if (device_id != null) {
-                tvDeviceId.setText(device_id);
-            } else {
-                tvDeviceId.setText("N/A");
-            }
+            tvDeviceId.setText(getResources().getString(R.string.n_a));
         } else {
             tvDeviceId.setText(device_id);
         }
@@ -86,11 +79,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
             if (PrefUtils.getBooleanPref(AboutActivity.this, DEVICE_LINKED_STATUS)) {
                 if (device_status == null) {
-                    tvStatus.setText("Active");
+                    tvStatus.setText(getResources().getString(R.string.active));
                 } else
                     tvStatus.setText(device_status);
             } else {
-                tvStatus.setText("N/A");
+                tvStatus.setText(getResources().getString(R.string.n_a));
             }
 
         }
@@ -104,7 +97,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         if (remaining_days != null) {
             tvExpiresIn.setText(remaining_days);
         } else {
-            tvExpiresIn.setText("N/A");
+            tvExpiresIn.setText(getResources().getString(R.string.n_a));
         }
 
 
@@ -119,7 +112,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             if (imei != null) {
                 tvImei1.setText(imei);
             } else {
-                tvImei1.setText("N/A");
+                tvImei1.setText(getResources().getString(R.string.n_a));
             }
         }
 
@@ -131,7 +124,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             if (imei2 != null) {
                 tvImei2.setText(imei2);
             } else {
-                tvImei2.setText("N/A");
+                tvImei2.setText(getResources().getString(R.string.n_a));
             }
         }
     }

@@ -20,7 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="Select a Sim Slot"
+        android:text="@string/select_a_sim_slot"
         android:textSize="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,13 +43,13 @@
             android:id="@+id/slote1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Slot 1" />
+            android:text="@string/slot_1" />
 
         <RadioButton
             android:id="@+id/slote2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Slot 2" />
+            android:text="@string/slot_2" />
     </RadioGroup>
 
     <EditText
@@ -59,7 +59,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="IMEI"
+        android:hint="@string/imei_hint"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Write IMEI"
+        android:text="@string/btn_write_imei"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

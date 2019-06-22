@@ -35,7 +35,7 @@ public class ChangeWallpaper extends AppCompatActivity
         setContentView(R.layout.activity_change_wallpaper2);
         type = getIntent().getStringExtra("TYPE");
         setSupportActionBar(findViewById(R.id.toolbar));
-        getSupportActionBar().setTitle("Wallpapers");
+        getSupportActionBar().setTitle(getResources().getString(R.string.wallpapers_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ids.add(R.raw.beatifulhome);
@@ -118,15 +118,15 @@ public class ChangeWallpaper extends AppCompatActivity
         fragmentManager.popBackStack();
         switch (type) {
             case KEY_MAIN:
-                Toast.makeText(this, "Background set for encrypted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.bg_set_encrypted), Toast.LENGTH_SHORT).show();
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(id));
                 break;
             case KEY_GUEST:
-                Toast.makeText(this, "Background set for guest", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.bg_set_guest), Toast.LENGTH_SHORT).show();
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(id));
                 break;
             case KEY_CODE:
-                Toast.makeText(this, "Background set for lock screen", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.bg_set_lockscreen), Toast.LENGTH_SHORT).show();
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(id));
                 break;
         }

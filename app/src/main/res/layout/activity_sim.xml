@@ -41,7 +41,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:textStyle="bold"
-            android:text="Guest"
+            android:text="@string/guest"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Encrypted"
+            android:text="@string/encrypted"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/allowAllGuest"
             app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Guest"
+            android:text="@string/guest"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +101,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:textStyle="bold"
-            android:text="Encrypted"
+            android:text="@string/encrypted"
             app:layout_constraintBottom_toBottomOf="@+id/allowRegisterAllGuest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/allowRegisterAllGuest"
@@ -128,12 +128,12 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:text="Registered Sim Cards"/>
+            android:text="@string/registered_sim_cards"/>
         <Button
             android:id="@+id/btnadd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADD +"/>
+            android:text="@string/btn_add"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

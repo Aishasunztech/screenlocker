@@ -34,7 +34,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Device Admin"
+                    android:text="@string/allow_device_admin"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Overlay Permission"
+                    android:text="@string/allow_overlay_permission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Modify System State"
+                    android:text="@string/allow_modify_system_state"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -177,7 +177,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Usage Access"
+                    android:text="@string/allow_usage_access"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -225,7 +225,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Run time Permission"
+                    android:text="@string/allow_run_time_permission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -238,7 +238,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -273,7 +273,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Install Packages"
+                    android:text="@string/allow_install_packages"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -286,7 +286,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -321,7 +321,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Notification Access"
+                    android:text="@string/allow_notification_access"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -334,7 +334,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -369,7 +369,7 @@
                     android:layout_weight="1"
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
-                    android:text="Allow Access Battery Optimization"
+                    android:text="@string/allow_access_battery_optimization"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <Switch
@@ -382,7 +382,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
-                android:text="Activate ScreenLocker Device Admin. It will provide More Secure environment " />
+                android:text="@string/allow_device_admin_message" />
 
             <View
                 android:layout_width="match_parent"

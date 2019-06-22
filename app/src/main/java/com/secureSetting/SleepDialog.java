@@ -88,43 +88,42 @@ public class SleepDialog extends Dialog {
                 if(checkedId == R.id.rb_15_seconds)
                 {
                     time = 15000;
-                    minutes = "15 seconds";
+                    minutes = "15 " + context.getResources().getString(R.string.seconds);
                 }else if(checkedId == R.id.rb_30_seconds)
                 {
                     time = 30000;
-                    minutes = "30 seconds";
+                    minutes = "30 " + context.getResources().getString(R.string.seconds);
 
 
                 }else if(checkedId == R.id.rb_1_minute)
                 {
                     time = 60000;
-                    minutes = "1 minute";
+                    minutes = "1 " + context.getResources().getString(R.string.minutes);
 
 
                 }else if(checkedId == R.id.rb_2_minute)
                 {
                     time = 120000;
-                    minutes = "2 minutes";
-
+                    minutes = "2 " + context.getResources().getString(R.string.minutes);
                 }else if(checkedId == R.id.rb_5_minute)
                 {
                     time = 300000;
-                    minutes = "5 minutes";
+                    minutes = "5 " + context.getResources().getString(R.string.minutes);
 
                 }else if(checkedId == R.id.rb_10_minute)
                 {
                     time = 10*60*1000;
-                    minutes = "10 minutes";
+                    minutes = "10 " + context.getResources().getString(R.string.minutes);
 
                 }else if(checkedId == R.id.rb_30_minute)
                 {
                     time = 30*60*1000;
-                    minutes = "30 minutes";
+                    minutes = "30 " + context.getResources().getString(R.string.minutes);
 
                 }
 
                 setSleepTime(time);
-                listener.sleepTimeChanged("After " + minutes + " of inactivity");
+                listener.sleepTimeChanged(context.getResources().getString(R.string.after_inactivity,minutes));
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {

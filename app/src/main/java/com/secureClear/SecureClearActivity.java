@@ -47,7 +47,7 @@ public class SecureClearActivity extends AppCompatActivity implements View.OnCli
         notificationContainer = findViewById(R.id.secure_clear_container);
         toolbar = findViewById(R.id.secureClearBar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Secure Clear");
+        getSupportActionBar().setTitle(getResources().getString(R.string.secure_clear_title));
         notificationContainer.setOnClickListener(this);
 
 

@@ -357,5 +357,6 @@ public class AppConstants {
 
 
     public static final String TEXT1 = "Your account with Device ID = ";
+    public static final String LANGUAGE_PREF = "language_pref";
 
 }

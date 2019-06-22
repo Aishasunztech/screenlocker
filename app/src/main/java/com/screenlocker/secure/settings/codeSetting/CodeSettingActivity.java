@@ -168,7 +168,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     private void setToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Admin Panel");
+        getSupportActionBar().setTitle(getResources().getString(R.string.admin_panel_title));
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -298,9 +298,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                     if (dialog != null && dialog.isShowing()) {
                         dialog.cancel();
                     }
-                    Snackbar.make(rootLayout, "Admin Password Changed.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rootLayout, getResources().getString(R.string.admin_password_changed), Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(CodeSettingActivity.this, "This password is taken please Try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CodeSettingActivity.this, getResources().getString(R.string.password_taken), Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -348,24 +348,24 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean validatePassword(EditText etOldText, EditText etNewPassword, EditText etConfirmPassword) {
         if (TextUtils.isEmpty(etOldText.getText().toString())) {
             etOldText.requestFocus();
-            Toast.makeText(this, "Please enter your old password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.enter_old_password), Toast.LENGTH_SHORT).show();
             return false;
         } else if (!etOldText.getText().toString().equals(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
 
             etOldText.requestFocus();
-            Toast.makeText(this, "Please enter correct password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.enter_correct_password), Toast.LENGTH_SHORT).show();
             return false;
         } else if (TextUtils.isEmpty(etNewPassword.getText().toString())) {
             etNewPassword.requestFocus();
-            Toast.makeText(this, "Please enter new password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.enter_new_password), Toast.LENGTH_SHORT).show();
             return false;
         } else if (TextUtils.isEmpty(etConfirmPassword.getText().toString())) {
             etConfirmPassword.requestFocus();
-            Toast.makeText(this, "Please renter your password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.re_enter_password), Toast.LENGTH_SHORT).show();
             return false;
         } else if (!etNewPassword.getText().toString().equals(etConfirmPassword.getText().toString())) {
             etConfirmPassword.requestFocus();
-            Toast.makeText(this, "Password did not match.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.password_not_matched), Toast.LENGTH_SHORT).show();
             return false;
         } else if (!passwordsOk(this, etConfirmPassword.getText().toString())) {
             return false;

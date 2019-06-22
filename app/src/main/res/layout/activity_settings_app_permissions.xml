@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:padding="10dp"
-        android:text="Secure Settings App"
+        android:text="@string/secure_settings_app"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:checked="false"
-        android:text="Guest "
+        android:text= "@string/guest"
         app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
         app:layout_constraintEnd_toStartOf="@+id/switchEncrypt"
         app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:checked="false"
-        android:text="Encrypt "
+        android:text="@string/encrypted"
         app:layout_constraintEnd_toEndOf="@+id/textView5"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="false"
-        android:text="Enable "
+        android:text="@string/enable"
         app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
         app:layout_constraintStart_toEndOf="@+id/switchEncrypt"
         app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
@@ -102,7 +102,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:padding="16dp"
-            android:text="In-App Menu Displays"
+            android:text="@string/menu_displays"
             android:textSize="@dimen/textSize"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -114,7 +114,7 @@
             android:gravity="center"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="Guest" />
+            android:text="@string/guest" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
             android:gravity="center"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="Encrypted" />
+            android:text="@string/encrypted" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -133,7 +133,7 @@
             android:gravity="center"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="Enable"
+            android:text="@string/enable"
             android:visibility="gone" />
 
     </LinearLayout>

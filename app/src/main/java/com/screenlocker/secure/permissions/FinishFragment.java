@@ -34,6 +34,6 @@ public class FinishFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return "Launch Application";
+        return getResources().getString(R.string.launch_application);
     }
 }

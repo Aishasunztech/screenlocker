@@ -71,7 +71,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 
     @Override
     public String error() {
-        return "Please Set as Default Launcher";
+        return getResources().getString(R.string.set_as_default_launcher);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext())) {
-            setLauncher.setText("Default Launcher set");
+            setLauncher.setText(getResources().getString(R.string.default_launcher_set));
             setLauncher.setEnabled(false);
             setLauncher.setClickable(false);
         }
@@ -119,7 +119,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public String name() {
         return
-                "Set Default Launcher";
+                getResources().getString(R.string.set_default_launcher);
     }
 
     public void onAttach(@NonNull Context context) {

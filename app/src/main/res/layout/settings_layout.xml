@@ -39,7 +39,7 @@
             android:drawableStart="@drawable/ic_chamge_pass"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
-            android:text="Manage Passwords"
+            android:text="@string/manage_passwords_settings"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             android:visibility="visible"
@@ -89,7 +89,7 @@
             android:drawableStart="@drawable/ic_link"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
-            android:text="Link Device"
+            android:text="@string/link_device"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             android:visibility="visible"
@@ -116,7 +116,7 @@
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
 
-            android:text="Set Background Image"
+            android:text="@string/set_background_image_settings"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             android:visibility="visible"
@@ -143,7 +143,7 @@
             android:drawableStart="@drawable/ic_about"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
-            android:text="About"
+            android:text="@string/about"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -168,7 +168,7 @@
             android:drawableStart="@drawable/ic_user"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
-            android:text="Account"
+            android:text="@string/account"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -214,6 +214,32 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+        <View
+            android:id="@+id/dividerLanguage"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAccount" />
+
+        <TextView
+            android:id="@+id/tvLanguage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/ic_worldwide"
+            android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
+            android:text="@string/language"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/textSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerLanguage" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

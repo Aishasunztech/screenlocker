@@ -28,11 +28,11 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SetEncryptedPasswordFragment extends AbstractStep {
-    private String error = "Please Set Encrypted Password";
+    private String error = "";
 
     @Override
     public String name() {
-        return "Encrypted Password";
+        return getResources().getString(R.string.encrypted_password);
     }
 
     @Override
@@ -106,6 +106,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
         ButterKnife.bind(this, v);
         etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
         etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+        error = getResources().getString(R.string.please_set_encrypted_password);
 
         return v;
     }
@@ -129,7 +130,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                 return true;
 
             } else {
-                error = "This password is already taken please try again.";
+                error = getResources().getString(R.string.password_taken);
                 return false;
             }
 

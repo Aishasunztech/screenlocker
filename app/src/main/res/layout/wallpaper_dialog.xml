@@ -30,7 +30,7 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:padding="@dimen/_16sdp"
-                android:text="Set As Wallpaper"
+                android:text="@string/set_as_wallpaper"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>

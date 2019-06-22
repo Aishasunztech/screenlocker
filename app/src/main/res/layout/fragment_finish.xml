@@ -10,6 +10,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Setup Completed !" />
+        android:text="@string/setup_completed" />
 
 </FrameLayout>

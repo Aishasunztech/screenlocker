@@ -171,7 +171,7 @@ public class MainActivity extends BaseActivity {
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Link Device");
+            getSupportActionBar().setTitle(getResources().getString(R.string.link_device_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -288,13 +288,13 @@ public class MainActivity extends BaseActivity {
                                                 }
                                                 break;
                                             case DUPLICATE_MAC:
-                                                showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                showError(getResources().getString(R.string.error_321) + response.body().getDevice_id() + getResources().getString(R.string.contact_support));
                                                 break;
                                             case DUPLICATE_SERIAL:
-                                                showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                showError(getResources().getString(R.string.error_322) + response.body().getDevice_id() + getResources().getString(R.string.contact_support));
                                                 break;
                                             case DUPLICATE_MAC_AND_SERIAL:
-                                                showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                                showError(getResources().getString(R.string.error323) + response.body().getDevice_id() + getResources().getString(R.string.contact_support));
                                                 break;
                                             case DEALER_NOT_FOUND:
                                                 showMainContent();
@@ -387,7 +387,7 @@ public class MainActivity extends BaseActivity {
             request(2, dealerPin);
 
         } else {
-            etPin.setError("Invalid Dealer or Code");
+            etPin.setError(getResources().getString(R.string.invaild_dealer_code));
         }
 
 
@@ -419,7 +419,8 @@ public class MainActivity extends BaseActivity {
                                             link = true;
                                             startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
                                         } else {
-                                            etPin.setError(dlr.getMsg());
+                                            etPin.setError(getResources().getString(R.string.invalid_link_code));
+//                                            etPin.setError(dlr.getMsg());
                                         }
                                     }
                                     enableViews();

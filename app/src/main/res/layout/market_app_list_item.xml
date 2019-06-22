@@ -131,7 +131,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="@dimen/_10sdp"
         android:background="@drawable/install_button_bg"
-        android:text="Download"
+        android:text="@string/download_title"
         android:visibility="gone"
         android:gravity="center"/>
 
@@ -145,7 +145,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="@dimen/_10sdp"
         android:background="@drawable/install_button_bg"
-        android:text="Uninstall"
+        android:text="@string/uninstall"
         android:visibility="gone"
         android:gravity="center"/>
 

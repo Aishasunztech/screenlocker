@@ -59,7 +59,7 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         SimEntry entry = simEntries.get(position);
         holder.tvSimICCID.setText(entry.getIccid());
         if (entry.getSlotNo() == -1 ) {
-            holder.tvSlote.setText("N/A");
+            holder.tvSlote.setText(context.getResources().getString(R.string.n_a));
         } else
             holder.tvSlote.setText(String.valueOf(entry.getSlotNo()));
         holder.tvSimName.setText(entry.getProviderName());
@@ -112,7 +112,7 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // Get the layout inflater
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        builder.setTitle("Edit Sim Card");
+        builder.setTitle(context.getResources().getString(R.string.edit_sim_card));
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.edit_sim_dialoge, null);
@@ -124,8 +124,8 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         }
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("Save", null)
-                .setNegativeButton("Delete", (dialog, id) -> {
+                .setPositiveButton(context.getResources().getString(R.string.btn_save), null)
+                .setNegativeButton(context.getResources().getString(R.string.delete_title), (dialog, id) -> {
                     mListener.onDeleteEntry(entry);
                 });
         AlertDialog dialog = builder.create();
@@ -136,7 +136,7 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
                 boolean isOk = true;
                 if (etName.getText().toString().length() < 2) {
                     isOk = false;
-                    etName.setError("Name Should contain at least 3 word");
+                    etName.setError(context.getResources().getString(R.string.should_contain_3_words));
                 } else
                     etName.setError(null);
                 if (isOk) {

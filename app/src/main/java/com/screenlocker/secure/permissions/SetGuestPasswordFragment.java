@@ -29,12 +29,12 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class SetGuestPasswordFragment extends AbstractStep {
-    private volatile String error = "Please Enter Password.";
+    private volatile String error = "";
     private Context mContext;
 
     @Override
     public String name() {
-        return "Guest Password";
+        return getResources().getString(R.string.guest_password);
     }
 
     @Override
@@ -78,6 +78,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        error = getResources().getString(R.string.please_enter_password);
     }
 
     @BindView(R.id.etEnterPin)
@@ -119,7 +120,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 return true;
 
             } else {
-                error = "This password is already taken please try again.";
+                error = getResources().getString(R.string.password_taken);
                 return false;
             }
 

@@ -15,6 +15,8 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.os.UserManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -65,6 +68,7 @@ import com.screenlocker.secure.permissions.WelcomeScreenActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.LanguageControls.ChangeLanguageActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -84,6 +88,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -467,6 +472,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvAccount).setVisibility(View.VISIBLE);
         findViewById(R.id.tvAccount).setOnClickListener(this);
+        findViewById(R.id.tvLanguage).setOnClickListener(this);
     }
 
 
@@ -524,6 +530,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
                     break;
+                case R.id.tvLanguage:
+                    Intent intent = new Intent(this, ChangeLanguageActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    this.finish();
+                    break;
             }
         } else {
             if (!gerOverlayDialog().isShowing())
@@ -545,7 +557,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
 //                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-                    showAlertDialog(SettingsActivity.this, "Invalid Password!", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+                    showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
                     return;
                 }
                 if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
@@ -554,7 +566,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
                     dialogInterface.dismiss();
                 } else {
-                    showAlertDialog(SettingsActivity.this, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+                    showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
                 }
             }, null, getString(R.string.please_enter_code_admin_password));
         }
@@ -562,8 +574,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void handleCheckForUpdate() {
         ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle("Update");
-        dialog.setMessage("Checking For Updates");
+        dialog.setTitle(getResources().getString(R.string.update_dialog_title));
+        dialog.setMessage(getResources().getString(R.string.update_dialog_message));
         dialog.show();
         try {
             currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
@@ -599,15 +611,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                     if (response.body().isSuccess()) {
                                         if (response.body().isApkStatus()) {
                                             AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
-                                                    .setTitle("Update Available")
-                                                    .setMessage("New update available! Press OK to update your system.")
-                                                    .setPositiveButton("OK", (dialog12, which) -> {
+                                                    .setTitle(getResources().getString(R.string.update_available_title))
+                                                    .setMessage(getResources().getString(R.string.update_available_message))
+                                                    .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
                                                         String url = response.body().getApkUrl();
 
                                                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
                                                         DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
                                                         obj.execute();
-                                                    }).setNegativeButton("Cancel", (dialog1, which) -> {
+                                                    }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
                                                         dialog1.dismiss();
                                                     });
                                             dialog.show();
@@ -626,7 +638,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             @Override
                             public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
                                 dialog.dismiss();
-                                Toast.makeText(SettingsActivity.this, "An error occurred, Please Try latter.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(SettingsActivity.this, getResources().getString(R.string.error_occured_toast), Toast.LENGTH_LONG).show();
 
                             }
                         });
@@ -639,12 +651,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private void showNetworkDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Network Not Connected!");
+        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage("Please connect to the internet before proceeding.");
+        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "NETWORK SETUP", (dialog, which) -> {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -652,7 +664,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -664,7 +676,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         alertDialog.setTitle(title);
         alertDialog.setIcon(icon);
         alertDialog.setMessage(msg);
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_text),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -834,16 +846,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             case RESULT_ENABLE:
                 if (resultCode == Activity.RESULT_OK) {
                     PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, true);
-                    Toast.makeText(SettingsActivity.this, "You have enabled the Admin Device features", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getResources().getString(R.string.enable_admin_device_feature), Toast.LENGTH_SHORT).show();
                 } else {
                     PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, false);
-                    Toast.makeText(SettingsActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getResources().getString(R.string.problem_admin_device_feature), Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case REQUEST_CODE_PASSWORD:
                 if (resultCode == RESULT_OK) {
-                    showAlertDialog(SettingsActivity.this, "Password Changed!", "Password Successfully Changed.", R.drawable.ic_checked);
+                    showAlertDialog(SettingsActivity.this, getResources().getString(R.string.password_changed_title), getResources().getString(R.string.password_changed_message), R.drawable.ic_checked);
 //                    Snackbar.make(rootLayout, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
                 }
                 break;
@@ -853,11 +865,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     Uri resultUri = result.getUri();
                     Timber.e("onActivityResult: BG_CHANGER : %s", resultUri);
                     if (isEncryptedChecked) {
-                        Toast.makeText(this, "Background saved for encrypted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.bg_save_encrypted), Toast.LENGTH_SHORT).show();
                         PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
 
                     } else {
-                        Toast.makeText(this, "Background saved for guest", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.bg_save_guest), Toast.LENGTH_SHORT).show();
                         PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
                     }
                 }

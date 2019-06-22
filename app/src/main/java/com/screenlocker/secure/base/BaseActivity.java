@@ -31,6 +31,8 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -120,6 +122,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 
     }
+
 
 
     private void createAlertDialog() {
@@ -310,6 +313,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
+        String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        if(language_key != null && !language_key.equals(""))
+        {
+            CommonUtils.setAppLocale(language_key,this);
+        }
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
             launchPermissions();

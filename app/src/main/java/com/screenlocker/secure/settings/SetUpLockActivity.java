@@ -124,7 +124,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
         if (view.getId() == R.id.disable_duress){
             PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD,null);
             btnDisableDuress.setEnabled(false);
-            btnDisableDuress.setText("Duress PIN Disabled");
+            btnDisableDuress.setText(getResources().getString(R.string.duress_pin_disabled));
         }
         if (view.getId() == R.id.btnConfirm) {
 
@@ -149,7 +149,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             setResult(RESULT_OK);
                             finish();
                         } else {
-                            etConfirmPin.setError("This password is taken please try again");
+                            etConfirmPin.setError(getResources().getString(R.string.password_taken));
                         }
                         break;
                     case AppConstants.KEY_CODE:
@@ -159,7 +159,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             setResult(RESULT_OK);
                             finish();
                         } else {
-                            etConfirmPin.setError("This password is taken please try again");
+                            etConfirmPin.setError(getResources().getString(R.string.password_taken));
                         }
 
                         break;
@@ -170,7 +170,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             setResult(RESULT_OK);
                             finish();
                         } else {
-                            etConfirmPin.setError("This password is taken please try again");
+                            etConfirmPin.setError(getResources().getString(R.string.password_taken));
                         }
                         break;
 
@@ -181,7 +181,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             setResult(RESULT_OK);
                             finish();
                         } else {
-                            etConfirmPin.setError("This password is taken please try again");
+                            etConfirmPin.setError(getResources().getString(R.string.password_taken));
                         }
                         break;
                 }

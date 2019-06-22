@@ -29,7 +29,7 @@
         android:layout_marginTop="30dp"
         android:ems="12"
         android:gravity="center"
-        android:hint="Dealer Pin or Activation Code"
+        android:hint="@string/dealer_pin_or_activation_code"
         android:imeOptions="actionDone"
         android:inputType="numberDecimal"
         android:singleLine="true"
@@ -44,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Submit"
+        android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"
         app:layout_constraintStart_toStartOf="@+id/edtTxtPin"
         app:layout_constraintTop_toBottomOf="@+id/edtTxtPin" />

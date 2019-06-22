@@ -92,7 +92,7 @@ public class MarketFragment extends Fragment implements
                 Snackbar snackbar = Snackbar.make(
                         ((ViewGroup) activity.findViewById(android.R.id.content))
                                 .getChildAt(0)
-                        , appName + " is installed"
+                        , appName + context.getResources().getString(R.string.is_installed)
                         , 3000);
                 snackbar.show();
             } else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageDeleted")) {
@@ -102,7 +102,7 @@ public class MarketFragment extends Fragment implements
                     Snackbar snackbar = Snackbar.make(
                             ((ViewGroup) activity.findViewById(android.R.id.content))
                                     .getChildAt(0)
-                            , appName + " is uninstalled"
+                            , appName + getResources().getString(R.string.is_uninstalled)
                             , 3000);
                     snackbar.show();
                 }
@@ -254,7 +254,7 @@ public class MarketFragment extends Fragment implements
 
                                 @Override
                                 public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                                    Toast.makeText(activity, "list is empty", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
 
                                     progressBar.setVisibility(View.GONE);
                                 }
@@ -376,12 +376,12 @@ public class MarketFragment extends Fragment implements
     @Override
     public void onInstallClick(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setTitle("Download");
+        alertDialog.setTitle(getResources().getString(R.string.download_title));
         alertDialog.setIcon(android.R.drawable.stat_sys_download);
 
-        alertDialog.setMessage("Are you sure you want to install this app?");
+        alertDialog.setMessage(getResources().getString(R.string.install_message));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_capital), (dialog, which) -> {
 
             String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
 
@@ -393,7 +393,7 @@ public class MarketFragment extends Fragment implements
 
         });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -405,7 +405,7 @@ public class MarketFragment extends Fragment implements
 
         AppExecutor.getInstance().getMainThread().execute(() -> {
             if (!status) {
-                Toast.makeText(activity, "Uninstall permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
             } else {
 
                 savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
@@ -551,10 +551,10 @@ public class MarketFragment extends Fragment implements
         protected void onPreExecute() {
             super.onPreExecute();
 //            dialog = new ProgressDialog(contextWeakReference.get());
-            dialog.setTitle("Downloading App, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, contextWeakReference.get().getResources().getString(R.string.cancel_text), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

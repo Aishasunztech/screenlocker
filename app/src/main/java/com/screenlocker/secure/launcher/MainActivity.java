@@ -399,7 +399,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     public void clearCache(Context context) {
         final KProgressHUD hud = KProgressHUD.create(MainActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Clearing cache")
+                .setLabel(getResources().getString(R.string.clearing_cache))
                 .setCancellable(false)
                 .setAnimationSpeed(2)
                 .setDimAmount(0.5f);
@@ -451,7 +451,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private void clearCacheSuccess() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Cache successfully cleared");
+        alertDialog.setTitle(getResources().getString(R.string.clearing_cache_successfull));
         alertDialog.setIcon(R.drawable.ic_checked);
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
+import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -23,7 +24,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        setTitle("Permissions");
+        setTitle(getResources().getString(R.string.permission));
 
         /**
          * if user has completed setup wizard move to Home Activity

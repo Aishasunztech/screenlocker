@@ -124,14 +124,14 @@ public class UtilityFunctions {
         return -1;
     }
 
-    public static String secondsToMintues(int seconds)
+    public static String secondsToMintues(int seconds,Context context)
     {
         int minutes = seconds/60;
         if(minutes!= 0)
         {
-            return minutes + " minutes";
+            return minutes + " " + context.getResources().getString(R.string.minutes);
         }
-        return seconds + " seconds";
+        return seconds + " " + context.getResources().getString(R.string.seconds);
     }
 
     public static String getWifiStatus(Context context)
@@ -145,7 +145,7 @@ public class UtilityFunctions {
             String SSID = wifiInfo.getSSID().substring(1,wifiInfo.getSSID().length()-1);
             if(SSID.contains("unknown"))
             {
-                  return "Not Connected";
+                  return context.getResources().getString(R.string.not_connected);
             }
             else{
 
@@ -157,21 +157,21 @@ public class UtilityFunctions {
         } else {
             int wifiState = wifiManager.getWifiState();
             if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                return "Not Connected";
+                return context.getResources().getString(R.string.not_connected);
             } else {
-                return "Disabled";
+                return context.getResources().getString(R.string.disabled);
             }
         }
     }
 
-    public static String getBlueToothStatus()
+    public static String getBlueToothStatus(Context context)
     {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(bluetoothAdapter.isEnabled())
         {
-            return "Enabled";
+            return context.getResources().getString(R.string.enabled);
         }else{
-            return "Disabled";
+            return context.getResources().getString(R.string.disabled);
 
         }
     }

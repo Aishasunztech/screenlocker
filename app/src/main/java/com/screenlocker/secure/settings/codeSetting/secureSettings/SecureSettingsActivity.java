@@ -166,7 +166,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Secure Settings Permission");
+        getSupportActionBar().setTitle(getResources().getString(R.string.secure_settings_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -235,17 +235,14 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                 });
 
                 int encryptedStatus = myDao.checkEncryptedStatus(false);
-                AppExecutor.getInstance().getMainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(encryptedStatus == 0)
-                        {
-                            menu.findItem(R.id.extension_encryption_all).setChecked(true);
+                AppExecutor.getInstance().getMainThread().execute(() -> {
+                    if(encryptedStatus == 0)
+                    {
+                        menu.findItem(R.id.extension_encryption_all).setChecked(true);
 
-                        }else{
-                            menu.findItem(R.id.extension_encryption_all).setChecked(false);
+                    }else{
+                        menu.findItem(R.id.extension_encryption_all).setChecked(false);
 
-                        }
                     }
                 });
 
@@ -270,20 +267,17 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         if (subExtension.isGuest())
                             subExtension.setGuest(false);
                     }
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE, false);
-                            extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setRecyclerView(extensionsList);
+                    new Thread(() -> {
+                        myDao.setAllGuest(AppConstants.SECURE_SETTINGS_UNIQUE, false);
+                        extensionsList = myDao.getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setRecyclerView(extensionsList);
 
-                                }
-                            });
+                            }
+                        });
 
-                        }
                     }).start();
                     PrefUtils.saveBooleanPref(this, EXTENSION_GUEST_CHECKED, false);
                     item.setChecked(false);
