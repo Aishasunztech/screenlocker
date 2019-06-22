@@ -338,14 +338,13 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     @Override
     public void onDeleteEntry(SimEntry entry) {
         new AlertDialog.Builder(this)
-                .setTitle("Delete")
+                .setTitle(getResources().getString(R.string.delete_title))
                 .setIcon(android.R.drawable.ic_delete)
-                .setMessage("Do you want to delete SIM with ICCID: "+
-                        entry.getIccid()+"?")
-                .setPositiveButton("Delete",(dialog, which) -> {
+                .setMessage(getResources().getString(R.string.want_to_delete,entry.getIccid()))
+                .setPositiveButton(getResources().getString(R.string.delete_title),(dialog, which) -> {
                     viewModel.deleteSimEntry(entry);
                 })
-                .setNegativeButton("Cancel",(dialog, which) -> {
+                .setNegativeButton(getResources().getString(R.string.cancel_text),(dialog, which) -> {
                     dialog.dismiss();
                 })
                 .show();

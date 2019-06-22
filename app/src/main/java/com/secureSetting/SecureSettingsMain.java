@@ -214,7 +214,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Secure Settings");
+            getSupportActionBar().setTitle(getResources().getString(R.string.secure_settings_activity_title));
         }
 
     }
@@ -345,12 +345,9 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 startActivity(intent);
             }
         });
-        findViewById(R.id.screen_lock_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
-                startActivity(intent);
-            }
+        findViewById(R.id.screen_lock_container).setOnClickListener(v -> {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
+            startActivity(intent);
         });
         battery_container.setOnClickListener(v -> {
 
@@ -366,29 +363,20 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
         });
 
-        sound_container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
-                startActivity(intent);
-            }
+        sound_container.setOnClickListener(v -> {
+            Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
+            startActivity(intent);
         });
-        language_container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$LanguageAndInputSettingsActivity");
-                intent.setComponent(cn);
-                startActivity(intent);
+        language_container.setOnClickListener(v -> {
+            final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$LanguageAndInputSettingsActivity");
+            intent.setComponent(cn);
+            startActivity(intent);
 
-            }
         });
-        dateTimeContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
-                startActivity(intent);
-            }
+        dateTimeContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+            startActivity(intent);
         });
 
         mobile_container.setOnClickListener(v -> {
@@ -415,9 +403,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         super.onResume();
 
 
-        bluetoothName.setText(getBlueToothStatus());
+        bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
-        sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this)) + " of inactivity");
+//        sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this),SecureSettingsMain.this) + " of inactivity");
+        sleepTime.setText(getResources().getString(R.string.inactivity_message,secondsToMintues(getSleepTime(SecureSettingsMain.this),SecureSettingsMain.this)));
         wifiName.setText(getWifiStatus(this));
 
         Intent intent = getIntent();

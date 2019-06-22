@@ -165,21 +165,19 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
 
         registerReceiver(appsStatusReceiver, filter);
-//        setScreenShot(true);
+        String language_key = PrefUtils.getStringPref(getAppContext(),AppConstants.LANGUAGE_PREF);
+        if(language_key != null && !language_key.equals(""))
+        {
+            CommonUtils.setAppLocale(language_key,getAppContext());
+        }
 
-    }
-
-    public void setScreenShot(boolean isEnable) {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                Window window = activity.getWindow();
-                if (isEnable) {
-
-                    window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-                            WindowManager.LayoutParams.FLAG_SECURE);
-                } else {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                String language_key = PrefUtils.getStringPref(getAppContext(),AppConstants.LANGUAGE_PREF);
+                if(language_key != null && !language_key.equals(""))
+                {
+                    CommonUtils.setAppLocale(language_key,getAppContext());
                 }
             }
 
@@ -213,6 +211,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
+
     }
 
 

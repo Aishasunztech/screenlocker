@@ -78,7 +78,7 @@ public class LinkDeviceFragment extends AbstractStep {
     //if user try to next without linking device
     @Override
     public String error() {
-        return "Please Link Device or Skip";
+        return getResources().getString(R.string.please_link_skip);
     }
 
     // user can skip the current step
@@ -115,7 +115,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return "Link Device";
+        return getResources().getString(R.string.link_device);
     }
 
     @Override
@@ -155,12 +155,12 @@ public class LinkDeviceFragment extends AbstractStep {
     private void showNetworkDialog( Context context) {
 
         androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(context).create();
-        alertDialog.setTitle("Network Not Connected!");
+        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage("Please connect to the internet before proceeding.");
+        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
 
-        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, "NETWORK SETUP", (dialog, which) -> {
+        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
             Intent intent = new Intent(context, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -168,7 +168,7 @@ public class LinkDeviceFragment extends AbstractStep {
         });
 
 
-        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> dialog.dismiss());
 
         alertDialog.show();

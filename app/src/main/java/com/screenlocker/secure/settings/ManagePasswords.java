@@ -44,8 +44,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_manage_passwords);
         setIds();
         if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
-            duressStatus.setText("Activated");
-        } else duressStatus.setText("Not Set");
+            duressStatus.setText(getResources().getString(R.string.activated_code));
+        } else duressStatus.setText(getResources().getString(R.string.not_set));
         setListeners();
         settingsActivity = new SettingsActivity();
 
@@ -58,7 +58,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
         if (requestCode == REQUEST_CODE_PASSWORD) {
             if (resultCode == RESULT_OK) {
-                showAlertDialog(ManagePasswords.this, "Password Changed!", "Password Successfully Changed.", R.drawable.ic_checked);
+                showAlertDialog(ManagePasswords.this, getResources().getString(R.string.password_changed_title), getResources().getString(R.string.password_changed_message), R.drawable.ic_checked);
             }
         }
 
@@ -81,7 +81,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         alertDialog.setTitle(title);
         alertDialog.setIcon(icon);
         alertDialog.setMessage(msg);
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_text),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -101,7 +101,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Manage Passwords");
+            getSupportActionBar().setTitle(getResources().getString(R.string.manage_password_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -157,8 +157,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         super.onResume();
         isBackPressed = false;
         if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
-            duressStatus.setText("Activated");
-        } else duressStatus.setText("Not Set");
+            duressStatus.setText(getResources().getString(R.string.activated_code));
+        } else duressStatus.setText(getResources().getString(R.string.not_set));
         setListeners();
     }
 
@@ -204,7 +204,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -219,7 +219,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
                 }
             }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
         }
@@ -248,7 +248,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -262,7 +262,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity, "Invalid password", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_encrypted_password));
@@ -273,14 +273,14 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     public void handleSetDuressPassword(AppCompatActivity activity,SettingsPresenter settingsPresenter, View rootLayout) {
         if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
             new AlertDialog.Builder(activity).
-                    setTitle("Warning!")
-                    .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.").setPositiveButton("Ok", (dialogInterface, i) -> {
+                    setTitle(getResources().getString(R.string.duress_password_warning))
+                    .setMessage(getResources().getString(R.string.duress_password_message)).setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
                         goToDuress = true;
                         Intent intent = new Intent(activity, SetUpLockActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
                 activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
             })
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
+                    .setNegativeButton(getResources().getString(R.string.cancel_text), (dialogInterface, i) -> dialogInterface.cancel())
                     .show();
 
         } else {
@@ -297,7 +297,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                    showAlertDialog(activity, "Invalid Password", "The password you entered is incorrect.", android.R.drawable.stat_sys_warning);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
                     return;
                 }
 
@@ -311,7 +311,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
                 } else {
-                    showAlertDialog(activity, "Invalid password!", "The password you entered is incorrect.", android.R.drawable.ic_dialog_alert);
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
 //                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_duress_password));

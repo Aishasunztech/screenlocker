@@ -33,11 +33,11 @@ import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 
 public class SetDuressPasswordFragment extends AbstractStep {
-    private String error = "Please Set or Skip Password";
+    private String error = "";
 
     @Override
     public String name() {
-        return "Duress Pin";
+        return getResources().getString(R.string.duress_pin);
     }
 
 
@@ -101,6 +101,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        error = getResources().getString(R.string.set_skip_password);
     }
 
     private AlertDialog builder;
@@ -120,13 +121,13 @@ public class SetDuressPasswordFragment extends AbstractStep {
         View v = inflater.inflate(R.layout.guess_password_layout, container, false);
         ButterKnife.bind(this, v);
         builder = new AlertDialog.Builder(getContext()).
-                setTitle("Warning!")
-                .setMessage("Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.")
-                .setPositiveButton("Ok", (dialogInterface, i) -> {
+                setTitle(getResources().getString(R.string.warning))
+                .setMessage(getResources().getString(R.string.duress_pin_message))
+                .setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
                     dialogInterface.cancel();
                 })
 
-                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                .setNegativeButton(getResources().getString(R.string.cancel_text), (dialogInterface, i) -> {
 //                        dialogInterface.cancel();
                     dialogInterface.dismiss();
 
@@ -173,7 +174,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
                 return true;
 
             } else {
-                error = "This password is already taken please try again.";
+                error = getResources().getString(R.string.password_taken);
                 return false;
             }
 

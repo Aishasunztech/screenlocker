@@ -53,7 +53,6 @@ import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 public class SecureMarketActivity extends BaseActivity
        {
 
-    private Toolbar toolbar;
     private PackageManager mPackageManager;
     private ViewPager container;
     private TabLayout tabLayout;
@@ -76,7 +75,6 @@ public class SecureMarketActivity extends BaseActivity
 
         mPackageManager = getPackageManager();
 
-        toolbar = findViewById(R.id.marketToolbar);
         container = findViewById(R.id.marketContainer);
         tabLayout = findViewById(R.id.marketTabLayout);
         et_market_search = findViewById(R.id.et_marketSearch);
@@ -119,10 +117,6 @@ public class SecureMarketActivity extends BaseActivity
 
             }
         });
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Secure Market");
 
         container.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @NonNull
@@ -168,11 +162,11 @@ public class SecureMarketActivity extends BaseActivity
                 switch (position)
                 {
                     case 0:
-                        return "Install";
+                        return getResources().getString(R.string.install);
                     case 1:
-                        return "UnInstall";
+                        return getResources().getString(R.string.uninstall);
                         default:
-                            return "Install";
+                            return getResources().getString(R.string.install);
 
                 }
 

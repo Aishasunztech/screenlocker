@@ -98,7 +98,7 @@ public class IMEIActivity extends BaseActivity {
 
     private void setToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("IMEI Menu");
+        getSupportActionBar().setTitle(getResources().getString(R.string.imei_menu_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

@@ -112,7 +112,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Load Policy");
+        getSupportActionBar().setTitle(getString(R.string.policy_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -120,7 +120,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnDefaultPolicy:
-                handleLoadPolicy("default_policy", "This will push the default Policy set by your Dealer.");
+                handleLoadPolicy(getResources().getString(R.string.default_policy), getResources().getString(R.string.default_policy_message));
                 break;
             case R.id.btnLoadPolicy:
                 submit();
@@ -132,9 +132,10 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void submit() {
         String policyName = etPolicyName.getText().toString();
         if (TextUtils.isEmpty(policyName)) {
-            etPolicyName.setError("please enter policy name.");
+            etPolicyName.setError(getResources().getString(R.string.enter_policy_name));
         } else {
-            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
+//            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
+            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device,policyName));
         }
     }
 
@@ -144,8 +145,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
 
         new AlertDialog.Builder(PolicyActivity.this).
-                setTitle("Warning!")
-                .setMessage(text).setPositiveButton("Ok", (dialogInterface, i) -> {
+                setTitle(getResources().getString(R.string.policy_warning_title))
+                .setMessage(text).setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
 
             if (mService != null) {
                 mService.onLoadPolicy(policyName);
@@ -154,7 +155,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             }
 
         })
-                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                .setNegativeButton(getResources().getString(R.string.cancel_text), (dialogInterface, i) -> {
                     dialogInterface.cancel();
                 })
                 .show();
@@ -166,19 +167,19 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         isLinkDialogOpen = true;
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Device Not Linked!");
+        alertDialog.setTitle(getResources().getString(R.string.device_not_linked));
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
         alertDialog.setCancelable(false);
-        alertDialog.setMessage("Please link your device before proceeding.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "LINK DEVICE", (dialog, which) -> {
+        alertDialog.setMessage(getResources().getString(R.string.link_device_to_proceed));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.link_device_button), (dialog, which) -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
 
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> {
                     dialog.dismiss();
                     finish();
@@ -224,12 +225,12 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         isNetworkDialogOpen = true;
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Network Not Connected!");
+        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
         alertDialog.setCancelable(false);
-        alertDialog.setMessage("Please connect to the internet before proceeding.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "NETWORK SETUP", (dialog, which) -> {
+        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
             Intent intent = new Intent(this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -237,7 +238,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> {
                     dialog.dismiss();
                     finish();
@@ -337,7 +338,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         btnLoadPolicy.setEnabled(true);
         btnDefault.setEnabled(true);
         progressBar.setVisibility(View.GONE);
-        etPolicyName.setError("Invalid policy name");
+        etPolicyName.setError(getResources().getString(R.string.invalid_policy_name));
     }
 
     private void processingView() {

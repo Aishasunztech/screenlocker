@@ -99,7 +99,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Installed Apps");
+        getSupportActionBar().setTitle(getResources().getString(R.string.installed_apps_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -151,7 +151,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
                                 @Override
                                 public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                                    Toast.makeText(InstallAppsActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -293,7 +293,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         protected void onPreExecute() {
             super.onPreExecute();
             dialog = new ProgressDialog(contextWeakReference.get());
-            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dialog.show();

@@ -2,6 +2,7 @@ package com.screenlocker.secure.launcher;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 }
 
             } else {
-                Toast.makeText(context, "App is disabled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getResources().getString(R.string.app_disabled), Toast.LENGTH_SHORT).show();
             }
 
 
@@ -129,19 +130,19 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     private void showCacheDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle("Clear Cache");
+        alertDialog.setTitle(context.getResources().getString(R.string.clear_cache_title));
         alertDialog.setIcon(android.R.drawable.stat_sys_warning);
 
-        alertDialog.setMessage("Proceed with clearing cache?");
+        alertDialog.setMessage(context.getResources().getString(R.string.clear_cache_message));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.ok_capital), (dialog, which) -> {
             listener.clearCache(context);
 
 
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
 
@@ -162,10 +163,27 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         //Here we use the information in the list we created to define the views
 
         String appLabel = appsList.get(i).getLabel();
+
         // Drawable appIcon = appsList.get(i).getIcon();
 
         TextView textView = viewHolder.textView;
-        textView.setText(appLabel);
+        if(appLabel.equals("Secure Market"))
+        {
+            textView.setText(context.getResources().getString(R.string.secure_market_title));
+
+        }
+        else if(appLabel.equals("Secure Clear"))
+        {
+            textView.setText(context.getResources().getString(R.string.secure_clear_title));
+
+        }else if(appLabel.equals("Secure Settings"))
+        {
+            textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
+
+        }
+        else{
+            textView.setText(appLabel);
+        }
         //  ImageView imageView = viewHolder.img;
         // imageView.setImageDrawable(appIcon);
 

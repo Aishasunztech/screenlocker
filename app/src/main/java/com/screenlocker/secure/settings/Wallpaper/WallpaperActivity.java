@@ -37,7 +37,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_change_wallpaper);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Change Wallpaper");
+        getSupportActionBar().setTitle(getResources().getString(R.string.change_wallpaper_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         findViewById(R.id.btnGuestWallpaper).setOnClickListener(this);
         findViewById(R.id.btnEncryptedWallpaper).setOnClickListener(this);
@@ -62,13 +62,13 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnGuestWallpaper:
-                showAlertDialog("Enter Guest Password",KEY_GUEST);
+                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
                 break;
             case R.id.btnEncryptedWallpaper:
-                showAlertDialog("Enter Encrypted Password",KEY_MAIN);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
                 break;
             case R.id.btnLockScreenWallpaer:
-                showAlertDialog("Enter Encrypted Password",KEY_CODE);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
                 break;
         }
     }
@@ -103,7 +103,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 (dialog, which) -> {
                     String password = input.getText().toString().trim();
                     if (password.equals("")){
-                        Snackbar.make(findViewById(R.id.rootLayout),"Please Enter Password",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(findViewById(R.id.rootLayout),getResources().getString(R.string.please_enter_password),Snackbar.LENGTH_LONG).show();
                     }else
                         handlePassword(password , type);
                 });
@@ -161,10 +161,10 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     private void showInvalidPasswordDialog(AppCompatActivity activity) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setTitle("Invalid password");
+        alertDialog.setTitle(getResources().getString(R.string.invalid_password_title));
         alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-        alertDialog.setMessage("The password you entered is incorrect.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setMessage(getResources().getString(R.string.invalid_password_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,  getResources().getString(R.string.ok_text),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }

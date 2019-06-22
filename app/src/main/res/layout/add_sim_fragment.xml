@@ -247,7 +247,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Manual Registration"
+            android:text="@string/manual_registration"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <LinearLayout
@@ -278,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:inputType="textCapSentences"
-                android:hint="Note" />
+                android:hint="@string/note_hint" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -292,7 +292,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Guest"
+                    android:text="@string/guest"
                     app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
                     app:layout_constraintEnd_toStartOf="@+id/manualEncrypted"
                     app:layout_constraintStart_toStartOf="parent"
@@ -304,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Encrypted"
+                    android:text="@string/encrypted"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -316,7 +316,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Enable"
+                    android:text="@string/enable"
                     app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/manualEncrypted"
@@ -331,7 +331,7 @@
                 android:layout_margin="8dp"
                 android:paddingLeft="@dimen/_8sdp"
                 android:paddingRight="@dimen/_8sdp"
-                android:text="Register Manual" />
+                android:text="@string/register_manual" />
 
 
         </LinearLayout>

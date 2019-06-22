@@ -27,7 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            app:titleTextColor="@color/SettingsColorPrimary">
+            app:titleTextColor="@color/SettingsColorPrimary"
+            >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -37,7 +38,7 @@
                     android:id="@+id/toolbarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Secure Market"
+                    android:text="@string/secure_market_title"
                     android:textColor="@color/SettingsColorPrimary"
                     android:gravity="center"
                     android:textSize="@dimen/_15ssp"
@@ -53,7 +54,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:hint="Search"
+                    android:hint="@string/search"
                     app:layout_constraintLeft_toRightOf="@+id/toolbarTitle"
                     android:imeOptions="actionSearch"
                     android:inputType="text"

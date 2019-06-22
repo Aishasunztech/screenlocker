@@ -98,7 +98,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
     private void setToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Apps");
+        getSupportActionBar().setTitle(getResources().getString(R.string.apps_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
