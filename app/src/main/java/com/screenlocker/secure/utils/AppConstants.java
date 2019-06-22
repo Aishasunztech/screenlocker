@@ -98,7 +98,6 @@ public class AppConstants {
     //End points
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-
     //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
     public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator

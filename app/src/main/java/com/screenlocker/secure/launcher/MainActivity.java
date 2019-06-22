@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
         if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
-                && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE)) {
+                && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE) && PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
 
             if (!mainPresenter.isServiceRunning()) {
                 mainPresenter.startLockService(lockScreenIntent);
