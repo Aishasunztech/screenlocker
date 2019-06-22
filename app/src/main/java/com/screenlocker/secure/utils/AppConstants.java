@@ -78,8 +78,8 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
     //        public static final String URL_1 = "http://192.168.0.122:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
@@ -251,22 +251,22 @@ public class AppConstants {
     /*
      * Screen Locker
      * */
-//    public static int attempt_5 = 1;
-//    public static int attempt_6 = 5;
-//    public static int attempt_7 = 10;
-//    public static int attempt_8 = 15;
-//    public static int attempt_9 = 30;
-//    public static int attempt_10 = 30;
+    public static int attempt_5 = 1;
+    public static int attempt_6 = 5;
+    public static int attempt_7 = 10;
+    public static int attempt_8 = 15;
+    public static int attempt_9 = 30;
+    public static int attempt_10 = 30;
 
     /*
      *Titan Locker
      * */
-    public static int attempt_5 = 1;
-    public static int attempt_6 = 1;
-    public static int attempt_7 = 3;
-    public static int attempt_8 = 5;
-    public static int attempt_9 = 5;
-    public static int attempt_10 = 5;
+//    public static int attempt_5 = 1;
+//    public static int attempt_6 = 1;
+//    public static int attempt_7 = 3;
+//    public static int attempt_8 = 5;
+//    public static int attempt_9 = 5;
+//    public static int attempt_10 = 5;
 
 
     public static final String IMEI_CHANGED = "imeiChanged";

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Titan Locker</string>
+    <string name="app_name">Screen Locker</string>
 
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
@@ -35,7 +35,7 @@
     <string name="hint_please_enter_encrypted_pin">Entrer Code PIN Crypté</string>
     <string name="empty">Le champ de mot de passe est vide</string>
     <string name="password_dont_match">Les mots de passe ne correspondent pas</string>
-    <string name="toolbar_title">Titan Locker</string>
+    <string name="toolbar_title">Screen Locker</string>
     <string name="set_guest_code">Code PIN invité</string>
     <string name="set_duress_code">Code PIN Duress</string>
     <string name="set_encrypted_code">Code PIN Crypté</string>
