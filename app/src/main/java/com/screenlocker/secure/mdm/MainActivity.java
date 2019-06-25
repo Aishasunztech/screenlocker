@@ -279,6 +279,7 @@ public class MainActivity extends BaseActivity {
                                         switch (msg) {
                                             case UNLINKED_DEVICE:
                                                 showMainContent();
+                                                //stop sevice
                                                 break;
                                             case NEW_DEVICE:
                                                 if (isLinked) {

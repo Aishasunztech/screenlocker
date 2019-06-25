@@ -2,6 +2,8 @@ package com.screenlocker.secure.socket.utils;
 
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
@@ -745,5 +748,19 @@ public class utils {
         return formatter.format(calendar.getTime());
     }
 
-
+    public static boolean isJobServiceOn(Context context, int JOB_ID) {
+        JobScheduler scheduler = (JobScheduler) context.getSystemService( JOB_SCHEDULER_SERVICE ) ;
+        boolean hasBeenScheduled = false ;
+        for ( JobInfo jobInfo : scheduler.getAllPendingJobs() ) {
+            if ( jobInfo.getId() == JOB_ID ) {
+                hasBeenScheduled = true ;
+                break ;
+            }
+        }
+        return hasBeenScheduled ;
+    }
+    public static void cancelJob(Context context,int JOB_ID){
+        JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler1.cancel(JOB_ID);
+    }
 }

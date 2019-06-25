@@ -3,6 +3,7 @@ package com.screenlocker.secure.utils;
 public class AppConstants {
 
     public static final long ONE_DAY_INTERVAL = 15 * 60 * 1000L;
+    public static final long FIVE_MIN_INTERVAL = 5 * 60 * 1000L;
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";

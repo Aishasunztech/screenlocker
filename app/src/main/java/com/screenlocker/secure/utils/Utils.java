@@ -173,7 +173,7 @@ public class Utils {
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
         String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
         if (bg == null || bg.equals("")) {
-            rootView.setBackgroundResource(R.drawable.background_icon);
+            rootView.setBackgroundResource(R.raw.remountan);
 
         } else {
             rootView.setBackgroundResource(Integer.parseInt(bg));
