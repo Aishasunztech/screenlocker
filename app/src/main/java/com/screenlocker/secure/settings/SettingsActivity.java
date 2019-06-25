@@ -50,8 +50,10 @@ import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.ChangeLanguageActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -185,12 +187,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-        if (linkStatus) {
-            tvlinkDevice.setVisibility(View.GONE);
-        } else {
-            tvlinkDevice.setVisibility(View.VISIBLE);
-        }
+//        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+//        if (linkStatus) {
+//            tvlinkDevice.setVisibility(View.GONE);
+//        } else {
+//            tvlinkDevice.setVisibility(View.VISIBLE);
+//        }
 
     }
 
@@ -708,7 +710,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (state) {
                 String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                 String serialNo = DeviceIdUtils.getSerialNumber();
-                if (serialNo != null) {
+                if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
                     new ApiUtils(SettingsActivity.this, macAddress, serialNo);
                 }
             } else {

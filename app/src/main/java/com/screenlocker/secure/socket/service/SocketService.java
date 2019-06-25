@@ -274,6 +274,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         new CheckInstance(internet -> {
                             if (internet) {
                                 String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
+                                socketManager.destroy();
                                 socketManager.connectSocket(token, device_id, live_url);
                             }
                         });

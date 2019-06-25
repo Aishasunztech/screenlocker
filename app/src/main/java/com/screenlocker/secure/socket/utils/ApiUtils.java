@@ -69,19 +69,11 @@ public class ApiUtils implements ApiRequests {
                             public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
                                 if (response.isSuccessful() && response.body() != null) {
-
-
                                     DeviceStatusResponse deviceStatusResponse = response.body();
                                     String msg = deviceStatusResponse.getMsg();
                                     Timber.d("response :" + msg);
                                     if (deviceStatusResponse.isStatus()) {
                                         saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
-                                        boolean isLinked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
-
-                                        if (isLinked) {
-                                            utils.startSocket(context, deviceStatusResponse.getDevice_id(), deviceStatusResponse.getToken());
-
-                                        }
                                         switch (msg) {
                                             case ACTIVE:
                                                 utils.unSuspendDevice(context);

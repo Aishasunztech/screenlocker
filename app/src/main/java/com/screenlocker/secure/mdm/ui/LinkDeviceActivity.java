@@ -639,16 +639,14 @@ public class LinkDeviceActivity extends BaseActivity {
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         String serialNo = DeviceIdUtils.getSerialNumber();
-        if (serialNo != null) {
-            new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
-        }
 
+        new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
 
         finishedRefreshing();
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
-        btnLinkDevice.setText("Next");
-        btnLinkDevice.setEnabled(true);
+        btnLinkDevice.setText("Device Linked");
+        btnLinkDevice.setEnabled(false);
         linked = true;
         tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 

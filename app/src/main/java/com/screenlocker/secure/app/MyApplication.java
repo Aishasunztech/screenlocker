@@ -260,6 +260,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
     }
 
+    private AsyncCalls asyncCalls;
 
     private void onlineConnection() {
 
@@ -268,7 +269,11 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         String[] urls = {URL_1, URL_2};
 
-        new AsyncCalls(output -> {
+        if (asyncCalls != null) {
+            asyncCalls.cancel(true);
+        }
+
+        asyncCalls = new AsyncCalls(output -> {
 
             Timber.d("output : " + output);
 
@@ -277,27 +282,33 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                checkForDownload();
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-
+                Timber.d("LinkStatus :" + linkStatus);
 
                 if (linkStatus) {
-                    Timber.d("LinkStatus :" + linkStatus);
-                    String macAddress =DeviceIdUtils.generateUniqueDeviceId(this);
-                    String serialNo = DeviceIdUtils.getSerialNumber();
 
+                    Timber.d("LinkStatus :" + linkStatus);
+                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                    String serialNo = DeviceIdUtils.getSerialNumber();
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
                 AppConstants.result = true;
+                checkForDownload();
+
             }
             AppConstants.isProgress = false;
-        }, this, urls).execute();// checking hosts
+        }, this, urls);// checking hosts
+        asyncCalls.execute();
     }
 
+    private CheckInstance checkInstance;
 
     private void checkForDownload() {
-        new CheckInstance(internet -> {
+        if (checkInstance != null) {
+            checkInstance.cancel(true);
+        }
+        checkInstance = new CheckInstance(internet -> {
             if (internet) {
 
                 String currentVersion = "1";

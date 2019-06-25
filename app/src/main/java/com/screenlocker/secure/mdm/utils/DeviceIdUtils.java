@@ -93,30 +93,44 @@ public class DeviceIdUtils {
         String uniqueId = null;
         if (context != null) {
 
-
-            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-            boolean wasWifiEnabled = wifiManager.isWifiEnabled();
-
-            if (!wifiManager.isWifiEnabled()) {
-                // ENABLE THE WIFI FIRST
-                wifiManager.setWifiEnabled(true);
-                try {
-                    // Let's give the device some-time to start the wifi
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Timber.e(e);
-                }
-            }
-
             uniqueId = getMacAddress();
 
-            if (!wasWifiEnabled) {
-                wifiManager.setWifiEnabled(false);
+
+            if (uniqueId.equals("02:00:00:00:00:00")) {
+
+                uniqueId = PrefUtils.getStringPref(context, DFAULT_MAC);
+
+                if (uniqueId == null) {
+
+                    WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    boolean wasWifiEnabled = wifiManager.isWifiEnabled();
+
+                    if (!wifiManager.isWifiEnabled()) {
+                        // ENABLE THE WIFI FIRST
+                        wifiManager.setWifiEnabled(true);
+                        try {
+                            // Let's give the device some-time to start the wifi
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            Timber.e(e);
+                        }
+                    }
+
+                    uniqueId = getMacAddress();
+
+                    if (!wasWifiEnabled) {
+                        wifiManager.setWifiEnabled(false);
+                    }
+
+
+                }
+
+
+            } else {
+                PrefUtils.saveStringPref(context, DFAULT_MAC, uniqueId);
             }
 
         }
-
 
         return uniqueId;
     }
@@ -284,7 +298,8 @@ public class DeviceIdUtils {
         }
     }
 
-    private static int sumDig(int n) // Function for finding and returning sum of digits of a number
+    private static int sumDig(
+            int n) // Function for finding and returning sum of digits of a number
     {
         int a = 0;
         while (n > 0) {

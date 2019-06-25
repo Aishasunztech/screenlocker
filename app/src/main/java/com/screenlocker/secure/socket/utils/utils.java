@@ -22,6 +22,7 @@ import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.model.Settings;
@@ -458,18 +459,22 @@ public class utils {
             context.startService(lockScreenIntent);
         }
 
+
         boolean device_linked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
 
-        if (!isMyServiceRunning(SocketService.class, context) && device_linked) {
+        if (device_linked && SocketManager.getInstance().getSocket() == null) {
+            String token = PrefUtils.getStringPref(context, TOKEN);
+            startSocket(context, device_id, token);
+        } else if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
             String token = PrefUtils.getStringPref(context, TOKEN);
             startSocket(context, device_id, token);
         }
+
 
     }
 
     public static void unlinkDevice(Context context, boolean status) {
 
-        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
         PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
@@ -556,9 +561,15 @@ public class utils {
         String token = PrefUtils.getStringPref(context, TOKEN);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
 
-        if (!isMyServiceRunning(SocketService.class, context)) {
+
+        boolean device_linked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+
+        if (device_linked && SocketManager.getInstance().getSocket() == null) {
+            startSocket(context, device_id, token);
+        } else if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
             startSocket(context, device_id, token);
         }
+
 
         PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
 
@@ -749,17 +760,18 @@ public class utils {
     }
 
     public static boolean isJobServiceOn(Context context, int JOB_ID) {
-        JobScheduler scheduler = (JobScheduler) context.getSystemService( JOB_SCHEDULER_SERVICE ) ;
-        boolean hasBeenScheduled = false ;
-        for ( JobInfo jobInfo : scheduler.getAllPendingJobs() ) {
-            if ( jobInfo.getId() == JOB_ID ) {
-                hasBeenScheduled = true ;
-                break ;
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        boolean hasBeenScheduled = false;
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == JOB_ID) {
+                hasBeenScheduled = true;
+                break;
             }
         }
-        return hasBeenScheduled ;
+        return hasBeenScheduled;
     }
-    public static void cancelJob(Context context,int JOB_ID){
+
+    public static void cancelJob(Context context, int JOB_ID) {
         JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler1.cancel(JOB_ID);
     }

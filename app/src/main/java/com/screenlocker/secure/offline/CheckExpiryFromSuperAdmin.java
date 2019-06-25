@@ -52,6 +52,8 @@ public class CheckExpiryFromSuperAdmin extends JobService {
         return false;
     }
 
+    private AsyncCalls asyncCalls;
+
     @Override
     public boolean onStopJob(JobParameters params) {
         return false;
@@ -63,7 +65,10 @@ public class CheckExpiryFromSuperAdmin extends JobService {
 
         String[] urls = {SUPER_ADMIN, URL_2};
 
-        new AsyncCalls(output -> {
+        if (asyncCalls != null) {
+            asyncCalls.cancel(true);
+        }
+        asyncCalls = new AsyncCalls(output -> {
             if (output != null) {
                 String url = output + SUPER_END_POINT;
                 ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
@@ -133,7 +138,9 @@ public class CheckExpiryFromSuperAdmin extends JobService {
                 });
 
             }
-        }, context, urls).execute();
+        }, context, urls);
+
+        asyncCalls.execute();
     }
 
     private void expire(Context context) {
