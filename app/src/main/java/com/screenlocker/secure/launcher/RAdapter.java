@@ -72,7 +72,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             context.startActivity(intent);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
-
                             context.startActivity(new Intent(context, ChatActivity.class));
                             break;
 
