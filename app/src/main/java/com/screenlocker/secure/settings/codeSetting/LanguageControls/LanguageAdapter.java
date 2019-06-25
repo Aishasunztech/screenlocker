@@ -1,20 +1,27 @@
 package com.screenlocker.secure.settings.codeSetting.LanguageControls;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
+
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.MyViewHolder> {
     private ArrayList<LanguageModel> langList;
@@ -66,6 +73,11 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.MyView
             CommonUtils.setAppLocale(languageModel.getLanguage_key(), context);
             PrefUtils.saveStringPref(context, AppConstants.LANGUAGE_PREF, languageModel.getLanguage_key());
             listener.recreatActivity();
+            Toast.makeText(context, context.getResources().getString(R.string.language_is_changed), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(BROADCAST_APPS_ACTION);
+            intent.putExtra(KEY_DATABASE_CHANGE, "apps");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
         }
     }

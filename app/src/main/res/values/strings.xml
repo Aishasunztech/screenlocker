@@ -311,6 +311,8 @@
     <string name="search">Search</string>
     <string name="expiry">Expiry (days remaining)</string>
     <string name="device_id">Device Id</string>
+    <string name="language_is_changed">Language is changed</string>
+    <string name="contact_support_chat">Contact Support</string>
     <string name="please_grant_all_permissions">Please Grant all permissions</string>
     <string name="invalid_link_code">Invalid link code</string>
     <string name="register_manual">Register Manual</string>

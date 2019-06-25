@@ -294,7 +294,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void onSocketEventFailed() {
         Timber.d("Socket event failed");
-        new ApiUtils(SocketService.this, DeviceIdUtils.getMacAddress(), DeviceIdUtils.getSerialNumber());
+        new ApiUtils(SocketService.this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
     }
 
     @Override
@@ -1020,7 +1020,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 }
 
                 String serial = DeviceIdUtils.getSerialNumber();
-                String mac = DeviceIdUtils.getMacAddress();
+                String mac = DeviceIdUtils.generateUniqueDeviceId(this);
 
                 jsonObject.put("serial", serial);
                 jsonObject.put("mac", mac);

@@ -3,6 +3,7 @@ package com.screenlocker.secure.settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,7 +13,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -42,7 +46,6 @@ import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.ChangeLanguageActivity;
@@ -139,7 +142,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         networkChangeReceiver = new NetworkChangeReceiver();
 
         init();
-
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
@@ -161,7 +163,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //                            lockScreen.setAction("locked");
 //                            ActivityCompat.startForegroundService(this, lockScreen);
 //                        }
-
                         PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
                         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
                             Intent intent = new Intent(this, SteppersActivity.class);
@@ -180,17 +181,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-//        if (linkStatus) {
-//            tvlinkDevice.setVisibility(View.GONE);
-//        } else {
-//            tvlinkDevice.setVisibility(View.VISIBLE);
-//        }
-//    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+        if (linkStatus) {
+            tvlinkDevice.setVisibility(View.GONE);
+        } else {
+            tvlinkDevice.setVisibility(View.VISIBLE);
+        }
+
+    }
 
     public void init() {
         setIds();
@@ -203,7 +205,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         createActiveDialog();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (manager != null) {
-            mMacAddress = CommonUtils.getMacAddress();
+            mMacAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         } else {
             mMacAddress = null;
         }
@@ -868,7 +870,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             Intent intent = new Intent(this, SocketService.class);
             if (state) {
-                String macAddress = CommonUtils.getMacAddress();
+                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                 String serialNo = DeviceIdUtils.getSerialNumber();
                 if (serialNo != null) {
                     new ApiUtils(SettingsActivity.this, macAddress, serialNo);

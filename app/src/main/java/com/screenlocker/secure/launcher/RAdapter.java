@@ -180,6 +180,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         {
             textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
 
+        }else if(appLabel.equals("Contact Support")){
+            textView.setText(context.getResources().getString(R.string.contact_support_chat));
         }
         else{
             textView.setText(appLabel);

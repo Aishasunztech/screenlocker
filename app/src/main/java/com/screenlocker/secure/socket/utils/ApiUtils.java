@@ -58,39 +58,41 @@ public class ApiUtils implements ApiRequests {
     @Override
     public void connectToSocket() {
         new CheckInstance(internet -> {
+
             if (internet) {
+                Timber.d("Instance" + MyApplication.oneCaller);
+
                 MyApplication.oneCaller
-                        .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), context.getPackageName() + context.getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
+                        .checkDeviceStatus(new DeviceModel(serialNo, DeviceIdUtils.getIPAddress(true), context.getPackageName() + context.getString(R.string.app_name), macAddress))
                         .enqueue(new Callback<DeviceStatusResponse>() {
                             @Override
                             public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
                                 if (response.isSuccessful() && response.body() != null) {
 
-                                    String msg = response.body().getMsg();
 
-
-                                    if (response.body().isStatus()) {
+                                    DeviceStatusResponse deviceStatusResponse = response.body();
+                                    String msg = deviceStatusResponse.getMsg();
+                                    Timber.d("response :" + msg);
+                                    if (deviceStatusResponse.isStatus()) {
+                                        saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
                                         boolean isLinked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+
                                         if (isLinked) {
-                                            utils.startSocket(context, PrefUtils.getStringPref(context, DEVICE_ID), PrefUtils.getStringPref(context, TOKEN));
+                                            utils.startSocket(context, deviceStatusResponse.getDevice_id(), deviceStatusResponse.getToken());
 
                                         }
                                         switch (msg) {
                                             case ACTIVE:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.unSuspendDevice(context);
                                                 break;
                                             case EXPIRED:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.suspendedDevice(context, "expired");
                                                 break;
                                             case SUSPENDED:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.suspendedDevice(context, "suspended");
                                                 break;
                                             case TRIAL:
-                                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                                 utils.unSuspendDevice(context);
                                                 break;
                                         }
@@ -110,7 +112,7 @@ public class ApiUtils implements ApiRequests {
 
                             @Override
                             public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
-
+                                Timber.d(t);
                                 String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                                 Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
                                 Intent socketIntent = new Intent(context, SocketService.class);

@@ -208,7 +208,7 @@ public class LinkDeviceActivity extends BaseActivity {
         // get ip address
         IP = DeviceIdUtils.getIPAddress(true);
         // get mac address
-        MAC = DeviceIdUtils.getMacAddress();
+        MAC = DeviceIdUtils.generateUniqueDeviceId(this);
 
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
@@ -422,7 +422,7 @@ public class LinkDeviceActivity extends BaseActivity {
             new CheckInstance(internet -> {
                 if (internet) {
                     MyApplication.oneCaller
-                            .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
+                            .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
                             .enqueue(new Callback<DeviceStatusResponse>() {
                                 @Override
                                 public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -637,7 +637,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         setProgressViews(false);
 
-        String macAddress = CommonUtils.getMacAddress();
+        String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         String serialNo = DeviceIdUtils.getSerialNumber();
         if (serialNo != null) {
             new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);

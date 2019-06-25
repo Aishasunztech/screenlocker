@@ -11,8 +11,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -24,9 +22,6 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
-import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
-import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -50,15 +45,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
-import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
-import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -165,19 +154,17 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
 
         registerReceiver(appsStatusReceiver, filter);
-        String language_key = PrefUtils.getStringPref(getAppContext(),AppConstants.LANGUAGE_PREF);
-        if(language_key != null && !language_key.equals(""))
-        {
-            CommonUtils.setAppLocale(language_key,getAppContext());
+        String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+        if (language_key != null && !language_key.equals("")) {
+            CommonUtils.setAppLocale(language_key, getAppContext());
         }
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                String language_key = PrefUtils.getStringPref(getAppContext(),AppConstants.LANGUAGE_PREF);
-                if(language_key != null && !language_key.equals(""))
-                {
-                    CommonUtils.setAppLocale(language_key,getAppContext());
+                String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+                if (language_key != null && !language_key.equals("")) {
+                    CommonUtils.setAppLocale(language_key, getAppContext());
                 }
             }
 
@@ -260,6 +247,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     @Override
     public void isConnected(boolean state) {
 
+        Timber.d("STATUS :" + state);
+
 
         if (state) {
             onlineConnection();
@@ -281,20 +270,24 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         new AsyncCalls(output -> {
 
+            Timber.d("output : " + output);
+
             if (output != null) {
                 PrefUtils.saveStringPref(appContext, LIVE_URL, output);
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                 Timber.d("live_url %s", live_url);
-
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                 checkForDownload();
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+
+
                 if (linkStatus) {
-                    String macAddress = CommonUtils.getMacAddress();
+                    Timber.d("LinkStatus :" + linkStatus);
+                    String macAddress =DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
-                    if (serialNo != null) {
-                        new ApiUtils(MyApplication.this, macAddress, serialNo);
-                    }
+
+                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+
                 }
                 AppConstants.result = true;
             }
@@ -356,7 +349,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         new CheckInstance(internet -> {
             if (internet) {
                 MyApplication.oneCaller
-                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getMacAddress(), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                         if (response.body() != null) {

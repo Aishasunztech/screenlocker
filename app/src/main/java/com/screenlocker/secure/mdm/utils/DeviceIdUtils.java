@@ -4,9 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.annotation.WorkerThread;
 import androidx.core.app.ActivityCompat;
 
 import android.telephony.SubscriptionInfo;
@@ -14,16 +17,29 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.screenlocker.secure.utils.PrefUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.DFAULT_MAC;
+
 public class DeviceIdUtils {
 
+    /**
+     * This method returns WLAN0's MAC Address
+     *
+     * @return WLAN0 MAC address or NULL if unable to get the mac address
+     */
+    @Nullable
     public static String getMacAddress() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -60,10 +76,51 @@ public class DeviceIdUtils {
                 return res1.toString();
             }
         } catch (Exception ex) {
-            return "02:00:00:00:00:00";
         }
         return "02:00:00:00:00:00";
     }
+
+
+    /**
+     * This method returns the device's WLAN MAC Address. We expect any device using the P2P sync module to
+     * either have a bluetooth or Wifi module. We are going to assume that they atleast have  Wifi module
+     *
+     * @return
+     */
+    @Nullable
+    @WorkerThread
+    public static final String generateUniqueDeviceId(Context context) {
+        String uniqueId = null;
+        if (context != null) {
+
+
+            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+            boolean wasWifiEnabled = wifiManager.isWifiEnabled();
+
+            if (!wifiManager.isWifiEnabled()) {
+                // ENABLE THE WIFI FIRST
+                wifiManager.setWifiEnabled(true);
+                try {
+                    // Let's give the device some-time to start the wifi
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Timber.e(e);
+                }
+            }
+
+            uniqueId = getMacAddress();
+
+            if (!wasWifiEnabled) {
+                wifiManager.setWifiEnabled(false);
+            }
+
+        }
+
+
+        return uniqueId;
+    }
+
 
     public static String getSerialNumber() {
         String serialNumber;
@@ -236,8 +293,6 @@ public class DeviceIdUtils {
         }
         return a;
     }
-
-
 
 
 }

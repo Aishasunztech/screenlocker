@@ -71,7 +71,7 @@ public class BlurWorker extends Worker {
 
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
 
-                app.setUniqueName(app.getPackageName() + app.getLabel());
+                app.setUniqueName(app.getPackageName());
 
                 Timber.d("app package %s", ri.loadLabel(pm));
 
@@ -79,15 +79,13 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
 
                     // own app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {
-
+                    if (app.getUniqueName().equals(applicationContext.getPackageName())) {
                         app.setGuest(false);
                         app.setEncrypted(true);
                         app.setEnable(true);
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(true);
-
 
                     } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
 
@@ -177,7 +175,7 @@ public class BlurWorker extends Worker {
                 supportExtension.setDefaultApp(false);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
-            }else {
+            } else {
                 supportInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
             }

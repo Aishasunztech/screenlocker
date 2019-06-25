@@ -24,6 +24,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -307,6 +308,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         isBackPressed = false;

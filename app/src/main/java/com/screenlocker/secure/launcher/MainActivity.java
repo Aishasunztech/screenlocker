@@ -7,17 +7,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -37,40 +44,21 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureMarket.SecureMarketActivity;
-import com.secureSetting.SecureSettingsMain;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
 import timber.log.Timber;
 
-import static android.view.KeyEvent.KEYCODE_POWER;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 
 /**
  * this activity is the custom launcher for the app
@@ -102,6 +90,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     private ScreenOffReceiver screenOffReceiver;
 
+    public MainActivity() {
+    }
+
+    public MainActivity(ScreenOffReceiver screenOffReceiver) {
+        this.screenOffReceiver = screenOffReceiver;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -115,10 +110,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             return;
         }
 
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
+//        OneTimeWorkRequest insertionWork =
+//                new OneTimeWorkRequest.Builder(BlurWorker.class)
+//                        .build();
+//        WorkManager.getInstance().enqueue(insertionWork);
 
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);

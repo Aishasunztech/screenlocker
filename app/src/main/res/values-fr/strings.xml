@@ -319,10 +319,9 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="search">Rechercher</string>
     <string name="expiry">Expiration (Jours Restants)</string>
     <string name="device_id">Device ID</string>
+    <string name="contact_support_chat">Contactez le support</string>
 
-
-
-
+    <string name="language_is_changed">Language is changed</string>
 
 
 </resources>

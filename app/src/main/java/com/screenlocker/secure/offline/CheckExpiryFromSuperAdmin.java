@@ -67,7 +67,7 @@ public class CheckExpiryFromSuperAdmin extends JobService {
             if (output != null) {
                 String url = output + SUPER_END_POINT;
                 ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
-                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress())).enqueue(new Callback<DeviceExpiryResponse>() {
+                service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(context))).enqueue(new Callback<DeviceExpiryResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<DeviceExpiryResponse> call, @NonNull Response<DeviceExpiryResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
