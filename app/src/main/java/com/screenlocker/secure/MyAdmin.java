@@ -30,27 +30,27 @@ public class MyAdmin extends DeviceAdminReceiver {
 
     @Override
     public CharSequence onDisableRequested(Context context, Intent intent) {
-        return "This is an optional message to warn the user about disabling.";
+        return context.getResources().getString(R.string.optional_message_warn);
     }
 
     @Override
     public void onDisabled(Context context, Intent intent) {
-        showToast(context, "Sample Device Admin: disabled");
+        showToast(context, context.getResources().getString(R.string.device_admin_disabled));
     }
 
     @Override
     public void onPasswordChanged(Context context, Intent intent) {
-        showToast(context, "Sample Device Admin: pw changed");
+        showToast(context, context.getResources().getString(R.string.device_admin_changed));
     }
 
     @Override
     public void onPasswordFailed(Context context, Intent intent) {
-        showToast(context, "Sample Device Admin: pw failed");
+        showToast(context, context.getResources().getString(R.string.device_admin_failed));
     }
 
     @Override
     public void onPasswordSucceeded(Context context, Intent intent) {
-        showToast(context, "Sample Device Admin: pw succeeded");
+        showToast(context, context.getResources().getString(R.string.device_admin_succeeded));
     }
 
 }

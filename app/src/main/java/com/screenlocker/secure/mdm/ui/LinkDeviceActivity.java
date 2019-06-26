@@ -154,7 +154,7 @@ public class LinkDeviceActivity extends BaseActivity {
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Link Device");
+            getSupportActionBar().setTitle(getResources().getString(R.string.link_device));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -208,7 +208,7 @@ public class LinkDeviceActivity extends BaseActivity {
         // get ip address
         IP = DeviceIdUtils.getIPAddress(true);
         // get mac address
-        MAC = DeviceIdUtils.generateUniqueDeviceId(this);
+        MAC = DeviceIdUtils.getMacAddress();
 
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
@@ -291,7 +291,7 @@ public class LinkDeviceActivity extends BaseActivity {
     @OnClick(R.id.btnLinkDevice)
     public void onClickBtnLinkDevice() {
 
-        if (btnLinkDevice.getText().equals("Next")) {
+        if (btnLinkDevice.getText().equals(getResources().getString(R.string.next))) {
             setResult(RESULT_OK);
             finish();
         } else {
@@ -316,7 +316,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                             PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
                                             pendingLinkViewState();
                                         } else {
-                                            Toast.makeText(LinkDeviceActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
                                     }
@@ -380,7 +380,7 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void newLinkViewState() {
-        setDealerPin("not linked yet");
+        setDealerPin(getResources().getString(R.string.not_linked_yet));
         btnLinkDevice.setText(R.string.link_device);
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnLinkDevice.setEnabled(true);
@@ -422,7 +422,7 @@ public class LinkDeviceActivity extends BaseActivity {
             new CheckInstance(internet -> {
                 if (internet) {
                     MyApplication.oneCaller
-                            .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
+                            .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
                             .enqueue(new Callback<DeviceStatusResponse>() {
                                 @Override
                                 public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -637,16 +637,18 @@ public class LinkDeviceActivity extends BaseActivity {
 
         setProgressViews(false);
 
-        String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+        String macAddress = CommonUtils.getMacAddress();
         String serialNo = DeviceIdUtils.getSerialNumber();
+        if (serialNo != null) {
+            new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
+        }
 
-        new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
 
         finishedRefreshing();
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
-        btnLinkDevice.setText("Device Linked");
-        btnLinkDevice.setEnabled(false);
+        btnLinkDevice.setText(getResources().getString(R.string.next));
+        btnLinkDevice.setEnabled(true);
         linked = true;
         tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 

@@ -40,14 +40,14 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         dialog = new ProgressDialog(contextWeakReference.get());
         if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.install_app_activity)))
         {
-            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
         }
         else if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.secure_market_activity)))
         {
-            dialog.setTitle("Downloading App, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
         }
         else{
-            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
         }
         dialog.setCancelable(false);
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

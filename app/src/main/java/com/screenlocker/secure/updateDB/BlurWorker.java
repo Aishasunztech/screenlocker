@@ -15,6 +15,7 @@ import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class BlurWorker extends Worker {
 
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
 
-                app.setUniqueName(app.getPackageName());
+                app.setPackageName(app.getPackageName());
 
                 Timber.d("app package %s", ri.loadLabel(pm));
 
@@ -79,13 +80,15 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
 
                     // own app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName())) {
+                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {
+
                         app.setGuest(false);
                         app.setEncrypted(true);
                         app.setEnable(true);
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(true);
+
 
                     } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
 
@@ -175,7 +178,7 @@ public class BlurWorker extends Worker {
                 supportExtension.setDefaultApp(false);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
-            } else {
+            }else {
                 supportInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
             }
@@ -205,6 +208,7 @@ public class BlurWorker extends Worker {
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
 
             boolean isPresent = false;
+
 
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu

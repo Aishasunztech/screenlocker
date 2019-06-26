@@ -74,6 +74,7 @@
     <string name="device_not_linked">Device not linked!</string>
     <string name="stop_linking">Stop Linking</string>
     <string name="session_expired">Session expired</string>
+    <string name="expired">expired</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="system_controls">System Permissions</string>
@@ -311,13 +312,32 @@
     <string name="search">Search</string>
     <string name="expiry">Expiry (days remaining)</string>
     <string name="device_id">Device Id</string>
-    <string name="language_is_changed">Language is changed</string>
-    <string name="contact_support_chat">Contact Support</string>
+
     <string name="please_grant_all_permissions">Please Grant all permissions</string>
     <string name="invalid_link_code">Invalid link code</string>
     <string name="register_manual">Register Manual</string>
     <string name="manual_registration">Manual Registration</string>
     <string name="confirm_password">Please confirm your password</string>
+    <string name="enter_valid_ICCID">Please Enter a valid ICCID</string>
+    <string name="enter_a_valid_name">Please Enter a valid Name</string>
+    <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
+    <string name="account_device_id_suspended">Your account with Device ID = %1$s is suspended.Please contact support</string>
+    <string name="not_linked_yet">not linked yet</string>
+    <string name="link_status">Link Status</string>
+    <string name="next">Next</string>
+    <string name="next_attempt_in">Next attempt in</string>
+    <string name="contact_support_chat">Contact Support</string>
+    <string name="optional_message_warn">This is an optional message to warn the user about disabling.</string>
+    <string name="device_admin_disabled">Sample Device Admin: disabled</string>
+    <string name="device_admin_changed">Sample Device Admin: pw changed</string>
+    <string name="device_admin_failed">Sample Device Admin: pw failed</string>
+    <string name="device_admin_succeeded">Sample Device Admin: pw succeeded</string>
+    <string name="language_is_changed">Language is changed</string>
+    <string name="please_wait_">Please wait...</string>
+    <string name="account_disabled">Account disabled. Contact your dealer for assistance.</string>
+    <string name="server_error">Server not responsive. Try again !</string>
+    <string name="incorrect_pin">Incorrect PIN!</string>
+
     <string-array name="languages">
         <item>en:English</item>
         <item>fr:Français</item>

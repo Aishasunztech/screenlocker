@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
@@ -28,18 +30,14 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.language));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         rc.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<LanguageModel> models = new ArrayList<>();
         String key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (key != null && !key.equals("")) {
-            String[] languages = new String[getResources().getStringArray(R.array.languages).length];
-            if (key.equals("en")) {
-                languages = getResources().getStringArray(R.array.languages);
-            } else if(key.equals("fr")){
-                languages = getResources().getStringArray(R.array.languages_french);
-            }
+            String[] languages = getResources().getStringArray(R.array.languages);
 
             for (String language : languages) {
                     String language_key = language.split(":")[0];
@@ -64,7 +62,18 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void recreatActivity() {
+
         recreate();
     }
 

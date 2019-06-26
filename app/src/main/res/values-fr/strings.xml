@@ -75,7 +75,9 @@
     <string name="link_device">Lier appareil</string>
     <string name="device_not_linked">Appareil non lié!</string>
     <string name="stop_linking">Arrêter le lien</string>
-    <string name="session_expired">Session expired</string>
+    <string name="session_expired">La session a expiré</string>
+    <string name="expired">expiré</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="system_controls">Autorisations système</string>
@@ -319,9 +321,39 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="search">Rechercher</string>
     <string name="expiry">Expiration (Jours Restants)</string>
     <string name="device_id">Device ID</string>
+    <string name="please_grant_all_permissions">S\'il vous plaît accorder toutes les permissions</string>
+    <string name="invalid_link_code">Code de Liaison invalide</string>
+    <string name="register_manual">Enregistrement manuel</string>
+    <string name="manual_registration">Enregistrement manuel</string>
+    <string name="confirm_password">Veuillez confirmer votre mot de passe</string>
+
+    <string name="enter_valid_ICCID">Veuillez entrer un ICCID valide</string>
+    <string name="enter_a_valid_name">Veuillez entrer un nom valide</string>
+    <string name="number_of_attempts_remaining">Vous avez %1$s tentatives avant la réinitialisation de l\'appareil et toutes les données seront perdues!</string>
+    <string name="link_status">Link Status</string>
+    <string name="next">Suivant</string>
+    <string name="next_attempt_in">Prochaine tentative dans</string>
+
     <string name="contact_support_chat">Contactez le support</string>
 
-    <string name="language_is_changed">Language is changed</string>
+    <string name="account_device_id_suspended">Votre compte avec Device ID = %1$s
+ est suspendu.Veuillez contacter le support</string>
+    <string name="not_linked_yet">pas encore lié</string>
+
+    <string name="optional_message_warn">Ceci est un message facultatif pour avertir
+ l\'utilisateur sur la désactivation.</string>
+    <string name="device_admin_disabled">Exemple d\'administrateur de périphérique: désactivé</string>
+    <string name="device_admin_changed">Exemple d’administrateur de périphérique: mot de passe modifié</string>
+    <string name="device_admin_failed">Exemple d’administrateur de périphérique: mot de passe a échoué</string>
+    <string name="device_admin_succeeded">Exemple d’administrateur de périphérique: mot de passe réussi</string>
+
+
+    <string name="language_is_changed">La langue est changée</string>
+    <string name="please_wait_">Veuillez patienter...</string>
+    <string name="account_disabled">Compte désactivé.\n
+    Contactez votre revendeur pour obtenir de l\'aide.</string>
+    <string name="server_error">le serveur ne répond plus, veuillez réessayer !</string>
+    <string name="incorrect_pin">PIN Invalide!</string>
 
 
 </resources>

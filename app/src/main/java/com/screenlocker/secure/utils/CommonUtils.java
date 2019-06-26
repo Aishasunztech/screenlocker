@@ -399,7 +399,7 @@ public class CommonUtils {
             if (remaining_days >= 0) {
                 daysLeft = Integer.toString(remaining_days);
             } else {
-                daysLeft = "expired";
+                daysLeft = context.getResources().getString(R.string.expired);
             }
         }
 

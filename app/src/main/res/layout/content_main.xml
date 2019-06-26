@@ -46,6 +46,7 @@
         android:layout_marginTop="24dp"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edtTxtPin"
         app:layout_constraintTop_toBottomOf="@+id/edtTxtPin" />
 

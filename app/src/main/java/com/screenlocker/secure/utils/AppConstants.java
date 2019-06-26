@@ -1,5 +1,8 @@
 package com.screenlocker.secure.utils;
 
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+
 public class AppConstants {
 
     public static final long ONE_DAY_INTERVAL = 15 * 60 * 1000L;
@@ -8,7 +11,7 @@ public class AppConstants {
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";
     public static final String SOME_ERROR = "Some Error Occurred";
-    public static final String SEVER_NOT_RESPONSIVE = "Server not responsive. Try again !";
+    public static final String SEVER_NOT_RESPONSIVE = MyApplication.getAppContext().getResources().getString(R.string.server_error);
     public static final String SIM_0_ICCID = "sim_0_iccid";
     public static final String SIM_1_ICCID = "sim_1_iccid";
     public static final String ALLOW_ENCRYPTED_ALL = "allow_encrypted_all";

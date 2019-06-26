@@ -35,7 +35,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/include"
-                tools:text="Link Status"
+                tools:text="@string/link_status"
                 tools:visibility="visible" />
 
             <TableLayout
@@ -450,7 +450,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Link Device"
+                android:text="@string/link_device"
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
@@ -461,7 +461,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Stop Linking"
+                android:text="@string/stop_linking"
                 app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
                 app:layout_constraintStart_toStartOf="@+id/tableLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
@@ -483,12 +483,11 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="Waiting for approval..."
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/progressBar"
                 app:layout_constraintStart_toStartOf="@+id/progressBar"
-                app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+                tools:layout_editor_absoluteY="483dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -121,13 +121,13 @@ public class AddSimDialog extends Fragment {
             String name = manualName.getText().toString().trim();
             boolean isError = false;
             if (iccid.length() != 20) {
-                manualIccid.setError("Please Enter a valid ICCID");
+                manualIccid.setError(getResources().getString(R.string.enter_valid_ICCID));
                 isError = true;
             } else {
                 manualIccid.setError(null);
             }
             if (name.length() < 2) {
-                manualName.setError("Please Enter a valid Name");
+                manualName.setError(getResources().getString(R.string.enter_a_valid_name));
                 isError = true;
             } else {
                 manualName.setError(null);

@@ -198,16 +198,22 @@ public class Utils {
             switch (device_status) {
                 case "suspended":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support");
+//                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,device_id));
+
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
                     }
                     break;
                 case "expired":
                     if (device_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Expired. Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,device_id));
+
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+//                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
 
                     }
                     break;
@@ -223,15 +229,20 @@ public class Utils {
             } else {
                 if (status.equals("suspended")) {
                     if (finalDevice_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
+//                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,finalDevice_id));
+
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
                     }
                 } else if (status.equals("expired")) {
                     if (finalDevice_id != null) {
-                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Expired. Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,finalDevice_id));
+
                     } else {
-                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
 
                     }
                 }
@@ -302,16 +313,23 @@ public class Utils {
                     switch (device_status1) {
                         case "suspended":
                             if (finalDevice_id1 != null) {
-                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,finalDevice_id1));
                             } else {
-                                keyboardView.setWarningText("Your account with Device ID = N/A is suspended.Please contact support ");
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Suspended. Please contact support");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
                             }
                             break;
                         case "expired":
                             if (finalDevice_id1 != null) {
-                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,finalDevice_id1));
+
                             } else {
-                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended,"N/A"));
+
 
                             }
                             break;
@@ -363,7 +381,8 @@ public class Utils {
                             unLockButton.setEnabled(true);
                             unLockButton.setClickable(true);
                             keyboardView.setPassword(null);
-                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
+//                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
+                            String text_view_str = "Incorrect PIN ! <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining,x+"");
                             keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     }
 
@@ -387,7 +406,8 @@ public class Utils {
             countDownTimer = new CountDownTimer(timeRemaining, 1000) {
                 @Override
                 public void onTick(long l) {
-                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+//                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) +"<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining,x + "")+"<br><br>"+ context.getResources().getString(R.string.next_attempt_in) +"<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
                     keyboardView.setPassword(null);
                     keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);

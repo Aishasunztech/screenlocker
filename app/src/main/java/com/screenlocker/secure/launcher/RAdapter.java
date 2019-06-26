@@ -182,6 +182,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         }else if(appLabel.equals("Contact Support")){
             textView.setText(context.getResources().getString(R.string.contact_support_chat));
         }
+        else if(appLabel.equals("Contact Support")){
+            textView.setText(context.getResources().getString(R.string.contact_support_chat));
+        }
         else{
             textView.setText(appLabel);
         }
@@ -197,9 +200,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-
-        //This method needs to be overridden so that Androids knows how many items
-        //will be making it into the list
 
         return appsList.size();
     }
