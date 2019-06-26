@@ -16,11 +16,11 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.secure.launcher1"
+        applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 504
-        versionName "5.04"
+        versionCode 505
+        versionName "5.05"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
