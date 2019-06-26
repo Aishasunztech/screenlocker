@@ -333,9 +333,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvLanguage:
                     Intent intent = new Intent(this, ChangeLanguageActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    this.finish();
+                    finish();
                     break;
             }
         } else {

@@ -7,8 +7,11 @@
 
     <TextView
         android:id="@+id/txtWarning"
-        android:layout_width="match_parent"
+        style="@style/icon_text"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:gravity="center_vertical|center_horizontal"
         android:minHeight="48dp"
         android:textColor="#fa8c16"
@@ -33,11 +36,11 @@
         android:minHeight="48dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:singleLine="true"
         android:shadowColor="#000000"
         android:shadowDx="5"
         android:shadowDy="5"
         android:shadowRadius="5"
+        android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/textColorPrimary"
         android:textColorHint="@color/textColorPrimary"
@@ -51,10 +54,11 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_margin="8dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/img"
         app:layout_constraintBottom_toBottomOf="@+id/password_field"
         app:layout_constraintEnd_toEndOf="@+id/password_field"
-        app:layout_constraintTop_toTopOf="@+id/password_field"
-        android:contentDescription="TODO" android:src="@drawable/img" />
+        app:layout_constraintTop_toTopOf="@+id/password_field" />
 
 
     <TableLayout
@@ -144,15 +148,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_7sdp"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
         android:text="@string/btn_backspace"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:shadowColor="#000000"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="5"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
