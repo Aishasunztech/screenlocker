@@ -183,7 +183,7 @@
             android:drawableStart="@drawable/ic_policy"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
-            android:text="Policy"
+            android:text="@string/policy"
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/textSize"
             app:layout_constraintEnd_toEndOf="parent"
