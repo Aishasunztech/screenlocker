@@ -329,7 +329,7 @@
  bị tạm ngưng. Vui lòng liên hệ với bộ phận hỗ trợ"</string>
     <string name="not_linked_yet">chưa được liên kết</string>
     <string name="link_status">Trạng thái Liên kết</string>
-    <string name="next">Kế tiếp</string>
+    <string name="next">Device Linked</string>
     <string name="next_attempt_in">Nỗ lực tiếp theo trong</string>
     <string name="contact_support_chat">Liên hệ Hỗ trợ</string>
     <string name="optional_message_warn">Đây là một tin nhắn tùy chọn để cảnh báo
@@ -351,7 +351,6 @@
 
     <string name="change_language_dialog_title">Thay đổi ngôn ngữ</string>
     <string name="change_language_dialog_message">Tiến hành thay đổi ngôn ngữ?</string>
-
 
 
 </resources>

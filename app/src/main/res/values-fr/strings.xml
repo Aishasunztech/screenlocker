@@ -331,7 +331,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="enter_a_valid_name">Veuillez entrer un nom valide</string>
     <string name="number_of_attempts_remaining">Vous avez %1$s tentatives avant la réinitialisation de l\'appareil et toutes les données seront perdues!</string>
     <string name="link_status">Link Status</string>
-    <string name="next">Suivant</string>
+    <string name="next">Device Linked</string>
     <string name="next_attempt_in">Prochaine tentative dans</string>
 
     <string name="contact_support_chat">Contactez le support</string>

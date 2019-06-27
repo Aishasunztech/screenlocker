@@ -325,7 +325,7 @@
     <string name="account_device_id_suspended">Your account with Device ID = %1$s is suspended.Please contact support</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
-    <string name="next">Next</string>
+    <string name="next">Device Linked</string>
     <string name="next_attempt_in">Next attempt in</string>
     <string name="contact_support_chat">Contact Support</string>
     <string name="optional_message_warn">This is an optional message to warn the user about disabling.</string>
