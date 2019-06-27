@@ -1,5 +1,6 @@
 package com.screenlocker.secure.service;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -23,15 +24,21 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
+import com.screenlocker.secure.permissions.WelcomeScreenActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -79,8 +86,31 @@ public class LockScreenService extends Service {
         }
     }
 
+
+    private void updateDb(Activity context) {
+
+        OneTimeWorkRequest insertionWork =
+                new OneTimeWorkRequest.Builder(BlurWorker.class)
+                        .build();
+        WorkManager.getInstance().enqueue(insertionWork);
+//
+//        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
+//                .observe(context, workInfo -> {
+//                    // Do something with the status
+//                    if (workInfo != null && workInfo.getState().isFinished()) {
+//
+//                    }
+//                });
+    }
+
     @Override
     public void onCreate() {
+
+        OneTimeWorkRequest insertionWork =
+                new OneTimeWorkRequest.Builder(BlurWorker.class)
+                        .build();
+        WorkManager.getInstance().enqueue(insertionWork);
+
 
         ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
 

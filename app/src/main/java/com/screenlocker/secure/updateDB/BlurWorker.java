@@ -42,6 +42,9 @@ public class BlurWorker extends Worker {
     public Result doWork() {
 
         Context applicationContext = getApplicationContext();
+
+
+        Timber.d("sjhdbfsjhfhsafsa");
         try {
 
             PackageManager pm = applicationContext.getPackageManager();
@@ -57,7 +60,8 @@ public class BlurWorker extends Worker {
 
             List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-            String settingPackageName = resolveInfos.get(0).activityInfo.packageName + resolveInfos.get(0).loadLabel(pm);
+            String settingPackageName = resolveInfos.get(0).activityInfo.packageName;
+            Timber.d(settingPackageName);
 
             // adding data to the model
             //getRunningApps(pm);
@@ -72,6 +76,7 @@ public class BlurWorker extends Worker {
 
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
 
+                app.setUniqueName(app.getPackageName());
 
                 Timber.d("app package %s", ri.loadLabel(pm));
 
@@ -79,7 +84,7 @@ public class BlurWorker extends Worker {
                 if (!dbApps.contains(app)) {
 
                     // own app
-                    if (app.getUniqueName().equals(applicationContext.getPackageName() + applicationContext.getString(R.string.app_name))) {
+                    if (app.getPackageName().equals(applicationContext.getPackageName())) {
 
                         app.setGuest(false);
                         app.setEncrypted(true);
@@ -98,7 +103,7 @@ public class BlurWorker extends Worker {
                         app.setVisible(true);
                         app.setDefaultApp(false);
 
-                    } else if (app.getUniqueName().equals(settingPackageName)) {
+                    } else if (app.getPackageName().equals(settingPackageName)) {
 
                         app.setGuest(false);
                         app.setVisible(false);
@@ -177,7 +182,7 @@ public class BlurWorker extends Worker {
                 supportExtension.setDefaultApp(false);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
-            }else {
+            } else {
                 supportInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
             }
