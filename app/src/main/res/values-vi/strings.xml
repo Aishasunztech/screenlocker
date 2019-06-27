@@ -346,7 +346,11 @@
     <string name="incorrect_pin">Mã PIN không chính xác</string>
     <string name="app_name_heading">Tên Ứng dụng</string>
     <string name="version">Phiên bản</string>
-    <string name="type">Type</string>
+    <string name="type">Kiểu</string>
+    <string name="policy">Chính sách</string>
+
+    <string name="change_language_dialog_title">Thay đổi ngôn ngữ</string>
+    <string name="change_language_dialog_message">Tiến hành thay đổi ngôn ngữ?</string>
 
 
 

@@ -357,9 +357,10 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="app_name_heading">Noms App</string>
     <string name="version">Version</string>
     <string name="type">Type</string>
+    <string name="policy">Politique</string>
 
-    <string name="change_language_dialog_title">Change Language</string>
-    <string name="change_language_dialog_message">Are your sure to change language</string>
+    <string name="change_language_dialog_title">Changer de langue</string>
+    <string name="change_language_dialog_message">Êtes-vous sûr de vouloir changer de langue?</string>
 
 
 
