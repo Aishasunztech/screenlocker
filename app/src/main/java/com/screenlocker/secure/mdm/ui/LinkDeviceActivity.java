@@ -645,7 +645,7 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         btnLinkDevice.setText(getResources().getString(R.string.next));
-        btnLinkDevice.setEnabled(true);
+        btnLinkDevice.setEnabled(false);
         linked = true;
         tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 
