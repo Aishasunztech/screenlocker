@@ -159,12 +159,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 .observe(this, workInfo -> {
                     // Do something with the status
                     if (workInfo != null && workInfo.getState().isFinished()) {
-//
-//                        if (getIntent().getAction() != null && getIntent().getAction().equals("locked")) {
-//                            Intent lockScreen = new Intent(SettingsActivity.this, LockScreenService.class);
-//                            lockScreen.setAction("locked");
-//                            ActivityCompat.startForegroundService(this, lockScreen);
-//                        }
                         PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
                         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
                             Intent intent = new Intent(this, SteppersActivity.class);

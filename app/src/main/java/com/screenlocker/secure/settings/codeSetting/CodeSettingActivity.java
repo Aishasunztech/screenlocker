@@ -42,6 +42,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
@@ -66,7 +67,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean goToInstallApps;
     private boolean goToPolicyMenu;
     private boolean goToIMEIMenu;
-    private boolean goToSettingsAppPermission,goToSimActivity;
+    private boolean goToSettingsAppPermission, goToSimActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
                 String settingPackageName = null;
                 if (resolveInfos != null || resolveInfos.size() != 0) {
-                    settingPackageName = resolveInfos.get(0).activityInfo.packageName + String.valueOf(resolveInfos.get(0).loadLabel(getPackageManager()));
+                    settingPackageName = resolveInfos.get(0).activityInfo.packageName;
                 }
                 if (settingPackageName != null) {
                     AppInfo particularApp = MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
@@ -216,7 +217,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tvIMEIMenu:
                 goToIMEIMenu = true;
-                startActivity(new Intent(CodeSettingActivity.this,IMEIActivity.class));
+                startActivity(new Intent(CodeSettingActivity.this, IMEIActivity.class));
 
         }
     }

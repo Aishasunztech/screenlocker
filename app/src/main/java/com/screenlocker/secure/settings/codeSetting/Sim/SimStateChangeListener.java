@@ -8,6 +8,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
 public class SimStateChangeListener extends BroadcastReceiver {
   String TAG = "sndiofhdigojfho";
@@ -18,9 +20,14 @@ public class SimStateChangeListener extends BroadcastReceiver {
 
             String state = intent.getStringExtra("ss");
             if (state.equals("ABSENT")){
-                Intent lock = new Intent(context, LockScreenService.class);
-                lock.setAction("locked");
-                ActivityCompat.startForegroundService(context,lock);
+
+                if(PrefUtils.getBooleanPref(context, AppConstants.TOUR_STATUS)){
+                    Intent lock = new Intent(context, LockScreenService.class);
+                    lock.setAction("locked");
+                    ActivityCompat.startForegroundService(context,lock);
+                }
+
+
             }
         }
     }

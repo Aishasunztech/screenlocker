@@ -51,7 +51,7 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         String settingPackageName = null;
         if (resolveInfos != null) {
-            settingPackageName = resolveInfos.get(0).activityInfo.packageName + resolveInfos.get(0).loadLabel(packageManager);
+            settingPackageName = resolveInfos.get(0).activityInfo.packageName;
         }
 
 
@@ -59,14 +59,14 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
         boolean allGuest = true;
         boolean allEncrypted = true;
 
-        String projectPrimaryKey = context.getPackageName() + context.getString(R.string.app_name);
+        String projectPrimaryKey = context.getPackageName();
 
 
         for (int i = 0; i < dbApps.size(); i++) {
             AppInfo appInfo = dbApps.get(i);
 
 
-            if (settingPackageName == null || !appInfo.getUniqueName().equals(settingPackageName)) {
+            if (!appInfo.getUniqueName().equals(settingPackageName)) {
                 appsList.add(appInfo);
             }
 
@@ -75,7 +75,7 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
                 if (appInfo.isEnable()) {
                     allDisable = true;
                 } else {
-                    if ((settingPackageName != null && appInfo.getUniqueName().equals(settingPackageName))
+                    if ((appInfo.getUniqueName().equals(settingPackageName))
                             || (appInfo.getUniqueName().equals(projectPrimaryKey)))
                         allDisable = true;
                     else
@@ -86,7 +86,7 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
                 if (appInfo.isGuest()) {
                     allGuest = true;
                 } else {
-                    if (settingPackageName != null && appInfo.getUniqueName().equals(settingPackageName))
+                    if (appInfo.getUniqueName().equals(settingPackageName))
                         allGuest = true;
                     else
                         allGuest = false;

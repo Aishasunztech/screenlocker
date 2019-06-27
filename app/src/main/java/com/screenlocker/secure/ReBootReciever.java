@@ -46,7 +46,6 @@ public class ReBootReciever extends BroadcastReceiver {
         if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 
-
                 ComponentName componentName1 = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
 
                 JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
@@ -90,7 +89,6 @@ public class ReBootReciever extends BroadcastReceiver {
                         } else {
                             context.startService(lockScreenIntent);
                         }
-
                     }
                 }
                 SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);

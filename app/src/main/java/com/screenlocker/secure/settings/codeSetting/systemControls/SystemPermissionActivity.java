@@ -130,7 +130,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (settingResolveInfo != null) {
-            settingPrimaryKey = settingResolveInfo.activityInfo.packageName + settingResolveInfo.loadLabel(packageManager);
+            settingPrimaryKey = settingResolveInfo.activityInfo.packageName;
         }
 
 
