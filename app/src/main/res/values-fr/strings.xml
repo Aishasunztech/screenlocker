@@ -299,7 +299,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="encrypted_password">Mot de passe crypté</string>
     <string name="set_skip_password">Veuillez définir ou ignorer le mot de passe</string>
     <string name="duress_pin">Code Duress</string>
-    <string name="warning">Warning!</string>
+    <string name="warning">Attention!</string>
     <string name="duress_pin_message">En entrant le Code Duress lorsque l\'appareil est verrouillé, les données de votre téléphone seront effacées.
 Vous ne pouvez pas annuler cette action.
 Toutes les données seront supprimées de l\'appareil cible sans aucune confirmation.
@@ -354,6 +354,16 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     Contactez votre revendeur pour obtenir de l\'aide.</string>
     <string name="server_error">le serveur ne répond plus, veuillez réessayer !</string>
     <string name="incorrect_pin">PIN Invalide!</string>
+    <string name="app_name_heading">Noms App</string>
+    <string name="version">Version</string>
+    <string name="type">Type</string>
+
+    <string name="change_language_dialog_title">Change Language</string>
+    <string name="change_language_dialog_message">Are your sure to change language</string>
+
+
+
+
 
 
 </resources>

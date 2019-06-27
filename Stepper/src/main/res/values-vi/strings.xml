@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaterialStepper</string>
+    <string name="ms_prev" >BỎ QUA</string>
+    <string name="ms_next" >Kế tiếp</string>
+    <string name="ms_end">Khởi chạy</string>
+    <string name="ms_continue">CONTINUE</string>
+    <string name="ms_optional">Optional</string>
+    <string name="ms_text_step">Step $current of $total</string>
+</resources>
