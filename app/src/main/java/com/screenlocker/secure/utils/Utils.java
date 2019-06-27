@@ -517,11 +517,11 @@ public class Utils {
         }
     }
 
-    public static void copyToClipBoard(Context context, String label, String text) {
+    public static void copyToClipBoard(Context context, String label, String text,String toastText) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText(label, text);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(context, "Copy to Clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
     public static void scheduleExpiryCheck(Context context) {

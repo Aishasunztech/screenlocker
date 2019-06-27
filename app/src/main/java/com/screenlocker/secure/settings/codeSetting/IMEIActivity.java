@@ -164,6 +164,6 @@ public class IMEIActivity extends BaseActivity {
     @OnClick(R.id.link_to_generate)
     public void linkToGenerate() {
         String linkText = link.getText().toString().substring(1,link.getText().toString().length()-1);
-        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText,"Link copied to clipboard");
     }
 }
