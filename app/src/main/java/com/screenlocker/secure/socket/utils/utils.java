@@ -530,7 +530,7 @@ public class utils {
                 context.startForegroundService(intent);
             } else {
                 context.startService(intent);
-            }Kế tiếp
+            }
 
         }
 
