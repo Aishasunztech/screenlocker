@@ -93,8 +93,16 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.MyView
             String key = PrefUtils.getStringPref(context,AppConstants.LANGUAGE_PREF);
            if(model.getLanguage_key().equals(key))
             {
+
                 checkBox.setChecked(true);
             }
+           else if (key ==null || key.equals("")){
+               if (getAdapterPosition() == 0){
+                   checkBox.setChecked(true);
+               }else {
+                   checkBox.setChecked(false);
+               }
+           }
            checkBox.setClickable(false);
            if(getAdapterPosition() == langList.size()-1){
                view.setVisibility(View.GONE);
