@@ -72,7 +72,6 @@ public class BlurWorker extends Worker {
 
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
 
-                app.setPackageName(app.getPackageName());
 
                 Timber.d("app package %s", ri.loadLabel(pm));
 

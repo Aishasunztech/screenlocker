@@ -33,6 +33,7 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import java.util.List;
 import java.util.Timer;
@@ -270,8 +271,6 @@ public class LinkDeviceActivity extends BaseActivity {
         tvSerialNo.setText(SerialNo);
         tvMAC.setText(MAC);
         tvIP.setText(IP);
-
-
         lytSwipeReferesh.setOnRefreshListener(listener);
 
     }
@@ -415,9 +414,7 @@ public class LinkDeviceActivity extends BaseActivity {
     SwipeRefreshLayout.OnRefreshListener listener = () -> {
         Timber.i("<<<<<SwipedToRefresh>>>>>");
         freshViewState();
-
         String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
-
         if (device_id != null) {
             new CheckInstance(internet -> {
                 if (internet) {
@@ -687,5 +684,52 @@ public class LinkDeviceActivity extends BaseActivity {
             lytSwipeReferesh.setRefreshing(false);
         }
     }
+    @OnClick(R.id.tvDeviceId)
+    public void copyDeviceId() {
+        String linkText = tvDeviceId.getText().toString().substring(1,tvDeviceId.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvLinkedDealerPin)
+    public void copyDealerPin(){
+        String linkText = tvLinkedDealerPin.getText().toString().substring(1,tvLinkedDealerPin.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvIMEI)
+    public void copyIMEI1(){
+        String linkText = tvIMEI.getText().toString().substring(1,tvIMEI.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+
+    @OnClick(R.id.tvSimNo)
+    public void copytvSimNo(){
+        String linkText = tvSimNo.getText().toString().substring(1,tvSimNo.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvIMEI2)
+    public void copytvIMEI2(){
+        String linkText = tvIMEI2.getText().toString().substring(1,tvIMEI2.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvSerialNo)
+    public void copytvSerialNo(){
+        String linkText = tvSerialNo.getText().toString().substring(1,tvSerialNo.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvSimNo2)
+    public void copytvSimNo2(){
+        String linkText = tvSimNo2.getText().toString().substring(1,tvSimNo2.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvMAC)
+    public void copytvMAC(){
+        String linkText = tvMAC.getText().toString().substring(1,tvMAC.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+    @OnClick(R.id.tvIP)
+    public void copytvIP(){
+        String linkText = tvIP.getText().toString().substring(1,tvIP.getText().toString().length()-1);
+        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText);
+    }
+
 
 }

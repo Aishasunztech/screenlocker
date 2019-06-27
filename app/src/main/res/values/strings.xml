@@ -340,11 +340,11 @@
 
     <string-array name="languages">
         <item>en:English</item>
-        <item>fr:Français</item>
+        <item>fr:FranÃ§ais</item>
     </string-array>
     <string-array name="languages_french">
         <item>en:English</item>
-        <item>fr:Français</item>
+        <item>fr:FranÃ§ais</item>
     </string-array>
 
 </resources>
