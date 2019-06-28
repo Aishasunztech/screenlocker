@@ -78,7 +78,7 @@ public class LinkDeviceFragment extends AbstractStep {
     //if user try to next without linking device
     @Override
     public String error() {
-        return getResources().getString(R.string.please_link_skip);
+        return MyApplication.getAppContext().getResources().getString(R.string.please_link_skip);
     }
 
     // user can skip the current step
@@ -115,7 +115,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return getResources().getString(R.string.link_device);
+        return MyApplication.getAppContext().getResources().getString(R.string.link_device);
     }
 
     @Override

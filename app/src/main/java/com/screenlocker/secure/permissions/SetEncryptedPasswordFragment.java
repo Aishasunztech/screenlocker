@@ -32,7 +32,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return getResources().getString(R.string.encrypted_password);
+        return MyApplication.getAppContext().getResources().getString(R.string.encrypted_password);
     }
 
     @Override

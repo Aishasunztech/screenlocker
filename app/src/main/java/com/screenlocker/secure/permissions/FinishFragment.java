@@ -1,6 +1,7 @@
 package com.screenlocker.secure.permissions;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.view.ViewGroup;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.solver.widgets.ConstraintAnchor;
 import androidx.fragment.app.Fragment;
 
 
@@ -18,7 +21,7 @@ import androidx.fragment.app.Fragment;
  */
 public class FinishFragment extends AbstractStep {
 
-
+    private Context mContext;
     public FinishFragment() {
         // Required empty public constructor
     }
@@ -34,6 +37,7 @@ public class FinishFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return getResources().getString(R.string.launch_application);
+        return MyApplication.getAppContext().getResources().getString(R.string.launch_application);
     }
+
 }

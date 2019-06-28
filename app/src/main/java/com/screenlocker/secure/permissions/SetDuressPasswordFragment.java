@@ -34,10 +34,11 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 
 public class SetDuressPasswordFragment extends AbstractStep {
     private String error = "";
+    private Context mContext;
 
     @Override
     public String name() {
-        return getResources().getString(R.string.duress_pin);
+        return MyApplication.getAppContext().getResources().getString(R.string.duress_pin);
     }
 
 
@@ -88,7 +89,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
     }
 
 
-    Context mContext = null;
 
     @Override
     public void onAttach(Context context) {
