@@ -21,7 +21,7 @@
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_15sdp"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:src="@drawable/ic_united_states"/>
     <TextView
         android:id="@+id/langName"

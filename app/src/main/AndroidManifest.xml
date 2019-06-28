@@ -45,7 +45,7 @@
     <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".app.MyApplication"
@@ -57,7 +57,9 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.codeSetting.LanguageControls.ChangeLanguageActivity"></activity>
+        <activity
+            android:name=".settings.codeSetting.LanguageControls.ChangeLanguageActivity"
+            android:screenOrientation="portrait" />
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
@@ -351,8 +353,9 @@
         <service
             android:name=".offline.CheckExpiryFromSuperAdmin"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name=".mdm.LinkStatusJobScheduler"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".mdm.LinkStatusJobScheduler"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
