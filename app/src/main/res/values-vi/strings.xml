@@ -307,7 +307,7 @@
     <string name="permission">Quyền</string>
     <string name="setup_completed">Hoàn tất Cài đặt!</string>
     <string name="welcome">Chào mừng bạn!</string>
-    <string name="welcome_message">Chúng tôi đang chuẩn bị ra mắt hệ thống lần đầu tiên vui lòng chờ.</string>
+    <string name="welcome_message">Chúng tôi đang chuẩn bị ra mắt hệ thống lần đầu tiên.</string>
     <string name="inactivity_message">Sau %1$s không hoạt động</string>
     <string name="change_language_title">Ngôn ngữ</string>
     <string name="dealer_pin_or_activation_code">Mã Đại lý hoặc Mã Kích hoạt</string>
@@ -347,8 +347,8 @@
     <string name="app_name_heading">Tên Ứng dụng</string>
     <string name="version">Phiên bản</string>
     <string name="type">Kiểu</string>
-    <string name="policy">Chính sách</string>
-
+    <string name="policy">Chính sáchu</string>
+    <string name="mode">Chế độ</string>
     <string name="change_language_dialog_title">Thay đổi ngôn ngữ</string>
     <string name="change_language_dialog_message">Tiến hành thay đổi ngôn ngữ?</string>
 
