@@ -38,6 +38,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 
 
     OnPageUpdateListener.PageUpdate mListener;
+    private Context mContext;
 
     public SetDefaultLauncherFragment() {
         // Required empty public constructor
@@ -118,16 +119,16 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return
-                getResources().getString(R.string.set_default_launcher);
+        return MyApplication.getAppContext().getResources().getString(R.string.set_default_launcher);
     }
 
     public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
         try {
             mListener = (OnPageUpdateListener.PageUpdate) context;
         } catch (Exception ignored) {
 
         }
-        super.onAttach(context);
+        mContext = context;
     }
 }

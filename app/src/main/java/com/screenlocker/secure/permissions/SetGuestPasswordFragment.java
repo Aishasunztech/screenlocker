@@ -34,7 +34,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
 
     @Override
     public String name() {
-        return getResources().getString(R.string.guest_password);
+        return MyApplication.getAppContext().getResources().getString(R.string.guest_password);
     }
 
     @Override
