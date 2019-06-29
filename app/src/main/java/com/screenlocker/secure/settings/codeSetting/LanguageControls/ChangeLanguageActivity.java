@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings.codeSetting.LanguageControls;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,7 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean mode = PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME);
         setContentView(R.layout.activity_change_language);
         rc = findViewById(R.id.languages_list);
         toolbar = findViewById(R.id.toolbar);

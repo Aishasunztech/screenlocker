@@ -280,7 +280,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:contentDescription="TODO"
-                    android:src="@drawable/ic_roaming"
+                    android:src="@drawable/ic_mobile_data"
                     android:tint="@android:color/black" />
 
                 <LinearLayout

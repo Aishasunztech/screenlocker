@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 public class PrefUtils {
 
-    private static final String PREF_FILE = "settings_pref";
+    public static final String PREF_FILE = "settings_pref";
 
     public static void saveToPref(Context context, boolean isEnabled) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);

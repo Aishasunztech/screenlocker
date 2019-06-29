@@ -2,11 +2,14 @@
 <resources>
 
 
-    <color name="colorPrimary">#131313</color>
-    <color name="colorPrimaryDark">#4b4b4b</color>
+    <color name="colorPrimary">#9E9E9E</color>
+    <color name="colorPrimaryDark">#616161</color>
     <color name="colorAccent">#40dcff</color>
-    <color name="colorLine">#9f9f9f</color>
-    <color name="textColorPrimary">#DAD9D9</color>
+    <color name="colorLine">#212121</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="backgroundSim">#D8D8D8</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="icon_tint">#212121</color>
     <!--<color name="guest_default_background_color">#4b4b4b</color>-->
 
     <color name="green_dark">#0e7904</color>

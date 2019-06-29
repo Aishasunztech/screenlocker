@@ -21,6 +21,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
@@ -28,7 +29,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private final List<SubExtension> subExtensionList;
 
     private Context context;
-    private int guestChecked = 0,encryptionChecked = 0;
+    private int guestChecked = 0, encryptionChecked = 0;
     private MenuChecklistener checklistener;
     private boolean isFirstTime = true;
 
@@ -82,8 +83,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         this.subExtensionList = subExtensions;
         this.context = context;
-        if(context instanceof MenuChecklistener)
-        {
+        if (context instanceof MenuChecklistener) {
             checklistener = (MenuChecklistener) context;
         }
     }
@@ -98,10 +98,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         vh.tv.setText(info.getLabel());
 
         // vh.img.setImageDrawable(info.getIcon());
+
         Glide.with(vh.img.getContext())
                 .load(subExtensionList.get(i).getIcon())
                 .apply(new RequestOptions().centerCrop())
                 .into(vh.img);
+
+        vh.img.setColorFilter(ContextCompat.getColor(context, R.color.icon_tint), android.graphics.PorterDuff.Mode.MULTIPLY);
+
+
         vh.guestSwitch.setChecked(info.isGuest());
         vh.encryptedSwitch.setChecked(info.isEncrypted());
         vh.enabledSwitch.setVisibility(View.GONE);
@@ -131,7 +136,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return new Adapter.ViewHolder(v);
     }
 
-    public interface MenuChecklistener{
+    public interface MenuChecklistener {
         void updateMenu();
     }
 }

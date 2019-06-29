@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import butterknife.BindView;

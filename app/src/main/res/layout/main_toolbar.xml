@@ -12,6 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        app:elevation="@dimen/_8sdp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar"
+        app:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
 </com.google.android.material.appbar.AppBarLayout>

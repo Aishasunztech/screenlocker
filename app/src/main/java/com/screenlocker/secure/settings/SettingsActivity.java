@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -32,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.work.OneTimeWorkRequest;
@@ -64,6 +66,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -89,7 +93,7 @@ import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
-
+    private volatile boolean asExtentention;
     private AlertDialog isActiveDialog;
     private AlertDialog noNetworkDialog;
     private NetworkChangeReceiver networkChangeReceiver;
@@ -110,6 +114,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TelephonyManager telephonyManager;
 
 
+    @BindView(R.id.tvManagePasswords)
+    TextView tvManagePasswords;
+    @BindView(R.id.tvChooseBackground)
+    TextView tvChooseBackground;
+    @BindView(R.id.tvAbout)
+    TextView tvAbout;
+    @BindView(R.id.tvCode)
+    TextView tvCode;
+    @BindView(R.id.tvCheckForUpdate)
+    TextView tvCheckForUpdate;
+    @BindView(R.id.tvAccount)
+    TextView tvAccount;
+    @BindView(R.id.tvLanguage)
+    TextView tvLanguage;
     private TextView tvlinkDevice;
 
 
@@ -138,8 +156,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+        ButterKnife.bind(this);
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
@@ -149,6 +169,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
+        if (getIntent().hasExtra("isSupport")) {
+            tvManagePasswords.setVisibility(View.GONE);
+            tvChooseBackground.setVisibility(View.GONE);
+            tvCode.setVisibility(View.GONE);
+            tvLanguage.setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.divider5).setVisibility(View.GONE);
+            findViewById(R.id.divider15).setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.tvTheme).setVisibility(View.GONE);
+            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+        }
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
@@ -181,12 +213,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-//        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-//        if (linkStatus) {
-//            tvlinkDevice.setVisibility(View.GONE);
-//        } else {
-//            tvlinkDevice.setVisibility(View.VISIBLE);
-//        }
+
 
     }
 
@@ -256,7 +283,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
     }
 
-
     private void setListeners() {
 
         findViewById(R.id.tvManagePasswords).setOnClickListener(this);
@@ -268,6 +294,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setVisibility(View.VISIBLE);
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvLanguage).setOnClickListener(this);
+        findViewById(R.id.tvTheme).setOnClickListener(this);
     }
 
 
@@ -295,7 +322,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvCode:
                     handleCodeAdmin();
                     break;
-
+                case R.id.tvTheme:
+                    Intent theme = new Intent(this, ChangeThemeActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(theme);
+                    break;
                 case R.id.tvAbout:
                     //handle the about click event
                     createAboutDialog();
@@ -715,5 +746,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.hasExtra("isSupport")) {
+            Log.d("kkogkooikn", "true: ");
+            asExtentention = true;
+        }else {
+            Log.d("kkogkooikn", "false: ");
+            asExtentention = false;
+        }
 
+    }
 }

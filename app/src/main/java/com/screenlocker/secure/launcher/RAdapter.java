@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
     private Context context;
@@ -74,8 +76,19 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
                             break;
-
-
+                        case "com.secure.launcher1":
+                            Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                            if (launch != null) {
+                                launch.addCategory(Intent.CATEGORY_LAUNCHER);
+                                if (PrefUtils.getStringPref(context,AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+                                    launch.putExtra("isSupport",true);
+                                    launch.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
+                                }
+                            }
+                            /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
+                            context.startActivity(launch);
+                            break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);

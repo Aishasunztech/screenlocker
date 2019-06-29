@@ -343,6 +343,9 @@
     <string name="change_language_dialog_title">Change Language</string>
     <string name="change_language_dialog_message">Proceed with changing the language?</string>
     <string name="policy">Policy</string>
+    <string name="theme">Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="dark_theme">Dark Theme</string>
 
 
     <string-array name="languages">

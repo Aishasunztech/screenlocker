@@ -75,7 +75,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".settings$Wallpaper$ChangeWallpaper"
+            android:name=".settings.Wallpaper.ChangeWallpaper"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -262,17 +262,17 @@
             </intent-filter>
         </receiver>
         <!--
-<receiver android:name="com.screenlocker.secure.settings.codeSetting.installApps.UpdateReceiver" android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <data android:scheme="package" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        -->
+    <receiver android:name="com.screenlocker.secure.settings.codeSetting.installApps.UpdateReceiver" android:enabled="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                    <data android:scheme="package" />
+                </intent-filter>
+                <intent-filter>
+                    <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                    <data android:scheme="package" />
+                </intent-filter>
+            </receiver>
+            -->
         <receiver
             android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
@@ -332,9 +332,7 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.Wallpaper.ChangeWallpaper"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.contactSupport.ChatActivity"
             android:screenOrientation="nosensor" />
@@ -356,6 +354,9 @@
         <service
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name="com.screenlocker.secure.settings.ChangeThemeActivity"/>
     </application>
+
 
 </manifest>
