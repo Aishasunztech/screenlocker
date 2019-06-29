@@ -77,6 +77,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
                     String label = pm.getApplicationLabel(applicationInfo).toString();
                     new Thread(() -> {
+
                         AppInfo appInfo = new AppInfo();
                         appInfo.setDefaultApp(false);
                         appInfo.setExtension(false);
@@ -85,7 +86,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         appInfo.setEnable(installModel.isEnable());
                         appInfo.setLabel(label);
                         appInfo.setPackageName(installModel.getPackage_name());
-                        appInfo.setUniqueName(installModel.getPackage_name() + label);
+                        appInfo.setUniqueName(installModel.getPackage_name());
                         appInfo.setIcon(icon);
                         appInfo.setVisible(true);
 
@@ -151,7 +152,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
 
             if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
-                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName)).start();
                 sendMessage(context);
                 return;
             }
@@ -159,7 +160,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             if (!aPackageName.equals(context.getPackageName())) {
 
                 new Thread(() -> {
-                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label);
+                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
                     sendMessage(context);
                 }).start();
 

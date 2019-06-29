@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
@@ -25,6 +26,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -573,8 +576,55 @@ public class utils {
 
         PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
 
-
     }
+
+
+    /*
+     *
+     *  This method checks either app is already installed or not and which app has to update or downgrade and returns list of custom object (InstallModel)
+     *
+     * */
+    public static List<InstallModel> checkInstalledApps(List<InstallModel> apps, Context context) {
+
+        // list for remaining apps
+        List<InstallModel> remainingApps = new ArrayList<>();
+
+        PackageManager pm = context.getPackageManager();
+
+
+        for (InstallModel app : apps) {
+            try {
+                PackageInfo info = pm.getPackageInfo(app.getPackage_name(), 0);
+
+                // current version of app
+                int currentVersion = info.versionCode;
+                // available version from server
+                int availableVersion = Integer.parseInt(app.getVersion());
+
+
+                if (currentVersion != availableVersion) {
+                    // both version are not equal
+                    if (currentVersion > availableVersion) {
+                        // flag shows package is already installed
+                        app.setInstall(true);
+                        app.setUpdate(false);
+                        remainingApps.add(app);
+                    } else {
+                        app.setInstall(true);
+                        app.setUpdate(true);
+                        remainingApps.add(app);
+                    }
+                }
+
+            } catch (PackageManager.NameNotFoundException e) {
+                app.setInstall(false);
+                remainingApps.add(app);
+            }
+        }
+
+        return remainingApps;
+    }
+
 
     public static String getDeviceStatus(Context context) {
         return PrefUtils.getStringPref(context, DEVICE_STATUS);

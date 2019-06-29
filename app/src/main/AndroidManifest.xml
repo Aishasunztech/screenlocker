@@ -355,7 +355,9 @@
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="com.screenlocker.secure.settings.ChangeThemeActivity"/>
+        <activity
+            android:name="com.screenlocker.secure.settings.ChangeThemeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 
