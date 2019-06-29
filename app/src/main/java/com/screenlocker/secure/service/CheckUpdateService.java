@@ -47,6 +47,7 @@ public class CheckUpdateService extends JobService {
 
     private void checkForDownload(JobParameters params) {
 
+
         new CheckInstance(internet -> {
             if (internet) {
 

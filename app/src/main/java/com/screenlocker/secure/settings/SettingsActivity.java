@@ -233,24 +233,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             mMacAddress = null;
         }
 
-        //  check for the can draw over permission ,is it enabled or not
-        if (PermissionUtils.canDrawOver(SettingsActivity.this)) {
-            // check for the permission to allow notification
-            if (PermissionUtils.canControlNotification(SettingsActivity.this)) {
-                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
-                    // main password is not set
-                    PrefUtils.saveStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-                }
-
-
-            } else {
-                // request user to allow notification for our app
-                PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
-            }
-        } else {
-            // request user to enable over lay permission for our app
-            PermissionUtils.requestOverlayPermission(SettingsActivity.this);
-        }
+//        //  check for the can draw over permission ,is it enabled or not
+//        if (PermissionUtils.canDrawOver(SettingsActivity.this)) {
+//            // check for the permission to allow notification
+//            if (PermissionUtils.canControlNotification(SettingsActivity.this)) {
+//                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
+//                    // main password is not set
+//                    PrefUtils.saveStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+//                }
+//
+//
+//            } else {
+//                // request user to allow notification for our app
+//                PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
+//            }
+//        } else {
+//            // request user to enable over lay permission for our app
+//            PermissionUtils.requestOverlayPermission(SettingsActivity.this);
+//        }
 
 
     }

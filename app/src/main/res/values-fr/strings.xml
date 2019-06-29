@@ -208,7 +208,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="downloading_update">Téléchargement de la mise à jour, veuillez patienter</string>
     <string name="install">installer</string>
     <string name="uninstall">désinstaller</string>
-    <string name="policy_title">Charger Policy</string>
+    <string name="policy_title">Appliquer Politique</string>
     <string name="policy_warning_title">Attention!</string>
     <string name="default_policy">default_policy</string>
     <string name="default_policy_message">Cela poussera la politique par défaut définie par votre Dealer.</string>
@@ -312,7 +312,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="permission">Permissions</string>
     <string name="setup_completed">L\'installation est terminée!</string>
     <string name="welcome">Bienvenue!</string>
-    <string name="welcome_message">Nous nous préparons à lancer le système pour la première fois, veuillez patienter.</string>
+    <string name="welcome_message">Nous nous préparons à lancer le système pour la première fois.</string>
     <string name="inactivity_message">Après %1$s secondes d\'inactivité</string>
     <string name="dealer_pin_or_activation_code">Code Revendeur ou code d\'Activation</string>
     <string name="change_language_title">Langues</string>
@@ -358,6 +358,8 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="version">Version</string>
     <string name="type">Type</string>
     <string name="policy">Politique</string>
+    <string name="mode">Mode</string>
+
 
     <string name="change_language_dialog_title">Changer de langue</string>
     <string name="change_language_dialog_message">Êtes-vous sûr de vouloir changer de langue?</string>

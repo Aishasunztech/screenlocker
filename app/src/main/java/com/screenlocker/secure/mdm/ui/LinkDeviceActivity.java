@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
@@ -27,7 +28,8 @@ import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
@@ -58,6 +60,8 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIA
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
@@ -67,6 +71,8 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 
@@ -296,84 +302,127 @@ public class LinkDeviceActivity extends BaseActivity {
         } else {
             processingLinkViewState();
 
-            new CheckInstance(internet -> {
-                if (internet) {
-                    MyApplication.oneCaller
-                            .linkDeviceToDealer(
-                                    new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
-                                    PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
-//                                +"INVALID_TOKEN"
-                            )
-                            .enqueue(new Callback<LinkDeviceResponse>() {
-                                @Override
-                                public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
 
-                                    if (response.isSuccessful() && response.body() != null) {
-                                        LinkDeviceResponse ldr = response.body();
-                                        if (ldr.isStatus()) {
-                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
-                                            PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
-                                            pendingLinkViewState();
-                                        } else {
-                                            Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
-//                        newLinkViewState();
-//                            checkLinkDeviceStatus();
-                                }
-                            });
+            if (MyApplication.oneCaller == null) {
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
                 }
-            });
+
+                String[] urls = {URL_1, URL_2};
+                asyncCalls = new AsyncCalls(output -> {
+                    if (output == null) {
+                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        linkDevice();
+                    }
+                }, this, urls);
+
+            } else {
+                linkDevice();
+            }
+
 
         }
 
     }
 
+    private void linkDevice() {
+
+        MyApplication.oneCaller
+                .linkDeviceToDealer(
+                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
+                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+//                                +"INVALID_TOKEN"
+                )
+                .enqueue(new Callback<LinkDeviceResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
+
+                        if (response.isSuccessful() && response.body() != null) {
+                            LinkDeviceResponse ldr = response.body();
+                            if (ldr.isStatus()) {
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
+                                pendingLinkViewState();
+                            } else {
+                                Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
+                        Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    private void stopLinking() {
+
+        MyApplication.oneCaller
+                .stopLinkingDevice(
+                        MAC, SerialNo,
+                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+//                                +"INVALID_TOKEN"
+                )
+                .enqueue(new Callback<DeleteDeviceResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<DeleteDeviceResponse> call, @NonNull Response<DeleteDeviceResponse> response) {
+
+                        if (response.isSuccessful() && response.body() != null) {
+
+                            DeleteDeviceResponse dDr = response.body();
+
+                            if (dDr.isStatus()) {
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
+                                newLinkViewState();
+                            } else {
+                                pendingLinkViewState();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<DeleteDeviceResponse> call, @NonNull Throwable t) {
+                        Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
     @OnClick(R.id.btnStopLink)
     public void onClickBtnUnlinkDevice() {
         processingUnlinkViewState();
 
-        new CheckInstance(internet -> {
-            if (internet) {
-
-                MyApplication.oneCaller
-                        .stopLinkingDevice(
-                                MAC, SerialNo,
-                                PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
-//                                +"INVALID_TOKEN"
-                        )
-                        .enqueue(new Callback<DeleteDeviceResponse>() {
-                            @Override
-                            public void onResponse(@NonNull Call<DeleteDeviceResponse> call, @NonNull Response<DeleteDeviceResponse> response) {
-
-                                if (response.isSuccessful() && response.body() != null) {
-
-                                    DeleteDeviceResponse dDr = response.body();
-
-                                    if (dDr.isStatus()) {
-                                        PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
-                                        PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
-                                        newLinkViewState();
-                                    } else {
-                                        pendingLinkViewState();
-                                    }
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<DeleteDeviceResponse> call, @NonNull Throwable t) {
-
-
-                            }
-                        });
+        if (MyApplication.oneCaller == null) {
+            if (asyncCalls != null) {
+                asyncCalls.cancel(true);
             }
-        });
+
+            String[] urls = {URL_1, URL_2};
+            asyncCalls = new AsyncCalls(output -> {
+                if (output == null) {
+                    Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                } else {
+                    PrefUtils.saveStringPref(this, LIVE_URL, output);
+                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    Timber.d("live_url %s", live_url);
+                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                    stopLinking();
+                }
+            }, this, urls);
+
+        } else {
+            stopLinking();
+        }
 
 
     }
@@ -411,104 +460,33 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
+    private AsyncCalls asyncCalls;
+
     SwipeRefreshLayout.OnRefreshListener listener = () -> {
         Timber.i("<<<<<SwipedToRefresh>>>>>");
         freshViewState();
         String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
         if (device_id != null) {
-            new CheckInstance(internet -> {
-                if (internet) {
-                    MyApplication.oneCaller
-                            .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
-                            .enqueue(new Callback<DeviceStatusResponse>() {
-                                @Override
-                                public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
-
-                                    if (response.isSuccessful() && response.body() != null) {
-
-                                        String msg = response.body().getMsg();
-
-
-                                        boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
-                                        if (response.body().isStatus()) {
-
-                                            switch (msg) {
-                                                case ACTIVE:
-                                                    DeviceStatusResponse deviceStatusResponse = response.body();
-                                                    saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
-                                                    utils.unSuspendDevice(LinkDeviceActivity.this);
-                                                    PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                    finishedRefreshing();
-                                                    approvedLinkViewState();
-                                                    break;
-                                                case EXPIRED:
-                                                    saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                    utils.suspendedDevice(LinkDeviceActivity.this, "expired");
-                                                    PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                    finish();
-                                                    break;
-                                                case SUSPENDED:
-                                                    saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                    utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
-                                                    PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
-                                                    finish();
-                                                    break;
-                                                case TRIAL:
-                                                    saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                    utils.unSuspendDevice(LinkDeviceActivity.this);
-                                                    PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                                    finish();
-                                                    break;
-                                                case PENDING:
-                                                    saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
-                                                    finishedRefreshing();
-                                                    pendingLinkViewState();
-                                                    break;
-                                            }
-                                        } else {
-                                            switch (msg) {
-                                                case UNLINKED_DEVICE:
-                                                    finish();
-                                                    break;
-                                                case NEW_DEVICE:
-                                                    if (isLinked) {
-                                                        utils.unlinkDevice(LinkDeviceActivity.this, false);
-                                                        finish();
-                                                    } else {
-                                                        finish();
-                                                    }
-                                                    break;
-                                                case DUPLICATE_MAC:
-//                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                    break;
-                                                case DUPLICATE_SERIAL:
-//                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                    break;
-                                                case DUPLICATE_MAC_AND_SERIAL:
-//                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
-                                                    break;
-                                                case DEALER_NOT_FOUND:
-//                                            showMainContent();
-                                                    break;
-                                            }
-                                        }
-                                    } else {
-                                        // if any error occurred show error view
-//                                showError(AppConstants.SEVER_NOT_RESPONSIVE);
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
-
-                                }
-                            });
+            if (MyApplication.oneCaller == null) {
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
                 }
-            });
+                String[] urls = {URL_1, URL_2};
+                asyncCalls = new AsyncCalls(output -> {
+                    if (output == null) {
+                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        checkDeviceStatus();
+                    }
+                }, this, urls);
 
+            } else {
+                checkDeviceStatus();
+            }
 
         } else {
             finishedRefreshing();
@@ -516,6 +494,100 @@ public class LinkDeviceActivity extends BaseActivity {
         }
 
     };
+
+
+    private void checkDeviceStatus() {
+
+        MyApplication.oneCaller
+                .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
+                .enqueue(new Callback<DeviceStatusResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
+
+                        if (response.isSuccessful() && response.body() != null) {
+
+                            String msg = response.body().getMsg();
+
+
+                            boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
+                            if (response.body().isStatus()) {
+
+                                switch (msg) {
+                                    case ACTIVE:
+                                        DeviceStatusResponse deviceStatusResponse = response.body();
+                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                        utils.unSuspendDevice(LinkDeviceActivity.this);
+                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        finishedRefreshing();
+                                        approvedLinkViewState();
+                                        break;
+                                    case EXPIRED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(LinkDeviceActivity.this, "expired");
+                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        finish();
+                                        break;
+                                    case SUSPENDED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
+                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+
+                                        finish();
+                                        break;
+                                    case TRIAL:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        utils.unSuspendDevice(LinkDeviceActivity.this);
+                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        finish();
+                                        break;
+                                    case PENDING:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        finishedRefreshing();
+                                        pendingLinkViewState();
+                                        break;
+                                }
+                            } else {
+                                switch (msg) {
+                                    case UNLINKED_DEVICE:
+                                        finish();
+                                        break;
+                                    case NEW_DEVICE:
+                                        if (isLinked) {
+                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                            finish();
+                                        } else {
+                                            finish();
+                                        }
+                                        break;
+                                    case DUPLICATE_MAC:
+//                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DUPLICATE_SERIAL:
+//                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DUPLICATE_MAC_AND_SERIAL:
+//                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        break;
+                                    case DEALER_NOT_FOUND:
+//                                            showMainContent();
+                                        break;
+                                }
+                            }
+                        } else {
+                            // if any error occurred show error view
+//                                showError(AppConstants.SEVER_NOT_RESPONSIVE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
+                        Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     @Override
     protected void onStop() {
