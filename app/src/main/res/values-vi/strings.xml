@@ -134,9 +134,9 @@
     <string name="set_background_image_settings">Cài đặt Hình nền</string>
     <string name="about">Về chúng tôi</string>
     <string name="activated">ĐÃ KÍCH HOẠT</string>
-    <string name="manage_password_title">Manage Passwords</string>
-    <string name="activated_code">Activated</string>
-    <string name="not_set">Chưa Thiết lập</string>
+    <string name="manage_password_title">Quản lý Mật khẩu</string>
+    <string name="activated_code">ĐÃ KÍCH HOẠT</string>
+    <string name="not_set">ếChưa Thit lập</string>
     <string name="invalid_password_title">Mật khẩu Không hợp lệ</string>
     <string name="invalid_password_message">Mật khẩu bạn đã nhập không chính xác.</string>
     <string name="duress_password_warning">Cảnh báo!</string>
@@ -163,7 +163,7 @@
     <string name="bg_save_guest">Nền đã được lưu cho khách</string>
     <string name="n_a">Không có</string>
     <string name="active">Đang hoạt động</string>
-    <string name="link_device_title">Link Device</string>
+    <string name="link_device_title">Liên kết thiết bị</string>
     <string name="error_321">Lỗi 321 ID thiết bị(</string>
     <string name="contact_support">) vui lòng liên hệ với bộ phận hỗ trợ</string>
     <string name="error_322">Lỗi 322 ID thiết bị(</string>
