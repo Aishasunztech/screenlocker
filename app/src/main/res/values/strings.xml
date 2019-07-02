@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Screen Locker</string>
-
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
     <string name="number_two">2</string>

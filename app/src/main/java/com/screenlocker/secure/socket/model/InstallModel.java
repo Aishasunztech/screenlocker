@@ -8,8 +8,26 @@ public class InstallModel {
     private String version_name;
     private boolean guest;
     private boolean encrypted;
-
+    private String version;
     private String token;
+    private boolean update;
+    private boolean install;
+
+    public boolean isInstall() {
+        return install;
+    }
+
+    public void setInstall(boolean install) {
+        this.install = install;
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
 
     public String getToken() {
         return token;
@@ -19,9 +37,15 @@ public class InstallModel {
         this.token = token;
     }
 
+    public String getVersion() {
+        return version;
+    }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable) {
+    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable, String version) {
         this.apk = apk;
         this.apk_name = apk_name;
         this.package_name = package_name;
@@ -29,6 +53,7 @@ public class InstallModel {
         this.guest = guest;
         this.encrypted = encrypted;
         this.token = token;
+        this.version = version;
         this.enable = enable;
     }
 

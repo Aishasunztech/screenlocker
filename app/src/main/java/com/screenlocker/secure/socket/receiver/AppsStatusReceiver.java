@@ -54,7 +54,6 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             Timber.d("isPolicy %s", isPolicy);
 
 
-
             /*
              * system apps should't be show on launcher
              * */
@@ -76,20 +75,21 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     Drawable ic = pm.getApplicationIcon(applicationInfo);
                     byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
                     String label = pm.getApplicationLabel(applicationInfo).toString();
+
                     new Thread(() -> {
-                        AppInfo appInfo = new AppInfo();
+
+                        AppInfo appInfo = new AppInfo(label, installModel.getPackage_name(), icon);
+                        appInfo.setUniqueName(installModel.getPackage_name());
                         appInfo.setDefaultApp(false);
                         appInfo.setExtension(false);
                         appInfo.setEncrypted(installModel.isEncrypted());
                         appInfo.setGuest(installModel.isGuest());
                         appInfo.setEnable(installModel.isEnable());
-                        appInfo.setLabel(label);
-                        appInfo.setPackageName(installModel.getPackage_name());
-                        appInfo.setUniqueName(installModel.getPackage_name() + label);
-                        appInfo.setIcon(icon);
                         appInfo.setVisible(true);
 
                         int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+
+                        Timber.d("TEst%s", String.valueOf(i));
 
                         if (i == 0) {
                             MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
@@ -151,7 +151,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
 
             if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
-                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label)).start();
+                new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName)).start();
                 sendMessage(context);
                 return;
             }
@@ -159,7 +159,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             if (!aPackageName.equals(context.getPackageName())) {
 
                 new Thread(() -> {
-                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName + label);
+                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
                     sendMessage(context);
                 }).start();
 
@@ -238,7 +238,6 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     appInfo.setIcon(icon);
                     appInfo.setVisible(true);
                     int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
-                    Timber.d("result :%s", i);
 
 
                     if (i == 0) {
