@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Screen Locker</string>
-
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
     <string name="number_two">2</string>
@@ -34,7 +32,6 @@
     <string name="hint_please_enter_encrypted_pin">Vui lòng nhập mã pin được mã khoá</string>
     <string name="empty">Trường mật khẩu trống.</string>
     <string name="password_dont_match">Mật khẩu không trùng khớp.</string>
-    <string name="toolbar_title">Khoá Màn Hình</string>
     <string name="set_guest_code">Mã Pin Khách</string>
     <string name="set_duress_code">Mã Pin Ép buộc</string>
     <string name="set_encrypted_code">Mã Pin Được mã hoá</string>
