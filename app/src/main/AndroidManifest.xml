@@ -241,6 +241,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".utils.AppInstallReciever"
             android:enabled="true"
