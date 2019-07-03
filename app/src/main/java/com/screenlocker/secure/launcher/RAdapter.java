@@ -76,7 +76,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
                             break;
-                        case "com.secure.launcher1":
+                        case "com.secure.launcher":
                             Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
                             if (launch != null) {
