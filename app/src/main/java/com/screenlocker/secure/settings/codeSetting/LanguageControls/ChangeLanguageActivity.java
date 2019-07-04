@@ -22,6 +22,7 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
 
     private RecyclerView rc;
     private Toolbar toolbar;
+    private boolean asSupport = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +37,18 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
 
         rc.setLayoutManager(new LinearLayoutManager(this));
 
+        asSupport = getIntent().getBooleanExtra("isSupport", false);
+
         ArrayList<LanguageModel> models = new ArrayList<>();
         String key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (key != null && !key.equals("")) {
             String[] languages = getResources().getStringArray(R.array.languages);
 
             for (String language : languages) {
-                    String language_key = language.split(":")[0];
-                    String language_name = language.split(":")[1];
-                    LanguageModel languageModel2 = new LanguageModel(language_key, language_name);
-                    models.add(languageModel2);
+                String language_key = language.split(":")[0];
+                String language_name = language.split(":")[1];
+                LanguageModel languageModel2 = new LanguageModel(language_key, language_name);
+                models.add(languageModel2);
             }
         } else {
             String[] languages = getResources().getStringArray(R.array.languages);
@@ -66,8 +69,7 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -83,6 +85,7 @@ public class ChangeLanguageActivity extends BaseActivity implements LanguageAdap
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra("isSupport", asSupport);
         startActivity(intent);
     }
 }

@@ -122,8 +122,18 @@ public class BlurWorker extends Worker {
 
                     }
 
-
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
+                } else {
+
+                    if (app.getPackageName().equals(settingPackageName)) {
+                        app.setGuest(false);
+                        app.setVisible(false);
+                        app.setDefaultApp(false);
+                        app.setEncrypted(false);
+                        app.setExtension(false);
+                        MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                    }
+
                 }
 
             }

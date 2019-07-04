@@ -1,3 +1,5 @@
+import groovy.xml.XmlUtil
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -19,8 +21,8 @@ android {
         applicationId "com.secure.launcher1"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 509
-        versionName "5.09"
+        versionCode 511
+        versionName "5.11"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -57,6 +59,29 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    preBuild {
+        doLast {
+            def imlFile = file("${project.name == rootProject.name ? project.name + '-' + project.name : project.name}.iml")
+            println "Change ${imlFile.name} order"
+            try {
+                def parsedXml = (new XmlParser()).parse(imlFile)
+                def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
+                parsedXml.component[1].remove(jdkNode)
+                def sdkString = "Android API ${android.compileSdkVersion.substring('android-'.length())} Platform"
+                new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+                XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+            } catch (FileNotFoundException e) {
+                e.printStackTrace()
+            }
+        }
+    }
+    allprojects {
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile) {
+                options.compilerArgs.add('-Xbootclasspath/p:app/system-libraries/framework.jar')
+            }
+        }
+    }
 
 }
 ext {
@@ -73,6 +98,7 @@ ext {
 }
 dependencies {
 
+    compileOnly files('system-libraries/framework.jar')
 // Add dependency
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 

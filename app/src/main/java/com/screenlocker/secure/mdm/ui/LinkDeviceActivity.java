@@ -20,7 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -33,7 +32,6 @@ import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -215,7 +213,7 @@ public class LinkDeviceActivity extends BaseActivity {
         // get ip address
         IP = DeviceIdUtils.getIPAddress(true);
         // get mac address
-        MAC = DeviceIdUtils.getMacAddress();
+        MAC = DeviceIdUtils.generateUniqueDeviceId(this);
 
         defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
@@ -499,7 +497,7 @@ public class LinkDeviceActivity extends BaseActivity {
     private void checkDeviceStatus() {
 
         MyApplication.oneCaller
-                .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.getMacAddress()))
+                .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
                 .enqueue(new Callback<DeviceStatusResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -706,7 +704,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         setProgressViews(false);
 
-        String macAddress = CommonUtils.getMacAddress();
+        String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         String serialNo = DeviceIdUtils.getSerialNumber();
         if (serialNo != null) {
             new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);

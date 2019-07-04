@@ -16,12 +16,10 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
@@ -271,13 +269,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 switch (action) {
                     case "start":
                         // connecting to socket
-                        new CheckInstance(internet -> {
-                            if (internet) {
-                                String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
-                                socketManager.destroy();
-                                socketManager.connectSocket(token, device_id, live_url);
-                            }
-                        });
+
+                        String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
+                        socketManager.destroy();
+                        socketManager.connectSocket(token, device_id, live_url);
 
                         break;
                 }

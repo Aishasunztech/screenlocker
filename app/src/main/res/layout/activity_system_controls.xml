@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/appImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -26,6 +27,7 @@
         tools:src="@mipmap/ic_launcher" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,6 +48,7 @@
         android:layout_marginEnd="8dp"
         android:switchPadding="8dp"
         android:text="@string/guest"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/switchEncrypt"
         app:layout_constraintEnd_toStartOf="@+id/switchEncrypt"
         app:layout_constraintTop_toTopOf="@+id/switchEncrypt" />
@@ -57,6 +60,7 @@
         android:layout_marginTop="8dp"
         android:switchPadding="8dp"
         android:text="@string/encrypted"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/textView5"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -65,7 +69,7 @@
         android:id="@+id/switchDisable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:visibility="gone"
         android:layout_marginStart="8dp"
         android:switchPadding="8dp"
         android:text="@string/enable"
@@ -78,12 +82,12 @@
         android:id="@+id/divider7"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:visibility="gone"
         android:layout_marginTop="16dp"
         android:background="@color/colorLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchEncrypt"
-
         tools:layout_editor_absoluteY="169dp" />
 
     <TextView

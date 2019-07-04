@@ -61,8 +61,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SecureSettingsMain.class);
-                            if (PrefUtils.getStringPref(context,AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
-                                i.putExtra("show_default","show_default");
+                            if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                                i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
                             break;
@@ -76,13 +76,13 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
                             break;
-                        case "com.secure.launcher1":
+                        case "com.secure.launcher":
                             Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
                             if (launch != null) {
                                 launch.addCategory(Intent.CATEGORY_LAUNCHER);
-                                if (PrefUtils.getStringPref(context,AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
-                                    launch.putExtra("isSupport",true);
+                                if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                                    launch.putExtra("isSupport", true);
                                     launch.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
                                 }
                             }
@@ -179,26 +179,20 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         // Drawable appIcon = appsList.get(i).getIcon();
 
         TextView textView = viewHolder.textView;
-        if(appLabel.equals("Secure Market"))
-        {
+        if (appLabel.equals("Secure Market")) {
             textView.setText(context.getResources().getString(R.string.secure_market_title));
 
-        }
-        else if(appLabel.equals("Secure Clear"))
-        {
+        } else if (appLabel.equals("Secure Clear")) {
             textView.setText(context.getResources().getString(R.string.secure_clear_title));
 
-        }else if(appLabel.equals("Secure Settings"))
-        {
+        } else if (appLabel.equals("Secure Settings")) {
             textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
 
-        }else if(appLabel.equals("Contact Support")){
+        } else if (appLabel.equals("Contact Support")) {
             textView.setText(context.getResources().getString(R.string.contact_support_chat));
-        }
-        else if(appLabel.equals("Contact Support")){
+        } else if (appLabel.equals("Contact Support")) {
             textView.setText(context.getResources().getString(R.string.contact_support_chat));
-        }
-        else{
+        } else {
             textView.setText(appLabel);
         }
         //  ImageView imageView = viewHolder.img;

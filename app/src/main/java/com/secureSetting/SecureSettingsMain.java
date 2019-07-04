@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -279,7 +280,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                     ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
 
                     popupWindow = new PopupWindow(container, width, (int) pxFromDp(SecureSettingsMain.this, 60), true);
-                    popupWindow.showAtLocation(findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
+                    popupWindow.showAtLocation((View) findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
                     SeekBar seekBar = container.findViewById(R.id.seek_bar);
 
                     int brightness = getScreenBrightness(SecureSettingsMain.this);
@@ -398,6 +399,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();

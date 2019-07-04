@@ -2,12 +2,13 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,8 +16,6 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.work.OneTimeWorkRequest;
@@ -41,13 +39,15 @@ import androidx.work.WorkManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.ChangeLanguageActivity;
@@ -55,16 +55,16 @@ import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,15 +77,15 @@ import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 
 /***
@@ -93,9 +93,6 @@ import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
-    private volatile boolean asExtentention;
-    private AlertDialog isActiveDialog;
-    private AlertDialog noNetworkDialog;
     private NetworkChangeReceiver networkChangeReceiver;
 
     private Toolbar mToolbar;
@@ -107,11 +104,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Switch switchEnableVpn;
 
     private SettingsPresenter settingsPresenter;
-    private ConstraintLayout rootLayout;
     private boolean isEncryptedChecked;
     private String currentVersion;
-    private String mMacAddress;
-    private TelephonyManager telephonyManager;
 
 
     @BindView(R.id.tvManagePasswords)
@@ -153,6 +147,40 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+    public static boolean uninstallPackage(Context context, String packageName) {
+
+        PackageManager packageManger = context.getPackageManager();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            PackageInstaller packageInstaller = packageManger.getPackageInstaller();
+            PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                    PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+            params.setAppPackageName(packageName);
+            int sessionId = 0;
+            try {
+                sessionId = packageInstaller.createSession(params);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+
+            PendingIntent i = PendingIntent.getBroadcast(context, sessionId,
+                    new Intent("android.intent.action.MAIN"), 0);
+
+            packageInstaller.uninstall(packageName, i.getIntentSender());
+            return true;
+        }
+        System.err.println("old sdk");
+        return false;
+    }
+
+
+    public static String splitName(String s) {
+        return s.replace(".apk", "");
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -160,6 +188,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
+        uninstallPackage(this, "com.android.packageinstaller");
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
@@ -169,11 +199,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-        if (getIntent().hasExtra("isSupport")) {
+        asSupport = getIntent().getBooleanExtra("isSupport", false);
+
+        if (asSupport) {
+
             tvManagePasswords.setVisibility(View.GONE);
             tvChooseBackground.setVisibility(View.GONE);
             tvCode.setVisibility(View.GONE);
-            tvLanguage.setVisibility(View.GONE);
+            tvLanguage.setVisibility(View.VISIBLE);
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
@@ -182,28 +215,28 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
         }
 
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
+        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            Intent intent = new Intent(this, SteppersActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            OneTimeWorkRequest insertionWork =
+                    new OneTimeWorkRequest.Builder(BlurWorker.class)
+                            .build();
+            WorkManager.getInstance().enqueue(insertionWork);
 
-        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-                .observe(this, workInfo -> {
-                    // Do something with the status
-                    if (workInfo != null && workInfo.getState().isFinished()) {
-                        PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
-                        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                            Intent intent = new Intent(this, SteppersActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
+            WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
+                    .observe(this, workInfo -> {
+                        // Do something with the status
+                        if (workInfo != null && workInfo.getState().isFinished()) {
+                            PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 
 
                         }
-                    }
-                });
+                    });
+        }
 
 
     }
@@ -227,6 +260,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         switchEnableVpn.setOnCheckedChangeListener(this);
         createActiveDialog();
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        String mMacAddress;
         if (manager != null) {
             mMacAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         } else {
@@ -271,13 +305,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void createActiveDialog() {
-        isActiveDialog = new AlertDialog.Builder(this).setMessage("").setCancelable(false).create();
+        AlertDialog isActiveDialog = new AlertDialog.Builder(this).setMessage("").setCancelable(false).create();
     }
 
 
     private void setIds() {
         switchEnableVpn = findViewById(R.id.switchEnableVpn);
-        rootLayout = findViewById(R.id.rootLayout);
+        ConstraintLayout rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
 
         tvlinkDevice = findViewById(R.id.tvlinkDevice);
@@ -359,6 +393,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvLanguage:
                     Intent intent = new Intent(this, ChangeLanguageActivity.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("isSupport", asSupport);
+
                     startActivity(intent);
                     finish();
                     break;
@@ -419,60 +455,88 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+
+    private AsyncCalls asyncCalls;
+
     private void requestCheckForUpdate(ProgressDialog dialog) {
 
-        new CheckInstance(internet -> {
-            if (internet) {
-                MyApplication.oneCaller
-                        .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                        .enqueue(new Callback<UpdateModel>() {
-                            @Override
-                            public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-                                if (dialog != null && dialog.isShowing()) {
-                                    dialog.dismiss();
+        if (MyApplication.oneCaller == null) {
 
-                                }
 
-                                if (response.body() != null) {
-                                    if (response.body().isSuccess()) {
-                                        if (response.body().isApkStatus()) {
-                                            AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
-                                                    .setTitle(getResources().getString(R.string.update_available_title))
-                                                    .setMessage(getResources().getString(R.string.update_available_message))
-                                                    .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
-                                                        String url = response.body().getApkUrl();
-
-                                                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                        DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
-                                                        obj.execute();
-                                                    }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
-                                                        dialog1.dismiss();
-                                                    });
-                                            dialog.show();
-                                        } else {
-                                            Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    } else {
-                                        saveToken();
-                                        requestCheckForUpdate(dialog);
-                                    }
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-                                dialog.dismiss();
-                                Toast.makeText(SettingsActivity.this, getResources().getString(R.string.error_occured_toast), Toast.LENGTH_LONG).show();
-
-                            }
-                        });
+            if (asyncCalls != null) {
+                asyncCalls.cancel(true);
             }
-        });
+
+            String[] urls = {URL_1, URL_2};
+
+            asyncCalls = new AsyncCalls(output -> {
+
+                if (output != null) {
+                    PrefUtils.saveStringPref(this, LIVE_URL, output);
+                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    Timber.d("live_url %s", live_url);
+                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                    update(dialog);
+
+                }
+            }, this, urls);
+            asyncCalls.execute();
+
+        } else {
+            update(dialog);
+        }
 
 
     }
+
+    private void update(ProgressDialog dialog) {
+        MyApplication.oneCaller
+                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .enqueue(new Callback<UpdateModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+
+                        }
+
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
+                                if (response.body().isApkStatus()) {
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
+                                            .setTitle(getResources().getString(R.string.update_available_title))
+                                            .setMessage(getResources().getString(R.string.update_available_message))
+                                            .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
+                                                String url = response.body().getApkUrl();
+
+                                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
+                                                obj.execute();
+                                            }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
+                                                dialog1.dismiss();
+                                            });
+                                    dialog.show();
+                                } else {
+                                    Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                saveToken();
+                                requestCheckForUpdate(dialog);
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                        dialog.dismiss();
+                        Toast.makeText(SettingsActivity.this, getResources().getString(R.string.error_occured_toast), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+    }
+
 
     private void showNetworkDialog() {
 
@@ -746,15 +810,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    private boolean asSupport = false;
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
         if (intent.hasExtra("isSupport")) {
             Log.d("kkogkooikn", "true: ");
-            asExtentention = true;
-        }else {
+            asSupport = true;
+        } else {
             Log.d("kkogkooikn", "false: ");
-            asExtentention = false;
+            asSupport = false;
         }
 
     }

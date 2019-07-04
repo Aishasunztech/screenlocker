@@ -2,6 +2,7 @@ package com.screenlocker.secure.permissions;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -31,12 +32,16 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 .observe(this, workInfo -> {
                     // Do something with the status
                     if (workInfo != null && workInfo.getState().isFinished()) {
-                        Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
-                        lockScreen.setAction("locked");
-                        ActivityCompat.startForegroundService(this, lockScreen);
-                        lockScreen = new Intent(WelcomeScreenActivity.this, MainActivity.class);
-                        startActivity(lockScreen);
-                        finish();
+                        new Handler().postDelayed(() -> {
+                            Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
+                            lockScreen.setAction("locked");
+                            ActivityCompat.startForegroundService(this, lockScreen);
+                            lockScreen = new Intent(WelcomeScreenActivity.this, MainActivity.class);
+                            startActivity(lockScreen);
+                            finish();
+                        }, 5000);
+
+
                     }
                 });
 

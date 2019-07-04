@@ -3,37 +3,11 @@ package com.screenlocker.secure.mdm;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
-import androidx.annotation.NonNull;
-
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.CheckInstance;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
-import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
-import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.PrefUtils;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
-import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.PENDING;
-import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.TRIAL;
-import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 /**

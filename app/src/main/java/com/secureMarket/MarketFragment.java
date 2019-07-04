@@ -4,6 +4,7 @@ package com.secureMarket;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,13 +30,17 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -54,12 +59,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.HOST_ERROR;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
 
 /**
@@ -111,14 +118,17 @@ public class MarketFragment extends Fragment implements
     };
 
     private void refreshList() {
+
         tvInfo.setVisibility(View.GONE);
         if (activity != null) {
             String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
             if (dealerId == null || dealerId.equals("")) {
-                getAdminApps();
+               // getAdminApps();
+                getServerApps(null);
             } else {
-                getAllApps(dealerId);
+              //  getAllApps(dealerId);
+                getServerApps(dealerId);
             }
         }
 
@@ -187,156 +197,174 @@ public class MarketFragment extends Fragment implements
         String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
-            getAdminApps();
+         //   getAdminApps();
+            getServerApps(null);
         } else {
-            getAllApps(dealerId);
+            getServerApps(dealerId);
+           // getAllApps(dealerId);
         }
 
 
     }
 
 
+    private void getServerApps(String dealerId){
+
+        if (MyApplication.oneCaller == null) {
+            if (asyncCalls != null) {
+                asyncCalls.cancel(true);
+            }
+            String[] urls = {URL_1, URL_2};
+            asyncCalls = new AsyncCalls(output -> {
+                if (output == null) {
+                    Toast.makeText(activity, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                } else {
+                    PrefUtils.saveStringPref(activity, LIVE_URL, output);
+                    String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
+                    Timber.d("live_url %s", live_url);
+                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+
+                    if(dealerId==null){
+                        getAdminApps();
+                    }else{
+                        getAllApps(dealerId);
+                    }
+                }
+            }, activity, urls);
+
+        } else {
+
+            if(dealerId==null){
+                getAdminApps();
+            }else{
+                getAllApps(dealerId);
+            }
+        }
+    }
+
+private AsyncCalls asyncCalls;
+
     private void getAllApps(String dealerId) {
 
-        if (CommonUtils.isNetworkAvailable(activity)) {
+        MyApplication.oneCaller
+                .getAllApps("marketApplist/" + dealerId)
+                .enqueue(new Callback<InstallAppModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
 
-            new CheckInstance(internet -> {
-                if (internet) {
-                    MyApplication.oneCaller
-                            .getAllApps("marketApplist/" + dealerId)
-                            .enqueue(new Callback<InstallAppModel>() {
-                                @Override
-                                public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                                    if (response.body() != null) {
-                                        if (response.body().isSuccess()) {
+                                appModelList.clear();
+                                appModelList.addAll(response.body().getList());
+                                installedApps.clear();
+                                unInstalledApps.clear();
 
-                                            appModelList.clear();
-                                            appModelList.addAll(response.body().getList());
-                                            installedApps.clear();
-                                            unInstalledApps.clear();
+                                checkAppInstalledOrNot(appModelList);
+                                for (List app : appModelList) {
+                                    if (app.isInstalled()) {
 
-                                            checkAppInstalledOrNot(appModelList);
-                                            for (List app : appModelList) {
-                                                if (app.isInstalled()) {
-
-                                                    if (isShow(app.getPackageName(), activity)) {
-                                                        installedApps.add(app);
-                                                    }
-
-                                                } else {
-
-                                                    if (isShow(app.getPackageName(), activity)) {
-                                                        unInstalledApps.add(app);
-
-                                                    }
-                                                }
-                                            }
-
-                                            if (fragmentType.equals("install")) {
-                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                            } else if (fragmentType.equals("uninstall")) {
-                                                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
-                                            }
-                                            rc.setLayoutManager(new GridLayoutManager(activity, 1));
-                                            tvInfo.setVisibility(View.GONE);
-
-                                        } else {
-                                            if (response.body().getList() == null) {
-                                                appModelList.clear();
-                                                tvInfo.setVisibility(View.VISIBLE);
-
-                                            }
+                                        if (isShow(app.getPackageName(), activity)) {
+                                            installedApps.add(app);
                                         }
 
+                                    } else {
+
+                                        if (isShow(app.getPackageName(), activity)) {
+                                            unInstalledApps.add(app);
+
+                                        }
                                     }
-                                    progressBar.setVisibility(View.GONE);
                                 }
 
-                                @Override
-                                public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                                    Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
-
-                                    progressBar.setVisibility(View.GONE);
+                                if (fragmentType.equals("install")) {
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
+                                } else if (fragmentType.equals("uninstall")) {
+                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
                                 }
-                            });
-                } else {
-                    Toast.makeText(activity, HOST_ERROR, Toast.LENGTH_SHORT).show();
-                }
-            });
+                                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                                tvInfo.setVisibility(View.GONE);
 
-        }
+                            } else {
+                                if (response.body().getList() == null) {
+                                    appModelList.clear();
+                                    tvInfo.setVisibility(View.VISIBLE);
+
+                                }
+                            }
+
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
+                        Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+
     }
 
 
     private void getAdminApps() {
-        if (CommonUtils.isNetworkAvailable(activity)) {
+        MyApplication.oneCaller
+                .getAdminApps()
+                .enqueue(new Callback<InstallAppModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
 
-            new CheckInstance(internet -> {
-                if (internet) {
-                    MyApplication.oneCaller
-                            .getAdminApps()
-                            .enqueue(new Callback<InstallAppModel>() {
-                                @Override
-                                public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                                    if (response.body() != null) {
-                                        if (response.body().isSuccess()) {
+                                appModelList.clear();
+                                appModelList.addAll(response.body().getList());
+                                installedApps.clear();
+                                unInstalledApps.clear();
 
-                                            appModelList.clear();
-                                            appModelList.addAll(response.body().getList());
-                                            installedApps.clear();
-                                            unInstalledApps.clear();
+                                checkAppInstalledOrNot(appModelList);
+                                for (List app : appModelList) {
 
-                                            checkAppInstalledOrNot(appModelList);
-                                            for (List app : appModelList) {
+                                    if (app.isInstalled()) {
 
-                                                if (app.isInstalled()) {
+                                        if (isShow(app.getPackageName(), activity)) {
+                                            installedApps.add(app);
+                                        }
 
-                                                    if (isShow(app.getPackageName(), activity)) {
-                                                        installedApps.add(app);
-                                                    }
-
-                                                } else {
-                                                    if (isShow(app.getPackageName(), activity)) {
-                                                        unInstalledApps.add(app);
-                                                    }
-
-                                                }
-                                            }
-
-                                            if (fragmentType.equals("install")) {
-                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                            } else if (fragmentType.equals("uninstall")) {
-                                                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
-                                            } else {
-                                                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
-                                            }
-                                            rc.setLayoutManager(new GridLayoutManager(activity, 1));
-
-
-                                        } else {
-                                            if (response.body().getList() == null) {
-                                                appModelList.clear();
-
-                                            }
+                                    } else {
+                                        if (isShow(app.getPackageName(), activity)) {
+                                            unInstalledApps.add(app);
                                         }
 
                                     }
-                                    progressBar.setVisibility(View.GONE);
                                 }
 
-                                @Override
-                                public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
-                                    progressBar.setVisibility(View.GONE);
+                                if (fragmentType.equals("install")) {
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
+                                } else if (fragmentType.equals("uninstall")) {
+                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this));
+                                } else {
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this));
                                 }
-                            });
-                } else {
-                    Toast.makeText(activity, HOST_ERROR, Toast.LENGTH_SHORT).show();
-                }
-            });
+                                rc.setLayoutManager(new GridLayoutManager(activity, 1));
 
 
-        }
+                            } else {
+                                if (response.body().getList() == null) {
+                                    appModelList.clear();
+
+                                }
+                            }
+
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
+
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
 
 
     }
@@ -344,7 +372,7 @@ public class MarketFragment extends Fragment implements
 
     private void checkAppInstalledOrNot(java.util.List<List> list) {
         if (list != null && list.size() > 0) {
-            for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
+            for (List app :
                     list) {
 //                String fileName = app.getApk();
 //                Log.d("APKNAME",app.getApk() + ": " + app.getPackageName());
@@ -408,56 +436,56 @@ public class MarketFragment extends Fragment implements
                 Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
             } else {
 
-                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                intent.setData(Uri.parse("package:" + app.getPackageName()));
-                activity.startActivity(intent);
-
-//                try {
-//                    PackageManager pm = activity.getPackageManager();
-//                    pm.getPackageInfo("com.secure.systemcontrol", 0);
-//                    if (activity != null) {
-//
-//
-//                        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-//                        alertDialog.setTitle("Uninstall");
-//                        alertDialog.setIcon(android.R.drawable.ic_delete
-//                        );
-//                        alertDialog.setMessage("Are you sure you want to uninstall this app?");
-//
-//                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
-//                            InstallModel installModel = new InstallModel(app.getApk(), app.getApkName(), app.getPackageName(), null, false, false, null, false);
-//                            ArrayList<InstallModel> apps = new ArrayList<>();
-//                            apps.add(installModel);
-//                            String json = new Gson().toJson(apps);
-//                            final Intent intent = new Intent();
-//                            intent.setAction("com.secure.systemcontrol.DELETE_PACKAGES");
-//                            intent.putExtra("json", json);
-//                            intent.putExtra("SecureMarket", true);
-//                            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
-//
-//                            if (activity != null) {
-//                                activity.sendBroadcast(intent);
-//                            }
-//                        });
-//
-//                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-//                                (dialog, which) -> dialog.dismiss());
-//                        alertDialog.show();
-//
-//                    }
-//
-//                } catch (PackageManager.NameNotFoundException e) {
-//
-//                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-//                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+//                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 ////            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-//                    intent.setData(Uri.parse("package:" + app.getPackageName()));
-//                    activity.startActivity(intent);
-//
-//                }
+//                intent.setData(Uri.parse("package:" + app.getPackageName()));
+//                activity.startActivity(intent);
+
+                try {
+                    PackageManager pm = activity.getPackageManager();
+                    pm.getPackageInfo("com.secure.systemcontrol", 0);
+                    if (activity != null) {
+
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+                        alertDialog.setTitle("Uninstall");
+                        alertDialog.setIcon(android.R.drawable.ic_delete
+                        );
+                        alertDialog.setMessage("Are you sure you want to uninstall this app?");
+
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+                            InstallModel installModel = new InstallModel(app.getApk(), app.getApkName(), app.getPackageName(), null, false, false, null, false);
+                            ArrayList<InstallModel> apps = new ArrayList<>();
+                            apps.add(installModel);
+                            String json = new Gson().toJson(apps);
+                            final Intent intent = new Intent();
+                            intent.setAction("com.secure.systemcontrol.DELETE_PACKAGES");
+                            intent.putExtra("json", json);
+                            intent.putExtra("SecureMarket", true);
+                            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
+
+                            if (activity != null) {
+                                activity.sendBroadcast(intent);
+                            }
+                        });
+
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+
+                    }
+
+                } catch (PackageManager.NameNotFoundException e) {
+
+                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+                    intent.setData(Uri.parse("package:" + app.getPackageName()));
+                    activity.startActivity(intent);
+
+                }
             }
         });
 
@@ -652,74 +680,74 @@ public class MarketFragment extends Fragment implements
 
         private void showInstallDialog(Uri uri, String packageName) {
 
-            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//
+//            Timber.d("packageName: %s", packageName);
+//
+//            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+//                    .setStream(uri) // uri from FileProvider
+//                    .setType("text/html")
+//                    .getIntent()
+//                    .setAction(Intent.ACTION_VIEW) //Change if needed
+//                    .setDataAndType(uri, "application/vnd.android.package-archive")
+//                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().startActivity(intent);
 
-            Timber.d("packageName: %s", packageName);
+            try {
+                PackageManager pm = contextWeakReference.get().getPackageManager();
+                pm.getPackageInfo("com.secure.systemcontrol", 0);
+                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
 
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                    .setStream(uri) // uri from FileProvider
-                    .setType("text/html")
-                    .getIntent()
-                    .setAction(Intent.ACTION_VIEW) //Change if needed
-                    .setDataAndType(uri, "application/vnd.android.package-archive")
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            contextWeakReference.get().startActivity(intent);
 
-//            try {
-//                PackageManager pm = contextWeakReference.get().getPackageManager();
-//                pm.getPackageInfo("com.secure.systemcontrol", 0);
-//                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-//                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-//                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-//
-//
-//                    alertDialog.setMessage("Are you sure you want to install this app?");
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-//
-//                        Intent launchIntent = new Intent();
-//                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-////                        launchIntent.setAction(Intent.ACTION_VIEW);
-//                        launchIntent.setAction(Intent.ACTION_MAIN);
-//                        launchIntent.setComponent(componentName);
-//                        launchIntent.setData(uri);
-//                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-//                        launchIntent.putExtra("user_space", userType);
-//                        launchIntent.putExtra("SecureMarket", true);
-//                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-//                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-////            contextWeakReference.get().sendBroadcast(sender);
-//
-//                        contextWeakReference.get().startActivity(launchIntent);
-//                        Snackbar snackbar = Snackbar.make(
-//                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-//                                        .getChildAt(0)
-//                                , contextWeakReference.get().getString(R.string.install_app_message)
-//                                , 3000);
-//
-//                        snackbar.show();
-//
-//                    });
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-//                            (dialog, which) -> dialog.dismiss());
-//                    alertDialog.show();
-//                }
-//            } catch (PackageManager.NameNotFoundException e) {
-//
-//                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-//
-//                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-//                        .setStream(uri) // uri from FileProvider
-//                        .setType("text/html")
-//                        .getIntent()
-//                        .setAction(Intent.ACTION_VIEW) //Change if needed
-//                        .setDataAndType(uri, "application/vnd.android.package-archive")
-//                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                contextWeakReference.get().startActivity(intent);
-//            } catch (Exception e) {
-//                Timber.e(e);
-//            }
+                    alertDialog.setMessage("Are you sure you want to install this app?");
+
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+
+                        Intent launchIntent = new Intent();
+                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                        launchIntent.setAction(Intent.ACTION_MAIN);
+                        launchIntent.setComponent(componentName);
+                        launchIntent.setData(uri);
+                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                        launchIntent.putExtra("user_space", userType);
+                        launchIntent.putExtra("SecureMarket", true);
+                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                        contextWeakReference.get().startActivity(launchIntent);
+                        Snackbar snackbar = Snackbar.make(
+                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                        .getChildAt(0)
+                                , contextWeakReference.get().getString(R.string.install_app_message)
+                                , 3000);
+
+                        snackbar.show();
+
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                            (dialog, which) -> dialog.dismiss());
+                    alertDialog.show();
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+
+                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+
+                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                        .setStream(uri) // uri from FileProvider
+                        .setType("text/html")
+                        .getIntent()
+                        .setAction(Intent.ACTION_VIEW) //Change if needed
+                        .setDataAndType(uri, "application/vnd.android.package-archive")
+                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                contextWeakReference.get().startActivity(intent);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
 
 //
 
