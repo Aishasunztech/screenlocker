@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BuildConfig;
@@ -22,19 +24,21 @@ import java.util.List;
 public class DeviceNotificationListener extends NotificationListenerService {
 
     private NLServiceReceiver nlservicereciver;
+    public static final String TAG = NLServiceReceiver.class.getSimpleName();
 
     public static final String ACTION_NOTIFICATION_REFRESH = BuildConfig.APPLICATION_ID + ".notification_refresh";
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
-        refreshList();
+        Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
-        refreshList();
+        Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
+        
     }
 
     @Override
@@ -72,6 +76,7 @@ public class DeviceNotificationListener extends NotificationListenerService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: ");
             if (intent.getStringExtra("command").equals("clearall")) {
                 DeviceNotificationListener.this.cancelAllNotifications();
             }
