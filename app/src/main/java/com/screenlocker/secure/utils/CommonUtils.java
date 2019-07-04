@@ -94,46 +94,6 @@ public class CommonUtils {
         return isReachable;
     }
 
-    public static String getMacAddress() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-
-//                Log.e("MACLENGTH", "getMacAddress: "+macBytes.length );
-//                macBytes[0] = 0x0c;
-//                for (byte b:macBytes) {
-//                    Log.e("MACLENGTH", "getMacAddress: "+b );
-//                }
-
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-//                    res1.append( Integer.toHexString(b & 0xFF) + ":");
-
-                    res1.append(
-                            String.format(
-                                    "%02X:",/*Integer.toHexString(*/
-                                    b /*& 0xFF) + ":"*/
-                            )
-                    );
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-        }
-        return "02:00:00:00:00:00";
-    }
-
 
     public static String getDate(long timeStamp) {
 
@@ -425,7 +385,7 @@ public class CommonUtils {
         }
     }
 
-    public static void setAppLocale(String locale,Context context) {
+    public static void setAppLocale(String locale, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         Configuration configuration = resources.getConfiguration();

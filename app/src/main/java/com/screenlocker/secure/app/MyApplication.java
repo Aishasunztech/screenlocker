@@ -20,7 +20,6 @@ import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.CheckInstance;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
@@ -72,6 +71,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     private NetworkChangeReceiver networkChangeReceiver;
     private MyAlarmBroadcastReceiver myAlarmBroadcastReceiver;
+
+    public MyApplication() {
+    }
 
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
@@ -264,8 +266,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     private void onlineConnection() {
 
-        AppConstants.isProgress = true;
-        AppConstants.result = false;
 
         String[] urls = {URL_1, URL_2};
 
@@ -293,94 +293,118 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
-                AppConstants.result = true;
                 checkForDownload();
 
             }
-            AppConstants.isProgress = false;
         }, this, urls);// checking hosts
         asyncCalls.execute();
     }
 
-    private CheckInstance checkInstance;
 
     private void checkForDownload() {
-        if (checkInstance != null) {
-            checkInstance.cancel(true);
+
+
+        String currentVersion = "1";
+        try {
+            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.d(e);
         }
-        checkInstance = new CheckInstance(internet -> {
-            if (internet) {
 
-                String currentVersion = "1";
-                try {
-                    currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Timber.d(e);
-                }
+        MyApplication.oneCaller
+                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .enqueue(new Callback<UpdateModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
 
-                MyApplication.oneCaller
-                        .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                        .enqueue(new Callback<UpdateModel>() {
-                            @Override
-                            public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
+                                if (response.body().isApkStatus()) {
+                                    String url = response.body().getApkUrl();
+                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
+                                    obj.execute();
 
-                                if (response.body() != null) {
-                                    if (response.body().isSuccess()) {
-                                        if (response.body().isApkStatus()) {
-                                            String url = response.body().getApkUrl();
-                                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                            DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
-                                            obj.execute();
-
-                                        }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
 
 
-                                    } else {
-                                        saveToken();
-                                        checkForDownload();
-                                    }
-
-                                }
+                            } else {
+                                saveToken();
+                                checkForDownload();
                             }
 
-                            @Override
-                            public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                        }
+                    }
 
-                            }
-                        });
-            }
-        });
+                    @Override
+                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+
+                    }
+                });
+
 
     }
 
 
     public static void saveToken() {
 
+        if (MyApplication.oneCaller == null) {
 
-        new CheckInstance(internet -> {
-            if (internet) {
-                MyApplication.oneCaller
-                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                        if (response.body() != null) {
-                            if (response.body().isStatus()) {
-                                PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+            String[] urls = {URL_1, URL_2};
 
+            new AsyncCalls(output -> {
+
+                if (output != null) {
+                    PrefUtils.saveStringPref(appContext, LIVE_URL, output);
+                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    Timber.d("live_url %s", live_url);
+                    oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                    MyApplication.oneCaller
+                            .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                            if (response.body() != null) {
+                                if (response.body().isStatus()) {
+                                    PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        @Override
+                        public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
 
+                        }
+                    });
+                }
+            }, MyApplication.getAppContext(), urls).execute();
+
+
+        } else {
+            MyApplication.oneCaller
+                    .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().isStatus()) {
+                            PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+
+                        }
                     }
-                });
-            }
-        });
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
+
+                }
+            });
+        }
 
 
     }
 
 
 }
+
+
+
