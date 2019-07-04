@@ -4,6 +4,7 @@ package com.secureMarket;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -38,6 +40,7 @@ import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -56,6 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -432,56 +436,56 @@ private AsyncCalls asyncCalls;
                 Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
             } else {
 
-                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                intent.setData(Uri.parse("package:" + app.getPackageName()));
-                activity.startActivity(intent);
-
-//                try {
-//                    PackageManager pm = activity.getPackageManager();
-//                    pm.getPackageInfo("com.secure.systemcontrol", 0);
-//                    if (activity != null) {
-//
-//
-//                        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-//                        alertDialog.setTitle("Uninstall");
-//                        alertDialog.setIcon(android.R.drawable.ic_delete
-//                        );
-//                        alertDialog.setMessage("Are you sure you want to uninstall this app?");
-//
-//                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
-//                            InstallModel installModel = new InstallModel(app.getApk(), app.getApkName(), app.getPackageName(), null, false, false, null, false);
-//                            ArrayList<InstallModel> apps = new ArrayList<>();
-//                            apps.add(installModel);
-//                            String json = new Gson().toJson(apps);
-//                            final Intent intent = new Intent();
-//                            intent.setAction("com.secure.systemcontrol.DELETE_PACKAGES");
-//                            intent.putExtra("json", json);
-//                            intent.putExtra("SecureMarket", true);
-//                            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
-//
-//                            if (activity != null) {
-//                                activity.sendBroadcast(intent);
-//                            }
-//                        });
-//
-//                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-//                                (dialog, which) -> dialog.dismiss());
-//                        alertDialog.show();
-//
-//                    }
-//
-//                } catch (PackageManager.NameNotFoundException e) {
-//
-//                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-//                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+//                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 ////            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-//                    intent.setData(Uri.parse("package:" + app.getPackageName()));
-//                    activity.startActivity(intent);
-//
-//                }
+//                intent.setData(Uri.parse("package:" + app.getPackageName()));
+//                activity.startActivity(intent);
+
+                try {
+                    PackageManager pm = activity.getPackageManager();
+                    pm.getPackageInfo("com.secure.systemcontrol", 0);
+                    if (activity != null) {
+
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+                        alertDialog.setTitle("Uninstall");
+                        alertDialog.setIcon(android.R.drawable.ic_delete
+                        );
+                        alertDialog.setMessage("Are you sure you want to uninstall this app?");
+
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+                            InstallModel installModel = new InstallModel(app.getApk(), app.getApkName(), app.getPackageName(), null, false, false, null, false);
+                            ArrayList<InstallModel> apps = new ArrayList<>();
+                            apps.add(installModel);
+                            String json = new Gson().toJson(apps);
+                            final Intent intent = new Intent();
+                            intent.setAction("com.secure.systemcontrol.DELETE_PACKAGES");
+                            intent.putExtra("json", json);
+                            intent.putExtra("SecureMarket", true);
+                            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                            intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
+
+                            if (activity != null) {
+                                activity.sendBroadcast(intent);
+                            }
+                        });
+
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+
+                    }
+
+                } catch (PackageManager.NameNotFoundException e) {
+
+                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+                    intent.setData(Uri.parse("package:" + app.getPackageName()));
+                    activity.startActivity(intent);
+
+                }
             }
         });
 
@@ -676,74 +680,74 @@ private AsyncCalls asyncCalls;
 
         private void showInstallDialog(Uri uri, String packageName) {
 
-            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//
+//            Timber.d("packageName: %s", packageName);
+//
+//            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+//                    .setStream(uri) // uri from FileProvider
+//                    .setType("text/html")
+//                    .getIntent()
+//                    .setAction(Intent.ACTION_VIEW) //Change if needed
+//                    .setDataAndType(uri, "application/vnd.android.package-archive")
+//                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().startActivity(intent);
 
-            Timber.d("packageName: %s", packageName);
+            try {
+                PackageManager pm = contextWeakReference.get().getPackageManager();
+                pm.getPackageInfo("com.secure.systemcontrol", 0);
+                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
 
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                    .setStream(uri) // uri from FileProvider
-                    .setType("text/html")
-                    .getIntent()
-                    .setAction(Intent.ACTION_VIEW) //Change if needed
-                    .setDataAndType(uri, "application/vnd.android.package-archive")
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            contextWeakReference.get().startActivity(intent);
 
-//            try {
-//                PackageManager pm = contextWeakReference.get().getPackageManager();
-//                pm.getPackageInfo("com.secure.systemcontrol", 0);
-//                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-//                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-//                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-//
-//
-//                    alertDialog.setMessage("Are you sure you want to install this app?");
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-//
-//                        Intent launchIntent = new Intent();
-//                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-////                        launchIntent.setAction(Intent.ACTION_VIEW);
-//                        launchIntent.setAction(Intent.ACTION_MAIN);
-//                        launchIntent.setComponent(componentName);
-//                        launchIntent.setData(uri);
-//                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-//                        launchIntent.putExtra("user_space", userType);
-//                        launchIntent.putExtra("SecureMarket", true);
-//                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-//                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-////            contextWeakReference.get().sendBroadcast(sender);
-//
-//                        contextWeakReference.get().startActivity(launchIntent);
-//                        Snackbar snackbar = Snackbar.make(
-//                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-//                                        .getChildAt(0)
-//                                , contextWeakReference.get().getString(R.string.install_app_message)
-//                                , 3000);
-//
-//                        snackbar.show();
-//
-//                    });
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-//                            (dialog, which) -> dialog.dismiss());
-//                    alertDialog.show();
-//                }
-//            } catch (PackageManager.NameNotFoundException e) {
-//
-//                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-//
-//                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-//                        .setStream(uri) // uri from FileProvider
-//                        .setType("text/html")
-//                        .getIntent()
-//                        .setAction(Intent.ACTION_VIEW) //Change if needed
-//                        .setDataAndType(uri, "application/vnd.android.package-archive")
-//                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                contextWeakReference.get().startActivity(intent);
-//            } catch (Exception e) {
-//                Timber.e(e);
-//            }
+                    alertDialog.setMessage("Are you sure you want to install this app?");
+
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+
+                        Intent launchIntent = new Intent();
+                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                        launchIntent.setAction(Intent.ACTION_MAIN);
+                        launchIntent.setComponent(componentName);
+                        launchIntent.setData(uri);
+                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                        launchIntent.putExtra("user_space", userType);
+                        launchIntent.putExtra("SecureMarket", true);
+                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                        contextWeakReference.get().startActivity(launchIntent);
+                        Snackbar snackbar = Snackbar.make(
+                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                        .getChildAt(0)
+                                , contextWeakReference.get().getString(R.string.install_app_message)
+                                , 3000);
+
+                        snackbar.show();
+
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                            (dialog, which) -> dialog.dismiss());
+                    alertDialog.show();
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+
+                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+
+                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                        .setStream(uri) // uri from FileProvider
+                        .setType("text/html")
+                        .getIntent()
+                        .setAction(Intent.ACTION_VIEW) //Change if needed
+                        .setDataAndType(uri, "application/vnd.android.package-archive")
+                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                contextWeakReference.get().startActivity(intent);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
 
 //
 

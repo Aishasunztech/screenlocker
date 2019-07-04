@@ -309,7 +309,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                         appInfo.setEncrypted(switchEncrypt.isChecked());
                         appInfo.setEnable(switchDisable.isChecked());
                     }
-                    MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateApps(appInfo);
+//                    MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateApps(appInfo);
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
                     intent.putExtra(KEY_DATABASE_CHANGE, "settings");
                     LocalBroadcastManager.getInstance(SystemPermissionActivity.this).sendBroadcast(intent);

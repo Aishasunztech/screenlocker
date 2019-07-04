@@ -2,11 +2,13 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -60,7 +62,9 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -143,6 +147,40 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+    public static boolean uninstallPackage(Context context, String packageName) {
+
+        PackageManager packageManger = context.getPackageManager();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            PackageInstaller packageInstaller = packageManger.getPackageInstaller();
+            PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                    PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+            params.setAppPackageName(packageName);
+            int sessionId = 0;
+            try {
+                sessionId = packageInstaller.createSession(params);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+
+            PendingIntent i = PendingIntent.getBroadcast(context, sessionId,
+                    new Intent("android.intent.action.MAIN"), 0);
+
+            packageInstaller.uninstall(packageName, i.getIntentSender());
+            return true;
+        }
+        System.err.println("old sdk");
+        return false;
+    }
+
+
+    public static String splitName(String s) {
+        return s.replace(".apk", "");
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -150,6 +188,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
+        uninstallPackage(this, "com.android.packageinstaller");
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
@@ -159,12 +199,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-        if (getIntent().hasExtra("isSupport")) {
+        asSupport = getIntent().getBooleanExtra("isSupport", false);
+
+        if (asSupport) {
 
             tvManagePasswords.setVisibility(View.GONE);
             tvChooseBackground.setVisibility(View.GONE);
             tvCode.setVisibility(View.GONE);
-            tvLanguage.setVisibility(View.GONE);
+            tvLanguage.setVisibility(View.VISIBLE);
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
@@ -351,6 +393,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvLanguage:
                     Intent intent = new Intent(this, ChangeLanguageActivity.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("isSupport", asSupport);
+
                     startActivity(intent);
                     finish();
                     break;
@@ -766,16 +810,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    private boolean asSupport = false;
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        boolean asExtentention;
+
         if (intent.hasExtra("isSupport")) {
             Log.d("kkogkooikn", "true: ");
-            asExtentention = true;
+            asSupport = true;
         } else {
             Log.d("kkogkooikn", "false: ");
-            asExtentention = false;
+            asSupport = false;
         }
 
     }

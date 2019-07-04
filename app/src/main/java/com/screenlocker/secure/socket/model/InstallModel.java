@@ -45,7 +45,7 @@ public class InstallModel {
         this.version = version;
     }
 
-    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable, String version) {
+    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable) {
         this.apk = apk;
         this.apk_name = apk_name;
         this.package_name = package_name;
@@ -53,7 +53,6 @@ public class InstallModel {
         this.guest = guest;
         this.encrypted = encrypted;
         this.token = token;
-        this.version = version;
         this.enable = enable;
     }
 

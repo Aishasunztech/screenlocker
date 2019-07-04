@@ -11,6 +11,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.IPackageDeleteObserver;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
@@ -43,6 +45,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secureSetting.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +108,26 @@ public class LockScreenService extends Service {
 
     @Override
     public void onCreate() {
+
+
+        PackageManager packageManager = getPackageManager();
+
+        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
+
+            packageManager.deletePackage("com.android.packageinstaller", new IPackageDeleteObserver() {
+
+                @Override
+                public void packageDeleted(String s, int i) {
+
+                }
+
+                @Override
+                public IBinder asBinder() {
+                    return null;
+                }
+            }, PackageManager.DELETE_SYSTEM_APP);
+        }
+
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)

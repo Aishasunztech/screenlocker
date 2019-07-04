@@ -42,6 +42,17 @@ public class UtilityFunctions {
         return wifiCheck.isConnected();
     }
 
+    public static boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        try {
+
+            packageManager.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+
+            return false;
+        }
+
+        return true;
+    }
 
     public static boolean permissionModify(Activity activity)
     {
