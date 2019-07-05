@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Screen Locker</string>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Titan Locker</string>
+    <string name="apktype"
+        translatable="false">SW</string>
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
     <string name="number_two">2</string>
@@ -32,7 +35,6 @@
     <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
     <string name="empty">Password field is empty.</string>
     <string name="password_dont_match">Password don\'t match.</string>
-    <string name="toolbar_title">Screen Locker</string>
     <string name="set_guest_code">Guest Pin Code</string>
     <string name="set_duress_code">Duress Pin Code</string>
     <string name="set_encrypted_code">Encrypted Pin Code</string>
@@ -346,12 +348,16 @@
     <string name="light_theme">Light Theme</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="mode">Mode</string>
+    <string name="link_device_message">Hit the button below to link your device</string>
+    <string name="link_device_activation_message" >Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+
 
 
     <string-array name="languages">
         <item>en:English</item>
         <item>fr:Français</item>
         <item>vi:Tiếng Việt</item>
+        <item>zh:Chinese</item>
     </string-array>
 
 
