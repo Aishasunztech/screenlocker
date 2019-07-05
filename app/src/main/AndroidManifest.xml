@@ -87,7 +87,8 @@
             android:name=".settings.codeSetting.IMEIActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".permissions.InstallAppSilently" />
-        <activity android:name=".permissions.WelcomeScreenActivity" />
+        <activity android:name=".permissions.WelcomeScreenActivity"
+            android:screenOrientation="nosensor"/>
         <activity
             android:name=".settings.codeSetting.ExitActivity"
             android:screenOrientation="portrait" />
