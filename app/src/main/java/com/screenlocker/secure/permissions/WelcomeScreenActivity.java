@@ -13,6 +13,9 @@ import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.updateDB.BlurWorker;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class WelcomeScreenActivity extends AppCompatActivity {
 
 
@@ -35,8 +38,15 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                         lockScreen.setAction("locked");
                         ActivityCompat.startForegroundService(this, lockScreen);
                         lockScreen = new Intent(WelcomeScreenActivity.this, MainActivity.class);
-                        startActivity(lockScreen);
-                        finish();
+                        Intent finalLockScreen = lockScreen;
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                startActivity(finalLockScreen);
+                                finish();
+                            }
+                        },5000);
+
                     }
                 });
 
