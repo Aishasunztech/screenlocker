@@ -346,7 +346,7 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<DeviceStatusResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
 
                         showError(AppConstants.SEVER_NOT_RESPONSIVE);
                         if (lytSwipeRefresh.isRefreshing()) {

@@ -96,6 +96,7 @@ public class DeviceIdUtils {
             uniqueId = getMacAddress();
 
 
+            assert uniqueId != null;
             if (uniqueId.equals("02:00:00:00:00:00")) {
 
                 uniqueId = PrefUtils.getStringPref(context, DFAULT_MAC);

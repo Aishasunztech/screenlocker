@@ -234,7 +234,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     appInfo.setEnable(true);
                     appInfo.setLabel(label);
                     appInfo.setPackageName(packageName);
-                    appInfo.setUniqueName(packageName + label);
+                    appInfo.setUniqueName(packageName);
                     appInfo.setIcon(icon);
                     appInfo.setVisible(true);
                     int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);

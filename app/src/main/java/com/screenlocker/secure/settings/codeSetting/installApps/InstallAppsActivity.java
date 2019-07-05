@@ -13,18 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,13 +21,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.CheckInstance;
+import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -64,6 +64,8 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -82,6 +84,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     private boolean isInstallDialogOpen;
     private ConstraintLayout containerLayout;
 
+    private AsyncCalls asyncCalls;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +96,33 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         createProgressDialog();
         findViewById(R.id.fabRefresh).setBackgroundColor(getResources().getColor(R.color.seekbarColor));
         findViewById(R.id.fabRefresh).setOnClickListener(this);
-        getAllApps();
+
+        if (MyApplication.oneCaller == null) {
+            String[] urls = {URL_1, URL_2};
+
+            if (asyncCalls != null) {
+                asyncCalls.cancel(true);
+            }
+
+            asyncCalls = new AsyncCalls(output -> {
+
+                if (output != null) {
+                    PrefUtils.saveStringPref(this, LIVE_URL, output);
+                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    Timber.d("live_url %s", live_url);
+                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                    getAllApps();
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                }
+
+            }, this, urls);
+            asyncCalls.execute();
+
+        } else {
+            getAllApps();
+
+        }
 
     }
 
@@ -128,34 +158,30 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     private void getAllApps() {
         if (CommonUtils.isNetworkAvailable(this)) {
 
-            new CheckInstance(internet -> {
-                if (internet) {
-                    MyApplication.oneCaller
-                            .getApps()
-                            .enqueue(new Callback<InstallAppModel>() {
-                                @Override
-                                public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
+            MyApplication.oneCaller
+                    .getApps()
+                    .enqueue(new Callback<InstallAppModel>() {
+                        @Override
+                        public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
 
-                                    if (response.body() != null && response.body().isSuccess()) {
+                            if (response.body() != null && response.body().isSuccess()) {
 
 
-                                        appModelList.addAll(response.body().getList());
-                                        if (appModelList.size() == 0) {
-
-                                        }
-                                        checkAppInstalledOrNot(appModelList);
-                                        mAdapter.notifyDataSetChanged();
-                                    }
+                                appModelList.addAll(response.body().getList());
+                                if (appModelList.size() == 0) {
 
                                 }
+                                checkAppInstalledOrNot(appModelList);
+                                mAdapter.notifyDataSetChanged();
+                            }
 
-                                @Override
-                                public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                                    Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            });
+                        }
+
+                        @Override
+                        public void onFailure(Call<InstallAppModel> call, Throwable t) {
+                            Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
 
         } else {
@@ -239,36 +265,31 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
 
             if (CommonUtils.isNetworkAvailable(this)) {
 
-                new CheckInstance(internet -> {
-                    MyApplication.oneCaller
-                            .getApps()
-                            .enqueue(new Callback<InstallAppModel>() {
-                                @Override
-                                public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
-                                    if (response.body() != null) {
-                                        if (response.body().isSuccess()) {
-                                            appModelList.clear();
-                                            appModelList.addAll(response.body().getList());
-                                            mAdapter.notifyDataSetChanged();
-                                            checkAppInstalledOrNot(appModelList);
-                                        } else {
-                                            if (response.body().getList() == null) {
-                                                appModelList.clear();
-                                                mAdapter.notifyDataSetChanged();
-                                            }
 
+                if (MyApplication.oneCaller == null) {
+                    String[] urls = {URL_1, URL_2};
 
-                                        }
+                    if (asyncCalls != null) {
+                        asyncCalls.cancel(true);
+                    }
 
-                                    }
-                                }
+                    asyncCalls = new AsyncCalls(output -> {
 
-                                @Override
-                                public void onFailure(Call<InstallAppModel> call, Throwable t) {
+                        if (output != null) {
+                            PrefUtils.saveStringPref(this, LIVE_URL, output);
+                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                            Timber.d("live_url %s", live_url);
+                            MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                            refreshApps();
+                        } else {
+                            Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        }
 
-                                }
-                            });
-                });
+                    }, this, urls);
+                    asyncCalls.execute();
+                } else {
+                    refreshApps();
+                }
 
 
             } else {
@@ -276,6 +297,38 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
             }
 
         }
+    }
+
+    private void refreshApps() {
+        MyApplication.oneCaller
+                .getApps()
+                .enqueue(new Callback<InstallAppModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
+                                appModelList.clear();
+                                appModelList.addAll(response.body().getList());
+                                mAdapter.notifyDataSetChanged();
+                                checkAppInstalledOrNot(appModelList);
+                            } else {
+                                if (response.body().getList() == null) {
+                                    appModelList.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                }
+
+
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
+
+                        Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
@@ -449,6 +502,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
