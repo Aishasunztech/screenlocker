@@ -11,23 +11,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.IPackageDeleteObserver;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -37,12 +31,10 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
-import com.screenlocker.secure.permissions.WelcomeScreenActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReciever;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.secureSetting.UtilityFunctions;
@@ -110,23 +102,7 @@ public class LockScreenService extends Service {
     public void onCreate() {
 
 
-        PackageManager packageManager = getPackageManager();
 
-        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
-
-            packageManager.deletePackage("com.android.packageinstaller", new IPackageDeleteObserver() {
-
-                @Override
-                public void packageDeleted(String s, int i) {
-
-                }
-
-                @Override
-                public IBinder asBinder() {
-                    return null;
-                }
-            }, PackageManager.DELETE_SYSTEM_APP);
-        }
 
 
         OneTimeWorkRequest insertionWork =
