@@ -2,13 +2,11 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -62,9 +60,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.IOException;
 import java.util.Objects;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,6 +72,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -147,34 +144,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public static boolean uninstallPackage(Context context, String packageName) {
-
-        PackageManager packageManger = context.getPackageManager();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            PackageInstaller packageInstaller = packageManger.getPackageInstaller();
-            PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
-                    PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-            params.setAppPackageName(packageName);
-            int sessionId = 0;
-            try {
-                sessionId = packageInstaller.createSession(params);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-
-
-            PendingIntent i = PendingIntent.getBroadcast(context, sessionId,
-                    new Intent("android.intent.action.MAIN"), 0);
-
-            packageInstaller.uninstall(packageName, i.getIntentSender());
-            return true;
-        }
-        System.err.println("old sdk");
-        return false;
-    }
-
-
     public static String splitName(String s) {
         return s.replace(".apk", "");
 
@@ -189,9 +158,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
 
-        uninstallPackage(this, "com.android.packageinstaller");
+        PackageManager packageManager = getPackageManager();
+
+
+        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
+
 
         networkChangeReceiver = new NetworkChangeReceiver();
+
 
         init();
         constraintLayout = findViewById(R.id.rootLayout);
@@ -213,6 +187,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+
         }
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -246,6 +221,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+
+        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+
+        if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+            tvManagePasswords.setVisibility(View.GONE);
+            tvChooseBackground.setVisibility(View.GONE);
+            tvCode.setVisibility(View.GONE);
+            tvLanguage.setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.divider5).setVisibility(View.GONE);
+            findViewById(R.id.divider15).setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.tvTheme).setVisibility(View.GONE);
+            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+        }
 
 
     }
