@@ -155,6 +155,9 @@ dependencies {
 
     // progress library
     implementation 'com.kaopiz:kprogresshud:1.2.0'
+    //MQTT android
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 
 
     implementation project(':Stepper')
