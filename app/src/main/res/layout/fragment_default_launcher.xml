@@ -1,16 +1,73 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/stepper_bg_gradient"
     tools:context="com.screenlocker.secure.permissions.SetDefaultLauncherFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
-
-    <Button
-        android:id="@+id/set_launcher"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/set_default_launcher" />
-</FrameLayout>
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/default_card"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            >
+
+            <ImageView
+                android:id="@+id/df_launcher_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_speed"
+                android:padding="@dimen/_20sdp"
+
+                />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/default_launcher_title"
+            android:textSize="@dimen/_18ssp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_10sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_launcher_message"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/_30sdp"
+            android:textColor="@color/white"
+            android:alpha="0.8"/>
+
+        <!--<com.google.android.material.button.MaterialButton-->
+            <!--android:id="@+id/material_text_button"-->
+            <!--style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/set_default_launcher"/>-->
+
+        <Button
+            android:id="@+id/set_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/set_default_launcher"
+            android:background="@drawable/btn_stepper_bg"
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -25,7 +25,9 @@ public class DotStepper extends BaseNavigation {
     protected LinearLayout mDots;
 
     // attributes
-    private int unselected = Color.parseColor("#bdbdbd");
+    private int unselected = Color.parseColor("#000000");
+//    #bdbdbd
+//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

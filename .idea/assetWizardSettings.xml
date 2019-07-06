@@ -14,9 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_theme" />
+                            <entry key="height" value="80" />
+                            <entry key="outputName" value="ic_speed" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\LockMEsh STuff\theme.svg" />
+                            <entry key="sourceFile" value="C:\Users\Abdul Razzaq\Downloads\speed.svg" />
+                            <entry key="width" value="80" />
                           </map>
                         </option>
                       </PersistentState>

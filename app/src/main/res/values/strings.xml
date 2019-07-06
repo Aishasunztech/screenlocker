@@ -348,6 +348,8 @@
     <string name="mode">Mode</string>
     <string name="link_device_message">Hit the button below to link your device</string>
     <string name="link_device_activation_message" >Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
 
 
     <string-array name="languages">
