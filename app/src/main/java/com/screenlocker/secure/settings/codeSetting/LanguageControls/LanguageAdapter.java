@@ -1,158 +1,68 @@
 package com.screenlocker.secure.settings.codeSetting.LanguageControls;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.appSelection.AppSelectionActivity;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-
-public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.MyViewHolder> {
+public class LanguageAdapter extends ArrayAdapter<LanguageModel> {
+    private final Context context;
+    private final String[] values;
+    private  String selectedText;
     private ArrayList<LanguageModel> langList;
-    private Context context;
-    private RecreateActivityListener listener;
 
-    public LanguageAdapter(ArrayList<LanguageModel> langList, Context context) {
-        this.langList = langList;
+    public LanguageAdapter(Context context, String[] values, String selectedText, ArrayList<LanguageModel> langList) {
+        super(context,R.layout.item_languages,langList);
         this.context = context;
-        listener = (RecreateActivityListener) context;
+        this.values = values;
+        this.langList = langList;
+        this.selectedText = selectedText;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_languages, parent, false);
-        return new MyViewHolder(view);
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LanguageModel model = langList.get(position);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.item_languages, parent, false);
+        }
+        TextView tv_lang = convertView.findViewById(R.id.langName);
+        ImageView img_flag = convertView.findViewById(R.id.img_flag);
+        RadioButton checkBox = convertView.findViewById(R.id.language_check);
+
+        tv_lang.setText(model.getLanguage_name());
+        img_flag.setImageResource(model.getFlagId());
+        if (model.getLanguage_key().equals(selectedText)) {
+            checkBox.setChecked(true);
+        } else {
+            checkBox.setChecked(false);
+        }
+        checkBox.setOnClickListener(v -> {
+            selectedText = model.getLanguage_key();
+            notifyDataSetChanged();
+        });
+
+        return convertView;
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.setData(langList.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return langList.size();
-    }
-
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        TextView tv_lang;
-        ImageView img_flag;
-        CheckBox checkBox;
-        View view;
-
-
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tv_lang = itemView.findViewById(R.id.langName);
-            img_flag = itemView.findViewById(R.id.img_flag);
-            checkBox = itemView.findViewById(R.id.language_check);
-            view = itemView.findViewById(R.id.language_divider);
-            itemView.setOnClickListener(this);
-        }
-
-        public void setData(LanguageModel languageModel) {
-
-            LanguageModel model = langList.get(getAdapterPosition());
-            tv_lang.setText(languageModel.getLanguage_name());
-
-            if (model.getLanguage_key().equals("en")) {
-                img_flag.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_flag_of_the_united_states));
-            } else if (model.getLanguage_key().equals("fr")) {
-                img_flag.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_flag_of_france));
-            } else if (model.getLanguage_key().equals("vi")) {
-                img_flag.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_flag_of_vietnam));
-            }
-
-            String key = PrefUtils.getStringPref(context, AppConstants.LANGUAGE_PREF);
-            if (model.getLanguage_key().equals(key)) {
-
-                checkBox.setChecked(true);
-            } else if (key == null || key.equals("")) {
-                if (getAdapterPosition() == 0) {
-                    checkBox.setChecked(true);
-                } else {
-                    checkBox.setChecked(false);
-                }
-            }
-            checkBox.setClickable(false);
-            if (getAdapterPosition() == langList.size() - 1) {
-                view.setVisibility(View.GONE);
-            } else {
-                view.setVisibility(View.VISIBLE);
-            }
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            showLanguageDialog();
-
-        }
-
-        private void showLanguageDialog() {
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle(context.getResources().getString(R.string.change_language_dialog_title));
-            alertDialog.setMessage(context.getResources().getString(R.string.change_language_dialog_message));
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.ok_text), (dialog, which) -> {
-                changeLanguage();
-                dialog.dismiss();
-            });
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel_capital), (dialog, which) -> dialog.dismiss());
-            alertDialog.setCancelable(false);
-
-            alertDialog.show();
-        }
-
-        private void changeLanguage() {
-
-            Intent intent = new Intent(BROADCAST_APPS_ACTION);
-            intent.putExtra(KEY_DATABASE_CHANGE, "apps");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
-            LanguageModel languageModel = langList.get(getAdapterPosition());
-            CommonUtils.setAppLocale(languageModel.getLanguage_key(), context);
-            PrefUtils.saveStringPref(context, AppConstants.LANGUAGE_PREF, languageModel.getLanguage_key());
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setMessage(context.getResources().getString(R.string.language_is_changed));
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.ok_text), (dialog, which) -> {
-                dialog.dismiss();
-
-                listener.recreatActivity();
-
-            });
-
-            alertDialog.setCancelable(false);
-            alertDialog.show();
-
-
-        }
-    }
-
-    public interface RecreateActivityListener {
-        void recreatActivity();
+    public String getSelectedText() {
+        return selectedText;
     }
 }
+
+
+

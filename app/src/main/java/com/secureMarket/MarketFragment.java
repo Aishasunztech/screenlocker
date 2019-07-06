@@ -706,7 +706,7 @@ private AsyncCalls asyncCalls;
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
 
                         Intent launchIntent = new Intent();
-                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.StateMainActivity");
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
                         launchIntent.setAction(Intent.ACTION_MAIN);
                         launchIntent.setComponent(componentName);

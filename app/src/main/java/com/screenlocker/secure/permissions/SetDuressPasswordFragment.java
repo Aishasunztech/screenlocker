@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.AppConstants;
@@ -105,14 +108,18 @@ public class SetDuressPasswordFragment extends AbstractStep {
     }
 
     private AlertDialog builder;
+    @BindView(R.id.pin_input_layout)
+    TextInputLayout pin_input_layout;
     @BindView(R.id.etEnterPin)
-    AppCompatEditText etEnterPin;
+    TextInputEditText etEnterPin;
 
-    /**
-     * to confirm the user entered password
-     */
+    @BindView(R.id.re_pin_input_layout)
+    TextInputLayout re_pin_input_layout;
     @BindView(R.id.etConfirmPin)
-    AppCompatEditText etConfirmPin;
+    TextInputEditText etConfirmPin;
+
+    @BindView(R.id.guest_image_icon)
+    ImageView img_picture;
 
 
     @Nullable
@@ -133,7 +140,8 @@ public class SetDuressPasswordFragment extends AbstractStep {
 
                 }).create();
         builder.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
+        pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_duress_pin));
+//        etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
         etEnterPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v1) {
@@ -149,7 +157,9 @@ public class SetDuressPasswordFragment extends AbstractStep {
                         , 100);
             }
         });
-        etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+        re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
+        img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_duress_icon));
+//        etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
 
 
         return v;
