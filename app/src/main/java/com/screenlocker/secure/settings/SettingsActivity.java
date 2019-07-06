@@ -437,6 +437,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (currentVersion != null)
             if (CommonUtils.isNetworkAvailable(this)) {
 
+
+
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();

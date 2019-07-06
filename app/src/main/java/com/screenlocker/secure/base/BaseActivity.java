@@ -354,10 +354,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             if (!hasFocus) {
-// Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-// sendBroadcast(closeDialog);
-// Method that handles loss of window focus
-//                new BlockStatusBar(this, false).collapseNow();
+//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//                sendBroadcast(closeDialog);
+//                Method that handles loss of window focus
+                new BlockStatusBar(this, false).collapseNow();
             }
         }
     }

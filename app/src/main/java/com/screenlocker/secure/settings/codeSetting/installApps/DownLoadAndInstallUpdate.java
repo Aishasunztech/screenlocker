@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
@@ -27,12 +28,22 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     private ProgressDialog dialog;
     private String activityName;
 
+    public static OnAppAvailable onAppAvailable;
+
+
+    public interface OnAppAvailable{
+        void onAppDownloadedAndAvailabe(String appName,String appUri);
+    }
+
+
     public DownLoadAndInstallUpdate(Context context, final String url, String appName,String activityName) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
         this.appName = appName;
         this.activityName = activityName;
     }
+
+
 
     @Override
     protected void onPreExecute() {
@@ -118,7 +129,14 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         if (dialog != null)
             dialog.dismiss();
         if (aBoolean) {
-            showInstallDialog(appName);
+          //  showInstallDialog(appName);
+
+            File f = contextWeakReference.get().getFileStreamPath(appName);
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
+
+            if(onAppAvailable!= null){
+                onAppAvailable.onAppDownloadedAndAvailabe(appName,apkUri.toString());
+            }
         }
 
     }
