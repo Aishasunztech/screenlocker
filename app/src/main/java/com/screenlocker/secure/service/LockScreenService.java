@@ -346,6 +346,9 @@ public class LockScreenService extends Service {
 
     private void startLockScreen() {
 
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+
+
         try {
             final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 

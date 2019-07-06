@@ -385,13 +385,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         });
 
         mobile_container.setOnClickListener(v -> {
-
-            setMobileDataState(true);
-
-
-//            Intent intent = new Intent();
-//            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-//            startActivity(intent);
+//            setMobileDataState(true);
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+            startActivity(intent);
         });
 
 
