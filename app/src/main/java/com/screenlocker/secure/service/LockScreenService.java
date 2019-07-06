@@ -35,6 +35,7 @@ import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.secureSetting.UtilityFunctions;
@@ -64,9 +65,13 @@ import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
  * (must enable service by enabling service from settings screens{@link SettingsActivity#onClick(View)})
  */
+
+
 public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
+    private AppInstallReceiver appInstallReceiver;
+
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
@@ -102,7 +107,33 @@ public class LockScreenService extends Service {
     public void onCreate() {
 
 
+        PackageManager packageManager = getPackageManager();
 
+
+        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
+
+
+        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
+
+            String[] packages = {"com.android.packageinstaller"};
+
+//            KeySet keySet = packageManager.getSigningKeySet(packages[0]);
+
+
+//            packageManager.deletePackageAsUser(packages[0], new IPackageDeleteObserver() {
+//                @Override
+//                public void packageDeleted(String s, int i) {
+//
+//                }
+//
+//                @Override
+//                public IBinder asBinder() {
+//                    return null;
+//                }
+//
+//            }, PackageManager.DELETE_SYSTEM_APP, 13);
+
+        }
 
 
         OneTimeWorkRequest insertionWork =
@@ -153,6 +184,7 @@ public class LockScreenService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         scheduleExpiryCheck(this);
         screenOffReceiver = new ScreenOffReceiver(this::startLockScreen);
+
 
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(

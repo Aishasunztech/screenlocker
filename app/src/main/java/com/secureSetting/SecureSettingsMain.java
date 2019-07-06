@@ -1,5 +1,6 @@
 package com.secureSetting;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -37,8 +40,8 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureClear.SecureClearActivity;
 import com.secureMarket.SecureMarketActivity;
-import com.secureSetting.t.ui.StateMainActivity;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -382,12 +385,30 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         });
 
         mobile_container.setOnClickListener(v -> {
-            Intent intent = new Intent(SecureSettingsMain.this, StateMainActivity.class);
-            //intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-            startActivity(intent);
+
+            setMobileDataState(true);
+
+
+//            Intent intent = new Intent();
+//            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+//            startActivity(intent);
         });
 
 
+    }
+
+
+    public void setMobileDataState(boolean mobileDataEnabled) {
+        try {
+            ConnectivityManager dataManager;
+            dataManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            @SuppressLint("PrivateApi") Method dataMtd = ConnectivityManager.class.getDeclaredMethod("setMobileDataEnabled", boolean.class);
+            dataMtd.setAccessible(true);
+            dataMtd.invoke(dataManager, mobileDataEnabled);
+        } catch (Exception ex) {
+            //Error Code Write Here
+            Toast.makeText(this, ex.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -409,7 +430,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
 //        sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this),SecureSettingsMain.this) + " of inactivity");
-        sleepTime.setText(getResources().getString(R.string.inactivity_message,secondsToMintues(getSleepTime(SecureSettingsMain.this),SecureSettingsMain.this)));
+        sleepTime.setText(getResources().getString(R.string.inactivity_message, secondsToMintues(getSleepTime(SecureSettingsMain.this), SecureSettingsMain.this)));
         wifiName.setText(getWifiStatus(this));
 
         Intent intent = getIntent();

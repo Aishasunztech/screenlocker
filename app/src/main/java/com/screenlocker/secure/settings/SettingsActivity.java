@@ -83,6 +83,7 @@ import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
@@ -161,7 +162,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-
     public static String splitName(String s) {
         return s.replace(".apk", "");
 
@@ -178,6 +178,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
+
 
         init();
         constraintLayout = findViewById(R.id.rootLayout);
@@ -201,6 +202,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+
         }
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -234,6 +236,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+
+        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+
+        if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+            tvManagePasswords.setVisibility(View.GONE);
+            tvChooseBackground.setVisibility(View.GONE);
+            tvCode.setVisibility(View.GONE);
+            tvLanguage.setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.divider5).setVisibility(View.GONE);
+            findViewById(R.id.divider15).setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
+            findViewById(R.id.tvTheme).setVisibility(View.GONE);
+            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+        }
 
 
     }
@@ -611,7 +628,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Device ID
         TextView tvDeviceId = accountDialog.findViewById(R.id.tvDeviceId);
         TextView textView17 = accountDialog.findViewById(R.id.textViewDeviceId);
-        String device_id = PrefUtils.getStringPref(StateSettingsActivity.this, DEVICE_ID);
+        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
         if (device_id != null) {
             tvDeviceId.setVisibility(View.VISIBLE);
             textView17.setVisibility(View.VISIBLE);
@@ -621,8 +638,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         *//*Status*//*
         TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
         TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
-        String device_status = PrefUtils.getStringPref(StateSettingsActivity.this, DEVICE_STATUS);
-        boolean b = PrefUtils.getBooleanPref(StateSettingsActivity.this, DEVICE_LINKED_STATUS);
+        String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
+        boolean b = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
         if (b) {
             tvStatus.setVisibility(View.VISIBLE);
             textView18.setVisibility(View.VISIBLE);
@@ -638,19 +655,19 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         TextView tvExpiresIn = accountDialog.findViewById(R.id.tvExpiresIn);
         TextView textView16 = accountDialog.findViewById(R.id.textViewExpiry);
 
-        String remaining_days = getRemainingDays(StateSettingsActivity.this);
+        String remaining_days = getRemainingDays(SettingsActivity.this);
 
         if (remaining_days != null) {
             textView16.setVisibility(View.VISIBLE);
             tvExpiresIn.setVisibility(View.VISIBLE);
             tvExpiresIn.setText(remaining_days);
 //            else {
-//                suspendedDevice(StateSettingsActivity.this, this, device_id, "expired");
+//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
 //            }
         }
 
 
-        List<String> imeis = DeviceIdUtils.getIMEI(StateSettingsActivity.this);
+        List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
 
 
         // IMEI 1

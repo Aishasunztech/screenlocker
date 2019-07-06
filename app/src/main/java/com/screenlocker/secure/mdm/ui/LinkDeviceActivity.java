@@ -461,6 +461,7 @@ public class LinkDeviceActivity extends BaseActivity {
     private AsyncCalls asyncCalls;
 
     SwipeRefreshLayout.OnRefreshListener listener = () -> {
+
         Timber.i("<<<<<SwipedToRefresh>>>>>");
         freshViewState();
         String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
@@ -491,6 +492,7 @@ public class LinkDeviceActivity extends BaseActivity {
             newLinkViewState();
         }
 
+
     };
 
 
@@ -516,7 +518,6 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                        finishedRefreshing();
                                         approvedLinkViewState();
                                         break;
                                     case EXPIRED:
@@ -697,6 +698,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void approvedLinkViewState() {
 
+
         if (t != null) {
             t.cancel();
             t = null;
@@ -706,10 +708,10 @@ public class LinkDeviceActivity extends BaseActivity {
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         String serialNo = DeviceIdUtils.getSerialNumber();
+
         if (serialNo != null) {
             new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
         }
-
 
         finishedRefreshing();
         btnLinkDevice.setVisibility(View.VISIBLE);
@@ -742,7 +744,6 @@ public class LinkDeviceActivity extends BaseActivity {
             simId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
         }
-
     }
 
 
