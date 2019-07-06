@@ -80,6 +80,33 @@ public class BlurWorker extends Worker {
 
                 Timber.d("app package %s", ri.loadLabel(pm));
 
+                for (AppInfo dbApp : dbApps) {
+
+
+                    if (dbApp.getUniqueName().equals(app.getUniqueName())) {
+                        String dbLabel = dbApp.getLabel();
+                        String label = app.getLabel();
+                        if (!dbLabel.equals(label)) {
+                            dbApp.setLabel(label);
+                            MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
+                            Timber.e("databaseLabel :%s", dbLabel);
+                            Timber.e("Label :%s", label);
+                            break;
+                        }
+
+
+                    }
+
+
+                }
+
+
+//                if (!dbLabel.equals(label)) {
+//                    dbApps.get(j).setLabel(label);
+//                    MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApps.get(j));
+//                }
+//
+
 
                 if (!dbApps.contains(app)) {
 
@@ -133,6 +160,7 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
                     }
+
 
                 }
 

@@ -27,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -124,7 +125,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-
     private void createAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         this.alertDialog = alertDialog
@@ -210,7 +210,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 break;
         }
     }
-
 
     @Override
     protected void onStop() {
@@ -314,9 +313,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onResume() {
         super.onResume();
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
-        if(language_key != null && !language_key.equals(""))
-        {
-            CommonUtils.setAppLocale(language_key,this);
+        if (language_key != null && !language_key.equals("")) {
+            CommonUtils.setAppLocale(language_key, this);
         }
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
@@ -347,6 +345,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             a.putExtra("emergency", true);
         }
         startActivity(a);
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            if (!hasFocus) {
+// Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+// sendBroadcast(closeDialog);
+// Method that handles loss of window focus
+//                new BlockStatusBar(this, false).collapseNow();
+            }
+        }
     }
 
 
