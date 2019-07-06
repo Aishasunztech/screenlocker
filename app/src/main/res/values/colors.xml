@@ -16,7 +16,9 @@
     <color name="seekbarColor">#EF9C00</color>
     <color name="switchContainerColor">#eeeeee</color>
 
-
+    <color name="gray">#EEEEEE</color>
+    <color name="gray_darken">#DDDDDD</color>
+    <color name="colorGray">#4A4A4A</color>
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>

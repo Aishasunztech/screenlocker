@@ -263,7 +263,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
                 } else {
                     showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
-//                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(StateSettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_encrypted_password));
         }
@@ -312,7 +312,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
                 } else {
                     showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
-//                        Toast.makeText(SettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(StateSettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
                 }
             }, null, activity.getString(R.string.please_enter_current_duress_password));
         }

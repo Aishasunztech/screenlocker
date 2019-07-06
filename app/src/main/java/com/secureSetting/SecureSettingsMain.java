@@ -37,6 +37,7 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureClear.SecureClearActivity;
 import com.secureMarket.SecureMarketActivity;
+import com.secureSetting.t.ui.StateMainActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -381,8 +382,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         });
 
         mobile_container.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+            Intent intent = new Intent(SecureSettingsMain.this, StateMainActivity.class);
+            //intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
             startActivity(intent);
         });
 

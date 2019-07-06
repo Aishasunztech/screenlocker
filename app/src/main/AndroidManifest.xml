@@ -58,9 +58,6 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".settings.codeSetting.LanguageControls.ChangeLanguageActivity"
-            android:screenOrientation="portrait" />
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
@@ -358,9 +355,14 @@
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity
-            android:name="com.screenlocker.secure.settings.ChangeThemeActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name="com.secureSetting.t.ui.StateMainActivity"
+            android:screenOrientation="nosensor"/>
+        <activity android:name="com.secureSetting.t.ui.StateSettingsActivity"
+            android:screenOrientation="nosensor"/>
+        <activity android:name="com.secureSetting.t.ui.IgnoreActivity"
+            android:screenOrientation="nosensor"/>
+        <activity android:name="com.secureSetting.t.ui.StateAboutActivity"
+            android:screenOrientation="nosensor"/>
     </application>
 
 
