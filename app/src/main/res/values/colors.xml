@@ -18,7 +18,9 @@
     <color name="colorBlack">@android:color/black</color>
     <color name="colorLightBlack">#333333</color>
 
-
+    <color name="gray">#EEEEEE</color>
+    <color name="gray_darken">#DDDDDD</color>
+    <color name="colorGray">#4A4A4A</color>
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>

@@ -10,13 +10,17 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
 
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -37,6 +41,18 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
+import com.secureSetting.t.data.AppItem;
+import com.secureSetting.t.data.DataManager;
+import com.secureSetting.t.db.DbHistoryExecutor;
+import com.secureSetting.t.db.DbIgnoreExecutor;
+import com.secureSetting.t.service.AppService;
+import com.secureSetting.t.util.CrashHandler;
+import com.secureSetting.t.util.PreferenceManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -200,6 +216,13 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
+        PreferenceManager.init(this);
+        getApplicationContext().startService(new Intent(getApplicationContext(), AppService.class));
+        DbIgnoreExecutor.init(getApplicationContext());
+        DbHistoryExecutor.init(getApplicationContext());
+        DataManager.init();
+        addDefaultIgnoreAppsToDB();
+
 
     }
 
@@ -403,8 +426,26 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     }
 
+    private void addDefaultIgnoreAppsToDB() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> mDefaults = new ArrayList<>();
+                mDefaults.add("com.android.settings");
+                mDefaults.add(BuildConfig.APPLICATION_ID);
+                for (String packageName : mDefaults) {
+                    AppItem item = new AppItem();
+                    item.mPackageName = packageName;
+                    item.mEventTime = System.currentTimeMillis();
+                    DbIgnoreExecutor.getInstance().insertItem(item);
+                }
+            }
+        }).run();
+    }
+
 
 }
+
 
 
 
