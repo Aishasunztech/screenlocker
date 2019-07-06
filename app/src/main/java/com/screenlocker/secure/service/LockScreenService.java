@@ -1,11 +1,14 @@
 package com.screenlocker.secure.service;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,6 +20,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -43,6 +47,8 @@ import com.secureSetting.UtilityFunctions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import timber.log.Timber;
 
@@ -78,6 +84,20 @@ public class LockScreenService extends Service {
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
 
+        List<String> blacklist = new ArrayList<>();
+    public static ServiceCallbacks mCallBacks;
+
+
+
+
+    private static final String TAG = "LockScreenServiceMM";
+
+    public interface ServiceCallbacks {
+        void onRecentAppKill();
+    }
+
+
+
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -108,6 +128,11 @@ public class LockScreenService extends Service {
 
 
         PackageManager packageManager = getPackageManager();
+
+
+        blacklist.add("com.android.systemui");
+        blacklist.add("com.vivo.upslide");
+        blacklist.add("com.sec.android.app.launcher");
 
 
         Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
@@ -223,6 +248,18 @@ public class LockScreenService extends Service {
                     Timber.d("is screen off");
                     appExecutor.getMainThread().execute(this::startLockScreen);
                     return;
+                }
+
+
+                if(powerManager.isScreenOn()){
+                    String current_package = getCurrentApp();
+                    if(current_package != null) {
+                        if (blacklist.contains(current_package)) {
+                            if (mCallBacks != null) {
+                                mCallBacks.onRecentAppKill();
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -516,5 +553,45 @@ public class LockScreenService extends Service {
         sendBroadcast(intent);
     }
 
+
+    public String getCurrentApp() {
+        String dum = null;
+        try {
+        if (Build.VERSION.SDK_INT >= 21) {
+        String currentApp = null;
+        UsageStatsManager usm = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+        usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        }
+        long time = System.currentTimeMillis();
+        List<UsageStats> applist = null;
+        if (usm != null) {
+        applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
+        }
+        if (applist != null && applist.size() > 0) {
+        SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+
+        for (UsageStats usageStats : applist) {
+        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+        }
+        if (!mySortedMap.isEmpty()) {
+        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+        }
+        }
+        return currentApp;
+        } else {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        String mm = null;
+        if (manager != null) {
+        mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+        }
+        return mm;
+        }
+        } catch (Exception e) {
+        Timber.d("getCurrentApp: %s", e.getMessage());
+
+        return dum;
+        }
+        }
 
 }

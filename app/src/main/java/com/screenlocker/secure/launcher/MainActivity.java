@@ -8,16 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -41,6 +45,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
+import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -66,7 +71,14 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener, OnAppsRefreshListener {
+public class MainActivity extends
+        BaseActivity implements
+        MainContract.MainMvpView,
+        SettingContract.SettingsMvpView,
+        RAdapter.ClearCacheListener,
+        OnAppsRefreshListener ,
+LockScreenService.ServiceCallbacks,
+        DownLoadAndInstallUpdate.OnAppAvailable{
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -106,6 +118,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        LockScreenService.mCallBacks =(LockScreenService.ServiceCallbacks) MainActivity.this;
+        DownLoadAndInstallUpdate.onAppAvailable =(DownLoadAndInstallUpdate.OnAppAvailable) MainActivity.this;
+
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
@@ -212,6 +228,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(i);
+
+            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            if (activityManager != null) {
+                int taskId = getTaskId();
+                Log.i("sfs", "clearRecentApp: task id is : " + taskId);
+                activityManager.moveTaskToFront(taskId, 0);
+            }
         } catch (Exception ignored) {
 
 
@@ -462,6 +485,44 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     public void onAppsRefresh() {
         AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
+    }
+
+    @Override
+    public void onRecentAppKill() {
+        clearRecentApp();
+    }
+
+    @Override
+    public void onAppDownloadedAndAvailabe(String appName, String uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+
+            if(getPackageManager().canRequestPackageInstalls()){
+
+
+                Intent intent = ShareCompat.IntentBuilder.from(MainActivity.this)
+                        .setStream(Uri.parse(uri))
+                        .setText("text/html")
+                        .getIntent()
+                        .setAction(Intent.ACTION_VIEW)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .setDataAndType(Uri.parse(uri),"application/vnd.android.package-archive");
+
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.parse(PrefUtils.getStringPref(getContext(),APk_URI)), "application/vnd.android.package-archive");
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+                startActivity(intent);
+
+            }else{
+                Toast.makeText(MainActivity.this, "Allowed apps to install from unsource", Toast.LENGTH_SHORT).show();
+
+                // getActivity().startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
+
+                startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:"+getPackageName())));
+
+            }
+        }
     }
 }
 
