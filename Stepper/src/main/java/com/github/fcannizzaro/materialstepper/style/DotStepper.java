@@ -25,7 +25,7 @@ public class DotStepper extends BaseNavigation {
     protected LinearLayout mDots;
 
     // attributes
-    private int unselected = Color.parseColor("#000000");
+    private int unselected = Color.parseColor("#bdbdbd");
 //    #bdbdbd
 //
 

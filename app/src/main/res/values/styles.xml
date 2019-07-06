@@ -117,11 +117,37 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+
     <style name="stepper_theme">
         <item name="android:colorPrimary">@color/colorBlack</item>
         <item name="android:colorPrimaryDark">@color/colorBlack</item>
         <item name="android:colorAccent">@color/colorBlack</item>
     </style>
 
+    <style name="TextLabelTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/_16ssp</item>
+
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorPrimary</item>
+
+        <item name="colorControlActivated">@color/white</item>
+
+    </style>
+
+    <style name="permissions_title_theme">
+        <item name="android:textColor">@android:color/white
+        </item>
+
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="permissions_message_theme">
+        <item name="android:textColor">@android:color/white
+        </item>
+
+        <item name="android:alpha">0.5</item>
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
 
 </resources>
