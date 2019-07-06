@@ -57,6 +57,8 @@ import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -290,12 +292,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             String bg;
             if (!message.equals("")) {
-                if (message.equals(KEY_GUEST_PASSWORD)) {
-                    // for the guest type user
-                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
+                if (message.equals(KEY_MAIN_PASSWORD)) {
+                    // for the encrypted user type
+                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-
-                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
+                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
+//                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
 
                     } else {
                         Glide.with(MainActivity.this)
@@ -318,11 +320,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     }
 
                 } else {
-                    // for the encrypted user type
-                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_MAIN_IMAGE);
+                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
-//                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
+
+                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
                         Glide.with(MainActivity.this)

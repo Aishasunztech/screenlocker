@@ -148,10 +148,11 @@ public class utils {
                         JSONObject app = apps.getJSONObject(i);
                         boolean guest = (boolean) app.get("guest");
                         String uniqueName = app.getString("uniqueName");
+                        String packageName = app.getString("packageName");
                         boolean enable = (boolean) app.get("enable");
                         boolean encrypted = (boolean) app.get("encrypted");
 
-                        MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, uniqueName);
+                        MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
 
                         if (i == apps.length() - 1) {
                             listener.onAppsReady();
