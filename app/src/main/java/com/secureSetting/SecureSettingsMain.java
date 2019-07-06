@@ -396,16 +396,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
     public void setMobileDataState(boolean mobileDataEnabled) {
-        try {
-            ConnectivityManager dataManager;
-            dataManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            @SuppressLint("PrivateApi") Method dataMtd = ConnectivityManager.class.getDeclaredMethod("setMobileDataEnabled", boolean.class);
-            dataMtd.setAccessible(true);
-            dataMtd.invoke(dataManager, mobileDataEnabled);
-        } catch (Exception ex) {
-            //Error Code Write Here
-            Toast.makeText(this, ex.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
+
     }
 
 
