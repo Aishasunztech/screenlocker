@@ -1,5 +1,6 @@
 package com.secureSetting;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
@@ -9,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
@@ -16,6 +18,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -224,6 +227,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     }
 
+    private Switch switch_mobile_data;
+
     private void setSetIds() {
         bluetoothName = findViewById(R.id.bluetooth_name);
         brightnessLevel = findViewById(R.id.brightness_lavel);
@@ -244,6 +249,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         mobile_container = findViewById(R.id.mobile_data_cotainer);
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
+        switch_mobile_data = findViewById(R.id.switch_mobile_data);
+        switch_mobile_data.setOnCheckedChangeListener(this);
 //        switch_airplane = findViewById(R.id.switch_air);
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
@@ -386,12 +393,16 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
         mobile_container.setOnClickListener(v -> {
 
-            setMobileDataState(true);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                Timber.e("Permission granted");
+            } else {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+                startActivity(intent);
+            }
 
 
-//            Intent intent = new Intent();
-//            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-//            startActivity(intent);
         });
 
 
@@ -399,15 +410,9 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
     public void setMobileDataState(boolean mobileDataEnabled) {
-        try {
-            ConnectivityManager dataManager;
-            dataManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            @SuppressLint("PrivateApi") Method dataMtd = ConnectivityManager.class.getDeclaredMethod("setMobileDataEnabled", boolean.class);
-            dataMtd.setAccessible(true);
-            dataMtd.invoke(dataManager, mobileDataEnabled);
-        } catch (Exception ex) {
-            //Error Code Write Here
-            Toast.makeText(this, ex.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            cm.setDataEnabled(mobileDataEnabled);
         }
     }
 
@@ -447,6 +452,17 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         } else {
             showMenus();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            switch_mobile_data.setVisibility(View.VISIBLE);
+            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                switch_mobile_data.setChecked(cm.isDataEnabled());
+            }
+
+        } else {
+            switch_mobile_data.setVisibility(View.GONE);
         }
 
 
@@ -511,17 +527,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        switch (buttonView.getId()) {
-////            case R.id.switch_air:
-////                final Intent intent = new Intent();
-////                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
-////                intent.putExtra("isEnabled", isChecked);
-////                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-////                intent.setComponent(
-////                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-////                sendBroadcast(intent);
-//                break;
-//        }
+        switch (buttonView.getId()) {
+            case R.id.switch_mobile_data:
+                setMobileDataState(isChecked);
+                break;
+
+        }
     }
 
     @Override

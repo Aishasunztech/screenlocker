@@ -139,7 +139,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     View dividerDataUSage;
 
 
-
     private ConstraintLayout constraintLayout;
 
     private ProgressBar progressBar;
@@ -315,6 +314,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvLanguage).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
         tvDataUSage.setOnClickListener(this);
+
     }
 
 
@@ -375,10 +375,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                     break;
                 case R.id.tvLanguage:
-                     languageDialogue();
+                    languageDialogue();
                     break;
                 case R.id.tvDataUSage:
                     startActivity(new Intent(SettingsActivity.this, StateMainActivity.class));
+                    break;
             }
         } else {
             if (!gerOverlayDialog().isShowing())
@@ -899,7 +900,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             saved = "en";
         }
         LanguageAdapter adapter = new LanguageAdapter(this, languages, saved, models);
-        builder.setAdapter(adapter,(dialog, which) -> {
+        builder.setAdapter(adapter, (dialog, which) -> {
 
         });
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
