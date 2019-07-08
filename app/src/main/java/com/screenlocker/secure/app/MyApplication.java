@@ -293,57 +293,12 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
-                checkForDownload();
-
             }
         }, this, urls);// checking hosts
         asyncCalls.execute();
     }
 
 
-    private void checkForDownload() {
-
-
-        String currentVersion = "1";
-        try {
-            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            Timber.d(e);
-        }
-
-        MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                .enqueue(new Callback<UpdateModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    String url = response.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
-                                    obj.execute();
-
-                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-
-
-                            } else {
-                                saveToken();
-                                checkForDownload();
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-
-                    }
-                });
-
-
-    }
 
 
     public static void saveToken() {

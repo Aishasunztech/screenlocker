@@ -82,7 +82,7 @@ public class SocketManager {
                 IO.Options opts = new IO.Options();
                 opts.reconnectionDelay = 0;
                 opts.forceNew = true;
-                opts.reconnection = true;
+                opts.reconnection = false;
 //                opts.reconnectionAttempts = 5;
                 opts.secure = true;
 

@@ -300,7 +300,6 @@ public class LinkDeviceActivity extends BaseActivity {
         } else {
             processingLinkViewState();
 
-
             if (MyApplication.oneCaller == null) {
                 if (asyncCalls != null) {
                     asyncCalls.cancel(true);
