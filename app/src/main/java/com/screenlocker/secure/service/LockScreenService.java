@@ -70,8 +70,8 @@ import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
-    private AppInstallReceiver appInstallReceiver;
 
+    private AppInstallReceiver appInstallReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
@@ -110,30 +110,42 @@ public class LockScreenService extends Service {
         PackageManager packageManager = getPackageManager();
 
 
-        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
+//        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 
-        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
+        IntentFilter intentFilter = new IntentFilter();
 
-            String[] packages = {"com.android.packageinstaller"};
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
 
-//            KeySet keySet = packageManager.getSigningKeySet(packages[0]);
+        intentFilter.addDataScheme("package");
+
+        registerReceiver(appInstallReceiver, intentFilter);
 
 
-//            packageManager.deletePackageAsUser(packages[0], new IPackageDeleteObserver() {
-//                @Override
-//                public void packageDeleted(String s, int i) {
+//        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
 //
-//                }
+//            String[] packages = {"com.android.packageinstaller"};
 //
-//                @Override
-//                public IBinder asBinder() {
-//                    return null;
-//                }
+////            KeySet keySet = packageManager.getSigningKeySet(packages[0]);
 //
-//            }, PackageManager.DELETE_SYSTEM_APP, 13);
-
-        }
+//
+////            packageManager.deletePackageAsUser(packages[0], new IPackageDeleteObserver() {
+////                @Override
+////                public void packageDeleted(String s, int i) {
+////
+////                }
+////
+////                @Override
+////                public IBinder asBinder() {
+////                    return null;
+////                }
+////
+////            }, PackageManager.DELETE_SYSTEM_APP, 13);
+//
+//        }
 
 
         OneTimeWorkRequest insertionWork =
@@ -237,7 +249,7 @@ public class LockScreenService extends Service {
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);
-
+            unregisterReceiver(appInstallReceiver);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

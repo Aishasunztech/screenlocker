@@ -21,8 +21,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5121
-        versionName "5.121"
+        versionCode 5123
+        versionName "5.123"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -164,7 +164,6 @@ dependencies {
     // AppsFlyer
     implementation 'com.appsflyer:af-android-sdk:4+@aar'
     implementation 'com.android.installreferrer:installreferrer:1.0'
-
 
 
     implementation project(':Stepper')

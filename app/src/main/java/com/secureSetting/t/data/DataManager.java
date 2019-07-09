@@ -61,12 +61,18 @@ public class DataManager {
     }
 
     public boolean hasPermission(Context context) {
-        AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-        if (appOps != null) {
-            int mode = appOps.checkOpNoThrow("android:get_usage_stats", android.os.Process.myUid(), context.getPackageName());
-            return mode == AppOpsManager.MODE_ALLOWED;
+        boolean granted;
+        AppOpsManager appOps = (AppOpsManager) context
+                .getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), context.getPackageName());
+
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            granted = (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            granted = (mode == AppOpsManager.MODE_ALLOWED);
         }
-        return false;
+        return granted;
     }
 
     public List<AppItem> getTargetAppTimeline(Context context, String target, int offset) {

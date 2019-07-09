@@ -86,8 +86,9 @@
             android:name=".settings.codeSetting.IMEIActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".permissions.InstallAppSilently" />
-        <activity android:name=".permissions.WelcomeScreenActivity"
-            android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".permissions.WelcomeScreenActivity"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".settings.codeSetting.ExitActivity"
             android:screenOrientation="portrait" />
@@ -357,14 +358,18 @@
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="com.secureSetting.t.ui.StateMainActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.StateSettingsActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.IgnoreActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.StateAboutActivity"
-            android:screenOrientation="nosensor"/>
+        <activity
+            android:name="com.secureSetting.t.ui.StateMainActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.StateSettingsActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.IgnoreActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.StateAboutActivity"
+            android:screenOrientation="nosensor" />
     </application>
 
 

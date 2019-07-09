@@ -455,10 +455,22 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+
             switch_mobile_data.setVisibility(View.VISIBLE);
             TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                switch_mobile_data.setChecked(cm.isDataEnabled());
+                TelephonyManager telMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                int simStateMain = telMgr.getSimState(0);
+                int simStateSecond = telMgr.getSimState(1);
+
+                if (simStateMain == 5 || simStateSecond == 5) {
+                    switch_mobile_data.setChecked(cm.isDataEnabled());
+                } else {
+                    switch_mobile_data.setEnabled(false);
+                }
+
+
             }
 
         } else {
