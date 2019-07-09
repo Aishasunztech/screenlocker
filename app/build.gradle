@@ -21,8 +21,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5131
-        versionName "5.131"
+        versionCode 5132
+        versionName "5.132"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -147,6 +147,11 @@ dependencies {
     //MQTT android
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    implementation 'androidx.palette:palette:1.0.0'
+    // AppsFlyer
+    implementation 'com.appsflyer:af-android-sdk:4+@aar'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
 
 
     implementation project(':Stepper')

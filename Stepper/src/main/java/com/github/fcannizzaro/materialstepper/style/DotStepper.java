@@ -26,6 +26,8 @@ public class DotStepper extends BaseNavigation {
 
     // attributes
     private int unselected = Color.parseColor("#bdbdbd");
+//    #bdbdbd
+//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

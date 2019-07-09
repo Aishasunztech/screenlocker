@@ -115,6 +115,14 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+
+
+    </style>
+
+    <style name="stepper_theme">
+        <item name="android:colorPrimary">@color/colorBlack</item>
+        <item name="android:colorPrimaryDark">@color/colorBlack</item>
+        <item name="android:colorAccent">@color/colorBlack</item>
     </style>
 
 

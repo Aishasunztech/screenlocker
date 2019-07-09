@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.screenlocker.secure.permissions.FinishFragment">
+    tools:context="com.screenlocker.secure.permissions.FinishFragment"
+    android:background="@drawable/stepper_bg_gradient">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -10,6 +11,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/setup_completed" />
+        android:text="@string/setup_completed"
+        />
 
 </FrameLayout>

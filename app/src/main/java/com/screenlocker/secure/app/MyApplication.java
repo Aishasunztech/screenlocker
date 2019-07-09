@@ -37,6 +37,15 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.data.AppItem;
+import com.secureSetting.t.data.DataManager;
+import com.secureSetting.t.db.DbHistoryExecutor;
+import com.secureSetting.t.db.DbIgnoreExecutor;
+import com.secureSetting.t.service.AppService;
+import com.secureSetting.t.util.PreferenceManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -200,6 +209,13 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
+        PreferenceManager.init(this);
+        getApplicationContext().startService(new Intent(getApplicationContext(), AppService.class));
+        DbIgnoreExecutor.init(getApplicationContext());
+        DbHistoryExecutor.init(getApplicationContext());
+        DataManager.init();
+        addDefaultIgnoreAppsToDB();
+
 
     }
 
@@ -299,6 +315,49 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
+    private void checkForDownload() {
+
+
+        String currentVersion = "1";
+        try {
+            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.d(e);
+        }
+
+        MyApplication.oneCaller
+                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .enqueue(new Callback<UpdateModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+
+                        if (response.body() != null) {
+                            if (response.body().isSuccess()) {
+                                if (response.body().isApkStatus()) {
+                                    String url = response.body().getApkUrl();
+                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
+                                    obj.execute();
+
+                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+
+
+                            } else {
+                                saveToken();
+                                checkForDownload();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+
+                    }
+                });
+
+
+    }
 
 
     public static void saveToken() {
@@ -358,8 +417,26 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     }
 
+    private void addDefaultIgnoreAppsToDB() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> mDefaults = new ArrayList<>();
+                mDefaults.add("com.android.settings");
+//                mDefaults.add(BuildConfig.APPLICATION_ID);
+                for (String packageName : mDefaults) {
+                    AppItem item = new AppItem();
+                    item.mPackageName = packageName;
+                    item.mEventTime = System.currentTimeMillis();
+                    DbIgnoreExecutor.getInstance().insertItem(item);
+                }
+            }
+        }).run();
+    }
+
 
 }
+
 
 
 

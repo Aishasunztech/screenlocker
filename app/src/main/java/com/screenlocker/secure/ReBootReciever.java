@@ -46,37 +46,6 @@ public class ReBootReciever extends BroadcastReceiver {
         if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 
-                ComponentName componentName1 = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
-
-                JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(ONE_DAY_INTERVAL)
-                        .build();
-
-                JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-                int resultCode1 = scheduler1.schedule(jobInfo1);
-                if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-                    Timber.d("Job Scheduled");
-                } else {
-                    Timber.d("Job Scheduled Failed");
-                }
-
-
-                ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-
-                JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(ONE_DAY_INTERVAL)
-                        .build();
-
-                JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-                int resultCode = scheduler.schedule(jobInfo);
-                if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                    Timber.d("Job Scheduled");
-                } else {
-                    Timber.d("Job Scheduled Failed");
-                }
-
                 String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                 Timber.d("<<< device status >>>%S", device_status);
 

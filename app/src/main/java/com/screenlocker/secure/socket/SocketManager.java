@@ -192,7 +192,7 @@ public class SocketManager {
      */
     public void destroy() {
 
-        Log.d("SocketManager","destroy");
+        Log.d("SocketManager", "destroy");
         if (socket != null) {
             socket.disconnect();
             socket.close();

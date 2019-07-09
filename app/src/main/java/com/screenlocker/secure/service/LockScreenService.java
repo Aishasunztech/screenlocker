@@ -37,6 +37,7 @@ import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReceiver;
@@ -84,10 +85,8 @@ public class LockScreenService extends Service {
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
 
-        List<String> blacklist = new ArrayList<>();
+    List<String> blacklist = new ArrayList<>();
     public static ServiceCallbacks mCallBacks;
-
-
 
 
     private static final String TAG = "LockScreenServiceMM";
@@ -97,8 +96,6 @@ public class LockScreenService extends Service {
     }
 
 
-
-
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -106,22 +103,6 @@ public class LockScreenService extends Service {
         }
     }
 
-
-    private void updateDb(Activity context) {
-
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
-//
-//        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-//                .observe(context, workInfo -> {
-//                    // Do something with the status
-//                    if (workInfo != null && workInfo.getState().isFinished()) {
-//
-//                    }
-//                });
-    }
 
     @Override
     public void onCreate() {
@@ -169,33 +150,20 @@ public class LockScreenService extends Service {
 
         ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
 
-        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
 
-        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode1 = scheduler1.schedule(jobInfo1);
-        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
-        }
+        if (!utils.isJobServiceOn(this, 1345)) {
+            JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPeriodic(ONE_DAY_INTERVAL)
+                    .build();
 
-        ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
-
-        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
+            JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode1 = scheduler1.schedule(jobInfo1);
+            if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
+                Timber.d("Job Scheduled");
+            } else {
+                Timber.d("Job Scheduled Failed");
+            }
         }
 
 
@@ -251,9 +219,9 @@ public class LockScreenService extends Service {
                 }
 
 
-                if(powerManager.isScreenOn()){
+                if (powerManager.isScreenOn()) {
                     String current_package = getCurrentApp();
-                    if(current_package != null) {
+                    if (current_package != null) {
                         if (blacklist.contains(current_package)) {
                             if (mCallBacks != null) {
                                 mCallBacks.onRecentAppKill();
@@ -557,41 +525,41 @@ public class LockScreenService extends Service {
     public String getCurrentApp() {
         String dum = null;
         try {
-        if (Build.VERSION.SDK_INT >= 21) {
-        String currentApp = null;
-        UsageStatsManager usm = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-        usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        }
-        long time = System.currentTimeMillis();
-        List<UsageStats> applist = null;
-        if (usm != null) {
-        applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
-        }
-        if (applist != null && applist.size() > 0) {
-        SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+            if (Build.VERSION.SDK_INT >= 21) {
+                String currentApp = null;
+                UsageStatsManager usm = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+                }
+                long time = System.currentTimeMillis();
+                List<UsageStats> applist = null;
+                if (usm != null) {
+                    applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
+                }
+                if (applist != null && applist.size() > 0) {
+                    SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
 
-        for (UsageStats usageStats : applist) {
-        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-        }
-        if (!mySortedMap.isEmpty()) {
-        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
-        }
-        }
-        return currentApp;
-        } else {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        String mm = null;
-        if (manager != null) {
-        mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
-        }
-        return mm;
-        }
+                    for (UsageStats usageStats : applist) {
+                        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                    }
+                    if (!mySortedMap.isEmpty()) {
+                        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+                    }
+                }
+                return currentApp;
+            } else {
+                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                String mm = null;
+                if (manager != null) {
+                    mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+                }
+                return mm;
+            }
         } catch (Exception e) {
-        Timber.d("getCurrentApp: %s", e.getMessage());
+            Timber.d("getCurrentApp: %s", e.getMessage());
 
-        return dum;
+            return dum;
         }
-        }
+    }
 
 }

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -30,8 +31,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -40,27 +44,32 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.LanguageControls.ChangeLanguageActivity;
+import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
+import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
+import com.secureSetting.t.ui.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,10 +80,12 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
@@ -84,6 +95,7 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /***
  * this activity show the settings for the app
@@ -91,7 +103,7 @@ import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
     private NetworkChangeReceiver networkChangeReceiver;
-
+    private SharedPreferences sharedPref;
     private Toolbar mToolbar;
     /**
      * request code for the set password activity
@@ -120,6 +132,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @BindView(R.id.tvLanguage)
     TextView tvLanguage;
     private TextView tvlinkDevice;
+    @BindView(R.id.tvDataUSage)
+    TextView tvDataUSage;
+    @BindView(R.id.dividerDataUSage)
+    View dividerDataUSage;
 
 
     private ConstraintLayout constraintLayout;
@@ -157,13 +173,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
-
-        PackageManager packageManager = getPackageManager();
-
-
-        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
-
-
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
 
 
@@ -181,6 +192,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChooseBackground.setVisibility(View.GONE);
             tvCode.setVisibility(View.GONE);
             tvLanguage.setVisibility(View.VISIBLE);
+            tvDataUSage.setVisibility(View.GONE);
+            dividerDataUSage.setVisibility(View.GONE);
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
@@ -237,6 +250,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
         }
 
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
+                Intent intent = new Intent(this, LockScreenService.class);
+
+                ActivityCompat.startForegroundService(this, intent);
+            }
+        }
 
     }
 
@@ -256,26 +276,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         } else {
             mMacAddress = null;
         }
-
-//        //  check for the can draw over permission ,is it enabled or not
-//        if (PermissionUtils.canDrawOver(SettingsActivity.this)) {
-//            // check for the permission to allow notification
-//            if (PermissionUtils.canControlNotification(SettingsActivity.this)) {
-//                if (PrefUtils.getStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD) == null) {
-//                    // main password is not set
-//                    PrefUtils.saveStringPref(SettingsActivity.this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-//                }
-//
-//
-//            } else {
-//                // request user to allow notification for our app
-//                PermissionUtils.requestNotificationAccessibilityPermission(SettingsActivity.this);
-//            }
-//        } else {
-//            // request user to enable over lay permission for our app
-//            PermissionUtils.requestOverlayPermission(SettingsActivity.this);
-//        }
-
 
     }
 
@@ -319,6 +319,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvLanguage).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
+        tvDataUSage.setOnClickListener(this);
+
     }
 
 
@@ -347,9 +349,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     handleCodeAdmin();
                     break;
                 case R.id.tvTheme:
-                    Intent theme = new Intent(this, ChangeThemeActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(theme);
+                    themeDialogue();
                     break;
                 case R.id.tvAbout:
                     //handle the about click event
@@ -372,7 +372,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             activeNetwork.isConnected();
 
                     if (isConnected) {
-                        Intent intent = new Intent(this, MainActivity.class);
+                        Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
                     } else {
                         showNetworkDialog();
@@ -381,12 +381,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
                     break;
                 case R.id.tvLanguage:
-                    Intent intent = new Intent(this, ChangeLanguageActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("isSupport", asSupport);
-
-                    startActivity(intent);
-                    finish();
+                    languageDialogue();
+                    break;
+                case R.id.tvDataUSage:
+                    startActivity(new Intent(SettingsActivity.this, MainActivity.class));
                     break;
             }
         } else {
@@ -815,6 +813,127 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Log.d("kkogkooikn", "false: ");
             asSupport = false;
         }
+    }
+
+    private void themeDialogue() {
+        int item;
+        AtomicInteger selected = new AtomicInteger();
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
+            item = 0;
+            selected.set(0);
+        } else {
+            item = 1;
+            selected.set(1);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick A Theme");
+        builder.setSingleChoiceItems(R.array.themes, item, (dialog, which) -> {
+            selected.set(which);
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (selected.get() == 1) {
+                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, false);
+            } else if (selected.get() == 0) {
+                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, true);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
+        if (key.equals(AppConstants.KEY_THEME)) {
+            if (PrefUtils.getBooleanPref(SettingsActivity.this, AppConstants.KEY_THEME)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            getDelegate().applyDayNight();
+            recreate();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
+        super.onDestroy();
+    }
+
+    private void languageDialogue() {
+        int item;
+        AtomicInteger selected = new AtomicInteger();
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
+            item = 0;
+            selected.set(0);
+        } else {
+            item = 1;
+            selected.set(1);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Language");
+        ArrayList<LanguageModel> models = new ArrayList<>();
+        String[] languages = getResources().getStringArray(R.array.languages);
+
+        for (String language : languages) {
+            String language_key = language.split(":")[0];
+            String language_name = language.split(":")[1];
+            LanguageModel languageModel2;
+            switch (language_key) {
+                case "en":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
+                    break;
+                case "fr":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_france);
+                    break;
+                case "vi":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_vietnam);
+                    break;
+                case "zh":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_chinese_flag);
+                    break;
+                case "es":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
+                    break;
+                default:
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
+                    break;
+
+            }
+
+            models.add(languageModel2);
+        }
+        String saved = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        if (saved == null || saved.equals("")) {
+            saved = "en";
+        }
+        LanguageAdapter adapter = new LanguageAdapter(this, languages, saved, models);
+        builder.setAdapter(adapter, (dialog, which) -> {
+
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            changeLanguage(adapter.getSelectedText());
+
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
+    private void changeLanguage(String code) {
+
+        Intent intent = new Intent(BROADCAST_APPS_ACTION);
+        intent.putExtra(KEY_DATABASE_CHANGE, "apps");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        CommonUtils.setAppLocale(code, SettingsActivity.this);
+        PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
+        recreate();
+
 
     }
+
 }

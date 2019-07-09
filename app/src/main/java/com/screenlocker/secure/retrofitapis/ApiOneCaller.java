@@ -35,7 +35,6 @@ public interface ApiOneCaller {
             @Body DeviceModel deviceModel
     );
 
-
     @FormUrlEncoded
     @POST("getstatus")
     Call<NetworkResponse> checkStatus(@Field("imei") String imeiNumber, @Field("mac") String macAddress);
