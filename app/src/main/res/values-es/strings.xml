@@ -87,7 +87,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Cuenta</string>
-    <string name="language">Languages</string>
+    <string name="language">Idiomas</string>
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">Usted está al día.</string>

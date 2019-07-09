@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -33,12 +32,12 @@ import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
-import com.secureSetting.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,22 +86,6 @@ public class LockScreenService extends Service {
     }
 
 
-    private void updateDb(Activity context) {
-
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
-//
-//        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-//                .observe(context, workInfo -> {
-//                    // Do something with the status
-//                    if (workInfo != null && workInfo.getState().isFinished()) {
-//
-//                    }
-//                });
-    }
-
     @Override
     public void onCreate() {
 
@@ -123,7 +106,6 @@ public class LockScreenService extends Service {
         intentFilter.addDataScheme("package");
 
         registerReceiver(appInstallReceiver, intentFilter);
-
 
 //        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
 //
@@ -147,44 +129,48 @@ public class LockScreenService extends Service {
 //
 //        }
 
-
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-        ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
+        if (!utils.isJobServiceOn(this, 1345)) {
+            ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
 
-        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
+            JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPeriodic(ONE_DAY_INTERVAL)
+                    .build();
+            JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode1 = scheduler1.schedule(jobInfo1);
+            if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
+                Timber.d("Job Scheduled");
+            } else {
+                Timber.d("Job Scheduled Failed");
+            }
 
-        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode1 = scheduler1.schedule(jobInfo1);
-        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
         }
 
-        ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
 
-        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
+        if (!utils.isJobServiceOn(this, 1234)) {
+            ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
 
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPeriodic(ONE_DAY_INTERVAL)
+                    .build();
 
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
+            JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+
+            int resultCode = scheduler.schedule(jobInfo);
+            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+                Timber.d("Job Scheduled");
+            } else {
+                Timber.d("Job Scheduled Failed");
+            }
+
         }
-
 
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);

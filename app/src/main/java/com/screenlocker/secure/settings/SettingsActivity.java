@@ -2,14 +2,12 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -45,12 +44,12 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
@@ -59,15 +58,15 @@ import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
-import com.secureSetting.t.ui.StateMainActivity;
+import com.secureSetting.t.ui.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -251,6 +250,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
         }
 
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
+                Intent intent = new Intent(this, LockScreenService.class);
+
+                ActivityCompat.startForegroundService(this, intent);
+            }
+        }
 
     }
 
@@ -366,7 +372,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             activeNetwork.isConnected();
 
                     if (isConnected) {
-                        Intent intent = new Intent(this, MainActivity.class);
+                        Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
                     } else {
                         showNetworkDialog();
@@ -378,7 +384,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     languageDialogue();
                     break;
                 case R.id.tvDataUSage:
-                    startActivity(new Intent(SettingsActivity.this, StateMainActivity.class));
+                    startActivity(new Intent(SettingsActivity.this, MainActivity.class));
                     break;
             }
         } else {

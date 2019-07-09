@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.screenlocker.secure.R;
 import com.secureSetting.t.data.DataManager;
-import com.secureSetting.t.ui.StateMainActivity;
+import com.secureSetting.t.ui.MainActivity;
 
 public class AppService extends Service {
 
@@ -34,7 +34,7 @@ public class AppService extends Service {
                 mHandler.removeCallbacks(mRepeatCheckTask);
                 Toast.makeText(mContext, R.string.grant_success, Toast.LENGTH_SHORT).show();
                 startService(new Intent(mContext, AlarmService.class));
-                Intent intent = new Intent(mContext, StateMainActivity.class);
+                Intent intent = new Intent(mContext, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }

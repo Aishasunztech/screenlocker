@@ -359,7 +359,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name="com.secureSetting.t.ui.StateMainActivity"
+            android:name="com.secureSetting.t.ui.MainActivity"
             android:screenOrientation="nosensor" />
         <activity
             android:name="com.secureSetting.t.ui.StateSettingsActivity"

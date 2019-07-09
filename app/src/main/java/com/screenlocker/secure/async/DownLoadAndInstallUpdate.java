@@ -156,7 +156,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 //
 //            contextWeakReference.get().revokeUriPermission(apkUri,FLAG_GRANT_READ_URI_PERMISSION |Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         Intent launchIntent = new Intent();
-        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.StateMainActivity");
+        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
         launchIntent.setAction(Intent.ACTION_MAIN);
         launchIntent.setComponent(componentName);

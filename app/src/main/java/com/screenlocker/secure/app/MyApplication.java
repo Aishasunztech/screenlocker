@@ -316,7 +316,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
-                checkForDownload();
+//                checkForDownload();
 
             }
         }, this, urls);// checking hosts
@@ -432,7 +432,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             public void run() {
                 List<String> mDefaults = new ArrayList<>();
                 mDefaults.add("com.android.settings");
-                mDefaults.add(BuildConfig.APPLICATION_ID);
+//                mDefaults.add(BuildConfig.APPLICATION_ID);
                 for (String packageName : mDefaults) {
                     AppItem item = new AppItem();
                     item.mPackageName = packageName;
