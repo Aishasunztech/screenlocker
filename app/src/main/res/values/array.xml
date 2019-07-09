@@ -8,6 +8,7 @@
         <item>en:English:</item>
         <item>fr:Français</item>
         <item>vi:Tiếng Việt</item>
-        <item>zh:Chinese</item>
+        <item>zh:中文</item>
+        <item>es:Espanol</item>
     </string-array>
 </resources>

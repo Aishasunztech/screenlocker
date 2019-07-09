@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -131,6 +132,8 @@ public class MainActivity extends BaseActivity {
      */
     @Override
     protected int getContentView() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         return R.layout.mdm_main;
     }
 
@@ -170,6 +173,7 @@ public class MainActivity extends BaseActivity {
             Timber.i("<<<<<SwipedToRefresh>>>>>");
             initAutoLogin();
         });
+
 
 
     }
