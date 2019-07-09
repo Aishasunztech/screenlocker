@@ -275,6 +275,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAccount" />
+        <TextView
+            android:id="@+id/tvDataCunsumption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/ic_consumption"
+            android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
+            android:text="@string/data_consumption_settings"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/textSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerLanguage" />
+
+        <View
+            android:id="@+id/dividerDataCunsumption"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
 
         <TextView
             android:id="@+id/tvLanguage"
@@ -291,7 +315,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerLanguage" />
+            app:layout_constraintTop_toBottomOf="@+id/dividerDataCunsumption" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

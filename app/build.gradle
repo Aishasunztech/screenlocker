@@ -18,7 +18,7 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.secure.launcher1"
+        applicationId "com.secure.launcher3"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 512
@@ -160,7 +160,6 @@ dependencies {
     // AppsFlyer
     implementation 'com.appsflyer:af-android-sdk:4+@aar'
     implementation 'com.android.installreferrer:installreferrer:1.0'
-
 
 
     implementation project(':Stepper')

@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_ss"
+            android:drawableStart="@drawable/ic_settings_icons"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
             android:text="@string/settings_controls"

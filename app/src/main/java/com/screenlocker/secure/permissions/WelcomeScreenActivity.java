@@ -12,9 +12,16 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.updateDB.BlurWorker;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.screenlocker.secure.utils.AppConstants.LINKSIM;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
+import static com.screenlocker.secure.utils.AppConstants.UPDATEWIFI;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
 
@@ -45,10 +52,25 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                                 startActivity(finalLockScreen);
                                 finish();
                             }
-                        },5000);
+                        }, 5000);
 
                     }
                 });
+        if (PrefUtils.getIntegerPref(this, UPDATEWIFI) == 0) {
+            PrefUtils.saveIntegerPref(this, UPDATEWIFI, 1);
+        }
+        //update sim toggle
+        if (PrefUtils.getIntegerPref(this, UPDATESIM) == 0) {
+            PrefUtils.saveIntegerPref(this, UPDATESIM, 2);
+        }
+        //sm wifi
+        if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) == 0) {
+            PrefUtils.saveIntegerPref(this, SECUREMARKETWIFI, 1);
+        }
+        //sm sim
+        if (PrefUtils.getIntegerPref(this, SECUREMARKETSIM) == 0) {
+            PrefUtils.saveIntegerPref(this, SECUREMARKETSIM, 2);
+        }
 
 
     }

@@ -92,8 +92,8 @@ public class StateAboutActivity extends BaseActivity {
             mPackageName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
             mDay = intent.getIntExtra(EXTRA_DAY, 0);
             // package name
-            TextView mPackage = findViewById(R.id.pkg_name);
-            mPackage.setText(mPackageName);
+
+
             // icon
             ImageView imageView = findViewById(R.id.icon);
             Drawable icon = AppUtil.getPackageIcon(this, mPackageName);

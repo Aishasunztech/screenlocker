@@ -47,6 +47,7 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -57,6 +58,8 @@ import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
+import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
@@ -113,28 +116,9 @@ public class LockScreenService extends Service {
         Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 
-        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
-
-            String[] packages = {"com.android.packageinstaller"};
-
-//            KeySet keySet = packageManager.getSigningKeySet(packages[0]);
-
-
-//            packageManager.deletePackageAsUser(packages[0], new IPackageDeleteObserver() {
-//                @Override
-//                public void packageDeleted(String s, int i) {
-//
-//                }
-//
-//                @Override
-//                public IBinder asBinder() {
-//                    return null;
-//                }
-//
-//            }, PackageManager.DELETE_SYSTEM_APP, 13);
-
+        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)){
+            stopCapture();
         }
-
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
@@ -157,21 +141,7 @@ public class LockScreenService extends Service {
             Timber.d("Job Scheduled Failed");
         }
 
-        ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
-
-        JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
-        }
+        scheduleUpdateJob(this);
 
 
         appExecutor = AppExecutor.getInstance();

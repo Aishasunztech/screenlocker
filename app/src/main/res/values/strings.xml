@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Screen Locker</string>
     <string name="toolbar_title" translatable="false">Titan Locker</string>
-    <string name="apktype"
-        translatable="false">SW</string>
+    <string name="apktype" translatable="false">SW</string>
     <string name="number_zero">0</string>
     <string name="number_one">1</string>
     <string name="number_two">2</string>
@@ -56,7 +55,7 @@
     <string name="password_is_changed_to_default">Password is changed to default.</string>
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
-    <string name="sim">SIM</string>
+    <string name="sim_title">SIM</string>
     <string name="set_duress_pass">Set Duress Password</string>
 
     // MDM strings
@@ -106,6 +105,7 @@
     <string name="permissions">Application Permission</string>
     <string name="link_heading">To generate a valid IMEI please go to </string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
+    <string name="link_title">Link</string>
     <string name="simtext">SIM:</string>
     <string name="slot">Slot :</string>
     <string name="name">/ Name :</string>
@@ -349,14 +349,10 @@
     <string name="dark_theme">Dark Theme</string>
     <string name="mode">Mode</string>
     <string name="link_device_message">Hit the button below to link your device</string>
-    <string name="link_device_activation_message" >Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
 
 
-
-
-
-
-<string-array name="sort">
+    <string-array name="sort">
         <item>Total</item>
         <item>Date</item>
         <item>Frequency</item>
@@ -419,5 +415,9 @@
 
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
+    <string name="updates">Updates</string>
+    <string name="sim">SIM</string>
+    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="continue_anyway">Continue Anyways</string>
 
 </resources>

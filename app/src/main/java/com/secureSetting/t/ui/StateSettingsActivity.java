@@ -6,18 +6,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
-import com.secureSetting.t.AppConst;
 import com.secureSetting.t.util.PreferenceManager;
-
-import java.util.Locale;
 
 public class StateSettingsActivity extends BaseActivity {
 
@@ -48,13 +40,10 @@ public class StateSettingsActivity extends BaseActivity {
 
         // hide uninstall
         mSwitchUninstall = findViewById(R.id.switch_uninstall_appps);
-        mSwitchUninstall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (PreferenceManager.getInstance().getUninstallSettings(PreferenceManager.PREF_SETTINGS_HIDE_UNINSTALL_APPS) != b) {
-                    PreferenceManager.getInstance().putBoolean(PreferenceManager.PREF_SETTINGS_HIDE_UNINSTALL_APPS, b);
-                    setResult(1);
-                }
+        mSwitchUninstall.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (PreferenceManager.getInstance().getUninstallSettings(PreferenceManager.PREF_SETTINGS_HIDE_UNINSTALL_APPS) != b) {
+                PreferenceManager.getInstance().putBoolean(PreferenceManager.PREF_SETTINGS_HIDE_UNINSTALL_APPS, b);
+                setResult(1);
             }
         });
 

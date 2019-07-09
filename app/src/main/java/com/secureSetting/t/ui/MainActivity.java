@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -57,7 +55,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class StateMainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity {
 
     private LinearLayout mSort;
     private Switch mSwitch;
@@ -143,7 +141,7 @@ public class StateMainActivity extends BaseActivity {
     }
 
     private void triggerSort() {
-        mDialog = new AlertDialog.Builder(StateMainActivity.this)
+        mDialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.sort)
                 .setSingleChoiceItems(R.array.sort, PreferenceManager.getInstance().getInt(PreferenceManager.PREF_LIST_SORT), new DialogInterface.OnClickListener() {
                     @Override
@@ -188,19 +186,14 @@ public class StateMainActivity extends BaseActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (b) {
-                        Intent intent = new Intent(StateMainActivity.this, AppService.class);
+                        Intent intent = new Intent(MainActivity.this, AppService.class);
                         intent.putExtra(AppService.SERVICE_ACTION, AppService.SERVICE_ACTION_CHECK);
                         startService(intent);
                     }
                 }
             });
         }
-        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                process();
-            }
-        });
+        mSwipe.setOnRefreshListener(this::process);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -263,7 +256,7 @@ public class StateMainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                startActivityForResult(new Intent(StateMainActivity.this, StateSettingsActivity.class), 1);
+                startActivityForResult(new Intent(MainActivity.this, StateSettingsActivity.class), 1);
                 return true;
             case R.id.sort:
                 triggerSort();
@@ -333,8 +326,8 @@ public class StateMainActivity extends BaseActivity {
             } else {
                 holder.mProgress.setProgress(0);
             }
-            Glide.with(StateMainActivity.this)
-                    .load(AppUtil.getPackageIcon(StateMainActivity.this, item.mPackageName))
+            Glide.with(MainActivity.this)
+                    .load(AppUtil.getPackageIcon(MainActivity.this, item.mPackageName))
                     .transition(new DrawableTransitionOptions().crossFade())
                     .into(holder.mIcon);
             holder.setOnClickListener(item);
@@ -368,11 +361,11 @@ public class StateMainActivity extends BaseActivity {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(StateMainActivity.this, StateAboutActivity.class);
+                        Intent intent = new Intent(MainActivity.this, StateAboutActivity.class);
                         intent.putExtra(StateAboutActivity.EXTRA_PACKAGE_NAME, item.mPackageName);
                         intent.putExtra(StateAboutActivity.EXTRA_DAY, mDay);
                         ActivityOptionsCompat options = ActivityOptionsCompat.
-                                makeSceneTransitionAnimation(StateMainActivity.this, mIcon, "profile");
+                                makeSceneTransitionAnimation(MainActivity.this, mIcon, "profile");
                         startActivityForResult(intent, 1, options.toBundle());
                     }
                 });

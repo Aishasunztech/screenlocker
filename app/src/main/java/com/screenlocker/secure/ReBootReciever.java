@@ -17,7 +17,6 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
-import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -56,22 +55,6 @@ public class ReBootReciever extends BroadcastReceiver {
                 JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
                 int resultCode1 = scheduler1.schedule(jobInfo1);
                 if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-                    Timber.d("Job Scheduled");
-                } else {
-                    Timber.d("Job Scheduled Failed");
-                }
-
-
-                ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-
-                JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(ONE_DAY_INTERVAL)
-                        .build();
-
-                JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-                int resultCode = scheduler.schedule(jobInfo);
-                if (resultCode == JobScheduler.RESULT_SUCCESS) {
                     Timber.d("Job Scheduled");
                 } else {
                     Timber.d("Job Scheduled Failed");

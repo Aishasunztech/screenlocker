@@ -269,7 +269,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 switch (action) {
                     case "start":
                         // connecting to socket
-
                         String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
                         socketManager.destroy();
                         socketManager.connectSocket(token, device_id, live_url);

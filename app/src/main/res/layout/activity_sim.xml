@@ -32,9 +32,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:textStyle="bold"
+                android:textSize="18sp"
                 android:gravity="center"
                 android:text="@string/enable_all_unregistered"
-                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/allowAllEncrypted"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/allowAllEncrypted" />

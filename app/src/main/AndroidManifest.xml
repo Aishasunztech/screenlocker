@@ -60,6 +60,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".settings.dataConsumption.DataConsumptionActivity"
+            android:screenOrientation="nosensor"/>
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
@@ -86,8 +88,9 @@
             android:name=".settings.codeSetting.IMEIActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".permissions.InstallAppSilently" />
-        <activity android:name=".permissions.WelcomeScreenActivity"
-            android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".permissions.WelcomeScreenActivity"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".settings.codeSetting.ExitActivity"
             android:screenOrientation="portrait" />
@@ -242,7 +245,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".utils.AppInstallReceiver"
             android:enabled="true"
@@ -274,7 +276,7 @@
                     <data android:scheme="package" />
                 </intent-filter>
             </receiver>
-            -->
+        -->
         <receiver
             android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
@@ -334,7 +336,6 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.contactSupport.ChatActivity"
             android:screenOrientation="nosensor" />
@@ -357,15 +358,18 @@
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="com.secureSetting.t.ui.StateMainActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.StateSettingsActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.IgnoreActivity"
-            android:screenOrientation="nosensor"/>
-        <activity android:name="com.secureSetting.t.ui.StateAboutActivity"
-            android:screenOrientation="nosensor"/>
+        <activity
+            android:name="com.secureSetting.t.ui.MainActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.StateSettingsActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.IgnoreActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name="com.secureSetting.t.ui.StateAboutActivity"
+            android:screenOrientation="nosensor" />
     </application>
-
 
 </manifest>
