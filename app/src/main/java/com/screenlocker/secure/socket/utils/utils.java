@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
@@ -216,7 +217,7 @@ public class utils {
                         if (ri.activityInfo.packageName.equals(packageName)) {
                             int finalI = i;
                             AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
-                                    ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
+                                    ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm),0,context));
                             app.setUniqueName(app.getPackageName() + app.getLabel());
                             app.setExtension(false);
                             app.setDefaultApp(false);

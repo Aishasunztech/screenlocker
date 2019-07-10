@@ -190,12 +190,20 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
         runtimePermissions.setOnCheckedChangeListener(this);
-        if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
+                layoutInstall.setVisibility(GONE);
+                unknownResources.setChecked(true);
+                unknownResources.setClickable(false);
+                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
+            } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
+        }else{
             layoutInstall.setVisibility(GONE);
             unknownResources.setChecked(true);
             unknownResources.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
-        } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
+        }
+
         unknownResources.setOnCheckedChangeListener(this);
         if (isNotificationAccess(getContext())) {
             layoutNotification.setVisibility(GONE);

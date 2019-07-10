@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -59,6 +61,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -120,12 +123,9 @@ LockScreenService.ServiceCallbacks,
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         LockScreenService.mCallBacks =(LockScreenService.ServiceCallbacks) MainActivity.this;
         DownLoadAndInstallUpdate.onAppAvailable =(DownLoadAndInstallUpdate.OnAppAvailable) MainActivity.this;
-
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
@@ -210,6 +210,31 @@ LockScreenService.ServiceCallbacks,
             if (devicePolicyManager != null) {
                 devicePolicyManager.lockNow();
             }
+        }
+        closeBar();
+    }
+
+    private void closeBar() {
+        if(!(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)){
+            WindowManager manager = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
+            WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+            localLayoutParams.gravity = Gravity.TOP;
+            localLayoutParams.flags =
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+
+                            // this is to enable the notification to receive touch events
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+
+                            // Draws over status bar
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+
+            localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            localLayoutParams.height = (int) (40 * getResources().getDisplayMetrics().scaledDensity);
+            localLayoutParams.format = PixelFormat.TRANSPARENT;
+
+            RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
+            manager.addView(relativeLayout, localLayoutParams);
         }
     }
 

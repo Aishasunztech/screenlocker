@@ -444,19 +444,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
 
     }
-
-
     private AsyncCalls asyncCalls;
-
     private void requestCheckForUpdate(ProgressDialog dialog) {
 
         if (MyApplication.oneCaller == null) {
 
-
             if (asyncCalls != null) {
                 asyncCalls.cancel(true);
             }
-
             String[] urls = {URL_1, URL_2};
 
             asyncCalls = new AsyncCalls(output -> {
@@ -467,16 +462,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     update(dialog);
-
                 }
             }, this, urls);
             asyncCalls.execute();
-
         } else {
             update(dialog);
         }
-
-
     }
 
     private void update(ProgressDialog dialog) {
@@ -487,7 +478,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
                         if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
-
                         }
 
                         if (response.body() != null) {
@@ -498,7 +488,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                             .setMessage(getResources().getString(R.string.update_available_message))
                                             .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
                                                 String url = response.body().getApkUrl();
-
                                                 String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
                                                 DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
                                                 obj.execute();

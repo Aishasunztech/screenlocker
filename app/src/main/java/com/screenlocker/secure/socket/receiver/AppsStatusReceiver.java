@@ -73,7 +73,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     ApplicationInfo applicationInfo = pm.getApplicationInfo(installModel.getPackage_name(), 0);
 
                     Drawable ic = pm.getApplicationIcon(applicationInfo);
-                    byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
+                    byte[] icon = CommonUtils.convertDrawableToByteArray(ic,0,context);
                     String label = pm.getApplicationLabel(applicationInfo).toString();
 
                     new Thread(() -> {
@@ -213,7 +213,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
 
                 Drawable ic = pm.getApplicationIcon(applicationInfo);
-                byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
+                byte[] icon = CommonUtils.convertDrawableToByteArray(ic,0,context);
                 String label = pm.getApplicationLabel(applicationInfo).toString();
 
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -106,18 +107,46 @@ public class CommonUtils {
         }
     }
 
-    public static byte[] convertDrawableToByteArray(Drawable d) {
+    public static byte[] convertDrawableToByteArray(Drawable drawable,int drawable_id,Context context) {
         Bitmap bitmap;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // only for gingerbread and newer versions
-            bitmap = getBitmapFromDrawable(d);
+            Drawable d;
+            if( (d = context.getDrawable(drawable_id))!=null){
+                bitmap = getBitmapFromDrawable(d);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                return stream.toByteArray();
+            }else if((d = drawable )!=null){
+                bitmap = getBitmapFromDrawable(d);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                return stream.toByteArray();
+            }else{
+                Toast.makeText(context, "drawable null", Toast.LENGTH_SHORT).show();
+                return new byte[]{};
+            }
         } else {
-            bitmap = ((BitmapDrawable) d).getBitmap();
+           // bitmap = ((BitmapDrawable) d).getBitmap();
+
+            if(drawable!=null){
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                return stream.toByteArray();
+            }else if(drawable_id!=0){
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_wifi);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                return stream.toByteArray();
+            }else{
+                Toast.makeText(context, "drawable null", Toast.LENGTH_SHORT).show();
+                return new byte[]{};
+            }
+
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
-        return stream.toByteArray();
     }
+
 
     @NonNull
     static private Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
@@ -177,8 +206,8 @@ public class CommonUtils {
         List<SubExtension> subExtensions = new ArrayList<>();
 
         // wifi menu
-        Drawable wifi_drawable = context.getResources().getDrawable(R.drawable.ic_wifi);
-        byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+      //  Drawable wifi_drawable = context.getResources().getDrawable();
+        byte[] wifi_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_wifi,context);
         SubExtension wifi = new SubExtension();
         wifi.setLabel("wi-fi");
         wifi.setIcon(wifi_icon);
@@ -190,8 +219,9 @@ public class CommonUtils {
 
 
         // bluetooth menu
-        Drawable bluetooth_drawable = context.getResources().getDrawable(R.drawable.ic_bluetooth);
-        byte[] bluetooth_icon = CommonUtils.convertDrawableToByteArray(bluetooth_drawable);
+      //  Drawable bluetooth_drawable = context.getResources().getDrawable(R.drawable.ic_bluetooth);
+        byte[] bluetooth_icon = CommonUtils.convertDrawableToByteArray(null,
+                R.drawable.ic_bluetooth,context);
         SubExtension bluetooth = new SubExtension();
         bluetooth.setLabel("Bluetooth");
         bluetooth.setIcon(bluetooth_icon);
@@ -202,8 +232,8 @@ public class CommonUtils {
         subExtensions.add(bluetooth);
 
         // SIM CARDS
-        Drawable sim_card_drawable = context.getResources().getDrawable(R.drawable.ic_sim_card);
-        byte[] sim_card_icon = CommonUtils.convertDrawableToByteArray(sim_card_drawable);
+      //  Drawable sim_card_drawable = context.getResources().getDrawable(R.drawable.ic_sim_card);
+        byte[] sim_card_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_sim_card,context);
         SubExtension sim_card = new SubExtension();
         sim_card.setLabel("SIM Cards");
         sim_card.setIcon(sim_card_icon);
@@ -214,8 +244,8 @@ public class CommonUtils {
         subExtensions.add(sim_card);
 
         //DATA ROAMING
-        Drawable data_roaming_drawable = context.getResources().getDrawable(R.drawable.ic_roaming);
-        byte[] data_roaming_icon = CommonUtils.convertDrawableToByteArray(data_roaming_drawable);
+     //   Drawable data_roaming_drawable = context.getResources().getDrawable(R.drawable.ic_roaming);
+        byte[] data_roaming_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_roaming,context);
         SubExtension dataRoaming = new SubExtension();
         dataRoaming.setLabel("Data Roaming");
         dataRoaming.setIcon(data_roaming_icon);
@@ -226,8 +256,8 @@ public class CommonUtils {
         subExtensions.add(dataRoaming);
 
         // MOBILE DATA
-        Drawable mobile_data_drawable = context.getResources().getDrawable(R.drawable.ic_mobile_data);
-        byte[] mobile_data_icon = CommonUtils.convertDrawableToByteArray(mobile_data_drawable);
+      //  Drawable mobile_data_drawable = context.getResources().getDrawable(R.drawable.ic_mobile_data);
+        byte[] mobile_data_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_mobile_data,context);
         SubExtension mobileData = new SubExtension();
         mobileData.setLabel("Mobile Data");
         mobileData.setIcon(mobile_data_icon);
@@ -239,8 +269,8 @@ public class CommonUtils {
 
 
         // HOT SPOT
-        Drawable hotspot_drawable = context.getResources().getDrawable(R.drawable.ic_wifi_hotspot);
-        byte[] hotspot_icon = CommonUtils.convertDrawableToByteArray(hotspot_drawable);
+      //  Drawable hotspot_drawable = context.getResources().getDrawable(R.drawable.ic_wifi_hotspot);
+        byte[] hotspot_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_wifi_hotspot,context);
         SubExtension hotspot = new SubExtension();
         hotspot.setLabel("Hotspot");
         hotspot.setIcon(hotspot_icon);
@@ -251,8 +281,8 @@ public class CommonUtils {
         subExtensions.add(hotspot);
 
         // SCREEN LOCK
-        Drawable screenLock_drawable = context.getResources().getDrawable(R.drawable.ic_screen_lock);
-        byte[] screenLock_icon = CommonUtils.convertDrawableToByteArray(screenLock_drawable);
+      //  Drawable screenLock_drawable = context.getResources().getDrawable(R.drawable.ic_screen_lock);
+        byte[] screenLock_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_screen_lock,context);
         SubExtension screenLock = new SubExtension();
         screenLock.setLabel("Finger Print + Lock");
         screenLock.setIcon(screenLock_icon);
@@ -263,8 +293,8 @@ public class CommonUtils {
         subExtensions.add(screenLock);
 
         // HOT SPOT
-        Drawable brightness_drawable = context.getResources().getDrawable(R.drawable.ic_settings_brightness);
-        byte[] brightness_icon = CommonUtils.convertDrawableToByteArray(brightness_drawable);
+      //  Drawable brightness_drawable = context.getResources().getDrawable(R.drawable.ic_settings_brightness);
+        byte[] brightness_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_settings_brightness,context);
         SubExtension brightness = new SubExtension();
         brightness.setLabel("Brightness");
         brightness.setIcon(brightness_icon);
@@ -275,8 +305,8 @@ public class CommonUtils {
         subExtensions.add(brightness);
 
         // SLEEP
-        Drawable sleep_drawable = context.getResources().getDrawable(R.drawable.ic_sleep);
-        byte[] sleep_icon = CommonUtils.convertDrawableToByteArray(sleep_drawable);
+      //  Drawable sleep_drawable = context.getResources().getDrawable(R.drawable.ic_sleep);
+        byte[] sleep_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_sleep,context);
         SubExtension sleep = new SubExtension();
         sleep.setLabel("Sleep");
         sleep.setIcon(sleep_icon);
@@ -287,8 +317,8 @@ public class CommonUtils {
         subExtensions.add(sleep);
 
         // BATTERY
-        Drawable battery_drawable = context.getResources().getDrawable(R.drawable.ic_battery);
-        byte[] battery_icon = CommonUtils.convertDrawableToByteArray(battery_drawable);
+       // Drawable battery_drawable = context.getResources().getDrawable(R.drawable.ic_battery);
+        byte[] battery_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_battery,context);
         SubExtension battery = new SubExtension();
         battery.setLabel("Battery");
         battery.setIcon(battery_icon);
@@ -299,8 +329,8 @@ public class CommonUtils {
         subExtensions.add(battery);
 
         // SOUND
-        Drawable sound_drawable = context.getResources().getDrawable(R.drawable.ic_sound);
-        byte[] sound_icon = CommonUtils.convertDrawableToByteArray(sound_drawable);
+      //  Drawable sound_drawable = context.getResources().getDrawable(R.drawable.ic_sound);
+        byte[] sound_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_sound,context);
         SubExtension sound = new SubExtension();
         sound.setLabel("Sound");
         sound.setIcon(sound_icon);
@@ -311,8 +341,8 @@ public class CommonUtils {
         subExtensions.add(sound);
 
         // DATE & TIME
-        Drawable dateTime_drawable = context.getResources().getDrawable(R.drawable.ic_date_time);
-        byte[] dateTime_icon = CommonUtils.convertDrawableToByteArray(dateTime_drawable);
+      //  Drawable dateTime_drawable = context.getResources().getDrawable(R.drawable.ic_date_time);
+        byte[] dateTime_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_date_time,context);
         SubExtension dateTime = new SubExtension();
         dateTime.setLabel("Date & Time");
         dateTime.setIcon(dateTime_icon);
@@ -325,8 +355,8 @@ public class CommonUtils {
 
         // Languages and input
 
-        Drawable language_drawable = context.getResources().getDrawable(R.drawable.ic_language);
-        byte[] language_icon = CommonUtils.convertDrawableToByteArray(language_drawable);
+       // Drawable language_drawable = context.getResources().getDrawable(R.drawable.ic_language);
+        byte[] language_icon = CommonUtils.convertDrawableToByteArray(null,R.drawable.ic_language,context);
         SubExtension language = new SubExtension();
         language.setLabel("Languages & Input");
         language.setIcon(language_icon);

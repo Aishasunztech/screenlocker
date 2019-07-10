@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -94,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+       // getWindow().addFlags(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY);
         localLayoutParams = new WindowManager.LayoutParams();
 
         createAlertDialog();
@@ -330,12 +331,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!getPackageManager().canRequestPackageInstalls()) {
-            launchPermissions();
         } else if (!isNotificationAccess(this)) {
             launchPermissions();
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
             launchPermissions();
+        } else if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+            if(!getPackageManager().canRequestPackageInstalls()){
+                launchPermissions();
+            }
         }
     }
 
@@ -354,6 +357,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             if (!hasFocus) {
+                Log.i("checkfocuschng", "onWindowFocusChanged: ");
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
