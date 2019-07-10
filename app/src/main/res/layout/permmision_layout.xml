@@ -2,13 +2,28 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_48sdp"
+    android:paddingTop="@dimen/_48sdp"
+    android:background="@drawable/stepper_bg_gradient"
+    >
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/_16sdp">
+
 
         <LinearLayout
             android:id="@+id/layout_allow_admin"
@@ -24,9 +39,8 @@
                 <ImageView
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
-
-
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_admin_permission"
+                    />
 
                 <TextView
                     android:layout_width="0dp"
@@ -35,7 +49,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_device_admin"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_admin"
@@ -47,6 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -74,7 +89,7 @@
 
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_overlay" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -83,7 +98,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_overlay_permission"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_drawoverlay"
@@ -95,6 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -121,7 +137,7 @@
                     android:layout_height="@dimen/_24sdp"
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_write_settings_permission" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -130,7 +146,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_modify_system_state"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_modify"
@@ -142,6 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -169,7 +186,7 @@
 
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_usage_access_permission" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -178,7 +195,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_usage_access"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_usage"
@@ -190,6 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -214,10 +232,8 @@
                 <ImageView
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
-
-
-
-                    android:src="@drawable/ic_admin" />
+                    
+                    android:src="@drawable/ic_running" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -226,7 +242,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_run_time_permission"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_runtime"
@@ -238,6 +254,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -265,7 +282,7 @@
 
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_download" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -274,7 +291,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_install_packages"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_unknown"
@@ -286,6 +303,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -313,7 +331,7 @@
 
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_notification_permission" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -322,7 +340,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_notification_access"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_notification"
@@ -334,6 +352,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
+                style="@style/permissions_message_theme"
                 android:text="@string/allow_device_admin_message" />
 
             <View
@@ -361,7 +380,7 @@
 
 
 
-                    android:src="@drawable/ic_admin" />
+                    android:src="@drawable/ic_charging" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -370,7 +389,7 @@
                     android:paddingStart="@dimen/_8sdp"
                     android:paddingEnd="@dimen/_8sdp"
                     android:text="@string/allow_access_battery_optimization"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="@style/permissions_title_theme" />
 
                 <Switch
                     android:id="@+id/active_battery_optimization"
@@ -379,6 +398,7 @@
             </LinearLayout>
 
             <TextView
+                style="@style/permissions_message_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/_48sdp"
@@ -393,6 +413,10 @@
         </LinearLayout>
     </LinearLayout>
     <!--Allow Usage Access-->
+
+
+    </LinearLayout>
+
 
 
 </androidx.core.widget.NestedScrollView>

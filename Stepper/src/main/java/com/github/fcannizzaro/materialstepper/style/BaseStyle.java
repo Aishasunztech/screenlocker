@@ -113,7 +113,7 @@ public class BaseStyle extends AppCompatActivity implements Stepable {
 
     protected void init() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(primaryColor);
+        toolbar.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         toolbar.setTitle(Html.fromHtml(mTitle));
     }
 
@@ -123,11 +123,11 @@ public class BaseStyle extends AppCompatActivity implements Stepable {
 
     private void findColors() {
 
-        if (primaryColor == 0) {
-            TypedValue typedValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-            primaryColor = typedValue.data;
-        }
+//        if (primaryColor == 0) {
+//            TypedValue typedValue = new TypedValue();
+//            getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+//            primaryColor = typedValue.data;
+//        }
 
         if (primaryColor == 0)
             primaryColor = ContextCompat.getColor(this, R.color.material_stepper_global);

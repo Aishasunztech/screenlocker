@@ -15,6 +15,8 @@
     <color name="green_dark">#0e7904</color>
     <color name="seekbarColor">#EF9C00</color>
     <color name="switchContainerColor">#eeeeee</color>
+    <color name="colorBlack">@android:color/black</color>
+    <color name="colorLightBlack">#333333</color>
 
     <color name="gray">#EEEEEE</color>
     <color name="gray_darken">#DDDDDD</color>
@@ -22,6 +24,7 @@
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>
+
 
 
 </resources>

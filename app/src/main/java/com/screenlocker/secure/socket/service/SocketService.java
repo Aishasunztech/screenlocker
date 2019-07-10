@@ -334,6 +334,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().off(GET_PULLED_APPS + device_id);
                 socketManager.getSocket().off(GET_POLICY + device_id);
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
+                stopSelf();
             }
 
 
@@ -562,23 +563,20 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void sendExtensions() {
         Timber.d("<<< Sending Extensions >>>");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (socketManager.getSocket().connected()) {
+        new Thread(() -> {
+            try {
+                if (socketManager.getSocket().connected()) {
 
-                        List<SubExtension> extensions = MyApplication.getAppDatabase(SocketService.this).getDao().getAllSubExtensions();
+                    List<SubExtension> extensions = MyApplication.getAppDatabase(SocketService.this).getDao().getAllSubExtensions();
 
-                        socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
+                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
 
-                        Timber.d("extensions sent%s", extensions.size());
-                    } else {
-                        Timber.d("Socket not connected");
-                    }
-                } catch (Exception e) {
-                    Timber.d(e);
+                    Timber.d("extensions sent%s", extensions.size());
+                } else {
+                    Timber.d("Socket not connected");
                 }
+            } catch (Exception e) {
+                Timber.d(e);
             }
         }).start();
     }

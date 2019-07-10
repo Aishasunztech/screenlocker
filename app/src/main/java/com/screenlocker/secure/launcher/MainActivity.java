@@ -43,6 +43,7 @@ import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -93,6 +94,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     private ScreenOffReceiver screenOffReceiver;
 
+
+
+
     public MainActivity() {
     }
 
@@ -127,6 +131,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+
+
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
 
@@ -386,6 +392,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
             unregisterReceiver(mShutDownReceiver);
             unregisterReceiver(screenOffReceiver);
+
         } catch (Exception ignored) {
             //
         }

@@ -1,17 +1,17 @@
 <resources>
-    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="app_name" translatable="false">Titan Locker</string>
     <string name="toolbar_title" translatable="false">Titan Locker</string>
     <string name="apktype" translatable="false">SW</string>
-    <string name="number_zero">0</string>
-    <string name="number_one">1</string>
-    <string name="number_two">2</string>
-    <string name="number_three">3</string>
-    <string name="number_four">4</string>
-    <string name="number_five">5</string>
-    <string name="number_six">6</string>
-    <string name="number_seven">7</string>
-    <string name="number_eight">8</string>
-    <string name="number_nine">9</string>
+    <string name="number_zero" translatable="false">0</string>
+    <string name="number_one" translatable="false">1</string>
+    <string name="number_two" translatable="false">2</string>
+    <string name="number_three" translatable="false">3</string>
+    <string name="number_four" translatable="false">4</string>
+    <string name="number_five" translatable="false">5</string>
+    <string name="number_six" translatable="false">6</string>
+    <string name="number_seven" translatable="false">7</string>
+    <string name="number_eight" translatable="false">8</string>
+    <string name="number_nine" translatable="false">9</string>
     <string name="btn_backspace">CLEAR ALL</string>
     <string name="description_notification_icon">notification icon</string>
     <string name="description_app_image">app image</string>
@@ -350,6 +350,8 @@
     <string name="mode">Mode</string>
     <string name="link_device_message">Hit the button below to link your device</string>
     <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
 
 
     <string-array name="sort">
@@ -378,7 +380,7 @@
 
     <string name="feedback">feedback: zhishoumowen@gmail.com</string>
 
-    <string name="grant_success">Grand permission successfully</string>
+    <string name="grant_success">Permission Granted</string>
 
     <string name="hide_system_apps">Hide system Apps</string>
     <string name="hide_uninstall_apps">Hide uninstalled Apps</string>

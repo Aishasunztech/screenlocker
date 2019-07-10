@@ -90,48 +90,48 @@
             </LinearLayout>
 
             <!--<LinearLayout-->
-                <!--android:id="@+id/airplane_container"-->
-                <!--style="@style/MainActivityItemsStyle"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:visibility="gone"-->
-                <!--app:layout_constraintTop_toBottomOf="@id/wif_container_layout">-->
+            <!--android:id="@+id/airplane_container"-->
+            <!--style="@style/MainActivityItemsStyle"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:visibility="gone"-->
+            <!--app:layout_constraintTop_toBottomOf="@id/wif_container_layout">-->
 
 
-                <!--<ImageView-->
-                    <!--android:layout_width="@dimen/_20sdp"-->
-                    <!--android:layout_height="@dimen/_20sdp"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:layout_marginLeft="20dp"-->
-                    <!--android:contentDescription="TODO"-->
-                    <!--android:src="@drawable/ic_airplane_mode"-->
-                    <!--android:tint="@android:color/black" />-->
+            <!--<ImageView-->
+            <!--android:layout_width="@dimen/_20sdp"-->
+            <!--android:layout_height="@dimen/_20sdp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:contentDescription="TODO"-->
+            <!--android:src="@drawable/ic_airplane_mode"-->
+            <!--android:tint="@android:color/black" />-->
 
-                <!--<LinearLayout-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="vertical">-->
-
-
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginLeft="@dimen/_15sdp"-->
-                        <!--android:text="Airplane mode"-->
-                        <!--android:textColor="@android:color/black"-->
-                        <!--android:textSize="18sp" />-->
+            <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
 
 
-                <!--</LinearLayout>-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="@dimen/_15sdp"-->
+            <!--android:text="Airplane mode"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:textSize="18sp" />-->
 
-                <!--<Switch-->
-                    <!--android:id="@+id/switch_air"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginEnd="25dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:visibility="visible" />-->
+
+            <!--</LinearLayout>-->
+
+            <!--<Switch-->
+            <!--android:id="@+id/switch_air"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginEnd="25dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:visibility="gone" />-->
             <!--</LinearLayout>-->
 
             <LinearLayout
@@ -245,6 +245,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
 
@@ -262,6 +263,12 @@
                 </LinearLayout>
 
 
+                <Switch
+                    android:id="@+id/switch_mobile_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_32sdp"
+                    android:visibility="gone" />
             </LinearLayout>
 
 
@@ -625,13 +632,13 @@
 
 
                     <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginLeft="@dimen/_15sdp"-->
-                        <!--android:text="Volume, vibration, Do Not Disturb"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="@dimen/_15sdp"-->
+                    <!--android:text="Volume, vibration, Do Not Disturb"-->
 
 
-                        <!--/>-->
+                    <!--/>-->
 
 
                 </LinearLayout>
@@ -676,9 +683,6 @@
 
 
             </LinearLayout>
-
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

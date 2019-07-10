@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import butterknife.BindView;
@@ -19,8 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
+import com.google.android.material.button.MaterialButton;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -78,8 +81,12 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_default_launcher, container, false);
+        CardView card = view.findViewById(R.id.default_card);
+        card.setBackgroundResource(R.drawable.black_circle);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_default_launcher, container, false);
+        return view;
     }
 
 

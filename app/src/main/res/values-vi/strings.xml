@@ -352,4 +352,18 @@
     <string name="change_language_dialog_message">Tiến hành thay đổi ngôn ngữ?</string>
 
 
+
+    <string name="theme">Chủ đề</string>
+    <string name="light_theme">Chủ đề ánh sáng</string>
+    <string name="dark_theme">Chủ đề tối</string>
+    <string name="link_device_message">Nhấn nút bên dưới để liên kết thiết bị của bạn</string>
+    <string name="link_device_activation_message">Vui lòng thêm mã kích hoạt được cung cấp bởi
+ đại lý và nhấn nút \"SUBMIT\" để liên kết
+ thiết bị của bạn"""</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
+
+
+
+
 </resources>

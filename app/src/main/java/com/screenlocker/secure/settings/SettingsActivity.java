@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -48,6 +49,7 @@ import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
@@ -57,6 +59,7 @@ import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -139,7 +142,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     TextView tvDataCunsumption;
     @BindView(R.id.dividerDataCunsumption)
     View dividerDataCunsumption;
-
 
     private ConstraintLayout constraintLayout;
 
@@ -259,6 +261,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             dividerDataCunsumption.setVisibility(View.GONE);
         }
 
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
+                Intent intent = new Intent(this, LockScreenService.class);
+
+                ActivityCompat.startForegroundService(this, intent);
+            }
+        }
 
     }
 
@@ -322,6 +331,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvTheme).setOnClickListener(this);
         tvDataUSage.setOnClickListener(this);
         tvDataCunsumption.setOnClickListener(this);
+
     }
 
 
@@ -915,6 +925,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case "zh":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_chinese_flag);
+                    break;
+                case "es":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
                     break;
                 default:
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);

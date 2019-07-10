@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -33,12 +32,12 @@ import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
-import com.secureSetting.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +46,7 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
@@ -73,8 +73,8 @@ import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
-    private AppInstallReceiver appInstallReceiver;
 
+    private AppInstallReceiver appInstallReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
@@ -89,22 +89,6 @@ public class LockScreenService extends Service {
         }
     }
 
-
-    private void updateDb(Activity context) {
-
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
-//
-//        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-//                .observe(context, workInfo -> {
-//                    // Do something with the status
-//                    if (workInfo != null && workInfo.getState().isFinished()) {
-//
-//                    }
-//                });
-    }
 
     @Override
     public void onCreate() {
@@ -142,6 +126,7 @@ public class LockScreenService extends Service {
         }
 
         scheduleUpdateJob(this);
+
 
 
         appExecutor = AppExecutor.getInstance();
@@ -207,7 +192,7 @@ public class LockScreenService extends Service {
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);
-
+            unregisterReceiver(appInstallReceiver);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -315,6 +300,9 @@ public class LockScreenService extends Service {
 
 
     private void startLockScreen() {
+
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+
 
         try {
             final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
