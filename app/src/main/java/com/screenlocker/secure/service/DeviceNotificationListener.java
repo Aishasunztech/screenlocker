@@ -32,12 +32,14 @@ public class DeviceNotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
         Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
+        StatusBarNotification[] notifications = getActiveNotifications();
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
         Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
+        StatusBarNotification[] notifications = getActiveNotifications();
         
     }
 

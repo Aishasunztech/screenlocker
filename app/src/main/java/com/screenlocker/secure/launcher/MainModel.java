@@ -95,10 +95,9 @@ public class MainModel implements MainContract.MainMvpModel {
      * @param adapter adapter instance to populate the  list of apps we get from the package manager
      */
     @Override
-    public void addDataToList(PackageManager pm, String message, RAdapter adapter) {
+    public void addDataToList(List<AppInfo> allDbApps,  String message, RAdapter adapter) {
 
 
-        List<AppInfo> allDbApps = MyApplication.getAppDatabase(context).getDao().getApps();
 
 
         if (message != null && !message.equals("")) {
@@ -130,8 +129,7 @@ public class MainModel implements MainContract.MainMvpModel {
                 }
             }
         }
-
-        AppExecutor.getInstance().getMainThread().execute(() -> ((MainActivity) context).removeOverlay());
+         ((MainActivity) context).removeOverlay();
     }
 
 }

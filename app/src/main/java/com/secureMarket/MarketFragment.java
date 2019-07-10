@@ -11,8 +11,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
@@ -406,38 +410,49 @@ public class MarketFragment extends Fragment implements
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onInstallClick(List app) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_MOBILE) {
-            if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 0) {
-                AlertDialog dialog = new AlertDialog.Builder(activity)
-                        .setTitle("Mobile Data")
-                        .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
-                        .setPositiveButton("Allow", (dialog1, which) -> {
-                            //
-                            downloadAndInstallApp(app);
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                        .show();
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Network n = cm.getActiveNetwork();
 
-            }
-        }else if (connectivityManager.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI){
-            if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 0) {
-                AlertDialog dialog = new AlertDialog.Builder(activity)
-                        .setTitle("WiFi")
-                        .setMessage("Please allow Secure Market to use WiFi mobile data for downloading Application.")
-                        .setPositiveButton("Allow", (dialog1, which) -> {
-                            //
-                            downloadAndInstallApp(app);
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                        .show();
+        if (n != null) {
+            final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
 
-            }
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("Mobile Data")
+                            .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                }else {
+                    downloadAndInstallApp(app);
+                }
+            }else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("WiFi")
+                            .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                }else {
+                    downloadAndInstallApp(app);
+                }
+            }else
+                downloadAndInstallApp(app);
         }
 
-        downloadAndInstallApp(app);
 
     }
 

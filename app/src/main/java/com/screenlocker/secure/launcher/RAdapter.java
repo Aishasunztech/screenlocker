@@ -37,6 +37,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
         final ImageView img;
+        final View badge;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -44,8 +45,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             //Finds the views from our row.xml
             textView = itemView.findViewById(R.id.text);
             img = itemView.findViewById(R.id.img);
-
+            badge = itemView.findViewById(R.id.badge);
             img.setOnClickListener(this);
+
         }
 
 

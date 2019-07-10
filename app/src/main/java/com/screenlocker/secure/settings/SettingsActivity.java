@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
@@ -435,9 +437,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_MOBILE) {
+        Network n = manager.getActiveNetwork();
+        NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+        if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
             if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1){
                 new AlertDialog.Builder(this)
                         .setTitle("Warning!")
