@@ -221,7 +221,7 @@ public class utils {
                             int finalI = i;
                             AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
                                     ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
-                            app.setUniqueName(app.getPackageName() + app.getLabel());
+                            app.setUniqueName(app.getPackageName());
                             app.setExtension(false);
                             app.setDefaultApp(false);
                             app.setEncrypted(false);
@@ -830,15 +830,16 @@ public class utils {
         JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler1.cancel(JOB_ID);
     }
-    public static   void scheduleUpdateJob(Context context){
+
+    public static void scheduleUpdateJob(Context context) {
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
         JobInfo jobInfo;
-        if (PrefUtils.getIntegerPref(context,UPDATESIM)!= 1 ){
+        if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
             jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPeriodic(ONE_DAY_INTERVAL)
                     .build();
-        }else{
+        } else {
             jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                     .setPeriodic(ONE_DAY_INTERVAL)

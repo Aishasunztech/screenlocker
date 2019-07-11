@@ -758,17 +758,17 @@ public class MarketFragment extends Fragment implements
 
         private void showInstallDialog(File file, String packageName, Context context) {
 
-            Signature[] releaseSig = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES).signatures;
+//            Signature[] releaseSig = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES).signatures;
 
-            String sha1 = "";
+//            String sha1 = "";
+//
+//            try {
+//                sha1 = getSHA1(releaseSig[0].toByteArray());
+//            } catch (NoSuchAlgorithmException e) {
+//                Timber.e(e);
+//            }
 
-            try {
-                sha1 = getSHA1(releaseSig[0].toByteArray());
-            } catch (NoSuchAlgorithmException e) {
-                Timber.e(e);
-            }
-
-            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+//            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
                 Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 try {
                     PackageManager pm = contextWeakReference.get().getPackageManager();
@@ -817,9 +817,10 @@ public class MarketFragment extends Fragment implements
                             .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
                     contextWeakReference.get().startActivity(intent);
                 }
-            } else {
-                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
-            }
+//            }
+//            else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
 
 
 //
