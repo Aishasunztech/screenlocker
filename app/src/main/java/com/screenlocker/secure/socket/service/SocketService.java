@@ -302,6 +302,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         } else if (socketState == 2) {
             Timber.d("Socket is connected");
+
             getSyncStatus();
             getPolicy();
             getDeviceStatus();
@@ -311,6 +312,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
             writeImei();
             imeiHistory();
             forceUpdateCheck();
+
+
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
                     != null) {
@@ -335,7 +338,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().off(GET_PULLED_APPS + device_id);
                 socketManager.getSocket().off(GET_POLICY + device_id);
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
-                stopSelf();
             }
 
 
@@ -670,24 +672,21 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void sendAppsWithoutIcons() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+        new Thread(() -> {
+            try {
 
-                    if (socketManager.getSocket().connected()) {
+                if (socketManager.getSocket().connected()) {
 
-                        socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(SocketService.this).getDao().getAppsWithoutIcons()));
-                        PrefUtils.saveBooleanPref(SocketService.this, APPS_SETTING_CHANGE, false);
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(SocketService.this).getDao().getAppsWithoutIcons()));
+                    PrefUtils.saveBooleanPref(SocketService.this, APPS_SETTING_CHANGE, false);
 
-                        Timber.d("Apps sent");
-                    } else {
-                        Timber.d("Socket not connected");
-                    }
-
-                } catch (Exception e) {
-                    Timber.e("error: %S", e.getMessage());
+                    Timber.d("Apps sent");
+                } else {
+                    Timber.d("Socket not connected");
                 }
+
+            } catch (Exception e) {
+                Timber.e("error: %S", e.getMessage());
             }
         }).start();
     }

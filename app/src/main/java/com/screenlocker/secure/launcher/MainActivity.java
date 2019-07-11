@@ -1,6 +1,7 @@
 package com.screenlocker.secure.launcher;
 
 import android.app.ActivityManager;
+import android.app.DownloadManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
@@ -95,8 +96,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private ScreenOffReceiver screenOffReceiver;
 
 
-
-
     public MainActivity() {
     }
 
@@ -108,8 +107,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
@@ -131,7 +130,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-
 
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
@@ -392,7 +390,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
             unregisterReceiver(mShutDownReceiver);
             unregisterReceiver(screenOffReceiver);
-
         } catch (Exception ignored) {
             //
         }

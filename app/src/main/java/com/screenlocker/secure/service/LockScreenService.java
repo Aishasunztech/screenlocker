@@ -10,7 +10,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
@@ -39,6 +41,8 @@ import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +74,6 @@ public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
 
-    private AppInstallReceiver appInstallReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
@@ -86,26 +89,55 @@ public class LockScreenService extends Service {
     }
 
 
+    public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
+
+        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
+                packageName, PackageManager.GET_SIGNATURES);
+        //note sample just checks the first signature
+        for (Signature signature : packageInfo.signatures) {
+            // SHA1 the signature
+            String sha1 = getSHA1(signature.toByteArray());
+            Timber.e("SHA1:" + sha1);
+            // check is matches hardcoded value
+            return APP_SIGNATURE.equals(sha1);
+        }
+
+        return false;
+    }
+
+    public static boolean validateAppSignatureFile(String sha1) {
+
+        return APP_SIGNATURE.equals(sha1);
+
+    }
+
+
+    //computed the sha1 hash of the signature
+    public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA1");
+        digest.update(sig);
+        byte[] hashtext = digest.digest();
+        return bytesToHex(hashtext);
+    }
+
+    //util method to convert byte array to hex string
+    public static String bytesToHex(byte[] bytes) {
+        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
+                '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for (int j = 0; j < bytes.length; j++) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
+
     @Override
     public void onCreate() {
-
-
-        PackageManager packageManager = getPackageManager();
-
-
-//        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
-
-
-        IntentFilter intentFilter = new IntentFilter();
-
-        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
-
-        intentFilter.addDataScheme("package");
-
-        registerReceiver(appInstallReceiver, intentFilter);
 
 //        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
 //
@@ -128,7 +160,6 @@ public class LockScreenService extends Service {
 ////            }, PackageManager.DELETE_SYSTEM_APP, 13);
 //
 //        }
-
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -235,7 +266,6 @@ public class LockScreenService extends Service {
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);
-            unregisterReceiver(appInstallReceiver);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
