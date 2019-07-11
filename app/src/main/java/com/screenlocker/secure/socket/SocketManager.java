@@ -83,7 +83,7 @@ public class SocketManager {
                 opts.reconnectionDelay = 10 * 60 * 60 * 1000L;
                 opts.forceNew = true;
                 opts.reconnection = true;
-                opts.reconnectionAttempts = 100;
+                opts.reconnectionAttempts = 1000;
                 opts.secure = true;
                 opts.query = "device_id=" + device_id + "&token=" + token;
 

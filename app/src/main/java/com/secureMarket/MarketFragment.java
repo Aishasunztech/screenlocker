@@ -62,6 +62,8 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -138,10 +140,10 @@ public class MarketFragment extends Fragment implements
             String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
             if (dealerId == null || dealerId.equals("")) {
-               // getAdminApps();
+                // getAdminApps();
                 getServerApps(null);
             } else {
-              //  getAllApps(dealerId);
+                //  getAllApps(dealerId);
                 getServerApps(dealerId);
             }
         }
@@ -211,18 +213,18 @@ public class MarketFragment extends Fragment implements
         String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
-         //   getAdminApps();
+            //   getAdminApps();
             getServerApps(null);
         } else {
             getServerApps(dealerId);
-           // getAllApps(dealerId);
+            // getAllApps(dealerId);
         }
 
 
     }
 
 
-    private void getServerApps(String dealerId){
+    private void getServerApps(String dealerId) {
 
         if (MyApplication.oneCaller == null) {
             if (asyncCalls != null) {
@@ -238,9 +240,9 @@ public class MarketFragment extends Fragment implements
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                    if(dealerId==null){
+                    if (dealerId == null) {
                         getAdminApps();
-                    }else{
+                    } else {
                         getAllApps(dealerId);
                     }
                 }
@@ -248,15 +250,15 @@ public class MarketFragment extends Fragment implements
 
         } else {
 
-            if(dealerId==null){
+            if (dealerId == null) {
                 getAdminApps();
-            }else{
+            } else {
                 getAllApps(dealerId);
             }
         }
     }
 
-private AsyncCalls asyncCalls;
+    private AsyncCalls asyncCalls;
 
     private void getAllApps(String dealerId) {
 
@@ -436,10 +438,10 @@ private AsyncCalls asyncCalls;
                             .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                             .show();
 
-                }else {
+                } else {
                     downloadAndInstallApp(app);
                 }
-            }else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
+            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
                     new AlertDialog.Builder(activity)
                             .setTitle("WiFi")
@@ -451,10 +453,10 @@ private AsyncCalls asyncCalls;
                             .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                             .show();
 
-                }else {
+                } else {
                     downloadAndInstallApp(app);
                 }
-            }else
+            } else
                 downloadAndInstallApp(app);
         }
 
@@ -500,12 +502,17 @@ private AsyncCalls asyncCalls;
 //                intent.setData(Uri.parse("package:" + app.getPackageName()));
 //                activity.startActivity(intent);
 
+                Set<String> packages = new HashSet<>();
+                packages.add(MyApplication.getAppContext().getPackageName());
+                packages.add("com.vortexlocker.app");
+                packages.add("com.rim.mobilefusion.client");
+                packages.add("com.secure.systemcontrol");
+
+
                 try {
                     PackageManager pm = activity.getPackageManager();
-                    pm.getPackageInfo("com.secure.systemcontrol", 0);
+                    pm.getPackageInfo("com.secure.systemcontrol12", 0);
                     if (activity != null) {
-
-
                         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
                         alertDialog.setTitle("Uninstall");
                         alertDialog.setIcon(android.R.drawable.ic_delete
@@ -524,9 +531,15 @@ private AsyncCalls asyncCalls;
                             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                             intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
 
-                            if (activity != null) {
-                                activity.sendBroadcast(intent);
+                            if (!packages.contains(app.getPackageName())) {
+                                if (activity != null) {
+                                    activity.sendBroadcast(intent);
+                                }
+                            } else {
+                                Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
                             }
+
+
                         });
 
                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
@@ -537,11 +550,17 @@ private AsyncCalls asyncCalls;
 
                 } catch (PackageManager.NameNotFoundException e) {
 
-                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+
+                    if (!packages.contains(app.getPackageName())) {
+                        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+                        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 //            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                    intent.setData(Uri.parse("package:" + app.getPackageName()));
-                    activity.startActivity(intent);
+                        intent.setData(Uri.parse("package:" + app.getPackageName()));
+                        activity.startActivity(intent);
+                    } else {
+                        Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
+                    }
+
 
                 }
             }
