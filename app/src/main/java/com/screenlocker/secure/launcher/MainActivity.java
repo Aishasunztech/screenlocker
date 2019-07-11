@@ -111,9 +111,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getAllApps().observe(this, appInfos -> {
             allDbApps = appInfos;
+            int size= adapter.appsList.size();
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();
-            clearRecentApp();
+            adapter.notifyItemRangeRemoved(0,--size);
             final String message = PrefUtils.getStringPref(this,CURRENT_KEY);
             setBackground(message);
             mainPresenter.addDataToList(allDbApps, message, adapter);
@@ -288,40 +289,33 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
+                        //Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
+                        background.setImageResource(R.raw.audiblack);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        //Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
-
-                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.texture);
+                        //Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
 
                 } else {
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-
-                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.tower);
+                        //Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 }
             }

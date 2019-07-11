@@ -39,6 +39,19 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setTitle(getResources().getString(R.string.wallpapers_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ids.add(R.raw._12);
+        ids.add(R.raw._13);
+        ids.add(R.raw._14);
+        ids.add(R.raw._15);
+        ids.add(R.raw._16);
+        ids.add(R.raw._17);
+        ids.add(R.raw._18);
+        ids.add(R.raw._19);
+        ids.add(R.raw._20);
+        ids.add(R.raw._21);
+        ids.add(R.raw._22);
+        ids.add(R.raw._23);
+        ids.add(R.raw._24);
         ids.add(R.raw.beatifulhome);
         ids.add(R.raw.bike);
         ids.add(R.raw.building);
@@ -78,7 +91,6 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.fhdanimals);
         ids.add(R.raw.groot);
         ids.add(R.raw.gun);
-        ids.add(R.raw.pikachu);
         ids.add(R.raw.red_flowrs);
         ids.add(R.raw.stadium);
 

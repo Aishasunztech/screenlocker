@@ -16,6 +16,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -96,8 +97,6 @@ public class LockScreenService extends Service {
         Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 
-
-
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -131,7 +130,10 @@ public class LockScreenService extends Service {
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         scheduleExpiryCheck(this);
-        screenOffReceiver = new ScreenOffReceiver(this::startLockScreen);
+        screenOffReceiver = new ScreenOffReceiver(() -> {
+            Log.d("nadeem", "screeen off from reciver: ");
+            startLockScreen(true);
+        });
         if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
             stopCapture();
         }
@@ -169,9 +171,9 @@ public class LockScreenService extends Service {
         }
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                if (!powerManager.isScreenOn()) {
-                    Timber.d("is screen off");
-                    appExecutor.getMainThread().execute(this::startLockScreen);
+                if (!powerManager.isInteractive()) {
+                    Log.d("nadeem", "Screen off from thread: ");
+                    appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     return;
                 }
             }
@@ -218,28 +220,30 @@ public class LockScreenService extends Service {
                 if (main_password == null) {
                     PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
-                startLockScreen();
+                startLockScreen(false);
             } else {
                 switch (action) {
                     case "suspended":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "expired":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "reboot":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "unlinked":
-                        startLockScreen();
+                        startLockScreen(true);
                         break;
                     case "unlocked":
                         removeLockScreenView();
                         simPermissionsCheck();
                         break;
                     case "locked":
-                        startLockScreen();
+                        startLockScreen(true);
                         break;
+                    case "lockedFromsim":
+                        startLockScreen(false);
                 }
             }
         }
@@ -294,32 +298,32 @@ public class LockScreenService extends Service {
     }
 
 
-    private void startLockScreen() {
+    private void startLockScreen(boolean refresh) {
+        Log.d("nadeem", "startLockScreen: ");
 
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 
-
         try {
-            final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-            refreshKeyboard();
+            setTimeRemaining(getAppContext());
+            if (refresh)
+                refreshKeyboard();
 
             if (mLayout == null) {
                 mLayout = new RelativeLayout(LockScreenService.this);
                 notificationItems.clear();
 
-                if (mNM != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
-                    }
-                }
+//                if (mNM != null) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
+//                    }
+//                }
                 if (windowManager != null) {
                     WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
                             notificationItems, LockScreenService.this);
                     windowManager.addView(mLayout, params);
                     try {
                         Intent i = new Intent(LockScreenService.this, MainActivity.class);
-//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(i);
@@ -442,7 +446,7 @@ public class LockScreenService extends Service {
 
     public void refreshKeyboard() {
 
-        setTimeRemaining(getAppContext());
+
         try {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);

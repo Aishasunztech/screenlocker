@@ -20,10 +20,10 @@ public class SimStateChangeListener extends BroadcastReceiver {
 
             String state = intent.getStringExtra("ss");
             if (state.equals("ABSENT")){
-
+                Log.d("nadeem", "onReceive: SIM absent");
                 if(PrefUtils.getBooleanPref(context, AppConstants.TOUR_STATUS)){
                     Intent lock = new Intent(context, LockScreenService.class);
-                    lock.setAction("locked");
+                    lock.setAction("lockedFromsim");
                     ActivityCompat.startForegroundService(context,lock);
                 }
 
