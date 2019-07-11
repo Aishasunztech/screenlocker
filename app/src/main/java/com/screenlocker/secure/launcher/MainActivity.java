@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation);
 
         rvApps.setLayoutAnimation(controller);
-        rvApps.getAdapter().notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         rvApps.scheduleLayoutAnimation();
     }
 

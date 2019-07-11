@@ -77,6 +77,8 @@ public class LockScreenService extends Service {
     private FrameLayout frameLayout;
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
+    private boolean isLocked = false;
+    private WindowManager.LayoutParams params;
 
 
     public class LocalBinder extends Binder {
@@ -119,7 +121,8 @@ public class LockScreenService extends Service {
         }
 
         scheduleUpdateJob(this);
-
+        mLayout = new RelativeLayout(LockScreenService.this);
+        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
 
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
@@ -307,32 +310,19 @@ public class LockScreenService extends Service {
             setTimeRemaining(getAppContext());
             if (refresh)
                 refreshKeyboard();
+            notificationItems.clear();
 
-            if (mLayout == null) {
-                mLayout = new RelativeLayout(LockScreenService.this);
-                notificationItems.clear();
-
-//                if (mNM != null) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
-//                    }
-//                }
-                if (windowManager != null) {
-                    WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
-                            notificationItems, LockScreenService.this);
-                    windowManager.addView(mLayout, params);
-                    try {
-                        Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        startActivity(i);
-                    } catch (Exception ignored) {
-
-
-                    }
-                }
+            if (!isLocked) {
+                isLocked = true;
+                windowManager.addView(mLayout, params);
+                //clear home with our app to front
+                Intent i = new Intent(LockScreenService.this, MainActivity.class);
+                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
             }
+
 
         } catch (Exception e) {
             Timber.e(e);
@@ -351,7 +341,7 @@ public class LockScreenService extends Service {
         try {
             if (mLayout != null)
                 windowManager.removeView(mLayout);
-            mLayout = null;
+            isLocked = false;
         } catch (Exception e) {
             Timber.d(e);
         }
