@@ -10,14 +10,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -34,15 +33,12 @@ import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +46,7 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -74,11 +71,14 @@ public class LockScreenService extends Service {
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
 
+    private AppInstallReceiver appInstallReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
+    private boolean isLocked = false;
+    private WindowManager.LayoutParams params;
 
 
     public class LocalBinder extends Binder {
@@ -89,119 +89,40 @@ public class LockScreenService extends Service {
     }
 
 
-    public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
-
-        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
-                packageName, PackageManager.GET_SIGNATURES);
-        //note sample just checks the first signature
-        for (Signature signature : packageInfo.signatures) {
-            // SHA1 the signature
-            String sha1 = getSHA1(signature.toByteArray());
-            Timber.e("SHA1:" + sha1);
-            // check is matches hardcoded value
-            return APP_SIGNATURE.equals(sha1);
-        }
-
-        return false;
-    }
-
-    public static boolean validateAppSignatureFile(String sha1) {
-
-        return APP_SIGNATURE.equals(sha1);
-
-    }
-
-
-    //computed the sha1 hash of the signature
-    public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA1");
-        digest.update(sig);
-        byte[] hashtext = digest.digest();
-        return bytesToHex(hashtext);
-    }
-
-    //util method to convert byte array to hex string
-    public static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for (int j = 0; j < bytes.length; j++) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
-    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
-
     @Override
     public void onCreate() {
 
-//        if (UtilityFunctions.isPackageInstalled("com.android.packageinstaller", packageManager)) {
-//
-//            String[] packages = {"com.android.packageinstaller"};
-//
-////            KeySet keySet = packageManager.getSigningKeySet(packages[0]);
-//
-//
-////            packageManager.deletePackageAsUser(packages[0], new IPackageDeleteObserver() {
-////                @Override
-////                public void packageDeleted(String s, int i) {
-////
-////                }
-////
-////                @Override
-////                public IBinder asBinder() {
-////                    return null;
-////                }
-////
-////            }, PackageManager.DELETE_SYSTEM_APP, 13);
-//
-//        }
+
+        PackageManager packageManager = getPackageManager();
+
+
+        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
+
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-        if (!utils.isJobServiceOn(this, 1345)) {
-            ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
+        ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
 
-            JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-            JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-            int resultCode1 = scheduler1.schedule(jobInfo1);
-            if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-                Timber.d("Job Scheduled");
-            } else {
-                Timber.d("Job Scheduled Failed");
-            }
+        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(ONE_DAY_INTERVAL)
+                .build();
 
+        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode1 = scheduler1.schedule(jobInfo1);
+        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Job Scheduled");
+        } else {
+            Timber.d("Job Scheduled Failed");
         }
 
-
-        if (!utils.isJobServiceOn(this, 1234)) {
-            ComponentName componentName = new ComponentName(this, CheckUpdateService.class);
-
-            JobInfo jobInfo = new JobInfo.Builder(1234, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-
-            JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
-            int resultCode = scheduler.schedule(jobInfo);
-            if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                Timber.d("Job Scheduled");
-            } else {
-                Timber.d("Job Scheduled Failed");
-            }
-
-        }
+        scheduleUpdateJob(this);
+        mLayout = new RelativeLayout(LockScreenService.this);
+        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
 
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
@@ -212,8 +133,13 @@ public class LockScreenService extends Service {
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         scheduleExpiryCheck(this);
-        screenOffReceiver = new ScreenOffReceiver(this::startLockScreen);
-
+        screenOffReceiver = new ScreenOffReceiver(() -> {
+            Log.d("nadeem", "screeen off from reciver: ");
+            startLockScreen(true);
+        });
+        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
+            stopCapture();
+        }
 
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -248,9 +174,9 @@ public class LockScreenService extends Service {
         }
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                if (!powerManager.isScreenOn()) {
-                    Timber.d("is screen off");
-                    appExecutor.getMainThread().execute(this::startLockScreen);
+                if (!powerManager.isInteractive()) {
+                    Log.d("nadeem", "Screen off from thread: ");
+                    appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     return;
                 }
             }
@@ -266,6 +192,7 @@ public class LockScreenService extends Service {
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(broadcastReceiver);
             PrefUtils.saveToPref(this, false);
+            unregisterReceiver(appInstallReceiver);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -296,28 +223,30 @@ public class LockScreenService extends Service {
                 if (main_password == null) {
                     PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
-                startLockScreen();
+                startLockScreen(false);
             } else {
                 switch (action) {
                     case "suspended":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "expired":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "reboot":
-                        startLockScreen();
+                        startLockScreen(false);
                         break;
                     case "unlinked":
-                        startLockScreen();
+                        startLockScreen(true);
                         break;
                     case "unlocked":
                         removeLockScreenView();
                         simPermissionsCheck();
                         break;
                     case "locked":
-                        startLockScreen();
+                        startLockScreen(true);
                         break;
+                    case "lockedFromsim":
+                        startLockScreen(false);
                 }
             }
         }
@@ -372,41 +301,28 @@ public class LockScreenService extends Service {
     }
 
 
-    private void startLockScreen() {
+    private void startLockScreen(boolean refresh) {
+        Log.d("nadeem", "startLockScreen: ");
 
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 
-
         try {
-            final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            setTimeRemaining(getAppContext());
+            if (refresh)
+                refreshKeyboard();
+            notificationItems.clear();
 
-            refreshKeyboard();
-
-            if (mLayout == null) {
-                mLayout = new RelativeLayout(LockScreenService.this);
-                notificationItems.clear();
-
-                if (mNM != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        notificationItems.addAll(Utils.getNotificationItems(mNM.getActiveNotifications()));
-                    }
-                }
-                if (windowManager != null) {
-                    WindowManager.LayoutParams params = Utils.prepareLockScreenView(mLayout,
-                            notificationItems, LockScreenService.this);
-                    windowManager.addView(mLayout, params);
-                    try {
-                        Intent i = new Intent(LockScreenService.this, MainActivity.class);
-//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        startActivity(i);
-                    } catch (Exception ignored) {
-
-
-                    }
-                }
+            if (!isLocked) {
+                isLocked = true;
+                windowManager.addView(mLayout, params);
+                //clear home with our app to front
+                Intent i = new Intent(LockScreenService.this, MainActivity.class);
+                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
             }
+
 
         } catch (Exception e) {
             Timber.e(e);
@@ -425,7 +341,7 @@ public class LockScreenService extends Service {
         try {
             if (mLayout != null)
                 windowManager.removeView(mLayout);
-            mLayout = null;
+            isLocked = false;
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -520,7 +436,7 @@ public class LockScreenService extends Service {
 
     public void refreshKeyboard() {
 
-        setTimeRemaining(getAppContext());
+
         try {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);

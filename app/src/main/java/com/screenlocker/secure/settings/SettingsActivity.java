@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
@@ -55,6 +57,7 @@ import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -92,6 +95,7 @@ import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
@@ -136,7 +140,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     TextView tvDataUSage;
     @BindView(R.id.dividerDataUSage)
     View dividerDataUSage;
-
+    @BindView(R.id.tvDataCunsumption)
+    TextView tvDataCunsumption;
+    @BindView(R.id.dividerDataCunsumption)
+    View dividerDataCunsumption;
 
     private ConstraintLayout constraintLayout;
 
@@ -200,6 +207,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+            tvDataCunsumption.setVisibility(View.GONE);
+            dividerDataCunsumption.setVisibility(View.GONE);
 
         }
 
@@ -248,6 +257,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
+            tvDataUSage.setVisibility(View.GONE);
+            dividerDataUSage.setVisibility(View.GONE);
+            tvDataCunsumption.setVisibility(View.GONE);
+            dividerDataCunsumption.setVisibility(View.GONE);
         }
 
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -308,7 +321,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void setListeners() {
-
         findViewById(R.id.tvManagePasswords).setOnClickListener(this);
         findViewById(R.id.tvChooseBackground).setOnClickListener(this);
         findViewById(R.id.tvAbout).setOnClickListener(this);
@@ -320,6 +332,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvLanguage).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
         tvDataUSage.setOnClickListener(this);
+        tvDataCunsumption.setOnClickListener(this);
 
     }
 
@@ -363,6 +376,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     handleCheckForUpdate();
                     //Crashlytics.getInstance().crash(); // Force a crash
                     break;
+                case R.id.tvDataCunsumption:
+                    startActivity(new Intent(this, DataConsumptionActivity.class));
+                    break;
                 case R.id.tvlinkDevice:
 
                     ConnectivityManager cm =
@@ -385,7 +401,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvDataUSage:
                     startActivity(new Intent(SettingsActivity.this, MainActivity.class));
-                    break;
             }
         } else {
             if (!gerOverlayDialog().isShowing())
@@ -422,7 +437,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network n = manager.getActiveNetwork();
+        NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+        if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1){
+                new AlertDialog.Builder(this)
+                        .setTitle("Warning!")
+                        .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
+                        .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
+                            proccedToDownload();
+                        })
+                        .setNegativeButton(R.string.cancel,(dialog, which) -> {
+                            dialog.dismiss();
+                        }).show();
+            }
+        }
+        else{
+            proccedToDownload();
+        }
+
+    }
+
+    private void proccedToDownload() {
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setTitle(getResources().getString(R.string.update_dialog_title));
         dialog.setMessage(getResources().getString(R.string.update_dialog_message));
@@ -440,7 +479,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 dialog.dismiss();
                 Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
             }
-
     }
 
 

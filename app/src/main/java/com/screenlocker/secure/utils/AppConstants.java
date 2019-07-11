@@ -85,10 +85,9 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static final String URL_1 = "http://142.93.102.4:3000";//TL new
+//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
     //    public static final String URL_1 = "http://192.168.0.103:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
@@ -369,5 +368,11 @@ public class AppConstants {
 
     public static final String TEXT1 = "Your account with Device ID = ";
     public static final String LANGUAGE_PREF = "language_pref";
+    public static final String UPDATEWIFI  = "updatewifi";
+    public static final String UPDATESIM  = "updateSim";
+    public static final String LINKSIM  = "linkSim";
+    public static final String SECUREMARKETWIFI  = "secureMarketWifi";
+    public static final String SECUREMARKETSIM  = "secureMarketSim";
+    public static final int UPDATE_JOB  = 1234;
 
 }

@@ -61,7 +61,7 @@ public class DataManager {
     }
 
     public boolean hasPermission(Context context) {
-        boolean granted;
+        boolean granted ;
         AppOpsManager appOps = (AppOpsManager) context
                 .getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
@@ -97,12 +97,9 @@ public class DataManager {
                 String currentPackage = event.getPackageName();
                 int eventType = event.getEventType();
                 long eventTime = event.getTimeStamp();
-                Log.d("||||------>", currentPackage + " " + target + " " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date(eventTime)) + " " + eventType);
                 if (currentPackage.equals(target)) { // 本次交互开始
-                    Log.d("||||||||||>", currentPackage + " " + target + " " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date(eventTime)) + " " + eventType);
                     // 记录第一次开始时间
                     if (eventType == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                        Log.d("********", "start " + start);
                         if (start == 0) {
                             start = eventTime;
                             item.mEventTime = eventTime;
@@ -114,7 +111,6 @@ public class DataManager {
                         if (start > 0) {
                             prevEndEvent = new ClonedEvent(event);
                         }
-                        Log.d("********", "add end " + start);
                     }
                 } else {
                     // 记录最后一次结束事件
@@ -254,12 +250,7 @@ public class DataManager {
                     }
                 });
             } else {
-                Collections.sort(newList, new Comparator<AppItem>() {
-                    @Override
-                    public int compare(AppItem left, AppItem right) {
-                        return (int) (right.mMobile - left.mMobile);
-                    }
-                });
+                Collections.sort(newList, (left, right) -> (int) (right.mMobile - left.mMobile));
             }
         }
         return newList;

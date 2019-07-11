@@ -28,6 +28,8 @@ public interface MyDao {
 
     @Query("SELECT * from AppInfo")
     List<AppInfo> getApps();
+    @Query("SELECT * from AppInfo")
+    LiveData<List<AppInfo>> getAllApps();
 
     @Query("SELECT * from SubExtension ")
     List<SubExtension> getAllSubExtensions();

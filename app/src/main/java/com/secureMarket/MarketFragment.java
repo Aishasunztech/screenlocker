@@ -11,9 +11,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
@@ -70,7 +75,10 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
@@ -130,10 +138,10 @@ public class MarketFragment extends Fragment implements
             String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
             if (dealerId == null || dealerId.equals("")) {
-                // getAdminApps();
+               // getAdminApps();
                 getServerApps(null);
             } else {
-                //  getAllApps(dealerId);
+              //  getAllApps(dealerId);
                 getServerApps(dealerId);
             }
         }
@@ -203,18 +211,18 @@ public class MarketFragment extends Fragment implements
         String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
-            //   getAdminApps();
+         //   getAdminApps();
             getServerApps(null);
         } else {
             getServerApps(dealerId);
-            // getAllApps(dealerId);
+           // getAllApps(dealerId);
         }
 
 
     }
 
 
-    private void getServerApps(String dealerId) {
+    private void getServerApps(String dealerId){
 
         if (MyApplication.oneCaller == null) {
             if (asyncCalls != null) {
@@ -230,9 +238,9 @@ public class MarketFragment extends Fragment implements
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                    if (dealerId == null) {
+                    if(dealerId==null){
                         getAdminApps();
-                    } else {
+                    }else{
                         getAllApps(dealerId);
                     }
                 }
@@ -240,15 +248,15 @@ public class MarketFragment extends Fragment implements
 
         } else {
 
-            if (dealerId == null) {
+            if(dealerId==null){
                 getAdminApps();
-            } else {
+            }else{
                 getAllApps(dealerId);
             }
         }
     }
 
-    private AsyncCalls asyncCalls;
+private AsyncCalls asyncCalls;
 
     private void getAllApps(String dealerId) {
 
@@ -407,8 +415,53 @@ public class MarketFragment extends Fragment implements
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onInstallClick(List app) {
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Network n = cm.getActiveNetwork();
+
+        if (n != null) {
+            final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("Mobile Data")
+                            .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                }else {
+                    downloadAndInstallApp(app);
+                }
+            }else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("WiFi")
+                            .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                }else {
+                    downloadAndInstallApp(app);
+                }
+            }else
+                downloadAndInstallApp(app);
+        }
+
+
+    }
+
+    private void downloadAndInstallApp(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(getResources().getString(R.string.download_title));
         alertDialog.setIcon(android.R.drawable.stat_sys_download);
@@ -430,7 +483,6 @@ public class MarketFragment extends Fragment implements
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
-
     }
 
     @Override

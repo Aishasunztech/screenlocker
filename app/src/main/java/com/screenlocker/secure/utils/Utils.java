@@ -256,6 +256,7 @@ public class Utils {
         TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
         supportButton.setOnClickListener(v -> {
             chatLogin(context);
+            keyboardView.setPassword(null);
         });
         long time_remaining = getTimeRemaining(context);
 
@@ -281,10 +282,12 @@ public class Utils {
             if (enteredPin.length() != 0) {
                 if (getUserType(enteredPin, context).equals("guest") && device_status1 == null) {
                     loginAsGuest(context);
+                    keyboardView.setPassword(null);
                 }
                 //if input is for eyncrypted
                 else if (getUserType(enteredPin, context).equals("encrypted") && device_status1 == null) {
                     loginAsEncrypted(context);
+                    keyboardView.setPassword(null);
                     PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
                     boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
                     if (lock_screen) {

@@ -51,15 +51,7 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/pkg_name"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:background="@drawable/bg_detail_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 
     <ProgressBar
         android:id="@+id/progressBar"
