@@ -326,6 +326,10 @@
     <string name="number_of_attempts_remaining">Bạn có %1$s lần thử trước khi thiết bị thiết lập lại và tất cả dữ liệu bị mất!</string>
     <string name="account_device_id_suspended">"Tài khoản của bạn có ID thiết bị = %1$s Không có
  bị tạm ngưng. Vui lòng liên hệ với bộ phận hỗ trợ"</string>
+    <string name="account_device_id_expired">"Tài khoản của bạn có ID thiết bị = %1$s Không có
+ bị tạm ngưng. Vui lòng liên hệ với bộ phận hỗ trợ"</string>
+
+
     <string name="not_linked_yet">chưa được liên kết</string>
     <string name="link_status">Trạng thái Liên kết</string>
     <string name="next">Device Linked</string>

@@ -323,7 +323,8 @@
     <string name="enter_valid_ICCID">Please Enter a valid ICCID</string>
     <string name="enter_a_valid_name">Please Enter a valid Name</string>
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
-    <string name="account_device_id_suspended">Your account with Device ID = %1$s is suspended.Please contact support</string>
+    <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
+    <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>

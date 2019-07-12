@@ -319,6 +319,7 @@
     <string name="enter_a_valid_name">Por favor, introduzca un nombre válido</string>
     <string name="number_of_attempts_remaining">¡Tiene %1$s intentos antes de que el dispositivo se reinicie y se pierdan todos los datos!</string>
     <string name="account_device_id_suspended">Su cuenta con ID de dispositivo = %1$s está suspendida. Por favor contacte con soporte</string>
+    <string name="account_device_id_expired">Su cuenta con ID de dispositivo = %1$s está finalizada. Por favor contacte con soporte</string>
     <string name="not_linked_yet">no está enlazado todavía</string>
     <string name="link_status">Estado del enlace</string>
     <string name="next">Device Linked</string>
