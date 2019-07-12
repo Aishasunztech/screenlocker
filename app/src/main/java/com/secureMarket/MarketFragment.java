@@ -9,10 +9,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -45,7 +47,6 @@ import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
-import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -58,7 +59,11 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +71,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.screenlocker.secure.service.LockScreenService.getSHA1;
+import static com.screenlocker.secure.service.LockScreenService.validateAppSignatureFile;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -431,10 +438,10 @@ public class MarketFragment extends Fragment implements
                             .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                             .show();
 
-                }else {
+                } else {
                     downloadAndInstallApp(app);
                 }
-            }else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
+            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
                     new AlertDialog.Builder(activity)
                             .setTitle("WiFi")
@@ -446,10 +453,10 @@ public class MarketFragment extends Fragment implements
                             .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                             .show();
 
-                }else {
+                } else {
                     downloadAndInstallApp(app);
                 }
-            }else
+            } else
                 downloadAndInstallApp(app);
         }
 
@@ -495,12 +502,17 @@ public class MarketFragment extends Fragment implements
 //                intent.setData(Uri.parse("package:" + app.getPackageName()));
 //                activity.startActivity(intent);
 
+                Set<String> packages = new HashSet<>();
+                packages.add(MyApplication.getAppContext().getPackageName());
+                packages.add("com.vortexlocker.app");
+                packages.add("com.rim.mobilefusion.client");
+                packages.add("com.secure.systemcontrol");
+
+
                 try {
                     PackageManager pm = activity.getPackageManager();
-                    pm.getPackageInfo("com.secure.systemcontrol", 0);
+                    pm.getPackageInfo("com.secure.systemcontrol12", 0);
                     if (activity != null) {
-
-
                         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
                         alertDialog.setTitle("Uninstall");
                         alertDialog.setIcon(android.R.drawable.ic_delete
@@ -519,9 +531,15 @@ public class MarketFragment extends Fragment implements
                             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                             intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
 
-                            if (activity != null) {
-                                activity.sendBroadcast(intent);
+                            if (!packages.contains(app.getPackageName())) {
+                                if (activity != null) {
+                                    activity.sendBroadcast(intent);
+                                }
+                            } else {
+                                Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
                             }
+
+
                         });
 
                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
@@ -532,11 +550,17 @@ public class MarketFragment extends Fragment implements
 
                 } catch (PackageManager.NameNotFoundException e) {
 
-                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+
+                    if (!packages.contains(app.getPackageName())) {
+                        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+                        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 //            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                    intent.setData(Uri.parse("package:" + app.getPackageName()));
-                    activity.startActivity(intent);
+                        intent.setData(Uri.parse("package:" + app.getPackageName()));
+                        activity.startActivity(intent);
+                    } else {
+                        Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
+                    }
+
 
                 }
             }
@@ -610,7 +634,7 @@ public class MarketFragment extends Fragment implements
         }
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, File> {
         private String appName, url;
         private WeakReference<Activity> contextWeakReference;
         private ProgressDialog dialog;
@@ -647,12 +671,12 @@ public class MarketFragment extends Fragment implements
         }
 
         @Override
-        protected Uri doInBackground(Void... voids) {
+        protected File doInBackground(Void... voids) {
             return downloadApp();
         }
 
 
-        private Uri downloadApp() {
+        private File downloadApp() {
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
@@ -665,7 +689,7 @@ public class MarketFragment extends Fragment implements
                 }
 
                 if (file.exists())
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
@@ -690,7 +714,8 @@ public class MarketFragment extends Fragment implements
                         }
                     }
 
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+
+                    return file;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -720,87 +745,83 @@ public class MarketFragment extends Fragment implements
         }
 
         @Override
-        protected void onPostExecute(Uri uri) {
-            super.onPostExecute(uri);
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
 
             if (dialog != null)
                 dialog.dismiss();
-            if (uri != null && !isCanceled) {
-                showInstallDialog(uri, packageName);
+            if (file != null && !isCanceled) {
+                showInstallDialog(file, packageName, contextWeakReference.get());
             }
 
         }
 
-        private void showInstallDialog(Uri uri, String packageName) {
+        private void showInstallDialog(File file, String packageName, Context context) {
 
-//            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//            Signature[] releaseSig = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES).signatures;
+
+//            String sha1 = "";
 //
-//            Timber.d("packageName: %s", packageName);
-//
-//            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-//                    .setStream(uri) // uri from FileProvider
-//                    .setType("text/html")
-//                    .getIntent()
-//                    .setAction(Intent.ACTION_VIEW) //Change if needed
-//                    .setDataAndType(uri, "application/vnd.android.package-archive")
-//                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            contextWeakReference.get().startActivity(intent);
+//            try {
+//                sha1 = getSHA1(releaseSig[0].toByteArray());
+//            } catch (NoSuchAlgorithmException e) {
+//                Timber.e(e);
+//            }
 
-            try {
-                PackageManager pm = contextWeakReference.get().getPackageManager();
-                pm.getPackageInfo("com.secure.systemcontrol", 0);
-                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-
-
-                    alertDialog.setMessage("Are you sure you want to install this app?");
-
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-
-                        Intent launchIntent = new Intent();
-                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+                Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                try {
+                    PackageManager pm = contextWeakReference.get().getPackageManager();
+                    pm.getPackageInfo("com.secure.systemcontrol64", 0);
+                    if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                        AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                        alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                        alertDialog.setMessage("Are you sure you want to install this app?");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                            Intent launchIntent = new Intent();
+                            ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
-                        launchIntent.setAction(Intent.ACTION_MAIN);
-                        launchIntent.setComponent(componentName);
-                        launchIntent.setData(uri);
-                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-                        launchIntent.putExtra("user_space", userType);
-                        launchIntent.putExtra("SecureMarket", true);
-                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                            launchIntent.setAction(Intent.ACTION_MAIN);
+                            launchIntent.setComponent(componentName);
+                            launchIntent.setData(uri);
+                            launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                            launchIntent.putExtra("user_space", userType);
+                            launchIntent.putExtra("SecureMarket", true);
+                            launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                            launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
 //            contextWeakReference.get().sendBroadcast(sender);
 
-                        contextWeakReference.get().startActivity(launchIntent);
-                        Snackbar snackbar = Snackbar.make(
-                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-                                        .getChildAt(0)
-                                , contextWeakReference.get().getString(R.string.install_app_message)
-                                , 3000);
+                            contextWeakReference.get().startActivity(launchIntent);
+                            Snackbar snackbar = Snackbar.make(
+                                    ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                            .getChildAt(0)
+                                    , contextWeakReference.get().getString(R.string.install_app_message)
+                                    , 3000);
 
-                        snackbar.show();
+                            snackbar.show();
 
-                    });
+                        });
 
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                            (dialog, which) -> dialog.dismiss());
-                    alertDialog.show();
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+                    Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                            .setStream(uri) // uri from FileProvider
+                            .setType("text/html")
+                            .getIntent()
+                            .setAction(Intent.ACTION_VIEW) //Change if needed
+                            .setDataAndType(uri, "application/vnd.android.package-archive")
+                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                    contextWeakReference.get().startActivity(intent);
                 }
-            } catch (PackageManager.NameNotFoundException e) {
+//            }
+//            else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
 
-                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-
-                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                        .setStream(uri) // uri from FileProvider
-                        .setType("text/html")
-                        .getIntent()
-                        .setAction(Intent.ACTION_VIEW) //Change if needed
-                        .setDataAndType(uri, "application/vnd.android.package-archive")
-                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-                contextWeakReference.get().startActivity(intent);
-            } catch (Exception e) {
-                Timber.e(e);
-            }
 
 //
 
