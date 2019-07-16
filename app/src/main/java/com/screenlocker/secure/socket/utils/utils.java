@@ -28,6 +28,7 @@ import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.model.InstalledAndRemainingApps;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -585,14 +586,14 @@ public class utils {
 
 
     /*
-     *
      *  This method checks either app is already installed or not and which app has to update or downgrade and returns list of custom object (InstallModel)
-     *
      * */
-    public static List<InstallModel> checkInstalledApps(List<InstallModel> apps, Context context) {
+    public static InstalledAndRemainingApps checkInstalledApps(List<InstallModel> apps, Context context) {
 
         // list for remaining apps
         List<InstallModel> remainingApps = new ArrayList<>();
+
+        List<InstallModel> installedApps = new ArrayList<>();
 
         PackageManager pm = context.getPackageManager();
 
@@ -619,6 +620,8 @@ public class utils {
                         app.setUpdate(true);
                         remainingApps.add(app);
                     }
+                } else {
+                    installedApps.add(app);
                 }
 
             } catch (PackageManager.NameNotFoundException e) {
@@ -627,7 +630,8 @@ public class utils {
             }
         }
 
-        return remainingApps;
+
+        return new InstalledAndRemainingApps(remainingApps, installedApps);
     }
 
 

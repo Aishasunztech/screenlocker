@@ -3,6 +3,9 @@ import groovy.xml.XmlUtil
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
+        }
     }
 
     dependencies {
@@ -165,6 +168,10 @@ dependencies {
     implementation project(':Stepper')
     implementation project(':chatkit')
     implementation 'androidx.palette:palette:1.0.0'
+
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
 
 }
 repositories {

@@ -184,6 +184,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
 
+//        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
+
 
         init();
         constraintLayout = findViewById(R.id.rootLayout);
@@ -437,25 +439,23 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network n = manager.getActiveNetwork();
         NetworkCapabilities nc = manager.getNetworkCapabilities(n);
         if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1){
+            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
                 new AlertDialog.Builder(this)
                         .setTitle("Warning!")
                         .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
                         .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
                             proccedToDownload();
                         })
-                        .setNegativeButton(R.string.cancel,(dialog, which) -> {
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
                             dialog.dismiss();
                         }).show();
             }
-        }
-        else{
+        } else {
             proccedToDownload();
         }
 

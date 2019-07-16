@@ -11,10 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -61,7 +61,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,7 +79,6 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
@@ -463,6 +461,7 @@ public class MarketFragment extends Fragment implements
 
     }
 
+
     private void downloadAndInstallApp(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(getResources().getString(R.string.download_title));
@@ -685,8 +684,8 @@ public class MarketFragment extends Fragment implements
                     apksPath.mkdir();
                 }
 
-                if (file.exists())
-                    return file;
+//                if (file.exists())
+//                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);

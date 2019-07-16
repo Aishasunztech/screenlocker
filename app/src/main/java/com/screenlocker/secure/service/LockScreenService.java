@@ -40,10 +40,21 @@ import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -234,8 +245,8 @@ public class LockScreenService extends Service {
                 if (!powerManager.isInteractive()) {
                     appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     return;
-                }else {
-                    if( myKM.inKeyguardRestrictedInputMode()) {
+                } else {
+                    if (myKM.inKeyguardRestrictedInputMode()) {
                         //it is locked
                         appExecutor.getMainThread().execute(() -> startLockScreen(true));
                         return;
@@ -545,6 +556,98 @@ public class LockScreenService extends Service {
             //windowManager.removeViewImmediate(mLayout);
         }
     };
+
+    private MqttAndroidClient client;
+
+
+    public void connect() {
+
+        String clientId = MqttClient.generateClientId();
+        client =
+                new MqttAndroidClient(this.getApplicationContext(), "tcp://192.168.137.108:1883",
+                        clientId);
+
+        try {
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setUserName("Nadeem");
+            options.setPassword("dexcityproduction".toCharArray());
+
+            IMqttToken token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // We are connected
+                    Timber.d("onSuccess");
+                    subcribed();
+                    client.setCallback(new MqttCallback() {
+                        @Override
+                        public void connectionLost(Throwable cause) {
+
+                        }
+
+                        @Override
+                        public void messageArrived(String topic, MqttMessage message) {
+                            Timber.d(message.toString());
+                        }
+
+                        @Override
+                        public void deliveryComplete(IMqttDeliveryToken token) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    // Something went wrong e.g. connection timeout or firewall problems
+                    Timber.d("onFailure");
+
+                }
+            });
+        } catch (MqttException e) {
+            Timber.e(e);
+
+        }
+    }
+
+//    public void publish() {
+//        String topic = "foo";
+//        String payload = editText.getText().toString();
+//        byte[] encodedPayload = new byte[0];
+//        try {
+//            encodedPayload = payload.getBytes("UTF-8");
+//            MqttMessage message = new MqttMessage(encodedPayload);
+//            client.publish(topic, message);
+//        } catch (UnsupportedEncodingException | MqttException e) {
+//            Log.wtf(TAG, "publish: ", e);
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void subcribed() {
+        String topic = "bar";
+        int qos = 1;
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // The message was published
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // The subscription could not be performed, maybe the user was not
+                    // authorized to subscribe on the specified topic e.g. using wildcards
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
