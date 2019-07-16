@@ -3,6 +3,9 @@ package com.screenlocker.secure.utils;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -392,4 +395,7 @@ public class CommonUtils {
         configuration.setLocale(new Locale(locale.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
     }
+
+
+
 }

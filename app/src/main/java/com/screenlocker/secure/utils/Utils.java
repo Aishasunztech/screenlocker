@@ -210,11 +210,11 @@ public class Utils {
                     break;
                 case "expired":
                     if (device_id != null) {
-                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, device_id));
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, device_id));
 
                     } else {
 //                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
-                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
 
 
                     }
@@ -240,10 +240,10 @@ public class Utils {
                     }
                 } else if (status.equals("expired")) {
                     if (finalDevice_id != null) {
-                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id));
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id));
 
                     } else {
-                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
 
 
                     }
@@ -330,11 +330,11 @@ public class Utils {
                         case "expired":
                             if (finalDevice_id1 != null) {
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
-                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id1));
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id1));
 
                             } else {
 //                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
-                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
 
 
                             }

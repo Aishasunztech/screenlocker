@@ -180,6 +180,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
 
+//        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
+
 
         init();
         constraintLayout = findViewById(R.id.rootLayout);
@@ -427,7 +429,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network n = manager.getActiveNetwork();

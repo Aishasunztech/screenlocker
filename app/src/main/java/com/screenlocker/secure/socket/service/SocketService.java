@@ -52,6 +52,7 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
+import static com.screenlocker.secure.socket.utils.utils.checkInstalledApps;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
@@ -311,7 +312,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
             writeImei();
             imeiHistory();
             forceUpdateCheck();
-
 
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -746,6 +746,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     }.getType();
 
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
+
+
+
 
                     for (int i = 0; i < list.size(); i++) {
 

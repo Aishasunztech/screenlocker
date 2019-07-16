@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -54,14 +55,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvStatus.setOnClickListener(this);
         tvImei1.setOnClickListener(this);
         tvImei2.setOnClickListener(this);
-
-
-        if (isMyServiceRunning()) {
-            onlineStatus.setText(getResources().getString(R.string.status_online));
-        } else {
-            onlineStatus.setText(getResources().getString(R.string.status_disconnected));
-        }
-
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
@@ -139,36 +132,38 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isMyServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (SocketService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+            onlineStatus.setText(getResources().getString(R.string.status_online));
+        } else {
+            onlineStatus.setText(getResources().getString(R.string.status_disconnected));
         }
-        return false;
+
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvDeviceId:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_ID, tvDeviceId.getText().toString(),"DeviceId copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_ID, tvDeviceId.getText().toString(), "DeviceId copied to clipboard");
                 break;
             case R.id.tvLinkedStatus:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_LINKED_STATUS, onlineStatus.getText().toString(),"LinkedStatus copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_LINKED_STATUS, onlineStatus.getText().toString(), "LinkedStatus copied to clipboard");
 
                 break;
             case R.id.tvDeviceStatus:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_STATUS, tvStatus.getText().toString(),"DeviceStatus copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_STATUS, tvStatus.getText().toString(), "DeviceStatus copied to clipboard");
 
                 break;
             case R.id.tvImei1:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_1, tvImei1.getText().toString(),"IMEI copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_1, tvImei1.getText().toString(), "IMEI copied to clipboard");
 
                 break;
             case R.id.tvImei2:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_2, tvImei2.getText().toString(),"IMEI copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_2, tvImei2.getText().toString(), "IMEI copied to clipboard");
 
                 break;
         }

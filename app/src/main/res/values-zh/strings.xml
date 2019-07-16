@@ -327,9 +327,10 @@
     <string name="confirm_password">请确认您的密码</string>
     <string name="enter_valid_ICCID">请输入有效的ICCID</string>
     <string name="enter_a_valid_name">请输入一个有效的名字</string>
-    <string name="number_of_attempts_remaining">You hav在设备重置和所有数据丢失之前，您可以尝试%1$s次!e %1$s attempts before device resets and all data is lost !</string>
-    <string name="account_device_id_suspended">"您的设备ID = %1$s的帐户被暂停。
- 请联系支持"</string>
+    <string name="number_of_attempts_remaining">在设备重置和所有数据丢失之前，您可以尝试%1$s次!</string>
+    <string name="account_device_id_suspended">您的设备ID = %1$s的帐户被暂停。请联系支持</string>
+    <string name="account_device_id_expired">您的设备ID = %1$s的帐户被暂停。请联系支持</string>
+
     <string name="not_linked_yet">未连接</string>
     <string name="link_status">链接状态</string>
     <string name="next">Device Linked</string>

@@ -11,10 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -61,7 +61,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,7 +79,6 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
@@ -463,6 +461,7 @@ public class MarketFragment extends Fragment implements
 
     }
 
+
     private void downloadAndInstallApp(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(getResources().getString(R.string.download_title));
@@ -659,12 +658,9 @@ public class MarketFragment extends Fragment implements
             dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, contextWeakReference.get().getResources().getString(R.string.cancel_text), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    isCanceled = true;
-                }
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, contextWeakReference.get().getResources().getString(R.string.cancel_text), (dialog, which) -> {
+                dialog.dismiss();
+                isCanceled = true;
             });
 //
             dialog.show();
@@ -688,8 +684,8 @@ public class MarketFragment extends Fragment implements
                     apksPath.mkdir();
                 }
 
-                if (file.exists())
-                    return file;
+//                if (file.exists())
+//                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
@@ -758,17 +754,24 @@ public class MarketFragment extends Fragment implements
 
         private void showInstallDialog(File file, String packageName, Context context) {
 
-//            Signature[] releaseSig = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES).signatures;
+            String sha1 = "142ds";
 
-//            String sha1 = "";
-//
-//            try {
-//                sha1 = getSHA1(releaseSig[0].toByteArray());
-//            } catch (NoSuchAlgorithmException e) {
-//                Timber.e(e);
-//            }
 
-//            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+
+            if (info != null) {
+                try {
+                    Signature[] releaseSig = info.signatures;
+                    if (releaseSig != null) {
+                        sha1 = getSHA1(releaseSig[0].toByteArray());
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
                 Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
                 try {
                     PackageManager pm = contextWeakReference.get().getPackageManager();
@@ -817,10 +820,9 @@ public class MarketFragment extends Fragment implements
                             .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
                     contextWeakReference.get().startActivity(intent);
                 }
-//            }
-//            else {
-//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
-//            }
+            } else {
+                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+            }
 
 
 //

@@ -122,47 +122,41 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 // encrypted user
                 case KEY_MAIN_PASSWORD:
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-                            if (subExtensions == null || subExtensions.size() == 0) {
-                                settingsLayout.setVisibility(View.GONE);
-                            } else {
-                                for (SubExtension subExtension : subExtensions) {
-                                    String extensionName = subExtension.getUniqueExtension();
-                                    if (extensions.containsKey(extensionName)) {
-                                        LinearLayout extension = extensions.get(extensionName);
-                                        if (extension != null) {
-                                            extension.setVisibility(View.VISIBLE);
-                                        }
+                    new Thread(() -> {
+                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        if (subExtensions == null || subExtensions.size() == 0) {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                        } else {
+                            for (SubExtension subExtension : subExtensions) {
+                                String extensionName = subExtension.getUniqueExtension();
+                                if (extensions.containsKey(extensionName)) {
+                                    LinearLayout extension = extensions.get(extensionName);
+                                    if (extension != null) {
+                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
                                     }
                                 }
                             }
-
                         }
+
                     }).start();
 
                     break;
 
                 //guest user
                 case KEY_GUEST_PASSWORD:
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+                    new Thread(() -> {
 
-                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
-                            if (subExtensions == null || subExtensions.size() == 0) {
-                                settingsLayout.setVisibility(View.GONE);
-                            } else {
-                                for (SubExtension subExtension : subExtensions) {
-                                    String extensionName = subExtension.getUniqueExtension();
-                                    if (extensions.containsKey(extensionName)) {
-                                        LinearLayout extension = extensions.get(extensionName);
-                                        if (extension != null) {
-                                            extension.setVisibility(View.VISIBLE);
-                                        }
+                        if (subExtensions == null || subExtensions.size() == 0) {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                        } else {
+                            for (SubExtension subExtension : subExtensions) {
+                                String extensionName = subExtension.getUniqueExtension();
+                                if (extensions.containsKey(extensionName)) {
+                                    LinearLayout extension = extensions.get(extensionName);
+                                    if (extension != null) {
+                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
                                     }
                                 }
                             }
@@ -291,7 +285,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                     ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
 
                     popupWindow = new PopupWindow(container, width, (int) pxFromDp(SecureSettingsMain.this, 60), true);
-                    popupWindow.showAtLocation((View) findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
+                    popupWindow.showAtLocation(findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
                     SeekBar seekBar = container.findViewById(R.id.seek_bar);
 
                     int brightness = getScreenBrightness(SecureSettingsMain.this);
