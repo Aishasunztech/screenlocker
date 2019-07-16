@@ -48,6 +48,7 @@ import java.util.Random;
 import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
+import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
@@ -78,6 +79,7 @@ public class Utils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNM = (NotificationManager) context.getSystemService(
                     Context.NOTIFICATION_SERVICE);
+
             if (mNM != null) {
                 NotificationChannel channel = mNM.getNotificationChannel(context.getString(R.string.app_name));
                 if (channel == null) {
@@ -86,16 +88,25 @@ public class Utils {
                             context.getString(R.string.app_name),
                             NotificationManager.IMPORTANCE_DEFAULT
                     );
+                    channel.setSound(null, null);
+                    channel.setShowBadge(false);
                     mNM.createNotificationChannel(channel);
 
                 }
             }
         }
         return new NotificationCompat.Builder(context, context.getString(R.string.app_name))
-                .setOngoing(true)
+                .setOngoing(false)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.app_name))
                 .setTicker(context.getString(R.string.app_name))
+                .setSound(null)
+                .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
+                .setGroup("My group")
+                .setGroupSummary(false)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+               // .setPriority(Notification.PRIORITY_MIN)
                 .setSmallIcon(icon)
                 .build();
     }
@@ -253,7 +264,7 @@ public class Utils {
         });
 
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
-        ImageView chatIcon =  keyboardView.findViewById(R.id.chat_icon);
+        ImageView chatIcon = keyboardView.findViewById(R.id.chat_icon);
         TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
         supportButton.setOnClickListener(v -> {
             chatLogin(context);
@@ -521,7 +532,7 @@ public class Utils {
         }
     }
 
-    public static void copyToClipBoard(Context context, String label, String text,String toastText) {
+    public static void copyToClipBoard(Context context, String label, String text, String toastText) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText(label, text);
         clipboard.setPrimaryClip(clip);
