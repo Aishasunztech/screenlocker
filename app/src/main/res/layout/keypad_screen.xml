@@ -4,8 +4,20 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
+
+    <ImageView
+        android:id="@+id/chat_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_chat_"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.screenlocker.secure.views.KeyboardView
         android:id="@+id/keypad"
@@ -28,16 +40,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_355sdp"
         android:background="@drawable/keyboard_button_bg"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
         android:text="@string/unlock"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:shadowColor="#000000"
-        android:shadowDy="5"
-        android:shadowDx="5"
-        android:shadowRadius="5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/keypad" />
+
     <TextView
         android:id="@+id/t9_key_support"
         style="@style/keyboard_button"
@@ -46,12 +59,12 @@
         android:layout_margin="@dimen/_7sdp"
         android:layout_marginStart="8dp"
         android:shadowColor="#000000"
-        android:textColor="@color/white"
         android:shadowDx="5"
         android:shadowDy="5"
         android:shadowRadius="5"
         android:text="@string/support"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

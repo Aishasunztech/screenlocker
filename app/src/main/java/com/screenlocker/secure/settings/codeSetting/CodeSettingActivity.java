@@ -27,14 +27,17 @@ import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
+import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.ui.MainActivity;
 
 import java.util.List;
 
@@ -184,6 +187,8 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tvSim).setOnClickListener(this);
         findViewById(R.id.tvPolicyMenu).setOnClickListener(this);
         findViewById(R.id.tvIMEIMenu).setOnClickListener(this);
+
+
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
     }
@@ -218,6 +223,8 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tvIMEIMenu:
                 goToIMEIMenu = true;
                 startActivity(new Intent(CodeSettingActivity.this, IMEIActivity.class));
+                break;
+
 
         }
     }

@@ -113,7 +113,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             allDbApps = appInfos;
             int size= adapter.appsList.size();
             adapter.appsList.clear();
-            adapter.notifyDataSetChanged();
             adapter.notifyItemRangeRemoved(0,--size);
             final String message = PrefUtils.getStringPref(this,CURRENT_KEY);
             setBackground(message);
@@ -191,6 +190,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         adapter.appsList = new ArrayList<>();
         rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
         rvApps.setAdapter(adapter);
+        rvApps.setItemViewCacheSize(30);
+
+
+
     }
 
     /**
@@ -277,6 +280,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         rvApps.setLayoutAnimation(controller);
         adapter.notifyDataSetChanged();
+        //rvApps.invalidate();
         rvApps.scheduleLayoutAnimation();
     }
 

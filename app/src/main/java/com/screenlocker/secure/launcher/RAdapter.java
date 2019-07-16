@@ -33,6 +33,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     private Context context;
     private ClearCacheListener listener;
 
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
@@ -181,22 +185,30 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         // Drawable appIcon = appsList.get(i).getIcon();
 
         TextView textView = viewHolder.textView;
-        if (appLabel.equals("Secure Market")) {
-            textView.setText(context.getResources().getString(R.string.secure_market_title));
+        switch (appLabel) {
 
-        } else if (appLabel.equals("Secure Clear")) {
-            textView.setText(context.getResources().getString(R.string.secure_clear_title));
+            case "Secure Market":
+                textView.setText(context.getResources().getString(R.string.secure_market_title));
 
-        } else if (appLabel.equals("Secure Settings")) {
-            textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
+                break;
+            case "Secure Clear":
+                textView.setText(context.getResources().getString(R.string.secure_clear_title));
 
-        } else if (appLabel.equals("Contact Support")) {
-            textView.setText(context.getResources().getString(R.string.contact_support_chat));
-        } else if (appLabel.equals("Contact Support")) {
-            textView.setText(context.getResources().getString(R.string.contact_support_chat));
-        } else {
-            textView.setText(appLabel);
+                break;
+            case "Secure Settings":
+                textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
+
+                break;
+            case "Contact Support":
+                textView.setText(context.getResources().getString(R.string.contact_support_chat));
+                break;
+            default:
+                textView.setText(appLabel);
+                break;
         }
+//        if (appsList.get(i).isNotification()){
+//            viewHolder.badge.setVisibility(View.VISIBLE);
+//        }
         //  ImageView imageView = viewHolder.img;
         // imageView.setImageDrawable(appIcon);
 

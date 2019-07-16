@@ -36,6 +36,7 @@ public class AppConstants {
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 3;
     public static final String BROADCAST_ACTION = "intentKey";
+    public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
@@ -85,15 +86,15 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
     //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-    //    public static final String URL_1 = "http://192.168.0.103:3000";//local
+//        public static final String URL_1 = "http://192.168.18.219:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
+//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 

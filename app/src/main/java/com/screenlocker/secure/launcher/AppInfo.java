@@ -26,6 +26,7 @@ public class AppInfo {
     private boolean enable;
     private boolean encrypted;
 
+
     public void setExtension(boolean extension) {
         this.extension = extension;
     }

@@ -50,7 +50,6 @@
     <uses-permission android:name="android.permission.MANAGE_USERS" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
-
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -61,8 +60,10 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.dataConsumption.DataConsumptionActivity"
-            android:screenOrientation="nosensor"/>
+        <activity android:name=".settings.AdvanceSettings"></activity>
+        <activity
+            android:name=".settings.dataConsumption.DataConsumptionActivity"
+            android:screenOrientation="nosensor" />
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>

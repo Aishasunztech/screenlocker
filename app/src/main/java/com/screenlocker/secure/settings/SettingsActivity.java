@@ -135,15 +135,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     TextView tvAccount;
     @BindView(R.id.tvLanguage)
     TextView tvLanguage;
+    @BindView(R.id.tvAdvance)
+    TextView tvAdvance;
+    @BindView(R.id.dividerAdvance)
+    View dividerAdvance;
     private TextView tvlinkDevice;
-    @BindView(R.id.tvDataUSage)
-    TextView tvDataUSage;
-    @BindView(R.id.dividerDataUSage)
-    View dividerDataUSage;
-    @BindView(R.id.tvDataCunsumption)
-    TextView tvDataCunsumption;
-    @BindView(R.id.dividerDataCunsumption)
-    View dividerDataCunsumption;
 
     private ConstraintLayout constraintLayout;
 
@@ -199,16 +195,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChooseBackground.setVisibility(View.GONE);
             tvCode.setVisibility(View.GONE);
             tvLanguage.setVisibility(View.VISIBLE);
-            tvDataUSage.setVisibility(View.GONE);
-            dividerDataUSage.setVisibility(View.GONE);
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
-            tvDataCunsumption.setVisibility(View.GONE);
-            dividerDataCunsumption.setVisibility(View.GONE);
+            dividerAdvance.setVisibility(View.GONE);
+            tvAdvance.setVisibility(View.GONE);
 
         }
 
@@ -257,10 +251,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider).setVisibility(View.GONE);
             findViewById(R.id.tvTheme).setVisibility(View.GONE);
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
-            tvDataUSage.setVisibility(View.GONE);
-            dividerDataUSage.setVisibility(View.GONE);
-            tvDataCunsumption.setVisibility(View.GONE);
-            dividerDataCunsumption.setVisibility(View.GONE);
+            dividerAdvance.setVisibility(View.GONE);
+            tvAdvance.setVisibility(View.GONE);
         }
 
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -331,8 +323,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvLanguage).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
-        tvDataUSage.setOnClickListener(this);
-        tvDataCunsumption.setOnClickListener(this);
+        tvAdvance.setOnClickListener(this);
 
     }
 
@@ -376,8 +367,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     handleCheckForUpdate();
                     //Crashlytics.getInstance().crash(); // Force a crash
                     break;
-                case R.id.tvDataCunsumption:
-                    startActivity(new Intent(this, DataConsumptionActivity.class));
+                case R.id.tvAdvance:
+                    startActivity(new Intent(this, AdvanceSettings.class));
                     break;
                 case R.id.tvlinkDevice:
 
@@ -399,8 +390,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvLanguage:
                     languageDialogue();
                     break;
-                case R.id.tvDataUSage:
-                    startActivity(new Intent(SettingsActivity.this, MainActivity.class));
+
             }
         } else {
             if (!gerOverlayDialog().isShowing())
@@ -443,19 +433,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         Network n = manager.getActiveNetwork();
         NetworkCapabilities nc = manager.getNetworkCapabilities(n);
         if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1){
+            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
                 new AlertDialog.Builder(this)
                         .setTitle("Warning!")
                         .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
                         .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
                             proccedToDownload();
                         })
-                        .setNegativeButton(R.string.cancel,(dialog, which) -> {
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
                             dialog.dismiss();
                         }).show();
             }
-        }
-        else{
+        } else {
             proccedToDownload();
         }
 

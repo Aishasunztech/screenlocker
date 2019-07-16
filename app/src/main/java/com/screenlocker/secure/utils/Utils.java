@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,7 +91,6 @@ public class Utils {
                 }
             }
         }
-
         return new NotificationCompat.Builder(context, context.getString(R.string.app_name))
                 .setOngoing(true)
                 .setContentTitle(context.getString(R.string.app_name))
@@ -253,6 +253,7 @@ public class Utils {
         });
 
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
+        ImageView chatIcon =  keyboardView.findViewById(R.id.chat_icon);
         TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
         supportButton.setOnClickListener(v -> {
             chatLogin(context);
