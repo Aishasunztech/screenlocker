@@ -757,72 +757,72 @@ public class MarketFragment extends Fragment implements
             String sha1 = "142ds";
 
 
-            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+//            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+//
+//            if (info != null) {
+//                try {
+//                    Signature[] releaseSig = info.signatures;
+//                    if (releaseSig != null) {
+//                        sha1 = getSHA1(releaseSig[0].toByteArray());
+//                    }
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
-            if (info != null) {
-                try {
-                    Signature[] releaseSig = info.signatures;
-                    if (releaseSig != null) {
-                        sha1 = getSHA1(releaseSig[0].toByteArray());
-                    }
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
 
-
-            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
-                Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-                try {
-                    PackageManager pm = contextWeakReference.get().getPackageManager();
-                    pm.getPackageInfo("com.secure.systemcontrol64", 0);
-                    if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-                        AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-                        alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-                        alertDialog.setMessage("Are you sure you want to install this app?");
-                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-                            Intent launchIntent = new Intent();
-                            ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+            //if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+            Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+            try {
+                PackageManager pm = contextWeakReference.get().getPackageManager();
+                pm.getPackageInfo("com.secure.systemcontrol64", 0);
+                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                    alertDialog.setMessage("Are you sure you want to install this app?");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                        Intent launchIntent = new Intent();
+                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
-                            launchIntent.setAction(Intent.ACTION_MAIN);
-                            launchIntent.setComponent(componentName);
-                            launchIntent.setData(uri);
-                            launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-                            launchIntent.putExtra("user_space", userType);
-                            launchIntent.putExtra("SecureMarket", true);
-                            launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-                            launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                        launchIntent.setAction(Intent.ACTION_MAIN);
+                        launchIntent.setComponent(componentName);
+                        launchIntent.setData(uri);
+                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                        launchIntent.putExtra("user_space", userType);
+                        launchIntent.putExtra("SecureMarket", true);
+                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
 //            contextWeakReference.get().sendBroadcast(sender);
 
-                            contextWeakReference.get().startActivity(launchIntent);
-                            Snackbar snackbar = Snackbar.make(
-                                    ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-                                            .getChildAt(0)
-                                    , contextWeakReference.get().getString(R.string.install_app_message)
-                                    , 3000);
+                        contextWeakReference.get().startActivity(launchIntent);
+                        Snackbar snackbar = Snackbar.make(
+                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                        .getChildAt(0)
+                                , contextWeakReference.get().getString(R.string.install_app_message)
+                                , 3000);
 
-                            snackbar.show();
+                        snackbar.show();
 
-                        });
+                    });
 
-                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                                (dialog, which) -> dialog.dismiss());
-                        alertDialog.show();
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-                    Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                            .setStream(uri) // uri from FileProvider
-                            .setType("text/html")
-                            .getIntent()
-                            .setAction(Intent.ACTION_VIEW) //Change if needed
-                            .setDataAndType(uri, "application/vnd.android.package-archive")
-                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-                    contextWeakReference.get().startActivity(intent);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                            (dialog, which) -> dialog.dismiss());
+                    alertDialog.show();
                 }
-            } else {
-                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+            } catch (PackageManager.NameNotFoundException e) {
+                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                        .setStream(uri) // uri from FileProvider
+                        .setType("text/html")
+                        .getIntent()
+                        .setAction(Intent.ACTION_VIEW) //Change if needed
+                        .setDataAndType(uri, "application/vnd.android.package-archive")
+                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                contextWeakReference.get().startActivity(intent);
             }
+//            } else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
 
 
 //
