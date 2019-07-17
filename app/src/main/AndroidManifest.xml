@@ -60,6 +60,10 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".settings.AdvanceSettings"></activity>
+        <activity
+            android:name=".settings.dataConsumption.DataConsumptionActivity"
+            android:screenOrientation="nosensor" />
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
@@ -243,7 +247,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".utils.AppInstallReceiver"
             android:enabled="true"
@@ -275,7 +278,7 @@
                     <data android:scheme="package" />
                 </intent-filter>
             </receiver>
-            -->
+        -->
         <receiver
             android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
@@ -335,7 +338,6 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.contactSupport.ChatActivity"
             android:screenOrientation="nosensor" />
@@ -371,6 +373,5 @@
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:screenOrientation="nosensor" />
     </application>
-
 
 </manifest>

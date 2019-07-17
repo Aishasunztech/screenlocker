@@ -9,12 +9,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
@@ -37,7 +42,6 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
@@ -55,7 +59,10 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,10 +70,14 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.screenlocker.secure.service.LockScreenService.getSHA1;
+import static com.screenlocker.secure.service.LockScreenService.validateAppSignatureFile;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
+import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -127,10 +138,10 @@ public class MarketFragment extends Fragment implements
             String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
             if (dealerId == null || dealerId.equals("")) {
-               // getAdminApps();
+                // getAdminApps();
                 getServerApps(null);
             } else {
-              //  getAllApps(dealerId);
+                //  getAllApps(dealerId);
                 getServerApps(dealerId);
             }
         }
@@ -200,18 +211,18 @@ public class MarketFragment extends Fragment implements
         String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
-         //   getAdminApps();
+            //   getAdminApps();
             getServerApps(null);
         } else {
             getServerApps(dealerId);
-           // getAllApps(dealerId);
+            // getAllApps(dealerId);
         }
 
 
     }
 
 
-    private void getServerApps(String dealerId){
+    private void getServerApps(String dealerId) {
 
         if (MyApplication.oneCaller == null) {
             if (asyncCalls != null) {
@@ -227,9 +238,9 @@ public class MarketFragment extends Fragment implements
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                    if(dealerId==null){
+                    if (dealerId == null) {
                         getAdminApps();
-                    }else{
+                    } else {
                         getAllApps(dealerId);
                     }
                 }
@@ -237,15 +248,15 @@ public class MarketFragment extends Fragment implements
 
         } else {
 
-            if(dealerId==null){
+            if (dealerId == null) {
                 getAdminApps();
-            }else{
+            } else {
                 getAllApps(dealerId);
             }
         }
     }
 
-private AsyncCalls asyncCalls;
+    private AsyncCalls asyncCalls;
 
     private void getAllApps(String dealerId) {
 
@@ -404,8 +415,54 @@ private AsyncCalls asyncCalls;
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onInstallClick(List app) {
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Network n = cm.getActiveNetwork();
+
+        if (n != null) {
+            final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("Mobile Data")
+                            .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                } else {
+                    downloadAndInstallApp(app);
+                }
+            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("WiFi")
+                            .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                } else {
+                    downloadAndInstallApp(app);
+                }
+            } else
+                downloadAndInstallApp(app);
+        }
+
+
+    }
+
+
+    private void downloadAndInstallApp(List app) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(getResources().getString(R.string.download_title));
         alertDialog.setIcon(android.R.drawable.stat_sys_download);
@@ -427,7 +484,6 @@ private AsyncCalls asyncCalls;
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
-
     }
 
     @Override
@@ -445,12 +501,17 @@ private AsyncCalls asyncCalls;
 //                intent.setData(Uri.parse("package:" + app.getPackageName()));
 //                activity.startActivity(intent);
 
+                Set<String> packages = new HashSet<>();
+                packages.add(MyApplication.getAppContext().getPackageName());
+                packages.add("com.vortexlocker.app");
+                packages.add("com.rim.mobilefusion.client");
+                packages.add("com.secure.systemcontrol");
+
+
                 try {
                     PackageManager pm = activity.getPackageManager();
-                    pm.getPackageInfo("com.secure.systemcontrol", 0);
+                    pm.getPackageInfo("com.secure.systemcontrol12", 0);
                     if (activity != null) {
-
-
                         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
                         alertDialog.setTitle("Uninstall");
                         alertDialog.setIcon(android.R.drawable.ic_delete
@@ -469,9 +530,15 @@ private AsyncCalls asyncCalls;
                             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                             intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.PackageUninstallReceiver"));
 
-                            if (activity != null) {
-                                activity.sendBroadcast(intent);
+                            if (!packages.contains(app.getPackageName())) {
+                                if (activity != null) {
+                                    activity.sendBroadcast(intent);
+                                }
+                            } else {
+                                Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
                             }
+
+
                         });
 
                         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
@@ -482,11 +549,17 @@ private AsyncCalls asyncCalls;
 
                 } catch (PackageManager.NameNotFoundException e) {
 
-                    savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-                    Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+
+                    if (!packages.contains(app.getPackageName())) {
+                        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
+                        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 //            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                    intent.setData(Uri.parse("package:" + app.getPackageName()));
-                    activity.startActivity(intent);
+                        intent.setData(Uri.parse("package:" + app.getPackageName()));
+                        activity.startActivity(intent);
+                    } else {
+                        Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
+                    }
+
 
                 }
             }
@@ -560,7 +633,7 @@ private AsyncCalls asyncCalls;
         }
     }
 
-    private class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
+    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, File> {
         private String appName, url;
         private WeakReference<Activity> contextWeakReference;
         private ProgressDialog dialog;
@@ -585,24 +658,21 @@ private AsyncCalls asyncCalls;
             dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, contextWeakReference.get().getResources().getString(R.string.cancel_text), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    isCanceled = true;
-                }
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, contextWeakReference.get().getResources().getString(R.string.cancel_text), (dialog, which) -> {
+                dialog.dismiss();
+                isCanceled = true;
             });
 //
             dialog.show();
         }
 
         @Override
-        protected Uri doInBackground(Void... voids) {
+        protected File doInBackground(Void... voids) {
             return downloadApp();
         }
 
 
-        private Uri downloadApp() {
+        private File downloadApp() {
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
@@ -614,8 +684,8 @@ private AsyncCalls asyncCalls;
                     apksPath.mkdir();
                 }
 
-                if (file.exists())
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+//                if (file.exists())
+//                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);
@@ -640,7 +710,8 @@ private AsyncCalls asyncCalls;
                         }
                     }
 
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+
+                    return file;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -670,122 +741,92 @@ private AsyncCalls asyncCalls;
         }
 
         @Override
-        protected void onPostExecute(Uri uri) {
-            super.onPostExecute(uri);
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
 
             if (dialog != null)
                 dialog.dismiss();
-            if (uri != null && !isCanceled) {
-                showInstallDialog(uri, packageName);
+            if (file != null && !isCanceled) {
+                showInstallDialog(file, packageName, contextWeakReference.get());
             }
 
         }
 
-        private void showInstallDialog(Uri uri, String packageName) {
+        private void showInstallDialog(File file, String packageName, Context context) {
 
-//            savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-//
-//            Timber.d("packageName: %s", packageName);
-//
-//            Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-//                    .setStream(uri) // uri from FileProvider
-//                    .setType("text/html")
-//                    .getIntent()
-//                    .setAction(Intent.ACTION_VIEW) //Change if needed
-//                    .setDataAndType(uri, "application/vnd.android.package-archive")
-//                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            contextWeakReference.get().startActivity(intent);
+            String sha1 = "142ds";
 
 
+            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
 
-
-
-//            try {
-//                PackageManager pm = contextWeakReference.get().getPackageManager();
-//                pm.getPackageInfo("com.secure.systemcontrol", 0);
-//                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-//                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-//                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-//
-//
-//                    alertDialog.setMessage("Are you sure you want to install this app?");
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-//
-//                        Intent launchIntent = new Intent();
-//                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-////                        launchIntent.setAction(Intent.ACTION_VIEW);
-//                        launchIntent.setAction(Intent.ACTION_MAIN);
-//                        launchIntent.setComponent(componentName);
-//                        launchIntent.setData(uri);
-//                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-//                        launchIntent.putExtra("user_space", userType);
-//                        launchIntent.putExtra("SecureMarket", true);
-//                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-//                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-////            contextWeakReference.get().sendBroadcast(sender);
-//
-//                        contextWeakReference.get().startActivity(launchIntent);
-//                        Snackbar snackbar = Snackbar.make(
-//                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-//                                        .getChildAt(0)
-//                                , contextWeakReference.get().getString(R.string.install_app_message)
-//                                , 3000);
-//
-//                        snackbar.show();
-//
-//                    });
-//
-//                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-//                            (dialog, which) -> dialog.dismiss());
-//                    alertDialog.show();
-//                }
-//            } catch (PackageManager.NameNotFoundException e) {
-//
-//                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-//
-//                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-//                        .setStream(uri) // uri from FileProvider
-//                        .setType("text/html")
-//                        .getIntent()
-//                        .setAction(Intent.ACTION_VIEW) //Change if needed
-//                        .setDataAndType(uri, "application/vnd.android.package-archive")
-//                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//                contextWeakReference.get().startActivity(intent);
-//            } catch (Exception e) {
-//                Timber.e(e);
-//            }
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-
-                if(getActivity().getPackageManager().canRequestPackageInstalls()){
-
-
-                    Intent intent = ShareCompat.IntentBuilder.from(getActivity())
-                            .setStream(uri)
-                            .setText("text/html")
-                            .getIntent()
-                            .setAction(Intent.ACTION_VIEW)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            .setDataAndType(uri,"application/vnd.android.package-archive");
-
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setDataAndType(Uri.parse(PrefUtils.getStringPref(getContext(),APk_URI)), "application/vnd.android.package-archive");
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-                    getActivity().startActivity(intent);
-
-                }else{
-                    //  Toast.makeText(activity, "Allowed apps to install from unsource", Toast.LENGTH_SHORT).show();
-
-                    // getActivity().startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
-
-                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:"+getActivity().getPackageName())));
-
+            if (info != null) {
+                try {
+                    Signature[] releaseSig = info.signatures;
+                    if (releaseSig != null) {
+                        sha1 = getSHA1(releaseSig[0].toByteArray());
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
                 }
             }
+
+
+            if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+                Uri uri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                try {
+                    PackageManager pm = contextWeakReference.get().getPackageManager();
+                    pm.getPackageInfo("com.secure.systemcontrol64", 0);
+                    if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                        AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+                        alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                        alertDialog.setMessage("Are you sure you want to install this app?");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                            Intent launchIntent = new Intent();
+                            ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                            launchIntent.setAction(Intent.ACTION_MAIN);
+                            launchIntent.setComponent(componentName);
+                            launchIntent.setData(uri);
+                            launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                            launchIntent.putExtra("user_space", userType);
+                            launchIntent.putExtra("SecureMarket", true);
+                            launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                            launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                            contextWeakReference.get().startActivity(launchIntent);
+                            Snackbar snackbar = Snackbar.make(
+                                    ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+                                            .getChildAt(0)
+                                    , contextWeakReference.get().getString(R.string.install_app_message)
+                                    , 3000);
+
+                            snackbar.show();
+
+                        });
+
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                (dialog, which) -> dialog.dismiss());
+                        alertDialog.show();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+                    Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+                            .setStream(uri) // uri from FileProvider
+                            .setType("text/html")
+                            .getIntent()
+                            .setAction(Intent.ACTION_VIEW) //Change if needed
+                            .setDataAndType(uri, "application/vnd.android.package-archive")
+                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                    contextWeakReference.get().startActivity(intent);
+                }
+            } else {
+                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+            }
+
+
+//
+
         }
 
 

@@ -588,8 +588,8 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         if (t != null) {
             t.cancel();
             t = null;

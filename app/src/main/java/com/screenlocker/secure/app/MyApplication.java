@@ -306,6 +306,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     Timber.d("LinkStatus :" + linkStatus);
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
+                    
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
@@ -423,6 +424,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             public void run() {
                 List<String> mDefaults = new ArrayList<>();
                 mDefaults.add("com.android.settings");
+                //mDefaults.add(BuildConfig.APPLICATION_ID);
 //                mDefaults.add(BuildConfig.APPLICATION_ID);
                 for (String packageName : mDefaults) {
                     AppItem item = new AppItem();

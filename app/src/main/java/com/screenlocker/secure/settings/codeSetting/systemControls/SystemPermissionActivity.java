@@ -407,16 +407,17 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
                 if (switchScreenShot.isChecked()) {
                     if (mService != null) {
-                        mService.stopCapture();
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, false);
-
-                    }
-                } else {
-                    if (mService != null) {
                         mService.startCapture();
                         PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, true);
 
                     }
+                } else {
+                    if (mService != null) {
+                        mService.stopCapture();
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, false);
+
+                    }
+
 
                 }
 

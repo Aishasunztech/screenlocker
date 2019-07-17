@@ -36,6 +36,7 @@ public class AppConstants {
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 3;
     public static final String BROADCAST_ACTION = "intentKey";
+    public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
@@ -85,15 +86,15 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-  //  public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-    //    public static final String URL_1 = "http://192.168.0.103:3000";//local
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//            public static final String URL_1 = "http://192.168.0.119:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-  //  public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
-        public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -107,8 +108,8 @@ public class AppConstants {
     //End points
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-//    public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
+    //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
@@ -261,12 +262,12 @@ public class AppConstants {
      * Screen Locker
      * */
 
-//    public static int attempt_5 = 1;
-//    public static int attempt_6 = 5;
-//    public static int attempt_7 = 10;
-//    public static int attempt_8 = 15;
-//    public static int attempt_9 = 30;
-//    public static int attempt_10 = 30;
+   /* public static int attempt_5 = 1;
+    public static int attempt_6 = 5;
+    public static int attempt_7 = 10;
+    public static int attempt_8 = 15;
+    public static int attempt_9 = 30;
+    public static int attempt_10 = 30;*/
 
     /*
      *Titan Locker
@@ -368,5 +369,11 @@ public class AppConstants {
 
     public static final String TEXT1 = "Your account with Device ID = ";
     public static final String LANGUAGE_PREF = "language_pref";
+    public static final String UPDATEWIFI = "updatewifi";
+    public static final String UPDATESIM = "updateSim";
+    public static final String LINKSIM = "linkSim";
+    public static final String SECUREMARKETWIFI = "secureMarketWifi";
+    public static final String SECUREMARKETSIM = "secureMarketSim";
+    public static final int UPDATE_JOB = 1234;
 
 }

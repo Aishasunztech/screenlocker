@@ -193,12 +193,7 @@ public class MainActivity extends BaseActivity {
                 }
             });
         }
-        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                process();
-            }
-        });
+        mSwipe.setOnRefreshListener(this::process);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -319,7 +314,7 @@ public class MainActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             AppItem item = getItemInfoByPosition(position);
             holder.mName.setText(item.mName);
-            holder.mUsage.setText(AppUtil.formatMilliSeconds(item.mUsageTime));
+            holder.mUsage.setText(AppUtil.formatMilliSeconds(item.mCount));
             holder.mTime.setText(String.format(Locale.getDefault(),
                     "%s · %d %s · %s",
                     new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault()).format(new Date(item.mEventTime)),

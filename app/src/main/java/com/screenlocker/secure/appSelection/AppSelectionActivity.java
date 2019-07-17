@@ -289,7 +289,7 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                     CodeSettingActivity.codeSettingsInstance.finish();
 
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
 

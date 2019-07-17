@@ -80,12 +80,12 @@ public class SocketManager {
         try {
             if (socket == null) {
                 IO.Options opts = new IO.Options();
-                opts.reconnectionDelay = 0;
+//                opts.reconnectionDelay = 10 * 60 * 60 * 1000L;
+                opts.reconnectionDelay = 5000;
                 opts.forceNew = true;
-                opts.reconnection = false;
-//                opts.reconnectionAttempts = 5;
+                opts.reconnection = true;
+                opts.reconnectionAttempts = 1000;
                 opts.secure = true;
-
                 opts.query = "device_id=" + device_id + "&token=" + token;
 
                 socket = IO.socket(url, opts);

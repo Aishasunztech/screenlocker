@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import androidx.core.app.ShareCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -90,14 +93,14 @@ LockScreenService.ServiceCallbacks,
      */
 
 //    public static Activity context = null;
-
+    List<AppInfo> allDbApps;
 
     PowerManager powerManager;
 
     AppExecutor appExecutor;
 
-
-    private PackageManager pm;
+    private MainViewModel viewModel;
+    private RecyclerView rvApps;
     private MainPresenter mainPresenter;
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
@@ -107,37 +110,37 @@ LockScreenService.ServiceCallbacks,
     private ScreenOffReceiver screenOffReceiver;
 
 
-
-
     public MainActivity() {
-    }
-
-    public MainActivity(ScreenOffReceiver screenOffReceiver) {
-        this.screenOffReceiver = screenOffReceiver;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         LockScreenService.mCallBacks =(LockScreenService.ServiceCallbacks) MainActivity.this;
         DownLoadAndInstallUpdate.onAppAvailable =(DownLoadAndInstallUpdate.OnAppAvailable) MainActivity.this;
 
+        allDbApps = new ArrayList<>();
+        setRecyclerView();
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getAllApps().observe(this, appInfos -> {
+            allDbApps = appInfos;
+            int size= adapter.appsList.size();
+            adapter.appsList.clear();
+            adapter.notifyItemRangeRemoved(0,--size);
+            final String message = PrefUtils.getStringPref(this,CURRENT_KEY);
+            setBackground(message);
+            mainPresenter.addDataToList(allDbApps, message, adapter);
+            runLayoutAnimation();
+        });
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
             return;
         }
-
-//        OneTimeWorkRequest insertionWork =
-//                new OneTimeWorkRequest.Builder(BlurWorker.class)
-//                        .build();
-//        WorkManager.getInstance().enqueue(insertionWork);
-
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -148,33 +151,12 @@ LockScreenService.ServiceCallbacks,
 
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
-
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-
-            try {
-
-                Intent shortcutIntent = new Intent(getApplicationContext(), ManagePasswords.class);
-                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                shortcutIntent.setAction(Intent.ACTION_MAIN);
-                ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(MainActivity.this, "Manage Passwords")
-                        .setShortLabel("Manage Passwords")
-                        .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.settings_icon))
-                        .setIntent(shortcutIntent)
-                        .build();
-                ShortcutManagerCompat.requestPinShortcut(getApplicationContext(), shortcut, null);
-            } catch (Exception e) {
-                Timber.d(e);
-            }
-        }
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         mainPresenter = new MainPresenter(this, new MainModel(this));
         background = findViewById(R.id.background);
-        pm = getPackageManager();
+
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
 
-        setRecyclerView();
 
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -215,11 +197,19 @@ LockScreenService.ServiceCallbacks,
 
 
     private void setRecyclerView() {
-        RecyclerView rvApps = findViewById(R.id.rvApps);
+         rvApps = findViewById(R.id.rvApps);
+        int resId = R.anim.layout_animation;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
+        rvApps.setLayoutAnimation(animation);
+
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
         rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
         rvApps.setAdapter(adapter);
+        rvApps.setItemViewCacheSize(30);
+
+
+
     }
 
     /**
@@ -227,10 +217,8 @@ LockScreenService.ServiceCallbacks,
      */
 
     public void clearRecentApp() {
-
         try {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
-//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(i);
@@ -242,8 +230,6 @@ LockScreenService.ServiceCallbacks,
                 activityManager.moveTaskToFront(taskId, 0);
             }
         } catch (Exception ignored) {
-
-
         }
     }
 
@@ -256,14 +242,9 @@ LockScreenService.ServiceCallbacks,
             clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
-            Thread t2 = new Thread() {
-                @Override
-                public void run() {
-                    mainPresenter.addDataToList(pm, message, adapter);
-                    runOnUiThread(() -> adapter.notifyDataSetChanged());
-                }
-            };
-            t2.start();
+            mainPresenter.addDataToList(allDbApps, message, adapter);
+            runLayoutAnimation();
+
 
         }
 
@@ -315,6 +296,16 @@ LockScreenService.ServiceCallbacks,
         super.onResume();
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
+    private void runLayoutAnimation() {
+        final Context context = rvApps.getContext();
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation);
+
+        rvApps.setLayoutAnimation(controller);
+        adapter.notifyDataSetChanged();
+        //rvApps.invalidate();
+        rvApps.scheduleLayoutAnimation();
+    }
 
     private void setBackground(String message) {
 
@@ -325,40 +316,33 @@ LockScreenService.ServiceCallbacks,
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
+                        //Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
+                        background.setImageResource(R.raw.audiblack);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        //Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
-
-                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.texture);
+                        //Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
 
                 } else {
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-
-                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.tower);
+                        //Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        Glide.with(MainActivity.this)
-                                .load(Integer.parseInt(bg))
-                                .apply(new RequestOptions().centerCrop())
-                                .into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 }
             }
@@ -383,12 +367,12 @@ LockScreenService.ServiceCallbacks,
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null)
                 if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
-                    refreshAppsList();
+                    //refreshAppsList();
                 }
         }
     };
 
-    private void refreshAppsList() {
+   /* private void refreshAppsList() {
 
 
         String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
@@ -397,14 +381,14 @@ LockScreenService.ServiceCallbacks,
         Thread t2 = new Thread() {
             @Override
             public void run() {
-                mainPresenter.addDataToList(pm, current_user, adapter);
+                mainPresenter.addDataToList(current_user, adapter);
                 runOnUiThread(() -> adapter.notifyDataSetChanged());
             }
         };
         t2.start();
 
 
-    }
+    }*/
 
 
     @Override
@@ -491,7 +475,7 @@ LockScreenService.ServiceCallbacks,
 
     @Override
     public void onAppsRefresh() {
-        AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
+        // AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
     }
 
     @Override

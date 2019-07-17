@@ -108,31 +108,7 @@
         <!-- to enable or enable the lock screen pin -->
 
         <!-- to select the apps those user want to encrypt -->
-        <TextView
-            android:id="@+id/tvDataUSage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_data_usage"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/data_usage"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider15" />
 
-        <View
-            android:id="@+id/dividerDataUSage"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
         <TextView
             android:id="@+id/tvlinkDevice"
             android:layout_width="0dp"
@@ -148,7 +124,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerDataUSage" />
+            app:layout_constraintTop_toBottomOf="@+id/divider15" />
 
         <View
             android:id="@+id/divider14"
@@ -227,6 +203,37 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerAbout" />
+        <View
+            android:id="@+id/divider15"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCode" />
+        <TextView
+            android:id="@+id/tvAdvance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:drawableStart="@drawable/ic_career"
+            android:drawablePadding="@dimen/_8sdp"
+            android:padding="16dp"
+            android:text="@string/advance"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/textSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerAdvance" />
+        <View
+            android:id="@+id/dividerAdvance"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAccount" />
 
         <TextView
             android:id="@+id/tvCheckForUpdate"
@@ -242,14 +249,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvAbout"
             app:layout_constraintVertical_bias="1.0" />
 
-        <View
-            android:id="@+id/divider15"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCode" />
 
         <TextView
             android:id="@+id/tvCode"
@@ -274,7 +273,8 @@
             android:background="@color/colorLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAccount" />
+            app:layout_constraintTop_toBottomOf="@+id/tvAdvance" />
+
 
         <TextView
             android:id="@+id/tvLanguage"

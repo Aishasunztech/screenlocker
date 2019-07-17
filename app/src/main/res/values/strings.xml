@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name" translatable="false">Titan Locker</string>
-    <string name="toolbar_title" translatable="false">Titan Locker</string>
-    <string name="apktype" translatable="false">BYOD</string>
+    <string name="app_name" translatable="false">Screen Locker BYOD</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
+    <string name="apktype"
+        translatable="false">BYOD</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
     <string name="number_two" translatable="false">2</string>
@@ -55,7 +56,7 @@
     <string name="password_is_changed_to_default">Password is changed to default.</string>
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
-    <string name="sim">SIM</string>
+    <string name="sim_title">SIM</string>
     <string name="set_duress_pass">Set Duress Password</string>
 
     // MDM strings
@@ -105,6 +106,7 @@
     <string name="permissions">Application Permission</string>
     <string name="link_heading">To generate a valid IMEI please go to </string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
+    <string name="link_title">Link</string>
     <string name="simtext">SIM:</string>
     <string name="slot">Slot :</string>
     <string name="name">/ Name :</string>
@@ -322,7 +324,8 @@
     <string name="enter_valid_ICCID">Please Enter a valid ICCID</string>
     <string name="enter_a_valid_name">Please Enter a valid Name</string>
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
-    <string name="account_device_id_suspended">Your account with Device ID = %1$s is suspended.Please contact support</string>
+    <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
+    <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
@@ -416,5 +419,10 @@
 
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
+    <string name="updates">Updates</string>
+    <string name="sim">SIM</string>
+    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="continue_anyway">Continue Anyways</string>
+    <string name="advance">Advance Settings</string>
 
 </resources>
