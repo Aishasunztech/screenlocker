@@ -55,7 +55,6 @@ public class BrightnessDialog extends Dialog {
         });
     }
 
-
     // Change the screen brightness
     public void setScreenBrightness(int brightnessValue){
 
@@ -68,8 +67,6 @@ public class BrightnessDialog extends Dialog {
 
         }
     }
-
-
 
     @Override
     protected void onStart() {
