@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.AppConstants;
@@ -81,14 +84,24 @@ public class SetGuestPasswordFragment extends AbstractStep {
         error = getResources().getString(R.string.please_enter_password);
     }
 
+    @BindView(R.id.pin_input_layout)
+    TextInputLayout pin_input_layout;
     @BindView(R.id.etEnterPin)
-    AppCompatEditText etEnterPin;
+    TextInputEditText etEnterPin;
+
+    @BindView(R.id.re_pin_input_layout)
+    TextInputLayout re_pin_input_layout;
+    @BindView(R.id.etConfirmPin)
+    TextInputEditText etConfirmPin;
+
+    @BindView(R.id.guest_image_icon)
+    ImageView img_picture;
 
     /**
      * to confirm the user entered password
      */
-    @BindView(R.id.etConfirmPin)
-    AppCompatEditText etConfirmPin;
+//    @BindView(R.id.etConfirmPin)
+//    AppCompatEditText etConfirmPin;
 
 
     @Nullable
@@ -96,8 +109,12 @@ public class SetGuestPasswordFragment extends AbstractStep {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.guess_password_layout, container, false);
         ButterKnife.bind(this, v);
-        etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
-        etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+//        etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
+//        etEnterPin.setHint("Guest pin");
+        pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_guest_pin));
+        re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
+//        etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+        img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_guest_icon));
 
         return v;
     }

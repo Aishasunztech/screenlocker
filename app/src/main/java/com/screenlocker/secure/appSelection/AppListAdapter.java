@@ -1,7 +1,10 @@
 package com.screenlocker.secure.appSelection;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.utils.AppConstants;
 
 import java.util.List;
 
@@ -44,6 +49,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
 
     }
 
+
     AppListAdapter(String packageName, List<AppInfo> apps) {
         this.packageName = packageName;
         this.appsList = apps;
@@ -58,11 +64,16 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
         AppInfo info = appsList.get(i);
         vh.tv.setText(info.getLabel());
 
+        if (info.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE)) {
+            vh.img.setColorFilter(ContextCompat.getColor(vh.img.getContext(), R.color.icon_tint), android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+
         // vh.img.setImageDrawable(info.getIcon());
         Glide.with(vh.img.getContext())
                 .load(appsList.get(i).getIcon())
                 .apply(new RequestOptions().centerCrop())
                 .into(vh.img);
+
         vh.guestSwitch.setChecked(info.isGuest());
         vh.encryptedSwitch.setChecked(info.isEncrypted());
         vh.enabledSwitch.setChecked(info.isEnable());

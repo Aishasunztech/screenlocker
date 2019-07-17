@@ -22,11 +22,13 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.model.InstalledAndRemainingApps;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -67,10 +69,13 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
+import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
 
@@ -217,7 +222,7 @@ public class utils {
                             int finalI = i;
                             AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
                                     ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
-                            app.setUniqueName(app.getPackageName() + app.getLabel());
+                            app.setUniqueName(app.getPackageName());
                             app.setExtension(false);
                             app.setDefaultApp(false);
                             app.setEncrypted(false);
@@ -581,14 +586,14 @@ public class utils {
 
 
     /*
-     *
      *  This method checks either app is already installed or not and which app has to update or downgrade and returns list of custom object (InstallModel)
-     *
      * */
-    public static List<InstallModel> checkInstalledApps(List<InstallModel> apps, Context context) {
+    public static InstalledAndRemainingApps checkInstalledApps(List<InstallModel> apps, Context context) {
 
         // list for remaining apps
         List<InstallModel> remainingApps = new ArrayList<>();
+
+        List<InstallModel> installedApps = new ArrayList<>();
 
         PackageManager pm = context.getPackageManager();
 
@@ -615,6 +620,8 @@ public class utils {
                         app.setUpdate(true);
                         remainingApps.add(app);
                     }
+                } else {
+                    installedApps.add(app);
                 }
 
             } catch (PackageManager.NameNotFoundException e) {
@@ -623,7 +630,8 @@ public class utils {
             }
         }
 
-        return remainingApps;
+
+        return new InstalledAndRemainingApps(remainingApps, installedApps);
     }
 
 
@@ -825,5 +833,31 @@ public class utils {
     public static void cancelJob(Context context, int JOB_ID) {
         JobScheduler scheduler1 = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler1.cancel(JOB_ID);
+    }
+
+    public static void scheduleUpdateJob(Context context) {
+        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
+        JobInfo jobInfo;
+        if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
+            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPeriodic(ONE_DAY_INTERVAL)
+                    .build();
+        } else {
+            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .setPeriodic(ONE_DAY_INTERVAL)
+                    .build();
+        }
+
+
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+
+        int resultCode = scheduler.schedule(jobInfo);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Job Scheduled");
+        } else {
+            Timber.d("Job Scheduled Failed");
+        }
     }
 }

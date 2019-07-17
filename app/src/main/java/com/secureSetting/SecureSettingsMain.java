@@ -1,5 +1,6 @@
 package com.secureSetting;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
@@ -9,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
@@ -16,6 +18,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -119,47 +122,41 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 // encrypted user
                 case KEY_MAIN_PASSWORD:
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-                            if (subExtensions == null || subExtensions.size() == 0) {
-                                settingsLayout.setVisibility(View.GONE);
-                            } else {
-                                for (SubExtension subExtension : subExtensions) {
-                                    String extensionName = subExtension.getUniqueExtension();
-                                    if (extensions.containsKey(extensionName)) {
-                                        LinearLayout extension = extensions.get(extensionName);
-                                        if (extension != null) {
-                                            extension.setVisibility(View.VISIBLE);
-                                        }
+                    new Thread(() -> {
+                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        if (subExtensions == null || subExtensions.size() == 0) {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                        } else {
+                            for (SubExtension subExtension : subExtensions) {
+                                String extensionName = subExtension.getUniqueExtension();
+                                if (extensions.containsKey(extensionName)) {
+                                    LinearLayout extension = extensions.get(extensionName);
+                                    if (extension != null) {
+                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
                                     }
                                 }
                             }
-
                         }
+
                     }).start();
 
                     break;
 
                 //guest user
                 case KEY_GUEST_PASSWORD:
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+                    new Thread(() -> {
 
-                            List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
-                            if (subExtensions == null || subExtensions.size() == 0) {
-                                settingsLayout.setVisibility(View.GONE);
-                            } else {
-                                for (SubExtension subExtension : subExtensions) {
-                                    String extensionName = subExtension.getUniqueExtension();
-                                    if (extensions.containsKey(extensionName)) {
-                                        LinearLayout extension = extensions.get(extensionName);
-                                        if (extension != null) {
-                                            extension.setVisibility(View.VISIBLE);
-                                        }
+                        if (subExtensions == null || subExtensions.size() == 0) {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                        } else {
+                            for (SubExtension subExtension : subExtensions) {
+                                String extensionName = subExtension.getUniqueExtension();
+                                if (extensions.containsKey(extensionName)) {
+                                    LinearLayout extension = extensions.get(extensionName);
+                                    if (extension != null) {
+                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
                                     }
                                 }
                             }
@@ -224,6 +221,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     }
 
+    private Switch switch_mobile_data;
+
     private void setSetIds() {
         bluetoothName = findViewById(R.id.bluetooth_name);
         brightnessLevel = findViewById(R.id.brightness_lavel);
@@ -244,6 +243,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         mobile_container = findViewById(R.id.mobile_data_cotainer);
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
+        switch_mobile_data = findViewById(R.id.switch_mobile_data);
+        switch_mobile_data.setOnCheckedChangeListener(this);
 //        switch_airplane = findViewById(R.id.switch_air);
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
@@ -284,7 +285,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                     ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
 
                     popupWindow = new PopupWindow(container, width, (int) pxFromDp(SecureSettingsMain.this, 60), true);
-                    popupWindow.showAtLocation((View) findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
+                    popupWindow.showAtLocation(findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
                     SeekBar seekBar = container.findViewById(R.id.seek_bar);
 
                     int brightness = getScreenBrightness(SecureSettingsMain.this);
@@ -385,10 +386,17 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         });
 
         mobile_container.setOnClickListener(v -> {
-//            setMobileDataState(true);
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-            startActivity(intent);
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                Timber.e("Permission granted");
+            } else {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+                startActivity(intent);
+            }
+
+
         });
 
 
@@ -396,7 +404,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
     public void setMobileDataState(boolean mobileDataEnabled) {
-
+        TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            cm.setDataEnabled(mobileDataEnabled);
+        }
     }
 
 
@@ -435,6 +446,30 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         } else {
             showMenus();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+
+            switch_mobile_data.setVisibility(View.VISIBLE);
+            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TelephonyManager telMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                int simStateMain = telMgr.getSimState(0);
+                int simStateSecond = telMgr.getSimState(1);
+
+                if (simStateMain == 5 || simStateSecond == 5) {
+                    switch_mobile_data.setChecked(cm.isDataEnabled());
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+                    switch_mobile_data.setEnabled(false);
+                }
+
+
+            }
+
+        } else {
+            switch_mobile_data.setVisibility(View.GONE);
         }
 
 
@@ -499,17 +534,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        switch (buttonView.getId()) {
-////            case R.id.switch_air:
-////                final Intent intent = new Intent();
-////                intent.setAction("com.secure.systemcontrol.SYSTEM_SETTINGS");
-////                intent.putExtra("isEnabled", isChecked);
-////                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-////                intent.setComponent(
-////                        new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-////                sendBroadcast(intent);
-//                break;
-//        }
+        switch (buttonView.getId()) {
+            case R.id.switch_mobile_data:
+                setMobileDataState(isChecked);
+                break;
+
+        }
     }
 
     @Override

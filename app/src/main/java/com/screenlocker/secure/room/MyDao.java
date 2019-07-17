@@ -26,8 +26,11 @@ public interface MyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertApps(AppInfo appsModel);
 
+
     @Query("SELECT * from AppInfo")
     List<AppInfo> getApps();
+    @Query("SELECT * from AppInfo")
+    LiveData<List<AppInfo>> getAllApps();
 
     @Query("SELECT * from SubExtension ")
     List<SubExtension> getAllSubExtensions();

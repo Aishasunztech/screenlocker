@@ -336,6 +336,9 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
 
     <string name="account_device_id_suspended">Votre compte avec Device ID = %1$s
  est suspendu.Veuillez contacter le support</string>
+    <string name="account_device_id_expired">Votre compte avec Device ID = %1$s
+ est expiré.Veuillez contacter le support</string>
+
     <string name="not_linked_yet">pas encore lié</string>
 
     <string name="optional_message_warn">Ceci est un message facultatif pour avertir
@@ -361,6 +364,16 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
 
     <string name="change_language_dialog_title">Changer de langue</string>
     <string name="change_language_dialog_message">Êtes-vous sûr de vouloir changer de langue?</string>
+    <string name="theme">Thème</string>
+    <string name="light_theme">Thème Claire</string>
+    <string name="dark_theme">Thème Sombre</string>
+    <string name="link_device_message">Appuyez sur le bouton ci-dessous pour lier votre appareil</string>
+    <string name="link_device_activation_message" >SVP ajouter le code d\'activation donné par
+ revendeur et cliquez sur le bouton \" SOUMETTRE \" pour lien
+ votre appareil</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
+
 
 
 

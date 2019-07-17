@@ -97,7 +97,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">账户</string>
-    <string name="language">Languages</string>
+    <string name="language">語言</string>
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">目前是最新的。</string>
@@ -312,7 +312,7 @@
     <string name="welcome">欢迎光临!</string>
     <string name="welcome_message">我们正在准备第一次启动系统，请稍候。</string>
     <string name="inactivity_message">在%1$s秒的不活动之后</string>
-    <string name="change_language_title">Languages</string>
+    <string name="change_language_title">語言</string>
     <string name="dealer_pin_or_activation_code">经销商Pin或激活码</string>
     <string name="clearing_cache">清除缓存</string>
     <string name="clearing_cache_successfull">成功清除缓存</string>
@@ -327,9 +327,10 @@
     <string name="confirm_password">请确认您的密码</string>
     <string name="enter_valid_ICCID">请输入有效的ICCID</string>
     <string name="enter_a_valid_name">请输入一个有效的名字</string>
-    <string name="number_of_attempts_remaining">You hav在设备重置和所有数据丢失之前，您可以尝试%1$s次!e %1$s attempts before device resets and all data is lost !</string>
-    <string name="account_device_id_suspended">"您的设备ID = %1$s的帐户被暂停。
- 请联系支持"</string>
+    <string name="number_of_attempts_remaining">在设备重置和所有数据丢失之前，您可以尝试%1$s次!</string>
+    <string name="account_device_id_suspended">您的设备ID = %1$s的帐户被暂停。请联系支持</string>
+    <string name="account_device_id_expired">您的设备ID = %1$s的帐户被暂停。请联系支持</string>
+
     <string name="not_linked_yet">未连接</string>
     <string name="link_status">链接状态</string>
     <string name="next">Device Linked</string>
@@ -351,12 +352,12 @@
     <string name="type">Type</string>
     <string name="change_language_dialog_title">Change Language</string>
     <string name="change_language_dialog_message">Proceed with changing the language?</string>
-    <string name="policy">Policy</string>
-    <string name="theme">Theme</string>
-    <string name="light_theme">Light Theme</string>
-    <string name="dark_theme">Dark Theme</string>
+    <string name="policy">Politique</string>
+
     <string name="mode">模式</string>
-    <string name="link_device_message">Hit the button below to link your device</string>
-    <string name="link_device_activation_message" >Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+
+
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
 
 </resources>

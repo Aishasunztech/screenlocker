@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.screenlocker.secure.settings.AdvanceSettings">
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/main_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tvDataCunsumption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_consumption"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/data_consumption_settings"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar" />
+
+    <View
+        android:id="@+id/dividerDataCunsumption"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
+    <TextView
+        android:id="@+id/tvDataUSage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_data_usage"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/data_usage"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
+
+    <View
+        android:id="@+id/dividerDataUSage"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -77,7 +77,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         String live_url = PrefUtils.getStringPref(context, LIVE_URL);
 
-        Timber.d("skljdgvhsdgsgsj%s", live_url + LOGO_END_POINT);
+        Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + appModelList.get(position).getLogo());
 
 
         Glide.with(context)

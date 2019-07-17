@@ -3,6 +3,8 @@ package com.screenlocker.secure.launcher;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import java.util.List;
+
 public interface MainContract {
     interface MainMvpView {
     }
@@ -15,7 +17,7 @@ public interface MainContract {
         Intent getSendingIntent();
 
 
-        void addDataToList(PackageManager pm, String message, RAdapter adapter);
+        void addDataToList(List<AppInfo> allDbApps, String message, RAdapter adapter);
     }
 
     interface MainMvpModel {
@@ -25,7 +27,7 @@ public interface MainContract {
 
         Intent getSendingIntent();
 
-        void addDataToList(PackageManager pm, String message, RAdapter adapter);
+        void addDataToList(List<AppInfo> allDbApps, String message, RAdapter adapter);
     }
 
 }

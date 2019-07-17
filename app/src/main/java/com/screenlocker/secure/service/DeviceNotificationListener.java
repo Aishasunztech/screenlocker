@@ -14,8 +14,11 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BuildConfig;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.Utils;
+import com.secureSetting.t.AppConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +35,28 @@ public class DeviceNotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
         Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
+        if (sbn.getPackageName().equals("com.armorsec.armor1")){
+            Intent intent = new Intent(AppConstants.BROADCAST_ACTION_NOTIFICATION);
+            intent.putExtra("isShow",true);
+            sendBroadcast(intent);
+        }
+        //StatusBarNotification[] notifications = getActiveNotifications();
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
         Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
+        StatusBarNotification[] notifications = getActiveNotifications();
+        for (StatusBarNotification notification : notifications) {
+            if (notification.getPackageName().equals(sbn.getPackageName())){
+                return;
+            }
+        }
+        Intent intent = new Intent(AppConstants.BROADCAST_ACTION_NOTIFICATION);
+        intent.putExtra("isShow",false);
+        sendBroadcast(intent);
+
         
     }
 

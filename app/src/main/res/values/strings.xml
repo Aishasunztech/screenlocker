@@ -3,16 +3,16 @@
     <string name="toolbar_title" translatable="false">Screen Locker</string>
     <string name="apktype"
         translatable="false">BYOD</string>
-    <string name="number_zero">0</string>
-    <string name="number_one">1</string>
-    <string name="number_two">2</string>
-    <string name="number_three">3</string>
-    <string name="number_four">4</string>
-    <string name="number_five">5</string>
-    <string name="number_six">6</string>
-    <string name="number_seven">7</string>
-    <string name="number_eight">8</string>
-    <string name="number_nine">9</string>
+    <string name="number_zero" translatable="false">0</string>
+    <string name="number_one" translatable="false">1</string>
+    <string name="number_two" translatable="false">2</string>
+    <string name="number_three" translatable="false">3</string>
+    <string name="number_four" translatable="false">4</string>
+    <string name="number_five" translatable="false">5</string>
+    <string name="number_six" translatable="false">6</string>
+    <string name="number_seven" translatable="false">7</string>
+    <string name="number_eight" translatable="false">8</string>
+    <string name="number_nine" translatable="false">9</string>
     <string name="btn_backspace">CLEAR ALL</string>
     <string name="description_notification_icon">notification icon</string>
     <string name="description_app_image">app image</string>
@@ -56,7 +56,7 @@
     <string name="password_is_changed_to_default">Password is changed to default.</string>
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
-    <string name="sim">SIM</string>
+    <string name="sim_title">SIM</string>
     <string name="set_duress_pass">Set Duress Password</string>
 
     // MDM strings
@@ -106,6 +106,7 @@
     <string name="permissions">Application Permission</string>
     <string name="link_heading">To generate a valid IMEI please go to </string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
+    <string name="link_title">Link</string>
     <string name="simtext">SIM:</string>
     <string name="slot">Slot :</string>
     <string name="name">/ Name :</string>
@@ -323,7 +324,8 @@
     <string name="enter_valid_ICCID">Please Enter a valid ICCID</string>
     <string name="enter_a_valid_name">Please Enter a valid Name</string>
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
-    <string name="account_device_id_suspended">Your account with Device ID = %1$s is suspended.Please contact support</string>
+    <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
+    <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
@@ -349,16 +351,78 @@
     <string name="dark_theme">Dark Theme</string>
     <string name="mode">Mode</string>
     <string name="link_device_message">Hit the button below to link your device</string>
-    <string name="link_device_activation_message" >Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
 
 
-
-    <string-array name="languages">
-        <item>en:English</item>
-        <item>fr:Français</item>
-        <item>vi:Tiếng Việt</item>
-        <item>zh:Chinese</item>
+    <string-array name="sort">
+        <item>Total</item>
+        <item>Date</item>
+        <item>Frequency</item>
+        <item>Mobile data</item>
     </string-array>
+    <string-array name="duration">
+        <item>Today</item>
+        <item>Yesterday</item>
+    </string-array>
+    <integer-array name="duration_int">
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
 
+
+    <string name="close">Close</string>
+
+    <string name="detail">Details</string>
+    <string name="duration">Duration</string>
+
+    <string name="enable_apps_monitor">Enable apps monitor</string>
+    <string name="enable_apps_monitoring">Apps monitoring</string>
+
+    <string name="feedback">feedback: zhishoumowen@gmail.com</string>
+
+    <string name="grant_success">Permission Granted</string>
+
+    <string name="hide_system_apps">Hide system Apps</string>
+    <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
+
+    <string name="ignore">Ignore this app</string>
+    <string name="ignore_hint">Apps in this list will be hidden</string>
+    <string name="ignore_list">Ignore list</string>
+    <string name="ignore_success">Move to ignore list successfully</string>
+
+    <string name="more">More detail</string>
+    <string name="app_info">App info</string>
+
+    <string name="notification_title">AppTimeline running</string>
+    <string name="notification_message">monitoring your app usage</string>
+    <string name="not_support">You device not support monitoring</string>
+
+    <string name="open">Open</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="settings">Settings</string>
+    <string name="settings_function">Functions</string>
+    <string name="settings_more">More</string>
+    <string name="share">Like and share</string>
+    <string name="share_desc">Hey check out this app, it\'s so cool, it can help checkout every app\'s time your spend on: %1$s%2$s</string>
+    <string name="slogan">Monitor Apps usage</string>
+    <string name="sort">Sort By</string>
+
+    <string name="toast_permission">Please find \"AppsTimeline\" and grant the permission</string>
+    <string name="times">%1$s · %2$d times</string>
+    <string name="times_only">times</string>
+    <string name="total">%1$s</string>
+
+
+    <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
+    <string name="data_usage">Data Usage</string>
+    <string name="updates">Updates</string>
+    <string name="sim">SIM</string>
+    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="continue_anyway">Continue Anyways</string>
+    <string name="advance">Advance Settings</string>
 
 </resources>
