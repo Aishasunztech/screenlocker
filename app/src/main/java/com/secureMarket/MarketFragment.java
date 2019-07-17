@@ -12,7 +12,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
@@ -557,7 +560,7 @@ private AsyncCalls asyncCalls;
         }
     }
 
-    private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
+    private class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
         private WeakReference<Activity> contextWeakReference;
         private ProgressDialog dialog;
@@ -693,64 +696,96 @@ private AsyncCalls asyncCalls;
 //                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            contextWeakReference.get().startActivity(intent);
 
-            try {
-                PackageManager pm = contextWeakReference.get().getPackageManager();
-                pm.getPackageInfo("com.secure.systemcontrol", 0);
-                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
-                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
 
 
-                    alertDialog.setMessage("Are you sure you want to install this app?");
 
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
 
-                        Intent launchIntent = new Intent();
-                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
-                        launchIntent.setAction(Intent.ACTION_MAIN);
-                        launchIntent.setComponent(componentName);
-                        launchIntent.setData(uri);
-                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-                        launchIntent.putExtra("user_space", userType);
-                        launchIntent.putExtra("SecureMarket", true);
-                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//            contextWeakReference.get().sendBroadcast(sender);
-
-                        contextWeakReference.get().startActivity(launchIntent);
-                        Snackbar snackbar = Snackbar.make(
-                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
-                                        .getChildAt(0)
-                                , contextWeakReference.get().getString(R.string.install_app_message)
-                                , 3000);
-
-                        snackbar.show();
-
-                    });
-
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                            (dialog, which) -> dialog.dismiss());
-                    alertDialog.show();
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-
-                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
-
-                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
-                        .setStream(uri) // uri from FileProvider
-                        .setType("text/html")
-                        .getIntent()
-                        .setAction(Intent.ACTION_VIEW) //Change if needed
-                        .setDataAndType(uri, "application/vnd.android.package-archive")
-                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-                contextWeakReference.get().startActivity(intent);
-            } catch (Exception e) {
-                Timber.e(e);
-            }
-
+//            try {
+//                PackageManager pm = contextWeakReference.get().getPackageManager();
+//                pm.getPackageInfo("com.secure.systemcontrol", 0);
+//                if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+//                    AlertDialog alertDialog = new AlertDialog.Builder(contextWeakReference.get()).create();
+//                    alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
 //
+//
+//                    alertDialog.setMessage("Are you sure you want to install this app?");
+//
+//                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+//
+//                        Intent launchIntent = new Intent();
+//                        ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+////                        launchIntent.setAction(Intent.ACTION_VIEW);
+//                        launchIntent.setAction(Intent.ACTION_MAIN);
+//                        launchIntent.setComponent(componentName);
+//                        launchIntent.setData(uri);
+//                        launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+//                        launchIntent.putExtra("user_space", userType);
+//                        launchIntent.putExtra("SecureMarket", true);
+//                        launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+//                        launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+////            contextWeakReference.get().sendBroadcast(sender);
+//
+//                        contextWeakReference.get().startActivity(launchIntent);
+//                        Snackbar snackbar = Snackbar.make(
+//                                ((ViewGroup) contextWeakReference.get().findViewById(android.R.id.content))
+//                                        .getChildAt(0)
+//                                , contextWeakReference.get().getString(R.string.install_app_message)
+//                                , 3000);
+//
+//                        snackbar.show();
+//
+//                    });
+//
+//                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+//                            (dialog, which) -> dialog.dismiss());
+//                    alertDialog.show();
+//                }
+//            } catch (PackageManager.NameNotFoundException e) {
+//
+//                savePackages(packageName, INSTALLED_PACKAGES, userType, contextWeakReference.get());
+//
+//                Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
+//                        .setStream(uri) // uri from FileProvider
+//                        .setType("text/html")
+//                        .getIntent()
+//                        .setAction(Intent.ACTION_VIEW) //Change if needed
+//                        .setDataAndType(uri, "application/vnd.android.package-archive")
+//                        .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//                contextWeakReference.get().startActivity(intent);
+//            } catch (Exception e) {
+//                Timber.e(e);
+//            }
 
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+
+                if(getActivity().getPackageManager().canRequestPackageInstalls()){
+
+
+                    Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                            .setStream(uri)
+                            .setText("text/html")
+                            .getIntent()
+                            .setAction(Intent.ACTION_VIEW)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            .setDataAndType(uri,"application/vnd.android.package-archive");
+
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.parse(PrefUtils.getStringPref(getContext(),APk_URI)), "application/vnd.android.package-archive");
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+                    getActivity().startActivity(intent);
+
+                }else{
+                    //  Toast.makeText(activity, "Allowed apps to install from unsource", Toast.LENGTH_SHORT).show();
+
+                    // getActivity().startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
+
+                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:"+getActivity().getPackageName())));
+
+                }
+            }
         }
 
 

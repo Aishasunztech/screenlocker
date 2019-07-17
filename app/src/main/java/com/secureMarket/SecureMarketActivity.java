@@ -230,8 +230,8 @@ public class SecureMarketActivity extends BaseActivity
         if(ev.getAction() == MotionEvent.ACTION_DOWN)
         {
             View view = getCurrentFocus();
-            int id = view.getId();
-            int searchId = R.id.root_layou_market;
+          //  int id = view.getId();
+           // int searchId = R.id.root_layou_market;
             if((view instanceof EditText))
             {
                 Rect outRect = new Rect();
