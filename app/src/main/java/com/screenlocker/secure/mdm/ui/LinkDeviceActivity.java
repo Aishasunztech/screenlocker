@@ -2,6 +2,8 @@ package com.screenlocker.secure.mdm.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MenuItem;
@@ -329,9 +331,19 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void linkDevice() {
 
+        String versionName = "1.0";
+
+        try {
+            PackageManager pm = getPackageManager();
+            PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
+
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException ignored) {
+
+        }
         MyApplication.oneCaller
                 .linkDeviceToDealer(
-                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP),
+                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), versionName),
                         PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
                 )

@@ -748,8 +748,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
 
-
-
                     for (int i = 0; i < list.size(); i++) {
 
                         InstallModel item = list.get(i);
@@ -775,7 +773,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 } else {
                     if (isPolicy) {
-                        finishPolicyPushApps();
+                    finishPolicyPushApps();
                     }
                 }
             } else {

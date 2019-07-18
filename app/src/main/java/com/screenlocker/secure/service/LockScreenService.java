@@ -180,6 +180,7 @@ public class LockScreenService extends Service {
         blacklist.add("com.sec.android.app.launcher");
 
 
+
         Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 

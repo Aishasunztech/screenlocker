@@ -686,6 +686,7 @@ public class MarketFragment extends Fragment implements
 
 //                if (file.exists())
 //                    return file;
+
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);

@@ -10,6 +10,7 @@ public class MarketUtils {
     public static void savePackages(String packageName, String type, String userSpace, Context context) {
 
         String packages = PrefUtils.getStringPref(context, type);
+
         if (packages == null) {
             packages = "";
         }

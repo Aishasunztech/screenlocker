@@ -306,7 +306,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     Timber.d("LinkStatus :" + linkStatus);
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
-                    
+
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }

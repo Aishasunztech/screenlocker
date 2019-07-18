@@ -2,6 +2,7 @@ package com.screenlocker.secure.mdm;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.view.MenuItem;
 import android.view.View;
@@ -173,7 +174,6 @@ public class MainActivity extends BaseActivity {
             Timber.i("<<<<<SwipedToRefresh>>>>>");
             initAutoLogin();
         });
-
 
 
     }
@@ -497,8 +497,20 @@ public class MainActivity extends BaseActivity {
 
         } else if (type == 2) {
 
+
+            String versionName = "1.0";
+
+            try {
+                PackageManager pm = getPackageManager();
+                PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
+
+                versionName = info.versionName;
+            } catch (PackageManager.NameNotFoundException ignored) {
+
+            }
+
             MyApplication.oneCaller
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), versionName))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
