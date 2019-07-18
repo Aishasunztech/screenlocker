@@ -104,7 +104,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 .apply(new RequestOptions().centerCrop())
                 .into(vh.img);
 
-        vh.img.setColorFilter(ContextCompat.getColor(context, R.color.icon_tint), android.graphics.PorterDuff.Mode.MULTIPLY);
+        vh.img.setColorFilter(ContextCompat.getColor(vh.img.getContext(), R.color.icon_tint), android.graphics.PorterDuff.Mode.MULTIPLY);
 
 
         vh.guestSwitch.setChecked(info.isGuest());
