@@ -430,6 +430,5 @@
     <string name="s_n">S/N</string>
     <string name="mac">MAC</string>
     <string name="ip_addr">IP Addr</string>
-    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
 
 </resources>
