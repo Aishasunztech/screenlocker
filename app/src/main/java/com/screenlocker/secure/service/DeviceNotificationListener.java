@@ -49,7 +49,7 @@ public class DeviceNotificationListener extends NotificationListenerService {
         Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
         StatusBarNotification[] notifications = getActiveNotifications();
         for (StatusBarNotification notification : notifications) {
-            if (notification.getPackageName().equals(sbn.getPackageName())){
+            if (notification.getPackageName().equals("com.armorsec.armor1")){
                 return;
             }
         }

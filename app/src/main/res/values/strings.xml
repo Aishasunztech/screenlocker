@@ -423,5 +423,11 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
+    <string name="dealer_pin">Dealer PIN</string>
+    <string name="imei_1">IMEI 1</string>
+    <string name="imei_2">IMEI 2</string>
+    <string name="s_n">S/N</string>
+    <string name="mac">MAC</string>
+    <string name="ip_addr">IP Addr</string>
 
 </resources>

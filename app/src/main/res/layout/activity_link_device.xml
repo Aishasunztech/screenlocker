@@ -60,7 +60,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="DeviceId"
+                        android:text="@string/device_id"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -118,7 +118,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="LinkedDealerPin"
+                        android:text="@string/dealer_pin"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -146,7 +146,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IMEI"
+                        android:text="@string/imei_1"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -175,7 +175,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SimNo"
+                        android:text="@string/sim_1"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -204,7 +204,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IMEI 2"
+                        android:text="@string/imei_2"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -233,7 +233,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SimNo 2"
+                        android:text="@string/sim_2"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -261,7 +261,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SerialNo"
+                        android:text="@string/s_n"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -289,7 +289,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MAC"
+                        android:text="@string/mac"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -317,7 +317,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IP Addr"
+                        android:text="@string/ip_addr"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
