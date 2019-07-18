@@ -423,5 +423,6 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
+    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
 
 </resources>
