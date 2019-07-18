@@ -1,9 +1,11 @@
 package com.screenlocker.secure.launcher;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -42,6 +44,8 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.manual_load.ManualPullPush;
+import com.screenlocker.secure.manual_load.ManualPushPullAdapter;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
@@ -49,11 +53,19 @@ import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.MarketFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +77,16 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 /**
@@ -105,10 +122,16 @@ LockScreenService.ServiceCallbacks,
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
+    public static PolicyRefreshListener policyRefreshListener;
 
 
     private ScreenOffReceiver screenOffReceiver;
 
+    public interface PolicyRefreshListener{
+        void refreshPolicy();
+    }
+
+    public static Activity context;
 
     public MainActivity() {
     }
@@ -127,10 +150,10 @@ LockScreenService.ServiceCallbacks,
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getAllApps().observe(this, appInfos -> {
             allDbApps = appInfos;
-            int size= adapter.appsList.size();
+            int size = adapter.appsList.size();
             adapter.appsList.clear();
-            adapter.notifyItemRangeRemoved(0,--size);
-            final String message = PrefUtils.getStringPref(this,CURRENT_KEY);
+            adapter.notifyItemRangeRemoved(0, --size);
+            final String message = PrefUtils.getStringPref(this, CURRENT_KEY);
             setBackground(message);
             mainPresenter.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
@@ -197,7 +220,7 @@ LockScreenService.ServiceCallbacks,
 
 
     private void setRecyclerView() {
-         rvApps = findViewById(R.id.rvApps);
+        rvApps = findViewById(R.id.rvApps);
         int resId = R.anim.layout_animation;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
@@ -207,7 +230,6 @@ LockScreenService.ServiceCallbacks,
         rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
         rvApps.setAdapter(adapter);
         rvApps.setItemViewCacheSize(30);
-
 
 
     }
@@ -293,9 +315,50 @@ LockScreenService.ServiceCallbacks,
         }
 
         refreshApps(this);
+
+
+        Log.i("checkpolicy", "onResume: onreusme called ");
+        ComponentName cn;
+        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            cn = am.getAppTasks().get(0).getTaskInfo().topActivity;
+        } else {
+            //noinspection deprecation
+            cn = am.getRunningTasks(1).get(0).topActivity;
+        }
+
+
         super.onResume();
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
+
+        ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
+
+
+        if(appsList!=null){
+            Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : "+appsList.size());
+            if(appsList.size()>0){
+                if(!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())){
+
+
+                    for(InstallModel model: appsList){
+                        Log.i("checkpolicy", "onResume: in MainActivity ....... apps call for "+model.getPackage_name());
+                    }
+
+
+                    Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+                    startActivity(intent);
+                }
+
+            }
+        }else{
+            Log.i("checkpolicy", "onResume: app list null : ");
+        }
+
+
+        Log.i("checkpolicy", "onResume:  component name is : "+cn.getClassName());
+
     }
+
     private void runLayoutAnimation() {
         final Context context = rvApps.getContext();
         final LayoutAnimationController controller =
@@ -390,6 +453,11 @@ LockScreenService.ServiceCallbacks,
 
     }*/
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.i("checkfoucsch", "onWindowFocusChanged: "+hasFocus);
+    }
 
     @Override
     protected void onDestroy() {
@@ -482,6 +550,90 @@ LockScreenService.ServiceCallbacks,
     public void onRecentAppKill() {
         clearRecentApp();
     }
+
+    @Override
+    public void showPolicyApps() {
+
+        Log.i("checkpolicy", "showPolicyApps: in main activity");
+
+
+        ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
+
+
+        ComponentName cn;
+        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            cn = am.getAppTasks().get(0).getTaskInfo().topActivity;
+        } else {
+            //noinspection deprecation
+            cn = am.getRunningTasks(1).get(0).topActivity;
+        }
+
+        if(!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())){
+
+            if(appsList!=null && appsList.size()>0){
+                Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+                startActivity(intent);
+            }
+
+
+        }else if(policyRefreshListener!=null) {
+            if(appsList!=null && appsList.size()>0){
+                policyRefreshListener.refreshPolicy();
+            }
+
+        }
+
+       SocketManager socketMSanager = SocketManager.getInstance();
+       String device_id = PrefUtils.getStringPref(MainActivity.this,DEVICE_ID);
+        if (socketMSanager.getSocket() != null && socketMSanager.getSocket().connected()) {
+            Timber.d("<<< FINISH POLICY PUSH APPS>>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socketMSanager.getSocket().emit(FINISH_POLICY_PUSH_APPS + device_id, jsonObject);
+                finishPolicy(socketMSanager,device_id);
+
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+
+    }
+
+
+    public void finishPolicy(SocketManager socketManager,String device_id) {
+        if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
+            Timber.d("<<< FINISH POLICY >>>");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("status", true);
+                socketManager.getSocket().emit(FINISH_POLICY + device_id, jsonObject);
+                PrefUtils.saveBooleanPref(this, LOADING_POLICY, false);
+                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
+                Intent intent = new Intent(FINISH_POLICY);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//                setScreenLock()
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
+    private void setScreenLock() {
+        Intent intent = new Intent(MainActivity.this, LockScreenService.class);
+
+        intent.setAction("locked");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+    }
+
 
     @Override
     public void onAppDownloadedAndAvailabe(String appName, String uri) {

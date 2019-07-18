@@ -12,6 +12,62 @@ public class InstallModel {
     private String token;
     private boolean update;
     private boolean install;
+    private boolean enable;
+
+    private String type_operation;
+
+
+    public InstallModel() {
+    }
+
+    public InstallModel(String apk, String apk_name, boolean guest, boolean encrypted, boolean enable) {
+        this.apk = apk;
+        this.apk_name = apk_name;
+        this.guest = guest;
+        this.encrypted = encrypted;
+        this.enable = enable;
+    }
+
+    public InstallModel(String apk,
+                        String apk_name,
+                        String package_name,
+                        String version_name,
+                        boolean guest,
+                        boolean encrypted,
+                        boolean update,
+                        boolean install,
+                        boolean enable) {
+        this.apk = apk;
+        this.apk_name = apk_name;
+        this.package_name = package_name;
+        this.version_name = version_name;
+        this.guest = guest;
+        this.encrypted = encrypted;
+        this.update = update;
+        this.install = install;
+        this.enable = enable;
+    }
+
+    public InstallModel(String apk,
+                        String apk_name,
+                        String package_name,
+                        String version_name,
+                        boolean guest,
+                        boolean encrypted,
+                        String token,
+                        boolean enable) {
+        this.apk = apk;
+        this.apk_name = apk_name;
+        this.package_name = package_name;
+        this.version_name = version_name;
+        this.guest = guest;
+        this.encrypted = encrypted;
+        this.token = token;
+        this.enable = enable;
+    }
+
+
+
 
     public boolean isInstall() {
         return install;
@@ -45,21 +101,7 @@ public class InstallModel {
         this.version = version;
     }
 
-    public InstallModel(String apk, String apk_name, String package_name, String version_name, boolean guest, boolean encrypted, String token, boolean enable) {
-        this.apk = apk;
-        this.apk_name = apk_name;
-        this.package_name = package_name;
-        this.version_name = version_name;
-        this.guest = guest;
-        this.encrypted = encrypted;
-        this.token = token;
-        this.enable = enable;
-    }
 
-    private boolean enable;
-
-    public InstallModel() {
-    }
 
     public String getApk() {
         return apk;
@@ -115,5 +157,13 @@ public class InstallModel {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public String getType_operation() {
+        return type_operation;
+    }
+
+    public void setType_operation(String type_operation) {
+        this.type_operation = type_operation;
     }
 }

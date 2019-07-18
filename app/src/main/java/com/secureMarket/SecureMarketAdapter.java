@@ -16,11 +16,14 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.AppsModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -38,13 +41,14 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     private String userSpace;
 
 
+
     public interface AppInstallUpdateListener {
-        void onInstallClick(List app);
+        void onInstallClick(Object app);
 
         void onUnInstallClick(List app, boolean status);
     }
 
-    public SecureMarketAdapter(java.util.List<List> appModelList, Context context, AppInstallUpdateListener listener) {
+    public SecureMarketAdapter(java.util.List<List> appModelList, Context context, AppInstallUpdateListener listener,ArrayList<InstallModel> installModelArrayList) {
         this.appModelList = appModelList;
         this.context = context;
         this.listener = listener;
@@ -62,31 +66,29 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            List app = appModelList.get(position);
+            holder.apkSize.setText(app.getApk_size());
 
-        List app = appModelList.get(position);
-        holder.apkSize.setText(app.getApk_size());
+            if (app.isInstalled()) {
+                holder.btnUnInstall.setVisibility(View.VISIBLE);
+                holder.btnInstall.setVisibility(View.GONE);
 
-        if (app.isInstalled()) {
-            holder.btnUnInstall.setVisibility(View.VISIBLE);
-            holder.btnInstall.setVisibility(View.GONE);
+            } else {
+                holder.btnInstall.setVisibility(View.VISIBLE);
+                holder.btnUnInstall.setVisibility(View.GONE);
+            }
 
-        } else {
-            holder.btnInstall.setVisibility(View.VISIBLE);
-            holder.btnUnInstall.setVisibility(View.GONE);
-        }
+            String live_url = PrefUtils.getStringPref(context, LIVE_URL);
 
-        String live_url = PrefUtils.getStringPref(context, LIVE_URL);
-
-        Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + appModelList.get(position).getLogo());
+            Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + appModelList.get(position).getLogo());
 
 
-        Glide.with(context)
-                .load(live_url + LOGO_END_POINT + appModelList.get(position).getLogo())
-                .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-                .into(holder.imageView);
+            Glide.with(context)
+                    .load(live_url + LOGO_END_POINT + appModelList.get(position).getLogo())
+                    .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                    .into(holder.imageView);
 
-        holder.tv_name.setText(appModelList.get(position).getApkName());
-
+            holder.tv_name.setText(appModelList.get(position).getApkName());
 
     }
 
@@ -119,11 +121,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         @Override
         public void onClick(View v) {
-
-            List app = appModelList.get(getAdapterPosition());
-
+            List app = new List();
             if (v.getId() == R.id.btnInstall) {
-
 
                 if (listener != null) {
                     listener.onInstallClick(app);

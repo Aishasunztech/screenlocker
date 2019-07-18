@@ -528,7 +528,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                 String url = response.body().getApkUrl();
 
                                                 String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
+                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null,null);
                                                 obj.execute();
                                             }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
                                                 dialog1.dismiss();
