@@ -12,6 +12,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.solver.widgets.ConstraintAnchor;
 import androidx.fragment.app.Fragment;
 
@@ -31,8 +32,11 @@ public class FinishFragment extends AbstractStep {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view =inflater.inflate(R.layout.fragment_finish, container, false);;
+                CardView card = view.findViewById(R.id.complete_card);
+        card.setBackgroundResource(R.drawable.black_circle);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finish, container, false);
+        return view;
     }
 
     @Override
