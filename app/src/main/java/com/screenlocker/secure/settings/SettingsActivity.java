@@ -924,6 +924,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case "es":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
                     break;
+                case "ar-rSA":
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
+                    break;
                 default:
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
                     break;
