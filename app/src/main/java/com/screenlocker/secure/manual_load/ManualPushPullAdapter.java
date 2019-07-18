@@ -1,6 +1,7 @@
 package com.screenlocker.secure.manual_load;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.LOGO_END_POINT;
 
 public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAdapter.AdapterViewHold> {
 
@@ -49,7 +55,14 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
         holder.tv_name.setText(installModel.getApk_name());
-        Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);
+        Log.i("thumbanail_test", "onBindViewHolder: ");
+
+     //   Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);
+
+        String live_url = PrefUtils.getStringPref(context, LIVE_URL);
+
+        Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + installModelArrayList.get(position).getApk());
+
 
     }
 
@@ -60,7 +73,7 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
 
      class AdapterViewHold extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-         ImageView imageView;
+         ImageView imageView,size_icon;
 
          TextView tv_name, btnInstall, btnUnInstall, apkSize;
 
@@ -71,7 +84,11 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
            btnInstall = itemView.findViewById(R.id.btnInstall);
            btnUnInstall = itemView.findViewById(R.id.btnUnInstall);
            apkSize = itemView.findViewById(R.id.apkSize);
+           size_icon = itemView.findViewById(R.id.size_icon);
            apkSize.setVisibility(View.GONE);
+           imageView.setVisibility(View.GONE);
+           size_icon.setVisibility(View.GONE);
+
 
            btnInstall.setOnClickListener(this);
            btnUnInstall.setOnClickListener(this);

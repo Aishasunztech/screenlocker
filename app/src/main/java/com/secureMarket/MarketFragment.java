@@ -440,8 +440,7 @@ public class MarketFragment extends DialogFragment implements
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onInstallClick(Object object) {
-            List app = (List) object;
+    public void onInstallClick(List app) {
             ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
             final Network n = cm.getActiveNetwork();
 
@@ -495,11 +494,17 @@ public class MarketFragment extends DialogFragment implements
 
             String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
 
-            downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url + MOBILE_END_POINT + "getApk/" +
-                    CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
-            downLoadAndInstallUpdate.execute();
-            AppConstants.INSTALLING_APP_NAME = app.getApkName();
-            AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
+            if(app!=null){
+                String url = live_url + MOBILE_END_POINT + "getApk/" +
+                        CommonUtils.splitName(app.getApk());
+                downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, url, app.getApk(), progressDialog, app.getPackageName());
+                downLoadAndInstallUpdate.execute();
+                AppConstants.INSTALLING_APP_NAME = app.getApkName();
+                AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
+            }else{
+                Toast.makeText(activity, "app null", Toast.LENGTH_SHORT).show();
+            }
+
 
         });
 

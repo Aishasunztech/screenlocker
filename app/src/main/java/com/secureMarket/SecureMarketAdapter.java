@@ -43,7 +43,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
     public interface AppInstallUpdateListener {
-        void onInstallClick(Object app);
+        void onInstallClick(List app);
 
         void onUnInstallClick(List app, boolean status);
     }
@@ -121,9 +121,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         @Override
         public void onClick(View v) {
-            List app = new List();
+            List app = appModelList.get(getAdapterPosition());
             if (v.getId() == R.id.btnInstall) {
-
                 if (listener != null) {
                     listener.onInstallClick(app);
                 }

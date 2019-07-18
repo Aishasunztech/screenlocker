@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -783,16 +784,31 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     if(getResources().getString(R.string.apktype).contains("BYOD")){
                         Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
                         if(push_apps.equals("push_apps")){
-                            new DownLoadAndInstallUpdate(this,null,true,null,new ArrayList<>(list)).execute();
+                            new DownLoadAndInstallUpdate(this,null,true,null,new ArrayList<>(list),isPolicy).execute();
                         }else if (push_apps.equals("pull_apps")){
                             ArrayList<InstallModel> appsList = utils.getArrayList( this);
-                            for(InstallModel model: list){
-                                if(appsList!=null){
-                                    Log.i("checkpolicy", "pushedApps: app removed for package is added is:"+ model.getPackage_name());
-                                    appsList.add(model); } }
-                            utils.saveArrayList(appsList,this);
+                            if(appsList!=null){
+                                for(InstallModel model: list){
+                                    if(isPackageInstalled(model.getPackage_name(),getPackageManager())){
+                                        Log.i("checkpolicy", "pushedApps: app removed for package is added is:"+ model.getPackage_name());
+                                        appsList.add(model);
+                                    }
+                                }
 
-                            if(onAppAvailable!=null){ onAppAvailable.showPolicyApps();}
+                            }else{
+                                appsList = new ArrayList<>();
+                                for(InstallModel model: list){
+                                    if(isPackageInstalled(model.getPackage_name(),getPackageManager())){
+                                        Log.i("checkpolicy", "pushedApps: app removed for package is added is:"+ model.getPackage_name());
+                                        appsList.add(model);
+                                    }
+                                }
+
+
+                            }
+
+                            utils.saveArrayList(appsList,this);
+                            if(onAppAvailable!=null){ onAppAvailable.showPolicyApps(false,true);}
 
                         }
                     }else{
@@ -1309,6 +1325,20 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         }
     }
+
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        boolean found = true;
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+
+            found = false;
+        }
+
+        return found;
+    }
+
 
 
 }
