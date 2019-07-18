@@ -20,6 +20,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -31,12 +32,18 @@ import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.MarketFragment;
+
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -85,7 +92,30 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 if (getPolicyDialog().isShowing()) {
                     getPolicyDialog().dismiss();
                 }
-                showpolicyConfirmstion();
+
+                Toast.makeText(context, "policy applied", Toast.LENGTH_SHORT).show();
+
+               // showpolicyConfirmstion();
+
+//                ArrayList<InstallModel> modelArrayList = utils.getArrayList( BaseActivity.this);
+//
+//                if(modelArrayList!=null){
+//                    if(modelArrayList.size()>0){
+//
+//                        if(getSupportFragmentManager().getFragments().size()>0){
+//                            if(getSupportFragmentManager().getFragments().get(0) instanceof MarketFragment){
+//
+//                            }else{
+//                                MarketFragment marketFragment = new MarketFragment();
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString("check",MarketFragment.TYPE_POLICY);
+//                                marketFragment.setArguments(bundle);
+//                                marketFragment.show(getSupportFragmentManager(),null);
+//                            }
+//                        }
+//                    }
+//                }
+
             }
         }
     };
@@ -221,7 +251,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onStart() {
         super.onStart();
-        showpolicyConfirmstion();
+       // showpolicyConfirmstion();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(loadingPolicyReceiver, new IntentFilter(FINISH_POLICY));
 

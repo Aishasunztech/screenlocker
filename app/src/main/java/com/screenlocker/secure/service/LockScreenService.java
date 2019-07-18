@@ -305,7 +305,6 @@ public class LockScreenService extends Service {
             Timber.d(e);
         }
 
-
         super.onDestroy();
     }
 
@@ -536,7 +535,6 @@ public class LockScreenService extends Service {
                     } else {
                         //disable sim slote for this user
                         broadCastIntent(false, slot);
-
                     }
                 } else {
                     //disable in any case

@@ -1,5 +1,6 @@
 package com.screenlocker.secure.socket.service;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -10,20 +11,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.manual_load.ManualPullPush;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.TransparentActivity;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
@@ -32,9 +40,11 @@ import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.MarketFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +52,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +61,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
+import static com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate.onAppAvailable;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.checkInstalledApps;
@@ -110,6 +122,7 @@ import static com.screenlocker.secure.utils.Utils.getNotification;
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
 
     private SocketManager socketManager;
+    private static final String TAG = "SocketServiceII";
 
     @Nullable
     @Override
@@ -739,19 +752,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 String pushedApps = object.getString(push_apps);
                 Timber.d(pushedApps);
 
+                Log.i("checkpolicy", "pushedApps: pram1 : " + object.toString()
+                        + ".... pram 2 ... " + push_apps.toString() + ".... pram 3 ... " + s.toString() + ".... pram 4 ... " + s2.toString() + " ..... prm 5 " + isPolicy);
 
                 if (!pushedApps.equals("[]")) {
 
-                    Type listType = new TypeToken<ArrayList<InstallModel>>() {
-                    }.getType();
+                    Type listType = new TypeToken<ArrayList<InstallModel>>(){}.getType();
 
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
-
-
-
                     for (int i = 0; i < list.size(); i++) {
-
                         InstallModel item = list.get(i);
                         String apk = item.getApk();
 
@@ -759,25 +769,46 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         String url = live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(apk);
                         item.setApk(url);
                         item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(SocketService.this, TOKEN)));
+                        item.setType_operation(push_apps);
                         list.set(i, item);
                     }
 
                     String apps = new Gson().toJson(list);
-
                     final Intent intent = new Intent();
                     intent.setAction(s);
                     intent.putExtra("json", apps);
                     intent.putExtra("isPolicy", isPolicy);
                     Timber.d("isPolicy %s", isPolicy);
-                    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                    intent.setComponent(new ComponentName("com.secure.systemcontrol", s2));
-                    sendBroadcast(intent);
+
+                    if(getResources().getString(R.string.apktype).contains("BYOD")){
+                        Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
+                        if(push_apps.equals("push_apps")){
+                            new DownLoadAndInstallUpdate(this,null,true,null,new ArrayList<>(list)).execute();
+                        }else if (push_apps.equals("pull_apps")){
+                            ArrayList<InstallModel> appsList = utils.getArrayList( this);
+                            for(InstallModel model: list){
+                                if(appsList!=null){
+                                    Log.i("checkpolicy", "pushedApps: app removed for package is added is:"+ model.getPackage_name());
+                                    appsList.add(model); } }
+                            utils.saveArrayList(appsList,this);
+
+                            if(onAppAvailable!=null){ onAppAvailable.showPolicyApps();}
+
+                        }
+                    }else{
+                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                        intent.setComponent(new ComponentName("com.secure.systemcontrol", s2));
+                        sendBroadcast(intent);
+                    }
+
 
                 } else {
                     if (isPolicy) {
                         finishPolicyPushApps();
                     }
                 }
+
+
             } else {
                 Timber.d("Invalid request");
             }

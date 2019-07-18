@@ -60,7 +60,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.AdvanceSettings"></activity>
+        <activity android:name=".manual_load.ManualPullPush"></activity>
+        <activity android:name=".settings.AdvanceSettings" />
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
             android:screenOrientation="nosensor" />

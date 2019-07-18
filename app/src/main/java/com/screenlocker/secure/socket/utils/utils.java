@@ -9,14 +9,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -39,6 +44,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,6 +185,8 @@ public class utils {
 
         String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
 
+        Log.i("checkresults", "refreshApps:  unInstalled apps : "+unInstalledPackage);
+
         if (unInstalledPackage != null) {
             String[] data = unInstalledPackage.split(",");
 
@@ -201,7 +209,10 @@ public class utils {
                 }
             }
         }
+
         String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
+
+        Log.i("checkresults", "refreshApps:  installed apps : "+installedPackages);
 
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
@@ -216,6 +227,7 @@ public class utils {
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
                     List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
+
 
                     for (ResolveInfo ri : allApps) {
                         if (ri.activityInfo.packageName.equals(packageName)) {
@@ -859,5 +871,24 @@ public class utils {
         } else {
             Timber.d("Job Scheduled Failed");
         }
+    }
+
+
+
+    public static void saveArrayList(ArrayList<InstallModel> list,Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        editor.putString("appsList", json);
+        editor.apply();     // This line is IMPORTANT !!!
+    }
+
+    public static ArrayList<InstallModel> getArrayList(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Gson gson = new Gson();
+        String json = prefs.getString("appsList", null);
+        Type type = new TypeToken<ArrayList<InstallModel>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 }

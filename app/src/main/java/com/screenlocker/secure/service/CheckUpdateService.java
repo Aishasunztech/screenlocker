@@ -96,7 +96,7 @@ public class CheckUpdateService extends JobService {
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, params);
+                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, params,null);
                                     obj.execute();
 
                                 }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();

@@ -5,22 +5,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.socket.model.InstallModel;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import androidx.core.content.FileProvider;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.secureMarket.MarketUtils.savePackages;
 
 public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
     private String appName, url;
@@ -31,8 +40,10 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     public static OnAppAvailable onAppAvailable;
 
 
+
     public interface OnAppAvailable{
         void onAppDownloadedAndAvailabe(String appName,String appUri);
+        void showPolicyApps();
     }
 
 
@@ -41,6 +52,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         this.url = url;
         this.appName = appName;
         this.activityName = activityName;
+
     }
 
 
@@ -48,21 +60,22 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog = new ProgressDialog(contextWeakReference.get());
-        if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.install_app_activity)))
-        {
-            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
-        }
-        else if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.secure_market_activity)))
-        {
-            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
-        }
-        else{
-            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
-        }
-        dialog.setCancelable(false);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.show();
+
+            dialog = new ProgressDialog(contextWeakReference.get());
+            if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.install_app_activity)))
+            {
+                dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
+            }
+            else if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.secure_market_activity)))
+            {
+                dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
+            }
+            else{
+                dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
+            }
+            dialog.setCancelable(false);
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.show();
     }
 
     @Override
@@ -74,10 +87,10 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     private Boolean downloadApp() {
         FileOutputStream fileOutputStream = null;
         InputStream input = null;
+        File file;
         try {
-            appName = appName.substring(0,(appName.length() -4));
-            File file = contextWeakReference.get().getFileStreamPath(appName);
-
+                appName = appName.substring(0,(appName.length() -4));
+                 file = contextWeakReference.get().getFileStreamPath(appName);
             if (file.exists())
                 return true;
             try {
@@ -96,11 +109,11 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
                     publishProgress((int) ((total * 100) / contentLength));
                     fileOutputStream.write(data, 0, count);
                 }
-
                 return true;
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.i("SocketServiceII", "downloadApp: exception 1 is : "+e.toString());
                 return false;
             } finally {
                 if (fileOutputStream != null) {
@@ -113,32 +126,31 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         } catch (Exception e) {
             e.printStackTrace();
 
+            Log.i("SocketServiceII", "downloadApp: exception 2 is : "+e.toString());
         }
         return false;
     }
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        dialog.setProgress(values[0]);
+            dialog.setProgress(values[0]);
 //            tvProgressText.setText(String.valueOf(values[0]));
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        if (dialog != null)
-            dialog.dismiss();
-        if (aBoolean) {
-          //  showInstallDialog(appName);
-
-            File f = contextWeakReference.get().getFileStreamPath(appName);
-            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
-
-            if(onAppAvailable!= null){
-                onAppAvailable.onAppDownloadedAndAvailabe(appName,apkUri.toString());
+        Log.i("SocketServiceII", "onPostExecute: result is : "+aBoolean);
+            if (dialog != null)
+                dialog.dismiss();
+            if (aBoolean) {
+                //  showInstallDialog(appName);
+                File f = contextWeakReference.get().getFileStreamPath(appName);
+                Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
+                if(onAppAvailable!= null){
+                    onAppAvailable.onAppDownloadedAndAvailabe(appName,apkUri.toString());
+                }
             }
-        }
-
     }
 
     private void showInstallDialog(String appName) {
