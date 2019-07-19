@@ -41,15 +41,17 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
     private boolean isSilent;
     private JobParameters jobParameters;
     private ArrayList<InstallModel> list_apps;
+    private boolean isPolicy;
 
     private static int counterFailed = 0 ;
 
-    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent, JobParameters jobParameters, ArrayList<InstallModel> list_apps) {
+    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent, JobParameters jobParameters, ArrayList<InstallModel> list_apps,boolean isPolicy) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
         this.isSilent = isSilent;
         this.jobParameters = jobParameters;
         this.list_apps = list_apps;
+        this.isPolicy = isPolicy;
         for(InstallModel installModel : list_apps){
             Log.i("checkpolicy", "DownLoadAndInstallUpdate: constructur for : "+ list_apps.size() + "  ...... "+ list_apps.get(0).getApk());
         }
@@ -188,7 +190,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
                     installModels.add(installModel);
                     utils.saveArrayList(installModels,contextWeakReference.get());
                     list_apps.remove(0);
-                    if(onAppAvailable!=null){ onAppAvailable.showPolicyApps();}
+                    if(onAppAvailable!=null){ onAppAvailable.showPolicyApps(isPolicy,false);}
                 }
 
                 if(list_apps.size()>1){
@@ -202,7 +204,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
                     installModels.add(installModel);
                     utils.saveArrayList(installModels,contextWeakReference.get());
                     list_apps.remove(0);
-                    new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps).execute();
+                    new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps,isPolicy).execute();
 
                 }
 
@@ -210,15 +212,15 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
                 if(counterFailed < 2){
                     counterFailed =+1;
-                    new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps).execute();
+                    new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps,isPolicy).execute();
 
                 }else{
                     counterFailed = 0;
                     if(list_apps.size()>1){
                         list_apps.remove(0);
-                        new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps).execute();
+                        new DownLoadAndInstallUpdate(contextWeakReference.get(),null,true,null,list_apps,isPolicy).execute();
                     }else{
-                        if(onAppAvailable!=null){ onAppAvailable.showPolicyApps();}
+                        if(onAppAvailable!=null){ onAppAvailable.showPolicyApps(isPolicy,false);}
                         // launch screen for install ............
                     }
 

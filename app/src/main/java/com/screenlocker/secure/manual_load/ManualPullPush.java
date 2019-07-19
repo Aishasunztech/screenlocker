@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,13 +22,19 @@ import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.MarketFragment;
 import com.secureMarket.SecureMarketAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class ManualPullPush extends AppCompatActivity implements ManualPushPullAdapter.PushPullAppsListener , MainActivity.PolicyRefreshListener {
 
@@ -62,27 +69,13 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
     @Override
     protected void onResume() {
         super.onResume();
-
         ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
-        Log.i(TAG, "onResume: called in manual push for size "+appsList.size());
-
         if(appsList!=null){
             if(app_check_Install!=null){
                 if(isPackageInstalled(app_check_Install,getPackageManager())){
-
-                    AppInfo app = new AppInfo(String.valueOf(installModell.loadLabel(pm)),
-                            ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
-
                     if(installModell!=null){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MyApplication.getAppDatabase(ManualPullPush.this).getDao().insertApps(app);
-                            }
-                        }).start();
-
+                       enterAppData();
                     }
-
                     if(appsList.size()>0){
                         for(int i = 0 ;i<appsList.size();i++){
                             if(app_check_Install.equals(appsList.get(i).getPackage_name())){
@@ -123,19 +116,18 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
 
 
             if(list.size()>0){
-                manualPushPullAdapter = new ManualPushPullAdapter(ManualPullPush.this,list,ManualPullPush.this);
-                recyclerView.setAdapter(manualPushPullAdapter);
-                recyclerView.setHasFixedSize(true);
+                if(manualPushPullAdapter!=null && recyclerView!=null){
+                    manualPushPullAdapter = new ManualPushPullAdapter(ManualPullPush.this,list,ManualPullPush.this);
+                    recyclerView.setAdapter(manualPushPullAdapter);
+                    recyclerView.setHasFixedSize(true);
+                }
+
             }else {finish();}
 
         }else{
             Log.i(TAG, "setRecyclerAdapter: list null in ManualPullPush adapter");
         }
-
-
-
     }
-
     @Override
     public void appTextButtonClick(int position, InstallModel installModel) {
 
@@ -185,6 +177,14 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == UNINSTALL_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MyApplication.getAppDatabase(ManualPullPush.this).getDao().deletePackage(app_check_uninstall);
+                    }
+                }).start();
+
                 ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
                 if(appsList.size()>0){
                     for(int i = 0 ;i<appsList.size();i++){
@@ -250,5 +250,37 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
     @Override
     public void refreshPolicy() {
         setRecyclerAdapter();
+    }
+
+    private void enterAppData(){
+
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(installModell.getPackage_name(), 0);
+            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
+
+
+            for (ResolveInfo ri : allApps) {
+                if (ri.activityInfo.packageName.equals(installModell.getPackage_name())) {
+                    AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
+                            ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
+                    app.setUniqueName(app.getPackageName());
+                    app.setExtension(false);
+                    app.setDefaultApp(false);
+                    app.setEncrypted(installModell.isEncrypted());
+                    app.setGuest(installModell.isGuest());
+                    app.setVisible(true);
+                    app.setEnable(installModell.isEnable());
+                    new Thread(() -> MyApplication.getAppDatabase(ManualPullPush.this).getDao().insertApps(app)).start();
+                }
+            }
+
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 }

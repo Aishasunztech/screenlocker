@@ -132,7 +132,12 @@ public class CommonUtils {
     }
 
     public static String splitName(String s) {
-        return s.replace(".apk", "");
+        if(s!=null){
+            return s.replace(".apk", "");
+        }else{
+            return "";
+        }
+
 
     }
 

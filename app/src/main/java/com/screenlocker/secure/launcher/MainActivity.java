@@ -78,6 +78,8 @@ import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -552,9 +554,12 @@ LockScreenService.ServiceCallbacks,
     }
 
     @Override
-    public void showPolicyApps() {
+    public void showPolicyApps(boolean isPolicy,boolean isPulled) {
 
         Log.i("checkpolicy", "showPolicyApps: in main activity");
+
+        SocketManager socketMSanager = SocketManager.getInstance();
+        String device_id = PrefUtils.getStringPref(MainActivity.this,DEVICE_ID);
 
 
         ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
@@ -584,26 +589,46 @@ LockScreenService.ServiceCallbacks,
 
         }
 
-       SocketManager socketMSanager = SocketManager.getInstance();
-       String device_id = PrefUtils.getStringPref(MainActivity.this,DEVICE_ID);
-        if (socketMSanager.getSocket() != null && socketMSanager.getSocket().connected()) {
-            Timber.d("<<< FINISH POLICY PUSH APPS>>>");
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("status", true);
-                socketMSanager.getSocket().emit(FINISH_POLICY_PUSH_APPS + device_id, jsonObject);
-                finishPolicy(socketMSanager,device_id);
+        Log.d("socket", "showPolicyApps: acknolgment tags are :    is Pulled... "+isPulled +" ...  is Policy .. "+isPolicy);
 
-            } catch (JSONException e) {
-                Timber.d(e);
-            }
-        }
+       if(isPulled){
+
+           finishPulledApps(socketMSanager,device_id);
+
+       }else{
+
+           if(isPolicy){
+
+               if (socketMSanager.getSocket() != null && socketMSanager.getSocket().connected()) {
+                   Timber.d("<<< FINISH POLICY PUSH APPS>>>");
+                   JSONObject jsonObject = new JSONObject();
+                   try {
+                       jsonObject.put("device_id", device_id);
+                       jsonObject.put("status", true);
+                       socketMSanager.getSocket().emit(FINISH_POLICY_PUSH_APPS + device_id, jsonObject);
+                       finishPolicy(socketMSanager,device_id);
+
+                   } catch (JSONException e) {
+                       Timber.d(e);
+                   }
+               }
+
+           }else{
+
+               finishPushedApps(socketMSanager,device_id);
+
+
+           }
+       }
+
 
     }
 
 
+
+
     public void finishPolicy(SocketManager socketManager,String device_id) {
+        Log.d("socket", "finishPolicy: called ... ");
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
             Timber.d("<<< FINISH POLICY >>>");
             JSONObject jsonObject = new JSONObject();
@@ -615,25 +640,42 @@ LockScreenService.ServiceCallbacks,
                 PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
                 Intent intent = new Intent(FINISH_POLICY);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-//                setScreenLock()
             } catch (JSONException e) {
                 Timber.d(e);
             }
         }
     }
 
-    private void setScreenLock() {
-        Intent intent = new Intent(MainActivity.this, LockScreenService.class);
 
-        intent.setAction("locked");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent);
-        } else {
-            startService(intent);
+    public void finishPushedApps(SocketManager socketManager ,String device_id) {
+        Timber.d("<<<Finish pushed apps>>>");
+        if (socketManager.getSocket() != null) {
+            if (socketManager.getSocket().connected()) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("status", true);
+                    socketManager.getSocket().emit(FINISHED_PUSHED_APPS + device_id, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
+    public void finishPulledApps(SocketManager socketManager,String device_id) {
+        Timber.d("<<<Finish pulled apps>>>");
+        if (socketManager.getSocket() != null) {
+            if (socketManager.getSocket().connected()) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("status", true);
+                    socketManager.getSocket().emit(FINISHED_PULLED_APPS + device_id, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     @Override
     public void onAppDownloadedAndAvailabe(String appName, String uri) {

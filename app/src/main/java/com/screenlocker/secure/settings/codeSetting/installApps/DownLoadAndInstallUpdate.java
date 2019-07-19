@@ -43,9 +43,8 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
 
     public interface OnAppAvailable{
         void onAppDownloadedAndAvailabe(String appName,String appUri);
-        void showPolicyApps();
+        void showPolicyApps(boolean isPolicy,boolean isPulled);
     }
-
 
     public DownLoadAndInstallUpdate(Context context, final String url, String appName,String activityName) {
         contextWeakReference = new WeakReference<>(context);
@@ -54,8 +53,6 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         this.activityName = activityName;
 
     }
-
-
 
     @Override
     protected void onPreExecute() {
