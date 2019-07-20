@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.appsflyer:af-android-sdk:4.10.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-af-android-sdk-4.10.1.aar/d7c6c23e0dc488a0c4debf39e7d145f6/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-af-android-sdk-4.10.1.aar/d7c6c23e0dc488a0c4debf39e7d145f6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-af-android-sdk-4.10.1.aar/3211e846cc1cb55bb5647eb88b6f09f4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-af-android-sdk-4.10.1.aar/3211e846cc1cb55bb5647eb88b6f09f4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.appsflyer/af-android-sdk/4.10.1/c4feb36166f7c3c993cb9b685b26832abc3ac8e3/af-android-sdk-4.10.1-javadoc.jar!/" />

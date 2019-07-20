@@ -82,6 +82,7 @@ import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.GET_SIM_UPDATES;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
@@ -101,6 +102,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
@@ -312,6 +314,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             writeImei();
             imeiHistory();
             forceUpdateCheck();
+            getSimUpdates();
 
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -337,6 +340,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().off(GET_PULLED_APPS + device_id);
                 socketManager.getSocket().off(GET_POLICY + device_id);
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
+                socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
             }
 
 
@@ -1214,6 +1218,41 @@ public class SocketService extends Service implements OnSocketConnectionListener
             } catch (JSONException e) {
                 Timber.d(e);
             }
+        }
+    }
+
+    @Override
+    public void getSimUpdates() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(GET_SIM_UPDATES + device_id, args -> {
+                    Timber.d("<<< GETTING SIM UPDATES >>>");
+                    JSONObject obj = (JSONObject) args[0];
+
+                    try {
+                        Timber.d(obj.toString());
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+                            Timber.e(" valid request ");
+                            socketManager.getSocket().emit(SEND_SIM_ACK+device_id,new JSONObject().put("device_id", device_id));
+                            Timber.d(obj.toString());
+
+
+
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 
