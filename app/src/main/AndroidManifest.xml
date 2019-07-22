@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" /> <!-- critical permissions -->
+    <uses-permission android:name="android.permission.REQUEST_PACKAGE_INSTALLS" />
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
@@ -46,7 +47,6 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.SUSPEND_APPS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.SUSPEND_APPS" />
     <uses-permission android:name="android.permission.MANAGE_USERS" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
@@ -83,8 +83,10 @@
         </activity>
 
         <activity android:name=".settings.AdvanceSettings" />
-        <activity android:name=".manual_load.ManualPullPush"></activity>
-        <activity android:name=".settings.AdvanceSettings" />
+        <activity
+            android:name=".manual_load.ManualPullPush"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
             android:screenOrientation="nosensor" />

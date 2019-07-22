@@ -19,8 +19,8 @@ android {
         applicationId "com.secure.launcher1"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5140
-        versionName "5.14"
+        versionCode 5134
+        versionName "5.134"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

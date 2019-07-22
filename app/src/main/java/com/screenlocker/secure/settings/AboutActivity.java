@@ -1,40 +1,65 @@
 package com.screenlocker.secure.settings;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
-public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
+public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private SocketManager socketManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        socketManager = SocketManager.getInstance();
+        socketManager.setSocketConnectionListener(this);
+
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.account));
@@ -49,12 +74,17 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvExpiresIn = findViewById(R.id.tvExpiresIn);
         tvImei1 = findViewById(R.id.tvImei1);
         tvImei2 = findViewById(R.id.tvImei2);
+        swipeRefreshLayout = findViewById(R.id.lytSwipeReferesh);
 
         onlineStatus.setOnClickListener(this);
         tvDeviceId.setOnClickListener(this);
         tvStatus.setOnClickListener(this);
         tvImei1.setOnClickListener(this);
         tvImei2.setOnClickListener(this);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            refresh();
+        });
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
@@ -144,6 +174,77 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+    private void showNetworkDialog() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
+        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+
+        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
+            Intent intent = new Intent(this, SecureSettingsMain.class);
+            intent.putExtra("show_default", "show_default");
+            startActivity(intent);
+
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
+
+    }
+
+    private AsyncCalls asyncCalls;
+
+    private void refresh() {
+
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+        if (isConnected) {
+
+            if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+                runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_online)));
+            } else {
+                runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_disconnected)));
+                String[] urls = {URL_1, URL_2};
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
+                }
+                asyncCalls = new AsyncCalls(output -> {
+                    Timber.d("output : " + output);
+                    if (output != null) {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+                        Timber.d("LinkStatus :" + linkStatus);
+                        if (linkStatus) {
+                            Timber.d("LinkStatus :" + linkStatus);
+                            String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                            String serialNo = DeviceIdUtils.getSerialNumber();
+                            runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
+                            new ApiUtils(this, macAddress, serialNo);
+                        }
+                    } else {
+                        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
+                    }
+                }, this, urls);// checking hosts
+                asyncCalls.execute();
+            }
+        } else {
+            showNetworkDialog();
+        }
+
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -167,5 +268,42 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        socketManager.removeSocketConnectionListener(this);
+        socketManager.removeAllSocketConnectionListener();
+
+    }
+
+    @Override
+    public void onSocketEventFailed() {
+        Timber.d("Socket event failed");
+        new ApiUtils(this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
+    }
+
+    @Override
+    public void onSocketConnectionStateChange(int socketState) {
+        if (socketState == 1) {
+            runOnUiThread(() -> onlineStatus.setText("Connecting..."));
+
+        } else if (socketState == 2) {
+            Timber.d("Socket is connected");
+
+            runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_online)));
+
+        } else if (socketState == 3) {
+            Timber.d("Socket is disconnected");
+            runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_disconnected)));
+
+        }
+    }
+
+
+    @Override
+    public void onInternetConnectionStateChange(int socketState) {
+
     }
 }

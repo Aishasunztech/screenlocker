@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -32,32 +34,32 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
         this.pushPullAppsListener = pushPullAppsListener;
     }
 
-    interface PushPullAppsListener{
-        void appTextButtonClick(int position,InstallModel installModel);
+    interface PushPullAppsListener {
+        void appTextButtonClick(int position, InstallModel installModel);
     }
 
     @NonNull
     @Override
     public AdapterViewHold onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new AdapterViewHold(LayoutInflater.from(parent.getContext()).inflate(R.layout.market_app_list_item,null));
+        return new AdapterViewHold(LayoutInflater.from(parent.getContext()).inflate(R.layout.market_app_list_item, null));
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHold holder, int position) {
-        InstallModel installModel = installModelArrayList.get(0);
+        InstallModel installModel = installModelArrayList.get(position);
 
-        if(installModel.getType_operation().equals(ManualPullPush.PULL_APP)){
+        if (installModel.getType_operation().equals(ManualPullPush.PULL_APP)) {
             holder.btnUnInstall.setVisibility(View.VISIBLE);
             holder.btnInstall.setVisibility(View.GONE);
         }
-        if(installModel.getType_operation().equals(ManualPullPush.PUSH_APP)){
+        if (installModel.getType_operation().equals(ManualPullPush.PUSH_APP)) {
             holder.btnUnInstall.setVisibility(View.GONE);
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
         holder.tv_name.setText(installModel.getApk_name());
-        Log.i("thumbanail_test", "onBindViewHolder: ");
+        Log.i("thumbanail_test", "onBindViewHolder: " + installModel.getApk_name());
 
-     //   Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);
+        //   Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);
 
         String live_url = PrefUtils.getStringPref(context, LIVE_URL);
 
@@ -71,47 +73,47 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
         return installModelArrayList.size();
     }
 
-     class AdapterViewHold extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class AdapterViewHold extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-         ImageView imageView,size_icon;
+        ImageView imageView, size_icon;
 
-         TextView tv_name, btnInstall, btnUnInstall, apkSize;
+        TextView tv_name, btnInstall, btnUnInstall, apkSize;
 
-       public AdapterViewHold(@NonNull View itemView) {
-           super(itemView);
-           imageView = itemView.findViewById(R.id.marketImageView);
-           tv_name = itemView.findViewById(R.id.market_app_name);
-           btnInstall = itemView.findViewById(R.id.btnInstall);
-           btnUnInstall = itemView.findViewById(R.id.btnUnInstall);
-           apkSize = itemView.findViewById(R.id.apkSize);
-           size_icon = itemView.findViewById(R.id.size_icon);
-           apkSize.setVisibility(View.GONE);
-           imageView.setVisibility(View.GONE);
-           size_icon.setVisibility(View.GONE);
+        public AdapterViewHold(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.marketImageView);
+            tv_name = itemView.findViewById(R.id.market_app_name);
+            btnInstall = itemView.findViewById(R.id.btnInstall);
+            btnUnInstall = itemView.findViewById(R.id.btnUnInstall);
+            apkSize = itemView.findViewById(R.id.apkSize);
+            size_icon = itemView.findViewById(R.id.size_icon);
+            apkSize.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+            size_icon.setVisibility(View.GONE);
 
+            btnInstall.setText("Install");
+            btnInstall.setOnClickListener(this);
+            btnUnInstall.setOnClickListener(this);
 
-           btnInstall.setOnClickListener(this);
-           btnUnInstall.setOnClickListener(this);
+        }
 
-       }
-
-         @Override
-         public void onClick(View v) {
-             switch (v.getId()){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
                 case R.id.btnInstall:
-                    if(pushPullAppsListener!=null){
-                        pushPullAppsListener.appTextButtonClick(getAdapterPosition(),installModelArrayList.get(getAdapterPosition()));
+                    if (pushPullAppsListener != null) {
+                        pushPullAppsListener.appTextButtonClick(getAdapterPosition(), installModelArrayList.get(getAdapterPosition()));
                     }
                     break;
-                 case R.id.btnUnInstall:
-                     if(pushPullAppsListener!=null){
-                         pushPullAppsListener.appTextButtonClick(getAdapterPosition(),installModelArrayList.get(getAdapterPosition()));
-                     }
-                     break;
-                 default:
-                     break;
+                case R.id.btnUnInstall:
+                    if (pushPullAppsListener != null) {
+                        pushPullAppsListener.appTextButtonClick(getAdapterPosition(), installModelArrayList.get(getAdapterPosition()));
+                    }
+                    break;
+                default:
+                    break;
 
-             }
-         }
-     }
+            }
+        }
+    }
 }

@@ -320,6 +320,7 @@ LockScreenService.ServiceCallbacks,
 
 
         Log.i("checkpolicy", "onResume: onreusme called ");
+
         ComponentName cn;
         ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -336,28 +337,34 @@ LockScreenService.ServiceCallbacks,
         ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
 
 
-        if(appsList!=null){
-            Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : "+appsList.size());
-            if(appsList.size()>0){
-                if(!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())){
+        if(!PrefUtils.getStringPref(this,CURRENT_KEY).equals(KEY_SUPPORT_PASSWORD)){
+
+            if(appsList!=null){
+                Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : "+appsList.size());
+                if(appsList.size()>0){
+                    if(!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())){
 
 
-                    for(InstallModel model: appsList){
-                        Log.i("checkpolicy", "onResume: in MainActivity ....... apps call for "+model.getPackage_name());
+                        for(InstallModel model: appsList){
+                            Log.i("checkpolicy", "onResume: in MainActivity ....... apps call for "+model.getPackage_name());
+                        }
+
+
+                        Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+                        startActivity(intent);
                     }
 
-
-                    Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
-                    startActivity(intent);
                 }
-
+            }else{
+                Log.i("checkpolicy", "onResume: app list null : ");
             }
-        }else{
-            Log.i("checkpolicy", "onResume: app list null : ");
+
+
+            Log.i("checkpolicy", "onResume:  component name is : "+cn.getClassName());
         }
 
-
         Log.i("checkpolicy", "onResume:  component name is : "+cn.getClassName());
+
 
     }
 
@@ -584,7 +591,8 @@ LockScreenService.ServiceCallbacks,
 
         }else if(policyRefreshListener!=null) {
             if(appsList!=null && appsList.size()>0){
-                policyRefreshListener.refreshPolicy();
+                runOnUiThread(() -> policyRefreshListener.refreshPolicy());
+
             }
 
         }
