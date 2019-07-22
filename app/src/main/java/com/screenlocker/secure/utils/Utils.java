@@ -313,7 +313,6 @@ public class Utils {
 
 
                 }
-                // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
             /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
 
 // JUST a go through LOCK
@@ -577,6 +576,14 @@ public class Utils {
         // =audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
         audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
                 currentVolume, AudioManager.STREAM_VOICE_CALL);
+    }
+    public static void micOff(Context context) {
+        Timber.d("speakerOn");
+        AudioManager audioManager = getAudioManager(context);
+        if (audioManager.isMicrophoneMute())
+            return;
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setMicrophoneMute(true);
     }
 
     /**

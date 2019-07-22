@@ -76,7 +76,7 @@
     <string name="session_expired">Session expired</string>
     <string name="expired">expired</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="system_controls">System Permissions</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
@@ -91,10 +91,10 @@
     <string name="no">No</string>
     <string name="fine_location_and_cross_location">Fine Location</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">Some Error Occurred!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="language">Languages</string>

@@ -63,12 +63,14 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ALLOW_SCREENSHOT;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
+import static com.screenlocker.secure.utils.Utils.micOff;
 import static com.screenlocker.secure.utils.Utils.startNfcSettingsActivity;
 
 
@@ -98,7 +100,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     private ImageView appImage;
     private LockScreenService mService;
     private boolean mBound = false;
-    static  final int REQUEST_PROVISION_MANAGED_PROFILE = 1;
+    static final int REQUEST_PROVISION_MANAGED_PROFILE = 1;
 
 
     @Override
@@ -117,11 +119,12 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
         switchDisable = findViewById(R.id.switchDisable);
         switchCamera = findViewById(R.id.switchCamera);
-        if (mDPM.getCameraDisabled(compName)){
+        if (mDPM.getCameraDisabled(compName)) {
             switchCamera.setChecked(true);
-        }else
+        } else
             switchCamera.setChecked(false);
         switchSpeaker = findViewById(R.id.switchSpeaker);
+        switchMic = findViewById(R.id.switchMic);
         switchFileSharing = findViewById(R.id.switchFileSharing);
         switchGuest = findViewById(R.id.switchGuest);
         switchEncrypt = findViewById(R.id.switchEncrypt);
@@ -205,9 +208,8 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             } else {
                 switchLocation.setChecked(false);
             }
-        }
-        else if (requestCode == REQUEST_PROVISION_MANAGED_PROFILE){
-            Log.d("", "onActivityResult: "+requestCode);
+        } else if (requestCode == REQUEST_PROVISION_MANAGED_PROFILE) {
+            Log.d("", "onActivityResult: " + requestCode);
         }
 
     }
@@ -269,7 +271,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//TODO if it exist in db then updatte the ui
                             switchGuest.setChecked(appInfo.isGuest());
                             switchEncrypt.setChecked(appInfo.isEncrypted());
                             switchDisable.setChecked(appInfo.isEnable());
@@ -409,18 +410,33 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
                 break;
             case R.id.switchCamera:
-                mDPM.setCameraDisabled(compName, isChecked);
+                try {
+
+                    mDPM.setCameraDisabled(compName, isChecked);
+                } catch (SecurityException e) {
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
+                    startActivityForResult(intent, RESULT_ENABLE);
+                }
                 break;
             case R.id.switchSpeaker:
                 //mDPM.setMasterVolumeMuted(compName, isChecked);
-                if (isChecked){
+                if (isChecked) {
                     Utils.speaker(this);
-                }else {
+                } else {
                     Utils.speakerOff(this);
                 }
                 break;
             case R.id.switchFileSharing:
-                mDPM.setScreenCaptureDisabled(compName, isChecked);
+                //mDPM.setScreenCaptureDisabled(compName, isChecked);
+                break;
+            case R.id.switchMic:
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                    Timber.d("device owner: ");
+                    mDPM.setMasterVolumeMuted(compName, isChecked);
+                }
+                //micOff(this);
                 break;
 
         }
