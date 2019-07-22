@@ -25,12 +25,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
@@ -71,7 +71,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
-public class InstallAppsActivity extends BaseActivity implements View.OnClickListener, InstallAppsAdapter.InstallAppListener {
+public class InstallAppsActivity extends BaseActivity implements  InstallAppsAdapter.InstallAppListener {
     private RecyclerView rvInstallApps;
     private TextView tvProgressText;
     private InstallAppsAdapter mAdapter;
@@ -82,7 +82,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     private PackageManager mPackageManager;
     private boolean isBackPressed;
     private boolean isInstallDialogOpen;
-    private ConstraintLayout containerLayout;
+    private SwipeRefreshLayout refreshLayout;
 
     private AsyncCalls asyncCalls;
 
@@ -94,8 +94,6 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         mPackageManager = getPackageManager();
         setRecyclerView();
         createProgressDialog();
-        findViewById(R.id.fabRefresh).setBackgroundColor(getResources().getColor(R.color.seekbarColor));
-        findViewById(R.id.fabRefresh).setOnClickListener(this);
 
         if (MyApplication.oneCaller == null) {
             String[] urls = {URL_1, URL_2};
@@ -240,7 +238,8 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setRecyclerView() {
-        containerLayout = findViewById(R.id.container_layout);
+        refreshLayout = findViewById(R.id.container_layout);
+        refreshLayout.setOnRefreshListener(this::onRefresh);
         appModelList = new ArrayList<>();
         rvInstallApps = findViewById(R.id.rvInstallApps);
 
@@ -259,44 +258,44 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.fabRefresh) {
 
-            if (CommonUtils.isNetworkAvailable(this)) {
+    public void onRefresh() {
+
+        if (CommonUtils.isNetworkAvailable(this)) {
 
 
-                if (MyApplication.oneCaller == null) {
-                    String[] urls = {URL_1, URL_2};
+            if (MyApplication.oneCaller == null) {
+                String[] urls = {URL_1, URL_2};
 
-                    if (asyncCalls != null) {
-                        asyncCalls.cancel(true);
-                    }
-
-                    asyncCalls = new AsyncCalls(output -> {
-
-                        if (output != null) {
-                            PrefUtils.saveStringPref(this, LIVE_URL, output);
-                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                            Timber.d("live_url %s", live_url);
-                            MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                            refreshApps();
-                        } else {
-                            Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                        }
-
-                    }, this, urls);
-                    asyncCalls.execute();
-                } else {
-                    refreshApps();
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
                 }
 
+                asyncCalls = new AsyncCalls(output -> {
 
+                    if (output != null) {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        refreshApps();
+                    } else {
+                        refreshLayout.setRefreshing(false);
+                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    }
+
+                }, this, urls);
+                asyncCalls.execute();
             } else {
-                Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
+                refreshApps();
             }
 
+
+        } else {
+            refreshLayout.setRefreshing(false);
+            Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void refreshApps() {
@@ -307,12 +306,14 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
                         if (response.body() != null) {
                             if (response.body().isSuccess()) {
+                                refreshLayout.setRefreshing(false);
                                 appModelList.clear();
                                 appModelList.addAll(response.body().getList());
                                 mAdapter.notifyDataSetChanged();
                                 checkAppInstalledOrNot(appModelList);
                             } else {
                                 if (response.body().getList() == null) {
+                                    refreshLayout.setRefreshing(false);
                                     appModelList.clear();
                                     mAdapter.notifyDataSetChanged();
                                 }
@@ -517,7 +518,7 @@ public class InstallAppsActivity extends BaseActivity implements View.OnClickLis
         super.onPause();
         if (!isBackPressed && !isInstallDialogOpen) {
             try {
-                containerLayout.setVisibility(View.INVISIBLE);
+                //refreshLayout.setVisibility(View.INVISIBLE);
                 this.finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
 

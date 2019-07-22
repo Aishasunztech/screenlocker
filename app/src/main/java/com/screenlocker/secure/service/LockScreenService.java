@@ -28,9 +28,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
@@ -328,10 +331,10 @@ public class LockScreenService extends Service {
             } else {
                 switch (action) {
                     case "suspended":
-                        startLockScreen(false);
+                        startLockScreen(true);
                         break;
                     case "expired":
-                        startLockScreen(false);
+                        startLockScreen(true);
                         break;
                     case "reboot":
                         startLockScreen(false);
@@ -554,6 +557,15 @@ public class LockScreenService extends Service {
         try {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);
+                TextView support = mLayout.findViewById(R.id.t9_key_support);
+                support.setText(getResources().getString(R.string.unlock));
+                TextView clear = mLayout.findViewById(R.id.t9_key_clear);
+                clear.setText(getResources().getString(R.string.support));
+                Button unlock = mLayout.findViewById(R.id.ivUnlock);
+                EditText pin = mLayout.findViewById(R.id.password_field);
+                pin.setText(null);
+                pin.setHint(getResources().getString(R.string.pin));
+                unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
                 refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);

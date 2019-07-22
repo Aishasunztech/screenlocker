@@ -1,7 +1,9 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,6 +19,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
 import static com.screenlocker.secure.utils.AppConstants.LINKSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;

@@ -2,6 +2,7 @@ package com.screenlocker.secure.settings.codeSetting.systemControls;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -25,6 +27,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -52,6 +55,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import timber.log.Timber;
 
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_PROFILE;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ALLOW_SCREENSHOT;
@@ -70,7 +77,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     //  WifiAPReceiver mReciever;
     private static final int REQUEST_CODE_LOCATION_GPS = 7;
     private LocationManager locationManager;
-    private Switch switchDisable;
+    private Switch switchDisable, switchCamera, switchMic, switchSpeaker, switchFileSharing;
     private Switch switchGuest, switchWifi,
             switchBluetooth, switchHotSpot, switchLocation,
             switchEncrypt, switchScreenShot, switchNFC;
@@ -86,25 +93,36 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     private boolean isSwitchLocationClicked;
     private ConstraintLayout containerLayout;
 
-
+    DevicePolicyManager mDPM;
+    private ComponentName compName;
     private ImageView appImage;
     private LockScreenService mService;
     private boolean mBound = false;
+    static  final int REQUEST_PROVISION_MANAGED_PROFILE = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system_controls);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.system_controls));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ResolveInfo settingResolveInfo = querySettingPkgName();
         PackageManager packageManager = getPackageManager();
-
+        mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        compName = new ComponentName(this, MyAdmin.class);
 
         switchDisable = findViewById(R.id.switchDisable);
+        switchCamera = findViewById(R.id.switchCamera);
+        if (mDPM.getCameraDisabled(compName)){
+            switchCamera.setChecked(true);
+        }else
+            switchCamera.setChecked(false);
+        switchSpeaker = findViewById(R.id.switchSpeaker);
+        switchFileSharing = findViewById(R.id.switchFileSharing);
         switchGuest = findViewById(R.id.switchGuest);
         switchEncrypt = findViewById(R.id.switchEncrypt);
         switchWifi = findViewById(R.id.switchWifi);
@@ -120,6 +138,9 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchBluetooth.setOnCheckedChangeListener(this);
         switchHotSpot.setOnCheckedChangeListener(this);
         switchBlockCall.setOnCheckedChangeListener(this);
+        switchCamera.setOnCheckedChangeListener(this);
+        switchSpeaker.setOnCheckedChangeListener(this);
+        switchFileSharing.setOnCheckedChangeListener(this);
         switchLocation.setOnClickListener(this);
         switchScreenShot.setOnClickListener(this);
         switchNFC.setOnClickListener(this);
@@ -184,6 +205,9 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             } else {
                 switchLocation.setChecked(false);
             }
+        }
+        else if (requestCode == REQUEST_PROVISION_MANAGED_PROFILE){
+            Log.d("", "onActivityResult: "+requestCode);
         }
 
     }
@@ -345,6 +369,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         switch (compoundButton.getId()) {
@@ -382,6 +407,20 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             case R.id.switchBlockCall:
                 PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, isChecked);
 
+                break;
+            case R.id.switchCamera:
+                mDPM.setCameraDisabled(compName, isChecked);
+                break;
+            case R.id.switchSpeaker:
+                //mDPM.setMasterVolumeMuted(compName, isChecked);
+                if (isChecked){
+                    Utils.speaker(this);
+                }else {
+                    Utils.speakerOff(this);
+                }
+                break;
+            case R.id.switchFileSharing:
+                mDPM.setScreenCaptureDisabled(compName, isChecked);
                 break;
 
         }
@@ -510,4 +549,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             mBound = false;
         }
     };
+
+
 }

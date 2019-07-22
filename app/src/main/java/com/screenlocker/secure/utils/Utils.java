@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
@@ -48,6 +49,7 @@ import java.util.Random;
 import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
+import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
@@ -78,6 +80,7 @@ public class Utils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNM = (NotificationManager) context.getSystemService(
                     Context.NOTIFICATION_SERVICE);
+
             if (mNM != null) {
                 NotificationChannel channel = mNM.getNotificationChannel(context.getString(R.string.app_name));
                 if (channel == null) {
@@ -86,16 +89,25 @@ public class Utils {
                             context.getString(R.string.app_name),
                             NotificationManager.IMPORTANCE_DEFAULT
                     );
+                    channel.setSound(null, null);
+                    channel.setShowBadge(false);
                     mNM.createNotificationChannel(channel);
 
                 }
             }
         }
         return new NotificationCompat.Builder(context, context.getString(R.string.app_name))
-                .setOngoing(true)
+                .setOngoing(false)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.app_name))
                 .setTicker(context.getString(R.string.app_name))
+                .setSound(null)
+                .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)
+                .setGroup("My group")
+                .setGroupSummary(false)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+               // .setPriority(Notification.PRIORITY_MIN)
                 .setSmallIcon(icon)
                 .build();
     }
@@ -253,7 +265,7 @@ public class Utils {
         });
 
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
-        ImageView chatIcon =  keyboardView.findViewById(R.id.chat_icon);
+        ImageView chatIcon = keyboardView.findViewById(R.id.chat_icon);
         TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
         supportButton.setOnClickListener(v -> {
             chatLogin(context);
@@ -521,7 +533,7 @@ public class Utils {
         }
     }
 
-    public static void copyToClipBoard(Context context, String label, String text,String toastText) {
+    public static void copyToClipBoard(Context context, String label, String text, String toastText) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText(label, text);
         clipboard.setPrimaryClip(clip);
@@ -544,5 +556,62 @@ public class Utils {
         }
 
     }
+    private static int currentVolume = 0;
+    private static boolean haSilence = false;
+
+    /**
+     * 扬声器免提
+     *
+     * @param context
+     */
+    public static void speaker(Context context) {
+        Timber.d("speakerOn");
+        AudioManager audioManager = getAudioManager(context);
+        if (audioManager.isSpeakerphoneOn())
+            return;
+        audioManager.setSpeakerphoneOn(true);
+        if (currentVolume == 0)
+            currentVolume = audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+        // currentVolume
+        // =audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                currentVolume, AudioManager.STREAM_VOICE_CALL);
+    }
+
+    /**
+     * 静音
+     *
+     * @param context
+     */
+    public static void speakerOff(Context context) {
+        Timber.d("speakerOff: ");
+        AudioManager audioManager = getAudioManager(context);
+        if (!audioManager.isSpeakerphoneOn())
+            return;
+        currentVolume = audioManager
+                .getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        audioManager.setSpeakerphoneOn(false);
+        audioManager.setMicrophoneMute(!audioManager.isSpeakerphoneOn());
+        audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 0,
+                AudioManager.STREAM_VOICE_CALL);
+    }
+
+    public static void silence(Context context) {
+        AudioManager audioManager = getAudioManager(context);
+        if (haSilence)
+            audioManager.setStreamMute(AudioManager.MODE_IN_CALL, false);
+        else
+            audioManager.setStreamMute(AudioManager.MODE_IN_CALL, true);
+    }
+
+    private static AudioManager getAudioManager(Context context) {
+        AudioManager audioManager = (AudioManager) context
+                .getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_CALL);
+        // audioManager.setMode(AudioManager.ROUTE_SPEAKER);
+        return audioManager;
+    }
+
 
 }

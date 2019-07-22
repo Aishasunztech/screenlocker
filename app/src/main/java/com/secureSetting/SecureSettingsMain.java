@@ -461,7 +461,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 if (simStateMain == 5 || simStateSecond == 5) {
                     switch_mobile_data.setChecked(cm.isDataEnabled());
                 } else {
-                    Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
                     switch_mobile_data.setEnabled(false);
                 }
 
