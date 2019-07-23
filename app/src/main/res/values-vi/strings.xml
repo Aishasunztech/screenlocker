@@ -76,7 +76,7 @@
     <string name="session_expired">Phiên Hết hạn</string>
     <string name="expired">Hết hạn</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="system_controls">Quyền Hệ thống</string>
     <string name="enable_vpn">Kích hoạt VPN</string>
     <string name="pgp_email">Email của PGP</string>
@@ -91,10 +91,10 @@
     <string name="no">Không</string>
     <string name="fine_location_and_cross_location">Fine Location</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">Đã Xảy ra Lỗi!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Tài khoản</string>
     <string name="language">Ngôn ngữ </string>

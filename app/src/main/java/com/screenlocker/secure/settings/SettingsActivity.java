@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -184,6 +185,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
         init();
+
+        tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
@@ -465,7 +469,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (CommonUtils.isNetworkAvailable(this)) {
 
 
-
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();
@@ -528,7 +531,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                 String url = response.body().getApkUrl();
 
                                                 String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null,null,false);
+                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null, null, false);
                                                 obj.execute();
                                             }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
                                                 dialog1.dismiss();

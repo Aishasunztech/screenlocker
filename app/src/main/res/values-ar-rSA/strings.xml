@@ -65,7 +65,7 @@
     <string name="session_expired">Session expired</string>
     <string name="expired">expired</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="system_controls">أذونات النظام</string>
     <string name="enable_vpn">تفعيل VPN</string>
     <string name="pgp_email">البريد الإلكتروني الخاص ب Pgp</string>
@@ -80,10 +80,10 @@
     <string name="no">No</string>
     <string name="fine_location_and_cross_location">Fine Location</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">حصل خطأ ما!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">الحساب</string>
     <string name="language">Languages</string>
@@ -121,7 +121,7 @@
     <string name="support">دعم</string>
     <string name="manage_passwords_settings">إدارة كلمات السر</string>
     <string name="set_background_image_settings">تعيين صورة الخلفية</string>
-    <string name="about">معلومات عنا</string>
+    <string name="about">معلومات عنا<u></u></string>
     <string name="activated">مُفعَل</string>
     <string name="manage_password_title">إدارة كلمات السر</string>
     <string name="activated_code">مُفعَل</string>

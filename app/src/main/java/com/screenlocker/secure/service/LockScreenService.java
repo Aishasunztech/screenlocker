@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -31,7 +30,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,7 +46,6 @@ import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -69,6 +66,7 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -100,10 +98,8 @@ public class LockScreenService extends Service {
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
 
-        List<String> blacklist = new ArrayList<>();
+    List<String> blacklist = new ArrayList<>();
     public static ServiceCallbacks mCallBacks;
-
-
 
 
     private static final String TAG = "LockScreenServiceMM";
@@ -111,8 +107,6 @@ public class LockScreenService extends Service {
     public interface ServiceCallbacks {
         void onRecentAppKill();
     }
-
-
 
 
     public class LocalBinder extends Binder {
@@ -175,16 +169,12 @@ public class LockScreenService extends Service {
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        PackageManager packageManager = getPackageManager();
 
+        PackageManager packageManager = getPackageManager();
 
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
-
-
-
-        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 
         OneTimeWorkRequest insertionWork =
@@ -193,22 +183,14 @@ public class LockScreenService extends Service {
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-        ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
-
-        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-
-        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode1 = scheduler1.schedule(jobInfo1);
-        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
+        if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
+            scheduleExpiryCheck(this);
         }
 
-        scheduleUpdateJob(this);
+        if (!getResources().getString(R.string.apktype).equals("BYOD")) {
+            scheduleUpdateJob(this);
+        }
+
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
         params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
@@ -218,7 +200,6 @@ public class LockScreenService extends Service {
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        scheduleExpiryCheck(this);
         screenOffReceiver = new ScreenOffReceiver(() -> {
             Log.d("nadeem", "screeen off from reciver: ");
             startLockScreen(true);
@@ -274,9 +255,9 @@ public class LockScreenService extends Service {
                 }
 
 
-                if(powerManager.isScreenOn()){
+                if (powerManager.isScreenOn()) {
                     String current_package = getCurrentApp();
-                    if(current_package != null) {
+                    if (current_package != null) {
                         if (blacklist.contains(current_package)) {
                             if (mCallBacks != null) {
                                 mCallBacks.onRecentAppKill();
@@ -558,9 +539,9 @@ public class LockScreenService extends Service {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                support.setText(getResources().getString(R.string.unlock));
+                support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                clear.setText(getResources().getString(R.string.support));
+                clear.setText(getResources().getString(R.string.btn_backspace));
                 Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
@@ -611,41 +592,41 @@ public class LockScreenService extends Service {
     public String getCurrentApp() {
         String dum = null;
         try {
-        if (Build.VERSION.SDK_INT >= 21) {
-        String currentApp = null;
-        UsageStatsManager usm = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-        usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        }
-        long time = System.currentTimeMillis();
-        List<UsageStats> applist = null;
-        if (usm != null) {
-        applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
-        }
-        if (applist != null && applist.size() > 0) {
-        SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+            if (Build.VERSION.SDK_INT >= 21) {
+                String currentApp = null;
+                UsageStatsManager usm = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+                }
+                long time = System.currentTimeMillis();
+                List<UsageStats> applist = null;
+                if (usm != null) {
+                    applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
+                }
+                if (applist != null && applist.size() > 0) {
+                    SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
 
-        for (UsageStats usageStats : applist) {
-        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-        }
-        if (!mySortedMap.isEmpty()) {
-        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
-        }
-        }
-        return currentApp;
-        } else {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        String mm = null;
-        if (manager != null) {
-        mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
-        }
-        return mm;
-        }
+                    for (UsageStats usageStats : applist) {
+                        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                    }
+                    if (!mySortedMap.isEmpty()) {
+                        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+                    }
+                }
+                return currentApp;
+            } else {
+                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                String mm = null;
+                if (manager != null) {
+                    mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+                }
+                return mm;
+            }
         } catch (Exception e) {
-        Timber.d("getCurrentApp: %s", e.getMessage());
+            Timber.d("getCurrentApp: %s", e.getMessage());
 
-        return dum;
+            return dum;
         }
-        }
+    }
 
 }

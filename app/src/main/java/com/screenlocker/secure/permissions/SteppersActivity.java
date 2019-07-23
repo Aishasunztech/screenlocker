@@ -45,6 +45,19 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             startActivity(intent);
             finish();
         } else {
+           /* if (!PrefUtils.getBooleanPref(this,"cmd2")){
+                Intent intent = new Intent(ACTION_PROVISION_MANAGED_DEVICE);
+                ComponentName cn = new ComponentName(getPackageName(),"com.screenlocker.secure.MyAdmin");
+                intent.putExtra(EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME,
+                        cn);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, 1);
+                    PrefUtils.saveBooleanPref(this,"cmd2",true);
+                    //activity.finish();
+                } else {
+                    Toast.makeText(this, "Stopping.",Toast.LENGTH_SHORT).show();
+                }
+            }*/
             addStep(new PermissionStepFragment());//0
             addStep(new SetGuestPasswordFragment());//1
             addStep(new SetEncryptedPasswordFragment());//2

@@ -37,9 +37,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.views.KeyboardView;
 
 import java.util.ArrayList;
@@ -107,7 +109,7 @@ public class Utils {
                 .setGroupSummary(false)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-               // .setPriority(Notification.PRIORITY_MIN)
+                // .setPriority(Notification.PRIORITY_MIN)
                 .setSmallIcon(icon)
                 .build();
     }
@@ -313,7 +315,6 @@ public class Utils {
 
 
                 }
-                // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
             /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
 
 // JUST a go through LOCK
@@ -540,15 +541,19 @@ public class Utils {
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
-    public static void scheduleExpiryCheck(Context context) {
+    public static void scheduleUpdateCheck(Context context) {
+
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(24 * 60 * 60 * 1000L)
                 .build();
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 123)) {
+            scheduler.cancel(123);
+        }
         int resultCode = scheduler.schedule(info);
+
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             //Log.d(TAG, "Job scheduled");
         } else {
@@ -556,6 +561,29 @@ public class Utils {
         }
 
     }
+
+    public static void scheduleExpiryCheck(Context context) {
+
+        ComponentName componentName = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
+        JobInfo info = new JobInfo.Builder(1345, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(24 * 60 * 60 * 1000L)
+                .build();
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 1345)) {
+            scheduler.cancel(1345);
+        }
+        int resultCode = scheduler.schedule(info);
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            //Log.d(TAG, "Job scheduled");
+        } else {
+            //Log.d(TAG, "Job scheduling failed");
+        }
+
+    }
+
+
     private static int currentVolume = 0;
     private static boolean haSilence = false;
 
@@ -577,6 +605,15 @@ public class Utils {
         // =audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
         audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
                 currentVolume, AudioManager.STREAM_VOICE_CALL);
+    }
+
+    public static void micOff(Context context) {
+        Timber.d("speakerOn");
+        AudioManager audioManager = getAudioManager(context);
+        if (audioManager.isMicrophoneMute())
+            return;
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setMicrophoneMute(true);
     }
 
     /**

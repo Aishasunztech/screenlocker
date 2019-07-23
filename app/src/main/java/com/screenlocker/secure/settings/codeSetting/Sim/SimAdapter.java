@@ -132,7 +132,6 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         dialog.setOnShowListener(dialogInterface -> {
             Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view1 -> {
-                // TODO Do something
                 boolean isOk = true;
                 if (etName.getText().toString().length() < 2) {
                     isOk = false;

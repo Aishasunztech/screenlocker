@@ -76,7 +76,7 @@
     <string name="session_expired">Session expired</string>
     <string name="expired">expired</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="system_controls">System Permissions</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
@@ -91,10 +91,10 @@
     <string name="no">No</string>
     <string name="fine_location_and_cross_location">Fine Location</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">Some Error Occurred!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="language">Languages</string>
@@ -423,5 +423,13 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
+    <string name="imei_1">IMEI 1</string>
+    <string name="imei_2">IMEI 2</string>
+    <string name="s_n">S/N</string>
+    <string name="dealer_pin">Dealer PIN</string>
+    <string name="mac">MAC</string>
+    <string name="ip_addr">IP Addr</string>
+    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
+
 
 </resources>
