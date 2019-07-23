@@ -315,85 +315,122 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         });
 
-        findViewById(R.id.sleep_cotainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SleepDialog sleepDialog = new SleepDialog(SecureSettingsMain.this);
-                sleepDialog.show();
-            }
+        findViewById(R.id.sleep_cotainer).setOnClickListener(v -> {
+            SleepDialog sleepDialog = new SleepDialog(SecureSettingsMain.this);
+            sleepDialog.show();
         });
 
-        findViewById(R.id.sim_cotainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.sim_cotainer).setOnClickListener(v -> {
 
+            try {
                 Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
+
+
         });
 
-        findViewById(R.id.hotspot_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.hotspot_container).setOnClickListener(v -> {
+
+            try {
                 final Intent intent = new Intent(Intent.ACTION_MAIN, null);
                 ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.TetherSettings");
                 intent.setComponent(cn);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-
-
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
+
+
         });
 
-        dataRoamingContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        dataRoamingContainer.setOnClickListener(v -> {
+            try {
                 Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
         findViewById(R.id.screen_lock_container).setOnClickListener(v -> {
             Intent intent = new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
         battery_container.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, 3);
+                mView = new FrameLayout(this);
+                getOverLayLayoutParams();
+                createLayoutParams();
 
-            Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
-            startActivityForResult(intent, 3);
-            mView = new FrameLayout(this);
-            getOverLayLayoutParams();
-            createLayoutParams();
+                wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+                mView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                wm.addView(mView, localLayoutParams);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
 
-            wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-            mView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            wm.addView(mView, localLayoutParams);
 
         });
 
         sound_container.setOnClickListener(v -> {
-            Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         });
         language_container.setOnClickListener(v -> {
-            final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$LanguageAndInputSettingsActivity");
-            intent.setComponent(cn);
-            startActivity(intent);
+            try {
+                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$LanguageAndInputSettingsActivity");
+                intent.setComponent(cn);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+
 
         });
         dateTimeContainer.setOnClickListener(v -> {
-            Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         mobile_container.setOnClickListener(v -> {
+            try {
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
 //                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                Timber.e("Permission granted");
-            } else {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
-                startActivity(intent);
+                    Timber.e("Permission granted");
+                } else {
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
 
 
@@ -414,8 +451,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onDestroy() {
         unregisterReceiver(mBatInfoReceiver);
-        if (wm != null && mView != null)
-            wm.removeViewImmediate(mView);
+        try {
+            if (wm != null && mView != null)
+                wm.removeViewImmediate(mView);
+        } catch (Exception ignored) {
+        }
+
         super.onDestroy();
 
     }
@@ -461,7 +502,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 if (simStateMain == 5 || simStateSecond == 5) {
                     switch_mobile_data.setChecked(cm.isDataEnabled());
                 } else {
-                   // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
                     switch_mobile_data.setEnabled(false);
                 }
 

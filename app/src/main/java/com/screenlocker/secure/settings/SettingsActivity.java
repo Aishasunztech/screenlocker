@@ -177,6 +177,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -913,6 +914,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             String language_key = language.split(":")[0];
             String language_name = language.split(":")[1];
             LanguageModel languageModel2;
+
             switch (language_key) {
                 case "en":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
@@ -929,7 +931,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case "es":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
                     break;
-                case "ar-rSA":
+                case "ar":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
                     break;
                 default:

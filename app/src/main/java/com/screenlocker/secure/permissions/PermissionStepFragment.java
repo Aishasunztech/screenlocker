@@ -77,11 +77,10 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
 
     /**
-    * This method is called when user clicks the next button.
-     *
-     *  User is only allowed to move to next step if he/she has granted all the permissions
-     *
-    */
+     * This method is called when user clicks the next button.
+     * <p>
+     * User is only allowed to move to next step if he/she has granted all the permissions
+     */
     @Override
     public boolean nextIf() {
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ADMIN) &&
@@ -121,29 +120,44 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
     /**
-    * Bind all views
-    */
-    @BindView(R.id.active_admin) Switch activeAdmin;
-    @BindView(R.id.active_drawoverlay) Switch drawoverlay;
-    @BindView(R.id.active_modify) Switch modifiSystemState;
-    @BindView(R.id.active_usage) Switch usageAccess;
-    @BindView(R.id.active_runtime) Switch runtimePermissions;
-    @BindView(R.id.active_unknown) Switch unknownResources;
-    @BindView(R.id.active_notification) Switch notificationAccess;
-    @BindView(R.id.active_battery_optimization) Switch batteryOptimization;
+     * Bind all views
+     */
+    @BindView(R.id.active_admin)
+    Switch activeAdmin;
+    @BindView(R.id.active_drawoverlay)
+    Switch drawoverlay;
+    @BindView(R.id.active_modify)
+    Switch modifiSystemState;
+    @BindView(R.id.active_usage)
+    Switch usageAccess;
+    @BindView(R.id.active_runtime)
+    Switch runtimePermissions;
+    @BindView(R.id.active_unknown)
+    Switch unknownResources;
+    @BindView(R.id.active_notification)
+    Switch notificationAccess;
+    @BindView(R.id.active_battery_optimization)
+    Switch batteryOptimization;
     /**
-    * Layout references to hide permission which are already granted
-    */
-    @BindView(R.id.layout_allow_overlay) LinearLayout layoutOverLay;
-    @BindView(R.id.layout_allow_usage) LinearLayout layoutUsage;
-    @BindView(R.id.layout_allow_admin) LinearLayout layoutAdmin;
-    @BindView(R.id.layout_allow_ignorebattery) LinearLayout layoutIgnore;
-    @BindView(R.id.layout_allow_modify_sytem) LinearLayout layoutModifySystem;
-    @BindView(R.id.layout_allow_installPackages) LinearLayout layoutInstall;
-    @BindView(R.id.layout_allow_runtime) LinearLayout layoutRuntime;
-    @BindView(R.id.layout_allow_notification_acces) LinearLayout layoutNotification;
+     * Layout references to hide permission which are already granted
+     */
+    @BindView(R.id.layout_allow_overlay)
+    LinearLayout layoutOverLay;
+    @BindView(R.id.layout_allow_usage)
+    LinearLayout layoutUsage;
+    @BindView(R.id.layout_allow_admin)
+    LinearLayout layoutAdmin;
+    @BindView(R.id.layout_allow_ignorebattery)
+    LinearLayout layoutIgnore;
+    @BindView(R.id.layout_allow_modify_sytem)
+    LinearLayout layoutModifySystem;
+    @BindView(R.id.layout_allow_installPackages)
+    LinearLayout layoutInstall;
+    @BindView(R.id.layout_allow_runtime)
+    LinearLayout layoutRuntime;
+    @BindView(R.id.layout_allow_notification_acces)
+    LinearLayout layoutNotification;
 
-    @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -180,7 +194,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, false);
         usageAccess.setOnCheckedChangeListener(this);
-        if (getActivity().checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
+        if (getActivity().checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
                 getActivity().checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
                 getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -190,12 +204,19 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
         runtimePermissions.setOnCheckedChangeListener(this);
-        if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
+                layoutInstall.setVisibility(GONE);
+                unknownResources.setChecked(true);
+                unknownResources.setClickable(false);
+                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
+            } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
+        } else {
             layoutInstall.setVisibility(GONE);
             unknownResources.setChecked(true);
             unknownResources.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
-        } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
+        }
         unknownResources.setOnCheckedChangeListener(this);
         if (isNotificationAccess(getContext())) {
             layoutNotification.setVisibility(GONE);
@@ -372,14 +393,18 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private void requestUnknownResouirces() {
-        boolean isNonPlayAppAllowed = MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls();
-        if (!isNonPlayAppAllowed) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-            intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));
-            startActivityForResult(intent, CODE_UNKNOWN_RESOURCES);
+        boolean isNonPlayAppAllowed;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            isNonPlayAppAllowed = MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls();
+            if (!isNonPlayAppAllowed) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));
+                startActivityForResult(intent, CODE_UNKNOWN_RESOURCES);
+            }
         }
+
     }
 
     private void init() {

@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
@@ -52,6 +53,7 @@ import com.screenlocker.secure.utils.Utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -98,7 +100,7 @@ public class LockScreenService extends Service {
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
 
-    List<String> blacklist = new ArrayList<>();
+    HashSet<String> blacklist = new HashSet<>();
     public static ServiceCallbacks mCallBacks;
 
 
@@ -175,6 +177,7 @@ public class LockScreenService extends Service {
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
+        blacklist.add("com.huawei.android.launcher");
 
 
         OneTimeWorkRequest insertionWork =
@@ -258,6 +261,7 @@ public class LockScreenService extends Service {
                 if (powerManager.isScreenOn()) {
                     String current_package = getCurrentApp();
                     if (current_package != null) {
+                        Timber.d("skldfggskjgskljogikljo %s", current_package);
                         if (blacklist.contains(current_package)) {
                             if (mCallBacks != null) {
                                 mCallBacks.onRecentAppKill();

@@ -110,13 +110,11 @@ public class CommonUtils {
     }
 
     public static byte[] convertDrawableToByteArray(Drawable d) {
+
         Bitmap bitmap;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // only for gingerbread and newer versions
-            bitmap = getBitmapFromDrawable(d);
-        } else {
-            bitmap = ((BitmapDrawable) d).getBitmap();
-        }
+
+        bitmap = getBitmapFromDrawable(d);
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
         return stream.toByteArray();
@@ -132,9 +130,9 @@ public class CommonUtils {
     }
 
     public static String splitName(String s) {
-        if(s!=null){
+        if (s != null) {
             return s.replace(".apk", "");
-        }else{
+        } else {
             return "";
         }
 
@@ -400,7 +398,6 @@ public class CommonUtils {
         configuration.setLocale(new Locale(locale.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
     }
-
 
 
 }

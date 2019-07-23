@@ -138,8 +138,14 @@ public class BlurWorker extends Worker {
                         app.setEncrypted(false);
                         app.setExtension(false);
 
+                    } else if (app.getPackageName().equals("com.secure.launcher1") && applicationContext.getResources().getString(R.string.apktype).equals("BYOD")) {
+                        app.setGuest(false);
+                        app.setEncrypted(false);
+                        app.setEnable(false);
+                        app.setExtension(false);
+                        app.setVisible(true);
+                        app.setDefaultApp(false);
                     } else {
-
                         app.setGuest(true);
                         app.setEncrypted(false);
                         app.setEnable(false);

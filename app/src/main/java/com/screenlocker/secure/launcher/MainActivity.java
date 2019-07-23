@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
@@ -10,11 +11,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -145,8 +148,8 @@ public class MainActivity extends
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LockScreenService.mCallBacks = (LockScreenService.ServiceCallbacks) MainActivity.this;
-        DownLoadAndInstallUpdate.onAppAvailable = (DownLoadAndInstallUpdate.OnAppAvailable) MainActivity.this;
+        LockScreenService.mCallBacks = MainActivity.this;
+        DownLoadAndInstallUpdate.onAppAvailable = MainActivity.this;
 
         allDbApps = new ArrayList<>();
         setRecyclerView();
@@ -219,6 +222,9 @@ public class MainActivity extends
                 devicePolicyManager.lockNow();
             }
         }
+
+
+        closeBar();
     }
 
 
@@ -242,6 +248,8 @@ public class MainActivity extends
      */
 
     public void clearRecentApp() {
+
+
         try {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -254,7 +262,8 @@ public class MainActivity extends
                 Log.i("sfs", "clearRecentApp: task id is : " + taskId);
                 activityManager.moveTaskToFront(taskId, 0);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
@@ -380,6 +389,7 @@ public class MainActivity extends
         rvApps.scheduleLayoutAnimation();
     }
 
+    @SuppressLint("ResourceType")
     private void setBackground(String message) {
 
         try {
@@ -684,6 +694,31 @@ public class MainActivity extends
             }
         }
     }
+
+    private void closeBar() {
+        if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)) {
+            WindowManager manager = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
+            WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+            localLayoutParams.gravity = Gravity.TOP;
+            localLayoutParams.flags =
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+
+                            // this is to enable the notification to receive touch events
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+
+                            // Draws over status bar
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+
+            localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            localLayoutParams.height = (int) (40 * getResources().getDisplayMetrics().scaledDensity);
+            localLayoutParams.format = PixelFormat.TRANSPARENT;
+
+            RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
+            manager.addView(relativeLayout, localLayoutParams);
+        }
+    }
+
 
     @Override
     public void onAppDownloadedAndAvailabe(String appName, String uri) {

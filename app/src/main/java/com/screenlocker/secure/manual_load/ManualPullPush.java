@@ -260,7 +260,6 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
                         .setDataAndType(Uri.parse(app_uri), "application/vnd.android.package-archive");
                 startActivity(intent);
             } else {
-
                 Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName()));
                 intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
                 startActivity(intent);

@@ -337,7 +337,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-    @TargetApi(Build.VERSION_CODES.O)
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
@@ -355,17 +355,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else if (!isAccessGranted(this)) {
             launchPermissions();
-        } else if (checkSelfPermission(android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+        } else if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!getPackageManager().canRequestPackageInstalls()) {
-            launchPermissions();
-        } else if (!isNotificationAccess(this)) {
-            launchPermissions();
-        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
-            launchPermissions();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!getPackageManager().canRequestPackageInstalls()) {
+                launchPermissions();
+            } else if (!isNotificationAccess(this)) {
+                launchPermissions();
+            } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+                launchPermissions();
+            }
         }
     }
 
