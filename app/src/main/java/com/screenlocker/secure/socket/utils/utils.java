@@ -72,6 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
@@ -649,6 +650,7 @@ public class utils {
 
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
@@ -679,6 +681,7 @@ public class utils {
 
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
