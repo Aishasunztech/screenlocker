@@ -86,10 +86,10 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
 //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.219:3000";//local
+        public static final String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -125,9 +125,12 @@ public class AppConstants {
     public static final String SEND_EXTENSIONS = "sendExtensions_";
     public static final String SEND_APPS = "sendApps_";
     public static final String SEND_SETTINGS = "sendSettings_";
+    public static final String SEND_SIM = "sendSim_";
+    public static final String SEND_SIM_ACK = "ack_sim_";
 
 
     public static final String GET_SYNC_STATUS = "get_sync_status_";
+    public static final String GET_SIM_UPDATES = "reg_sim_";
     public static final String GET_PUSHED_APPS = "get_pushed_apps_";
     public static final String GET_PULLED_APPS = "get_pulled_apps_";
     public static final String SEND_PULLED_APPS_STATUS = "send_pulled_apps_status_";

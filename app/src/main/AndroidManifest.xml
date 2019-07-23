@@ -47,6 +47,8 @@
     <uses-permission android:name="android.permission.SUSPEND_APPS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.MANAGE_USERS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
     <application
@@ -250,11 +252,13 @@
         <receiver
             android:name=".MyAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
+
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
 
             <intent-filter>
+
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>

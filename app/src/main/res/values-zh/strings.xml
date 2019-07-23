@@ -76,7 +76,7 @@
     <string name="session_expired">会话过期</string>
     <string name="expired">expired</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="system_controls">系统权限</string>
     <string name="enable_vpn">启用VPN</string>
     <string name="pgp_email">Pgp电子邮件</string>
@@ -91,10 +91,10 @@
     <string name="no">不是</string>
     <string name="fine_location_and_cross_location">Fine Location</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">发生了一些错误!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">账户</string>
     <string name="language">語言</string>

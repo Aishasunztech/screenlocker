@@ -1,6 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting.Sim;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,23 +30,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Delete;
 
+import com.google.gson.Gson;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_SIM;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 
@@ -72,8 +82,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         setupViewModel();
         SubscriptionManager sManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -293,18 +301,28 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     public void onSimRegistered(SubscriptionInfo info,String note) {
         SimEntry entry = new SimEntry(info.getIccId(), info.getCarrierName().toString(), note, info.getSimSlotIndex(), true, true, true, "Active");
         viewModel.insertSimEntry(entry);
+        if (SocketManager.getInstance().getSocket().connected()){
+            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
+            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
+        }
         fragmentManager.popBackStack();
     }
 
     @Override
     public void onManualInsert(SimEntry sm) {
         viewModel.insertSimEntry(sm);
+        if (SocketManager.getInstance().getSocket().connected()){
+            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
+            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(sm));
+        }
         fragmentManager.popBackStack();
     }
 
 
     @Override
     public void onSimPermissionChange(SimEntry entry, String type, boolean isChecked) {
+
+
         switch (type) {
             case KEY_GUEST:
                 entry.setGuest(isChecked);
@@ -333,8 +351,13 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                 break;
         }
         viewModel.updateSimEntry(entry);
+        if (SocketManager.getInstance().getSocket().connected()){
+            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
+            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
+        }
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Override
     public void onDeleteEntry(SimEntry entry) {
         new AlertDialog.Builder(this)
@@ -354,6 +377,12 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     @Override
     public void onUpdateEntry(SimEntry entry) {
         viewModel.updateSimEntry(entry);
+        Timber.d( "onUpdateEntry: ");
+        if (SocketManager.getInstance().getSocket().connected()){
+            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
+            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
+        }
+
     }
 
     void broadCastIntent(boolean enabled, int slot) {

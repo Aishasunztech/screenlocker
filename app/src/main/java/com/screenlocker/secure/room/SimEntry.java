@@ -2,21 +2,29 @@ package com.screenlocker.secure.room;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * @author Muhammad Nadeem
  * @Date 5/24/2019.
  */
 @Entity(tableName = "sim")
-public class SimEntry {
+public class
+SimEntry {
     @NonNull
     @PrimaryKey
     private String iccid;
+    @SerializedName("name")
     private String providerName;
+    @SerializedName("note")
     private String apn;
     private int slotNo;
+    @SerializedName("guest")
     private boolean isGuest;
+    @SerializedName("encrypt")
     private boolean isEncrypted;
     private boolean isEnable;
     private String status;
@@ -30,6 +38,14 @@ public class SimEntry {
         this.isEncrypted = isEncrypted;
         this.isEnable = isEnable;
         this.status = status;
+    }
+    @Ignore
+    public SimEntry(String iccid, String providerName, String apn, boolean isGuest, boolean isEncrypted) {
+        this.iccid = iccid;
+        this.providerName = providerName;
+        this.apn = apn;
+        this.isGuest = isGuest;
+        this.isEncrypted = isEncrypted;
     }
 
     public String getIccid() {

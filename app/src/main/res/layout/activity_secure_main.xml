@@ -103,7 +103,7 @@
             <!--android:layout_height="@dimen/_20sdp"-->
             <!--android:layout_gravity="center_vertical"-->
             <!--android:layout_marginLeft="20dp"-->
-            <!--android:contentDescription="TODO"-->
+            <!--android:contentDescription=""-->
             <!--android:src="@drawable/ic_airplane_mode"-->
             <!--android:tint="@android:color/black" />-->
 

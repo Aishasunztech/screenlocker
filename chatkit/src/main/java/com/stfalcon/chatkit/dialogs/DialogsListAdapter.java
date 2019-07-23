@@ -438,7 +438,7 @@ public class DialogsListAdapter<DIALOG extends IDialog>
         this.datesFormatter = datesFormatter;
     }
 
-    //TODO ability to set style programmatically
+    // ability to set style programmatically
     void setStyle(DialogListStyle dialogStyle) {
         this.dialogStyle = dialogStyle;
     }

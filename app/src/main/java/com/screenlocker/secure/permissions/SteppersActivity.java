@@ -1,8 +1,10 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.R;
@@ -14,6 +16,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -41,6 +45,19 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             startActivity(intent);
             finish();
         } else {
+           /* if (!PrefUtils.getBooleanPref(this,"cmd2")){
+                Intent intent = new Intent(ACTION_PROVISION_MANAGED_DEVICE);
+                ComponentName cn = new ComponentName(getPackageName(),"com.screenlocker.secure.MyAdmin");
+                intent.putExtra(EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME,
+                        cn);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, 1);
+                    PrefUtils.saveBooleanPref(this,"cmd2",true);
+                    //activity.finish();
+                } else {
+                    Toast.makeText(this, "Stopping.",Toast.LENGTH_SHORT).show();
+                }
+            }*/
             addStep(new PermissionStepFragment());//0
             addStep(new SetGuestPasswordFragment());//1
             addStep(new SetEncryptedPasswordFragment());//2
