@@ -1,10 +1,7 @@
 package com.secureSetting;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,13 +10,11 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,37 +29,29 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureClear.SecureClearActivity;
-import com.secureMarket.SecureMarketActivity;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.WeakHashMap;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.secureSetting.UtilityFunctions.getBatteryLevel;
 import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
 import static com.secureSetting.UtilityFunctions.getScreenBrightness;
 import static com.secureSetting.UtilityFunctions.getSleepTime;
@@ -255,13 +242,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private void clickListeners() {
 
         findViewById(R.id.wif_container_layout)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                .setOnClickListener(v -> {
+                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
 //                Intent intent = new Intent(SettingsMainActivity.this,WifiMainActivity.class);
-                        startActivity(intent);
-                    }
+                    startActivity(intent);
                 });
         findViewById(R.id.bluetooth_container_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -466,6 +450,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     protected void onResume() {
         super.onResume();
 
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
 
         bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");

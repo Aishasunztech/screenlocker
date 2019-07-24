@@ -1,7 +1,6 @@
 package com.screenlocker.secure.permissions;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,23 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.TextView;
-
-import com.github.fcannizzaro.materialstepper.AbstractStep;
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.utils.PrefUtils;
-
-import java.util.Set;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,19 +25,31 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.github.fcannizzaro.materialstepper.AbstractStep;
+import com.screenlocker.secure.BuildConfig;
+import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
+import com.screenlocker.secure.utils.PrefUtils;
+
+import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.view.View.GONE;
+import static com.screenlocker.secure.utils.AppConstants.CODE_ACCESSIBILITY;
 import static com.screenlocker.secure.utils.AppConstants.CODE_BATERY_OPTIMIZATION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_MODIFY_SYSTEMS_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_UNKNOWN_RESOURCES;
 import static com.screenlocker.secure.utils.AppConstants.CODE_USAGE_ACCESS;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.NOFICATION_REQUEST;
-import static com.screenlocker.secure.utils.AppConstants.PERMISSIONS_NUMBER;
+import static com.screenlocker.secure.utils.AppConstants.PER_ACCESS;
 import static com.screenlocker.secure.utils.AppConstants.PER_ADMIN;
 import static com.screenlocker.secure.utils.AppConstants.PER_BATTERY;
 import static com.screenlocker.secure.utils.AppConstants.PER_MODIFIY;
@@ -64,9 +65,9 @@ import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionAdmin;
 import static com.screenlocker.secure.utils.PermissionUtils.permissionModify1;
-import static com.screenlocker.secure.utils.PermissionUtils.requestNotificationAccessibilityPermission;
 import static com.screenlocker.secure.utils.PermissionUtils.requestNotificationAccessibilityPermission1;
 import static com.screenlocker.secure.utils.PermissionUtils.requestUsageStatePermission1;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 public class PermissionStepFragment extends AbstractStep implements CompoundButton.OnCheckedChangeListener {
 
@@ -83,6 +84,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
      */
     @Override
     public boolean nextIf() {
+
+
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ADMIN) &&
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_OVERLAY) &&
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_MODIFIY) &&
@@ -90,13 +93,23 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_RUNTIME) &&
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN) &&
                 PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_BATTERY)) {
+                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_BATTERY)
+                && PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ACCESS)
+        ) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
             //all the permissions are granted, can move t0o next
             return true;
         }
+
+
         return false;
 
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
     }
 
     // user can,'t skip this
@@ -138,6 +151,10 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     Switch notificationAccess;
     @BindView(R.id.active_battery_optimization)
     Switch batteryOptimization;
+    @BindView(R.id.active_accessibility)
+    Switch accessibilityService;
+
+
     /**
      * Layout references to hide permission which are already granted
      */
@@ -157,6 +174,9 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     LinearLayout layoutRuntime;
     @BindView(R.id.layout_allow_notification_acces)
     LinearLayout layoutNotification;
+    @BindView(R.id.layout_accessibility)
+    LinearLayout layoutAccessibility;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -233,6 +253,18 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);
         } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, false);
         batteryOptimization.setOnCheckedChangeListener(this);
+
+
+        if (isAccessServiceEnabled(getContext(), WindowChangeDetectingService.class)) {
+            layoutAccessibility.setVisibility(GONE);
+            batteryOptimization.setChecked(true);
+            batteryOptimization.setClickable(false);
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, true);
+        } else {
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, false);
+        }
+        accessibilityService.setOnCheckedChangeListener(this);
+
         return v;
     }
 
@@ -273,6 +305,9 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                 case R.id.active_battery_optimization:
                     startActivityForResult(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getContext().getPackageName())),
                             CODE_BATERY_OPTIMIZATION);
+                    break;
+                case R.id.active_accessibility:
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), CODE_ACCESSIBILITY);
                     break;
 
             }
@@ -346,6 +381,19 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
                 } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
                 break;
+            case CODE_ACCESSIBILITY:
+
+                if (isAccessServiceEnabled(MyApplication.getAppContext(), WindowChangeDetectingService.class)) {
+                    batteryOptimization.setChecked(true);
+                    batteryOptimization.setClickable(false);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, true);
+                } else {
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, false);
+                    accessibilityService.setChecked(false);
+
+                }
+
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -387,9 +435,11 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         if (!Settings.canDrawOverlays(getContext())) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             intent.setData(Uri.parse("package:" + MyApplication.getAppContext().getPackageName()));
-
-
             startActivityForResult(intent, DRAW_OVERLAY);
+        } else {
+            drawoverlay.setChecked(true);
+            drawoverlay.setClickable(false);
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, true);
         }
     }
 

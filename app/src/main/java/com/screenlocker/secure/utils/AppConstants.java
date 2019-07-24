@@ -86,10 +86,10 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
     //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-    //        public static final String URL_1 = "http://192.168.18.149:3000";//local
+//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+    //    public static final String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -161,6 +161,7 @@ public class AppConstants {
     public static final String PER_BATTERY = "per_batteryopt";
     public static final String PER_NOTIFICATION = "per_notification";
     public static final String PERMISSIONS_NUMBER = "permission_numbers";
+    public static final String PER_ACCESS = "per_access";
     public static final String DEF_PAGE_NO = "def_page_no";
 
     public static final int NOFICATION_REQUEST = 1323;
@@ -204,6 +205,10 @@ public class AppConstants {
     public static final int CODE_USAGE_ACCESS = 224;
     public static final int CODE_BATERY_OPTIMIZATION = 2255;
     public static final int CODE_LAUNCHER = 2265;
+    public static final int CODE_ACCESSIBILITY = 2222;
+
+
+    public static final String IS_SETTINGS_ALLOW = "is_settings_allow";
 
     public static final int RESULT_ENABLE = 11;
     public static final int PERMISSION_REQUEST_READ_PHONE_STATE = 100;
@@ -264,25 +269,24 @@ public class AppConstants {
     /*
      * Screen Locker
      * */
-
-//    public static int attempt_5 = 1;
-//    public static int attempt_6 = 5;
-//    public static int attempt_7 = 10;
-//    public static int attempt_8 = 15;
-//    public static int attempt_9 = 30;
-//    public static int attempt_10 = 30;
+//
+    public static int attempt_5 = 1000 * 60;
+    public static int attempt_6 = 1000 * 60 * 5;
+    public static int attempt_7 = 1000 * 60 * 10;
+    public static int attempt_8 = 1000 * 60 * 15;
+    public static int attempt_9 = 1000 * 60 * 30;
+    public static int attempt_10 = 1000 * 60 * 30;
 
     /*
      *Titan Locker
      * */
-
-
-    public static int attempt_5 = 1;
-    public static int attempt_6 = 1;
-    public static int attempt_7 = 3;
-    public static int attempt_8 = 5;
-    public static int attempt_9 = 5;
-    public static int attempt_10 = 5;
+//
+//    public static int attempt_5 = 1000 * 60;
+//    public static int attempt_6 = 1000 * 60;
+//    public static int attempt_7 = 1000 * 60 * 3;
+//    public static int attempt_8 = 1000 * 60 * 5;
+//    public static int attempt_9 = 1000 * 60 * 5;
+//    public static int attempt_10 = 1000 * 60 * 5;
 
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";

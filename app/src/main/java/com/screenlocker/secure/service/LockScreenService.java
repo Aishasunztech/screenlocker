@@ -4,8 +4,6 @@ import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
@@ -14,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -32,7 +31,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
@@ -40,9 +38,9 @@ import androidx.work.WorkManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
-import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -53,6 +51,7 @@ import com.screenlocker.secure.utils.Utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -62,24 +61,23 @@ import java.util.TreeMap;
 import timber.log.Timber;
 
 import static android.view.View.VISIBLE;
-import static com.screenlocker.secure.app.MyApplication.getAppContext;
-import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
+import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -101,6 +99,10 @@ public class LockScreenService extends Service {
     private WindowManager.LayoutParams params;
 
     HashSet<String> blacklist = new HashSet<>();
+
+    HashSet<String> permittedPackages = new HashSet<>();
+
+
     public static ServiceCallbacks mCallBacks;
 
 
@@ -180,6 +182,17 @@ public class LockScreenService extends Service {
         blacklist.add("com.huawei.android.launcher");
 
 
+        permittedPackages.add("com.google.android.packageinstaller");
+        permittedPackages.add("com.android.packageinstaller");
+
+
+//        ArrayList<ActivityInfo> infos = getAllRunningActivities(this, "com.android.settings");
+//
+//        for (ActivityInfo info : infos) {
+//            Timber.d("kjfdgfuihgsuihgiuh %s", info.name);
+//        }
+
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -191,7 +204,7 @@ public class LockScreenService extends Service {
         }
 
         if (!getResources().getString(R.string.apktype).equals("BYOD")) {
-            scheduleUpdateJob(this);
+            scheduleUpdateCheck(this);
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
@@ -205,15 +218,18 @@ public class LockScreenService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> {
             Log.d("nadeem", "screeen off from reciver: ");
-            startLockScreen(true);
+
+            if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
+                startLockScreen(true);
+            }
         });
+
         if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
             stopCapture();
         }
 
         //local
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 notificationReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION_NOTIFICATION));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -231,7 +247,7 @@ public class LockScreenService extends Service {
         public void onReceive(Context context, Intent intent) {
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
-                sheduleScreenOffMonitor();
+//                sheduleScreenOffMonitor();
             }
         }
     };
@@ -241,11 +257,14 @@ public class LockScreenService extends Service {
     AppExecutor appExecutor;
 
     private void sheduleScreenOffMonitor() {
+
         if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
             appExecutor.readyNewExecutor();
         }
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
+
             while (!Thread.currentThread().isInterrupted()) {
+
                 if (!powerManager.isInteractive()) {
                     appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     return;
@@ -257,21 +276,109 @@ public class LockScreenService extends Service {
                     }
                 }
 
+                Timber.d("skldfggskjgskljogikljo %s", "RUNNING");
 
-                if (powerManager.isScreenOn()) {
-                    String current_package = getCurrentApp();
-                    if (current_package != null) {
-                        Timber.d("skldfggskjgskljogikljo %s", current_package);
-                        if (blacklist.contains(current_package)) {
-                            if (mCallBacks != null) {
-                                mCallBacks.onRecentAppKill();
-                            }
-                        }
+                if (powerManager.isInteractive()) {
+
+                    String packageC = getCurrentApp();
+
+                    String current_package = (packageC == null) ? "" : packageC;
+
+                    Timber.d("skldfggskjgskljogikljo %s", current_package);
+
+                    if (isAllowed(this, current_package)) {
+                        Timber.d("skldfggskjgskljogikljo %s", " ===> package allowed");
+                    } else if (current_package.equals("com.android.settings") && PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
+                        Timber.d("skldfggskjgskljogikljo %s", "===> settings allowed");
+                    } else {
+                        Timber.d("skldfggskjgskljogikljo %s", " ===> package not allowed");
+                        Intent i = new Intent(LockScreenService.this, MainActivity.class);
+                        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(i);
                     }
+
                 }
             }
         });
     }
+
+
+    private int counter = 0;
+    private String tempPackage;
+    boolean status = true;
+
+    private boolean isAllowed(Context context, String packageName) {
+
+        if (packageName.equals(context.getPackageName()) || permittedPackages.contains(packageName)) {
+            return true;
+        }
+
+        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
+        String currentSpace = (space == null) ? "" : space;
+
+
+        if (counter == 0) {
+            tempPackage = packageName;
+            counter++;
+        } else {
+            if (tempPackage.equals(packageName)) {
+                return status;
+            } else {
+                counter = 0;
+                status = true;
+            }
+
+        }
+
+        Timber.d("<<< QUERYING DATA >>>");
+
+        AppInfo info = MyApplication.getAppDatabase(this).getDao().getParticularApp(packageName);
+
+        if (info != null) {
+            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isGuest())) {
+                status = true;
+            } else if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+                status = true;
+            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
+                status = true;
+            } else {
+                status = false;
+            }
+
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
+    private void disableComponent(Context context, String packageName, String klass) {
+
+        ComponentName name = new ComponentName(packageName, klass);
+        PackageManager pm = context.getPackageManager();
+
+        // We need the DONT_KILL_APP flag, otherwise we will be killed
+        // immediately because we are in the same app.
+        pm.setComponentEnabledSetting(name, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+
+    public ArrayList<ActivityInfo> getAllRunningActivities(Context context, String packageName) {
+        try {
+            PackageInfo pi = context.getPackageManager().getPackageInfo(
+                    packageName, PackageManager.GET_ACTIVITIES);
+
+            return new ArrayList<>(Arrays.asList(pi.activities));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -391,12 +498,11 @@ public class LockScreenService extends Service {
 
 
     private void startLockScreen(boolean refresh) {
-        Log.d("nadeem", "startLockScreen: ");
-
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+        counter = 0;
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 
         try {
-            setTimeRemaining(getAppContext());
+//            setTimeRemaining(getAppContext());
             if (refresh)
                 refreshKeyboard();
             notificationItems.clear();
@@ -432,22 +538,28 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView() {
-        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD))
-            setTimeRemaining(getAppContext());
+//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+//            //            setTimeRemaining(getAppContext());
+//        }
+        if (mCallBacks != null) {
+            mCallBacks.onRecentAppKill();
+        }
+
         try {
             if (mLayout != null) {
-//                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-//
-//                in.setDuration(5000);
-//
-//                mLayout.setVisibility(View.GONE);
-//                mLayout.startAnimation(in);
+                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
+                in.setDuration(5000);
+                mLayout.setVisibility(View.GONE);
+                mLayout.startAnimation(in);
                 windowManager.removeView(mLayout);
+
             }
             isLocked = false;
         } catch (Exception e) {
             Timber.d(e);
         }
+
+
     }
 
     private void simPermissionsCheck() {
@@ -537,8 +649,6 @@ public class LockScreenService extends Service {
 
 
     public void refreshKeyboard() {
-
-
         try {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);
@@ -554,9 +664,7 @@ public class LockScreenService extends Service {
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
                 refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
-
             }
-
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -609,7 +717,6 @@ public class LockScreenService extends Service {
                 }
                 if (applist != null && applist.size() > 0) {
                     SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
-
                     for (UsageStats usageStats : applist) {
                         mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
                     }
@@ -624,6 +731,7 @@ public class LockScreenService extends Service {
                 if (manager != null) {
                     mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
                 }
+
                 return mm;
             }
         } catch (Exception e) {

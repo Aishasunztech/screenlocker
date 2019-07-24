@@ -1,6 +1,5 @@
 package com.screenlocker.secure.launcher;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
@@ -10,7 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -26,18 +24,12 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.ShareCompat;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -48,24 +40,18 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.manual_load.ManualPullPush;
-import com.screenlocker.secure.manual_load.ManualPushPullAdapter;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
-import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.utils;
-import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureMarket.MarketFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,8 +71,8 @@ import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
@@ -251,17 +237,19 @@ public class MainActivity extends
 
 
         try {
+
             Intent i = new Intent(MainActivity.this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(i);
 
-            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            if (activityManager != null) {
-                int taskId = getTaskId();
-                Log.i("sfs", "clearRecentApp: task id is : " + taskId);
-                activityManager.moveTaskToFront(taskId, 0);
-            }
+//            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//            if (activityManager != null) {
+//                int taskId = getTaskId();
+//                Log.i("sfs", "clearRecentApp: task id is : " + taskId);
+//                activityManager.moveTaskToFront(taskId, 0);
+//            }
+
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -270,6 +258,8 @@ public class MainActivity extends
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
+
+            Timber.d("svklsfdijgosdifgosdifgos");
 
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();
@@ -316,6 +306,8 @@ public class MainActivity extends
 
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);
             mainPresenter.startLockService(lockScreenIntent);
@@ -347,7 +339,7 @@ public class MainActivity extends
         ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
 
 
-        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(KEY_SUPPORT_PASSWORD)) {
+        if (msg != null && !msg.equals("") && msg.equals(KEY_ENCRYPTED)) {
 
             if (appsList != null) {
                 Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : " + appsList.size());
@@ -389,7 +381,6 @@ public class MainActivity extends
         rvApps.scheduleLayoutAnimation();
     }
 
-    @SuppressLint("ResourceType")
     private void setBackground(String message) {
 
         try {
@@ -399,33 +390,35 @@ public class MainActivity extends
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        //Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
+                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
-                        background.setImageResource(R.raw.audiblack);
+//                        background.setImageResource(R.raw.audiblack);
 
                     } else {
-                        //Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
-                        background.setImageResource(Integer.parseInt(bg));
+                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+//                        background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        background.setImageResource(R.raw.texture);
-                        //Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+//                        background.setImageResource(R.raw.texture);
+                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        background.setImageResource(Integer.parseInt(bg));
+//                        background.setImageResource(Integer.parseInt(bg));
+                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
                     }
 
                 } else {
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        background.setImageResource(R.raw.tower);
-                        //Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
+//                        background.setImageResource(R.raw.tower);
+                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
-                        background.setImageResource(Integer.parseInt(bg));
+//                        background.setImageResource(Integer.parseInt(bg));
+                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
                     }
                 }
             }

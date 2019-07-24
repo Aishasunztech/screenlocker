@@ -380,6 +380,12 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void getSyncStatus() {
 
+
+        Timber.d("<<< GET SYnc>>>");
+
+        Timber.d("<<<STATUS >>> %s", SocketManager.getInstance().getSocket().connected());
+//        Timber.d("<<<STATUS >>> %s", socketManager.getSocket().connected());
+
         try {
 
             if (socketManager.getSocket().connected()) {
@@ -766,6 +772,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
+
                     for (int i = 0; i < list.size(); i++) {
                         InstallModel item = list.get(i);
                         String apk = item.getApk();
@@ -787,6 +794,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     if (getResources().getString(R.string.apktype).contains("BYOD")) {
                         Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
                         if (push_apps.equals("push_apps")) {
+
                             ArrayList<InstallModel> appsList = utils.getArrayList(this);
                             ArrayList<InstallModel> temp = new ArrayList<>();
 
@@ -1451,9 +1459,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         Timber.d(obj.toString());
                         if (validateRequest(device_id, obj.getString("device_id"))) {
                             Timber.e(" valid request ");
-                            socketManager.getSocket().emit(SEND_SIM_ACK+device_id,new JSONObject().put("device_id", device_id));
+                            socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                             Timber.d(obj.toString());
-
 
 
                         } else {

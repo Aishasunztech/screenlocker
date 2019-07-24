@@ -26,6 +26,9 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.screenlocker.secure.FakeLauncherActivity;
+import com.screenlocker.secure.R;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CODE_MODIFY_SYSTEMS_STATE;
@@ -202,7 +205,7 @@ public class PermissionUtils {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean isAccessGranted(Context context) {
 
-        boolean granted ;
+        boolean granted;
         AppOpsManager appOps = (AppOpsManager) context
                 .getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
@@ -217,6 +220,7 @@ public class PermissionUtils {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public static void requestUsageStatePermission1(Context context, Fragment fragment) {
         if (!isAccessGranted(context)) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
@@ -246,6 +250,24 @@ public class PermissionUtils {
         }
         return false;
     }
+
+
+    public static void resetPreferredLauncherAndOpenChooser(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        ComponentName componentName = new ComponentName(context, FakeLauncherActivity.class);
+        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+        Intent selector = new Intent(Intent.ACTION_MAIN);
+
+
+        selector.addCategory(Intent.CATEGORY_HOME);
+        selector.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+        context.startActivity(selector/*Intent.createChooser(selector, "Set " + context.getResources().getString(R.string.app_name) + " as Home app")*/);
+        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+    }
+
 
     public static boolean isNotificationAccess(Context context) {
         Set<String> notificationListenerSet = NotificationManagerCompat

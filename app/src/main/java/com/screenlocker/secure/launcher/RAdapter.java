@@ -2,6 +2,8 @@ package com.screenlocker.secure.launcher;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
@@ -51,9 +54,32 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             img = itemView.findViewById(R.id.img);
             badge = itemView.findViewById(R.id.badge);
             img.setOnClickListener(this);
+            img.setOnLongClickListener(v -> {
+
+                PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
+                openAppInfo(context, appsList.get(getAdapterPosition()).getPackageName());
+
+                return false;
+            });
 
         }
 
+
+        private void openAppInfo(Context context, String packageName) {
+
+            try {
+                if (!packageName.equals(context.getPackageName())) {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + packageName));
+                    context.startActivity(intent);
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
 
         @Override
         public void onClick(final View v) {

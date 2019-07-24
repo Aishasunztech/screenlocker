@@ -58,7 +58,6 @@ import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -68,7 +67,6 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
-import com.secureSetting.t.ui.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
@@ -218,6 +216,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             startActivity(intent);
             finish();
         } else {
+
+            String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+
+            if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                constraintLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+
+                return;
+            }
             OneTimeWorkRequest insertionWork =
                     new OneTimeWorkRequest.Builder(BlurWorker.class)
                             .build();
@@ -231,11 +238,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             constraintLayout.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
 
-
                         }
                     });
-        }
 
+        }
 
     }
 
@@ -260,6 +266,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
             dividerAdvance.setVisibility(View.GONE);
             tvAdvance.setVisibility(View.GONE);
+        } else {
+
+            tvManagePasswords.setVisibility(View.VISIBLE);
+            tvChooseBackground.setVisibility(View.VISIBLE);
+            tvCode.setVisibility(View.VISIBLE);
+            tvLanguage.setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider5).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider15).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.VISIBLE);
+            findViewById(R.id.tvTheme).setVisibility(View.VISIBLE);
+            findViewById(R.id.tvthemeDevider).setVisibility(View.VISIBLE);
+            dividerAdvance.setVisibility(View.VISIBLE);
+            tvAdvance.setVisibility(View.VISIBLE);
         }
 
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -788,6 +808,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //                 else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 //                    //Exception error = result.getError();
 //                }
+                break;
+
+            case 1445:
+
+                Timber.d("skdfgijosijdg %s", resultCode);
+
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

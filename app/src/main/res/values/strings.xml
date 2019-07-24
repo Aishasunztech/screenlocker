@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Titan Locker BYOD</string>
-    <string name="toolbar_title" translatable="false">Titan Locker</string>
+    <string name="app_name" translatable="false">Screen Locker BYOD</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
     <string name="apktype" translatable="false">BYOD</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
@@ -423,6 +423,7 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
+
     <string name="imei_1">IMEI 1</string>
     <string name="imei_2">IMEI 2</string>
     <string name="s_n">S/N</string>
@@ -430,6 +431,14 @@
     <string name="mac">MAC</string>
     <string name="ip_addr">IP Addr</string>
     <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
+    <string name="change_default_home_dialog_body">change default home body</string>
+    <string name="change_default_home_dialog_body_settings">change default home body settings</string>
+    <string name="change_default_home_dialog_body_settings_tts">change default home dialog settings tts</string>
+    <string name="change_default_home_dialog_cancel">Cancel default home dialog cancel</string>
+    <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
+
+    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="on_accessibility_service">On Accessibility Service</string>
 
 
 </resources>

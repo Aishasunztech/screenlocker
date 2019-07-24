@@ -714,6 +714,8 @@ public class MarketFragment extends DialogFragment implements
 //                if (file.exists())
 //                    return file;
 
+                if (file.exists())
+                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);

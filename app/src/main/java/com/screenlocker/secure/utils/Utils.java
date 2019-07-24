@@ -1,5 +1,7 @@
 package com.screenlocker.secure.utils;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
@@ -11,18 +13,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
+import android.content.pm.ServiceInfo;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,6 +57,7 @@ import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
+import static com.screenlocker.secure.service.DeviceNotificationListener.TAG;
 import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.getUserType;
@@ -64,7 +70,9 @@ import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
+import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 
 public class Utils {
 
@@ -166,7 +174,10 @@ public class Utils {
                 windowType,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                         | WindowManager.LayoutParams.FLAG_FULLSCREEN
                         | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -276,20 +287,50 @@ public class Utils {
         long time_remaining = getTimeRemaining(context);
 
 
+        int attempts = 10;
+        int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+        int x = attempts - count;
+
         if (time_remaining != 0) {
-            unLockButton.setEnabled(false);
-            unLockButton.setClickable(false);
-            int attempts = 10;
-            int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
-            int x = attempts - count;
-            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, time_remaining, x, context, count);
-            if (countDownTimer != null)
-                countDownTimer.start();
+
+            if (count >= 5) {
+
+                if (count > 9) {
+                    wipeDevice(context);
+                }
+
+                switch (count) {
+                    case 5:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
+                        break;
+                    case 6:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
+                        break;
+                    case 7:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
+                        break;
+                    case 8:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
+                        break;
+                    case 9:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
+                        break;
+                    case 10:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
+                        break;
+                }
+            } else {
+                PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+                PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+            }
+
         }
 
 
         String finalDevice_id1 = device_id;
         unLockButton.setOnClickListener(v -> {
+
+            Timber.d("fvksdifgseifgueri");
 
             String enteredPin = keyboardView.getInputText().trim();
             String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
@@ -355,53 +396,54 @@ public class Utils {
                     }
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-                    int attempts = 10;
-                    int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
-                    int x = attempts - count;
 
-                    if (count > 9) {
+                    int attempts1 = 10;
+                    int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+                    int x1 = attempts1 - count1;
+
+                    if (count1 > 9) {
                         wipeDevice(context);
                     }
 
-                    switch (count) {
+                    switch (count1) {
 
                         case 5:
-                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_5, x, context, count);
+                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_5, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 6:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_6, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_6, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 7:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_7, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_7, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 8:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_8, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_8, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 9:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_9, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_9, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 10:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_10, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_10, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         default:
-                            PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
+                            PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count1 + 1);
                             unLockButton.setEnabled(true);
                             unLockButton.setClickable(true);
                             keyboardView.setPassword(null);
 //                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
-                            String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x + "");
+                            String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x1 + "");
                             keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     }
 
@@ -415,6 +457,19 @@ public class Utils {
         return params;
     }
 
+    private static void remainingTime(Context context, KeyboardView keyboardView, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
+        long time;
+        CountDownTimer countDownTimer;
+        unLockButton.setEnabled(false);
+        unLockButton.setClickable(false);
+        time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
+        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        countDownTimer = timer(unLockButton, keyboardView, time, x, context, count);
+        if (countDownTimer != null)
+            countDownTimer.start();
+    }
+
     private static CountDownTimer timer(Button unLockButton, KeyboardView keyboardView, long timeRemaining, int x, Context context, int count) {
 
         CountDownTimer countDownTimer = null;
@@ -422,14 +477,16 @@ public class Utils {
 
             unLockButton.setEnabled(false);
             unLockButton.setClickable(false);
+
             countDownTimer = new CountDownTimer(timeRemaining, 1000) {
                 @Override
                 public void onTick(long l) {
 //                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
-                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
                     keyboardView.setPassword(null);
                     keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
+                    setTimeRemaining(context);
                 }
 
                 @Override
@@ -440,6 +497,7 @@ public class Utils {
                     keyboardView.clearWaringText();
                     PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
                     PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+                    PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
                 }
             };
         } catch (Exception ignored) {
@@ -501,6 +559,44 @@ public class Utils {
     }
 
 
+    public static boolean isAccessServiceEnabled(Context mContext, Class accessibilityServiceClass) {
+        int accessibilityEnabled = 0;
+        final String service = mContext.getPackageName() + "/" + accessibilityServiceClass.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+                    + e.getMessage());
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+
+                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+                    if (accessibilityService.equalsIgnoreCase(service)) {
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
+        }
+
+        return false;
+    }
+
     public static void sendMessageToActivity(String msg, Context context) {
 
         Intent intent = new Intent(AppConstants.BROADCAST_ACTION);
@@ -524,11 +620,7 @@ public class Utils {
     public static void startNfcSettingsActivity(Context context) {
         try {
 
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                context.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
-            } else {
-                context.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-            }
+            context.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
         } catch (Exception e) {
             Toast.makeText(context, "Your phone has no NFC", Toast.LENGTH_SHORT).show();
         }
@@ -570,6 +662,9 @@ public class Utils {
                 .setPeriodic(24 * 60 * 60 * 1000L)
                 .build();
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 1345)) {
+            scheduler.cancel(1345);
+        }
         if (utils.isJobServiceOn(context, 1345)) {
             scheduler.cancel(1345);
         }

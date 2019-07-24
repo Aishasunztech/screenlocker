@@ -9,6 +9,8 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -16,11 +18,11 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.secure.launcher"
+        applicationId "com.secure.launcher1"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 514
-        versionName "5.14"
+        versionCode 5141
+        versionName "5.141"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -169,6 +171,7 @@ dependencies {
     implementation 'com.mani:ThinDownloadManager:1.4.0'
 
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()

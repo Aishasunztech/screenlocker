@@ -170,7 +170,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
         mPasswordField.setText(password);
     }
 
-    //    Enable
+    //    Enableclear
     public void enableEditText() {
         mPasswordField.setFocusableInTouchMode(true);
         mPasswordField.setFocusable(true);

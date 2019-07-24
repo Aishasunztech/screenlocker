@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.mani:ThinDownloadManager:1.4.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ThinDownloadManager-1.4.0.aar/9e5149f7a1c592271e3cfd74f9f5c1f6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ThinDownloadManager-1.4.0.aar/9e5149f7a1c592271e3cfd74f9f5c1f6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ThinDownloadManager-1.4.0.aar/644a21073a930aeeedbc90f1b4be0971/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ThinDownloadManager-1.4.0.aar/644a21073a930aeeedbc90f1b4be0971/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

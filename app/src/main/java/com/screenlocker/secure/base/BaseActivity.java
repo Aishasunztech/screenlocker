@@ -2,7 +2,6 @@ package com.screenlocker.secure.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -32,18 +31,13 @@ import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.utils.utils;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureMarket.MarketFragment;
-
-import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -56,6 +50,7 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 @SuppressLint("Registered")
 public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
@@ -95,7 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
                 Toast.makeText(context, "policy applied", Toast.LENGTH_SHORT).show();
 
-               // showpolicyConfirmstion();
+                // showpolicyConfirmstion();
 
 //                ArrayList<InstallModel> modelArrayList = utils.getArrayList( BaseActivity.this);
 //
@@ -251,7 +246,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onStart() {
         super.onStart();
-       // showpolicyConfirmstion();
+        // showpolicyConfirmstion();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(loadingPolicyReceiver, new IntentFilter(FINISH_POLICY));
 
@@ -337,7 +332,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
@@ -360,6 +354,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
+        } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
+            launchPermissions();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!getPackageManager().canRequestPackageInstalls()) {
                 launchPermissions();
@@ -369,7 +365,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 launchPermissions();
             }
         }
+
+
     }
+
 
     private void launchPermissions() {
         Intent a = new Intent(this, SteppersActivity.class);
@@ -382,6 +381,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+//
+//        if (hasFocus) {
+////            Toast.makeText(this, "hasFocus : " + hasFocus, Toast.LENGTH_SHORT).show();
+//        } else {
+//
+//            String pakage = getCurrentApp();
+//
+//            if(!pakage.equals("com.secure.launcher1")){
+//                clearRecentApp();
+//            }
+//
+//        }
+
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -389,7 +401,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
-                new BlockStatusBar(this, false).collapseNow();
+//                new BlockStatusBar(this, false).collapseNow();
             }
         }
     }

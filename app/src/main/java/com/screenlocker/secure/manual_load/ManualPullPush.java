@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 
 public class ManualPullPush extends AppCompatActivity implements ManualPushPullAdapter.PushPullAppsListener, MainActivity.PolicyRefreshListener {
@@ -69,6 +70,9 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
     @Override
     protected void onResume() {
         super.onResume();
+
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+
         ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
         if (appsList != null) {
             if (app_check_Install != null) {
@@ -154,6 +158,7 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
 
         if (installModel.getPackage_name() != null) {
             Timber.d(installModel.getPackage_name());
+            Timber.d(installModel.getType_operation());
         }
 
         if (PUSH_APP.equals(installModel.getType_operation())) {
@@ -265,6 +270,11 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
                 startActivity(intent);
 
             }
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(app_uri),
+                    "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
         }
     }
 
