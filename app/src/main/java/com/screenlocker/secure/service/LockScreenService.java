@@ -360,7 +360,7 @@ public class LockScreenService extends Service {
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 
         try {
-            setTimeRemaining(getAppContext());
+//            setTimeRemaining(getAppContext());
             if (refresh)
                 refreshKeyboard();
             notificationItems.clear();
@@ -397,7 +397,7 @@ public class LockScreenService extends Service {
 
     public void removeLockScreenView() {
         if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD))
-            setTimeRemaining(getAppContext());
+//            setTimeRemaining(getAppContext());
         try {
             if (mLayout != null) {
 //                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);

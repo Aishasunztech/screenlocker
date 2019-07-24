@@ -64,6 +64,7 @@ import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
+import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 
 public class Utils {
 
@@ -472,6 +473,7 @@ public class Utils {
                     keyboardView.setPassword(null);
                     keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
+                    setTimeRemaining(context);
                 }
 
                 @Override
