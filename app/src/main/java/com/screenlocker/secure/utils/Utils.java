@@ -394,32 +394,32 @@ public class Utils {
                     switch (count1) {
 
                         case 5:
-                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_5, x1, context, count);
+                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_5, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 6:
-                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_6, x1, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_6, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 7:
-                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_7, x1, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_7, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 8:
-                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_8, x1, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_8, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 9:
-                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_9, x1, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_9, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 10:
-                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_10, x1, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_10, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
