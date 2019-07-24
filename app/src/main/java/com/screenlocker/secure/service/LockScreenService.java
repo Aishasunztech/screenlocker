@@ -396,8 +396,10 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView() {
-        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD))
-//            setTimeRemaining(getAppContext());
+//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+//            //            setTimeRemaining(getAppContext());
+//        }
+
         try {
             if (mLayout != null) {
 //                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
