@@ -17,20 +17,25 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.TransparentActivity;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
+import com.screenlocker.secure.socket.model.BooleanTypeAdapter;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
+import com.screenlocker.secure.socket.model.UnRegisterModel;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -45,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
 
 import timber.log.Timber;
 
@@ -63,50 +70,7 @@ import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
-import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
-import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_SIM_UPDATES;
-import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.IMEI1;
-import static com.screenlocker.secure.utils.AppConstants.IMEI2;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
-import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
-import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.AppConstants.*;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
@@ -238,6 +202,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             }
                             if (action.equals("settings")) {
                                 sendSettings();
+                            }
+                            if (action.equals("simSettings")) {
+                                sendSimSettings();
                             }
 
                             try {
@@ -400,7 +367,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
                             }
-
+                            sendSimSettings();
 
                         } else {
                             Timber.e(" invalid request ");
@@ -660,6 +627,66 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     @Override
+    public void sendSimSettings() {
+        Timber.d("<<< Sending  Sim Settings >>>");
+
+        try {
+            if (socketManager.getSocket().connected()) {
+                Set<String> set = PrefUtils.getStringSet(this, DELETED_ICCIDS);
+                if (set != null && set.size() > 0) {
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("action", SIM_ACTION_DELETED);
+                            json.put("entries", new Gson().toJson(set));
+                            socketManager.getSocket().emit(SEND_SIM + device_id, json);
+                            PrefUtils.saveStringSetPref(this, DELETED_ICCIDS, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    });
+
+                }
+
+                Set<String> set1 = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+                if (set1 != null && set1.size() > 0) {
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getSims(set1);
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("action", SIM_ACTION_UPDATE);
+                            json.put("entries", new Gson().toJson(entries));
+                            socketManager.getSocket().emit(SEND_SIM + device_id, json);
+                            PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                }
+                if (PrefUtils.getBooleanPref(this, SIM_UNREGISTER_FLAG)){
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("action", SIM_ACTION_UNREGISTER);
+                        json.put("entries", new JSONObject().put("guest",PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("encrypt",PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
+                        socketManager.getSocket().emit(SEND_SIM + device_id, json);
+                        PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, false);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            } else {
+                Timber.d("Socket not connected");
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+    }
+
+    @Override
     public void sendAppliedStatus() {
         try {
             if (socketManager.getSocket().connected()) {
@@ -750,8 +777,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     }.getType();
 
                     List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
-
-
 
 
                     for (int i = 0; i < list.size(); i++) {
@@ -1232,13 +1257,51 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     JSONObject obj = (JSONObject) args[0];
 
                     try {
-                        Timber.d(obj.toString());
                         if (validateRequest(device_id, obj.getString("device_id"))) {
                             Timber.e(" valid request ");
-                            socketManager.getSocket().emit(SEND_SIM_ACK+device_id,new JSONObject().put("device_id", device_id));
                             Timber.d(obj.toString());
+                            String action = obj.getString("action");
+                            GsonBuilder builder = new GsonBuilder();
+                            builder.registerTypeAdapter(boolean.class, new BooleanTypeAdapter());
+                            Gson gson = builder.create();
+                            switch (action) {
+                                case SIM_ACTION_DELETED:
+                                    Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() { }.getType());
+                                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                                        MyApplication.getAppDatabase(this).getDao().deleteSims(set);
+                                        try {
+                                            socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
+                                        } catch (JSONException e) {
+                                            Timber.e(" JSON error : %s", e.getMessage());
+                                        }
+                                    });
+                                    break;
+                                case SIM_ACTION_UPDATE:
 
+                                    ArrayList<SimEntry> simEntries =gson.fromJson(obj.getString("entries"), new TypeToken<ArrayList<SimEntry>>() {}.getType());
+                                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                                        for (SimEntry simEntry : simEntries) {
+                                            simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
+                                            int no = MyApplication.getAppDatabase(this).getDao().updateSim(simEntry);
+                                            if (no < 1) {
+                                                MyApplication.getAppDatabase(this).getDao().insertSim(simEntry);
+                                            }
+                                        }
+                                        try {
+                                            socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
+                                        } catch (JSONException e) {
+                                            Timber.e(" JSON error : %s", e.getMessage());
+                                        }
+                                    });
+                                    break;
+                                case SIM_ACTION_UNREGISTER:
 
+                                    UnRegisterModel sim = gson.fromJson(obj.getString("entries"), UnRegisterModel.class);
+
+                                    PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isGuest());
+                                     PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isEncrypt());
+                                    break;
+                            }
 
                         } else {
                             Timber.e(" invalid request ");

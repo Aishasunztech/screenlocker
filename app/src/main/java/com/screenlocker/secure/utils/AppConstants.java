@@ -377,5 +377,11 @@ public class AppConstants {
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";
     public static final int UPDATE_JOB = 1234;
+    public static final String  UNSYNC_ICCIDS = "un_sync_iccid";
+    public static final String  DELETED_ICCIDS = "deleted_iccid";
+    public static final String  SIM_UNREGISTER_FLAG = "unregisterflag";
+    public static final String  SIM_ACTION_DELETED = "sim_delete";
+    public static final String  SIM_ACTION_UPDATE = "sim_update";
+    public static final String  SIM_ACTION_UNREGISTER = "sim_unregister";
 
 }

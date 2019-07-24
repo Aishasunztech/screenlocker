@@ -12,6 +12,8 @@ import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.service.AppExecutor;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author Muhammad Nadeem
@@ -25,18 +27,17 @@ public class SimViewModel extends AndroidViewModel {
         database = MyApplication.getAppDatabase(this.getApplication());
         simEntries = database.getDao().getAllSims();
     }
-    public LiveData<List<SimEntry>> getAllSimEntries(){return simEntries;}
-    public void updateSimEntry(SimEntry sim){
+    LiveData<List<SimEntry>> getAllSimEntries(){return simEntries;}
+    void updateSimEntry(SimEntry sim){
         AppExecutor.getInstance().getSingleThreadExecutor().execute(()->{
             database.getDao().updateSim(sim);
         });
     }
-    public void insertSimEntry(SimEntry sim){
-        AppExecutor.getInstance().getSingleThreadExecutor().execute(()->{
-            database.getDao().insertSim(sim);
-        });
+    void insertSimEntry(SimEntry sim){
+       AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> database.getDao().insertSim(sim));
+
     }
-    public void deleteSimEntry(SimEntry sim){
+    void deleteSimEntry(SimEntry sim){
         AppExecutor.getInstance().getSingleThreadExecutor().execute(()->{
             database.getDao().deleteSim(sim);
         });

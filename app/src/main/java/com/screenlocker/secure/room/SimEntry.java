@@ -95,7 +95,6 @@ SimEntry {
     public void setEncrypted(boolean encrypted) {
         isEncrypted = encrypted;
     }
-
     public boolean isEnable() {
         return isEnable;
     }
@@ -111,4 +110,5 @@ SimEntry {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

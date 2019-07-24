@@ -19,6 +19,7 @@ import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
 
 import java.util.List;
+import java.util.Set;
 
 @Dao
 public interface MyDao {
@@ -29,6 +30,7 @@ public interface MyDao {
 
     @Query("SELECT * from AppInfo")
     List<AppInfo> getApps();
+
     @Query("SELECT * from AppInfo")
     LiveData<List<AppInfo>> getAllApps();
 
@@ -135,13 +137,20 @@ public interface MyDao {
     void insertSim(SimEntry entry);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateSim(SimEntry sim);
+    int updateSim(SimEntry sim);
 
     @Delete
     void deleteSim(SimEntry entry);
 
     @Query("SELECT * FROM sim")
     LiveData<List<SimEntry>> getAllSims();
+
+    @Query("SELECT * FROM sim WHERE iccid IN (:ids)")
+    List<SimEntry> getSims(Set<String> ids);
+
+    @Query("DELETE from sim WHERE iccid IN (:ids)")
+    int deleteSims(Set<String> ids);
+
     @Query("SELECT * FROM sim")
     List<SimEntry> getAllSimInService();
     @Query("SELECT * FROM messages order by mDate desc")

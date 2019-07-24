@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Delete;
@@ -35,19 +36,25 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
@@ -57,12 +64,15 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_UNREGISTER_FLAG;
+import static com.screenlocker.secure.utils.AppConstants.UNSYNC_ICCIDS;
+import static com.screenlocker.secure.utils.AppConstants.isProgress;
 
 public class SimActivity extends BaseActivity implements AddSimDialog.OnRegisterSimListener, SimAdapter.OnSimPermissionChangeListener {
 
 
     private boolean isBackPressed;
-    private Switch allowGuest , allowEncrypted,allowRegisterAllGuest, allowRegisterAllEncrypted;
+    private Switch allowGuest, allowEncrypted, allowRegisterAllGuest, allowRegisterAllEncrypted;
     private SimViewModel viewModel;
     private List<SimEntry> entries;
     private SimAdapter adapter;
@@ -70,6 +80,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     private boolean isFirstRegister = false, isSecondRegister = false;
     private String iccid0, iccid1;
     private FragmentManager fragmentManager;
+    private boolean isChanged = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
@@ -134,55 +145,73 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         allowGuest = findViewById(R.id.allowAllGuest);
         allowEncrypted = findViewById(R.id.allowAllEncrypted);
         allowRegisterAllGuest = findViewById(R.id.allowRegisterAllGuest);
-        allowRegisterAllEncrypted= findViewById(R.id.allowRegisterAllEncrypted);
-        allowRegisterAllGuest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Switch s = (Switch) v;
-                if (s.isChecked()){
-                    for (SimEntry entry : entries) {
-                        entry.setGuest(true);
-                        viewModel.updateSimEntry(entry);
-                    }
-                }else{
-                    for (SimEntry entry : entries) {
-                        entry.setGuest(false);
-                        viewModel.updateSimEntry(entry);
-                    }
+        allowRegisterAllEncrypted = findViewById(R.id.allowRegisterAllEncrypted);
+        allowRegisterAllGuest.setOnClickListener(v -> {
+            Switch s = (Switch) v;
+            Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+            if (set == null)
+                set = new HashSet<>();
+
+            if (s.isChecked()) {
+                for (SimEntry entry : entries) {
+                    entry.setGuest(true);
+                    viewModel.updateSimEntry(entry);
+                    isChanged = true;
+                    set.add(entry.getIccid());
+                }
+            } else {
+                for (SimEntry entry : entries) {
+                    entry.setGuest(false);
+                    viewModel.updateSimEntry(entry);
+                    isChanged = true;
+                    set.add(entry.getIccid());
                 }
             }
+            PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
         });
-        allowRegisterAllEncrypted.setOnClickListener((view)->{
+        allowRegisterAllEncrypted.setOnClickListener((view) -> {
             Switch a = (Switch) view;
-            if (a.isChecked()){
+            Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+            if (set == null)
+                set = new HashSet<>();
+            if (a.isChecked()) {
                 for (SimEntry entry : entries) {
                     entry.setEncrypted(true);
                     viewModel.updateSimEntry(entry);
+                    isChanged = true;
+                    set.add(entry.getIccid());
                 }
-            }else{
+            } else {
                 for (SimEntry entry : entries) {
                     entry.setEncrypted(false);
                     viewModel.updateSimEntry(entry);
+                    isChanged = true;
+                    set.add(entry.getIccid());
                 }
             }
+            PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
         });
         RecyclerView rvSim = findViewById(R.id.rvSim);
         rvSim.setLayoutManager(new LinearLayoutManager(this));
         adapter = new SimAdapter(this, entries, this);
         rvSim.setAdapter(adapter);
-        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)){
+        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)) {
             allowGuest.setChecked(true);
-        }else
+        } else
             allowGuest.setChecked(false);
-        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)){
+        if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)) {
             allowEncrypted.setChecked(true);
-        }else
+        } else
             allowEncrypted.setChecked(false);
         allowGuest.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL,isChecked);
+            PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, isChecked);
+            isChanged = true;
+            PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, true);
         });
-        allowEncrypted.setOnCheckedChangeListener((buttonView, isChecked) ->{
-            PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL,isChecked);
+        allowEncrypted.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, isChecked);
+            isChecked = true;
+            PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, true);
         });
         findViewById(R.id.btnadd).setOnClickListener(v -> {
             fragmentManager = getSupportFragmentManager();
@@ -223,18 +252,17 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     }
 
 
-
     private void setupViewModel() {
         viewModel = ViewModelProviders.of(this).get(SimViewModel.class);
         viewModel.getAllSimEntries().observe(this, simEntries -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 entries.clear();
-                boolean guestAll= true , encryptedAll = true;
+                boolean guestAll = true, encryptedAll = true;
                 for (SimEntry simEntry : simEntries) {
-                    if (!simEntry.isGuest()){
+                    if (!simEntry.isGuest()) {
                         guestAll = false;
                     }
-                    if (!simEntry.isEncrypted()){
+                    if (!simEntry.isEncrypted()) {
                         encryptedAll = false;
                     }
                     if (simEntry.getIccid().equals(iccid0)) {
@@ -276,14 +304,14 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                         if (update) {
                             viewModel.updateSimEntry(simEntry);
                         }
-                    }
-                    else {
+                    } else {
                         if (!simEntry.getStatus().equals(getResources().getString(R.string.status_not_inserted))) {
                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
                             viewModel.updateSimEntry(simEntry);
                         }
-                        if(simEntry.getSlotNo() != -1){
+                        if (simEntry.getSlotNo() != -1) {
                             simEntry.setSlotNo(-1);
+                            viewModel.updateSimEntry(simEntry);
                         }
                     }
                     entries.add(simEntry);
@@ -298,23 +326,27 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
-    public void onSimRegistered(SubscriptionInfo info,String note) {
+    public void onSimRegistered(SubscriptionInfo info, String note) {
         SimEntry entry = new SimEntry(info.getIccId(), info.getCarrierName().toString(), note, info.getSimSlotIndex(), true, true, true, "Active");
         viewModel.insertSimEntry(entry);
-        if (SocketManager.getInstance().getSocket().connected()){
-            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
-            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
-        }
+        isChanged = true;
+        Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+        if (set == null)
+            set = new HashSet<>();
+        set.add(entry.getIccid());
+        PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
         fragmentManager.popBackStack();
     }
 
     @Override
-    public void onManualInsert(SimEntry sm) {
-        viewModel.insertSimEntry(sm);
-        if (SocketManager.getInstance().getSocket().connected()){
-            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
-            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(sm));
-        }
+    public void onManualInsert(SimEntry entry) {
+        viewModel.insertSimEntry(entry);
+        isChanged = true;
+        Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+        if (set == null)
+            set = new HashSet<>();
+        set.add(entry.getIccid());
+        PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
         fragmentManager.popBackStack();
     }
 
@@ -346,15 +378,17 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                 entry.setEnable(isChecked);
                 if (entry.getStatus().equals(getResources().getString(R.string.status_active)) ||
                         entry.getStatus().equals(getResources().getString(R.string.status_disabled)))
-                    if (entry.getSlotNo() == 0 || entry.getSlotNo()==1)
-                    broadCastIntent(isChecked, entry.getSlotNo());
+                    if (entry.getSlotNo() == 0 || entry.getSlotNo() == 1)
+                        broadCastIntent(isChecked, entry.getSlotNo());
                 break;
         }
         viewModel.updateSimEntry(entry);
-        if (SocketManager.getInstance().getSocket().connected()){
-            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
-            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
-        }
+        isChanged = true;
+        Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+        if (set == null)
+            set = new HashSet<>();
+        set.add(entry.getIccid());
+        PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -363,11 +397,17 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.delete_title))
                 .setIcon(android.R.drawable.ic_delete)
-                .setMessage(getResources().getString(R.string.want_to_delete,entry.getIccid()))
-                .setPositiveButton(getResources().getString(R.string.delete_title),(dialog, which) -> {
+                .setMessage(getResources().getString(R.string.want_to_delete, entry.getIccid()))
+                .setPositiveButton(getResources().getString(R.string.delete_title), (dialog, which) -> {
+                    isChanged = true;
+                    Set<String> set = PrefUtils.getStringSet(this, DELETED_ICCIDS);
+                    if (set == null)
+                        set = new HashSet<>();
+                    set.add(entry.getIccid());
+                    PrefUtils.saveStringSetPref(this, DELETED_ICCIDS, set);
                     viewModel.deleteSimEntry(entry);
                 })
-                .setNegativeButton(getResources().getString(R.string.cancel_text),(dialog, which) -> {
+                .setNegativeButton(getResources().getString(R.string.cancel_text), (dialog, which) -> {
                     dialog.dismiss();
                 })
                 .show();
@@ -377,11 +417,13 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     @Override
     public void onUpdateEntry(SimEntry entry) {
         viewModel.updateSimEntry(entry);
-        Timber.d( "onUpdateEntry: ");
-        if (SocketManager.getInstance().getSocket().connected()){
-            String device_id = PrefUtils.getStringPref(SimActivity.this, DEVICE_ID);
-            SocketManager.getInstance().getSocket().emit(SEND_SIM + device_id,new Gson().toJson(entry));
-        }
+//        TODO: mark as un sync
+        isChanged = true;
+        Set<String> set = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+        if (set == null)
+            set = new HashSet<>();
+        set.add(entry.getIccid());
+        PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, set);
 
     }
 
@@ -403,12 +445,19 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
 
     @Override
     protected void onStop() {
+        if (isChanged) {
+            Intent intent = new Intent(BROADCAST_APPS_ACTION);
+            intent.putExtra(KEY_DATABASE_CHANGE, "simSettings");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
         try {
             fragmentManager.popBackStack();
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
+
         this.finish();
         super.onStop();
     }
+
 }

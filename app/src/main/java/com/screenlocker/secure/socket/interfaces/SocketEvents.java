@@ -16,6 +16,8 @@ public interface SocketEvents {
 
     void sendSettings();
 
+    void sendSimSettings();
+
     void sendAppliedStatus();
 
     void sendAppsWithoutIcons();
