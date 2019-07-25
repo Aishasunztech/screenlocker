@@ -11,13 +11,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.service.notification.StatusBarNotification;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,9 +35,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.views.KeyboardView;
 
 import java.util.ArrayList;
@@ -61,7 +62,9 @@ import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
+import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
+import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 
 public class Utils {
 
@@ -106,7 +109,7 @@ public class Utils {
                 .setGroupSummary(false)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-               // .setPriority(Notification.PRIORITY_MIN)
+                // .setPriority(Notification.PRIORITY_MIN)
                 .setSmallIcon(icon)
                 .build();
     }
@@ -273,15 +276,43 @@ public class Utils {
         long time_remaining = getTimeRemaining(context);
 
 
+        int attempts = 10;
+        int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+        int x = attempts - count;
+
         if (time_remaining != 0) {
-            unLockButton.setEnabled(false);
-            unLockButton.setClickable(false);
-            int attempts = 10;
-            int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
-            int x = attempts - count;
-            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, time_remaining, x, context, count);
-            if (countDownTimer != null)
-                countDownTimer.start();
+
+            if (count >= 5) {
+
+                if (count > 9) {
+                    wipeDevice(context);
+                }
+
+                switch (count) {
+                    case 5:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
+                        break;
+                    case 6:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
+                        break;
+                    case 7:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
+                        break;
+                    case 8:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
+                        break;
+                    case 9:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
+                        break;
+                    case 10:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
+                        break;
+                }
+            } else {
+                PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+                PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+            }
+
         }
 
 
@@ -312,7 +343,6 @@ public class Utils {
 
 
                 }
-                // TODO handle the super key for unlocking the dialer screen ( uncomment it to make super key run)
             /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
 
 // JUST a go through LOCK
@@ -353,53 +383,54 @@ public class Utils {
                     }
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-                    int attempts = 10;
-                    int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
-                    int x = attempts - count;
 
-                    if (count > 9) {
+                    int attempts1 = 10;
+                    int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+                    int x1 = attempts1 - count1;
+
+                    if (count1 > 9) {
                         wipeDevice(context);
                     }
 
-                    switch (count) {
+                    switch (count1) {
 
                         case 5:
-                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_5, x, context, count);
+                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_5, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 6:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_6, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_6, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 7:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_7, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_7, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 8:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_8, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_8, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 9:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_9, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_9, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         case 10:
-                            countDownTimer = timer(unLockButton, keyboardView, 1000 * 60 * AppConstants.attempt_10, x, context, count);
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_10, x1, context, count1);
                             if (countDownTimer != null)
                                 countDownTimer.start();
                             break;
                         default:
-                            PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
+                            PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count1 + 1);
                             unLockButton.setEnabled(true);
                             unLockButton.setClickable(true);
                             keyboardView.setPassword(null);
 //                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
-                            String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x + "");
+                            String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x1 + "");
                             keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     }
 
@@ -413,6 +444,19 @@ public class Utils {
         return params;
     }
 
+    private static void remainingTime(Context context, KeyboardView keyboardView, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
+        long time;
+        CountDownTimer countDownTimer;
+        unLockButton.setEnabled(false);
+        unLockButton.setClickable(false);
+        time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
+        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        countDownTimer = timer(unLockButton, keyboardView, time, x, context, count);
+        if (countDownTimer != null)
+            countDownTimer.start();
+    }
+
     private static CountDownTimer timer(Button unLockButton, KeyboardView keyboardView, long timeRemaining, int x, Context context, int count) {
 
         CountDownTimer countDownTimer = null;
@@ -420,14 +464,16 @@ public class Utils {
 
             unLockButton.setEnabled(false);
             unLockButton.setClickable(false);
+
             countDownTimer = new CountDownTimer(timeRemaining, 1000) {
                 @Override
                 public void onTick(long l) {
 //                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
-                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
                     keyboardView.setPassword(null);
                     keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
+                    setTimeRemaining(context);
                 }
 
                 @Override
@@ -438,6 +484,7 @@ public class Utils {
                     keyboardView.clearWaringText();
                     PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
                     PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+                    PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
                 }
             };
         } catch (Exception ignored) {
@@ -522,11 +569,7 @@ public class Utils {
     public static void startNfcSettingsActivity(Context context) {
         try {
 
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                context.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
-            } else {
-                context.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-            }
+            context.startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
         } catch (Exception e) {
             Toast.makeText(context, "Your phone has no NFC", Toast.LENGTH_SHORT).show();
         }
@@ -539,15 +582,19 @@ public class Utils {
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
-    public static void scheduleExpiryCheck(Context context) {
+    public static void scheduleUpdateCheck(Context context) {
+
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(24 * 60 * 60 * 1000L)
                 .build();
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 123)) {
+            scheduler.cancel(123);
+        }
         int resultCode = scheduler.schedule(info);
+
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             //Log.d(TAG, "Job scheduled");
         } else {
@@ -555,5 +602,94 @@ public class Utils {
         }
 
     }
+
+    public static void scheduleExpiryCheck(Context context) {
+
+        ComponentName componentName = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
+        JobInfo info = new JobInfo.Builder(1345, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(24 * 60 * 60 * 1000L)
+                .build();
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 1345)) {
+            scheduler.cancel(1345);
+        }
+        int resultCode = scheduler.schedule(info);
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            //Log.d(TAG, "Job scheduled");
+        } else {
+            //Log.d(TAG, "Job scheduling failed");
+        }
+
+    }
+
+
+    private static int currentVolume = 0;
+    private static boolean haSilence = false;
+
+    /**
+     * 扬声器免提
+     *
+     * @param context
+     */
+    public static void speaker(Context context) {
+        Timber.d("speakerOn");
+        AudioManager audioManager = getAudioManager(context);
+        if (audioManager.isSpeakerphoneOn())
+            return;
+        audioManager.setSpeakerphoneOn(true);
+        if (currentVolume == 0)
+            currentVolume = audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+        // currentVolume
+        // =audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                currentVolume, AudioManager.STREAM_VOICE_CALL);
+    }
+
+    public static void micOff(Context context) {
+        Timber.d("speakerOn");
+        AudioManager audioManager = getAudioManager(context);
+        if (audioManager.isMicrophoneMute())
+            return;
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setMicrophoneMute(true);
+    }
+
+    /**
+     * 静音
+     *
+     * @param context
+     */
+    public static void speakerOff(Context context) {
+        Timber.d("speakerOff: ");
+        AudioManager audioManager = getAudioManager(context);
+        if (!audioManager.isSpeakerphoneOn())
+            return;
+        currentVolume = audioManager
+                .getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        audioManager.setSpeakerphoneOn(false);
+        audioManager.setMicrophoneMute(!audioManager.isSpeakerphoneOn());
+        audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 0,
+                AudioManager.STREAM_VOICE_CALL);
+    }
+
+    public static void silence(Context context) {
+        AudioManager audioManager = getAudioManager(context);
+        if (haSilence)
+            audioManager.setStreamMute(AudioManager.MODE_IN_CALL, false);
+        else
+            audioManager.setStreamMute(AudioManager.MODE_IN_CALL, true);
+    }
+
+    private static AudioManager getAudioManager(Context context) {
+        AudioManager audioManager = (AudioManager) context
+                .getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_CALL);
+        // audioManager.setMode(AudioManager.ROUTE_SPEAKER);
+        return audioManager;
+    }
+
 
 }

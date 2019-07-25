@@ -684,8 +684,8 @@ public class MarketFragment extends Fragment implements
                     apksPath.mkdir();
                 }
 
-//                if (file.exists())
-//                    return file;
+                if (file.exists())
+                    return file;
                 try {
                     fileOutputStream = new FileOutputStream(file);
                     URL downloadUrl = new URL(url);

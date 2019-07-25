@@ -6,7 +6,7 @@
     android:background="@drawable/stepper_bg_gradient"
     tools:context="com.screenlocker.secure.permissions.SetDefaultLauncherFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- : Update blank fragment layout -->
 
     <LinearLayout
         android:layout_width="wrap_content"

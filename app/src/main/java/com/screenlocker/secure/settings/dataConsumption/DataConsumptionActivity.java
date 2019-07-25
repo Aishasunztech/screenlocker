@@ -1,12 +1,12 @@
 package com.screenlocker.secure.settings.dataConsumption;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Switch;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.socket.utils.utils;
@@ -17,11 +17,9 @@ import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.socket.utils.utils.cancelJob;
 import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
-import static com.screenlocker.secure.utils.AppConstants.LINKSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
-import static com.screenlocker.secure.utils.AppConstants.UPDATEWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 
 public class DataConsumptionActivity extends AppCompatActivity {
