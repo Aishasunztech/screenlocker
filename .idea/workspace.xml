@@ -243,33 +243,7 @@
     <last-search-timestamp>1562762847243</last-search-timestamp>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc60bacb-4900-4701-ab84-84705b125167" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_2_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_policy_icon.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SetUpLockActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SetUpLockActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/policy/PolicyActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/policy/PolicyActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/black_circle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/black_circle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/btn_stepper_bg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/btn_stepper_bg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/guest_password_bg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/guest_password_bg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_change_wallpaper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_change_wallpaper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_manage_passwords.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_manage_passwords.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_policy.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_policy.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_set_up_lock.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_set_up_lock.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/settings_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/settings_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
-    </list>
+    <list default="true" id="bc60bacb-4900-4701-ab84-84705b125167" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -417,9 +391,40 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="122">
-              <caret line="930" column="118" selection-start-line="930" selection-start-column="118" selection-end-line="930" selection-end-column="118" />
+              <caret line="935" column="118" selection-start-line="935" selection-start-column="118" selection-end-line="935" selection-end-column="118" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#13174#13196#0" expanded="true" />
+                <element signature="e#16517#16574#0" expanded="true" />
+                <element signature="e#16576#16635#0" expanded="true" />
+                <element signature="e#17189#17246#0" expanded="true" />
+                <element signature="e#17248#17307#0" expanded="true" />
+                <element signature="e#17385#17437#0" expanded="true" />
+                <element signature="e#18144#18194#0" expanded="true" />
+                <element signature="e#18336#18351#0" expanded="true" />
+                <element signature="e#18658#18712#0" expanded="true" />
+                <element signature="e#18741#18797#0" expanded="true" />
+                <element signature="e#19285#19336#0" expanded="true" />
+                <element signature="e#20496#20524#0" expanded="true" />
+                <element signature="e#21276#21333#0" expanded="true" />
+                <element signature="e#21391#21450#0" expanded="true" />
+                <element signature="e#21515#21557#0" expanded="true" />
+                <element signature="e#22148#22194#0" expanded="true" />
+                <element signature="e#22499#22527#0" expanded="true" />
+                <element signature="e#23050#23104#0" expanded="true" />
+                <element signature="e#23327#23383#0" expanded="true" />
+                <element signature="e#23482#23546#0" expanded="true" />
+                <element signature="e#23609#23657#0" expanded="true" />
+                <element signature="e#23939#23985#0" expanded="true" />
+                <element signature="e#24423#24465#0" expanded="true" />
+                <element signature="e#30662#30724#0" expanded="true" />
+                <element signature="e#30929#30992#0" expanded="true" />
+                <element signature="e#31210#31267#0" expanded="true" />
+                <element signature="e#31269#31328#0" expanded="true" />
+                <element signature="e#31916#31968#0" expanded="true" />
+                <element signature="e#32197#32245#0" expanded="true" />
+                <element signature="e#34793#34804#0" expanded="true" />
+                <element signature="e#35131#35146#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1250,13 +1255,6 @@
       <option name="presentableId" value="Default" />
       <updated>1553177713409</updated>
     </task>
-    <task id="LOCAL-00019" summary="Sim Layout">
-      <created>1557215450247</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1557215450247</updated>
-    </task>
     <task id="LOCAL-00020" summary="Sim Menu Added">
       <created>1557230624342</created>
       <option name="number" value="00020" />
@@ -1593,7 +1591,14 @@
       <option name="project" value="LOCAL" />
       <updated>1563433542475</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="previous screens commit">
+      <created>1564033889515</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1564033889516</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1730,7 +1735,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ScreenLocker version 4.79" />
     <MESSAGE value="Settings open on unlock ,Screen Capture, and policy cancel bug fixed" />
     <MESSAGE value="SL version v4.80" />
     <MESSAGE value="Offline expiry" />
@@ -1755,7 +1759,8 @@
     <MESSAGE value="SL SW v5.14 with notification removed from lock screen.final" />
     <MESSAGE value="TL SW v5.14 with notification removed from lock screen.final" />
     <MESSAGE value="setup complete screen arabic added" />
-    <option name="LAST_COMMIT_MESSAGE" value="setup complete screen arabic added" />
+    <MESSAGE value="previous screens commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="previous screens commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1768,13 +1773,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/installApps/InstallAppsActivity.java</url>
-          <line>365</line>
+          <line>366</line>
           <properties />
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/installApps/InstallAppsActivity.java</url>
-          <line>372</line>
+          <line>373</line>
           <properties />
           <option name="timeStamp" value="20" />
         </line-breakpoint>
@@ -2171,9 +2176,40 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="122">
-          <caret line="930" column="118" selection-start-line="930" selection-start-column="118" selection-end-line="930" selection-end-column="118" />
+          <caret line="935" column="118" selection-start-line="935" selection-start-column="118" selection-end-line="935" selection-end-column="118" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#13174#13196#0" expanded="true" />
+            <element signature="e#16517#16574#0" expanded="true" />
+            <element signature="e#16576#16635#0" expanded="true" />
+            <element signature="e#17189#17246#0" expanded="true" />
+            <element signature="e#17248#17307#0" expanded="true" />
+            <element signature="e#17385#17437#0" expanded="true" />
+            <element signature="e#18144#18194#0" expanded="true" />
+            <element signature="e#18336#18351#0" expanded="true" />
+            <element signature="e#18658#18712#0" expanded="true" />
+            <element signature="e#18741#18797#0" expanded="true" />
+            <element signature="e#19285#19336#0" expanded="true" />
+            <element signature="e#20496#20524#0" expanded="true" />
+            <element signature="e#21276#21333#0" expanded="true" />
+            <element signature="e#21391#21450#0" expanded="true" />
+            <element signature="e#21515#21557#0" expanded="true" />
+            <element signature="e#22148#22194#0" expanded="true" />
+            <element signature="e#22499#22527#0" expanded="true" />
+            <element signature="e#23050#23104#0" expanded="true" />
+            <element signature="e#23327#23383#0" expanded="true" />
+            <element signature="e#23482#23546#0" expanded="true" />
+            <element signature="e#23609#23657#0" expanded="true" />
+            <element signature="e#23939#23985#0" expanded="true" />
+            <element signature="e#24423#24465#0" expanded="true" />
+            <element signature="e#30662#30724#0" expanded="true" />
+            <element signature="e#30929#30992#0" expanded="true" />
+            <element signature="e#31210#31267#0" expanded="true" />
+            <element signature="e#31269#31328#0" expanded="true" />
+            <element signature="e#31916#31968#0" expanded="true" />
+            <element signature="e#32197#32245#0" expanded="true" />
+            <element signature="e#34793#34804#0" expanded="true" />
+            <element signature="e#35131#35146#0" expanded="true" />
           </folding>
         </state>
       </provider>
