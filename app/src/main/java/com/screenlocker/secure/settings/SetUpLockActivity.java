@@ -6,14 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Validator;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 
@@ -24,12 +32,10 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     /**
      * entered pin from the user
      */
-    private AppCompatEditText etEnterPin;
 
     /**
      * to confirm the user entered password
      */
-    private AppCompatEditText etConfirmPin;
 
     /**
      * button to validate the password and save it
@@ -40,12 +46,28 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
 
     private String from;
 
+    @BindView(R.id.pin_input_layout)
+    TextInputLayout pin_input_layout;
+    @BindView(R.id.etEnterPin)
+    TextInputEditText etEnterPin;
+
+    @BindView(R.id.re_pin_input_layout)
+    TextInputLayout re_pin_input_layout;
+    @BindView(R.id.etConfirmPin)
+    TextInputEditText etConfirmPin;
+
+    @BindView(R.id.guest_image_icon)
+    ImageView img_picture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up_lock);
+        ButterKnife.bind(this);
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setToolbar(mToolbar);
+
+
         init();
 
         if (getIntent().hasExtra(Intent.EXTRA_TEXT)) {
@@ -55,8 +77,12 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 // setting toolbar name for guest type
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.set_guest_code);
-                etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
-                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+//                etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
+//                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_guest_icon));
+
+                pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_guest_pin));
+                re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
             } else if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
                 from = AppConstants.KEY_DURESS;
                 // setting toolbar name for guest type
@@ -66,8 +92,12 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
 
                     btnDisableDuress.setVisibility(View.VISIBLE );
                 }
-                etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
-                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+//                etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
+//                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_duress_icon));
+
+                pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_duress_pin));
+                re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
             } else if (setMainPwd.equalsIgnoreCase(AppConstants.KEY_CODE)) {
                 from = AppConstants.KEY_CODE;
                 if (getSupportActionBar() != null)
@@ -79,8 +109,12 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 // setting toolbar name for encrypted type
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.set_encrypted_code);
-                etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
-                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+//                etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
+//                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_encrypted_third));
+                pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_encrypted_pin));
+                re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
+
 
             }
         }
@@ -96,8 +130,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void init() {
-        etEnterPin = findViewById(R.id.etEnterPin);
-        etConfirmPin = findViewById(R.id.etConfirmPin);
+//        etEnterPin = findViewById(R.id.etEnterPin);
+//        etConfirmPin = findViewById(R.id.etConfirmPin);
         btnConfirm = findViewById(R.id.btnConfirm);
         btnDisableDuress = findViewById(R.id.disable_duress);
         btnDisableDuress.setOnClickListener(this);

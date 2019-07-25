@@ -33,6 +33,7 @@ import com.secureSetting.SecureSettingsMain;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import timber.log.Timber;
@@ -50,6 +51,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
     private boolean isNetworkDialogOpen, isLinkDialogOpen;
     private ConstraintLayout containerLayout;
+    private CardView cardView;
 
     private Button btnDefault, btnLoadPolicy;
     private EditText etPolicyName;
@@ -98,6 +100,10 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         btnLoadPolicy = findViewById(R.id.btnLoadPolicy);
         btnLoadPolicy.setOnClickListener(this);
         etPolicyName = findViewById(R.id.edtTxtPin);
+        cardView = findViewById(R.id.policy_card);
+        cardView.setBackgroundResource(R.drawable.black_circle);
+
+
 
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
