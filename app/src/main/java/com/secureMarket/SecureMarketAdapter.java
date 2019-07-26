@@ -36,6 +36,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     private Context context;
     private AppInstallUpdateListener listener;
     private String userSpace;
+    private String fragmentType;
 
 
     public interface AppInstallUpdateListener {
@@ -44,11 +45,13 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         void onUnInstallClick(List app, boolean status);
     }
 
-    public SecureMarketAdapter(java.util.List<List> appModelList, Context context, AppInstallUpdateListener listener) {
+    public SecureMarketAdapter(java.util.List<List> appModelList, Context context,
+                               AppInstallUpdateListener listener,String fragmentType) {
         this.appModelList = appModelList;
         this.context = context;
         this.listener = listener;
         userSpace = PrefUtils.getStringPref(context, CURRENT_KEY);
+        this.fragmentType = fragmentType;
 
 
     }
@@ -69,6 +72,13 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         if (app.isInstalled()) {
             holder.btnUnInstall.setVisibility(View.VISIBLE);
             holder.btnInstall.setVisibility(View.GONE);
+            if(fragmentType.equals("update"))
+            {
+                holder.btnUnInstall.setText(context.getResources().getString(R.string.update));
+            }
+            else{
+                holder.btnUnInstall.setText(context.getResources().getString(R.string.uninstall));
+            }
 
         } else {
             holder.btnInstall.setVisibility(View.VISIBLE);
@@ -139,13 +149,29 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                             boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
 
                             if (isGuest) {
-                                if (app.getIs_restrict_uninstall() == 0) {
-                                    listener.onUnInstallClick(app, true);
-                                } else {
-                                    listener.onUnInstallClick(app, false);
+                                if(fragmentType.equals("update"))
+                                {
+                                    if (listener != null) {
+                                        listener.onInstallClick(app);
+                                    }
+                                }
+                                else if(fragmentType.equals("uninstall")) {
+                                    if (app.getIs_restrict_uninstall() == 0) {
+                                        listener.onUnInstallClick(app, true);
+                                    } else {
+                                        listener.onUnInstallClick(app, false);
+                                    }
                                 }
                             } else {
-                                listener.onUnInstallClick(app, false);
+                                if(fragmentType.equals("update"))
+                                {
+                                    if (listener != null) {
+                                        listener.onInstallClick(app);
+                                    }
+                                }
+                                else if(fragmentType.equals("uninstall")) {
+                                    listener.onUnInstallClick(app, false);
+                                }
                             }
                         }).start();
 
@@ -156,17 +182,37 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                         new Thread(() -> {
                             boolean isEncrypted = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
                             if (isEncrypted) {
-                                if (app.getIs_restrict_uninstall() == 0) {
-                                    listener.onUnInstallClick(app, true);
-                                } else {
+                                if(fragmentType.equals("update"))
+                                {
+                                    if (listener != null) {
+                                        listener.onInstallClick(app);
+                                    }
+                                }
+                                else if(fragmentType.equals("uninstall")) {
+                                    if (app.getIs_restrict_uninstall() == 0) {
+                                        listener.onUnInstallClick(app, true);
+                                    } else {
+                                        listener.onUnInstallClick(app, false);
+                                    }
+                                }
+//                                if (app.getIs_restrict_uninstall() == 0) {
+//                                    listener.onUnInstallClick(app, true);
+//                                } else {
+//                                    listener.onUnInstallClick(app, false);
+//                                }
+                            } else {
+                                if(fragmentType.equals("update"))
+                                {
+                                    if (listener != null) {
+                                        listener.onInstallClick(app);
+                                    }
+                                }
+                                else if(fragmentType.equals("uninstall")) {
                                     listener.onUnInstallClick(app, false);
                                 }
-                            } else {
-                                listener.onUnInstallClick(app, false);
+//                                listener.onUnInstallClick(app, false);
                             }
                         }).start();
-
-
                         break;
                 }
 

@@ -61,7 +61,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".policy.PolicyActivity"></activity>
+        <activity android:name="com.secureSetting.NotificationsActivity"></activity>
+        <activity android:name=".policy.PolicyActivity" />
         <activity android:name=".settings.AdvanceSettings" />
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
@@ -148,10 +149,7 @@
         <activity
             android:name=".socket.policy.ui.PolicyActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:launchMode="singleTop"
@@ -248,13 +246,11 @@
         <receiver
             android:name=".MyAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
-
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
 
             <intent-filter>
-
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>

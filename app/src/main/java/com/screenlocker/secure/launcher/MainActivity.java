@@ -70,7 +70,7 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener, OnAppsRefreshListener {
+public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             setBackground(msg);
         }
 
-        refreshApps(this);
+//        refreshApps(this);
         super.onResume();
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
@@ -450,10 +450,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         alertDialog.show();
     }
 
-    @Override
-    public void onAppsRefresh() {
-        // AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
-    }
+//    @Override
+//    public void onAppsRefresh() {
+//        // AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
+//    }
 }
 
 

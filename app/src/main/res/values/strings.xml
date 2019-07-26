@@ -203,7 +203,7 @@
     <string name="something_wrong">something went wrong</string>
     <string name="downloading_update">Downloading Update, Please Wait</string>
     <string name="install">install</string>
-    <string name="uninstall">uninstall</string>
+    <string name="uninstall">Uninstall</string>
     <string name="policy_title">Load Policy</string>
     <string name="policy_warning_title">Warning!</string>
     <string name="default_policy">default_policy</string>
@@ -419,6 +419,7 @@
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
     <string name="updates">Updates</string>
+    <string name="update">Update</string>
     <string name="sim">SIM</string>
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
@@ -430,5 +431,7 @@
     <string name="s_n">S/N</string>
     <string name="mac">MAC</string>
     <string name="ip_addr">IP Addr</string>
+    <string name="notifications">Notifications</string>
+    <string name="all_apps">All Apps</string>
 
 </resources>

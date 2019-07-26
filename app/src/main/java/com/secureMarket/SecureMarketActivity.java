@@ -139,6 +139,13 @@ public class SecureMarketActivity extends BaseActivity
                         fragmentUninstall.setArguments(b1);
 
                         return fragmentUninstall;
+                    case 2:
+                        MarketFragment fragmentUpdate = new MarketFragment();
+                        Bundle b3 = new Bundle();
+                        b3.putString("check","update");
+                        fragmentUpdate.setArguments(b3);
+
+                        return fragmentUpdate;
                         default:
                             MarketFragment fragmentDefault = new MarketFragment();
                             Bundle b2 = new Bundle();
@@ -153,7 +160,7 @@ public class SecureMarketActivity extends BaseActivity
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
 
             @Nullable
@@ -165,6 +172,8 @@ public class SecureMarketActivity extends BaseActivity
                         return getResources().getString(R.string.install);
                     case 1:
                         return getResources().getString(R.string.uninstall);
+                    case 2:
+                        return getResources().getString(R.string.updates);
                         default:
                             return getResources().getString(R.string.install);
 

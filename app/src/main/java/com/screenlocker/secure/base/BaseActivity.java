@@ -31,7 +31,9 @@ import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -40,6 +42,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
@@ -51,7 +54,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 
 @SuppressLint("Registered")
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, OnAppsRefreshListener {
     //    customViewGroup view;
     WindowManager.LayoutParams localLayoutParams;
     private boolean overlayIsAllowed;
@@ -312,6 +315,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
+
+        refreshApps(this);
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
@@ -364,4 +369,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
+    @Override
+    public void onAppsRefresh() {
+
+    }
 }

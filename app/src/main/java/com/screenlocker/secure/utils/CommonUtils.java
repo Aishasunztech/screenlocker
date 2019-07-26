@@ -340,6 +340,20 @@ public class CommonUtils {
         subExtensions.add(language);
 
 
+        // Notifications
+
+        Drawable notificaitons_drawable = context.getResources().getDrawable(R.drawable.ic_notifications);
+        byte[] notificaitons_icon = CommonUtils.convertDrawableToByteArray(notificaitons_drawable);
+        SubExtension notificaitons = new SubExtension();
+        notificaitons.setLabel("Notifications");
+        notificaitons.setIcon(notificaitons_icon);
+        notificaitons.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
+        notificaitons.setGuest(false);
+        notificaitons.setEncrypted(false);
+        notificaitons.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Notifications");
+        subExtensions.add(notificaitons);
+
+
         return subExtensions;
 
     }

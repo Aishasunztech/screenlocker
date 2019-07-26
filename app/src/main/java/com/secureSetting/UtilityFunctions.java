@@ -6,7 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,6 +18,9 @@ import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.view.Gravity;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import com.screenlocker.secure.R;
 
@@ -30,6 +35,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
+import static android.content.Context.WINDOW_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.LOCATION_SETTINGS_CODE;
 import static com.screenlocker.secure.utils.AppConstants.RC_PERMISSION;
@@ -202,6 +208,19 @@ public class UtilityFunctions {
     public static int getBatteryLevel(Context context) {
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+    }
+
+
+    public static int getVersionCode(Context context,String packageName)
+    {
+
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 
