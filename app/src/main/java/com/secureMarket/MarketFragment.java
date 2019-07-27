@@ -285,7 +285,7 @@ public class MarketFragment extends Fragment implements
                                             installedApps.add(app);
                                         }
                                         int versionCode = getVersionCode(activity,app.getPackageName());
-                                        if(versionCode != 0) {
+                                        if(versionCode != 0 && app.getVersion_code() != null) {
                                             int updatedVersion = Integer.parseInt(app.getVersion_code());
                                             if(versionCode < updatedVersion)
                                             {

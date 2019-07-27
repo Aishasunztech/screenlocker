@@ -87,15 +87,15 @@ public class AppConstants {
 
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+        public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-        public static final String URL_1 = "http://192.168.18.226:3000";//local
+//        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
     //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-            public static final String SUPER_ADMIN = "http://192.168.18.226:8042";//local
+//            public static final String SUPER_ADMIN = "http://192.168.18.226:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -108,8 +108,8 @@ public class AppConstants {
     //End points
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
+    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
