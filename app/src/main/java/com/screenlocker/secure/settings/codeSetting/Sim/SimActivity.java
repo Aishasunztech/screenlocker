@@ -7,17 +7,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.SweepGradient;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import androidx.annotation.RequiresApi;
@@ -29,16 +23,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Delete;
 
-import com.google.gson.Gson;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
-import com.screenlocker.secure.socket.SocketManager;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -47,26 +36,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import timber.log.Timber;
-
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_UNREGISTER_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.UNSYNC_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.isProgress;
 
 public class SimActivity extends BaseActivity implements AddSimDialog.OnRegisterSimListener, SimAdapter.OnSimPermissionChangeListener {
 
@@ -110,6 +93,8 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         }
         iccid0 = PrefUtils.getStringPref(this, SIM_0_ICCID);
         iccid1 = PrefUtils.getStringPref(this, SIM_1_ICCID);
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -210,7 +195,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         });
         allowEncrypted.setOnCheckedChangeListener((buttonView, isChecked) -> {
             PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, isChecked);
-            isChecked = true;
+            isChanged = true;
             PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, true);
         });
         findViewById(R.id.btnadd).setOnClickListener(v -> {

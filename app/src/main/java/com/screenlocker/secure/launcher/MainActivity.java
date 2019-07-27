@@ -95,9 +95,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     private ShutDownReceiver mShutDownReceiver;
 
 
-    private ScreenOffReceiver screenOffReceiver;
-
-
     public MainActivity() {
     }
 
@@ -111,10 +108,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getAllApps().observe(this, appInfos -> {
             allDbApps = appInfos;
-            int size= adapter.appsList.size();
+            int size = adapter.appsList.size();
             adapter.appsList.clear();
-            adapter.notifyItemRangeRemoved(0,--size);
-            final String message = PrefUtils.getStringPref(this,CURRENT_KEY);
+            adapter.notifyItemRangeRemoved(0, --size);
+            final String message = PrefUtils.getStringPref(this, CURRENT_KEY);
             setBackground(message);
             mainPresenter.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
@@ -132,8 +129,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
-
-        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         mainPresenter = new MainPresenter(this, new MainModel(this));
@@ -181,7 +176,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
     private void setRecyclerView() {
-         rvApps = findViewById(R.id.rvApps);
+        rvApps = findViewById(R.id.rvApps);
         int resId = R.anim.layout_animation;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
@@ -191,7 +186,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
         rvApps.setAdapter(adapter);
         rvApps.setItemViewCacheSize(30);
-
 
 
     }
@@ -273,6 +267,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onResume();
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
     }
+
     private void runLayoutAnimation() {
         final Context context = rvApps.getContext();
         final LayoutAnimationController controller =
@@ -375,7 +370,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
             unregisterReceiver(mShutDownReceiver);
-            unregisterReceiver(screenOffReceiver);
 
         } catch (Exception ignored) {
             //

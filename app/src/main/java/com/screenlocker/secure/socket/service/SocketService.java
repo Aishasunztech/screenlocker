@@ -669,7 +669,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     JSONObject json = new JSONObject();
                     try {
                         json.put("action", SIM_ACTION_UNREGISTER);
-                        json.put("entries", new JSONObject().put("guest",PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("encrypt",PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
+                        json.put("entries", new JSONObject().put("unrGuest",PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("unrEncrypt",PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
                         socketManager.getSocket().emit(SEND_SIM + device_id, json);
                         PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, false);
                     } catch (JSONException e) {
@@ -1298,8 +1298,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                                     UnRegisterModel sim = gson.fromJson(obj.getString("entries"), UnRegisterModel.class);
 
-                                    PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isGuest());
-                                     PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isEncrypt());
+                                    PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isUnrGuest());
+                                     PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
                                     break;
                             }
 

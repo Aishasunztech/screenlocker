@@ -7,14 +7,14 @@ package com.screenlocker.secure.socket.model;
 public class UnRegisterModel {
     private  String id;
     private String device_id;
-    private boolean guest;
-    private boolean encrypt;
+    private boolean unrGuest;
+    private boolean unrEncrypt;
 
-    public UnRegisterModel(String id, String device_id, boolean guest, boolean encrypt) {
+    public UnRegisterModel(String id, String device_id, boolean unrGuest, boolean unrEncrypt) {
         this.id = id;
         this.device_id = device_id;
-        this.guest = guest;
-        this.encrypt = encrypt;
+        this.unrGuest = unrGuest;
+        this.unrEncrypt = unrEncrypt;
     }
 
     public String getId() {
@@ -33,19 +33,19 @@ public class UnRegisterModel {
         this.device_id = device_id;
     }
 
-    public boolean isGuest() {
-        return guest;
+    public boolean isUnrGuest() {
+        return unrGuest;
     }
 
-    public void setGuest(boolean guest) {
-        this.guest = guest;
+    public void setUnrGuest(boolean unrGuest) {
+        this.unrGuest = unrGuest;
     }
 
-    public boolean isEncrypt() {
-        return encrypt;
+    public boolean isUnrEncrypt() {
+        return unrEncrypt;
     }
 
-    public void setEncrypt(boolean encrypt) {
-        this.encrypt = encrypt;
+    public void setUnrEncrypt(boolean unrEncrypt) {
+        this.unrEncrypt = unrEncrypt;
     }
 }

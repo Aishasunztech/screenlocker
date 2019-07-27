@@ -139,6 +139,9 @@ public interface MyDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     int updateSim(SimEntry sim);
 
+    @Query("UPDATE sim set slotNo=:slote,  status=:status where iccid =:iccid")
+    int updateSimStatus(int slote, String status, String iccid);
+
     @Delete
     void deleteSim(SimEntry entry);
 

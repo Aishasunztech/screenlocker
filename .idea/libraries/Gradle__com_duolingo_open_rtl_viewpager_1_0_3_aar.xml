@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.duolingo.open:rtl-viewpager:1.0.3@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-rtl-viewpager-1.0.3.aar/0d7172208ab95b9ed2c30b841315ad62/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-rtl-viewpager-1.0.3.aar/0d7172208ab95b9ed2c30b841315ad62/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.duolingo.open/rtl-viewpager/1.0.3/1f3f66bd8a7378b078fd3ac825a3f00298dc7c6b/rtl-viewpager-1.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

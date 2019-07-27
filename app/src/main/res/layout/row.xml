@@ -20,17 +20,10 @@
     <ImageView
         android:id="@+id/img"
         android:layout_gravity="center"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:contentDescription="@string/description_app_image"
         app:srcCompat="@mipmap/ic_launcher" />
-    <View
-        android:id="@+id/badge"
-        android:layout_gravity="end"
-        android:visibility="gone"
-        android:layout_width="@dimen/_12sdp"
-        android:layout_height="@dimen/_12sdp"
-        android:background="@drawable/badge" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

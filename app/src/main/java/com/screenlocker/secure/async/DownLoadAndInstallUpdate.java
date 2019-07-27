@@ -29,7 +29,7 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 
 public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
-    private String appName, url;
+    private String appName, url , packageName;
     private WeakReference<Context> contextWeakReference;
     private ProgressDialog dialog;
 
@@ -37,11 +37,12 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
     private JobParameters jobParameters;
 
-    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent, JobParameters jobParameters) {
+    public DownLoadAndInstallUpdate(Context context, final String url, boolean isSilent, JobParameters jobParameters, String packageName) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
         this.isSilent = isSilent;
         this.jobParameters = jobParameters;
+        this.packageName = packageName;
     }
 
     @Override
@@ -161,15 +162,10 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         launchIntent.setAction(Intent.ACTION_MAIN);
         launchIntent.setComponent(componentName);
         launchIntent.setData(apkUri);
-        launchIntent.putExtra("package", contextWeakReference.get().getPackageName());
+        launchIntent.putExtra("package", packageName);
         launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
 //            contextWeakReference.get().sendBroadcast(sender);
         contextWeakReference.get().startActivity(launchIntent);
-
-        if (jobParameters != null) {
-            JobService js = (JobService) contextWeakReference.get();
-            js.jobFinished(jobParameters, false);
-        }
     }
 
 }

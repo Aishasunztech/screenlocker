@@ -34,7 +34,7 @@ public class AppConstants {
     public static final String DATABASE_NAME = "app_db";
     public static final String KEY_MAIN = "main";
     public static final String KEY_DURESS = "duress";
-    public static final int LAUNCHER_GRID_SPAN = 3;
+    public static final int LAUNCHER_GRID_SPAN = 4;
     public static final String BROADCAST_ACTION = "intentKey";
     public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
@@ -87,9 +87,9 @@ public class AppConstants {
 
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-        public static final String URL_1 = "http://192.168.18.149:3000";//local
+//        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -232,6 +232,11 @@ public class AppConstants {
     public static final String SECURE_SETTINGS_UNIQUE = "com.secureSetting.SecureSettingsMainSecure Settings";
     // package name for SecureSettings
     public static final String SECURE_SETTINGS_PACKAGE = "com.secureSetting.SecureSettingsMain";
+
+    // unique name for SFM extension
+    public static final String SFM_UNIQUE = "com.secure.filemanagerSecure File Manager";
+    // package name for SecureSettings
+    public static final String SFM_PACKAGE = "com.secure.filemanager";
 
 
     //unique name for secure clear
