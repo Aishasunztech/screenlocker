@@ -161,8 +161,9 @@ dependencies {
     implementation 'com.appsflyer:af-android-sdk:4+@aar'
     implementation 'com.android.installreferrer:installreferrer:1.0'
 
-    //lottie
-    implementation 'com.airbnb.android:lottie:3.0.7'
+    //loading
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+
 
     implementation project(':Stepper')
     implementation project(':chatkit')
