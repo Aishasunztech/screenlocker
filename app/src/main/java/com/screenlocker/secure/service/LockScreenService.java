@@ -3,8 +3,6 @@ package com.screenlocker.secure.service;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,12 +36,10 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
-import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -58,15 +53,14 @@ import timber.log.Timber;
 
 import static android.view.View.VISIBLE;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
-import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -74,6 +68,7 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
+import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -167,22 +162,14 @@ public class LockScreenService extends Service {
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-        ComponentName componentName1 = new ComponentName(this, CheckExpiryFromSuperAdmin.class);
-
-        JobInfo jobInfo1 = new JobInfo.Builder(1345, componentName1)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-
-        JobScheduler scheduler1 = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode1 = scheduler1.schedule(jobInfo1);
-        if (resultCode1 == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
+        if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
+            scheduleExpiryCheck(this);
         }
 
-        scheduleUpdateJob(this);
+        if (!getResources().getString(R.string.apktype).equals("BYOD")) {
+            scheduleUpdateCheck(this);
+        }
+
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
         params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
@@ -192,7 +179,6 @@ public class LockScreenService extends Service {
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        scheduleExpiryCheck(this);
         screenOffReceiver = new ScreenOffReceiver(() -> {
             Log.d("nadeem", "screeen off from reciver: ");
             startLockScreen(true);
@@ -371,10 +357,10 @@ public class LockScreenService extends Service {
     private void startLockScreen(boolean refresh) {
         Log.d("nadeem", "startLockScreen: ");
 
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 
         try {
-            setTimeRemaining(getAppContext());
+//            setTimeRemaining(getAppContext());
             if (refresh)
                 refreshKeyboard();
             notificationItems.clear();
@@ -410,8 +396,10 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView() {
-        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD))
-            setTimeRemaining(getAppContext());
+//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+//            //            setTimeRemaining(getAppContext());
+//        }
+
         try {
             if (mLayout != null) {
 //                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
@@ -516,15 +504,13 @@ public class LockScreenService extends Service {
 
 
     public void refreshKeyboard() {
-
-
         try {
             if (mLayout != null) {
                 View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                support.setText(getResources().getString(R.string.unlock));
+                support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                clear.setText(getResources().getString(R.string.support));
+                clear.setText(getResources().getString(R.string.btn_backspace));
                 Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
@@ -533,9 +519,7 @@ public class LockScreenService extends Service {
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
                 refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
-
             }
-
         } catch (Exception e) {
             Timber.d(e);
         }

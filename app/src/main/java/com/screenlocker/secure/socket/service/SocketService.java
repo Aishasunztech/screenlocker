@@ -59,7 +59,6 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
-import static com.screenlocker.secure.socket.utils.utils.checkInstalledApps;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
@@ -456,6 +455,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             });
         }
     }
+
+
+
 
     private void setScreenLock() {
         Intent intent = new Intent(SocketService.this, LockScreenService.class);

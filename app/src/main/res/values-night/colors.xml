@@ -19,6 +19,12 @@
     <color name="gray">#EEEEEE</color>
     <color name="gray_darken">#DDDDDD</color>
     <color name="colorGray">#4A4A4A</color>
+    <color name="colorBlack">@android:color/black</color>
+    <color name="colorLightBlack">#333333</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorPureBlack">#000000</color>
+
+
 
 
     //Secure Settings colors

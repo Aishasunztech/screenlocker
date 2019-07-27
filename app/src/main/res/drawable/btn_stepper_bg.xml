@@ -15,7 +15,7 @@
 
     <item android:state_pressed="false">
         <shape>
-            <stroke android:color="@color/white" android:width="@dimen/_1sdp"/>
+            <stroke android:color="@color/colorWhite" android:width="@dimen/_1sdp"/>
             <corners android:radius="@dimen/_20sdp"/>
             <padding
                 android:left="@dimen/_20sdp"

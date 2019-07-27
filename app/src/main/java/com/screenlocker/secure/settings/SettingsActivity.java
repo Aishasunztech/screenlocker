@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -176,6 +177,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
+
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -184,6 +187,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
         init();
+        tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         constraintLayout = findViewById(R.id.rootLayout);
         constraintLayout.setVisibility(View.GONE);
         progressBar = findViewById(R.id.progress);
@@ -924,11 +929,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case "es":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
                     break;
-                case "ar-rSA":
+                case "ar":
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
                     break;
                 default:
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
                     break;
 
             }

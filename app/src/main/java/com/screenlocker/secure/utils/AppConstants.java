@@ -113,8 +113,8 @@ public class AppConstants {
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.0.120:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.0.120:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -270,24 +270,24 @@ public class AppConstants {
      * Screen Locker
      * */
 
-    public static int attempt_5 = 1;
-    public static int attempt_6 = 5;
-    public static int attempt_7 = 10;
-    public static int attempt_8 = 15;
-    public static int attempt_9 = 30;
-    public static int attempt_10 = 30;
+    public static int attempt_5 = 1000 * 60;
+    public static int attempt_6 = 1000 * 60 * 5;
+    public static int attempt_7 = 1000 * 60 * 10;
+    public static int attempt_8 = 1000 * 60 * 15;
+    public static int attempt_9 = 1000 * 60 * 30;
+    public static int attempt_10 = 1000 * 60 * 30;
 
     /*
      *Titan Locker
      * */
 
-   /* public static int attempt_5 = 1;
-    public static int attempt_6 = 1;
-    public static int attempt_7 = 3;
-    public static int attempt_8 = 5;
-    public static int attempt_9 = 5;
-    public static int attempt_10 = 5;
-*/
+//    public static int attempt_5 = 1000 * 60;
+//    public static int attempt_6 = 1000 * 60;
+//    public static int attempt_7 = 1000 * 60 * 3;
+//    public static int attempt_8 = 1000 * 60 * 5;
+//    public static int attempt_9 = 1000 * 60 * 5;
+//    public static int attempt_10 = 1000 * 60 * 5;
+
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";
 

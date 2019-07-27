@@ -1,10 +1,7 @@
 package com.secureSetting;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,13 +10,11 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,31 +27,22 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureClear.SecureClearActivity;
-import com.secureMarket.SecureMarketActivity;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import timber.log.Timber;
@@ -64,7 +50,6 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.secureSetting.UtilityFunctions.getBatteryLevel;
 import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
 import static com.secureSetting.UtilityFunctions.getScreenBrightness;
 import static com.secureSetting.UtilityFunctions.getSleepTime;
@@ -85,7 +70,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container;
 
     private ConstraintLayout settingsLayout;
 
@@ -100,6 +85,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         }
 
     };
+
+    FrameLayout mView;
 
     private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
@@ -206,6 +193,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input", language_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Notifications", notifications_container);
 
         clickListeners();
 
@@ -244,13 +232,15 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         dataRoamingContainer = findViewById(R.id.data_roaming_cotainer);
         settingsLayout = findViewById(R.id.settings_layout);
         switch_mobile_data = findViewById(R.id.switch_mobile_data);
+        notifications_container = findViewById(R.id.notification_container);
         switch_mobile_data.setOnCheckedChangeListener(this);
+        mView = new FrameLayout(this);
 //        switch_airplane = findViewById(R.id.switch_air);
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
 
     WindowManager wm;
-    FrameLayout mView;
+
 
     private void clickListeners() {
 
@@ -315,41 +305,29 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         });
 
-        findViewById(R.id.sleep_cotainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SleepDialog sleepDialog = new SleepDialog(SecureSettingsMain.this);
-                sleepDialog.show();
-            }
+        findViewById(R.id.sleep_cotainer).setOnClickListener(v -> {
+            SleepDialog sleepDialog = new SleepDialog(SecureSettingsMain.this);
+            sleepDialog.show();
         });
 
-        findViewById(R.id.sim_cotainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.sim_cotainer).setOnClickListener(v -> {
 
-                Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
-                startActivity(intent);
-            }
+            Intent intent = new Intent("com.android.settings.sim.SIM_SUB_INFO_SETTINGS");
+            startActivity(intent);
         });
 
-        findViewById(R.id.hotspot_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.TetherSettings");
-                intent.setComponent(cn);
-                startActivity(intent);
+        findViewById(R.id.hotspot_container).setOnClickListener(v -> {
+            final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.TetherSettings");
+            intent.setComponent(cn);
+            startActivity(intent);
 
 
-            }
         });
 
-        dataRoamingContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
-                startActivity(intent);
-            }
+        dataRoamingContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+            startActivity(intent);
         });
         findViewById(R.id.screen_lock_container).setOnClickListener(v -> {
             Intent intent = new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
@@ -359,15 +337,13 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
             Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
             startActivityForResult(intent, 3);
-            mView = new FrameLayout(this);
-            getOverLayLayoutParams();
-            createLayoutParams();
 
-            wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-            mView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            wm.addView(mView, localLayoutParams);
+            getOverLayLayoutParams();
+//            createLayoutParams();
+
 
         });
+
 
         sound_container.setOnClickListener(v -> {
             Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
@@ -399,6 +375,58 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
         });
 
+        notifications_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(SecureSettingsMain.this,NotificationsActivity.class);
+//                intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+//                intent.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
+                Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
+                intent.setComponent(cn);
+                startActivity(intent);
+
+                getOverLayLayoutParams();
+            }
+        });
+
+
+    }
+
+    private void getOverLayLayoutParams() {
+
+        if (localLayoutParams == null) {
+            localLayoutParams = new WindowManager.LayoutParams();
+        }
+        createLayoutParams();
+    }
+
+    private void createLayoutParams() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+
+        } else {
+
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+
+        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+// this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+// Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        localLayoutParams.y = (int) (24 * getResources().getDisplayMetrics().scaledDensity);
+
+        localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
+
+        localLayoutParams.format = PixelFormat.TRANSLUCENT;
+
+        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        wm.addView(mView, localLayoutParams);
+
 
     }
 
@@ -414,8 +442,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onDestroy() {
         unregisterReceiver(mBatInfoReceiver);
-        if (wm != null && mView != null)
-            wm.removeViewImmediate(mView);
+        removeView();
         super.onDestroy();
 
     }
@@ -461,7 +488,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 if (simStateMain == 5 || simStateSecond == 5) {
                     switch_mobile_data.setChecked(cm.isDataEnabled());
                 } else {
-                   // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
                     switch_mobile_data.setEnabled(false);
                 }
 
@@ -474,8 +501,18 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
 //        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
+        removeView();
 
+    }
 
+    private void removeView() {
+        if(mView != null &&mView.getWindowToken() !=null)
+        {
+            if(wm != null)
+            {
+                wm.removeViewImmediate(mView);
+            }
+        }
     }
 
 
@@ -492,36 +529,6 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     private WindowManager.LayoutParams localLayoutParams;
 
-    private void createLayoutParams() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-
-        } else {
-
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }
-
-        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-// this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-// Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (24 * getResources().getDisplayMetrics().scaledDensity);
-        ;
-        localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
-        localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.format = PixelFormat.TRANSLUCENT;
-
-    }
-
-    public void getOverLayLayoutParams() {
-        if (localLayoutParams == null) {
-            localLayoutParams = new WindowManager.LayoutParams();
-            createLayoutParams();
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
