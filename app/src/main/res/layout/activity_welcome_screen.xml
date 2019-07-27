@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stepper_bg_gradient"
+    android:background="@color/colorWhite"
     tools:context="com.screenlocker.secure.permissions.WelcomeScreenActivity">
 
 
@@ -92,10 +92,23 @@
 
 
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.ThreeBounce"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_3sdp"
+        app:SpinKit_Color="@color/colorBlack"
+        app:layout_constraintTop_toTopOf="@+id/tv_please"
+        app:layout_constraintBottom_toBottomOf="@id/tv_please"
+        app:layout_constraintLeft_toRightOf="@id/tv_please"/>
     <TextView
+        android:id="@+id/tv_please"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/please_wait_"
+        android:text="@string/please_wait"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
