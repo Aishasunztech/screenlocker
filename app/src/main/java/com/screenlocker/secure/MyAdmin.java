@@ -53,4 +53,7 @@ public class MyAdmin extends DeviceAdminReceiver {
         showToast(context, context.getResources().getString(R.string.device_admin_succeeded));
     }
 
+
+
+
 }

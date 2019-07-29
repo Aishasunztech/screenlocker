@@ -43,6 +43,17 @@ public class List {
     @Expose
     private int is_restrict_uninstall;
 
+    @SerializedName("version_code")
+    @Expose
+    private String version_code;
+
+    public String getVersion_code() {
+        return version_code;
+    }
+
+    public void setVersion_code(String version_code) {
+        this.version_code = version_code;
+    }
 
     public int getIs_restrict_uninstall() {
         return is_restrict_uninstall;

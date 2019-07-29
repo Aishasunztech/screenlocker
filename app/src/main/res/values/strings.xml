@@ -439,6 +439,6 @@
 
     <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
     <string name="on_accessibility_service">On Accessibility Service</string>
-
-
+    <string name="notifications">Notifications</string>
+    <string name="all_apps">All Apps</string>
 </resources>

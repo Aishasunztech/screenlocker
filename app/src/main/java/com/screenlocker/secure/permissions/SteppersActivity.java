@@ -84,7 +84,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onComplete(Bundle data) {
         super.onComplete(data);
         //save the tour complete status in database
-        PrefUtils.saveBooleanPref(SteppersActivity.this, TOUR_STATUS, true);
+
         Intent intent;
         if (isEmergency){
             intent = new Intent(SteppersActivity.this, MainActivity.class);

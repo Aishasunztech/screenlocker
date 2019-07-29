@@ -172,6 +172,10 @@ dependencies {
 
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //loading
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+
 }
 repositories {
     mavenCentral()

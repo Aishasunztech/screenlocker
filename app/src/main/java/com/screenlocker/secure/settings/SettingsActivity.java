@@ -961,7 +961,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
                     break;
                 default:
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
+                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
                     break;
 
             }

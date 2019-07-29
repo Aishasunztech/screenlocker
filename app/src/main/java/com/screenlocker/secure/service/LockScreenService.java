@@ -220,7 +220,7 @@ public class LockScreenService extends Service {
             Log.d("nadeem", "screeen off from reciver: ");
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
-                startLockScreen(true);
+//                startLockScreen(true);
             }
         });
 
