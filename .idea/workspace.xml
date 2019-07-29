@@ -262,635 +262,12 @@
     <last-search-timestamp>1564033672011</last-search-timestamp>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc60bacb-4900-4701-ab84-84705b125167" name="Default Changelist" comment="SIM Sync">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_annotation_annotation_1_0_2_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_0_2_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_ktx_1_0_2_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_alexvasilkov_gesture_views_2_5_2_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_andrognito_patternlockview_patternlockview_1_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_duolingo_open_rtl_viewpager_1_0_3_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_Stericson_RootShell_1_6_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_Stericson_RootTools_df729dcb13_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_ajalt_reprint_core_3_3_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_9_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_annotations_13_0_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_android_extensions_runtime_1_3_40_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_1_3_40_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_1_3_41_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_common_1_3_40_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_common_1_3_41_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_jdk7_1_3_40_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_jdk7_1_3_41_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/api-versions-15-28.0.3.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/maven.google/androidx/core/group-index.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/maven.google/master-index.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/sdk-registry.xml/sdk-registry.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-de.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-en.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-es.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-hu.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-it.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-nb.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-pt.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/intermediates/lint-cache/typos-tr.txt-2.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/commons.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/AndroidManifest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/AboutActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/BaseSimpleActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/BaseSplashActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/CustomizationActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/FAQActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/LicenseActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/adapters/FilepickerItemsAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/adapters/MyArrayAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/adapters/MyRecyclerViewAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/adapters/PasswordTypesAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/asynctasks/CopyMoveTask.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/AppSideloadedDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/ChangeDateTimeFormatDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/ColorPickerDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/ConfirmationAdvancedDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/ConfirmationDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/CreateNewFolderDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/CustomIntervalPickerDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/DonateDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/ExportSettingsDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/FileConflictDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/FilePickerDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/FolderLockingNoticeDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/LineColorPickerDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/NewAppDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/PropertiesDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/PurchaseThankYouDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/RadioGroupDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/RateUsDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/RenameItemDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/RenameItemsDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/RenameItemsPatternDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/SecurityDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/SelectAlarmSoundDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/StoragePickerDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/UpgradeToProDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/WhatsNewDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/WritePermissionDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Activity-themes.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Activity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/AlertDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Any.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/App.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/ArrayList.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/BufferedWriter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Context-storage.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Context.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Cursor.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/DocumentFile.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Drawable.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/EditText.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/ExifInterface.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/File.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/ImageView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Int.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/List.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Long.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Point.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/RemoteViews.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Resources.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/SeekBar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/String.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/TabLayout.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/TextView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/View.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/ViewPager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/AlphanumericComparator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/BaseConfig.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/Constants.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/Inlines.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/MyContentProvider.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/MyContextWrapper.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/CopyMoveListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/HashListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/LineColorPickerListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/MyActionModeCallback.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/RecyclerScrollCallback.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/RefreshRecyclerViewListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/interfaces/SecurityTab.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/AlarmSound.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/FAQItem.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/FileDirItem.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/License.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/MyTheme.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/RadioItem.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/Release.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/models/SharedTheme.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/receivers/SharedThemeReceiver.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/Breadcrumbs.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/ColorPickerSquare.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/FastScroller.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/FingerprintTab.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/LineColorPicker.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyAppCompatCheckbox.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyAppCompatSpinner.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyAutoCompleteTextView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyButton.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyCompatRadioButton.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyDialogViewPager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyEditText.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyFloatingActionButton.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyGridLayoutManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyLinearLayoutManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyRecyclerView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyScrollView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MySeekBar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MySwitchCompat.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyTextView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/MyViewPager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/PatternTab.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/PinTab.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_arrow_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_attach_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_bell.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_camera.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_check.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_check_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_chevron_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_circle_filled.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_clock.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_copy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_cross.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_cross_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_delete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_edit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_email.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_email_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_facebook.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_filter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_fingerprint.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_folder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_hide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_info.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_label.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_lock_huge.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_minus_circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_open.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_orientation_auto.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_orientation_landscape.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_orientation_portrait.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_pause.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_person.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_person_biggest.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_phone_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_place.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_place_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_plus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_properties.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_reddit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_redo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_redo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_rename_new.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_repeat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_reset.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_sd_card.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_search.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_select_all.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_share.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_sms.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_sms_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_snooze.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_snooze_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_sort.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_star_off.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_star_off_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_star_on.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_star_on_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_undo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_undo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_unhide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_usb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_vibrate.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/img_write_storage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/img_write_storage_otg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/img_write_storage_sd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-ldrtl/fastscroller_handle_vertical.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-nodpi/img_color_picker_hue.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_arrow_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_attach_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_bell.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_camera.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_check.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_check_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_chevron_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_circle_filled.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_clock.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_copy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_cross.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_cross_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_delete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_edit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_email.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_email_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_facebook.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_filter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_fingerprint.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_folder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_hide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_info.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_label.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_lock_huge.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_minus_circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_open.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_orientation_auto.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_orientation_landscape.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_orientation_portrait.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_pause.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_person.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_person_biggest.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_phone_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_place.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_place_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_plus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_properties.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_reddit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_redo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_redo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_rename_new.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_repeat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_reset.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_sd_card.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_search.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_select_all.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_share.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_sms.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_sms_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_snooze.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_snooze_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_sort.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_star_off.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_star_off_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_star_on.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_star_on_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_undo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_undo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_unhide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_usb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/ic_vibrate.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/img_write_storage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/img_write_storage_otg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xhdpi/img_write_storage_sd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_arrow_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_attach_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_bell.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_camera.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_check.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_check_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_chevron_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_circle_filled.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_clock.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_copy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_cross.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_cross_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_delete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_edit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_email.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_email_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_facebook.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_filter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_fingerprint.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_folder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_hide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_info.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_label.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_lock_huge.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_minus_circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_open.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_orientation_auto.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_orientation_landscape.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_orientation_portrait.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_pause.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_person.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_person_biggest.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_phone_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_place.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_place_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_plus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_properties.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_reddit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_redo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_redo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_rename_new.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_repeat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_reset.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_sd_card.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_search.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_select_all.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_share.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_sms.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_sms_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_snooze.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_snooze_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_sort.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_star_off.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_star_off_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_star_on.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_star_on_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_undo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_undo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_unhide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_usb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/ic_vibrate.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/img_write_storage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/img_write_storage_otg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxhdpi/img_write_storage_sd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_arrow_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_attach_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_bell.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_camera.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_check.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_check_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_chevron_right.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_circle_filled.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_clock.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_copy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_cross.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_cross_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_delete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_edit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_email.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_email_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_facebook.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_filter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_fingerprint.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_folder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_hide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_info.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_label.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_lock_huge.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_minus_circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_open.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_orientation_auto.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_orientation_landscape.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_orientation_portrait.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_pause.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_person.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_person_biggest.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_phone_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_place.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_place_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_plus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_properties.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_reddit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_redo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_redo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_rename_new.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_repeat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_reset.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_save.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_sd_card.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_search.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_select_all.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_share.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_sms.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_sms_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_snooze.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_snooze_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_sort.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_star_off.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_star_off_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_star_on.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_star_on_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_undo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_undo_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_unhide.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_usb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/ic_vibrate.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/img_write_storage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/img_write_storage_otg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable-xxxhdpi/img_write_storage_sd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/button_background.9.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/circle_background.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/color_picker_circle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/divider.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/fastscroller_bubble.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/fastscroller_handle_horizontal.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/fastscroller_handle_vertical.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/selector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/shortcut_plus.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/transparent_button.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/drawable/transparent_button_pressed.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/activity_about.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/activity_customization.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/activity_faq.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/activity_license.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/breadcrumb_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_change_date_time_format.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_color_picker.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_create_new_folder.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_custom_interval_picker.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_export_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_file_conflict.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_filepicker.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_line_color_picker.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_message.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_properties.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_purchase_thank_you.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_radio_group.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_rename_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_rename_items.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_rename_items_pattern.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_security.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_select_alarm_sound.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_textview.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_title.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_upgrade_to_pro.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_whats_new.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_write_permission.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/dialog_write_permission_otg.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/divider.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/empty_image_view.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/fastscroller_handle_horizontal.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/fastscroller_handle_vertical.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/filepicker_list_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/item_select_alarm_sound.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/license_faq_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/property_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/radio_button.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/sfm_actionbar_title.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/tab_fingerprint.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/tab_pattern.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/layout/tab_pin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/menu/cab_delete_only.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/menu/cab_remove_only.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/menu/menu_customization.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-ar/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-az/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-br/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-ca/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-cs/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-cy/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-da/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-de/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-el/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-es/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-fi/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-fr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-gl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-hi-rIN/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-hr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-hu/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-id/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-in/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-it/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-iw/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-ja/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-ko-rKR/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-lt/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-nb/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-nl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-no/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-pl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-pt-rBR/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-pt/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-sk/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-sl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-sr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-sv/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-sw600dp/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-tr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-uk/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-zh-rCN/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values-zh-rTW/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/arrays.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/colors.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/donottranslate.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/ids.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/integers.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons/src/main/res/values/styles.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/app.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/release/output.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/sfm.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/debug/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/AndroidManifest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/App.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/FavoritesActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/MainActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/ReadTextActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/SettingsActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/SimpleActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/SplashActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/adapters/ItemsAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/adapters/ManageFavoritesAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/dialogs/ChangeSortingDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/dialogs/CompressAsDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/dialogs/CreateNewItemDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/dialogs/SaveAsDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/extensions/Activity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/extensions/Context.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/extensions/String.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/fragments/ItemsFragment.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/helpers/Config.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/helpers/Constants.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/helpers/RootHelpers.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/interfaces/ItemOperationsListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/models/ListItem.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/views/GestureEditText.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-hdpi/ic_data_protection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-hdpi/ic_folder_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-hdpi/ic_home.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-mdpi/ic_data_protection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-v26/ic_launcher_foreground.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xhdpi/ic_data_protection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xhdpi/ic_folder_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xhdpi/ic_home.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxhdpi/ic_data_protection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxhdpi/ic_folder_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxhdpi/ic_home.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxxhdpi/ic_data_protection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxxhdpi/ic_folder_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable-xxxhdpi/ic_home.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable/ic_sheild_folder.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/drawable/shortcut_folder.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_activity_favorites.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_activity_main.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_activity_read_text.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_activity_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_dialog_change_sorting.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_dialog_compress_as.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_dialog_create_new.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_dialog_save_as.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_item_list_file_dir.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_item_list_section.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_item_manage_favorite.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/layout/sfm_items_fragment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/menu/cab.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/menu/menu.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/menu/menu_editor.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/menu/menu_favorites.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-ar/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-az/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-cs/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-cy/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-da/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-de/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-el/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-es/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-fr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-hr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-hu/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-id/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-in/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-it/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-ja/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-ko-rKR/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-lt/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-nb/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-nl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-pl/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-pt-rBR/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-pt/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-sk/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-sv/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-tr/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-uk/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values-zh-rTW/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values/colors.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values/donottranslate.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/values/styles.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/xml/provider_paths.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sfm/src/main/res/xml/searchable.xml" afterDir="false" />
+    <list default="true" id="bc60bacb-4900-4701-ab84-84705b125167" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_itsxtt_patternlockview_0_1_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/stepper_bacground.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_password_options_acitivity.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenlockerv4.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
@@ -902,146 +279,34 @@
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_activity_activity_1_0_0_alpha08_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_activity_activity_1_0_0_alpha08_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_0_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_0_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_1_0_alpha05_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_1_1_0_alpha05_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_resources_1_1_0_alpha05_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_appcompat_appcompat_resources_1_1_0_alpha05_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_arch_core_core_runtime_2_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_asynclayoutinflater_asynclayoutinflater_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_asynclayoutinflater_asynclayoutinflater_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_asynclayoutinflater_asynclayoutinflater_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_asynclayoutinflater_asynclayoutinflater_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cardview_cardview_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cardview_cardview_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cardview_cardview_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cardview_cardview_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_constraintlayout_constraintlayout_1_1_3_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_constraintlayout_constraintlayout_1_1_3_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_coordinatorlayout_coordinatorlayout_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_coordinatorlayout_coordinatorlayout_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_coordinatorlayout_coordinatorlayout_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_coordinatorlayout_coordinatorlayout_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_1_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_core_core_1_1_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cursoradapter_cursoradapter_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cursoradapter_cursoradapter_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cursoradapter_cursoradapter_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_cursoradapter_cursoradapter_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_customview_customview_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_customview_customview_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_customview_customview_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_customview_customview_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_documentfile_documentfile_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_documentfile_documentfile_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_documentfile_documentfile_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_documentfile_documentfile_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_drawerlayout_drawerlayout_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_drawerlayout_drawerlayout_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_drawerlayout_drawerlayout_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_drawerlayout_drawerlayout_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_exifinterface_exifinterface_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_exifinterface_exifinterface_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_1_0_alpha08_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_fragment_fragment_1_1_0_alpha08_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_interpolator_interpolator_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_interpolator_interpolator_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_interpolator_interpolator_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_interpolator_interpolator_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_ui_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_ui_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_ui_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_ui_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_utils_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_utils_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_utils_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_core_utils_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_v4_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_legacy_legacy_support_v4_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_extensions_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_extensions_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_core_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_core_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_core_2_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_livedata_core_2_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_process_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_process_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_2_0_alpha01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_runtime_2_2_0_alpha01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_service_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_service_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_2_0_alpha01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_lifecycle_lifecycle_viewmodel_2_2_0_alpha01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_loader_loader_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_loader_loader_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_loader_loader_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_loader_loader_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_localbroadcastmanager_localbroadcastmanager_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_localbroadcastmanager_localbroadcastmanager_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_localbroadcastmanager_localbroadcastmanager_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_localbroadcastmanager_localbroadcastmanager_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_media_media_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_media_media_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_palette_palette_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_palette_palette_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_print_print_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_print_print_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_print_print_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_print_print_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_1_0_alpha05_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_recyclerview_recyclerview_1_1_0_alpha05_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_room_room_runtime_2_1_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_room_room_runtime_2_1_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_savedstate_savedstate_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_savedstate_savedstate_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_slidingpanelayout_slidingpanelayout_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_slidingpanelayout_slidingpanelayout_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_slidingpanelayout_slidingpanelayout_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_slidingpanelayout_slidingpanelayout_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_sqlite_sqlite_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_sqlite_sqlite_2_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_sqlite_sqlite_framework_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_sqlite_sqlite_framework_2_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_swiperefreshlayout_swiperefreshlayout_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_swiperefreshlayout_swiperefreshlayout_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_swiperefreshlayout_swiperefreshlayout_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_swiperefreshlayout_swiperefreshlayout_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_espresso_espresso_core_3_2_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_espresso_espresso_core_3_2_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_espresso_espresso_idling_resource_3_2_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_espresso_espresso_idling_resource_3_2_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_monitor_1_2_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_monitor_1_2_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_runner_1_2_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_test_runner_1_2_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_transition_transition_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_transition_transition_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_transition_transition_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_transition_transition_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_1_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_1_1_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_1_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_vectordrawable_vectordrawable_animated_1_1_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_1_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_versionedparcelable_versionedparcelable_1_1_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_viewpager_viewpager_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_viewpager_viewpager_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_viewpager_viewpager_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_viewpager_viewpager_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_airbnb_android_lottie_3_0_7_aar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_beta_1_2_10_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_beta_1_2_10_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_core_2_7_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_core_2_7_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_annotations_4_8_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_annotations_4_9_0_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_disklrucache_4_8_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_disklrucache_4_9_0_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_8_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_9_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_8_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_0_0_beta01_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_0_0_beta01_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_intuit_sdp_sdp_android_1_0_6_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_intuit_sdp_sdp_android_1_0_6_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_intuit_ssp_ssp_android_1_0_6_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_intuit_ssp_ssp_android_1_0_6_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_butterknife_10_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_butterknife_10_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_butterknife_runtime_10_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_butterknife_runtime_10_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_kaopiz_kprogresshud_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_kaopiz_kprogresshud_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_fabric_sdk_android_fabric_1_4_8_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__io_fabric_sdk_android_fabric_1_4_8_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_ybq_Android_SpinKit_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_ybq_Android_SpinKit_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_okio_okio_1_17_4_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stepper/Stepper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Stepper/Stepper.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/DownLoadAndInstallUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/DownLoadAndInstallUpdate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ReBootReciever.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ReBootReciever.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/ManagePasswords.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/ManagePasswords.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SetUpLockActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/SetUpLockActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/model/UnRegisterModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/model/UnRegisterModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/systemControls/SystemPermissionActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/systemControls/SystemPermissionActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/row.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/row.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_welcome_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_welcome_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_default_launcher.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_default_launcher.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_finish.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_finish.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_link_device.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_link_device.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/guess_password_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/guess_password_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/permmision_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/permmision_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chatkit/chatkit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/chatkit/chatkit.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/commons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/commons/commons.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sfm/sfm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sfm/sfm.iml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -1075,12 +340,51 @@
         <task path="$PROJECT_DIR$/commons">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/chatkit">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":app" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":chatkit" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":chatkit" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":chatkit" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -1100,6 +404,35 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":sfm" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":sfm" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":sfm" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":Stepper" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="screenlockerv4" type="f1a62948:ProjectNode" />
+                <item name=":Stepper" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -1113,25 +446,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimActivity.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="435" column="74" selection-start-line="433" selection-start-column="11" selection-end-line="435" selection-end-column="74" />
-              <folding>
-                <element signature="e#12281#12329#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/secureSetting/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/securesettings/AppConstants.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="6" selection-start-line="6" selection-end-line="6" />
-              <folding>
-                <element signature="e#0#373#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="292">
+              <caret line="241" selection-start-line="241" selection-end-line="241" />
             </state>
           </provider>
         </entry>
@@ -1139,39 +457,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="165" column="14" selection-start-line="165" selection-start-column="14" selection-end-line="165" selection-end-column="114" />
+            <state relative-caret-position="-1210">
+              <caret line="96" column="41" selection-start-line="96" selection-start-column="29" selection-end-line="96" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="70" column="49" selection-start-line="70" selection-start-column="49" selection-end-line="70" selection-end-column="49" />
-              <folding>
-                <element signature="e#2557#2598#0" expanded="true" />
-                <element signature="e#3142#3183#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-362">
+              <caret line="372" column="23" selection-start-line="372" selection-start-column="23" selection-end-line="372" selection-end-column="23" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java">
+        <entry file="file://$PROJECT_DIR$/secureSetting/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/securesettings/AppConstants.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="142" column="7" selection-start-line="142" selection-start-column="7" selection-end-line="142" selection-end-column="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="411" column="16" selection-start-line="411" selection-start-column="16" selection-end-line="411" selection-end-column="16" />
+            <state relative-caret-position="60">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
             </state>
           </provider>
         </entry>
@@ -1179,36 +484,50 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
+            <state relative-caret-position="20">
+              <caret line="91" column="63" selection-start-line="91" selection-start-column="63" selection-end-line="91" selection-end-column="63" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-324">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
+            <state relative-caret-position="-2100">
+              <caret line="179" selection-start-line="179" selection-end-line="179" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row.xml">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/ManagePasswords.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
+            <state relative-caret-position="80">
+              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/SetUpLockActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_password_options_acitivity.xml">
+          <provider selected="true" editor-type-id="text-editor" />
           <provider editor-type-id="android-designer2" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="185" column="83" selection-start-line="185" selection-start-column="83" selection-end-line="185" selection-end-column="83" />
+            <state relative-caret-position="100">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -1221,18 +540,14 @@
         <option value="layoutResourceFile" />
         <option value="Interface" />
         <option value="valueResourceFile" />
-        <option value="resourceFile" />
         <option value="layoutResourceFile_vertical" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getString</find>
-      <find>SEND_</find>
-      <find>getSync</find>
-      <find>BROADCAST_APPS_ACTION</find>
       <find>getAllSim</find>
       <find>prepare</find>
       <find>countDownTimer.</find>
@@ -1244,7 +559,6 @@
       <find>set&lt;</find>
       <find>getSy</find>
       <find>DELETED_ICCIDS</find>
-      <find>URL_1</find>
       <find>sendSim</find>
       <find>UNIQ</find>
       <find>com.secure.filemanager</find>
@@ -1255,10 +569,15 @@
       <find>itemCli</find>
       <find>An erro</find>
       <find>provider</find>
-      <find>getSim</find>
       <find>.provider</find>
       <find>language</find>
       <find>onstart</find>
+      <find>getSim</find>
+      <find>KEY_ENABLE_SCREENSHOT</find>
+      <find>URL_1</find>
+      <find>colorLightBlack</find>
+      <find>colorBlack</find>
+      <find>oncreate</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -1287,21 +606,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/PrefUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/interfaces/SocketEvents.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimViewModel.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/DeviceNotificationListener.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/Utils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/SimEntry.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/model/BooleanTypeAdapter.java" />
-        <option value="$PROJECT_DIR$/commons/build.gradle" />
-        <option value="$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/AboutActivity.kt" />
-        <option value="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/SimpleActivity.kt" />
-        <option value="$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/helpers/RootHelpers.kt" />
-        <option value="$PROJECT_DIR$/sfm/src/main/res/xml/provider_paths.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/gradle.properties" />
         <option value="$PROJECT_DIR$/sfm/build.gradle" />
         <option value="$PROJECT_DIR$/build.gradle" />
@@ -1329,20 +633,35 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/DownLoadAndInstallUpdate.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/row.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/systemControls/SystemPermissionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/drawable/stepper_bacground.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/permmision_layout.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/guess_password_layout.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_link_device.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_default_launcher.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_finish.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_welcome_screen.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ReBootReciever.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/ManagePasswords.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/SetUpLockActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
+    <option name="x" value="949" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
   </component>
@@ -1356,52 +675,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="sfm" type="feadf853:AndroidModuleNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="sfm" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="1abcf292:AndroidViewProjectNode" />
-              <item name="sfm" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="drawable" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="screenlockerv4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="screenlockerv4" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="screenlockerv4" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="screenlockerv4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="screenlockerv4" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1429,26 +706,26 @@
     <option name="LAST_EDITED_BUILD_TYPE" value="release" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/system-libraries" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app" />
-      <recent name="$PROJECT_DIR$/app/system-liberaries" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/app/src/main/java/com/secureMarket" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com" />
       <recent name="com.screenlocker.secure" />
     </key>
     <key name="android.template.packageName">
+      <recent name="com.screenlocker.secure.settings.managepassword" />
       <recent name="com.screenlocker.secure.manual_load" />
       <recent name="com.secureMarket" />
       <recent name="com.screenlocker.secure.settings.codeSetting" />
       <recent name="com.screenlocker.secure.settings.settingsControls" />
-      <recent name="com.titanlocker.secure.settings.codeSetting.policy" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/system-libraries" />
       <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/app/system-liberaries" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/com/secureMarket" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -1813,25 +1090,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/Stepper" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="lintFix" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
     <configuration name="screenlockerv4 [clean]" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -1844,6 +1102,25 @@
         <option name="taskNames">
           <list>
             <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="screenlockerv4:app [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="cleanBuildCache" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -1870,6 +1147,25 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="screenlockerv4:chatkit [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/chatkit" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="cleanBuildCache" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="screenlockerv4:commons [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -1889,26 +1185,7 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="screenlockerv4:commons [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/commons" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="screenlockerv4:sfm [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="screenlockerv4:sfm [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/sfm" />
@@ -1919,7 +1196,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="build" />
+            <option value="cleanBuildCache" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -2011,19 +1288,19 @@
       <item itemvalue="Android App.secureSetting" />
       <item itemvalue="Gradle.screenlockerv4:app [clean]" />
       <item itemvalue="Gradle.screenlockerv4 [clean]" />
-      <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" />
+      <item itemvalue="Gradle.screenlockerv4:sfm [cleanBuildCache]" />
       <item itemvalue="Gradle.screenlockerv4:sfm [clean]" />
-      <item itemvalue="Gradle.screenlockerv4:sfm [build]" />
-      <item itemvalue="Gradle.screenlockerv4:commons [clean]" />
+      <item itemvalue="Gradle.screenlockerv4:app [cleanBuildCache]" />
+      <item itemvalue="Gradle.screenlockerv4:chatkit [cleanBuildCache]" />
       <item itemvalue="Gradle.screenlockerv4:commons [cleanBuildCache]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.screenlockerv4:commons [cleanBuildCache]" />
-        <item itemvalue="Gradle.screenlockerv4:commons [clean]" />
-        <item itemvalue="Gradle.screenlockerv4:sfm [build]" />
+        <item itemvalue="Gradle.screenlockerv4:chatkit [cleanBuildCache]" />
+        <item itemvalue="Gradle.screenlockerv4:app [cleanBuildCache]" />
         <item itemvalue="Gradle.screenlockerv4:sfm [clean]" />
-        <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" />
+        <item itemvalue="Gradle.screenlockerv4:sfm [cleanBuildCache]" />
       </list>
     </recent_temporary>
   </component>
@@ -2041,13 +1318,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1553177713409</updated>
-    </task>
-    <task id="LOCAL-00038" summary="policy cancel button added">
-      <created>1560258268728</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1560258268728</updated>
     </task>
     <task id="LOCAL-00039" summary="ScreenLocker version 4.79">
       <created>1560271707498</created>
@@ -2385,7 +1655,14 @@
       <option name="project" value="LOCAL" />
       <updated>1563976329575</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="SFM added as extension">
+      <created>1564229131469</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1564229131469</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2406,7 +1683,7 @@
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49935317" visible="true" weight="0.31821862" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49935317" weight="0.31821862" />
       <window_info id="Structure" order="1" weight="0.24858299" />
       <window_info id="Designer" order="2" />
       <window_info id="Build Variants" order="3" sideWeight="0.5006468" side_tool="true" weight="0.28249678" />
@@ -2422,8 +1699,8 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3250444" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.48970398" weight="0.9165186" />
-      <window_info anchor="bottom" id="Android Profiler" order="8" weight="0.66882277" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.48970398" weight="0.91474247" />
+      <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" weight="0.66882277" />
       <window_info anchor="bottom" id="Messages" order="9" weight="0.80206984" />
       <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49420848" weight="0.71580815" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.4993565" weight="0.77975136" />
@@ -2483,7 +1760,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="bug fixes" />
     <MESSAGE value="SL version 5.05" />
     <MESSAGE value="SL version 5.06" />
     <MESSAGE value="Icons bug fixed" />
@@ -2508,17 +1784,12 @@
     <MESSAGE value="Working on Camera, Mic and speaker disable." />
     <MESSAGE value="Bug Fixes" />
     <MESSAGE value="SIM Sync" />
-    <option name="LAST_COMMIT_MESSAGE" value="SIM Sync" />
+    <MESSAGE value="SFM added as extension" />
+    <option name="LAST_COMMIT_MESSAGE" value="SFM added as extension" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimAdapter.java</url>
-          <line>59</line>
-          <properties />
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/installApps/InstallAppsActivity.java</url>
           <line>366</line>
@@ -2541,234 +1812,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/commons/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="141" column="32" selection-start-line="141" selection-start-column="18" selection-end-line="141" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/res/layout/sfm_items_fragment.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/res/layout/dialog_radio_group.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" column="51" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/extensions/Context.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/widget/TextView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="321" column="13" selection-start-line="321" selection-start-column="13" selection-end-line="321" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/view/View.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="6426" column="16" selection-start-line="6426" selection-start-column="16" selection-end-line="6426" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.appcompat/appcompat/1.0.2/e38e7c85994112b70d4548176128c72b8477c110/appcompat-1.0.2-sources.jar!/androidx/appcompat/app/AppCompatActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2685">
-          <caret line="291" column="22" selection-start-line="291" selection-start-column="22" selection-end-line="291" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/SplashActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="8" column="33" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/res/layout/actionbar_title.xml" />
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/app/Activity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="4871" column="16" selection-start-line="4871" selection-start-column="16" selection-end-line="4871" selection-end-column="16" />
-          <folding>
-            <element signature="e#207897#207898#0" expanded="true" />
-            <element signature="e#207945#207946#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/chatkit/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2060">
-          <caret line="103" selection-start-line="103" selection-end-line="103" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/res/layout/dialog_purchase_thank_you.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-      <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/content/ContextWrapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="140" column="18" selection-start-line="140" selection-start-column="18" selection-end-line="140" selection-end-column="18" />
-          <folding>
-            <element signature="e#3868#3869#0" expanded="true" />
-            <element signature="e#3913#3914#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/MyContentProvider.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="7" column="22" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/build/generated/source/buildConfig/debug/com/secure/filemanager/BuildConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/Constants.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="251" selection-start-line="251" selection-end-line="251" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/FastScroller.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-522">
-          <caret line="20" column="6" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/adapters/ItemsAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="52" column="20" selection-start-line="52" selection-start-column="20" selection-end-line="52" selection-end-column="20" />
-          <folding>
-            <element signature="e#13806#13822#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.40/7af6fd6b9293e80fc7408493a764858a7f66b022/kotlin-stdlib-1.3.40-sources.jar!/kotlin/Any.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/adapters/MyRecyclerViewAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-490">
-          <caret line="20" column="54" selection-start-line="20" selection-start-column="54" selection-end-line="20" selection-end-column="54" />
-          <folding>
-            <element signature="e#48#743#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="49" column="79" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/interfaces/ItemOperationsListener.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/views/Breadcrumbs.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="154" column="14" selection-start-line="154" selection-start-column="14" selection-end-line="154" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/fragments/ItemsFragment.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="268" column="39" selection-start-line="268" selection-start-column="39" selection-end-line="268" selection-end-column="39" />
-          <folding>
-            <element signature="e#10447#10473#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/extensions/Activity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="43" column="12" selection-start-line="43" selection-start-column="12" selection-end-line="43" selection-end-column="12" />
-          <folding>
-            <element signature="e#58#530#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/extensions/Activity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="320" column="20" selection-start-line="320" selection-start-column="20" selection-end-line="320" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/activities/MainActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="52" column="46" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="1300" column="101" selection-start-line="1300" selection-start-column="101" selection-end-line="1300" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/SecurityDialog.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-468">
-          <caret line="38" column="60" selection-start-line="38" selection-start-column="60" selection-end-line="38" selection-end-column="60" />
-          <folding>
-            <element signature="e#47#741#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/dialogs/UpgradeToProDialog.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -2840,38 +1883,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="348" column="205" selection-start-line="348" selection-start-column="205" selection-end-line="348" selection-end-column="205" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
           <caret line="528" column="229" selection-start-line="528" selection-start-column="229" selection-end-line="528" selection-end-column="229" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="20" column="42" selection-start-line="20" selection-start-column="42" selection-end-line="20" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="165" column="14" selection-start-line="165" selection-start-column="14" selection-end-line="165" selection-end-column="114" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="142" column="7" selection-start-line="142" selection-start-column="7" selection-end-line="142" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -2882,34 +1897,6 @@
           <folding>
             <element signature="e#12281#12329#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/secureSetting/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/securesettings/AppConstants.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-          <folding>
-            <element signature="e#0#373#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="70" column="49" selection-start-line="70" selection-start-column="49" selection-end-line="70" selection-end-column="49" />
-          <folding>
-            <element signature="e#2557#2598#0" expanded="true" />
-            <element signature="e#3142#3183#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="411" column="16" selection-start-line="411" selection-start-column="16" selection-end-line="411" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -2928,17 +1915,279 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
+        <state relative-caret-position="2460">
+          <caret line="142" column="7" selection-start-line="142" selection-start-column="7" selection-end-line="142" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimStateChangeListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="70" column="49" selection-start-line="70" selection-start-column="49" selection-end-line="70" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="282" column="18" selection-start-line="282" selection-start-column="12" selection-end-line="282" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/offline/CheckExpiryFromSuperAdmin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="43" column="31" selection-start-line="43" selection-start-column="31" selection-end-line="43" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="607" column="65" selection-start-line="607" selection-start-column="65" selection-end-line="607" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sfm/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="980">
+          <caret line="49" column="79" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="13" column="62" selection-start-line="13" selection-start-column="62" selection-end-line="13" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/PermissionStepFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="150" column="50" selection-start-line="150" selection-start-column="50" selection-end-line="150" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/stepper_bg_gradient.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="8" lean-forward="true" selection-end-line="6" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-night/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="21" column="29" lean-forward="true" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/stepper_bacground.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="8" lean-forward="true" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/permmision_layout.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/systemControls/SystemPermissionActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="239" selection-start-line="239" selection-end-line="239" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetGuestPasswordFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="109" column="52" selection-start-line="109" selection-start-column="52" selection-end-line="109" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/guess_password_layout.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="51" selection-start-line="5" selection-start-column="51" selection-end-line="5" selection-end-column="51" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetEncryptedPasswordFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="110" column="47" lean-forward="true" selection-start-line="110" selection-start-column="47" selection-end-line="110" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SteppersActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="920">
+          <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/FinishFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="34" column="54" selection-start-line="34" selection-start-column="54" selection-end-line="34" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_finish.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="10" column="44" selection-start-line="10" selection-start-column="44" selection-end-line="10" selection-end-column="44" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/WelcomeScreenActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="41" column="45" selection-start-line="41" selection-start-column="45" selection-end-line="41" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_welcome_screen.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="19" column="14" selection-start-line="19" selection-start-column="14" selection-end-line="19" selection-end-column="14" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_default_launcher.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="51" selection-start-line="5" selection-start-column="51" selection-end-line="5" selection-end-column="51" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/LinkDeviceFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1120">
+          <caret line="93" column="50" selection-start-line="93" selection-start-column="50" selection-end-line="93" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_link_device.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="658">
+          <caret line="153" selection-start-line="153" selection-end-line="153" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2122">
+          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ReBootReciever.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="92" column="73" selection-start-line="92" selection-start-column="73" selection-end-line="92" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="83" column="56" selection-start-line="83" selection-start-column="56" selection-end-line="83" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1940">
+          <caret line="171" column="10" selection-start-line="171" selection-start-column="10" selection-end-line="171" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/SetUpLockActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_password_options_acitivity.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/ManagePasswords.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-324">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
+        <state relative-caret-position="292">
+          <caret line="241" selection-start-line="241" selection-end-line="241" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/secureSetting/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/securesettings/AppConstants.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="91" column="63" selection-start-line="91" selection-start-column="63" selection-end-line="91" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-362">
+          <caret line="372" column="23" selection-start-line="372" selection-start-column="23" selection-end-line="372" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1210">
+          <caret line="96" column="41" selection-start-line="96" selection-start-column="29" selection-end-line="96" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2100">
+          <caret line="179" selection-start-line="179" selection-end-line="179" />
         </state>
       </provider>
     </entry>

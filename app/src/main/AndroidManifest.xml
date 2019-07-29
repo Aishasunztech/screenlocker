@@ -62,7 +62,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.secureSetting.NotificationsActivity"></activity>
+        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity"></activity>
+        <activity android:name="com.secureSetting.NotificationsActivity" />
         <activity android:name=".policy.PolicyActivity" />
         <activity android:name=".settings.AdvanceSettings" />
         <activity
@@ -150,7 +151,7 @@
         <activity
             android:name=".socket.policy.ui.PolicyActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings.SettingsActivity"
             android:launchMode="singleTop"
@@ -173,7 +174,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".settings.SetUpLockActivity"
+            android:name=".settings.managepassword.SetUpLockActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
@@ -181,7 +182,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".settings.ManagePasswords"
+            android:name=".settings.managepassword.ManagePasswords"
             android:screenOrientation="portrait" />
 
         <service android:name=".utils.LifecycleReceiverService" />
@@ -380,7 +381,6 @@
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:screenOrientation="nosensor" />
-
     </application>
 
 </manifest>

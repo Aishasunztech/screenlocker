@@ -183,7 +183,7 @@ public class LockScreenService extends Service {
             Log.d("nadeem", "screeen off from reciver: ");
             startLockScreen(true);
         });
-        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
             stopCapture();
         }
 

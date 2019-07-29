@@ -58,7 +58,8 @@ import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
+import com.screenlocker.secure.settings.managepassword.ManagePasswords;
+import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -68,7 +69,6 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
-import com.secureSetting.t.ui.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;

@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -18,35 +17,22 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.service.ScreenOffReceiver;
-import com.screenlocker.secure.settings.ManagePasswords;
 import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.AppInstallReceiver;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -57,10 +43,8 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
-import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;

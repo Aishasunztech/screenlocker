@@ -11,6 +11,8 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -18,11 +20,11 @@ repositories {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.secure.launcher3"
+        applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5143
-        versionName "5.143"
+        versionCode 5144
+        versionName "5.144"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -167,6 +169,8 @@ dependencies {
     //loading
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
 
+    // pattern Lock
+    implementation 'com.itsxtt:patternlockview:0.1.0'
 
     implementation project(':Stepper')
     implementation project(':chatkit')

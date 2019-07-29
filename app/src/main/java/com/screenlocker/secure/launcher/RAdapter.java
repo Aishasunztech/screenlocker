@@ -1,9 +1,7 @@
 package com.screenlocker.secure.launcher;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
 import com.contactSupport.ChatActivity;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
@@ -21,13 +22,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
-import com.simplemobiletools.filemanager.pro.activities.SplashActivity;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
