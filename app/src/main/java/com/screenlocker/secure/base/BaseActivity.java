@@ -45,6 +45,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
@@ -356,14 +357,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
             launchPermissions();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!getPackageManager().canRequestPackageInstalls()) {
-                launchPermissions();
-            } else if (!isNotificationAccess(this)) {
-                launchPermissions();
-            } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
-                launchPermissions();
-            }
+        } else if (!isNotificationAccess(this)) {
+            launchPermissions();
+        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+            launchPermissions();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
+            launchPermissions();
+        } else {
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
         }
 
 
@@ -372,6 +373,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     private void launchPermissions() {
         Intent a = new Intent(this, SteppersActivity.class);
+        PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, true);
+
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             a.putExtra("emergency", true);
         }
@@ -398,10 +401,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             if (!hasFocus) {
-//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-//                sendBroadcast(closeDialog);
+                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
-//                new BlockStatusBar(this, false).collapseNow();
+                new BlockStatusBar(this, false).collapseNow();
             }
         }
     }

@@ -3,78 +3,94 @@ package com.screenlocker.secure.service.apps;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.view.Gravity;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.inputmethod.EditorInfo;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
+import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
 public class WindowChangeDetectingService extends AccessibilityService {
 
+    private HashSet<String> ssPermissions = new HashSet<>();
 
-    private WindowManager wm;
-    private FrameLayout mView;
-    private TextView textView;
-    private HashSet<String> allowedSettingsActivities = new HashSet<>();
+    private HashSet<String> smPermissions = new HashSet<>();
+
+    private HashSet<String> stepperPermissions = new HashSet<>();
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
 
+        ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$WifiSettingsActivity");
+        ssPermissions.add("com.android.settings/.ConfirmLockPassword$InternalActivity");
+        ssPermissions.add("com.android.settings/.ChooseLockGenericActivity");
+        ssPermissions.add("com.android.settings/.ChooseLockPassword");
+        ssPermissions.add("com.android.settings/.Settings$PowerUsageSummaryActivity");
+        ssPermissions.add("com.android.settings/.Settings$SoundSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$DateTimeSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$BluetoothSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$SimSettingsActivity");
+        ssPermissions.add("com.android.settings/.applications.InstalledAppDetailsTop");
+        ssPermissions.add("com.android.settings/.Settings$LanguageAndInputSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$DataUsageSummaryActivity");
+        ssPermissions.add("com.android.settings/.password.ChooseLockGeneric");
+        ssPermissions.add("com.android.settings/.EncryptionInterstitial");
+        ssPermissions.add("com.android.settings/.password.ChooseLockPattern");
+        ssPermissions.add("com.android.settings/.notification.RedactionInterstitial");
+        ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollFindSensor");
+        ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollEnrolling");
+        ssPermissions.add("com.android.settings/.password.ChooseLockPassword");
+        ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollFinish");
+        ssPermissions.add("com.android.phone/.MobileNetworkSettings");
+        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        ssPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
+        ssPermissions.add("com.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
+        ssPermissions.add("com.android.settings/.Settings$TetherSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$TetherWifiSettingsActivity");
+        ssPermissions.add(getPackageName() + "/com.secureSetting.SecureSettingsMain");
+        ssPermissions.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
+        ssPermissions.add(getPackageName() + "/com.screenlocker.secure.launcher.MainActivity");
 
-        mView = new FrameLayout(this);
+//        allowedPackages.add("com.google.android.packageinstaller");
+//        allowedPackages.add("com.android.packageinstaller");
 
-        textView = new TextView(this);
+        stepperPermissions.add("com.android.packageinstaller/.UninstallerActivity");
+        stepperPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
+        stepperPermissions.add("com.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
+        stepperPermissions.add("com.google.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
 
-        allowedSettingsActivities.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.Settings$WifiSettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.ConfirmLockPassword$InternalActivity");
-        allowedSettingsActivities.add("com.android.settings/.ChooseLockGenericActivity");
-        allowedSettingsActivities.add("com.android.settings/.ChooseLockPassword");
-        allowedSettingsActivities.add("com.android.settings/.Settings$PowerUsageSummaryActivity");
-        allowedSettingsActivities.add("com.android.settings/.Settings$SoundSettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.Settings$DateTimeSettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.Settings$BluetoothSettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.Settings$SimSettingsActivity");
-        allowedSettingsActivities.add("com.android.settings/.applications.InstalledAppDetailsTop");
-        allowedSettingsActivities.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.ManagePermissionsActivity");
-        allowedSettingsActivities.add(getPackageName() + "/com.secureSetting.SecureSettingsMain");
-        allowedSettingsActivities.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
-
-
-        textView.setHeight(WindowManager.LayoutParams.MATCH_PARENT);
-        textView.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
-
-        textView.setSingleLine(false);
-        textView.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-
-        mView.addView(textView);
-
-        getOverLayLayoutParams();
-        createLayoutParams();
-
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mView.setBackgroundColor(getResources().getColor(android.R.color.white));
 //        wm.addView(mView, localLayoutParams);
 
+        stepperPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        stepperPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
+        ssPermissions.add("com.android.settings/.SubSettings");
+        ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
 
         //Configure these here for compatibility with API 13 and below.
         AccessibilityServiceInfo config = new AccessibilityServiceInfo();
@@ -98,34 +114,70 @@ public class WindowChangeDetectingService extends AccessibilityService {
                         event.getClassName().toString()
                 );
 
-
                 ActivityInfo activityInfo = tryGetActivity(componentName);
                 boolean isActivity = activityInfo != null;
-                if (isActivity) {
-                    Timber.d("dkjgdgrfghdghdr %s", componentName.flattenToShortString());
-                    textView.setText(componentName.flattenToShortString());
-                    if (allowedSettingsActivities.contains(componentName.flattenToShortString()) && PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                        textView.setText(componentName.flattenToShortString() + "This activity is allowed");
-                    } else {
-
+                Timber.d("dkjgdgrfghdghdr %s", componentName.flattenToShortString());
+                if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                    Timber.d("dkjgdgrfghdghdr %s", "Tour Completed");
+                    if (isActivity) {
                         if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                            textView.setText(componentName.flattenToShortString() + "This activity is not allowed");
-                            if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                                Intent intent = new Intent(this, LockScreenService.class);
-                                intent.setAction("locked");
-                                ActivityCompat.startForegroundService(this, intent);
+                            Timber.d("dkjgdgrfghdghdr %s", "settings allowed");
+                            if (ssPermissions.contains(componentName.flattenToShortString())) {
+                            } else {
+                                checkAppStatus(componentName);
                             }
-
-
+                        } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
+                            Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
+                            if (stepperPermissions.contains(componentName.flattenToShortString())) {
+                            } else {
+                                checkAppStatus(componentName);
+                            }
+                        } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING)) {
+                            Timber.d("dkjgdgrfghdghdr %s", "permission granting");
                         } else {
-                            textView.setText(componentName.flattenToShortString() + "This activity is handled by service");
+                            Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
+                            checkAppStatus(componentName);
                         }
                     }
                 }
 
-
             }
+
+
         }
+    }
+
+
+    private void checkAppStatus(ComponentName componentName) {
+        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
+                .submit(() -> isAllowed(WindowChangeDetectingService.this, componentName.getPackageName()));
+        try {
+            boolean status = futureObject.get();
+            if (!status) {
+                clearRecentApp(this);
+            }
+        } catch (Exception e) {
+            clearRecentApp(this);
+        }
+    }
+
+    @Override
+    public void onInterrupt() {
+
+    }
+
+
+    private void clearRecentApp(Context context) {
+
+        Intent i = new Intent(context, MainActivity.class);
+        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        i.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        startActivity(i);
+
+        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("locked"));
+
     }
 
     private ActivityInfo tryGetActivity(ComponentName componentName) {
@@ -136,51 +188,39 @@ public class WindowChangeDetectingService extends AccessibilityService {
         }
     }
 
-    @Override
-    public void onInterrupt() {
-        try {
-            if (wm != null && mView != null)
-                wm.removeViewImmediate(mView);
-        } catch (Exception ignored) {
+
+    boolean status = false;
+
+
+    private boolean isAllowed(Context context, String packageName) {
+
+        if (packageName.equals(context.getPackageName())) {
+            return true;
         }
 
-    }
+        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
+        String currentSpace = (space == null) ? "" : space;
+        Timber.d("<<< QUERYING DATA >>>");
 
-    private WindowManager.LayoutParams localLayoutParams;
-
-    private void createLayoutParams() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+        if (info != null) {
+            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+                status = true;
+            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
+                status = true;
+            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
+                status = true;
+            } else {
+                status = false;
+            }
 
         } else {
-
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            status = false;
         }
 
-        localLayoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER;
 
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-// this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-// Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-
-
-        localLayoutParams.y = (int) (450 * getResources().getDisplayMetrics().scaledDensity);
-        ;
-        localLayoutParams.width = (int) (300 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.format = PixelFormat.TRANSLUCENT;
-
+        return status;
     }
 
-    public void getOverLayLayoutParams() {
-        if (localLayoutParams == null) {
-            localLayoutParams = new WindowManager.LayoutParams();
-            createLayoutParams();
-        }
-    }
 
 }

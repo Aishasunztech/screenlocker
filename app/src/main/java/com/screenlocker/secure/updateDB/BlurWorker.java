@@ -231,6 +231,27 @@ public class BlurWorker extends Worker {
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
             }
 
+
+            AppInfo sfmInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SFM_UNIQUE);
+
+            if (sfmInfo == null) {
+                //Secure clear Extension
+                Drawable sfm_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_sheild_folder);
+                byte[] sfm_icon = CommonUtils.convertDrawableToByteArray(sfm_drawable);
+                AppInfo sfmExtension = new AppInfo("Secure File Manager", AppConstants.SFM_PACKAGE, sfm_icon);
+                sfmExtension.setUniqueName(sfmExtension.getPackageName() + sfmExtension.getLabel());
+                sfmExtension.setExtension(false);
+                sfmExtension.setGuest(false);
+                sfmExtension.setEncrypted(true);
+                sfmExtension.setEnable(true);
+                sfmExtension.setVisible(true);
+                sfmExtension.setDefaultApp(false);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(sfmExtension);
+            } else {
+                sfmInfo.setExtension(false);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(sfmInfo);
+            }
+
             AppInfo secureMarketInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_MARKET_UNIQUE);
 
             if (secureMarketInfo == null) {

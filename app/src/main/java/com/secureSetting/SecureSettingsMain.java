@@ -534,7 +534,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         localLayoutParams.y = (int) (24 * getResources().getDisplayMetrics().scaledDensity);
-        ;
+
         localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
         localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
 

@@ -1,11 +1,8 @@
 package com.screenlocker.secure.permissions;
 
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -13,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import butterknife.BindView;
@@ -101,41 +96,29 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 //            setLauncher.setEnabled(false);
         }
         setLauncher.setOnClickListener(v -> {
-//            Intent home = new Intent(Intent.ACTION_DEFAULT);
-//            home.addCategory(Intent.CATEGORY_LAUNCHER);
-//            Intent chooser = Intent.createChooser(home, "Launcher");
-//            startActivity(chooser);
-//
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN, null);
-            homeIntent.addCategory(Intent.CATEGORY_HOME);
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            startActivity(homeIntent);
-
-//            try {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-//                    startActivityForResult(intent, CODE_LAUNCHER);
-//                } else {
-//                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-//                    startActivityForResult(intent, CODE_LAUNCHER);
-//                }
-//            } catch (Exception ignored) {
-//            }
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                    startActivityForResult(intent, CODE_LAUNCHER);
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    startActivityForResult(intent, CODE_LAUNCHER);
+                }
+            } catch (Exception ignored) {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                startActivityForResult(intent, CODE_LAUNCHER);
+            }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 34328) {
-            Toast.makeText(mContext, " RESULT_CODE " + resultCode, Toast.LENGTH_SHORT).show();
+        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext())) {
+            setLauncher.setText(getResources().getString(R.string.default_launcher_set));
+            setLauncher.setEnabled(false);
+            setLauncher.setClickable(false);
         }
-
-//        if (requestCode == CODE_LAUNCHER && isMyLauncherDefault(MyApplication.getAppContext())) {
-//            setLauncher.setText(getResources().getString(R.string.default_launcher_set));
-//            setLauncher.setEnabled(false);
-//            setLauncher.setClickable(false);
-//        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 

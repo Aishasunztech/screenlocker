@@ -3,6 +3,8 @@ package com.screenlocker.secure.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Set;
+
 public class PrefUtils {
 
     public static final String PREF_FILE = "settings_pref";
@@ -19,6 +21,12 @@ public class PrefUtils {
         return sharedPref.getBoolean("is_enabled", false);
     }
 
+    public static void saveStringSetPref(Context context, String key, Set<String> value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putStringSet(key, value);
+        editor.apply();
+    }
     public static void saveStringPref(Context context, String key, String value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -29,6 +37,10 @@ public class PrefUtils {
     public static String getStringPref(Context context, String key) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
+    }
+    public static Set<String> getStringSet(Context context, String key) {
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getStringSet(key, null);
     }
 
     public static boolean getBooleanPref(Context context, String key) {

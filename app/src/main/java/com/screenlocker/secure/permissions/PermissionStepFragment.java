@@ -109,7 +109,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
     }
 
     // user can,'t skip this
@@ -185,6 +184,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         View v = inflater.inflate(R.layout.permmision_layout, container, false);
         ButterKnife.bind(this, v);
         init();
+
+
         //check if user already granted the permission
         if (devicePolicyManager.isAdminActive(compName)) {
             activeAdmin.setChecked(true);

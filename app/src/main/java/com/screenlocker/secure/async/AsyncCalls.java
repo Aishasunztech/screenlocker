@@ -6,13 +6,7 @@ import android.os.AsyncTask;
 import com.screenlocker.secure.interfaces.AsyncResponse;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
-import timber.log.Timber;
-
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.IsReachable;
 
 public class AsyncCalls extends AsyncTask<Void, Void, String> {
@@ -36,12 +30,17 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
 
-        Context context = contextRef.get();
-        for (String url : urls) {
-            if ((IsReachable(context, url))) {
-                return url;
+        try {
+            Context context = contextRef.get();
+            for (String url : urls) {
+
+                if ((IsReachable(context, url))) {
+                    return url;
+                }
             }
+        } catch (Exception ignored) {
         }
+
 
         return null;
     }

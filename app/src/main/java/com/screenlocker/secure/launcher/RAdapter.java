@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,6 +22,8 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
+import com.simplemobiletools.filemanager.pro.activities.MainActivity;
+import com.simplemobiletools.filemanager.pro.activities.SplashActivity;
 
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
         final ImageView img;
-        final View badge;
+
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -52,9 +55,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             //Finds the views from our row.xml
             textView = itemView.findViewById(R.id.text);
             img = itemView.findViewById(R.id.img);
-            badge = itemView.findViewById(R.id.badge);
-            img.setOnClickListener(this);
-            img.setOnLongClickListener(v -> {
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(v -> {
 
                 PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
                 openAppInfo(context, appsList.get(getAdapterPosition()).getPackageName());
@@ -107,6 +110,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
+                            break;
+                        case AppConstants.SFM_UNIQUE:
+                            context.startActivity(new Intent(context, MainActivity.class));
                             break;
                         case "com.secure.launcher":
                             Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());

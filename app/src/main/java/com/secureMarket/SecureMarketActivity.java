@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 
 public class SecureMarketActivity extends BaseActivity {
@@ -76,7 +77,7 @@ public class SecureMarketActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secure_market);
 
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
 
         mPackageManager = getPackageManager();
 

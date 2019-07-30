@@ -34,7 +34,7 @@ public class AppConstants {
     public static final String DATABASE_NAME = "app_db";
     public static final String KEY_MAIN = "main";
     public static final String KEY_DURESS = "duress";
-    public static final int LAUNCHER_GRID_SPAN = 3;
+    public static final int LAUNCHER_GRID_SPAN = 4;
     public static final String BROADCAST_ACTION = "intentKey";
     public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
@@ -87,15 +87,15 @@ public class AppConstants {
 
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-        public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
     public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
     //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-//            public static final String SUPER_ADMIN = "http://192.168.18.226:8042";//local
+    //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -109,7 +109,7 @@ public class AppConstants {
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
     public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-//    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
+//    public static final String STAGING_BASE_URL = "http://192.168.0.120:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
@@ -209,6 +209,8 @@ public class AppConstants {
 
 
     public static final String IS_SETTINGS_ALLOW = "is_settings_allow";
+    public static final String UNINSTALL_ALLOWED = "uninstall_allowed";
+    public static final String PERMISSION_GRANTING = "permission_granting";
 
     public static final int RESULT_ENABLE = 11;
     public static final int PERMISSION_REQUEST_READ_PHONE_STATE = 100;
@@ -237,6 +239,11 @@ public class AppConstants {
     public static final String SECURE_SETTINGS_UNIQUE = "com.secureSetting.SecureSettingsMainSecure Settings";
     // package name for SecureSettings
     public static final String SECURE_SETTINGS_PACKAGE = "com.secureSetting.SecureSettingsMain";
+
+    // unique name for SFM extension
+    public static final String SFM_UNIQUE = "com.secure.filemanagerSecure File Manager";
+    // package name for SecureSettings
+    public static final String SFM_PACKAGE = "com.secure.filemanager";
 
 
     //unique name for secure clear
@@ -382,5 +389,11 @@ public class AppConstants {
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";
     public static final int UPDATE_JOB = 1234;
+    public static final String UNSYNC_ICCIDS = "un_sync_iccid";
+    public static final String DELETED_ICCIDS = "deleted_iccid";
+    public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
+    public static final String SIM_ACTION_DELETED = "sim_delete";
+    public static final String SIM_ACTION_UPDATE = "sim_update";
+    public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
 
 }

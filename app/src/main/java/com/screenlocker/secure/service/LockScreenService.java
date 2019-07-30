@@ -19,6 +19,7 @@ import android.content.pm.Signature;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -176,6 +177,9 @@ public class LockScreenService extends Service {
 
         PackageManager packageManager = getPackageManager();
 
+
+        handler = new Handler();
+
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
@@ -220,7 +224,7 @@ public class LockScreenService extends Service {
             Log.d("nadeem", "screeen off from reciver: ");
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
-//                startLockScreen(true);
+                startLockScreen(true);
             }
         });
 
@@ -443,6 +447,10 @@ public class LockScreenService extends Service {
                         break;
                     case "lockedFromsim":
                         startLockScreen(false);
+                        break;
+                    case "na":
+                        startLockScreen(true);
+                        break;
                 }
             }
         }
@@ -497,8 +505,11 @@ public class LockScreenService extends Service {
     }
 
 
+    private Handler handler;
+
     private void startLockScreen(boolean refresh) {
-        counter = 0;
+
+
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 
         try {
@@ -517,6 +528,8 @@ public class LockScreenService extends Service {
 
                 mLayout.setVisibility(VISIBLE);
                 mLayout.startAnimation(in);
+
+
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
                 //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -651,13 +664,14 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
+
                 View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                clear.setText(getResources().getString(R.string.btn_backspace));
                 Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
+                support.setText(getResources().getString(R.string.support));
+                clear.setText(getResources().getString(R.string.btn_backspace));
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
                 unlock.setText(getResources().getString(R.string.unlock));

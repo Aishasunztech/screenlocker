@@ -437,6 +437,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     @Override
+    public void sendSimSettings() {
+
+    }
+
+    @Override
     public void getAppliedSettings() {
 
         if (socketManager.getSocket().connected()) {

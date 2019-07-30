@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 public class AppExecutor {
 
 
-    private Executor singleThreadExecutor;
+    private ExecutorService singleThreadExecutor;
     private ExecutorService executorForUpdatingList;
     private Executor mainThread;
     private static AppExecutor appExecutor;
@@ -33,7 +33,7 @@ public class AppExecutor {
 
     }
 
-    public Executor getSingleThreadExecutor() {
+    public ExecutorService getSingleThreadExecutor() {
         return singleThreadExecutor;
     }
 

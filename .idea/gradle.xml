@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$/Stepper" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/chatkit" />
+            <option value="$PROJECT_DIR$/commons" />
+            <option value="$PROJECT_DIR$/sfm" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

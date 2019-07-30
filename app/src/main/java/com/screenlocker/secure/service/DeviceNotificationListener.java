@@ -35,27 +35,12 @@ public class DeviceNotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
         Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
-        if (sbn.getPackageName().equals("com.armorsec.armor1")){
-            Intent intent = new Intent(AppConstants.BROADCAST_ACTION_NOTIFICATION);
-            intent.putExtra("isShow",true);
-            sendBroadcast(intent);
-        }
-        //StatusBarNotification[] notifications = getActiveNotifications();
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
         Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
-        StatusBarNotification[] notifications = getActiveNotifications();
-        for (StatusBarNotification notification : notifications) {
-            if (notification.getPackageName().equals("com.armorsec.armor1")){
-                return;
-            }
-        }
-        Intent intent = new Intent(AppConstants.BROADCAST_ACTION_NOTIFICATION);
-        intent.putExtra("isShow",false);
-        sendBroadcast(intent);
 
         
     }

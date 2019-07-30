@@ -98,7 +98,7 @@ dependencies {
 // implementation "android.arch.persistence.room:runtime:1.0.0"
 
 
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
 
 //location service
 
@@ -107,7 +107,7 @@ dependencies {
 //app update checker lib
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'org.jsoup:jsoup:1.11.3'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
 // DAGGER GOOGLE
     implementation "com.google.dagger:dagger:$versionDagger"
@@ -162,14 +162,10 @@ dependencies {
 
     implementation project(':Stepper')
     implementation project(':chatkit')
+    implementation project(':sfm')
+
+
     implementation 'androidx.palette:palette:1.0.0'
-    //download manager
-    implementation 'com.mani:ThinDownloadManager:1.4.0'
-
-
-    // Downloader
-    implementation 'com.mani:ThinDownloadManager:1.4.0'
-
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
