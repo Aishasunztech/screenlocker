@@ -2,8 +2,11 @@ package com.screenlocker.secure.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,13 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -39,10 +46,20 @@ import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TreeMap;
+
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
@@ -116,6 +133,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
     };
 
+
+    private HashSet<String> blacklist = new HashSet<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -397,17 +416,103 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //
 //        }
 
-
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
             if (!hasFocus) {
-                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                sendBroadcast(closeDialog);
+//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
                 new BlockStatusBar(this, false).collapseNow();
             }
         }
+
     }
+
+//    private void clearRecentApp(Context context) {
+//
+//        Intent i = new Intent(context, MainActivity.class);
+//        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        i.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//        startActivity(i);
+//
+//        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("locked"));
+//
+//    }
+
+
+//    private boolean status = false;
+//
+//    private boolean isAllowed(Context context, String packageName) {
+//
+//        if (packageName.equals(context.getPackageName())) {
+//            return true;
+//        }
+//
+//        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
+//        String currentSpace = (space == null) ? "" : space;
+//        Timber.d("<<< QUERYING DATA >>>");
+//
+//        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+//        if (info != null) {
+//            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+//                status = true;
+//            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
+//                status = true;
+//            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
+//                status = true;
+//            } else {
+//                status = false;
+//            }
+//
+//        } else {
+//            status = false;
+//        }
+//
+//
+//        return status;
+//    }
+
+
+//    public String getCurrentApp() {
+//        String dum = null;
+//        try {
+//            if (Build.VERSION.SDK_INT >= 21) {
+//                String currentApp = null;
+//                UsageStatsManager usm = null;
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+//                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+//                }
+//                long time = System.currentTimeMillis();
+//                List<UsageStats> applist = null;
+//                if (usm != null) {
+//                    applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
+//                }
+//                if (applist != null && applist.size() > 0) {
+//                    SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+//                    for (UsageStats usageStats : applist) {
+//                        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+//                    }
+//                    if (!mySortedMap.isEmpty()) {
+//                        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+//                    }
+//                }
+//                return currentApp;
+//            } else {
+//                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//                String mm = null;
+//                if (manager != null) {
+//                    mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+//                }
+//
+//                return mm;
+//            }
+//        } catch (Exception e) {
+//            Timber.d("getCurrentApp: %s", e.getMessage());
+//
+//            return dum;
+//        }
+//    }
 
 
 }

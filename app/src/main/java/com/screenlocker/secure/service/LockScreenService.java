@@ -523,12 +523,9 @@ public class LockScreenService extends Service {
                 windowManager.addView(mLayout, params);
                 mLayout.setVisibility(View.GONE);
                 final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-
                 in.setDuration(2000);
-
                 mLayout.setVisibility(VISIBLE);
                 mLayout.startAnimation(in);
-
 
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);

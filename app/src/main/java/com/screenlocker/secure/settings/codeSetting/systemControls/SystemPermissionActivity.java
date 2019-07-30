@@ -119,7 +119,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
         switchDisable = findViewById(R.id.switchDisable);
         switchCamera = findViewById(R.id.switchCamera);
-        if (mDPM.getCameraDisabled(compName)) {
+        if (!mDPM.getCameraDisabled(compName)) {
             switchCamera.setChecked(true);
         } else
             switchCamera.setChecked(false);

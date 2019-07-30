@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
@@ -35,8 +37,9 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
-public class ManualPullPush extends AppCompatActivity implements ManualPushPullAdapter.PushPullAppsListener, MainActivity.PolicyRefreshListener {
+public class ManualPullPush extends BaseActivity implements ManualPushPullAdapter.PushPullAppsListener, MainActivity.PolicyRefreshListener {
 
     public static final String PUSH_APP = "push_apps";
     public static final String PULL_APP = "pull_apps";
@@ -67,11 +70,14 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
 
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        Log.i("checkpolicy", "onResume:  : ... ");
+
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
 
         ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
         if (appsList != null) {
@@ -330,10 +336,10 @@ public class ManualPullPush extends AppCompatActivity implements ManualPushPullA
 
     }
 
-    public void code_secret(View view) {
-        utils.saveArrayList(null, this);
-        finish();
-    }
+//    public void code_secret(View view) {
+//        utils.saveArrayList(null, this);
+//        finish();
+//    }
 
-    ///   admin!dev#lm@786
+
 }

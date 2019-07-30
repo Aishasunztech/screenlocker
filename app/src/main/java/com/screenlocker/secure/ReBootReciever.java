@@ -88,12 +88,11 @@ public class ReBootReciever extends BroadcastReceiver {
                 SubscriptionInfo si1 = sm.getActiveSubscriptionInfoForSimSlotIndex(1);
                 if (si0 != null) {
                     PrefUtils.saveStringPref(context, SIM_0_ICCID, si0.getIccId());
-                    Log.d("onstatuschanged", "onReceive: " + si0.getIccId());
+
                 } else
                     PrefUtils.saveStringPref(context, SIM_0_ICCID, null);
                 if (si1 != null) {
                     PrefUtils.saveStringPref(context, SIM_1_ICCID, si1.getIccId());
-                    Log.d("onstatuschanged", "onReceive: " + si1.getIccId());
 
                 } else
                     PrefUtils.saveStringPref(context, SIM_1_ICCID, null);

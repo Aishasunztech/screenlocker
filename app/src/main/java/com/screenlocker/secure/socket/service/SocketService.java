@@ -797,23 +797,24 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     intent.putExtra("isPolicy", isPolicy);
                     Timber.d("isPolicy %s", isPolicy);
                     if (getResources().getString(R.string.apktype).contains("BYOD")) {
-                        Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
+
                         if (push_apps.equals("push_apps")) {
+
+                            Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
 
                             ArrayList<InstallModel> appsList = utils.getArrayList(this);
                             ArrayList<InstallModel> temp = new ArrayList<>();
+
 
                             if (appsList == null) {
                                 new DownLoadAndInstallUpdate(this, null, true, null, new ArrayList<>(list), isPolicy).execute();
                             } else if (appsList.size() > 0) {
                                 for (int i = 0; i < list.size(); i++) {
-
                                     for (InstallModel model : appsList) {
                                         if (!model.getApk_name().equals(list.get(i).getApk_name())) {
                                             temp.add(model);
                                         }
                                     }
-
                                 }
                                 if (temp.size() > 0) {
                                     new DownLoadAndInstallUpdate(this, null, true, null, new ArrayList<>(temp), isPolicy).execute();
@@ -831,6 +832,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
                         } else if (push_apps.equals("pull_apps")) {
+                            Log.i("checkpolicy", "pulledApps: in byod condition ...  ");
                             ArrayList<InstallModel> appsList = utils.getArrayList(this);
                             for (InstallModel model : list) {
                                 if (appsList != null) {

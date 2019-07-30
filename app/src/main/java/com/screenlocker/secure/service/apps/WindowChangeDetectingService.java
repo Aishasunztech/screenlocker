@@ -40,6 +40,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
     private HashSet<String> stepperPermissions = new HashSet<>();
 
+
+    private HashSet<String> globalActions = new HashSet<>();
+
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
@@ -60,6 +63,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/.password.ChooseLockGeneric");
         ssPermissions.add("com.android.settings/.EncryptionInterstitial");
         ssPermissions.add("com.android.settings/.password.ChooseLockPattern");
+        ssPermissions.add("com.android.settings/.password.ConfirmLockPassword$InternalActivity");
         ssPermissions.add("com.android.settings/.notification.RedactionInterstitial");
         ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollFindSensor");
         ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollEnrolling");
@@ -75,22 +79,32 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add(getPackageName() + "/com.secureSetting.SecureSettingsMain");
         ssPermissions.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
         ssPermissions.add(getPackageName() + "/com.screenlocker.secure.launcher.MainActivity");
+        ssPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 //        allowedPackages.add("com.google.android.packageinstaller");
 //        allowedPackages.add("com.android.packageinstaller");
 
-        stepperPermissions.add("com.android.packageinstaller/.UninstallerActivity");
-        stepperPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
-        stepperPermissions.add("com.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
-        stepperPermissions.add("com.google.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
+        smPermissions.add("com.android.packageinstaller/.UninstallerActivity");
+        smPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
+        smPermissions.add("com.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
+        smPermissions.add("com.google.android.packageinstaller/.com.android.packageinstaller/.PackageInstallerActivity");
+        smPermissions.add("com.android.packageinstaller/.InstallStaging");
+        smPermissions.add("com.google.android.packageinstaller/.InstallStaging");
+        smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 //        wm.addView(mView, localLayoutParams);
 
         stepperPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         stepperPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
-        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
-        ssPermissions.add("com.android.settings/.SubSettings");
-        ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
+        stepperPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
+        stepperPermissions.add("com.android.settings/.SubSettings");
+        stepperPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
+        stepperPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
+
+        globalActions.add("com.android.systemui/.globalactions.GlobalActionsDialog$ExActionsDialog");
+        globalActions.add("com.android.settings/android.app.Dialog");
+        globalActions.add("com.android.settings/.bluetooth.RequestPermissionActivity");
+
 
         //Configure these here for compatibility with API 13 and below.
         AccessibilityServiceInfo config = new AccessibilityServiceInfo();
@@ -128,7 +142,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
                             }
                         } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
                             Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
-                            if (stepperPermissions.contains(componentName.flattenToShortString())) {
+                            if (smPermissions.contains(componentName.flattenToShortString())) {
+
                             } else {
                                 checkAppStatus(componentName);
                             }
@@ -136,7 +151,11 @@ public class WindowChangeDetectingService extends AccessibilityService {
                             Timber.d("dkjgdgrfghdghdr %s", "permission granting");
                         } else {
                             Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
-                            checkAppStatus(componentName);
+
+                            if (!globalActions.contains(componentName.flattenToShortString()))
+                                checkAppStatus(componentName);
+
+
                         }
                     }
                 }

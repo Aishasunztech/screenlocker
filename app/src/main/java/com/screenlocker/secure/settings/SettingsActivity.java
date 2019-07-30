@@ -58,6 +58,8 @@ import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.settings.managepassword.ManagePasswords;
+import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -454,24 +456,29 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network n = manager.getActiveNetwork();
-        NetworkCapabilities nc = manager.getNetworkCapabilities(n);
-        if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Warning!")
-                        .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
-                        .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
-                            proccedToDownload();
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        }).show();
+        try {
+            ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            Network n = manager.getActiveNetwork();
+            NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Warning!")
+                            .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
+                            .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
+                                proccedToDownload();
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                dialog.dismiss();
+                            }).show();
+                }
+            } else {
+                proccedToDownload();
             }
-        } else {
-            proccedToDownload();
+        } catch (Exception e) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -80,6 +80,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
 /**
  * this activity is the custom launcher for the app
@@ -323,7 +324,10 @@ public class MainActivity extends
 
         Log.i("checkpolicy", "onResume: onreusme called ");
 
+        Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : " + msg);
+
         ComponentName cn;
+
         ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             cn = am.getAppTasks().get(0).getTaskInfo().topActivity;
@@ -333,10 +337,16 @@ public class MainActivity extends
         }
 
 
-        super.onResume();
+
+
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
 
         ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
+        
+        
+        if(appsList!=null){
+            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
+        }
 
 
         if (msg != null && !msg.equals("") && msg.equals(KEY_ENCRYPTED)) {
@@ -363,10 +373,21 @@ public class MainActivity extends
 
 
             Log.i("checkpolicy", "onResume:  component name is : " + cn.getClassName());
+
+
+            return;
         }
 
         Log.i("checkpolicy", "onResume:  component name is : " + cn.getClassName());
 
+
+        for (InstallModel installModel : appsList) {
+            Log.i("checkpolicy","sdgioserijgto"+installModel.getPackage_name());
+        }
+        
+        
+        
+        super.onResume();
 
     }
 
