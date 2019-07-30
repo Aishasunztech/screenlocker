@@ -23,8 +23,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5144
-        versionName "5.144"
+        versionCode 5150
+        versionName "5.15"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -171,6 +171,12 @@ dependencies {
 
     // pattern Lock
     implementation 'com.itsxtt:patternlockview:0.1.0'
+
+    //text mask
+    implementation 'com.github.santalu:mask-edittext:1.1.1'
+
+    // DownloadManager
+    implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.4'
 
     implementation project(':Stepper')
     implementation project(':chatkit')

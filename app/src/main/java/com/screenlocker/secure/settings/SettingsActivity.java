@@ -434,24 +434,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network n = manager.getActiveNetwork();
-        NetworkCapabilities nc = manager.getNetworkCapabilities(n);
-        if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Warning!")
-                        .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
-                        .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
-                            proccedToDownload();
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        }).show();
+        try {
+
+
+            NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Warning!")
+                            .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
+                            .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
+                                proccedToDownload();
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                dialog.dismiss();
+                            }).show();
+                }
+            } else {
+                proccedToDownload();
             }
-        } else {
-            proccedToDownload();
+        }catch (Exception e){
+            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -640,6 +647,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chatId);
         }
+
+        aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
+            startActivity(new Intent(this,WhatsNew.class));
+
+        });
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
         TextView textView20 = aboutDialog.findViewById(R.id.textView20);

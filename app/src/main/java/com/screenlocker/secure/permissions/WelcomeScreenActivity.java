@@ -3,6 +3,7 @@ package com.screenlocker.secure.permissions;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,6 +29,7 @@ import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_AD
 import static com.screenlocker.secure.utils.AppConstants.LINKSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATEWIFI;
 
@@ -48,30 +50,16 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
 
 
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
+        Handler handler = new Handler();
 
-        WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-                .observe(this, workInfo -> {
-                    // Do something with the status
-                    if (workInfo != null && workInfo.getState().isFinished()) {
-                        Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
-                        lockScreen.setAction("locked");
-                        ActivityCompat.startForegroundService(this, lockScreen);
-                        lockScreen = new Intent(WelcomeScreenActivity.this, MainActivity.class);
-                        Intent finalLockScreen = lockScreen;
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                startActivity(finalLockScreen);
-                                finish();
-                            }
-                        }, 5000);
-
-                    }
-                });
+        handler.postDelayed(() -> {
+            startActivity(new Intent(WelcomeScreenActivity.this, MainActivity.class));
+            Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
+            lockScreen.setAction("locked");
+            ActivityCompat.startForegroundService(this, lockScreen);
+            PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
+            finish();
+        }, 5000);
         if (PrefUtils.getIntegerPref(this, UPDATEWIFI) == 0) {
             PrefUtils.saveIntegerPref(this, UPDATEWIFI, 1);
         }
