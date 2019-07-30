@@ -49,7 +49,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             textView = itemView.findViewById(R.id.text);
             img = itemView.findViewById(R.id.img);
 
-            img.setOnClickListener(this);
+            itemView.setOnClickListener(this);
 
         }
 
@@ -83,19 +83,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             break;
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
-                            break;
-                        case "com.secure.launcher":
-                            Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
-                            if (launch != null) {
-                                launch.addCategory(Intent.CATEGORY_LAUNCHER);
-                                if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
-                                    launch.putExtra("isSupport", true);
-                                    launch.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
-                                }
-                            }
-                            /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
-                            context.startActivity(launch);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
