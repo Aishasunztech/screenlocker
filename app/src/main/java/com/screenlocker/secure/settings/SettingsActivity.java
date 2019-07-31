@@ -640,6 +640,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chatId);
         }
+
+        aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
+            startActivity(new Intent(SettingsActivity.this, WhatsNew.class));
+        });
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
         TextView textView20 = aboutDialog.findViewById(R.id.textView20);

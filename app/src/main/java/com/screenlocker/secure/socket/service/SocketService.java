@@ -1302,6 +1302,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                                     PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isUnrGuest());
                                      PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
+                                    try {
+                                        socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
+                                    } catch (JSONException e) {
+                                        Timber.e(" JSON error : %s", e.getMessage());
+                                    }
                                     break;
                             }
 

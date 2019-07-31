@@ -4,20 +4,63 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_icon"
     android:fitsSystemWindows="true">
+    <TextView
+        android:id="@+id/txtWarning"
+        style="@style/icon_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:minHeight="48dp"
+        android:textColor="#fa8c16"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/chat_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+
+    <EditText
+        android:id="@+id/password_field"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/ic_chat_"
-        android:visibility="gone"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:enabled="false"
+        android:gravity="center"
+        android:hint="@string/pin"
+        android:inputType="numberPassword"
+        android:minHeight="48dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txtWarning" />
+
+    <ImageView
+        android:id="@+id/t9_key_backspace"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="8dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/img"
+        app:layout_constraintBottom_toBottomOf="@+id/password_field"
+        app:layout_constraintEnd_toEndOf="@+id/password_field"
+        app:layout_constraintTop_toTopOf="@+id/password_field" />
+
 
     <com.screenlocker.secure.views.KeyboardView
         android:id="@+id/keypad"
@@ -70,6 +113,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/t9_key_clear"
+        style="@style/keyboard_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_7sdp"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text="@string/btn_backspace"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

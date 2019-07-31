@@ -190,8 +190,6 @@ public class LockScreenService extends Service {
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                notificationReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION_NOTIFICATION));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
@@ -243,7 +241,6 @@ public class LockScreenService extends Service {
             Timber.d("screen locker distorting.");
             unregisterReceiver(screenOffReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(notificationReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
@@ -543,17 +540,4 @@ public class LockScreenService extends Service {
             //windowManager.removeViewImmediate(mLayout);
         }
     };
-    BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra("isShow", false)) {
-                if (mLayout != null)
-                    mLayout.findViewById(R.id.chat_icon).setVisibility(VISIBLE);
-            } else {
-                if (mLayout != null)
-                    mLayout.findViewById(R.id.chat_icon).setVisibility(View.GONE);
-            }
-        }
-    };
-
 }

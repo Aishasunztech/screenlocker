@@ -267,7 +267,6 @@ public class Utils {
         });
 
         Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
-        ImageView chatIcon = keyboardView.findViewById(R.id.chat_icon);
         TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
         supportButton.setOnClickListener(v -> {
             chatLogin(context);

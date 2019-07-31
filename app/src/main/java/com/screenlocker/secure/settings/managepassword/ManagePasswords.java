@@ -1,8 +1,10 @@
 package com.screenlocker.secure.settings.managepassword;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -117,7 +119,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                  * start the {@link SetUpLockActivity} to get the password
                  */
 //                settingsActivity.handleSetGuestPassword(ManagePasswords.this, rootLayout);
-                handleSetGuestPassword(ManagePasswords.this,null,rootLayout);
+//                handleSetGuestPassword(ManagePasswords.this,null,rootLayout);
+                startActivity(new Intent(this, PasswordOptionsAcitivity.class));
                 break;
 
             case R.id.tvSetMainPassword:    // handle the set main password click event
@@ -154,6 +157,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
