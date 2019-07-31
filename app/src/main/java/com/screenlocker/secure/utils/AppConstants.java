@@ -1,5 +1,7 @@
 package com.screenlocker.secure.utils;
 
+import android.content.Context;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 
@@ -175,6 +177,9 @@ public class AppConstants {
     public static final String COPIED_IMEI_1 = "COPIED_IMEI_1";
     public static final String COPIED_IMEI_2 = "COPIED_IMEI_2";
     public static final String COPIED_URL = "COPIED_URL";
+    public static final String STARTED_DOWNLOAD_ID = "download_id";
+    public static final String PACKAGE_NAME = "package_name";
+    public static final String DOWNLOADING_QUEUE = "downloading_list";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

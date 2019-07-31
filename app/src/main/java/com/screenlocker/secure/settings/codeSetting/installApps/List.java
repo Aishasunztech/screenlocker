@@ -1,10 +1,19 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
+import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.room.Ignore;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class List {
 
+    public List()
+    {
+
+    }
 
     @SerializedName("apk_name")
     @Expose
@@ -46,6 +55,16 @@ public class List {
     @SerializedName("version_code")
     @Expose
     private String version_code;
+
+    private transient ProgressBar progressBar;
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
 
     public String getVersion_code() {
         return version_code;
