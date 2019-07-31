@@ -1,6 +1,7 @@
 package com.secureSetting;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -23,7 +25,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class NotificationsActivity extends AppCompatActivity implements GetApplistTask.GetAppsListener {
+public class NotificationsActivity extends BaseActivity implements GetApplistTask.GetAppsListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -50,8 +55,19 @@ public class NotificationsActivity extends AppCompatActivity implements GetAppli
         rc.setAdapter(new NotificationsAdapter(appInfos,this));
         rc.setLayoutManager(new LinearLayoutManager(this));
 
+        String key = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
+        if (key.equals(AppConstants.KEY_MAIN_PASSWORD)){
+            new GetApplistTask(this,true).execute();
+        }else if (key.equals(AppConstants.KEY_GUEST_PASSWORD)){
+            new GetApplistTask(this,false).execute();
+        }
 
-        new GetApplistTask(this).execute();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -98,15 +114,13 @@ public class NotificationsActivity extends AppCompatActivity implements GetAppli
                 textView = itemView.findViewById(R.id.notification_app_name);
             }
 
-            WindowManager wm;
-            FrameLayout mView;
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-//                intent.setAction(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                 intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
                 intent.putExtra("android.provider.extra.APP_PACKAGE", appInfoList.get(getAdapterPosition()).getPackageName());
                 startActivity(intent);
+                addView(android.R.color.transparent);
             }
 
             public void setData(AppInfo appInfo) {

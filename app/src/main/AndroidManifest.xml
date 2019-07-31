@@ -62,7 +62,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.WhatsNew"></activity>
+        <activity android:name="com.secureSetting.AllNotificationActivity"></activity>
+        <activity android:name=".settings.WhatsNew" />
         <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
         <activity android:name="com.secureSetting.NotificationsActivity" />
         <activity android:name=".policy.PolicyActivity" />

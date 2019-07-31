@@ -37,10 +37,10 @@ public interface MyDao {
     @Query("SELECT * from SubExtension ")
     List<SubExtension> getAllSubExtensions();
 
-    @Query("select * from AppInfo where guest= :isGuest and enable =:isEnable ")
+    @Query("select * from AppInfo where guest= :isGuest and enable =:isGuest and extension=:isEnable ")
     List<AppInfo> getGuestApps(boolean isGuest, boolean isEnable);
 
-    @Query("select * from AppInfo where encrypted= :isEncrypted and enable =:isEnable ")
+    @Query("select * from AppInfo where encrypted= :isEncrypted and enable =:isEncrypted and extension=:isEnable")
     List<AppInfo> getEncryptedApps(boolean isEncrypted, boolean isEnable);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)

@@ -374,6 +374,8 @@ public class MarketFragment extends Fragment implements
                                         if (versionCode != 0 && app.getVersion_code() != null) {
                                             int updatedVersion = Integer.parseInt(app.getVersion_code());
                                             if (versionCode < updatedVersion) {
+                                                Timber.d("Yours: %s", app.getVersion_code());
+                                                Timber.d("Ours: %s", versionCode);
                                                 updateApps.add(app);
                                             }
                                         }
@@ -411,8 +413,8 @@ public class MarketFragment extends Fragment implements
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                        Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
-
+                        if (getContext() != null)
+                            Toast.makeText(getContext(), getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 });
@@ -448,6 +450,8 @@ public class MarketFragment extends Fragment implements
                                         if (versionCode != 0) {
                                             int updatedVersion = Integer.parseInt(app.getVersion_code());
                                             if (versionCode < updatedVersion) {
+                                                Timber.d("Yours: %s", app.getVersion_code());
+                                                Timber.d("Ours: %s", versionCode);
                                                 updateApps.add(app);
                                             }
                                         }
