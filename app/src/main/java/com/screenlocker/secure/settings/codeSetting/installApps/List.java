@@ -56,16 +56,6 @@ public class List {
     @Expose
     private String version_code;
 
-    private transient ProgressBar progressBar;
-
-    public ProgressBar getProgressBar() {
-        return progressBar;
-    }
-
-    public void setProgressBar(ProgressBar progressBar) {
-        this.progressBar = progressBar;
-    }
-
     public String getVersion_code() {
         return version_code;
     }

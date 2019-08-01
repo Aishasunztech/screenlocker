@@ -1,6 +1,7 @@
 package com.secureMarket;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     private AppInstallUpdateListener listener;
     private String userSpace;
     private String fragmentType;
-    private UpdateProgressListener updateListener;
+
 
 
     public interface AppInstallUpdateListener {
@@ -67,7 +68,6 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.market_app_list_item, parent, false);
-        updateListener = new MyViewHolder(view);
         return new MyViewHolder(view);
     }
 
@@ -103,28 +103,6 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         holder.tv_name.setText(appModelList.get(position).getApkName());
 
-        String packageName = PrefUtils.getStringPref(context, AppConstants.PACKAGE_NAME);
-        app.setProgressBar(holder.progressBar);
-
-        if(app.getPackageName().equals(packageName))
-        {
-//            holder.progressBar.setVisibility(View.VISIBLE);
-            app.getProgressBar().setVisibility(View.VISIBLE);
-            Log.d("lsafd",app.getProgressBar().getId() + "");
-        }
-//        if (packageName != null && packageName.equals(app.getPackageName())) {
-//            if(app.getProgress() <100) {
-//                holder.progressBar.setVisibility(View.VISIBLE);
-//                Log.d("lkdf",app.getProgress() + "");
-//                holder.progressBar.setProgress(app.getProgress());
-//            }else{
-//
-//                holder.progressBar.setVisibility(View.GONE);
-//                holder.progressBar.setProgress(0);
-//            }
-//        }
-
-
     }
 
     @Override
@@ -132,7 +110,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         return appModelList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, UpdateProgressListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
         ImageView imageView;
@@ -151,7 +129,6 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             progressBar = itemView.findViewById(R.id.downloadProgress);
 //            btnDownload = itemView.findViewById(R.id.btnDownload);
 
-
             btnInstall.setOnClickListener(this);
             btnUnInstall.setOnClickListener(this);
         }
@@ -165,22 +142,10 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
                 if (listener != null) {
-                    String packageName = PrefUtils.getStringPref(context, AppConstants.PACKAGE_NAME);
-                    if (packageName != null && !packageName.equals("")) {
                         listener.setProgressBar(progressBar);
-//                        String json = PrefUtils.getStringPref(context, AppConstants.DOWNLOADING_QUEUE);
-//                        Gson gson = new Gson();
-//                        if(json != null && !json.equals(""))
-//                        {
-//                            ArrayList<String> packageNames = new ArrayList<>();
-//                            Type type = new TypeToken<ArrayList<String>>(){}.getType();
-//                            packageNames = gson.fromJson(json,type);
-//                            if(packageNames)
-//                        }
-                    } else {
                         listener.onInstallClick(app,progressBar);
 
-                    }
+                    //}
                 }
 
             } else if (v.getId() == R.id.btnUnInstall) {
@@ -254,25 +219,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
             }
 
-
         }
 
-        @Override
-        public void setProgress(int progress, String packageName) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(progress);
-
-
-        }
     }
-
-    public interface UpdateProgressListener {
-        void setProgress(int progress, String packageName);
-    }
-
-    public void updateProgress(String packageName, int progress) {
-        updateListener.setProgress(progress, packageName);
-    }
-
 
 }

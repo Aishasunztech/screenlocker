@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,6 +84,9 @@ public class SecureMarketActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
 
+
+        container.setOffscreenPageLimit(0);
+
 //
 //        container.setOnTouchListener(this);
 //        tabLayout.setOnTouchListener(this);
@@ -118,121 +122,12 @@ public class SecureMarketActivity extends BaseActivity
             }
         });
 
-        container.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            @NonNull
-            @Override
-            public Fragment getItem(int position) {
-                switch (position)
-                {
-                    case 0:
-                        MarketFragment fragment = new MarketFragment();
-                        Bundle b = new Bundle();
-                        b.putString("check","install");
-                        fragment.setArguments(b);
-
-                        return fragment;
-
-                    case 1:
-                        MarketFragment fragmentUninstall = new MarketFragment();
-                        Bundle b1 = new Bundle();
-                        b1.putString("check","uninstall");
-                        fragmentUninstall.setArguments(b1);
-
-                        return fragmentUninstall;
-                    case 2:
-                        MarketFragment fragmentUpdate = new MarketFragment();
-                        Bundle b3 = new Bundle();
-                        b3.putString("check","update");
-                        fragmentUpdate.setArguments(b3);
-
-                        return fragmentUpdate;
-                        default:
-                            MarketFragment fragmentDefault = new MarketFragment();
-                            Bundle b2 = new Bundle();
-                            b2.putString("check","install");
-
-                            fragmentDefault.setArguments(b2);
-
-                            return fragmentDefault;
-                }
-
-            }
-
-            @Override
-            public int getCount() {
-                return 3;
-            }
-
-            @Nullable
-            @Override
-            public CharSequence getPageTitle(int position) {
-                switch (position)
-                {
-                    case 0:
-                        return getResources().getString(R.string.install);
-                    case 1:
-                        return getResources().getString(R.string.uninstall);
-                    case 2:
-                        return getResources().getString(R.string.updates);
-                        default:
-                            return getResources().getString(R.string.install);
-
-                }
-
-            }
-        });
+        container.setAdapter(new MainMarketPagerAdapter(getSupportFragmentManager(),this));
         tabLayout.setupWithViewPager(container);
+
 
     }
 
-
-//    private String getAppLabel(PackageManager pm, String pathToApk) {
-//        PackageInfo packageInfo = pm.getPackageArchiveInfo(pathToApk, 0);
-//        if (packageInfo != null) {
-//
-//            if (Build.VERSION.SDK_INT >= 8) {
-//                // those two lines do the magic:
-//                packageInfo.applicationInfo.sourceDir = pathToApk;
-//                packageInfo.applicationInfo.publicSourceDir = pathToApk;
-//            }
-//
-//            CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
-//            Timber.e("getAppLabel: package name is " + packageInfo.packageName);
-//            return packageInfo.packageName;
-//
-//        } else {
-//            return null;
-//        }
-//    }
-
-
-//    @Override
-//    public void onInstallClick(List app) {
-////        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
-////                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
-////        downLoadAndInstallUpdate.execute();
-//    }
-
-//    @Override
-//    public void onUnInstallClick(List app) {
-//        File fileApk = getFileStreamPath(app.getApk());
-//        if (fileApk.exists()) {
-//            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-//
-//            startActivity(intent);
-//        }
-//    }
-
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//            if (v.getId() != R.id.et_marketSearch) {
-//                et_market_search.clearFocus();
-//                et_market_search.setFocusable(false);
-//                hideKeyboard(SecureMarketActivity.this);
-//            }
-//        return false;
-//    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

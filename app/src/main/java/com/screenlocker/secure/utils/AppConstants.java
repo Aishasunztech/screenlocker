@@ -180,6 +180,7 @@ public class AppConstants {
     public static final String STARTED_DOWNLOAD_ID = "download_id";
     public static final String PACKAGE_NAME = "package_name";
     public static final String DOWNLOADING_QUEUE = "downloading_list";
+    public static final String PROGRESS = "progress";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 
