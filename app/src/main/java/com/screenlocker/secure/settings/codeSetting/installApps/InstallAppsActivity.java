@@ -40,6 +40,7 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -55,6 +56,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,16 +64,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
+import static com.screenlocker.secure.utils.Utils.silentPullApp;
+import static com.secureMarket.MarketUtils.savePackages;
 
 
-public class InstallAppsActivity extends BaseActivity implements  InstallAppsAdapter.InstallAppListener {
+public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener {
     private RecyclerView rvInstallApps;
     private TextView tvProgressText;
     private InstallAppsAdapter mAdapter;
@@ -167,7 +174,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
                                 appModelList.addAll(response.body().getList());
                                 if (appModelList.size() == 0) {
-
+                                    //empty state should be here
                                 }
                                 checkAppInstalledOrNot(appModelList);
                                 mAdapter.notifyDataSetChanged();
@@ -190,28 +197,18 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
 
     private void checkAppInstalledOrNot(List<com.screenlocker.secure.settings.codeSetting.installApps.List> list) {
-        Log.d("CheckAppInstalledOrNot", "called");
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk();
-//                File file = getActivity().getFileStreamPath(fileName);
-                File apksPath = new File(getFilesDir(), "apk");
-                File file = new File(apksPath, fileName);
-                if (file.exists()) {
-                    Log.d("FileExists", "Yes");
-                    String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
-                    if (appPackageName != null)
-                        app.setInstalled(appInstalledOrNot(appPackageName));
-                }
+                app.setInstalled(appInstalledOrNot(app.getPackageName()));
             }
         }
 
     }
 
-    private boolean appInstalledOrNot(String uri) {
+    private boolean appInstalledOrNot(String packageName) {
         try {
-            mPackageManager.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            mPackageManager.getPackageInfo(packageName, 0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -336,11 +333,13 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
+        private String packageName;
 
         DownLoadAndInstallUpdate(Context context, final String url, String appName) {
             contextWeakReference = new WeakReference<>(context);
             this.url = url;
             this.appName = appName;
+            this.packageName = appName;
         }
 
         @Override
@@ -363,49 +362,48 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-
+                appName = new Date().getTime() + ".apk";
                 File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
                 File file = new File(apksPath, appName);
-//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
 
                 if (file.exists())
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-                try {
-                    fileOutputStream = new FileOutputStream(file);
-                    URL downloadUrl = new URL(url);
-                    URLConnection connection = downloadUrl.openConnection();
-                    int contentLength = connection.getContentLength();
+                    //  return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                    try {
+                        fileOutputStream = new FileOutputStream(file);
+                        URL downloadUrl = new URL(url);
+                        URLConnection connection = downloadUrl.openConnection();
+                        int contentLength = connection.getContentLength();
 
-                    // input = body.byteStream();
-                    input = new BufferedInputStream(downloadUrl.openStream());
-                    byte data[] = new byte[contentLength];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress((int) ((total * 100) / contentLength));
-                        fileOutputStream.write(data, 0, count);
+                        // input = body.byteStream();
+                        input = new BufferedInputStream(downloadUrl.openStream());
+                        byte data[] = new byte[contentLength];
+                        long total = 0;
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            total += count;
+                            publishProgress((int) ((total * 100) / contentLength));
+                            fileOutputStream.write(data, 0, count);
+                        }
+
+                        return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    } finally {
+                        if (fileOutputStream != null) {
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                        }
+                        if (input != null)
+                            input.close();
+                        file.setReadable(true, false);
+
+
                     }
-
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                } finally {
-                    if (fileOutputStream != null) {
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-                    }
-                    if (input != null)
-                        input.close();
-                    file.setReadable(true, false);
-
-
-                }
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -442,6 +440,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             } catch (IOException e) {
                 Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
             }*/
+            savePackages(packageName, INSTALLED_PACKAGES, PrefUtils.getStringPref(contextWeakReference.get(), CURRENT_KEY), contextWeakReference.get());
             Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
                     .setStream(uri) // uri from FileProvider
                     .setType("text/html")
@@ -466,7 +465,6 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             }
 
             CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
-            Timber.e("getAppLabel: package name is " + packageInfo.packageName);
             return packageInfo.packageName;
 
         } else {
@@ -479,7 +477,6 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
 
         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-
         DownLoadAndInstallUpdate downLoadAndInstallUpdate =
                 new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
                         CommonUtils.splitName(app.getApk()), app.getApk());
@@ -491,16 +488,11 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        String fileName = app.getApk();
-        File dir = new File(getFilesDir(), "apk");
-
-        File fileApk = new File(dir, fileName);
-        if (fileApk.exists()) {
-            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-
-            startActivity(intent);
-        }
+        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
+        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+        intent.setData(Uri.parse("package:" + app.getPackageName()));
+        startActivity(intent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

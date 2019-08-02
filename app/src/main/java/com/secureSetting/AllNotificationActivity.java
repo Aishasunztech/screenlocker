@@ -1,7 +1,6 @@
 package com.secureSetting;
 
 
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
@@ -11,9 +10,11 @@ import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.utils.AppConstants;
 
 public class AllNotificationActivity extends BaseActivity {
 
@@ -37,7 +38,9 @@ public class AllNotificationActivity extends BaseActivity {
             ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
             intent.setComponent(cn);
             startActivity(intent);
-            addView(android.R.color.background_light);
+            Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
+            intent1.putExtra("add",true);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         });
     }
 
@@ -52,5 +55,16 @@ public class AllNotificationActivity extends BaseActivity {
         if (item.getItemId() == android.R.id.home)
             finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

@@ -701,7 +701,7 @@ public class MarketFragment extends Fragment implements
                     if (!packages.contains(app.getPackageName())) {
                         savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
                         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
                         intent.setData(Uri.parse("package:" + app.getPackageName()));
                         activity.startActivity(intent);
                     } else {

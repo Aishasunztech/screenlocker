@@ -194,24 +194,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-        asSupport = getIntent().getBooleanExtra("isSupport", false);
-
-        if (asSupport) {
-
-            tvManagePasswords.setVisibility(View.GONE);
-            tvChooseBackground.setVisibility(View.GONE);
-            tvCode.setVisibility(View.GONE);
-            tvLanguage.setVisibility(View.VISIBLE);
-            findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.divider5).setVisibility(View.GONE);
-            findViewById(R.id.divider15).setVisibility(View.GONE);
-            findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.tvTheme).setVisibility(View.GONE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
-            dividerAdvance.setVisibility(View.GONE);
-            tvAdvance.setVisibility(View.GONE);
-
-        }
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);

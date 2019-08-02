@@ -43,6 +43,7 @@ public class AppConstants {
 
 
     public static final String BROADCAST_KEY = "key";
+    public static final String BROADCAST_VIEW_ADD_REMOVE = "add_view";
     public static final String SUPER_ADMIN_KEY = "11111";
 
     public static final String KEY_SERVICE_RUNNING = "lock_service";

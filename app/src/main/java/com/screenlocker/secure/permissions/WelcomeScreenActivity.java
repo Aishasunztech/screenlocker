@@ -42,12 +42,11 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
-         imageView = findViewById(R.id.rotating_image);
-
+        imageView = findViewById(R.id.rotating_image);
+        PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate_infinite);
         rotation.setFillAfter(true);
         imageView.startAnimation(rotation);
-
 
 
         Handler handler = new Handler();
@@ -57,7 +56,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
             lockScreen.setAction("locked");
             ActivityCompat.startForegroundService(this, lockScreen);
-            PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
+
             finish();
         }, 5000);
         if (PrefUtils.getIntegerPref(this, UPDATEWIFI) == 0) {

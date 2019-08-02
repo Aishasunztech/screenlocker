@@ -18,9 +18,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -54,16 +56,15 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 
-@SuppressLint("Registered")
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, OnAppsRefreshListener {
+
+public class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, OnAppsRefreshListener {
     //    customViewGroup view;
-    private WindowManager.LayoutParams localLayoutParams;
-    private WindowManager wm;
-    FrameLayout mView;
+
     private boolean overlayIsAllowed;
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
 //    private static WindowManager manager, mWindowManager;
+
 
 
     private boolean statusViewAdded;
@@ -101,9 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localLayoutParams = new WindowManager.LayoutParams();
-        mView = new FrameLayout(this);
-        createLayoutParams();
+
 
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
@@ -165,45 +164,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
-    private void createLayoutParams() {
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-
-        } else {
-
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }
-
-        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-// this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-// Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.format = PixelFormat.TRANSLUCENT;
 
 
-    }
 
-    protected void addView(int colorId) {
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mView.setBackgroundColor(getResources().getColor(colorId));
-        wm.addView(mView, localLayoutParams);
-    }
-
-    private void removeView() {
-        if (mView != null && mView.getWindowToken() != null) {
-            if (wm != null) {
-                wm.removeViewImmediate(mView);
-            }
-        }
-    }
 
 
     @Override
@@ -338,7 +301,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
-        removeView();
+        Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         refreshApps(this);
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {

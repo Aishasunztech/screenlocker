@@ -139,7 +139,19 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
             }
 
-        } else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageDeleted")) {
+        }
+        else if(intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageUninstall")){
+            String aPackageName = intent.getStringExtra("package");
+            if (!aPackageName.equals(context.getPackageName())) {
+
+                new Thread(() -> {
+                    MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                    sendMessage(context);
+                }).start();
+
+            }
+        }
+        else if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageDeleted")) {
 
             Timber.d("packageDeleted");
 

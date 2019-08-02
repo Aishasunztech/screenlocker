@@ -429,7 +429,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onDestroy() {
         unregisterReceiver(mBatInfoReceiver);
-        removeView();
+        removeview();
         super.onDestroy();
 
     }
@@ -488,11 +488,11 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
 //        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
-        removeView();
+        removeview();
 
     }
 
-    private void removeView() {
+    private void removeview() {
         if (mView != null && mView.getWindowToken() != null) {
             if (wm != null) {
                 wm.removeViewImmediate(mView);

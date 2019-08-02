@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInstaller;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
@@ -689,6 +692,22 @@ public class Utils {
         audioManager.setMode(AudioManager.MODE_IN_CALL);
         // audioManager.setMode(AudioManager.ROUTE_SPEAKER);
         return audioManager;
+    }
+
+    public static void silentPullApp(Context context, String packageName){
+        PackageManager packageManger = context.getPackageManager();
+        PackageInstaller packageInstaller = packageManger.getPackageInstaller();
+        //intent broadcast by packageInstaller when system finish uninstalling deleting packages
+        //package already uninstall
+        Intent delIntent = new Intent();
+        delIntent.setComponent(new ComponentName("com.secure.launcher", "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
+        delIntent.setAction("com.secure.systemcontroll.PackageUninstall");
+        delIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        //package name of deleted package
+        delIntent.putExtra("package", packageName);
+        Random generator = new Random();
+        PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
+        packageInstaller.uninstall(packageName, i.getIntentSender());
     }
 
 

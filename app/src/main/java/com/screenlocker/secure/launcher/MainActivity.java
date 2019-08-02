@@ -234,7 +234,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
-
+        super.onResume();
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
@@ -247,9 +247,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             setBackground(msg);
         }
 
-//        refreshApps(this);
-        super.onResume();
-//        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
+//
+
+//
     }
 
     private void runLayoutAnimation() {

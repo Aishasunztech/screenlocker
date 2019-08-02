@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -120,7 +121,9 @@ public class NotificationsActivity extends BaseActivity implements GetApplistTas
                 intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
                 intent.putExtra("android.provider.extra.APP_PACKAGE", appInfoList.get(getAdapterPosition()).getPackageName());
                 startActivity(intent);
-                addView(android.R.color.transparent);
+                Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
+                intent1.putExtra("add",true);
+                LocalBroadcastManager.getInstance(NotificationsActivity.this).sendBroadcast(intent1);
             }
 
             public void setData(AppInfo appInfo) {
