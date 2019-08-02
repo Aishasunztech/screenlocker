@@ -156,7 +156,7 @@ public class LockScreenService extends Service {
         public void onProgress(@NotNull Download download, long l, long l1) {
 
             if (downloadListener != null) {
-                downloadListener.showDialog(download.getProgress());
+                downloadListener.showProgressDialog(download.getProgress());
 
 
             }
@@ -394,7 +394,7 @@ public class LockScreenService extends Service {
     }
 
     public interface DownloadServiceCallBacks {
-        void showDialog(int progress);
+        void showProgressDialog(int progress);
 
         void downloadComplete(String filePath, String packagename);
 

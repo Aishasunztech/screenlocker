@@ -3,9 +3,12 @@ package com.screenlocker.secure.settings.codeSetting.installApps;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -13,10 +16,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -39,11 +45,13 @@ import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.MarketFragment;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -64,6 +72,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -78,12 +87,14 @@ import static com.screenlocker.secure.utils.Utils.silentPullApp;
 import static com.secureMarket.MarketUtils.savePackages;
 
 
-public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener {
+public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener,
+        LockScreenService.DownloadServiceCallBacks {
     private RecyclerView rvInstallApps;
     private TextView tvProgressText;
     private InstallAppsAdapter mAdapter;
     private List<com.screenlocker.secure.settings.codeSetting.installApps.List> appModelList;
     private AlertDialog progressDialog;
+    private ProgressDialog downloadProgressDialog;
     private ProgressBar mProgressBar;
     public static final String TAG = InstallAppsActivity.class.getSimpleName();
     private PackageManager mPackageManager;
@@ -92,6 +103,10 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     private SwipeRefreshLayout refreshLayout;
 
     private AsyncCalls asyncCalls;
+    private String url = "";
+    private String fileName = "";
+    private LockScreenService mService = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +116,18 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         mPackageManager = getPackageManager();
         setRecyclerView();
         createProgressDialog();
+
+        downloadProgressDialog = new ProgressDialog(this);
+        downloadProgressDialog.setTitle(getResources().getString(R.string.downloading_app_title));
+        downloadProgressDialog.setCancelable(false);
+        downloadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        downloadProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text), (dialog, which) -> {
+            dialog.dismiss();
+            if(mService != null)
+            {
+                mService.cancelDownload();
+            }
+        });
 
         if (MyApplication.oneCaller == null) {
             String[] urls = {URL_1, URL_2};
@@ -131,7 +158,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     }
 
-    private void setToolbar() {
+
+        private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.installed_apps_title));
@@ -159,6 +187,9 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 break;
         }
     }
+
+
+
 
     private void getAllApps() {
         if (CommonUtils.isNetworkAvailable(this)) {
@@ -233,6 +264,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
 
     }
+
+
 
     private void setRecyclerView() {
         refreshLayout = findViewById(R.id.container_layout);
@@ -314,8 +347,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                                     appModelList.clear();
                                     mAdapter.notifyDataSetChanged();
                                 }
-
-
                             }
 
                         }
@@ -323,11 +354,116 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
                         Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    @Override
+    public void showProgressDialog(int progress) {
+
+        if (!this.isFinishing())
+        {
+            if(!downloadProgressDialog.isShowing())
+            {
+                downloadProgressDialog.show();
+            }
+            downloadProgressDialog.setProgress(progress);
+
+        }
+
+    }
+
+    @Override
+    public void downloadComplete(String filePath, String packagename) {
+        if(progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+        if(!filePath.equals("") && !packagename.equals(""))
+        {
+            showInstallDialog(new File(filePath),packagename);
+        }
+    }
+
+    private void showInstallDialog(File file, String packageName) {
+
+        String sha1 = "142ds";
+
+
+//            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+//
+//            if (info != null) {
+//                try {
+//                    Signature[] releaseSig = info.signatures;
+//                    if (releaseSig != null) {
+//                        sha1 = getSHA1(releaseSig[0].toByteArray());
+//                    }
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+
+        //if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+        try {
+            PackageManager pm = this.getPackageManager();
+            pm.getPackageInfo("com.secure.systemcontrol64", 0);
+            if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                alertDialog.setMessage("Are you sure you want to install this app?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                    Intent launchIntent = new Intent();
+                    ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                    launchIntent.setAction(Intent.ACTION_MAIN);
+                    launchIntent.setComponent(componentName);
+                    launchIntent.setData(uri);
+                    launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                    launchIntent.putExtra("user_space", userType);
+                    launchIntent.putExtra("SecureMarket", true);
+                    launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                    launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                    startActivity(launchIntent);
+                    Snackbar snackbar = Snackbar.make(
+                            ((ViewGroup) findViewById(android.R.id.content))
+                                    .getChildAt(0)
+                            , getString(R.string.install_app_message)
+                            , 3000);
+
+                    snackbar.show();
+
+                });
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            savePackages(packageName, INSTALLED_PACKAGES, userType, this);
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) this)
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+        }
+//            } else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
+
+
+//
+
+    }
+
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
@@ -477,11 +613,42 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
 
         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
-                        CommonUtils.splitName(app.getApk()), app.getApk());
+//        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
+//                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
+//                        CommonUtils.splitName(app.getApk()), app.getApk());
+//
+//        downLoadAndInstallUpdate.execute();
+        File apksPath = new File(getFilesDir(), "apk");
+        File file = new File(apksPath, app.getApk());
+//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+        if (!apksPath.exists()) {
+            apksPath.mkdir();
+        }
+        if (!file.exists()) {
+            url = live_url + MOBILE_END_POINT + "getApk/" +
+                    CommonUtils.splitName(app.getApk());
+            fileName = file.getAbsolutePath();
 
-        downLoadAndInstallUpdate.execute();
+            if (mService != null) {
+                mService.startDownload(url, fileName,app.getPackageName());
+
+            }
+
+        } else {
+            int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+            if(file_size >= (101*1024))
+            {
+                showInstallDialog(new File(fileName),app.getPackageName());
+            }
+            else{
+                if (mService != null) {
+                    file.delete();
+                    mService.startDownload(url, fileName,app.getPackageName());
+
+                }
+            }
+        }
+
 
 
     }
@@ -503,6 +670,10 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelList);
         mAdapter.notifyDataSetChanged();
+        if(mService != null)
+        {
+            mService.setDownloadListener(this);
+        }
     }
 
     @Override
@@ -523,6 +694,14 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, LockScreenService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -532,6 +711,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
         }
+        unbindService(connection);
+
     }
 
     @Override
@@ -539,6 +720,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         super.onBackPressed();
         isBackPressed = true;
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean installPackage(Context context, String abspath, String packageName)
@@ -574,4 +757,21 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 0);
         return pendingIntent.getIntentSender();
     }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
+            mService = binder.getService();
+            mService.setDownloadListener(InstallAppsActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
 }
