@@ -1,5 +1,7 @@
 package com.screenlocker.secure.socket.model;
 
+import android.net.Uri;
+
 public class InstallModel {
 
     private String apk;
@@ -14,39 +16,52 @@ public class InstallModel {
     private boolean install;
     private boolean enable;
 
-    private String type_operation;
+    private String apk_uri;
+
+    private boolean policy;
+
+    public boolean isPolicy() {
+        return policy;
+    }
+
+    public String getApk_uri() {
+        return apk_uri;
+    }
+
+    public void setApk_uri(String apk_uri) {
+        this.apk_uri = apk_uri;
+    }
+
+    public void setPolicy(boolean policy) {
+        this.policy = policy;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private String type;
 
 
     public InstallModel() {
     }
 
-    public InstallModel(String apk, String apk_name, boolean guest, boolean encrypted, boolean enable) {
+    public InstallModel(String apk, String apk_name, boolean guest, boolean encrypted, boolean enable, String type, String apk_uri, boolean policy) {
         this.apk = apk;
         this.apk_name = apk_name;
         this.guest = guest;
         this.encrypted = encrypted;
         this.enable = enable;
+        this.type = type;
+        this.apk_uri = apk_uri;
+        this.policy = policy;
     }
 
-    public InstallModel(String apk,
-                        String apk_name,
-                        String package_name,
-                        String version_name,
-                        boolean guest,
-                        boolean encrypted,
-                        boolean update,
-                        boolean install,
-                        boolean enable) {
-        this.apk = apk;
-        this.apk_name = apk_name;
-        this.package_name = package_name;
-        this.version_name = version_name;
-        this.guest = guest;
-        this.encrypted = encrypted;
-        this.update = update;
-        this.install = install;
-        this.enable = enable;
-    }
 
     public InstallModel(String apk,
                         String apk_name,
@@ -65,8 +80,6 @@ public class InstallModel {
         this.token = token;
         this.enable = enable;
     }
-
-
 
 
     public boolean isInstall() {
@@ -100,7 +113,6 @@ public class InstallModel {
     public void setVersion(String version) {
         this.version = version;
     }
-
 
 
     public String getApk() {
@@ -159,11 +171,4 @@ public class InstallModel {
         this.enable = enable;
     }
 
-    public String getType_operation() {
-        return type_operation;
-    }
-
-    public void setType_operation(String type_operation) {
-        this.type_operation = type_operation;
-    }
 }

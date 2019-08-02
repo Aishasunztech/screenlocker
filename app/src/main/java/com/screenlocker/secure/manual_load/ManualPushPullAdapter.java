@@ -28,6 +28,10 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
     private ArrayList<InstallModel> installModelArrayList;
     private PushPullAppsListener pushPullAppsListener;
 
+    public final String PUSH_APP = "push_apps";
+    public final String PULL_APP = "pull_apps";
+
+
     public ManualPushPullAdapter(Context context, ArrayList<InstallModel> installModelArrayList, PushPullAppsListener pushPullAppsListener) {
         this.context = context;
         this.installModelArrayList = installModelArrayList;
@@ -48,15 +52,16 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
     public void onBindViewHolder(@NonNull AdapterViewHold holder, int position) {
         InstallModel installModel = installModelArrayList.get(position);
 
-        if (installModel.getType_operation().equals(ManualPullPush.PULL_APP)) {
+        if (installModel.getType().equals(PULL_APP)) {
             holder.btnUnInstall.setVisibility(View.VISIBLE);
             holder.btnInstall.setVisibility(View.GONE);
         }
-        if (installModel.getType_operation().equals(ManualPullPush.PUSH_APP)) {
+        if (installModel.getType().equals(PUSH_APP)) {
             holder.btnUnInstall.setVisibility(View.GONE);
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
         holder.tv_name.setText(installModel.getApk_name());
+
         Log.i("thumbanail_test", "onBindViewHolder: " + installModel.getApk_name());
 
         //   Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);

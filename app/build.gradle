@@ -19,7 +19,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.secure.launcher1"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 5141
         versionName "5.141"
@@ -171,6 +171,11 @@ dependencies {
 
     //loading
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+
+
+    //text mask
+    implementation 'com.github.santalu:mask-edittext:1.1.1'
+
 
 }
 repositories {

@@ -23,6 +23,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.santalu.maskedittext.MaskEditText;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SimEntry;
 
@@ -63,7 +64,7 @@ public class AddSimDialog extends Fragment {
     @BindView(R.id.tvSimName2)
     TextView simName2;
     @BindView(R.id.manualICCID)
-    EditText manualIccid;
+    MaskEditText manualIccid;
     @BindView(R.id.manualName)
     EditText manualName;
     @BindView(R.id.manualEnable)
@@ -117,7 +118,7 @@ public class AddSimDialog extends Fragment {
 
         }
         btnManualRegister.setOnClickListener(v -> {
-            String iccid = manualIccid.getText().toString().trim();
+            String iccid = manualIccid.getRawText().trim();
             String name = manualName.getText().toString().trim();
             boolean isError = false;
             if (iccid.length() != 20) {

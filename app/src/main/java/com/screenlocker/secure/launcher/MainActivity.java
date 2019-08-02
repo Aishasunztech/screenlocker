@@ -1,6 +1,5 @@
 package com.screenlocker.secure.launcher;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -10,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -20,12 +18,10 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.app.ShareCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -39,15 +35,16 @@ import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.manual_load.DownloadCompleteListener;
 import com.screenlocker.secure.manual_load.ManualPullPush;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.SettingContract;
-import com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -66,11 +63,9 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
@@ -79,6 +74,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
@@ -90,9 +86,7 @@ public class MainActivity extends
         MainContract.MainMvpView,
         SettingContract.SettingsMvpView,
         RAdapter.ClearCacheListener,
-        OnAppsRefreshListener,
-        LockScreenService.ServiceCallbacks,
-        DownLoadAndInstallUpdate.OnAppAvailable {
+        OnAppsRefreshListener, DownloadCompleteListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -115,19 +109,14 @@ public class MainActivity extends
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
-    public static PolicyRefreshListener policyRefreshListener;
 
 
     private ScreenOffReceiver screenOffReceiver;
 
-    public interface PolicyRefreshListener {
-        void refreshPolicy();
-    }
-
-    public static Activity context;
 
     public MainActivity() {
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +124,11 @@ public class MainActivity extends
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LockScreenService.mCallBacks = MainActivity.this;
-        DownLoadAndInstallUpdate.onAppAvailable = MainActivity.this;
+        SocketService socketService = new SocketService();
+
+
+        SocketService.downloadCompleteListener = (DownloadCompleteListener) this;
+
 
         allDbApps = new ArrayList<>();
         setRecyclerView();
@@ -322,72 +314,22 @@ public class MainActivity extends
         refreshApps(this);
 
 
-        Log.i("checkpolicy", "onResume: onreusme called ");
+        Timber.d("<<< Check Policy >>>");
 
-        Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : " + msg);
-
-        ComponentName cn;
-
-        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            cn = am.getAppTasks().get(0).getTaskInfo().topActivity;
-        } else {
-            //noinspection deprecation
-            cn = am.getRunningTasks(1).get(0).topActivity;
+        if (PrefUtils.getBooleanPref(this, SHOW_MANUAL_ACTIVITY)) {
+            Timber.d("<<< Policy Remaining >>>");
+            Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
-
-
 
 
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
 
-        ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
-        
-        
-        if(appsList!=null){
-            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
-        }
 
+        super.
 
-        if (msg != null && !msg.equals("") && msg.equals(KEY_ENCRYPTED)) {
-
-            if (appsList != null) {
-                Log.i("checkpolicy", "onResume:  in MainActivity ....... app list size : " + appsList.size());
-                if (appsList.size() > 0) {
-                    if (!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())) {
-
-
-                        for (InstallModel model : appsList) {
-                            Log.i("checkpolicy", "onResume: in MainActivity ....... apps call for " + model.getPackage_name());
-                        }
-
-
-                        Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
-                        startActivity(intent);
-                    }
-
-                }
-            } else {
-                Log.i("checkpolicy", "onResume: app list null : ");
-            }
-
-
-            Log.i("checkpolicy", "onResume:  component name is : " + cn.getClassName());
-
-
-            return;
-        }
-
-        Log.i("checkpolicy", "onResume:  component name is : " + cn.getClassName());
-
-
-        for (InstallModel installModel : appsList) {
-            Log.i("checkpolicy","sdgioserijgto"+installModel.getPackage_name());
-        }
-        
-        
-        
-        super.onResume();
+                onResume();
 
     }
 
@@ -490,7 +432,6 @@ public class MainActivity extends
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Log.i("checkfoucsch", "onWindowFocusChanged: " + hasFocus);
     }
 
     @Override
@@ -580,135 +521,6 @@ public class MainActivity extends
         // AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
     }
 
-    @Override
-    public void onRecentAppKill() {
-        clearRecentApp();
-    }
-
-    @Override
-    public void showPolicyApps(boolean isPolicy, boolean isPulled) {
-
-        Log.i("checkpolicy", "showPolicyApps: in main activity : " + isPolicy + isPulled);
-
-        SocketManager socketMSanager = SocketManager.getInstance();
-        String device_id = PrefUtils.getStringPref(MainActivity.this, DEVICE_ID);
-
-
-        ArrayList<InstallModel> appsList = utils.getArrayList(MainActivity.this);
-
-
-        ComponentName cn;
-        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            cn = am.getAppTasks().get(0).getTaskInfo().topActivity;
-        } else {
-            //noinspection deprecation
-            cn = am.getRunningTasks(1).get(0).topActivity;
-        }
-
-        if (!"com.screenlocker.secure.manual_load.ManualPullPush".equals(cn.getClassName())) {
-
-            if (appsList != null && appsList.size() > 0) {
-                Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
-                startActivity(intent);
-            }
-
-
-        } else if (policyRefreshListener != null) {
-            if (appsList != null && appsList.size() > 0) {
-                runOnUiThread(() -> policyRefreshListener.refreshPolicy());
-
-            }
-
-        }
-
-        Log.d("socket", "showPolicyApps: acknolgment tags are :    is Pulled... " + isPulled + " ...  is Policy .. " + isPolicy);
-
-        if (isPulled) {
-
-            finishPulledApps(socketMSanager, device_id);
-
-        } else {
-
-            if (isPolicy) {
-
-                if (socketMSanager.getSocket() != null && socketMSanager.getSocket().connected()) {
-                    Timber.d("<<< FINISH POLICY PUSH APPS>>>");
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put("device_id", device_id);
-                        jsonObject.put("status", true);
-                        socketMSanager.getSocket().emit(FINISH_POLICY_APPS + device_id, jsonObject);
-                        socketMSanager.getSocket().emit(FINISH_POLICY + device_id, jsonObject);
-                        finishPolicy(socketMSanager, device_id);
-
-                    } catch (JSONException e) {
-                        Timber.d(e);
-                    }
-                }
-
-            } else {
-
-                finishPushedApps(socketMSanager, device_id);
-
-
-            }
-        }
-
-
-    }
-
-
-    public void finishPolicy(SocketManager socketManager, String device_id) {
-        Log.d("socket", "finishPolicy: called ... ");
-        if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
-            Timber.d("<<< FINISH POLICY >>>");
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("status", true);
-                socketManager.getSocket().emit(FINISH_POLICY + device_id, jsonObject);
-                PrefUtils.saveBooleanPref(this, LOADING_POLICY, false);
-                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
-                Intent intent = new Intent(FINISH_POLICY);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            } catch (JSONException e) {
-                Timber.d(e);
-            }
-        }
-    }
-
-
-    public void finishPushedApps(SocketManager socketManager, String device_id) {
-        Timber.d("<<<Finish pushed apps>>>");
-        if (socketManager.getSocket() != null) {
-            if (socketManager.getSocket().connected()) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("status", true);
-                    socketManager.getSocket().emit(FINISHED_PUSHED_APPS + device_id, jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void finishPulledApps(SocketManager socketManager, String device_id) {
-        Timber.d("<<<Finish pulled apps>>>");
-        if (socketManager.getSocket() != null) {
-            if (socketManager.getSocket().connected()) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("status", true);
-                    socketManager.getSocket().emit(FINISHED_PULLED_APPS + device_id, jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     private void closeBar() {
         if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)) {
             WindowManager manager = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
@@ -733,36 +545,14 @@ public class MainActivity extends
         }
     }
 
-
     @Override
-    public void onAppDownloadedAndAvailabe(String appName, String uri) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    public void onDownloadCompleted(ArrayList<InstallModel> downloadedApps) {
+        Timber.d("<<< Downloading Completed >>>");
+        PrefUtils.saveBooleanPref(MainActivity.this, SHOW_MANUAL_ACTIVITY, true);
+        Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
-            if (getPackageManager().canRequestPackageInstalls()) {
-
-                Intent intent = ShareCompat.IntentBuilder.from(MainActivity.this)
-                        .setStream(Uri.parse(uri))
-                        .setText("text/html")
-                        .getIntent()
-                        .setAction(Intent.ACTION_VIEW)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        .setDataAndType(Uri.parse(uri), "application/vnd.android.package-archive");
-
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setDataAndType(Uri.parse(PrefUtils.getStringPref(getContext(),APk_URI)), "application/vnd.android.package-archive");
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-                startActivity(intent);
-
-            } else {
-                Toast.makeText(MainActivity.this, "Allowed apps to install from unsource", Toast.LENGTH_SHORT).show();
-
-                // getActivity().startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES));
-
-                startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName())));
-
-            }
-        }
     }
 }
 

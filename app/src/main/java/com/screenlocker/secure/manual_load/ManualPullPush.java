@@ -1,6 +1,9 @@
 package com.screenlocker.secure.manual_load;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -16,6 +19,7 @@ import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -23,181 +27,248 @@ import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.utils.utils;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.PULL_APPS;
+import static com.screenlocker.secure.utils.AppConstants.PUSH_APPS;
+import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
+import static com.screenlocker.secure.utils.AppConstants.SYSTEM_APP;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
-public class ManualPullPush extends BaseActivity implements ManualPushPullAdapter.PushPullAppsListener, MainActivity.PolicyRefreshListener {
-
-    public static final String PUSH_APP = "push_apps";
-    public static final String PULL_APP = "pull_apps";
+public class ManualPullPush extends BaseActivity implements ManualPushPullAdapter.PushPullAppsListener {
 
     @BindView(R.id.recyclerViewManualList)
     RecyclerView recyclerView;
     ManualPushPullAdapter manualPushPullAdapter;
-
-    private static String app_check_Install = null;
-    private static String app_check_uninstall = null;
-    public static int UNINSTALL_REQUEST_CODE = 100;
-
-    private static InstallModel installModell = null;
-
-
-    private static final String TAG = "checkpolicy";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_pull_push);
         ButterKnife.bind(this);
-        MainActivity.policyRefreshListener = ManualPullPush.this;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        manualPushPullAdapter = new ManualPushPullAdapter(ManualPullPush.this, new ArrayList<>(), ManualPullPush.this);
-        setRecyclerAdapter();
-
+        Timber.d("<<< ManualPushPull >>>");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean uriCheck(String type, String uri) {
+        if (type.equals(PUSH_APPS)) {
+            return uri != null;
+        } else {
+            return true;
+        }
+    }
+
+    private ArrayList<InstallModel> filterApps() {
+
+        ArrayList<InstallModel> list = utils.getArrayList(ManualPullPush.this);
+
+        utils.saveArrayList(null, this);
+
+        Timber.d("<<============ ALL APPS ==============>>>");
+        if (list != null && list.size() > 0) {
+            for (InstallModel model : list) {
+                Timber.d(model.getPackage_name());
+            }
+        }
+
+        Timber.d("<<============= PUSH APPS TO INSERT IN TO DB ===================>>");
+
+        if (list != null && list.size() > 0) {
+
+            List<InstallModel> pushDbApps = list.stream().filter(model -> (model.getType().equals(PUSH_APPS) && model.getApk_uri() != null) && isPackageInstalled(model.getPackage_name(), getPackageManager()) && !isSystemApp(model.getPackage_name())).collect(Collectors.toList());
+
+            if (pushDbApps != null && pushDbApps.size() > 0) {
+                for (int i = 0; i < pushDbApps.size(); i++) {
+                    sendBroadcast(this, true, pushDbApps.get(i), i == pushDbApps.size() - 1, true);
+                    Timber.d(pushDbApps.get(i).getPackage_name());
+                }
+            }
+
+        }
+
+        Timber.d("<<============= PULLL APPS TO DELETE FROM DB ===================>>");
+
+        if (list != null && list.size() > 0) {
+
+            List<InstallModel> pullApps = list.stream().filter(model -> model.getType().equals(PULL_APPS) && !isPackageInstalled(model.getPackage_name(), getPackageManager()) && !isSystemApp(model.getPackage_name())).collect(Collectors.toList());
+
+            if (pullApps != null && pullApps.size() > 0) {
+                for (int i = 0; i < pullApps.size(); i++) {
+                    sendDelBroadCast(this, false, pullApps.get(i), i == pullApps.size() - 1, "", pullApps.get(i).getPackage_name(), false);
+                    Timber.d(pullApps.get(i).getPackage_name());
+                }
+            }
+
+        }
+
+        Timber.d("<<=============== PUSH APPS ==============>>");
+
+
+        if (list != null && list.size() > 0) {
+            List<InstallModel> pushApps = list.stream().filter(model -> (model.getType().equals(PUSH_APPS)) && model.getApk_uri() != null && !isPackageInstalled(model.getPackage_name(), getPackageManager()) && !isSystemApp(model.getPackage_name())).collect(Collectors.toList());
+            if (pushApps != null && pushApps.size() > 0) {
+                for (InstallModel model : pushApps) {
+                    Timber.d(model.getPackage_name());
+                }
+
+                ArrayList<InstallModel> push = utils.getArrayList(this);
+
+                if (push == null) {
+                    push = new ArrayList<>(pushApps);
+                } else {
+                    push.addAll(pushApps);
+                }
+
+                utils.saveArrayList(push, this);
+
+            }
+        } else {
+            Timber.d("<<===================== DATA NOT FOUND ======================>>");
+        }
+
+
+        Timber.d("<<=============== PULL APPS ==============>>");
+
+
+        if (list != null && list.size() > 0) {
+            List<InstallModel> pullApps = list.stream().filter(model -> (model.getType().equals(PULL_APPS)) && !isSystemApp(model.getPackage_name()) && isPackageInstalled(model.getPackage_name(), getPackageManager())).collect(Collectors.toList());
+            if (pullApps != null && pullApps.size() > 0) {
+                for (InstallModel model : pullApps) {
+                    Timber.d(model.getPackage_name());
+                }
+
+                ArrayList<InstallModel> pull = utils.getArrayList(this);
+
+                if (pull == null) {
+                    pull = new ArrayList<>(pullApps);
+                } else {
+                    pull.addAll(pullApps);
+                }
+
+                utils.saveArrayList(pull, this);
+            }
+        } else {
+            Timber.d("<<===================== DATA NOT FOUND ======================>>");
+        }
+
+        return utils.getArrayList(this);
+    }
+
+
+    private boolean isSystemApp(String packageName) {
+
+        ApplicationInfo info = null;
+        try {
+            info = getPackageManager().getApplicationInfo(packageName, 0);
+            if (info.sourceDir.startsWith("/data/app/")) {
+                //Non-system app
+                return false;
+            } else {
+                //System app
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+
+    //send Intent with success status of package push request
+    private void sendBroadcast(Context context, boolean status, InstallModel model, boolean isLast, boolean insertApp) {
+
+        Timber.d(model.getPackage_name());
+
+        Intent appInstalled = new Intent();
+        appInstalled.setComponent(new ComponentName(context.getPackageName(), "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
+        appInstalled.setAction("com.secure.systemcontroll.PackageAdded");
+        appInstalled.putExtra("packageAdded", new Gson().toJson(model));
+        appInstalled.putExtra("status", status);
+        appInstalled.putExtra("isPolicy", model.isPolicy());
+        appInstalled.putExtra("isLast", isLast);
+        appInstalled.putExtra("insertApp", insertApp);
+        context.sendBroadcast(appInstalled);
+    }
+
+
+    private void sendDelBroadCast(Context context, boolean secureMarket, InstallModel model, boolean isLast, String label, String packageName, boolean sendStatus) {
+        //package already uninstall
+        Intent delIntent = new Intent();
+        delIntent.setComponent(new ComponentName(context.getPackageName(), "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
+        delIntent.setAction("com.secure.systemcontroll.PackageDeleted");
+        delIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        //package name of deleted package
+        delIntent.putExtra("package", packageName);
+        delIntent.putExtra("model", new Gson().toJson(model));
+        // isLast specifies if this is the last package of requested delete packages list
+        // for notifying LM About operation
+        delIntent.putExtra("isLast", isLast);
+        delIntent.putExtra("sendStatus", sendStatus);
+        //Label of deleting package (important for deleting record from local database)
+        delIntent.putExtra("label", label);
+        delIntent.putExtra("SecureMarket", secureMarket);
+        context.sendBroadcast(delIntent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.i("checkpolicy", "onResume:  : ... ");
+        Timber.d("<<< ONRESUME >>>");
 
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+        ArrayList<InstallModel> appsList = filterApps();
 
-        ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
-        if (appsList != null) {
-            if (app_check_Install != null) {
-                if (isPackageInstalled(app_check_Install, getPackageManager())) {
-                    if (installModell != null) {
-                        enterAppData();
-                    }
-                    if (appsList.size() > 0) {
-                        for (int i = 0; i < appsList.size(); i++) {
-                            if (app_check_Install.equals(appsList.get(i).getPackage_name())) {
-                                appsList.remove(i);
-                                break;
-                            }
-                        }
-                    }
-                    app_check_Install = null;
-
-                    utils.saveArrayList(appsList, ManualPullPush.this);
-                    if (appsList.size() > 0) {
-                        setRecyclerAdapter();
-                    }
-                    if (appsList.size() == 0) {
-                        finish();
-                    }
-                }
-            } else {
-                if (appsList.size() > 0) {
-                    for (InstallModel model : appsList) {
-                        Log.i("checkpolicy", "onResume: model is : ... " + model.getApk());
-                    }
-                    setRecyclerAdapter();
-                } else {
-                    finish();
-                }
-            }
+        if (appsList != null && appsList.size() > 0) {
+            Timber.d(" AppsList Size : %s", appsList.size());
+            setRecyclerAdapter(appsList);
+            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
 
         } else {
+            Timber.d("Completed Manual Push Pull");
+            PrefUtils.saveBooleanPref(ManualPullPush.this, SHOW_MANUAL_ACTIVITY, false);
+            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
             finish();
         }
     }
 
-    private void setRecyclerAdapter() {
-
-        if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(KEY_SUPPORT_PASSWORD)) {
-            finish();
+    private void setRecyclerAdapter(ArrayList<InstallModel> list) {
+        Timber.d("<<< Setting Resycler View >>>");
+        if (recyclerView != null) {
+            manualPushPullAdapter = new ManualPushPullAdapter(ManualPullPush.this, list, this);
+            recyclerView.setAdapter(manualPushPullAdapter);
+            recyclerView.setHasFixedSize(true);
         }
-        ArrayList<InstallModel> list = utils.getArrayList(ManualPullPush.this);
-
-
-        if (list != null) {
-            for (InstallModel model : list) {
-                Log.i(TAG, "setRecyclerAdapter: apk name is ////// ...  " + model.getApk_name());
-            }
-            Log.i(TAG, "setRecyclerAdapter: for size ... : " + list.size());
-            for (InstallModel model : list) {
-                Log.i(TAG, "setRecyclerAdapter: list model is : .. package name is  ... " + model.getPackage_name() + " ... app name is  ... " + model.getApk_name());
-            }
-            if (list.size() > 0) {
-                if (recyclerView != null) {
-                    manualPushPullAdapter = new ManualPushPullAdapter(ManualPullPush.this, list, ManualPullPush.this);
-                    recyclerView.setAdapter(manualPushPullAdapter);
-                    recyclerView.setHasFixedSize(true);
-                }
-
-            } else {
-                finish();
-            }
-
-        } else {
-            Log.i(TAG, "setRecyclerAdapter: list null in ManualPullPush adapter");
-        }
-
-
     }
+
 
     @Override
     public void appTextButtonClick(int position, InstallModel installModel) {
-        ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
-
 
         Timber.d("<< appTextButtonClick >>>");
-        Timber.d(String.valueOf(position));
 
-        if (installModel.getPackage_name() != null) {
-            Timber.d(installModel.getPackage_name());
-            Timber.d(installModel.getType_operation());
+        if (installModel.getType().equals(PUSH_APPS)) {
+            Timber.d(installModel.getApk_uri());
+            appInstallRequest(installModel.getApk_uri());
+        } else if (installModel.getType().equals(PULL_APPS)) {
+            appUninstallRequest(installModel.getPackage_name());
         }
 
-        if (PUSH_APP.equals(installModel.getType_operation())) {
-            installModell = installModel;
-            appInstallRequest(installModel.getApk(), installModel.getPackage_name());
-        }
-
-        if (PULL_APP.equals(installModel.getType_operation())) {
-            if (isPackageInstalled(installModel.getPackage_name(), getPackageManager())) {
-                appUninstallRequest(installModel.getPackage_name());
-            } else {
-                Log.i(TAG, "appTextButtonClick: else condition app not installed ... first  size is : .. " + appsList.size());
-                app_check_uninstall = installModel.getPackage_name();
-                if (appsList.size() > 0) {
-
-                    ArrayList<InstallModel> tempApps = new ArrayList<>();
-
-                    for (int i = 0; i < appsList.size(); i++) {
-                        if (app_check_uninstall.equals(appsList.get(i).getPackage_name())) {
-                            Log.i(TAG, "appTextButtonClick: else condition app not installed ... removing package is : .. " + appsList.get(i).getPackage_name());
-                        } else {
-                            tempApps.add(appsList.get(i));
-                        }
-                    }
-
-                    utils.saveArrayList(tempApps, this);
-                    Log.i(TAG, "appTextButtonClick: else condition app not installed ... second  size is : .. " + tempApps.size());
-                }
-
-                setRecyclerAdapter();
-            }
-
-        }
 
     }
 
@@ -205,12 +276,6 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
     private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
         boolean found = true;
 
-        HashSet<String> packages = new HashSet<>();
-        packages.add("com.paraphron.youtube");
-
-        if (packages.contains(packageName) && getResources().getString(R.string.apktype).equals("BYOD")) {
-            return found;
-        }
 
         try {
             packageManager.getPackageInfo(packageName, 0);
@@ -221,43 +286,15 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         return found;
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == UNINSTALL_REQUEST_CODE) {
-
-            if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, "onActivityResult: user canceled the (un)install");
-                Toast.makeText(this, "application unInstall Request Canceled", Toast.LENGTH_SHORT).show();
-
-            } else {
-                new Thread(() -> MyApplication.getAppDatabase(ManualPullPush.this).getDao().deletePackage(app_check_uninstall)).start();
-                ArrayList<InstallModel> appsList = utils.getArrayList(ManualPullPush.this);
-                if (appsList.size() > 0) {
-                    for (int i = 0; i < appsList.size(); i++) {
-                        if (app_check_uninstall.equals(appsList.get(i).getPackage_name())) {
-                            appsList.remove(i);
-                            break;
-                        }
-                    }
-                }
-                utils.saveArrayList(appsList, ManualPullPush.this);
-                setRecyclerAdapter();
-            }
-        }
-    }
-
     private void appUninstallRequest(String app_pkg_name) {
-        app_check_uninstall = app_pkg_name;
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app_pkg_name));
         intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
-        startActivityForResult(intent, UNINSTALL_REQUEST_CODE);
+        startActivity(intent);
     }
 
-    private void appInstallRequest(String app_uri, String app_pkg_name) {
-        app_check_Install = app_pkg_name;
+    private void appInstallRequest(String app_uri) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (getPackageManager().canRequestPackageInstalls()) {
                 Intent intent = ShareCompat.IntentBuilder.from(ManualPullPush.this)
@@ -298,44 +335,6 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
             super.onBackPressed();
         }
     }
-
-    @Override
-    public void refreshPolicy() {
-        setRecyclerAdapter();
-    }
-
-    private void enterAppData() {
-
-        PackageManager pm = getPackageManager();
-        try {
-            pm.getPackageInfo(installModell.getPackage_name(), 0);
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
-
-
-            for (ResolveInfo ri : allApps) {
-                if (ri.activityInfo.packageName.equals(installModell.getPackage_name())) {
-                    AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
-                            ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
-                    app.setUniqueName(app.getPackageName());
-                    app.setExtension(false);
-                    app.setDefaultApp(false);
-                    app.setEncrypted(installModell.isEncrypted());
-                    app.setGuest(installModell.isGuest());
-                    app.setVisible(true);
-                    app.setEnable(installModell.isEnable());
-                    new Thread(() -> MyApplication.getAppDatabase(ManualPullPush.this).getDao().insertApps(app)).start();
-                }
-            }
-
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 //    public void code_secret(View view) {
 //        utils.saveArrayList(null, this);
 //        finish();

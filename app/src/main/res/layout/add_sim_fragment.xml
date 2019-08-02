@@ -255,13 +255,13 @@
             android:layout_marginStart="@dimen/_16sdp"
             android:layout_marginEnd="@dimen/_16sdp"
             android:orientation="vertical">
-
-            <EditText
+            <com.santalu.maskedittext.MaskEditText
                 android:id="@+id/manualICCID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="ICCID"
                 android:gravity="center"
-                android:hint="ICCID" />
+                app:met_mask="#####-#####-#####-#####"/>
 
             <EditText
                 android:id="@+id/manualName"

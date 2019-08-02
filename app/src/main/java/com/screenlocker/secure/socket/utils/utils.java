@@ -58,6 +58,7 @@ import timber.log.Timber;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
+import static com.screenlocker.secure.utils.AppConstants.APPS_LIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -186,7 +187,7 @@ public class utils {
 
         String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
 
-        Log.i("checkresults", "refreshApps:  unInstalled apps : "+unInstalledPackage);
+        Log.i("checkresults", "refreshApps:  unInstalled apps : " + unInstalledPackage);
 
         if (unInstalledPackage != null) {
             String[] data = unInstalledPackage.split(",");
@@ -213,7 +214,7 @@ public class utils {
 
         String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
 
-        Log.i("checkresults", "refreshApps:  installed apps : "+installedPackages);
+        Log.i("checkresults", "refreshApps:  installed apps : " + installedPackages);
 
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
@@ -864,10 +865,7 @@ public class utils {
                     .setPeriodic(ONE_DAY_INTERVAL)
                     .build();
         }
-
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-
         int resultCode = scheduler.schedule(jobInfo);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             Timber.d("Job Scheduled");
@@ -877,21 +875,18 @@ public class utils {
     }
 
 
-
-    public static void saveArrayList(ArrayList<InstallModel> list,Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
+    public static void saveArrayList(ArrayList<InstallModel> list, Context context) {
         Gson gson = new Gson();
         String json = gson.toJson(list);
-        editor.putString("appsList", json);
-        editor.apply();     // This line is IMPORTANT !!!
+        PrefUtils.saveStringPref(context, APPS_LIST, null);
+        PrefUtils.saveStringPref(context, APPS_LIST, json);
     }
 
-    public static ArrayList<InstallModel> getArrayList(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public static ArrayList<InstallModel> getArrayList(Context context) {
         Gson gson = new Gson();
-        String json = prefs.getString("appsList", null);
-        Type type = new TypeToken<ArrayList<InstallModel>>() {}.getType();
+        String json = PrefUtils.getStringPref(context, APPS_LIST);
+        Type type = new TypeToken<ArrayList<InstallModel>>() {
+        }.getType();
         return gson.fromJson(json, type);
     }
 }

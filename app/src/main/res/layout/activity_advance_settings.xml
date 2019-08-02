@@ -61,4 +61,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
 
+    <TextView
+        android:id="@+id/tv_IMEI"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_imei"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="IMEI"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
+
+    <View
+        android:id="@+id/dividerIMEI"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_IMEI" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

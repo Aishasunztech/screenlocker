@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.secureSetting.t.ui.MainActivity;
 
@@ -24,6 +25,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         findViewById(R.id.tvDataUSage).setOnClickListener(this);
         findViewById(R.id.tvDataCunsumption).setOnClickListener(this);
+        findViewById(R.id.tv_IMEI).setOnClickListener(this);
     }
 
     @Override
@@ -43,6 +45,10 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.tvDataUSage:
                 startActivity(new Intent(this, MainActivity.class));
+                break;
+            case R.id.tv_IMEI:
+                startActivity(new Intent(this, IMEIActivity.class));
+
                 break;
         }
     }

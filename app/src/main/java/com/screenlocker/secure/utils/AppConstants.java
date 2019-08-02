@@ -87,14 +87,14 @@ public class AppConstants {
 
     //servers links
     public static final String URL_1 = "https://api.lockmesh.com";//live SL
-//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-    //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
+    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+//        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//    public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -367,6 +367,7 @@ public class AppConstants {
     public static final String DEVICE_STATUS_KEY = "device_status_key";
     public static final String PENDING_STATE = "pending_state";
     public static final String ACTIVE_STATE = "active_state";
+    public static final String APPS_LIST = "apps_list";
 
     public static final String HOST_ERROR = "Some Error Occurred!";
 
@@ -395,5 +396,14 @@ public class AppConstants {
     public static final String SIM_ACTION_DELETED = "sim_delete";
     public static final String SIM_ACTION_UPDATE = "sim_update";
     public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
+
+
+    // push pull apps
+    public static final String SYSTEM_APP = "system_app";
+    public static final String PUSH_APPS = "push_apps";
+    public static final String PULL_APPS = "pull_apps";
+    public static final String INSTALLED_APP = "installed_app";
+    public static final String SHOW_MANUAL_ACTIVITY = "show_manual_activity";
+
 
 }

@@ -202,7 +202,7 @@ public class SecureMarketActivity extends BaseActivity {
 
 //    @Override
 //    public void onInstallClick(List app) {
-////        DownLoadAndInstallUpdate downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
+////        DownloadPushedApps downLoadAndInstallUpdate = new DownloadPushedApps(this, AppConstants.STAGING_BASE_URL + "/getApk/" +
 ////                CommonUtils.splitName(app.getApk()),app.getApk(),getString(R.string.secure_market_activity));
 ////        downLoadAndInstallUpdate.execute();
 //    }

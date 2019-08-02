@@ -95,8 +95,6 @@ public class MarketFragment extends DialogFragment implements
         SecureMarketAdapter.AppInstallUpdateListener, SecureMarketActivity.SearchQueryListener {
 
 
-    public static final String TYPE_POLICY = "TYPE_POLICY";
-
     private String fragmentType;
     private RecyclerView rc;
     private ProgressBar progressBar;
@@ -172,33 +170,26 @@ public class MarketFragment extends DialogFragment implements
     public void onStart() {
         super.onStart();
 
-        Log.i("checkpolicy", "onStart: fragment dialog ... ");
 
-        if(isNotPolicyLoad()){
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
-            intentFilter.addAction("com.secure.systemcontroll.PackageDeleted");
-            activity.registerReceiver(broadcastReceiver, intentFilter);
-        }else{
-            Dialog dialog = getDialog();
-            if (dialog != null)
-            {
-                int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int height = ViewGroup.LayoutParams.MATCH_PARENT;
-                dialog.getWindow().setLayout(width, height);
-            }
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (activity != null) {
-            if(isNotPolicyLoad()){
+        try {
+            if (activity != null) {
                 activity.unregisterReceiver(broadcastReceiver);
             }
-
+        } catch (Exception ignored) {
         }
+
     }
 
     @Override
@@ -231,16 +222,15 @@ public class MarketFragment extends DialogFragment implements
         String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
 
-        if(isNotPolicyLoad()){
-            if (dealerId == null || dealerId.equals("")) {
-                //   getAdminApps();
-                getServerApps(null);
-            } else {
-                getServerApps(dealerId);
-                // getAllApps(dealerId);
-            }
 
+        if (dealerId == null || dealerId.equals("")) {
+            //   getAdminApps();
+            getServerApps(null);
+        } else {
+            getServerApps(dealerId);
+            // getAllApps(dealerId);
         }
+
 
     }
 
@@ -300,23 +290,22 @@ public class MarketFragment extends DialogFragment implements
                                 for (List app : appModelList) {
                                     if (app.isInstalled()) {
 
-                                        if (isShow(app.getPackageName(), activity)) {
-                                            installedApps.add(app);
-                                        }
+
+                                        installedApps.add(app);
+
 
                                     } else {
 
-                                        if (isShow(app.getPackageName(), activity)) {
-                                            unInstalledApps.add(app);
 
-                                        }
+                                        unInstalledApps.add(app);
+
                                     }
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this,null));
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, null));
                                 } else if (fragmentType.equals("uninstall")) {
-                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this,null));
+                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, null));
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
                                 tvInfo.setVisibility(View.GONE);
@@ -363,24 +352,24 @@ public class MarketFragment extends DialogFragment implements
 
                                     if (app.isInstalled()) {
 
-                                        if (isShow(app.getPackageName(), activity)) {
-                                            installedApps.add(app);
-                                        }
+
+                                        installedApps.add(app);
+
 
                                     } else {
-                                        if (isShow(app.getPackageName(), activity)) {
-                                            unInstalledApps.add(app);
-                                        }
+
+                                        unInstalledApps.add(app);
+
 
                                     }
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this,null));
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, null));
                                 } else if (fragmentType.equals("uninstall")) {
-                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this,null));
+                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, null));
                                 } else {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this,null));
+                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, null));
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
 
@@ -441,45 +430,45 @@ public class MarketFragment extends DialogFragment implements
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onInstallClick(List app) {
-            ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final Network n = cm.getActiveNetwork();
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Network n = cm.getActiveNetwork();
 
-            if (n != null) {
-                final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+        if (n != null) {
+            final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
 
-                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
-                        new AlertDialog.Builder(activity)
-                                .setTitle("Mobile Data")
-                                .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
-                                .setPositiveButton("Allow", (dialog1, which) -> {
-                                    //
-                                    downloadAndInstallApp(app);
-                                })
-                                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                                .show();
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("Mobile Data")
+                            .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
 
-                    } else {
-                        downloadAndInstallApp(app);
-                    }
-                } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
-                        new AlertDialog.Builder(activity)
-                                .setTitle("WiFi")
-                                .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
-                                .setPositiveButton("Allow", (dialog1, which) -> {
-                                    //
-                                    downloadAndInstallApp(app);
-                                })
-                                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                                .show();
-
-                    } else {
-                        downloadAndInstallApp(app);
-                    }
-                } else
+                } else {
                     downloadAndInstallApp(app);
-            }
+                }
+            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
+                    new AlertDialog.Builder(activity)
+                            .setTitle("WiFi")
+                            .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
+                            .setPositiveButton("Allow", (dialog1, which) -> {
+                                //
+                                downloadAndInstallApp(app);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                            .show();
+
+                } else {
+                    downloadAndInstallApp(app);
+                }
+            } else
+                downloadAndInstallApp(app);
+        }
     }
 
 
@@ -494,14 +483,14 @@ public class MarketFragment extends DialogFragment implements
 
             String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
 
-            if(app!=null){
+            if (app != null) {
                 String url = live_url + MOBILE_END_POINT + "getApk/" +
                         CommonUtils.splitName(app.getApk());
                 downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, url, app.getApk(), progressDialog, app.getPackageName());
                 downLoadAndInstallUpdate.execute();
                 AppConstants.INSTALLING_APP_NAME = app.getApkName();
                 AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
-            }else{
+            } else {
                 Toast.makeText(activity, "app null", Toast.LENGTH_SHORT).show();
             }
 
@@ -630,10 +619,10 @@ public class MarketFragment extends DialogFragment implements
                         searchedList.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this,null));
+                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, null));
                 rc.setLayoutManager(new LinearLayoutManager(activity));
             } else {
-                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this,null));
+                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, null));
                 rc.setLayoutManager(new LinearLayoutManager(activity));
             }
 
@@ -650,10 +639,10 @@ public class MarketFragment extends DialogFragment implements
                         searchedList.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this,null));
+                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, null));
                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
             } else {
-                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this,null));
+                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, null));
                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
             }
 
@@ -873,31 +862,6 @@ public class MarketFragment extends DialogFragment implements
         super.onDestroyView();
         progressDialog.dismiss();
     }
-
-
-    private boolean isShow(String packageName, Activity activity) {
-        if (packageName.equals(activity.getPackageName())) {
-            return false;
-        }
-        if (packageName.equals("com.secure.systemcontrol")) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isNotPolicyLoad(){
-        if(getArguments()!=null){
-            if(!getArguments().getString("check").equals(TYPE_POLICY)){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return true;
-        }
-    }
-
-
 
 
 }

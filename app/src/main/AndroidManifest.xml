@@ -63,6 +63,10 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".settings.WhatsNew"></activity>
+        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
+        <activity android:name="com.secureSetting.NotificationsActivity" />
+        <activity android:name=".policy.PolicyActivity" />
 
         <service
             android:name=".service.apps.WindowChangeDetectingService"
@@ -101,6 +105,7 @@
         <activity android:name=".settings.AdvanceSettings" />
         <activity
             android:name=".manual_load.ManualPullPush"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
@@ -137,6 +142,7 @@
         <activity
             android:name=".settings.codeSetting.ExitActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
             android:screenOrientation="portrait" />

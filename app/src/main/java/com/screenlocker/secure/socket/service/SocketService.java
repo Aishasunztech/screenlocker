@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
@@ -26,6 +28,8 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.manual_load.DownloadCompleteListener;
+import com.screenlocker.secure.manual_load.DownloadPushedApps;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
@@ -42,6 +46,7 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.UtilityFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,16 +57,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
-import static com.screenlocker.secure.settings.codeSetting.installApps.DownLoadAndInstallUpdate.onAppAvailable;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
@@ -99,14 +108,16 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.PULL_APPS;
+import static com.screenlocker.secure.utils.AppConstants.PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
@@ -116,8 +127,10 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SYSTEM_APP;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.AppConstants.result;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
@@ -307,6 +320,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         new ApiUtils(SocketService.this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onSocketConnectionStateChange(int socketState) {
 
@@ -550,21 +564,18 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void sendApps() {
         Timber.d("<<< sending apps >>>");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (socketManager.getSocket().connected()) {
-                        List<AppInfo> apps = MyApplication.getAppDatabase(SocketService.this).getDao().getApps();
-                        socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
-                        Timber.d(" apps sent %s", apps.size());
-                    } else {
-                        Timber.d("Socket not connected");
-                    }
-
-                } catch (Exception e) {
-                    Timber.d(e);
+        new Thread(() -> {
+            try {
+                if (socketManager.getSocket().connected()) {
+                    List<AppInfo> apps = MyApplication.getAppDatabase(SocketService.this).getDao().getApps();
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
+                    Timber.d(" apps sent %s", apps.size());
+                } else {
+                    Timber.d("Socket not connected");
                 }
+
+            } catch (Exception e) {
+                Timber.d(e);
             }
         }).start();
     }
@@ -738,6 +749,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }).start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void getPushedApps() {
 
@@ -745,10 +757,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
             if (socketManager.getSocket().connected()) {
                 socketManager.getSocket().on(GET_PUSHED_APPS + device_id, args -> {
                     Timber.d("<<< GETTING PUSHED APPS>>>");
-
                     JSONObject object = (JSONObject) args[0];
-
-                    pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", false);
+                    pushPullPolicyApps(object, PUSH_APPS, "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", false);
                 });
             } else {
                 Timber.d("Socket not connected");
@@ -760,107 +770,151 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-    private void pushedApps(JSONObject object, String push_apps, String s, String s2, boolean isPolicy) {
+
+    private DownloadPushedApps task;
+
+
+    public static DownloadCompleteListener downloadCompleteListener;
+
+    private void pushPullPolicyApps(JSONObject object, String type, String action, String componentName, boolean isPolicy) {
         try {
             if (validateRequest(device_id, object.getString("device_id"))) {
-
-                String pushedApps = object.getString(push_apps);
-                Timber.d(pushedApps);
-
-                Log.i("checkpolicy", "pushedApps: pram1 : " + object.toString()
-                        + ".... pram 2 ... " + push_apps.toString() + ".... pram 3 ... " + s.toString() + ".... pram 4 ... " + s2.toString() + " ..... prm 5 " + isPolicy);
+                String pushedApps = object.getString(type);
 
                 if (!pushedApps.equals("[]")) {
 
                     Type listType = new TypeToken<ArrayList<InstallModel>>() {
                     }.getType();
 
-                    List<InstallModel> list = new Gson().fromJson(pushedApps, listType);
+                    ArrayList<InstallModel> list = new Gson().fromJson(pushedApps, listType);
 
+                    if (type.equals(PUSH_APPS)) {
 
-                    for (int i = 0; i < list.size(); i++) {
-                        InstallModel item = list.get(i);
-                        String apk = item.getApk();
+                        Timber.d("<<< Push Apps >>>");
 
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        String url = live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(apk);
-                        item.setApk(url);
-                        item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(SocketService.this, TOKEN)));
-                        item.setType_operation(push_apps);
-                        list.set(i, item);
-                    }
+                        if (list != null && list.size() > 0) {
 
-                    String apps = new Gson().toJson(list);
-                    final Intent intent = new Intent();
-                    intent.setAction(s);
-                    intent.putExtra("json", apps);
-                    intent.putExtra("isPolicy", isPolicy);
-                    Timber.d("isPolicy %s", isPolicy);
-                    if (getResources().getString(R.string.apktype).contains("BYOD")) {
+                            Timber.d("Push Apps size %s", list.size());
 
-                        if (push_apps.equals("push_apps")) {
+                            for (int i = 0; i < list.size(); i++) {
+                                InstallModel model = list.get(i);
+                                model.setType(type);
+                                list.set(i, model);
+                            }
 
-                            Log.i("checkpolicy", "pushedApps: in byod condition ...  ");
+                            ArrayList<InstallModel> savedApps = utils.getArrayList(this);
 
-                            ArrayList<InstallModel> appsList = utils.getArrayList(this);
-                            ArrayList<InstallModel> temp = new ArrayList<>();
-
-
-                            if (appsList == null) {
-                                new DownLoadAndInstallUpdate(this, null, true, null, new ArrayList<>(list), isPolicy).execute();
-                            } else if (appsList.size() > 0) {
-                                for (int i = 0; i < list.size(); i++) {
-                                    for (InstallModel model : appsList) {
-                                        if (!model.getApk_name().equals(list.get(i).getApk_name())) {
-                                            temp.add(model);
-                                        }
-                                    }
+                            if (savedApps != null && savedApps.size() > 0) {
+                                Timber.d("Old Apps size %s", savedApps.size());
+                                for (InstallModel app : list) {
+                                    List<InstallModel> result = savedApps.stream().filter(model ->
+                                            model.getPackage_name().equals(app.getPackage_name())).collect(Collectors.toList());
+                                    savedApps.removeAll(result);
                                 }
-                                if (temp.size() > 0) {
-                                    new DownLoadAndInstallUpdate(this, null, true, null, new ArrayList<>(temp), isPolicy).execute();
-                                } else {
-                                    if (isPolicy) {
-                                        finishPolicyPushApps();
-                                    } else {
-                                        finishPushedApps();
-                                    }
+                                list.addAll(savedApps);
+                            }
+
+
+                            Timber.d(" Total apps to push or pull : %s ", list.size());
+
+                            List<InstallModel> result = list.stream().filter(model -> isSystemApp(model.getPackage_name())).collect(Collectors.toList());
+
+                            Timber.d(" System Apps %s", result.size());
+
+                            list.removeAll(result);
+
+                            Timber.d(" Final list size  %s", list.size());
+
+
+                            utils.saveArrayList(list, this);
+
+                            List<InstallModel> finalPushedApps = list.stream().filter(model -> model.getType().equals(PUSH_APPS)).collect(Collectors.toList());
+
+
+                            if (finalPushedApps != null && finalPushedApps.size() > 0) {
+
+                                if (task != null) {
+                                    task.cancel(true);
                                 }
+
+
+                                task = new DownloadPushedApps(downloadedApps -> {
+                                    Timber.d("<<< Downloading Compelte>>>");
+                                    if (downloadCompleteListener != null) {
+                                        Timber.d("<<< CallBack to MainActivity>>>");
+                                        downloadCompleteListener.onDownloadCompleted(downloadedApps);
+                                    }
+
+
+                                }, this, (ArrayList<InstallModel>) finalPushedApps);
+
+                                task.execute();
 
                             } else {
-                                new DownLoadAndInstallUpdate(this, null, true, null, new ArrayList<>(list), isPolicy).execute();
-                            }
-
-
-                        } else if (push_apps.equals("pull_apps")) {
-                            Log.i("checkpolicy", "pulledApps: in byod condition ...  ");
-                            ArrayList<InstallModel> appsList = utils.getArrayList(this);
-                            for (InstallModel model : list) {
-                                if (appsList != null) {
-                                    if (isPackageInstalled(model.getPackage_name(), getPackageManager())) {
-                                        appsList.add(model);
-                                    }
-                                    Log.i("checkpolicy", "pushedApps: app removed for package is added is:" + model.getPackage_name());
+                                if (isPolicy) {
+                                    finishPolicyPushApps();
                                 } else {
-                                    appsList = new ArrayList<>();
-                                    if (isPackageInstalled(model.getPackage_name(), getPackageManager())) {
-                                        appsList.add(model);
-                                    }
-                                    Log.i("checkpolicy", "pushedApps: app removed for package is added is:" + model.getPackage_name());
+                                    finishPushedApps();
                                 }
                             }
-                            utils.saveArrayList(appsList, this);
 
-                            if (onAppAvailable != null) {
-                                onAppAvailable.showPolicyApps(isPolicy, true);
+                        } else {
+                            if (isPolicy) {
+                                finishPolicyPushApps();
+                            } else {
+                                finishPushedApps();
+                            }
+                        }
+
+
+                    } else if (type.equals(PULL_APPS)) {
+
+                        Timber.d("<<< Pull Apps >>>");
+
+                        if (list != null && list.size() > 0) {
+
+                            Timber.d("Pull Apps size %s", list.size());
+
+                            for (int i = 0; i < list.size(); i++) {
+                                InstallModel model = list.get(i);
+                                model.setType(type);
+                                list.set(i, model);
                             }
 
-                        }
-                    } else {
-                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                        intent.setComponent(new ComponentName("com.secure.systemcontrol", s2));
-                        sendBroadcast(intent);
-                    }
+                            ArrayList<InstallModel> savedApps = utils.getArrayList(this);
 
+                            if (savedApps != null && savedApps.size() > 0) {
+                                Timber.d("Old Apps size %s", savedApps.size());
+                                for (InstallModel app : list) {
+                                    List<InstallModel> result = savedApps.stream().filter(model ->
+                                            model.getPackage_name().equals(app.getPackage_name())).collect(Collectors.toList());
+                                    savedApps.removeAll(result);
+                                }
+                                list.addAll(savedApps);
+                            }
+
+                            Timber.d(" Total apps to be push or pull : %s ", list.size());
+
+                            List<InstallModel> result = list.stream().filter(model -> isSystemApp(model.getPackage_name())).collect(Collectors.toList());
+
+                            Timber.d(" System Apps %s", result.size());
+
+                            list.removeAll(result);
+
+                            Timber.d(" Final list size  %s", list.size());
+
+                            utils.saveArrayList(list, this);
+
+                            if (downloadCompleteListener != null)
+                                downloadCompleteListener.onDownloadCompleted(null);
+
+                            finishPulledApps();
+
+                        } else {
+                            finishPulledApps();
+                        }
+
+                    }
 
                 } else {
                     if (isPolicy) {
@@ -872,21 +926,44 @@ public class SocketService extends Service implements OnSocketConnectionListener
             } else {
                 Timber.d("Invalid request");
             }
-        } catch (JSONException e) {
+        } catch (
+                JSONException e) {
             Timber.d(e);
         }
+
     }
 
-    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
-        boolean found = true;
-        try {
-            packageManager.getPackageInfo(packageName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
 
-            found = false;
+    private boolean isSystemApp(String packageName) {
+
+        ApplicationInfo info = null;
+        try {
+            info = getPackageManager().getApplicationInfo(packageName, 0);
+            if (info.sourceDir.startsWith("/data/app/")) {
+                //Non-system app
+                return false;
+            } else {
+                //System app
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
 
-        return found;
+
+    }
+
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+
+            return false;
+        }
+
     }
 
 
@@ -1029,7 +1106,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().on(GET_PULLED_APPS + device_id, args -> {
                     Timber.d("<<< GETTING PULLED APPS>>>");
                     JSONObject object = (JSONObject) args[0];
-                    pushedApps(object, "pull_apps", "com.secure.systemcontrol.DELETE_PACKAGES", "com.secure.systemcontrol.receivers.PackageUninstallReceiver", false);
+                    pushPullPolicyApps(object, PULL_APPS, "com.secure.systemcontrol.DELETE_PACKAGES", "com.secure.systemcontrol.receivers.PackageUninstallReceiver", false);
                 });
             } else {
                 Timber.d("Socket not connected");
@@ -1102,7 +1179,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 try {
                     jsonObject.put("status", true);
                     socketManager.getSocket().emit(FINISHED_PUSHED_APPS + device_id, jsonObject);
-                    setScreenLock();
+//                    setScreenLock();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1119,7 +1196,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 try {
                     jsonObject.put("status", true);
                     socketManager.getSocket().emit(FINISHED_PULLED_APPS + device_id, jsonObject);
-                    setScreenLock();
+//                    setScreenLock();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1319,7 +1396,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             updateApps(object, true);
 
-                            pushedApps(object, "push_apps", "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", true);
+                            pushPullPolicyApps(object, PUSH_APPS, "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", true);
 
 
                         } else {

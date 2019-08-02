@@ -37,15 +37,6 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     private ProgressDialog dialog;
     private String activityName;
 
-    public static OnAppAvailable onAppAvailable;
-
-
-    public interface OnAppAvailable {
-        void onAppDownloadedAndAvailabe(String appName, String appUri);
-
-        void showPolicyApps(boolean isPolicy, boolean isPulled);
-    }
-
     public DownLoadAndInstallUpdate(Context context, final String url, String appName, String activityName) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
@@ -140,14 +131,13 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         if (aBoolean) {
             //  showInstallDialog(appName);
             File f = contextWeakReference.get().getFileStreamPath(appName);
+
             Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
-            if (onAppAvailable != null) {
-                onAppAvailable.onAppDownloadedAndAvailabe(appName, apkUri.toString());
-            }
         }
     }
 
     private void showInstallDialog(String appName) {
+
         File f = contextWeakReference.get().getFileStreamPath(appName);
             /*try {
                 installPackage(appName);

@@ -88,6 +88,11 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         public void onClick(final View v) {
             final Context context = v.getContext();
             AppInfo info = appsList.get(getAdapterPosition());
+
+            if (info.getPackageName().equals(context.getPackageName())) {
+                PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
+            }
+
             if (info.isEnable()) {
                 try {
 
