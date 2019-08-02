@@ -298,7 +298,7 @@ public class MarketFragment extends Fragment implements
 
     private void getAllApps(String dealerId) {
 
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
                 .getAllApps("marketApplist/" + dealerId)
                 .enqueue(new Callback<InstallAppModel>() {
@@ -389,7 +389,7 @@ public class MarketFragment extends Fragment implements
 
     }
     private void getAdminApps() {
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
         MyApplication.oneCaller
                 .getAdminApps()
                 .enqueue(new Callback<InstallAppModel>() {
@@ -589,7 +589,7 @@ public class MarketFragment extends Fragment implements
 
                     if (mService != null) {
                         mService.startDownload(url, fileName,app.getPackageName());
-                        progressBar.setVisibility(View.VISIBLE);
+
                     }
 
                 } else {
@@ -811,15 +811,7 @@ public class MarketFragment extends Fragment implements
         }
     }
 
-    @Override
-    public void showProgressBar(boolean show) {
-        if(show)
-        {
-            progressBar.setVisibility(View.VISIBLE);
-        }else{
-            progressBar.setVisibility(View.GONE);
-        }
-    }
+
 
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, File> {

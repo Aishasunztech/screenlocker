@@ -122,10 +122,7 @@ public class LockScreenService extends Service {
         public void onCompleted(@NotNull Download download) {
 
             downloadListener.downloadComplete(filePath, packageName);
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(false);
-            }
+
 
 
         }
@@ -133,10 +130,9 @@ public class LockScreenService extends Service {
         @Override
         public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
             Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(false);
-            }
+            File file = new File(filePath);
+            file.delete();
+
 
         }
 
@@ -147,7 +143,7 @@ public class LockScreenService extends Service {
 
         @Override
         public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
-                downloadListener.showProgressBar(false);
+
             downloadId = download.getId();
         }
 
@@ -157,7 +153,7 @@ public class LockScreenService extends Service {
 
             if (downloadListener != null) {
                 downloadListener.showDialog(download.getProgress());
-                downloadListener.showProgressBar(false);
+
 
             }
 
@@ -177,7 +173,7 @@ public class LockScreenService extends Service {
         public void onCancelled(@NotNull Download download) {
             File file = new File(filePath);
             file.delete();
-            downloadListener.showProgressBar(false);
+
             Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
         }
 
@@ -188,7 +184,8 @@ public class LockScreenService extends Service {
 
         @Override
         public void onDeleted(@NotNull Download download) {
-
+            File file = new File(filePath);
+            file.delete();
         }
     };
     private DownloadServiceCallBacks downloadListener;
@@ -359,11 +356,8 @@ public class LockScreenService extends Service {
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
 
         fetch.enqueue(request, updatedRequest -> {
-            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_SHORT).show();
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(true);
-            }
+            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
+
             //Request was successfully enqueued for download.
         }, error -> {
             Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -383,7 +377,6 @@ public class LockScreenService extends Service {
 
         void downloadComplete(String filePath, String packagename);
 
-        void showProgressBar(boolean show);
     }
 
     public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
