@@ -1,18 +1,25 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.Toast;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
+import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -24,6 +31,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
+
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         /**
          * if user has completed setup wizard move to Home Activity
@@ -84,7 +93,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onComplete(Bundle data) {
         super.onComplete(data);
         //save the tour complete status in database
-
         Intent intent;
         if (isEmergency){
             intent = new Intent(SteppersActivity.this, MainActivity.class);

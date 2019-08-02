@@ -32,7 +32,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -48,7 +50,19 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.tonyodev.fetch2.Download;
+import com.tonyodev.fetch2.Error;
+import com.tonyodev.fetch2.Fetch;
+import com.tonyodev.fetch2.FetchConfiguration;
+import com.tonyodev.fetch2.FetchListener;
+import com.tonyodev.fetch2.NetworkType;
+import com.tonyodev.fetch2.Priority;
+import com.tonyodev.fetch2.Request;
+import com.tonyodev.fetch2core.DownloadBlock;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -62,6 +76,7 @@ import java.util.TreeMap;
 import timber.log.Timber;
 
 import static android.view.View.VISIBLE;
+import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -98,6 +113,100 @@ public class LockScreenService extends Service {
     private boolean isLayoutAdded = false;
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
+    private Fetch fetch;
+    private int downloadId = 0;
+    private FetchListener fetchListener = new FetchListener() {
+        @Override
+        public void onAdded(@NotNull Download download) {
+        }
+
+        @Override
+        public void onQueued(@NotNull Download download, boolean b) {
+
+        }
+
+        @Override
+        public void onWaitingNetwork(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onCompleted(@NotNull Download download) {
+
+            downloadListener.downloadComplete(filePath, packageName);
+            if(downloadListener != null)
+            {
+                downloadListener.showProgressBar(false);
+            }
+
+
+        }
+
+        @Override
+        public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
+            Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
+            if(downloadListener != null)
+            {
+                downloadListener.showProgressBar(false);
+            }
+
+        }
+
+        @Override
+        public void onDownloadBlockUpdated(@NotNull Download download, @NotNull DownloadBlock downloadBlock, int i) {
+
+        }
+
+        @Override
+        public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
+                downloadListener.showProgressBar(false);
+            downloadId = download.getId();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        public void onProgress(@NotNull Download download, long l, long l1) {
+
+            if (downloadListener != null) {
+                downloadListener.showDialog(download.getProgress());
+                downloadListener.showProgressBar(false);
+
+            }
+
+
+        }
+
+        @Override
+        public void onPaused(@NotNull Download download) {
+        }
+
+        @Override
+        public void onResumed(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onCancelled(@NotNull Download download) {
+            File file = new File(filePath);
+            file.delete();
+            downloadListener.showProgressBar(false);
+            Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onRemoved(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onDeleted(@NotNull Download download) {
+
+        }
+    };
+    private DownloadServiceCallBacks downloadListener;
+    private String url = "";
+    private String filePath = "";
+    private String packageName = "";
 
     HashSet<String> blacklist = new HashSet<>();
 
@@ -177,6 +286,12 @@ public class LockScreenService extends Service {
 
         PackageManager packageManager = getPackageManager();
 
+        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
+                .setDownloadConcurrentLimit(3)
+                .build();
+        fetch = Fetch.Impl.getInstance(fetchConfiguration);
+        fetch.addListener(fetchListener);
+
 
         handler = new Handler();
 
@@ -222,18 +337,15 @@ public class LockScreenService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> {
             Log.d("nadeem", "screeen off from reciver: ");
-
-            if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
-                startLockScreen(true);
-            }
+            startLockScreen(true);
         });
-
-        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
             stopCapture();
         }
 
         //local
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 notificationReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION_NOTIFICATION));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -383,6 +495,49 @@ public class LockScreenService extends Service {
         }
     }
 
+
+    public void startDownload(String url, String filePath, String packageName) {
+        this.url = url;
+        this.filePath = filePath;
+        this.packageName = packageName;
+        Request request = new Request(url, filePath);
+        request.setPriority(Priority.HIGH);
+        request.setNetworkType(NetworkType.ALL);
+        request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
+
+        fetch.enqueue(request, updatedRequest -> {
+            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_SHORT).show();
+            if(downloadListener != null)
+            {
+                downloadListener.showProgressBar(true);
+            }
+            //Request was successfully enqueued for download.
+        }, error -> {
+            Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            //An error occurred enqueuing the request.
+        });
+    }
+
+
+
+    public void cancelDownload() {
+        if(downloadId != 0)
+        fetch.cancel(downloadId);
+    }
+
+    public interface DownloadServiceCallBacks {
+        void showDialog(int progress);
+
+        void downloadComplete(String filePath, String packagename);
+
+        void showProgressBar(boolean show);
+    }
+
+    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
+        if (downloadListener != null) {
+            this.downloadListener = downloadListener;
+        }
+    }
 
     @Override
     public void onDestroy() {

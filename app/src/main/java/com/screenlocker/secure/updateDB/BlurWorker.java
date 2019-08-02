@@ -276,6 +276,9 @@ public class BlurWorker extends Worker {
                 marketExtension.setDefaultApp(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(marketExtension);
             } else {
+                Drawable market_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_market);
+                byte[] secure_market_icon = CommonUtils.convertDrawableToByteArray(market_drawable);
+                secureMarketInfo.setIcon(secure_market_icon);
                 secureMarketInfo.setExtension(false);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
             }

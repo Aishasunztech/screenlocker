@@ -112,6 +112,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.systemui/.globalactions.GlobalActionsDialog$ExActionsDialog");
         globalActions.add("com.android.settings/android.app.Dialog");
         globalActions.add("com.android.settings/.bluetooth.RequestPermissionActivity");
+        globalActions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        globalActions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
 
 
         //Configure these here for compatibility with API 13 and below.

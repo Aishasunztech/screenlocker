@@ -1,5 +1,7 @@
 package com.screenlocker.secure.utils;
 
+import android.content.Context;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 
@@ -87,14 +89,14 @@ public class AppConstants {
 
     //servers links
     public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static final String URL_1 = "http://192.168.18.226:3000";//local
+//        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "http://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -176,6 +178,10 @@ public class AppConstants {
     public static final String COPIED_IMEI_1 = "COPIED_IMEI_1";
     public static final String COPIED_IMEI_2 = "COPIED_IMEI_2";
     public static final String COPIED_URL = "COPIED_URL";
+    public static final String STARTED_DOWNLOAD_ID = "download_id";
+    public static final String PACKAGE_NAME = "package_name";
+    public static final String DOWNLOADING_QUEUE = "downloading_list";
+    public static final String PROGRESS = "progress";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 
@@ -276,7 +282,7 @@ public class AppConstants {
     /*
      * Screen Locker
      * */
-//
+
     public static int attempt_5 = 1000 * 60;
     public static int attempt_6 = 1000 * 60 * 5;
     public static int attempt_7 = 1000 * 60 * 10;
@@ -287,7 +293,7 @@ public class AppConstants {
     /*
      *Titan Locker
      * */
-//
+
 //    public static int attempt_5 = 1000 * 60;
 //    public static int attempt_6 = 1000 * 60;
 //    public static int attempt_7 = 1000 * 60 * 3;

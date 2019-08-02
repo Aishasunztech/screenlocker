@@ -300,6 +300,7 @@ public class MainActivity extends
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);

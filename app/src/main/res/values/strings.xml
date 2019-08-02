@@ -419,6 +419,7 @@
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
     <string name="updates">Updates</string>
+    <string name="update">update</string>
     <string name="sim">SIM</string>
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
