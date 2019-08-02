@@ -62,8 +62,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
@@ -71,7 +73,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
-public class InstallAppsActivity extends BaseActivity implements  InstallAppsAdapter.InstallAppListener {
+public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener {
     private RecyclerView rvInstallApps;
     private TextView tvProgressText;
     private InstallAppsAdapter mAdapter;
@@ -85,6 +87,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
     private SwipeRefreshLayout refreshLayout;
 
     private AsyncCalls asyncCalls;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -507,10 +510,14 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
     @Override
     protected void onResume() {
         super.onResume();
+
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         isBackPressed = false;
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelList);
         mAdapter.notifyDataSetChanged();
+
     }
 
     @Override

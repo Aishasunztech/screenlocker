@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -84,20 +85,44 @@ public class WindowChangeDetectingService extends AccessibilityService {
 //        allowedPackages.add("com.google.android.packageinstaller");
 //        allowedPackages.add("com.android.packageinstaller");
 
+
         smPermissions.add("com.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallerActivity");
+
+
         smPermissions.add("com.android.packageinstaller/.PackageInstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/.PackageInstallerActivity");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.PackageInstallerActivity");
+
+
+        smPermissions.add("com.android.packageinstaller/.DeleteStagedFileOnResult");
+        smPermissions.add("com.google.android.packageinstaller/.DeleteStagedFileOnResult");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.DeleteStagedFileOnResult");
+
+
         smPermissions.add("com.android.packageinstaller/.InstallStaging");
+        smPermissions.add("com.google.android.packageinstaller/.InstallStaging");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallStaging");
+
+
         smPermissions.add("com.android.packageinstaller/.InstallInstalling");
         smPermissions.add("com.google.android.packageinstaller/.InstallInstalling");
-        smPermissions.add("com.google.android.packageinstaller/.InstallStaging");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallInstalling");
+
+
         smPermissions.add("com.android.packageinstaller/android.widget.FrameLayout");
         smPermissions.add("com.google.android.packageinstaller/android.widget.FrameLayout");
         smPermissions.add("com.android.packageinstaller/android.app.AlertDialog");
         smPermissions.add("com.google.android.packageinstaller/android.app.AlertDialog");
+        smPermissions.add("com.android.packageinstaller/com.android.packageinstaller.DeleteStagedFileOnResult");
+
+
         smPermissions.add("com.android.packageinstaller/.UninstallUninstalling");
         smPermissions.add("com.google.android.packageinstaller/.UninstallUninstalling");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallUninstalling");
+
+
         smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 //        wm.addView(mView, localLayoutParams);
@@ -138,36 +163,44 @@ public class WindowChangeDetectingService extends AccessibilityService {
                         event.getClassName().toString()
                 );
 
+
                 ActivityInfo activityInfo = tryGetActivity(componentName);
                 boolean isActivity = activityInfo != null;
                 Timber.d("dkjgdgrfghdghdr %s", componentName.flattenToShortString());
-                if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                    Timber.d("dkjgdgrfghdghdr %s", "Tour Completed");
-                    if (isActivity) {
-                        if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                            Timber.d("dkjgdgrfghdghdr %s", "settings allowed");
-                            if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
-                            } else {
-                                checkAppStatus(componentName);
-                            }
-                        } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
-                            Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
-                            if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
-                                Timber.d("dkjgdgrfghdghdr %s", "activity allowed");
-                            } else {
-                                Timber.d("dkjgdgrfghdghdr %s", "activity not allowed");
-                                checkAppStatus(componentName);
-                            }
-                        } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().contains(getPackageName())) {
-                            Timber.d("dkjgdgrfghdghdr %s", "permission granting");
-                        } else {
-                            Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
 
-                            if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().contains(getPackageName()))
-                                checkAppStatus(componentName);
+
+                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+
+                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                        Timber.d("dkjgdgrfghdghdr %s", "Tour Completed");
+                        if (isActivity) {
+                            if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
+                                Timber.d("dkjgdgrfghdghdr %s", "settings allowed");
+                                if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
+                                } else {
+                                    checkAppStatus(componentName);
+                                }
+                            } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
+                                Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
+                                if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
+                                    Timber.d("dkjgdgrfghdghdr %s", "activity allowed");
+                                } else {
+                                    Timber.d("dkjgdgrfghdghdr %s", "activity not allowed");
+                                    checkAppStatus(componentName);
+                                }
+                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().contains(getPackageName())) {
+                                Timber.d("dkjgdgrfghdghdr %s", "permission granting");
+                            } else {
+                                Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
+
+                                if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().contains(getPackageName()))
+                                    checkAppStatus(componentName);
+                            }
                         }
                     }
+
                 }
+
 
             }
 
@@ -198,13 +231,12 @@ public class WindowChangeDetectingService extends AccessibilityService {
     private void clearRecentApp(Context context) {
 
         Intent i = new Intent(context, MainActivity.class);
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        i.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         startActivity(i);
 
-        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("locked"));
+//        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("locked"));
 
     }
 

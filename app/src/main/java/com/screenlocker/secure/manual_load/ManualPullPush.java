@@ -67,14 +67,6 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         Timber.d("<<< ManualPushPull >>>");
     }
 
-    private boolean uriCheck(String type, String uri) {
-        if (type.equals(PUSH_APPS)) {
-            return uri != null;
-        } else {
-            return true;
-        }
-    }
-
     private ArrayList<InstallModel> filterApps() {
 
         ArrayList<InstallModel> list = utils.getArrayList(ManualPullPush.this);
@@ -287,6 +279,8 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
     }
 
     private void appUninstallRequest(String app_pkg_name) {
+        Timber.d("UNINSTALL PACKAGE " + app_pkg_name);
+
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app_pkg_name));
         intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);

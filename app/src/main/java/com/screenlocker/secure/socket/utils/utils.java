@@ -60,6 +60,7 @@ import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_LIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -73,6 +74,7 @@ import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
@@ -664,11 +666,13 @@ public class utils {
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
+
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
+        service.putExtra(CURRENT_KEY, KEY_GUEST_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {
@@ -678,11 +682,10 @@ public class utils {
 
     public static void chatLogin(Context context) {
 
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
-//                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
-        sendMessageToActivity(AppConstants.KEY_SUPPORT_PASSWORD, context);
+        sendMessageToActivity(KEY_SUPPORT_PASSWORD, context);
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
+        service.putExtra(CURRENT_KEY, KEY_SUPPORT_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {
@@ -695,12 +698,12 @@ public class utils {
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
 
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
+        service.putExtra(CURRENT_KEY, KEY_MAIN_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {

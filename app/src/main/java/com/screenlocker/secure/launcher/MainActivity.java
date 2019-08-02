@@ -308,16 +308,20 @@ public class MainActivity extends
         }
 
         String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+
+
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
         }
 
         refreshApps(this);
 
-
         Timber.d("<<< Check Policy >>>");
 
-        if (PrefUtils.getBooleanPref(this, SHOW_MANUAL_ACTIVITY)) {
+        Timber.d("sdkfjsdgsfgsdgs %s", msg);
+
+
+        if (PrefUtils.getBooleanPref(this, SHOW_MANUAL_ACTIVITY) && msg != null && msg.equals(KEY_MAIN_PASSWORD)) {
             Timber.d("<<< Policy Remaining >>>");
             Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -328,9 +332,7 @@ public class MainActivity extends
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
 
 
-        super.
-
-                onResume();
+        super.onResume();
 
     }
 

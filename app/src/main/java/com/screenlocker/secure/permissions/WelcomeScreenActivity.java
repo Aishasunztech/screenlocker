@@ -16,6 +16,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -27,6 +28,7 @@ import java.util.TimerTask;
 import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
 import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
 import static com.screenlocker.secure.utils.AppConstants.LINKSIM;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -53,6 +55,9 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         rotation.setFillAfter(true);
         imageView.startAnimation(rotation);
 
+        PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
+        PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
+
 
         handler = new Handler();
 
@@ -61,7 +66,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
             lockScreen.setAction("locked");
             ActivityCompat.startForegroundService(this, lockScreen);
-            PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
             finish();
         }, 5000);
 

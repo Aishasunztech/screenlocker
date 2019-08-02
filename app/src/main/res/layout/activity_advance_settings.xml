@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.screenlocker.secure.settings.AdvanceSettings">
+
     <include
         android:id="@+id/appBar"
         layout="@layout/main_toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvDataCunsumption"
         android:layout_width="0dp"
@@ -35,6 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
+
     <TextView
         android:id="@+id/tvDataUSage"
         android:layout_width="0dp"

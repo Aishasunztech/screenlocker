@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
@@ -295,6 +297,19 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_disconnected)));
 
         }
+    }
+
+
+    public void emergencyFlag(View view) {
+
+        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+            Toast.makeText(this, "EMERGENCY FLAG OFF", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
+        } else {
+            Toast.makeText(this, "EMERGENCY FLAG ON", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
+        }
+
     }
 
 

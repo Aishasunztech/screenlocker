@@ -134,10 +134,6 @@ public class LockScreenService extends Service {
         public void onCompleted(@NotNull Download download) {
 
             downloadListener.downloadComplete(filePath, packageName);
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(false);
-            }
 
 
         }
@@ -145,10 +141,9 @@ public class LockScreenService extends Service {
         @Override
         public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
             Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(false);
-            }
+            File file = new File(filePath);
+            file.delete();
+
 
         }
 
@@ -159,7 +154,7 @@ public class LockScreenService extends Service {
 
         @Override
         public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
-                downloadListener.showProgressBar(false);
+
             downloadId = download.getId();
         }
 
@@ -169,7 +164,7 @@ public class LockScreenService extends Service {
 
             if (downloadListener != null) {
                 downloadListener.showDialog(download.getProgress());
-                downloadListener.showProgressBar(false);
+
 
             }
 
@@ -189,7 +184,7 @@ public class LockScreenService extends Service {
         public void onCancelled(@NotNull Download download) {
             File file = new File(filePath);
             file.delete();
-            downloadListener.showProgressBar(false);
+
             Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
         }
 
@@ -200,7 +195,8 @@ public class LockScreenService extends Service {
 
         @Override
         public void onDeleted(@NotNull Download download) {
-
+            File file = new File(filePath);
+            file.delete();
         }
     };
     private DownloadServiceCallBacks downloadListener;
@@ -506,11 +502,8 @@ public class LockScreenService extends Service {
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
 
         fetch.enqueue(request, updatedRequest -> {
-            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_SHORT).show();
-            if(downloadListener != null)
-            {
-                downloadListener.showProgressBar(true);
-            }
+            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
+
             //Request was successfully enqueued for download.
         }, error -> {
             Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -519,10 +512,9 @@ public class LockScreenService extends Service {
     }
 
 
-
     public void cancelDownload() {
-        if(downloadId != 0)
-        fetch.cancel(downloadId);
+        if (downloadId != 0)
+            fetch.cancel(downloadId);
     }
 
     public interface DownloadServiceCallBacks {
@@ -530,7 +522,6 @@ public class LockScreenService extends Service {
 
         void downloadComplete(String filePath, String packagename);
 
-        void showProgressBar(boolean show);
     }
 
     public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
@@ -594,7 +585,8 @@ public class LockScreenService extends Service {
                         startLockScreen(true);
                         break;
                     case "unlocked":
-                        removeLockScreenView();
+                        String current_key = intent.getStringExtra(CURRENT_KEY);
+                        removeLockScreenView(current_key);
                         simPermissionsCheck();
                         break;
                     case "locked":
@@ -684,7 +676,7 @@ public class LockScreenService extends Service {
 
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
@@ -702,10 +694,11 @@ public class LockScreenService extends Service {
         return binder;
     }
 
-    public void removeLockScreenView() {
-//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
-//            //            setTimeRemaining(getAppContext());
-//        }
+    public void removeLockScreenView(String current_key) {
+
+
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, current_key);
+
         if (mCallBacks != null) {
             mCallBacks.onRecentAppKill();
         }

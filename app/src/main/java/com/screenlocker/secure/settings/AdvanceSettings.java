@@ -7,11 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.t.ui.MainActivity;
+
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 
 public class AdvanceSettings extends AppCompatActivity implements View.OnClickListener {
 
@@ -52,4 +56,6 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+
 }
