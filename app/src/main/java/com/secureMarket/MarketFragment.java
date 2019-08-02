@@ -582,26 +582,25 @@ public class MarketFragment extends Fragment implements
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
+                url = live_url + MOBILE_END_POINT + "getApk/" +
+                        CommonUtils.splitName(app.getApk());
+                fileName = file.getAbsolutePath();
                 if (!file.exists()) {
-                    url = live_url + MOBILE_END_POINT + "getApk/" +
-                            CommonUtils.splitName(app.getApk());
-                    fileName = file.getAbsolutePath();
 
                     if (mService != null) {
-                        mService.startDownload(url, fileName,app.getPackageName());
+                        mService.startDownload(url, fileName, app.getPackageName());
 
                     }
 
                 } else {
-                    int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
-                    if(file_size >= (101*1024))
-                    {
-                        showInstallDialog(new File(fileName),app.getPackageName());
-                    }
-                    else{
+                    int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+                    if (file_size >= (101 * 1024)) {
+                        showInstallDialog(new File(fileName), app.getPackageName());
+                    } else {
                         if (mService != null) {
+                            File file1 = new File(file.getAbsolutePath());
                             file.delete();
-                            mService.startDownload(url, fileName,app.getPackageName());
+                            mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName());
 
                         }
                     }
