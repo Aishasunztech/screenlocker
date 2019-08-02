@@ -29,7 +29,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -44,7 +46,19 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.tonyodev.fetch2.Download;
+import com.tonyodev.fetch2.Error;
+import com.tonyodev.fetch2.Fetch;
+import com.tonyodev.fetch2.FetchConfiguration;
+import com.tonyodev.fetch2.FetchListener;
+import com.tonyodev.fetch2.NetworkType;
+import com.tonyodev.fetch2.Priority;
+import com.tonyodev.fetch2.Request;
+import com.tonyodev.fetch2core.DownloadBlock;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,7 +80,6 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
@@ -92,6 +105,97 @@ public class LockScreenService extends Service {
     private boolean isLayoutAdded = false;
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
+    private Fetch fetch;
+    private int downloadId = 0;
+    private FetchListener fetchListener = new FetchListener() {
+        @Override
+        public void onAdded(@NotNull Download download) {
+        }
+
+        @Override
+        public void onQueued(@NotNull Download download, boolean b) {
+
+        }
+
+        @Override
+        public void onWaitingNetwork(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onCompleted(@NotNull Download download) {
+
+            downloadListener.downloadComplete(filePath, packageName);
+
+
+
+        }
+
+        @Override
+        public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
+            Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
+            File file = new File(filePath);
+            file.delete();
+
+
+        }
+
+        @Override
+        public void onDownloadBlockUpdated(@NotNull Download download, @NotNull DownloadBlock downloadBlock, int i) {
+
+        }
+
+        @Override
+        public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
+
+            downloadId = download.getId();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        public void onProgress(@NotNull Download download, long l, long l1) {
+
+            if (downloadListener != null) {
+                downloadListener.showDialog(download.getProgress());
+
+
+            }
+
+
+        }
+
+        @Override
+        public void onPaused(@NotNull Download download) {
+        }
+
+        @Override
+        public void onResumed(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onCancelled(@NotNull Download download) {
+            File file = new File(filePath);
+            file.delete();
+
+            Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onRemoved(@NotNull Download download) {
+
+        }
+
+        @Override
+        public void onDeleted(@NotNull Download download) {
+            File file = new File(filePath);
+            file.delete();
+        }
+    };
+    private DownloadServiceCallBacks downloadListener;
+    private String url = "";
+    private String filePath = "";
+    private String packageName = "";
 
 
 
@@ -156,6 +260,12 @@ public class LockScreenService extends Service {
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         PackageManager packageManager = getPackageManager();
+
+        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
+                .setDownloadConcurrentLimit(3)
+                .build();
+        fetch = Fetch.Impl.getInstance(fetchConfiguration);
+        fetch.addListener(fetchListener);
 
 
         Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
@@ -255,6 +365,45 @@ public class LockScreenService extends Service {
                 }
             }
         });
+    }
+
+    public void startDownload(String url, String filePath, String packageName) {
+        this.url = url;
+        this.filePath = filePath;
+        this.packageName = packageName;
+        Request request = new Request(url, filePath);
+        request.setPriority(Priority.HIGH);
+        request.setNetworkType(NetworkType.ALL);
+        request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
+
+        fetch.enqueue(request, updatedRequest -> {
+            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
+
+            //Request was successfully enqueued for download.
+        }, error -> {
+            Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            //An error occurred enqueuing the request.
+        });
+    }
+
+
+
+    public void cancelDownload() {
+        if(downloadId != 0)
+        fetch.cancel(downloadId);
+    }
+
+    public interface DownloadServiceCallBacks {
+        void showDialog(int progress);
+
+        void downloadComplete(String filePath, String packagename);
+
+    }
+
+    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
+        if (downloadListener != null) {
+            this.downloadListener = downloadListener;
+        }
     }
 
     @Override

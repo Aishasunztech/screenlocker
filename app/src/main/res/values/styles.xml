@@ -125,12 +125,12 @@
     </style>
 
     <style name="TextLabelTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textColorHint">@color/colorPrimary</item>
+        <item name="android:textColorHint">@color/colorHintMaterial</item>
         <item name="android:textSize">@dimen/_16ssp</item>
 
 
         <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorHintMaterial</item>
 
         <item name="colorControlActivated">@color/colorWhite</item>
 
@@ -150,5 +150,11 @@
         <item name="android:alpha">0.5</item>
         <item name="android:textSize">@dimen/_11ssp</item>
     </style>
+
+    <style name="chipTheme" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
 
 </resources>

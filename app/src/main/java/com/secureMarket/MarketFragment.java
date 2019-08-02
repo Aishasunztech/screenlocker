@@ -9,9 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -19,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -46,6 +47,7 @@ import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.socket.model.InstallModel;
@@ -57,8 +59,6 @@ import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
 import com.tonyodev.fetch2.FetchConfiguration;
 import com.tonyodev.fetch2.FetchListener;
-import com.tonyodev.fetch2.NetworkType;
-import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
 
@@ -71,7 +71,6 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,12 +81,11 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-import static com.screenlocker.secure.service.LockScreenService.getSHA1;
-import static com.screenlocker.secure.service.LockScreenService.validateAppSignatureFile;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
@@ -100,13 +98,14 @@ import static com.secureSetting.UtilityFunctions.getVersionCode;
  * A simple {@link Fragment} subclass.
  */
 public class MarketFragment extends Fragment implements
-        SecureMarketAdapter.AppInstallUpdateListener, SecureMarketActivity.SearchQueryListener {
+        SecureMarketAdapter.AppInstallUpdateListener, SecureMarketActivity.SearchQueryListener, LockScreenService.DownloadServiceCallBacks {
 
 
     private String fragmentType;
     private RecyclerView rc;
     private ProgressBar progressBar;
     private TextView tvInfo;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private java.util.List<List> appModelList;
     private PackageManager mPackageManager;
     private java.util.List<List> installedApps = new ArrayList<>();
@@ -115,77 +114,8 @@ public class MarketFragment extends Fragment implements
     private java.util.List<List> unInstalledApps = new ArrayList<>();
     private ProgressDialog progressDialog;
     private String userSpace;
-    private DownLoadAndInstallUpdate downLoadAndInstallUpdate;
-
-    private Fetch fetch;
-    private Request request;
-    private FetchListener fetchListener = new FetchListener() {
-        @Override
-        public void onAdded(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onQueued(@NotNull Download download, boolean b) {
-
-        }
-
-        @Override
-        public void onWaitingNetwork(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onCompleted(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
-
-        }
-
-        @Override
-        public void onDownloadBlockUpdated(@NotNull Download download, @NotNull DownloadBlock downloadBlock, int i) {
-
-        }
-
-        @Override
-        public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
-            Toast.makeText(activity, "Download started", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onProgress(@NotNull Download download, long l, long l1) {
-            Toast.makeText(activity, "Progress" + download.getProgress(), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onPaused(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onResumed(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onCancelled(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onRemoved(@NotNull Download download) {
-
-        }
-
-        @Override
-        public void onDeleted(@NotNull Download download) {
-
-        }
-    };
-
+    private String url = "", fileName = "";
+    private SecureMarketAdapter installedAdapter, uninstalledAdapter, updateAdapter;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -213,10 +143,12 @@ public class MarketFragment extends Fragment implements
             }
         }
     };
+    private LockScreenService mService = null;
 
     private void refreshList() {
 
         tvInfo.setVisibility(View.GONE);
+
         if (activity != null) {
             String dealerId = PrefUtils.getStringPref(activity, AppConstants.KEY_DEVICE_LINKED);
 //        Log.d("ConnectedDealer",dealerId);
@@ -254,6 +186,9 @@ public class MarketFragment extends Fragment implements
         intentFilter.addAction("com.secure.systemcontroll.PackageDeleted");
         activity.registerReceiver(broadcastReceiver, intentFilter);
 
+        Intent intent = new Intent(activity, LockScreenService.class);
+        activity.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -261,6 +196,7 @@ public class MarketFragment extends Fragment implements
         super.onStop();
         if (activity != null) {
             activity.unregisterReceiver(broadcastReceiver);
+            activity.unbindService(connection);
         }
     }
 
@@ -273,6 +209,7 @@ public class MarketFragment extends Fragment implements
         mPackageManager = activity.getPackageManager();
         progressDialog = new ProgressDialog(activity);
         userSpace = PrefUtils.getStringPref(activity, CURRENT_KEY);
+
     }
 
     @Override
@@ -282,12 +219,24 @@ public class MarketFragment extends Fragment implements
         rc = view.findViewById(R.id.appList);
         tvInfo = view.findViewById(R.id.tvNoDataFound);
         progressBar = view.findViewById(R.id.marketFragmentProgress);
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle(activity.getResources().getString(R.string.downloading_app_title));
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, activity.getResources().getString(R.string.cancel_text), (dialog, which) -> {
+            dialog.dismiss();
+            if(mService != null)
+            {
+                mService.cancelDownload();
+            }
+        });
 
-        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(activity)
-                .setDownloadConcurrentLimit(3)
-                .build();
+        swipeRefreshLayout = view.findViewById(R.id.refresh_Market);
+        swipeRefreshLayout.setOnRefreshListener(() -> refreshList());
 
-        fetch = Fetch.Impl.getInstance(fetchConfiguration);
+
+
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -349,6 +298,7 @@ public class MarketFragment extends Fragment implements
 
     private void getAllApps(String dealerId) {
 
+//        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
                 .getAllApps("marketApplist/" + dealerId)
                 .enqueue(new Callback<InstallAppModel>() {
@@ -374,8 +324,6 @@ public class MarketFragment extends Fragment implements
                                         if (versionCode != 0 && app.getVersion_code() != null) {
                                             int updatedVersion = Integer.parseInt(app.getVersion_code());
                                             if (versionCode < updatedVersion) {
-                                                Timber.d("Yours: %s", app.getVersion_code());
-                                                Timber.d("Ours: %s", versionCode);
                                                 updateApps.add(app);
                                             }
                                         }
@@ -390,11 +338,14 @@ public class MarketFragment extends Fragment implements
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
+                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(uninstalledAdapter);
                                 } else if (fragmentType.equals("uninstall")) {
-                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
+                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(installedAdapter);
                                 } else if (fragmentType.equals("update")) {
-                                    rc.setAdapter(new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType));
+                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(updateAdapter);
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
                                 tvInfo.setVisibility(View.GONE);
@@ -409,20 +360,36 @@ public class MarketFragment extends Fragment implements
 
                         }
                         progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                        if (getContext() != null)
-                            Toast.makeText(getContext(), getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+                        AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if(activity != null) {
+
+                                        Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+
+                                        progressBar.setVisibility(View.GONE);
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+
                     }
                 });
 
     }
-
-
     private void getAdminApps() {
+//        progressBar.setVisibility(View.VISIBLE);
         MyApplication.oneCaller
                 .getAdminApps()
                 .enqueue(new Callback<InstallAppModel>() {
@@ -450,8 +417,6 @@ public class MarketFragment extends Fragment implements
                                         if (versionCode != 0) {
                                             int updatedVersion = Integer.parseInt(app.getVersion_code());
                                             if (versionCode < updatedVersion) {
-                                                Timber.d("Yours: %s", app.getVersion_code());
-                                                Timber.d("Ours: %s", versionCode);
                                                 updateApps.add(app);
                                             }
                                         }
@@ -465,13 +430,17 @@ public class MarketFragment extends Fragment implements
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
+                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(uninstalledAdapter);
                                 } else if (fragmentType.equals("uninstall")) {
-                                    rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
+                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(installedAdapter);
                                 } else if (fragmentType.equals("update")) {
-                                    rc.setAdapter(new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType));
+                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(updateAdapter);
                                 } else {
-                                    rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
+                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+                                    rc.setAdapter(uninstalledAdapter);
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
 
@@ -485,30 +454,42 @@ public class MarketFragment extends Fragment implements
 
                         }
                         progressBar.setVisibility(View.GONE);
+
+                        if (swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
 
-                        progressBar.setVisibility(View.GONE);
+
+                            AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        if(activity != null) {
+
+                                            Toast.makeText(activity, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+
+                                            progressBar.setVisibility(View.GONE);
+                                            swipeRefreshLayout.setRefreshing(false);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
                     }
+
                 });
 
 
     }
-
-
     private void checkAppInstalledOrNot(java.util.List<List> list) {
         if (list != null && list.size() > 0) {
-            for (List app :
-                    list) {
-//                String fileName = app.getApk();
-//                Log.d("APKNAME",app.getApk() + ": " + app.getPackageName());
-////                File file = activity.getFileStreamPath(fileName);
-//                File apksPath = new File(activity.getFilesDir(), "apk");
-//                File file = new File(apksPath, fileName);
-//                if (file.exists()) {
-//                    String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
+            for (List app : list) {
                 String appPackageName = app.getPackageName();
                 if (appPackageName != null)
                     app.setInstalled(appInstalledOrNot(appPackageName));
@@ -531,7 +512,7 @@ public class MarketFragment extends Fragment implements
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onInstallClick(List app) {
+    public void onInstallClick(List app, ProgressBar progressBar) {
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         final Network n = cm.getActiveNetwork();
 
@@ -575,7 +556,6 @@ public class MarketFragment extends Fragment implements
 
     }
 
-
     private void downloadAndInstallApp(List app) {
         Log.d("lksajhdf", "");
         AppExecutor.getInstance().getMainThread().execute(() -> {
@@ -588,43 +568,33 @@ public class MarketFragment extends Fragment implements
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_capital), (dialog, which) -> {
 
                 String live_url = PrefUtils.getStringPref(activity, LIVE_URL);
-                downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url + MOBILE_END_POINT + "getApk/" +
-                        CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
-
-
-                downLoadAndInstallUpdate.execute();
+//                downLoadAndInstallUpdate = new DownLoadAndInstallUpdate(activity, live_url + MOBILE_END_POINT + "getApk/" +
+//                        CommonUtils.splitName(app.getApk()), app.getApk(), progressDialog, app.getPackageName());
+//
+//
+//                downLoadAndInstallUpdate.execute();
                 AppConstants.INSTALLING_APP_NAME = app.getApkName();
                 AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
 
-//                File apksPath = new File(activity.getFilesDir(), "apk");
-//                File file = new File(apksPath, app.getApk());
-////                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
-//                if (!apksPath.exists()) {
-//                    apksPath.mkdir();
-//                }
-//                if (!file.exists()) {
-//                    String url = live_url + MOBILE_END_POINT + "getApk/" +
-//                            CommonUtils.splitName(app.getApk());
-//                    String fileName = file.getAbsolutePath();
-//
-//                    request = new Request(url, fileName);
-//                    request.setPriority(Priority.HIGH);
-//                    request.setNetworkType(NetworkType.ALL);
-//                    request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
-//                    fetch.addListener(fetchListener);
-//                    fetch.enqueue(request, updatedRequest -> {
-//                        Toast.makeText(activity, "request is added", Toast.LENGTH_SHORT).show();
-//                        //Request was successfully enqueued for download.
-//                    }, error -> {
-//                        Toast.makeText(activity, "Something went wrong", Toast.LENGTH_SHORT).show();
-//                        //An error occurred enqueuing the request.
-//                    });
-//
-//                }
-//                else{
-//                    file.delete();
-//                    Toast.makeText(activity, "File is already exists", Toast.LENGTH_SHORT).show();
-//                }
+                File apksPath = new File(activity.getFilesDir(), "apk");
+                File file = new File(apksPath, app.getApk());
+//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+                if (!apksPath.exists()) {
+                    apksPath.mkdir();
+                }
+                if (!file.exists()) {
+                    url = live_url + MOBILE_END_POINT + "getApk/" +
+                            CommonUtils.splitName(app.getApk());
+                    fileName = file.getAbsolutePath();
+
+                    if (mService != null) {
+                        mService.startDownload(url, fileName,app.getPackageName());
+
+                    }
+
+                } else {
+                    showInstallDialog(file,app.getPackageName());
+                }
 
             });
 
@@ -701,7 +671,7 @@ public class MarketFragment extends Fragment implements
                     if (!packages.contains(app.getPackageName())) {
                         savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
                         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
                         intent.setData(Uri.parse("package:" + app.getPackageName()));
                         activity.startActivity(intent);
                     } else {
@@ -714,6 +684,11 @@ public class MarketFragment extends Fragment implements
         });
 
 
+    }
+
+    @Override
+    public void setProgressBar(ProgressBar progressBar) {
+//        downloadProgress.setVisibility(View.VISIBLE);
     }
 
 
@@ -802,6 +777,42 @@ public class MarketFragment extends Fragment implements
 
         }
     }
+
+    @Override
+    public void showDialog(int progress) {
+
+
+            if (!activity.isFinishing())
+            {
+                if(!progressDialog.isShowing())
+                {
+                    progressDialog.show();
+                }
+                progressDialog.setProgress(progress);
+
+                if(progressBar.getVisibility() == View.VISIBLE)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+            }
+
+    }
+
+    @Override
+    public void downloadComplete(String filePath,String packageName) {
+        if(progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+        if(!filePath.equals("") && !packageName.equals(""))
+        {
+            showInstallDialog(new File(filePath),packageName);
+        }
+    }
+
+
+
 
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, File> {
         private String appName, url;
@@ -1024,4 +1035,100 @@ public class MarketFragment extends Fragment implements
         }
         return true;
     }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
+            mService = binder.getService();
+            mService.setDownloadListener(MarketFragment.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
+    private void showInstallDialog(File file, String packageName) {
+
+        String sha1 = "142ds";
+
+
+//            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+//
+//            if (info != null) {
+//                try {
+//                    Signature[] releaseSig = info.signatures;
+//                    if (releaseSig != null) {
+//                        sha1 = getSHA1(releaseSig[0].toByteArray());
+//                    }
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+
+        //if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+        String userType = PrefUtils.getStringPref(activity, CURRENT_KEY);
+        Uri uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+        try {
+            PackageManager pm = activity.getPackageManager();
+            pm.getPackageInfo("com.secure.systemcontrol64", 0);
+            if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+                alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                alertDialog.setMessage("Are you sure you want to install this app?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                    Intent launchIntent = new Intent();
+                    ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                    launchIntent.setAction(Intent.ACTION_MAIN);
+                    launchIntent.setComponent(componentName);
+                    launchIntent.setData(uri);
+                    launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                    launchIntent.putExtra("user_space", userType);
+                    launchIntent.putExtra("SecureMarket", true);
+                    launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                    launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                    activity.startActivity(launchIntent);
+                    Snackbar snackbar = Snackbar.make(
+                            ((ViewGroup) activity.findViewById(android.R.id.content))
+                                    .getChildAt(0)
+                            , activity.getString(R.string.install_app_message)
+                            , 3000);
+
+                    snackbar.show();
+
+                });
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            savePackages(packageName, INSTALLED_PACKAGES, userType, activity);
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) activity)
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivity(intent);
+        }
+//            } else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
+
+
+//
+
+    }
+
 }
+
