@@ -42,6 +42,7 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.screenlocker.secure.views.PrepareLockScreen;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -172,7 +173,7 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
+        params = PrepareLockScreen.getParams(LockScreenService.this,mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
 
@@ -508,7 +509,7 @@ public class LockScreenService extends Service {
                 support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
-                Button unlock = mLayout.findViewById(R.id.ivUnlock);
+                Button unlock = view.findViewById(R.id.t9_unlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
@@ -536,7 +537,7 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = Utils.prepareLockScreenView(mLayout, null, this);
+            params = PrepareLockScreen.getParams(LockScreenService.this,mLayout);
             //windowManager.removeViewImmediate(mLayout);
         }
     };

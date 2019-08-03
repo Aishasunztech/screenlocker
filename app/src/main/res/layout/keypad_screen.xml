@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_icon"
     android:fitsSystemWindows="true">
+
     <TextView
         android:id="@+id/txtWarning"
         style="@style/icon_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="92dp"
         android:layout_marginEnd="8dp"
         android:gravity="center_vertical|center_horizontal"
         android:minHeight="48dp"
@@ -61,38 +64,87 @@
         app:layout_constraintEnd_toEndOf="@+id/password_field"
         app:layout_constraintTop_toTopOf="@+id/password_field" />
 
-
-    <com.screenlocker.secure.views.KeyboardView
-        android:id="@+id/keypad"
+    <RadioGroup
+        android:id="@+id/radio_group"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/_80sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/round_corners"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_field">
+
+        <RadioButton
+            android:id="@+id/radio_pin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/option_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="@dimen/_8sdp"
+            android:shadowColor="#000000"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="5"
+            android:text="PIN"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+
+        <RadioButton
+            android:id="@+id/radio_pattern"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/options_selector2"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="@dimen/_8sdp"
+            android:shadowColor="#000000"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="5"
+            android:text="Pattern"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </RadioGroup>
+
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/radio_group"
+        app:layout_constraintVertical_bias="0.0">
 
-    <Button
-        android:id="@+id/ivUnlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_355sdp"
-        android:background="@drawable/keyboard_button_bg"
-        android:shadowColor="#000000"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="5"
-        android:text="@string/unlock"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/keypad" />
+        <com.screenlocker.secure.views.KeyboardView
+            android:id="@+id/keypad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <com.itsxtt.patternlock.PatternLockView
+            android:id="@+id/patternLockView"
+            app:plv_regularDotRadiusRatio= ".1"
+            app:plv_errorDotRadiusRatio= ".1"
+            app:plv_selectedDotRadiusRatio= ".1"
+            app:plv_spacing= "0dp"
+            app:plv_indicatorSizeRatio="0.1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ViewSwitcher>
+
 
     <TextView
         android:id="@+id/t9_key_support"
@@ -113,22 +165,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/t9_key_clear"
         style="@style/keyboard_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_7sdp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:shadowColor="#000000"
         android:shadowDx="5"
         android:shadowDy="5"
         android:shadowRadius="5"
         android:text="@string/btn_backspace"
-        android:textColor="@color/white"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/t9_key_support" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

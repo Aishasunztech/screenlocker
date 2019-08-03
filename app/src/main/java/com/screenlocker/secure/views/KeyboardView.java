@@ -24,9 +24,8 @@ import java.util.Random;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 
 public class KeyboardView extends LinearLayout implements View.OnClickListener, RefreshListener {
-
-    private EditText mPasswordField;
-    private TextView txtWarning;
+    private TextView btnUnlock;
+    private OnKeyClickListener mListener;
 
     public KeyboardView(Context context) {
         super(context);
@@ -51,12 +50,10 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 
     private void initViews() {
 
-        mPasswordField = $(R.id.password_field);
-        txtWarning = $(R.id.txtWarning);
+        btnUnlock = $(R.id.t9_unlock);
 
-        $(R.id.t9_key_clear).setOnClickListener(this);
 
-        $(R.id.t9_key_backspace).setOnClickListener(this);
+
 
         TextView k0 = $(R.id.t9_key_0),
                 k1 = $(R.id.t9_key_1),
@@ -97,33 +94,6 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 
 //        $(R.id.t9_key_9).setOnClickListener(this);
 
-        mPasswordField.setTransformationMethod(new HiddenPassTransformationMethod());
-
-        mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-
-
-        mPasswordField.setTextColor(getResources().getColor(R.color.textColorPrimary));
-
-
-        mPasswordField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String device_status = getDeviceStatus(getContext());
-                if (device_status == null) {
-                    txtWarning.setVisibility(INVISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
     }
 
@@ -145,70 +115,14 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
     public void onClick(View v) {
         // handle number button click
         if (v.getTag() != null && "number_button".equals(v.getTag())) {
-            mPasswordField.append(((TextView) v).getText());
-            return;
-        }
-        switch (v.getId()) {
-            case R.id.t9_key_clear: { // handle clear button
-                setPassword(null);
+//            mPasswordField.append(((TextView) v).getText());
+            if (mListener != null) {
+                mListener.onKeyClick(((TextView) v).getText().toString());
             }
-            break;
-            case R.id.t9_key_backspace: { // handle backspace button
-                // delete one character
-                Editable editable = mPasswordField.getText();
-                int charCount = editable.length();
-                if (charCount > 0) {
-                    editable.delete(charCount - 1, charCount);
-                }
-            }
-            break;
         }
     }
 
 
-    public void setPassword(String password) {
-        mPasswordField.setText(password);
-    }
-
-    //    Enableclear
-    public void enableEditText() {
-        mPasswordField.setFocusableInTouchMode(true);
-        mPasswordField.setFocusable(true);
-        mPasswordField.setEnabled(true);
-    }
-
-
-    //    Disable
-    public void disableEditText() {
-        mPasswordField.setFocusable(false);
-        mPasswordField.setEnabled(false);
-        mPasswordField.setCursorVisible(false);
-        mPasswordField.setKeyListener(null);
-        mPasswordField.setBackgroundColor(Color.TRANSPARENT);
-    }
-
-    public void clearWaringText() {
-        txtWarning.setVisibility(INVISIBLE);
-        txtWarning.setText(null);
-    }
-
-    public void setWarningText(String msg) {
-        txtWarning.setVisibility(VISIBLE);
-
-//        if(!msg.equals(getResources().getString(R.string.wrong_password_try_again))){
-//            txtWarning.setBackgroundResource(R.drawable.error_msg);
-//        }
-
-
-
-            txtWarning.setText(msg);
-
-
-    }
-
-    public String getInputText() {
-        return mPasswordField.getText().toString();
-    }
 
     private <T extends View> T $(@IdRes int id) {
         return (T) super.findViewById(id);
@@ -220,45 +134,14 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
     }
 
 
-    private class HiddenPassTransformationMethod implements TransformationMethod {
-
-        private char DOT = '\u26AA';
 
 
-        @Override
-        public CharSequence getTransformation(final CharSequence charSequence, final View view) {
-            return new PassCharSequence(charSequence);
-        }
+    public void setOnKeyClickListener(OnKeyClickListener listener) {
+        mListener = listener;
+    }
 
-        @Override
-        public void onFocusChanged(final View view, final CharSequence charSequence, final boolean b, final int i,
-                                   final Rect rect) {
-            //nothing to do here
-        }
-
-        private class PassCharSequence implements CharSequence {
-
-            private final CharSequence charSequence;
-
-            PassCharSequence(final CharSequence charSequence) {
-                this.charSequence = charSequence;
-            }
-
-            @Override
-            public char charAt(final int index) {
-                return DOT;
-            }
-
-            @Override
-            public int length() {
-                return charSequence.length();
-            }
-
-            @Override
-            public CharSequence subSequence(final int start, final int end) {
-                return new PassCharSequence(charSequence.subSequence(start, end));
-            }
-        }
+    public void setOnUnlockButtonClickListener(OnUnlockButtonClickListener listener) {
+        btnUnlock.setOnClickListener(listener);
     }
 
 }
