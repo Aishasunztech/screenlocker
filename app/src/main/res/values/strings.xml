@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name" translatable="false">Titan Locker</string>
-    <string name="toolbar_title" translatable="false">Titan Locker</string>
-    <string name="apktype" translatable="false">SW</string>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
+    <string name="apktype" translatable="false">Dev</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
     <string name="number_two" translatable="false">2</string>
@@ -438,7 +438,7 @@
     <string name="features">\u25CB SFM as extension app. \n\u25CB Auto updates for all app.\n\u25CB New Update Tab in Sm.\n\u25CB Disable camera feature. \n\u25CB Notification Menu in SS.\n\u25CB New Welcome screen with animation.\n\u25CB New Icons for SM, SS and SC apps.\n\u25CB SIM Settings synchronization with LM.
 </string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. </string>
-    <string name="what_s_new_v5_15">What\'s New v5.15</string>
+    <string name="what_s_new_v5_15">What\'s New v5.146</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
 

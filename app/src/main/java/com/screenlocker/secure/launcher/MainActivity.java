@@ -43,6 +43,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
@@ -235,6 +236,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onResume() {
         super.onResume();
+
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
@@ -248,7 +250,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 //
-
+        refreshApps(this);
 //
     }
 
