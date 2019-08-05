@@ -64,7 +64,10 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.WhatsNew"></activity>
+        <activity
+            android:name="com.secureSetting.AllNotificationActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".settings.WhatsNew" />
         <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
         <activity android:name="com.secureSetting.NotificationsActivity" />
         <activity android:name=".policy.PolicyActivity" />
@@ -166,7 +169,7 @@
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
@@ -176,7 +179,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
@@ -200,7 +202,7 @@
         <activity
             android:name=".permissions.SteppersActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
@@ -264,6 +266,7 @@
             <intent-filter>
                 <action android:name="com.secure.systemcontroll.PackageAdded" />
                 <action android:name="com.secure.systemcontroll.PackageDeleted" />
+                <action android:name="com.secure.systemcontroll.PackageUninstall" />
                 <action android:name="com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET" />
             </intent-filter>
         </receiver>

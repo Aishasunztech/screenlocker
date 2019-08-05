@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -30,6 +31,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,6 +111,8 @@ public class LockScreenService extends Service {
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private FrameLayout frameLayout;
+    private WindowManager.LayoutParams localLayoutParams;
+    private LinearLayout mView;
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
     private boolean isLocked = false;
@@ -132,7 +136,6 @@ public class LockScreenService extends Service {
 
         @Override
         public void onCompleted(@NotNull Download download) {
-
             downloadListener.downloadComplete(filePath, packageName);
 
 
@@ -163,7 +166,7 @@ public class LockScreenService extends Service {
         public void onProgress(@NotNull Download download, long l, long l1) {
 
             if (downloadListener != null) {
-                downloadListener.showDialog(download.getProgress());
+                downloadListener.showProgressDialog(download.getProgress());
 
 
             }
@@ -327,6 +330,10 @@ public class LockScreenService extends Service {
         params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
+        //smalliew
+        localLayoutParams = new WindowManager.LayoutParams();
+        createLayoutParamsForSmallView();
+        mView = new LinearLayout(this);
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -342,6 +349,8 @@ public class LockScreenService extends Service {
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 notificationReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION_NOTIFICATION));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -360,6 +369,16 @@ public class LockScreenService extends Service {
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
 //                sheduleScreenOffMonitor();
+            }
+        }
+    };
+    BroadcastReceiver viewAddRemoveReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("add")) {
+                addView(android.R.color.transparent);
+            } else {
+                removeView();
             }
         }
     };
@@ -503,9 +522,9 @@ public class LockScreenService extends Service {
 
         fetch.enqueue(request, updatedRequest -> {
             Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
-
             //Request was successfully enqueued for download.
         }, error -> {
+            Timber.e(error.getThrowable());
             Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             //An error occurred enqueuing the request.
         });
@@ -518,7 +537,7 @@ public class LockScreenService extends Service {
     }
 
     public interface DownloadServiceCallBacks {
-        void showDialog(int progress);
+        void showProgressDialog(int progress);
 
         void downloadComplete(String filePath, String packagename);
 
@@ -538,6 +557,7 @@ public class LockScreenService extends Service {
             unregisterReceiver(screenOffReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(notificationReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
 
@@ -667,6 +687,7 @@ public class LockScreenService extends Service {
 
             if (!isLocked) {
                 isLocked = true;
+                removeView();
                 windowManager.addView(mLayout, params);
                 mLayout.setVisibility(View.GONE);
                 final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
@@ -859,6 +880,47 @@ public class LockScreenService extends Service {
             }
         }
     };
+
+
+    protected void addView(int colorId) {
+        mView.setBackgroundColor(getResources().getColor(colorId));
+        windowManager.addView(mView, localLayoutParams);
+    }
+
+    protected void removeView() {
+        Timber.d("removeView: ");
+        if (mView != null && mView.getWindowToken() != null) {
+            if (windowManager != null) {
+                windowManager.removeViewImmediate(mView);
+            }
+        }
+    }
+
+    private void createLayoutParamsForSmallView() {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+
+        } else {
+
+            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+
+        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+// this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+// Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        localLayoutParams.y = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+
+        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        localLayoutParams.height = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+
+        localLayoutParams.format = PixelFormat.TRANSLUCENT;
+
+
+    }
 
     public String getCurrentApp() {
         String dum = null;

@@ -8,14 +8,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.view.accessibility.AccessibilityEvent;
-
-import androidx.core.app.ActivityCompat;
+import android.widget.Toast;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
@@ -47,6 +45,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+
+
+        Toast.makeText(this, "Service Connected ", Toast.LENGTH_SHORT).show();
 
         ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$WifiSettingsActivity");

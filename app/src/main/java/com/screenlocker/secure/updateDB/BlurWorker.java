@@ -228,7 +228,7 @@ public class BlurWorker extends Worker {
                 supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
                 supportExtension.setExtension(false);
                 supportExtension.setGuest(false);
-                supportExtension.setEncrypted(true);
+                supportExtension.setEncrypted(false);
                 supportExtension.setEnable(true);
                 supportExtension.setVisible(true);
                 supportExtension.setDefaultApp(false);

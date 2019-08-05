@@ -2,12 +2,12 @@ package com.screenlocker.secure.settings.managepassword;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import com.screenlocker.secure.R;
 
-class PasswordOptionsAcitivity extends AppCompatActivity {
-
+public class PasswordOptionsAcitivity extends AppCompatActivity {
 
 
     @Override

@@ -1,12 +1,8 @@
 package com.screenlocker.secure.base;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,31 +10,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.view.Gravity;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -47,20 +37,11 @@ import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.Timer;
-import java.util.TreeMap;
 
 import timber.log.Timber;
 
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
@@ -71,10 +52,10 @@ import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
-@SuppressLint("Registered")
+
 public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
     //    customViewGroup view;
-    WindowManager.LayoutParams localLayoutParams;
+
     private boolean overlayIsAllowed;
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
@@ -141,7 +122,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localLayoutParams = new WindowManager.LayoutParams();
 
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
@@ -200,29 +180,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         });
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    }
-
-
-    private void createLayoutParams() {
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-
-        } else {
-
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }
-
-        localLayoutParams.gravity = Gravity.TOP;
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-// this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-// Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-
-        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (25 * getResources().getDisplayMetrics().scaledDensity);
-        localLayoutParams.format = PixelFormat.TRANSPARENT;
     }
 
 
@@ -357,6 +314,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
@@ -422,13 +381,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //                sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
-
                 new BlockStatusBar(this, false).collapseNow();
 
             }
         }
 
     }
+
 
 //    private void clearRecentApp(Context context) {
 //
@@ -519,3 +478,4 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 
 }
+

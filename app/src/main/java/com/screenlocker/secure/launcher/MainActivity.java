@@ -296,7 +296,7 @@ public class MainActivity extends
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
-
+        super.onResume();
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
@@ -314,7 +314,6 @@ public class MainActivity extends
             setBackground(msg);
         }
 
-        refreshApps(this);
 
         Timber.d("<<< Check Policy >>>");
 
@@ -328,12 +327,16 @@ public class MainActivity extends
             startActivity(intent);
         }
 
+        refreshApps(this);
 
 //        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
 
 
         super.onResume();
 
+//
+
+//
     }
 
     private void runLayoutAnimation() {

@@ -45,6 +45,7 @@ public class AppConstants {
 
 
     public static final String BROADCAST_KEY = "key";
+    public static final String BROADCAST_VIEW_ADD_REMOVE = "add_view";
     public static final String SUPER_ADMIN_KEY = "11111";
 
     public static final String KEY_SERVICE_RUNNING = "lock_service";
@@ -88,15 +89,15 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-//        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -402,6 +403,7 @@ public class AppConstants {
     public static final String SIM_ACTION_DELETED = "sim_delete";
     public static final String SIM_ACTION_UPDATE = "sim_update";
     public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
+    public static final String UEM_PKG = "com.rim.mobilefusion.client";
 
 
     // push pull apps
