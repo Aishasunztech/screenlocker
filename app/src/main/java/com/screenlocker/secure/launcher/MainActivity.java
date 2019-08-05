@@ -119,13 +119,26 @@ public class MainActivity extends
 
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+//        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//
+//        startLockTask();
+//
+//
+//        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+//
+//        devicePolicyManager.setLockTaskPackages(getComponentName(), new String[]{"com.securefreevpn.vpn",getPackageName()});
+
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SocketService socketService = new SocketService();
-
 
         SocketService.downloadCompleteListener = (DownloadCompleteListener) this;
 

@@ -7,16 +7,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Handler;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.AppExecutor;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Future;
 
 import timber.log.Timber;
@@ -43,11 +53,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
     private HashSet<String> globalActions = new HashSet<>();
 
     @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-
-
-        Toast.makeText(this, "Service Connected ", Toast.LENGTH_SHORT).show();
+    public void onCreate() {
+        super.onCreate();
 
         ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$WifiSettingsActivity");
@@ -124,6 +131,11 @@ public class WindowChangeDetectingService extends AccessibilityService {
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallUninstalling");
 
 
+        smPermissions.add("com.android.packageinstaller/.InstallSuccess");
+        smPermissions.add("com.google.android.packageinstaller/.InstallSuccess");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallSuccess");
+
+
         smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 //        wm.addView(mView, localLayoutParams);
@@ -141,6 +153,14 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         globalActions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
 
+
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+
+        Toast.makeText(this, "Service Connected ", Toast.LENGTH_SHORT).show();
 
         //Configure these here for compatibility with API 13 and below.
         AccessibilityServiceInfo config = new AccessibilityServiceInfo();
@@ -229,6 +249,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
     }
 
 
+    private Handler handler;
+
+
     private void clearRecentApp(Context context) {
 
         Intent i = new Intent(context, MainActivity.class);
@@ -237,7 +260,17 @@ public class WindowChangeDetectingService extends AccessibilityService {
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
 
-//        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("locked"));
+
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
+        handler = new Handler();
+
+        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(WindowChangeDetectingService.this, new Intent(WindowChangeDetectingService.this, LockScreenService.class).setAction("remove")), 2000);
+
 
     }
 

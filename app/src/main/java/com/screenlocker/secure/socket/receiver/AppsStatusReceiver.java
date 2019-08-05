@@ -40,6 +40,9 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
         Timber.d("dklfggidgfdr");
 
+        Timber.d(intent.getAction());
+
+
         if (intent.getAction() != null && intent.getAction().equals("com.secure.systemcontroll.PackageAdded")) {
 
 

@@ -314,8 +314,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);

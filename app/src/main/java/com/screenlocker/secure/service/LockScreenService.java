@@ -17,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -31,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,9 +40,12 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -52,6 +57,7 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secureSetting.t.GlideOptions;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -291,15 +297,10 @@ public class LockScreenService extends Service {
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
         fetch.addListener(fetchListener);
 
-
-        handler = new Handler();
-
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
         blacklist.add("com.huawei.android.launcher");
-
-
         permittedPackages.add("com.google.android.packageinstaller");
         permittedPackages.add("com.android.packageinstaller");
 
@@ -334,6 +335,10 @@ public class LockScreenService extends Service {
         localLayoutParams = new WindowManager.LayoutParams();
         createLayoutParamsForSmallView();
         mView = new LinearLayout(this);
+
+        mView.setOrientation(LinearLayout.VERTICAL);
+        mView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -376,7 +381,7 @@ public class LockScreenService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
-                addView(android.R.color.transparent);
+                addView(getResources().getDrawable(R.drawable.stepper_bg_gradient));
             } else {
                 removeView();
             }
@@ -618,6 +623,15 @@ public class LockScreenService extends Service {
                     case "na":
                         startLockScreen(true);
                         break;
+                    case "add":
+                        Timber.d("ADD VIEW ");
+                        addView(getResources().getDrawable(R.drawable.stepper_bacground));
+                        break;
+                    case "remove":
+                        Timber.d("REMOVE VIEW ");
+                        removeView();
+                        break;
+
                 }
             }
         }
@@ -716,7 +730,6 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView(String current_key) {
-
 
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, current_key);
 
@@ -830,7 +843,6 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-
                 View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
@@ -882,18 +894,61 @@ public class LockScreenService extends Service {
     };
 
 
-    protected void addView(int colorId) {
-        mView.setBackgroundColor(getResources().getColor(colorId));
-        windowManager.addView(mView, localLayoutParams);
+    private boolean viewAdded = false;
+
+    private ImageView imageView;
+
+    private TextView textView;
+
+    protected void addView(Drawable drawable) {
+        Timber.d("addView: ");
+        try {
+            mView.setBackground(drawable);
+            if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
+
+                imageView = new ImageView(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
+                imageView.setLayoutParams(params);
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
+
+                textView = new TextView(this);
+                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+                textView.setText("Action not allowed !");
+                textView.setTextSize(18f);
+                textView.setTextColor(getResources().getColor(R.color.white));
+
+
+                mView.addView(imageView);
+                mView.addView(textView);
+
+                windowManager.addView(mView, localLayoutParams);
+                viewAdded = true;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+            viewAdded = false;
+        }
+
     }
 
     protected void removeView() {
         Timber.d("removeView: ");
-        if (mView != null && mView.getWindowToken() != null) {
-            if (windowManager != null) {
-                windowManager.removeViewImmediate(mView);
+        try {
+            if (mView != null && mView.getWindowToken() != null) {
+                if (windowManager != null) {
+                    mView.removeView(imageView);
+                    mView.removeView(textView);
+                    windowManager.removeViewImmediate(mView);
+                    viewAdded = false;
+                }
             }
+        } catch (Exception e) {
+            Timber.e(e);
+            viewAdded = false;
         }
+
     }
 
     private void createLayoutParamsForSmallView() {
@@ -912,10 +967,10 @@ public class LockScreenService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+//        localLayoutParams.y = WindowManager.LayoutParams.MATCH_PARENT;
 
         localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
 
         localLayoutParams.format = PixelFormat.TRANSLUCENT;
 

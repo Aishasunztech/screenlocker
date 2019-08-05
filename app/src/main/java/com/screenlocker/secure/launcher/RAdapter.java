@@ -1,11 +1,9 @@
 package com.screenlocker.secure.launcher;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +11,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
 import com.contactSupport.ChatActivity;
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
-import com.simplemobiletools.filemanager.pro.activities.SplashActivity;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
-
+import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 
@@ -91,6 +90,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
             if (info.getPackageName().equals(context.getPackageName())) {
                 PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
+
             }
 
             if (info.isEnable()) {
@@ -119,17 +119,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
                             break;
-                        case "com.secure.launcher":
-                            Intent launch = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
-                            if (launch != null) {
-                                launch.addCategory(Intent.CATEGORY_LAUNCHER);
-                                if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
-                                    launch.putExtra("isSupport", true);
-                                    launch.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
-                                }
-                            }
-                            /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
+                        case BuildConfig.APPLICATION_ID:
+                            Intent launch = new Intent(context, SettingsActivity.class);
+                            launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
                             break;
                         default: {

@@ -252,7 +252,11 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             batteryOptimization.setChecked(true);
             batteryOptimization.setClickable(false);
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);
-        } else PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, false);
+        } else {
+            batteryOptimization.setChecked(false);
+            batteryOptimization.setClickable(true);
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, false);
+        }
         batteryOptimization.setOnCheckedChangeListener(this);
 
 
@@ -369,7 +373,11 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                     batteryOptimization.setChecked(true);
                     batteryOptimization.setClickable(false);
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);
-                } else batteryOptimization.setChecked(false);
+                } else {
+                    batteryOptimization.setChecked(false);
+                    batteryOptimization.setClickable(true);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, false);
+                }
 
                 break;
             case 1245:

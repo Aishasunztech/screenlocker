@@ -98,6 +98,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     private PackageManager mPackageManager;
     private boolean isBackPressed;
     private boolean isInstallDialogOpen;
+    private boolean isUnstallDialogOpen;
     private SwipeRefreshLayout refreshLayout;
 
     private AsyncCalls asyncCalls;
@@ -436,6 +437,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             }
         } catch (PackageManager.NameNotFoundException e) {
 
+            isInstallDialogOpen = true;
 
             savePackages(packageName, INSTALLED_PACKAGES, userType, this);
 
@@ -649,6 +651,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
+        isUnstallDialogOpen = true;
         savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
 //                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
@@ -661,12 +664,12 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     protected void onResume() {
         super.onResume();
 
-
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
 
         isBackPressed = false;
         isInstallDialogOpen = false;
+        isUnstallDialogOpen = false;
         checkAppInstalledOrNot(appModelList);
         mAdapter.notifyDataSetChanged();
         if (mService != null) {
@@ -677,7 +680,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isBackPressed && !isInstallDialogOpen) {
+        if (!isBackPressed && !isInstallDialogOpen && !isUnstallDialogOpen) {
             try {
                 //refreshLayout.setVisibility(View.INVISIBLE);
                 this.finish();

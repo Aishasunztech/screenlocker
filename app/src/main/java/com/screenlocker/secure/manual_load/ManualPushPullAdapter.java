@@ -54,10 +54,10 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
 
         if (installModel.getType().equals(PULL_APP)) {
             holder.btnUnInstall.setVisibility(View.VISIBLE);
-            holder.btnInstall.setVisibility(View.GONE);
+            holder.btnInstall.setVisibility(View.INVISIBLE);
         }
         if (installModel.getType().equals(PUSH_APP)) {
-            holder.btnUnInstall.setVisibility(View.GONE);
+            holder.btnUnInstall.setVisibility(View.INVISIBLE);
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
         holder.tv_name.setText(installModel.getApk_name());

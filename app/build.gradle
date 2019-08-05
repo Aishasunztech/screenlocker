@@ -21,8 +21,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 5142
-        versionName "5.142"
+        versionCode 5143
+        versionName "5.143"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -178,6 +178,7 @@ dependencies {
 
     // DownloadManager
     implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.4'
+
 
 
 }

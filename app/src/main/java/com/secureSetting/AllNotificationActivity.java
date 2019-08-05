@@ -38,9 +38,6 @@ public class AllNotificationActivity extends BaseActivity {
             ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
             intent.setComponent(cn);
             startActivity(intent);
-            Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
-            intent1.putExtra("add",true);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         });
     }
 

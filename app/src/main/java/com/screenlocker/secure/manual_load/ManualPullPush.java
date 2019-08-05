@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,7 +64,8 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_pull_push);
         ButterKnife.bind(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+
         Timber.d("<<< ManualPushPull >>>");
     }
 
@@ -140,7 +142,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
 
 
         if (list != null && list.size() > 0) {
-            List<InstallModel> pullApps = list.stream().filter(model -> (model.getType().equals(PULL_APPS)) && !isSystemApp(model.getPackage_name()) && isPackageInstalled(model.getPackage_name(), getPackageManager())).collect(Collectors.toList());
+            List<InstallModel> pullApps = list.stream().filter(model -> (model.getType().equals(PULL_APPS)) && !model.getPackage_name().equals(getPackageName()) && !isSystemApp(model.getPackage_name()) && isPackageInstalled(model.getPackage_name(), getPackageManager())).collect(Collectors.toList());
             if (pullApps != null && pullApps.size() > 0) {
                 for (InstallModel model : pullApps) {
                     Timber.d(model.getPackage_name());

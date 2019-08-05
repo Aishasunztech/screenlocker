@@ -300,7 +300,6 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
     @Override
     public void finish() {
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             super.finishAndRemoveTask();
         } else {
