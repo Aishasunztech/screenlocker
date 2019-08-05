@@ -690,9 +690,6 @@ public class LockScreenService extends Service {
 
     private void startLockScreen(boolean refresh) {
 
-
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
-
         try {
 //            setTimeRemaining(getAppContext());
             if (refresh)
@@ -715,6 +712,8 @@ public class LockScreenService extends Service {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
+                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+
             }
 
 

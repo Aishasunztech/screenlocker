@@ -79,21 +79,27 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/.password.ChooseLockPassword");
         ssPermissions.add("com.android.settings/.fingerprint.FingerprintEnrollFinish");
         ssPermissions.add("com.android.phone/.MobileNetworkSettings");
-        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
-        ssPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
-        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
-        ssPermissions.add("com.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
         ssPermissions.add("com.android.settings/.Settings$TetherSettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$TetherWifiSettingsActivity");
+
+
+        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        ssPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        ssPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity");
+
+
+        ssPermissions.add("com.google.android.packageinstaller/.permission.ui.Manage.PermissionsActivity");
+        ssPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.ManagePermissionsActivity");
+        ssPermissions.add("com.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
+
         ssPermissions.add(getPackageName() + "/com.secureSetting.SecureSettingsMain");
         ssPermissions.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
         ssPermissions.add(getPackageName() + "/com.screenlocker.secure.launcher.MainActivity");
         ssPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
-//        allowedPackages.add("com.google.android.packageinstaller");
-//        allowedPackages.add("com.android.packageinstaller");
+        // SM permission
 
-
+        smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
         smPermissions.add("com.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallerActivity");
@@ -135,8 +141,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
         smPermissions.add("com.google.android.packageinstaller/.InstallSuccess");
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallSuccess");
 
-
-        smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 //        wm.addView(mView, localLayoutParams);
 
