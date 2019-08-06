@@ -537,7 +537,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-                                        finish();
+                                        approvedLinkViewState();
                                         break;
                                     case PENDING:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
