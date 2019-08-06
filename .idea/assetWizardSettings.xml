@@ -35,9 +35,11 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="0380ff" />
-                            <entry key="outputName" value="ic_encrypted_icon_24" />
+                            <entry key="height" value="200" />
+                            <entry key="outputName" value="ic_lock_restricted" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Abdul Razzaq\Downloads\encrypted 1.svg" />
+                            <entry key="sourceFile" value="C:\Users\Abdul Razzaq\Downloads\lock.svg" />
+                            <entry key="width" value="200" />
                           </map>
                         </option>
                       </PersistentState>

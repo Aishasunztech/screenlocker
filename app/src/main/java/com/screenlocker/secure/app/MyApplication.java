@@ -224,6 +224,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
+
         PreferenceManager.init(this);
         getApplicationContext().startService(new Intent(getApplicationContext(), AppService.class));
         DbIgnoreExecutor.init(getApplicationContext());

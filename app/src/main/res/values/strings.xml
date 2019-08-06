@@ -441,5 +441,6 @@
     <string name="what_s_new_v5_15">What\'s New v5.15</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
+    <string name="action_restricted">Action Restricted</string>
 
 </resources>
