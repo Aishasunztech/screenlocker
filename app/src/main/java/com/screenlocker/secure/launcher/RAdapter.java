@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
@@ -84,9 +86,13 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
                             break;
+                        case BuildConfig.APPLICATION_ID:
+                            Intent intent1 = new Intent(context, SettingsActivity.class);
+                            intent1.setAction(Intent.ACTION_VIEW);
+                            context.startActivity(intent1);
+                            break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
                             if (launchIntent != null) {
                                 launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                             }

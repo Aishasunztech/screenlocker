@@ -299,7 +299,6 @@ public class LockScreenService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> {
-            Log.d("nadeem", "screeen off from reciver: ");
             startLockScreen(true);
         });
         if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
@@ -526,9 +525,8 @@ public class LockScreenService extends Service {
 
 
     private void startLockScreen(boolean refresh) {
-        Log.d("nadeem", "startLockScreen: ");
 
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+
 
         try {
 //            setTimeRemaining(getAppContext());
@@ -540,19 +538,13 @@ public class LockScreenService extends Service {
                 isLocked = true;
                 removeView();
                 windowManager.addView(mLayout, params);
-                mLayout.setVisibility(View.GONE);
-                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-
-                in.setDuration(2000);
-
-                mLayout.setVisibility(VISIBLE);
-                mLayout.startAnimation(in);
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
                 //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
+                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
 
 

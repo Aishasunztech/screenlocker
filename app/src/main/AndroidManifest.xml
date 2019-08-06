@@ -384,8 +384,6 @@
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:screenOrientation="nosensor" />
-        <activity android:name=".base.BaseActivity"
-            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -53,16 +54,20 @@ public class SimStateChangeListener extends BroadcastReceiver {
                 SubscriptionInfo infoSim1 = sManager.getActiveSubscriptionInfoForSimSlotIndex(0);
                 SubscriptionInfo infoSim2 = sManager.getActiveSubscriptionInfoForSimSlotIndex(1);
                 if (infoSim1 != null) {
-                   int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(0,context.getString(R.string.status_active),infoSim1.getIccId());
-                    if (result>0){
-                        saveIccid(context,infoSim1.getIccId());
-                    }
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(0,context.getString(R.string.status_active),infoSim1.getIccId());
+                        if (result>0){
+                            saveIccid(context,infoSim1.getIccId());
+                        }
+                    });
                 }
                 if (infoSim2 != null) {
-                    int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(1,context.getString(R.string.status_active),infoSim2.getIccId());
-                    if (result>0){
-                        saveIccid(context,infoSim2.getIccId());
-                    }
+                   AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                       int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(1,context.getString(R.string.status_active),infoSim2.getIccId());
+                       if (result>0){
+                           saveIccid(context,infoSim2.getIccId());
+                       }
+                   });
                 }
 
             }

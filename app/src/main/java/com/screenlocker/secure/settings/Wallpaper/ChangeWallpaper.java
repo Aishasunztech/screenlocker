@@ -1,8 +1,12 @@
 package com.screenlocker.secure.settings.Wallpaper;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.screenlocker.secure.R;
@@ -29,6 +33,7 @@ public class ChangeWallpaper extends AppCompatActivity
     private String type;
     private FragmentManager fragmentManager;
     private boolean isBackPressed;
+    private SetWallpaperDialog newFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,23 +117,23 @@ public class ChangeWallpaper extends AppCompatActivity
     @Override
     public void onItemClick(int position) {
         fragmentManager = getSupportFragmentManager();
-        SetWallpaperDialog newFragment = new SetWallpaperDialog();
-        Bundle bundle = new Bundle();
-        bundle.putInt("RAWID", ids.get(position));
-        newFragment.setArguments(bundle);
-        // The device is smaller, so show the fragment fullscreen
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        // For a little polish, specify a transition animation
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        // To make it fullscreen, use the 'content' root view as the container
-        // for the fragment, which is always the root view for the activity
-        transaction.add(android.R.id.content, newFragment)
-                .addToBackStack(null).commit();
+        if (newFragment == null) {
+            newFragment = new SetWallpaperDialog(ChangeWallpaper.this, this);
+            Window window = newFragment.getWindow();
+            if (window != null) {
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                newFragment.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        }
+        if (!newFragment.isShowing()) {
+            newFragment.setImage(ids.get(position));
+            newFragment.show();
+
+        }
     }
 
     @Override
     public void onWallpaperSelected(int id) {
-        fragmentManager.popBackStack();
         switch (type) {
             case KEY_MAIN:
                 Toast.makeText(this, getResources().getString(R.string.bg_set_encrypted), Toast.LENGTH_SHORT).show();
@@ -143,6 +148,7 @@ public class ChangeWallpaper extends AppCompatActivity
                 PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(id));
                 break;
         }
+        newFragment.dismiss();
     }
 
     @Override
@@ -154,8 +160,7 @@ public class ChangeWallpaper extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isBackPressed)
-        {
+        if (!isBackPressed) {
             this.finish();
         }
     }

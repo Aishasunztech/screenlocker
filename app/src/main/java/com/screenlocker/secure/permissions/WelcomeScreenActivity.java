@@ -37,6 +37,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
 
     ImageView imageView;
+    private boolean isLaunched = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
             lockScreen.setAction("locked");
             ActivityCompat.startForegroundService(this, lockScreen);
+            isLaunched = false;
 
             finish();
         }, 5000);
@@ -76,5 +78,17 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isLaunched){
+            startActivity(new Intent(WelcomeScreenActivity.this, MainActivity.class));
+            Intent lockScreen = new Intent(WelcomeScreenActivity.this, LockScreenService.class);
+            lockScreen.setAction("locked");
+            ActivityCompat.startForegroundService(this, lockScreen);
+            finish();
+        }
     }
 }
