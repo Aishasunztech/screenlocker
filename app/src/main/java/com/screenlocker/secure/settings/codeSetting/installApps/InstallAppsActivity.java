@@ -681,7 +681,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!isBackPressed && !isInstallDialogOpen) {
             try {
                 //refreshLayout.setVisibility(View.INVISIBLE);
-                this.finish();
+//                this.finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
 
                     //  finish previous activity and this activity

@@ -1121,7 +1121,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         } else {
                             if (policyResponse != null) {
                                 policyResponse.onResponse(false);
-
                             }
                         }
 
