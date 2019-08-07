@@ -14,7 +14,9 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.BufferedInputStream;
@@ -30,6 +32,7 @@ import java.util.Date;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
 public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
     private String appName, url;
@@ -96,7 +99,6 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
             try {
                 fileOutputStream = new FileOutputStream(file);
-
                 downloadUrl = new URL(url);
                 connection = downloadUrl.openConnection();
                 connection.setRequestProperty("authorization", PrefUtils.getStringPref(contextWeakReference.get(), SYSTEM_LOGIN_TOKEN));
@@ -110,6 +112,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
                 while ((count = input.read(data)) != -1) {
                     if (isCanceled) {
                         file.delete();
+
                         break;
                     }
                     total += count;
@@ -173,6 +176,9 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
     private void showInstallDialog(Uri apkUri, Context context) {
         //for Build.VERSION.SDK_INT <= 24
+
+        PrefUtils.saveBooleanPref(contextWeakReference.get(), AppConstants.IS_SETTINGS_ALLOW, false);
+        PrefUtils.saveBooleanPref(contextWeakReference.get(), UNINSTALL_ALLOWED, true);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, apkUri);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);

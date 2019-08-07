@@ -104,13 +104,12 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         cardView.setBackgroundResource(R.drawable.black_circle);
 
 
-
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
         etPolicyName.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submit();
-                return  true;
+                return true;
             }
             return false;
         });
@@ -127,6 +126,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnDefaultPolicy:
+                isDefault = true;
+                etPolicyName.setError(null);
                 handleLoadPolicy(getResources().getString(R.string.default_policy), getResources().getString(R.string.default_policy_message));
                 break;
             case R.id.btnLoadPolicy:
@@ -142,7 +143,9 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             etPolicyName.setError(getResources().getString(R.string.enter_policy_name));
         } else {
 //            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
-            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device,policyName));
+            isDefault = false;
+            etPolicyName.setError(null);
+            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device, policyName));
         }
     }
 
@@ -150,14 +153,13 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     // method to load default or  policy
     private void handleLoadPolicy(String policyName, String text) {
 
-
         new AlertDialog.Builder(PolicyActivity.this).
                 setTitle(getResources().getString(R.string.policy_warning_title))
                 .setMessage(text).setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
 
             if (mService != null) {
                 mService.onLoadPolicy(policyName);
-                PrefUtils.saveStringPref(PolicyActivity.this,POLICY_NAME,policyName);
+                PrefUtils.saveStringPref(PolicyActivity.this, POLICY_NAME, policyName);
                 processingView();
             }
 
@@ -328,24 +330,32 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         doUnbindService();
     }
 
+    private boolean isDefault = false;
+
     @Override
     public void onResponse(boolean status) {
         Timber.d("Policy status %s", status);
         if (status) {
             PrefUtils.saveBooleanPref(this, LOADING_POLICY, true);
             AppExecutor.getInstance().getMainThread().execute(this::successView);
+            finish();
         } else {
-            AppExecutor.getInstance().getMainThread().execute(this::errorView);
+            if (isDefault) {
+                AppExecutor.getInstance().getMainThread().execute(() -> errorView(getResources().getString(R.string.policy_not_set)));
+            } else {
+                AppExecutor.getInstance().getMainThread().execute(() -> errorView(getResources().getString(R.string.invalid_policy_name)));
+            }
+
         }
     }
 
 
-    private void errorView() {
+    private void errorView(String msg) {
         etPolicyName.setEnabled(true);
         btnLoadPolicy.setEnabled(true);
         btnDefault.setEnabled(true);
         progressBar.setVisibility(View.GONE);
-        etPolicyName.setError(getResources().getString(R.string.invalid_policy_name));
+        etPolicyName.setError(msg);
     }
 
     private void processingView() {

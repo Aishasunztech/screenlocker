@@ -7,12 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
-import android.os.Build;
 import android.os.Handler;
-import android.view.WindowManager;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -25,9 +22,8 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
@@ -51,6 +47,27 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
 
     private HashSet<String> globalActions = new HashSet<>();
+
+    public static ServiceConnectedListener serviceConnectedListener;
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+
+        Timber.d("connected : " + connected.get());
+
+        connected.set(false);
+
+
+        if (serviceConnectedListener != null) {
+            serviceConnectedListener.serviceConnected(connected.get());
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+
+
+    }
 
     @Override
     public void onCreate() {
@@ -177,9 +194,22 @@ public class WindowChangeDetectingService extends AccessibilityService {
     }
 
 
+//    @Override
+//    protected boolean onKeyEvent(KeyEvent event) {
+//        if (event.getKeyCode() == KeyEvent.KEYCODE_HOME)
+//            return true;
+//        else
+//            return super.onKeyEvent(event);
+//    }
+
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
+        connected.set(true);
+
+
+        Timber.d("dkjgdgrfghdghdr %s", event.getAction());
 
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             if (event.getPackageName() != null && event.getClassName() != null) {
@@ -264,7 +294,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
 
-
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
             handler = null;
@@ -319,6 +348,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
         return status;
     }
+
+
+    AtomicBoolean connected = new AtomicBoolean(false);
 
 
 }

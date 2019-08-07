@@ -22,10 +22,21 @@ public class AppInfo {
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
+
+    public boolean isSystemApp() {
+        return systemApp;
+    }
+
+    public void setSystemApp(boolean systemApp) {
+        this.systemApp = systemApp;
+    }
+
     private boolean guest;
     private boolean enable;
     private boolean encrypted;
 
+
+    private boolean systemApp;
 
     public void setExtension(boolean extension) {
         this.extension = extension;

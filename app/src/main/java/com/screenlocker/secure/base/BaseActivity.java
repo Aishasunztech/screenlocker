@@ -15,20 +15,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.service.apps.ServiceConnectedListener;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
@@ -41,11 +44,13 @@ import java.util.HashSet;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
+import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
@@ -53,7 +58,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess
 import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, ServiceConnectedListener {
     //    customViewGroup view;
 
     private boolean overlayIsAllowed;
@@ -88,28 +93,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                     getPolicyDialog().dismiss();
                 }
 
-                Toast.makeText(context, "policy applied", Toast.LENGTH_SHORT).show();
-
-                // showpolicyConfirmstion();
-
-//                ArrayList<InstallModel> modelArrayList = utils.getArrayList( BaseActivity.this);
-//
-//                if(modelArrayList!=null){
-//                    if(modelArrayList.size()>0){
-//
-//                        if(getSupportFragmentManager().getFragments().size()>0){
-//                            if(getSupportFragmentManager().getFragments().get(0) instanceof MarketFragment){
-//
-//                            }else{
-//                                MarketFragment marketFragment = new MarketFragment();
-//                                Bundle bundle = new Bundle();
-//                                bundle.putString("check",MarketFragment.TYPE_POLICY);
-//                                marketFragment.setArguments(bundle);
-//                                marketFragment.show(getSupportFragmentManager(),null);
-//                            }
-//                        }
-//                    }
-//                }
+                showpolicyConfirmstion();
 
             }
         }
@@ -121,7 +105,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        WindowChangeDetectingService.serviceConnectedListener = this;
 
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
@@ -189,6 +176,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
         unregisterReceiver(lifecycleReceiver);
         lifecycleReceiver.unsetStateChangeListener();
+
+        WindowChangeDetectingService.serviceConnectedListener = null;
 
         if (alertDialog != null) {
             alertDialog.dismiss();
@@ -315,6 +304,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onResume() {
         super.onResume();
 
+//        Intent intent = new Intent(this, WindowChangeDetectingService.class);
+//        intent.setAction("checkStatus");
+//        startService(intent);
+
+
+        PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
+
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
@@ -335,6 +331,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
             launchPermissions();
+            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
         } else if (!isNotificationAccess(this)) {
             launchPermissions();
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
@@ -343,6 +340,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else {
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
+            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
         }
 
 
@@ -352,7 +350,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     private void launchPermissions() {
         Intent a = new Intent(this, SteppersActivity.class);
         PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, true);
-
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             a.putExtra("emergency", true);
         }
@@ -374,16 +371,32 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //            }
 //
 //        }
+        PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!hasFocus) {
-//                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-//                sendBroadcast(closeDialog);
+
+                BlockStatusBar blockStatusBar = new BlockStatusBar(this, false);
+
+                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+                    // Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+
+                    // sendBroadcast(closeDialog);
 //                Method that handles loss of window focus
-                new BlockStatusBar(this, false).collapseNow();
+                    blockStatusBar.collapseNow(false);
+                } else {
+                    blockStatusBar.collapseNow(true);
+                }
+
 
             }
         }
+
+    }
+
+    @Override
+    public void serviceConnected(boolean status) {
+//        Toast.makeText(this, "Service Staatus : " + status, Toast.LENGTH_SHORT).show();
 
     }
 

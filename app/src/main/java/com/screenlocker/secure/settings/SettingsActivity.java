@@ -96,6 +96,7 @@ import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -170,6 +171,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+    private void runShellCommand(String command) throws Exception {
+        Process process = Runtime.getRuntime().exec(command);
+        process.waitFor();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -177,6 +184,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
+
+//        runShellCommand("adb shell pm hide ")
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
@@ -478,8 +488,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         if (currentVersion != null)
             if (CommonUtils.isNetworkAvailable(this)) {
-
-
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();
@@ -540,8 +548,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                             .setMessage(getResources().getString(R.string.update_available_message))
                                             .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
                                                 String url = response.body().getApkUrl();
-
                                                 String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+
                                                 DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
                                                 obj.execute();
                                             }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {

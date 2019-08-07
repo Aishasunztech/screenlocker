@@ -2,6 +2,7 @@ package com.screenlocker.secure.updateDB;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -32,6 +33,24 @@ public class BlurWorker extends Worker {
     }
 
     private static final String TAG = BlurWorker.class.getSimpleName();
+
+    private boolean isSystemApp(String packageName, Context context) {
+
+        ApplicationInfo info = null;
+        try {
+            info = context.getPackageManager().getApplicationInfo(packageName, 0);
+            if (info.sourceDir.startsWith("/data/app/")) {
+                //Non-system app
+                return false;
+            } else {
+                //System app
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
 
     @NonNull
     @Override
@@ -79,19 +98,26 @@ public class BlurWorker extends Worker {
 
                 for (AppInfo dbApp : dbApps) {
 
-
                     if (dbApp.getUniqueName().equals(app.getUniqueName())) {
                         String dbLabel = dbApp.getLabel();
                         String label = app.getLabel();
+
+                        boolean isSystemApp = isSystemApp(app.getPackageName(), MyApplication.getAppContext());
+
                         if (!dbLabel.equals(label)) {
                             dbApp.setLabel(label);
                             MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
                             Timber.e("databaseLabel :%s", dbLabel);
                             Timber.e("Label :%s", label);
                             break;
+                        } else if (isSystemApp) {
+                            boolean is_dbApp_system = isSystemApp(dbApp.getPackageName(), MyApplication.getAppContext());
+                            if (!is_dbApp_system) {
+                                dbApp.setSystemApp(true);
+                                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
+                                break;
+                            }
                         }
-
-
                     }
 
 
@@ -116,6 +142,7 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(true);
+                        app.setSystemApp(true);
 
 
                     } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
@@ -126,6 +153,7 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(false);
+                        app.setSystemApp(true);
 
                     } else if (app.getPackageName().equals(settingPackageName)) {
 
@@ -134,6 +162,7 @@ public class BlurWorker extends Worker {
                         app.setDefaultApp(false);
                         app.setEncrypted(false);
                         app.setExtension(false);
+                        app.setSystemApp(true);
 
                     } else if (app.getPackageName().equals("com.secure.launcher1") && applicationContext.getResources().getString(R.string.apktype).equals("BYOD")) {
                         app.setGuest(false);
@@ -142,6 +171,7 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(false);
+                        app.setSystemApp(true);
                     } else {
                         app.setGuest(true);
                         app.setEncrypted(false);
@@ -149,7 +179,7 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         app.setVisible(true);
                         app.setDefaultApp(false);
-
+                        app.setSystemApp(isSystemApp(app.getPackageName(), MyApplication.getAppContext()));
                     }
 
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
@@ -161,6 +191,7 @@ public class BlurWorker extends Worker {
                         app.setDefaultApp(false);
                         app.setEncrypted(false);
                         app.setExtension(false);
+                        app.setSystemApp(true);
                         MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
                     }
 
@@ -183,14 +214,15 @@ public class BlurWorker extends Worker {
                 wifiExtension.setEnable(true);
                 wifiExtension.setVisible(true);
                 wifiExtension.setDefaultApp(false);
+                wifiExtension.setSystemApp(true);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
-            }
-            else{
+            } else {
                 appInfo.setExtension(false);
                 Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
                 byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
                 appInfo.setIcon(secure_settings_icon);
+                appInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(appInfo);
             }
 
@@ -209,6 +241,8 @@ public class BlurWorker extends Worker {
                 clearExtension.setVisible(true);
                 clearExtension.setDefaultApp(false);
 
+                clearExtension.setSystemApp(true);
+
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
             } else {
 
@@ -216,6 +250,7 @@ public class BlurWorker extends Worker {
                 byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
                 secureCleanInfo.setIcon(secure_clear_icon);
                 secureCleanInfo.setExtension(false);
+                secureCleanInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
             AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
@@ -232,10 +267,12 @@ public class BlurWorker extends Worker {
                 supportExtension.setEnable(true);
                 supportExtension.setVisible(true);
                 supportExtension.setDefaultApp(false);
+                supportExtension.setSystemApp(true);
 
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
             } else {
                 supportInfo.setExtension(false);
+                supportInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
             }
 
@@ -254,9 +291,11 @@ public class BlurWorker extends Worker {
                 sfmExtension.setEnable(true);
                 sfmExtension.setVisible(true);
                 sfmExtension.setDefaultApp(false);
+                sfmExtension.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(sfmExtension);
             } else {
                 sfmInfo.setExtension(false);
+                sfmInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(sfmInfo);
             }
 
@@ -274,12 +313,14 @@ public class BlurWorker extends Worker {
                 marketExtension.setEnable(true);
                 marketExtension.setVisible(true);
                 marketExtension.setDefaultApp(false);
+                marketExtension.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(marketExtension);
             } else {
                 Drawable market_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_market);
                 byte[] secure_market_icon = CommonUtils.convertDrawableToByteArray(market_drawable);
                 secureMarketInfo.setIcon(secure_market_icon);
                 secureMarketInfo.setExtension(false);
+                secureMarketInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
             }
 

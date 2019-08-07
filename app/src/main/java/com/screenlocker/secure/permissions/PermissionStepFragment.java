@@ -37,6 +37,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -60,6 +61,7 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -106,9 +108,13 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
     }
 
+
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void onResume() {
+        super.onResume();
+
+        PrefUtils.saveBooleanPref(MyApplication.getAppContext(), TEMP_SETTINGS_ALLOW, true);
+        Timber.d("sfdkgsfdgjsedgs %s","onResume");
     }
 
     // user can,'t skip this
@@ -116,7 +122,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     public boolean setSkipable() {
         return false;
     }
-
 
     //return title for activity
     @Override

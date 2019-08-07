@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -31,6 +34,7 @@ import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -85,6 +89,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     public MyApplication() {
     }
+
+
 
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
@@ -179,10 +185,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
-                    try{
-                        ((AppCompatActivity)activity).getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    }catch (Exception e)
-                    {
+                    try {
+                        ((AppCompatActivity) activity).getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -325,49 +330,49 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
-    private void checkForDownload() {
-
-
-        String currentVersion = "1";
-        try {
-            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            Timber.d(e);
-        }
-
-        MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                .enqueue(new Callback<UpdateModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    String url = response.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
-                                    obj.execute();
-
-                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-
-
-                            } else {
-                                saveToken();
-                                checkForDownload();
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-
-                    }
-                });
-
-
-    }
+//    private void checkForDownload() {
+//
+//
+//        String currentVersion = "1";
+//        try {
+//            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            Timber.d(e);
+//        }
+//
+//        MyApplication.oneCaller
+//                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+//                .enqueue(new Callback<UpdateModel>() {
+//                    @Override
+//                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+//
+//                        if (response.body() != null) {
+//                            if (response.body().isSuccess()) {
+//                                if (response.body().isApkStatus()) {
+//                                    String url = response.body().getApkUrl();
+//                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+//                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
+//                                    obj.execute();
+//
+//                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+//
+//
+//                            } else {
+//                                saveToken();
+//                                checkForDownload();
+//                            }
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+//
+//                    }
+//                });
+//
+//
+//    }
 
 
     public static void saveToken() {

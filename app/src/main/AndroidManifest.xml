@@ -81,7 +81,6 @@
             android:name="com.secureSetting.NotificationsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".policy.PolicyActivity" />
 
         <service
             android:name=".service.apps.WindowChangeDetectingService"

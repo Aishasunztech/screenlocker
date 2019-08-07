@@ -22,6 +22,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,25 +40,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
-import com.secureSetting.t.GlideOptions;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -80,6 +80,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
@@ -90,13 +91,14 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
+import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
@@ -377,6 +379,7 @@ public class LockScreenService extends Service {
             }
         }
     };
+
     BroadcastReceiver viewAddRemoveReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -388,94 +391,101 @@ public class LockScreenService extends Service {
         }
     };
 
-    PowerManager powerManager;
+    private PowerManager powerManager;
 
-    AppExecutor appExecutor;
+    private AppExecutor appExecutor;
 
-    private void sheduleScreenOffMonitor() {
+    private boolean running = false;
+
+    private void startRecentAppsKillThread() {
 
         if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
             appExecutor.readyNewExecutor();
         }
+
         appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
 
             while (!Thread.currentThread().isInterrupted()) {
 
                 if (!powerManager.isInteractive()) {
                     appExecutor.getMainThread().execute(() -> startLockScreen(true));
+                    running = false;
                     return;
-                } else {
-                    if (myKM.inKeyguardRestrictedInputMode()) {
-                        //it is locked
-                        appExecutor.getMainThread().execute(() -> startLockScreen(true));
-                        return;
-                    }
                 }
+                running = true;
 
-                Timber.d("skldfggskjgskljogikljo %s", "RUNNING");
+                String package_name = getCurrentApp();
 
-                if (powerManager.isInteractive()) {
+                Timber.d("current Package %s", package_name);
 
-                    String packageC = getCurrentApp();
 
-                    String current_package = (packageC == null) ? "" : packageC;
-
-                    Timber.d("skldfggskjgskljogikljo %s", current_package);
-
-                    if (isAllowed(this, current_package)) {
-                        Timber.d("skldfggskjgskljogikljo %s", " ===> package allowed");
-                    } else if (current_package.equals("com.android.settings") && PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                        Timber.d("skldfggskjgskljogikljo %s", "===> settings allowed");
+                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+                    if (package_name != null) {
+                        checkAppStatus(package_name);
                     } else {
-                        Timber.d("skldfggskjgskljogikljo %s", " ===> package not allowed");
-                        Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        startActivity(i);
+                        clearRecentApp(this);
                     }
-
                 }
+
             }
         });
     }
 
 
-    private int counter = 0;
-    private String tempPackage;
-    boolean status = true;
+    private void checkAppStatus(String packageName) {
+
+        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
+                .submit(() -> isAllowed(LockScreenService.this, packageName));
+        try {
+            boolean status = futureObject.get();
+            if (!status) {
+                clearRecentApp(this);
+            }
+        } catch (Exception e) {
+            clearRecentApp(this);
+        }
+    }
+
+    private boolean status = false;
+
+
+    private void clearRecentApp(Context context) {
+
+        Intent i = new Intent(context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
+        handler = new Handler(Looper.getMainLooper());
+
+        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
+
+
+    }
+
 
     private boolean isAllowed(Context context, String packageName) {
 
-        if (packageName.equals(context.getPackageName()) || permittedPackages.contains(packageName)) {
+        if (packageName.equals(context.getPackageName()) || (packageName.equals("com.android.settings") && PrefUtils.getBooleanPref(this, TEMP_SETTINGS_ALLOW))) {
             return true;
         }
 
         String space = PrefUtils.getStringPref(context, CURRENT_KEY);
         String currentSpace = (space == null) ? "" : space;
-
-
-        if (counter == 0) {
-            tempPackage = packageName;
-            counter++;
-        } else {
-            if (tempPackage.equals(packageName)) {
-                return status;
-            } else {
-                counter = 0;
-                status = true;
-            }
-
-        }
-
         Timber.d("<<< QUERYING DATA >>>");
 
-        AppInfo info = MyApplication.getAppDatabase(this).getDao().getParticularApp(packageName);
-
+        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
         if (info != null) {
-            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isGuest())) {
+            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
                 status = true;
-            } else if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
                 status = true;
             } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
                 status = true;
@@ -487,8 +497,10 @@ public class LockScreenService extends Service {
             status = false;
         }
 
+
         return status;
     }
+
 
     private void disableComponent(Context context, String packageName, String klass) {
 
@@ -630,6 +642,15 @@ public class LockScreenService extends Service {
                     case "remove":
                         Timber.d("REMOVE VIEW ");
                         removeView();
+                        break;
+                    case "startThread":
+                        if (!running) {
+                            startRecentAppsKillThread();
+                        }
+                        break;
+                    case "stopThread":
+                        running = false;
+                        appExecutor.getExecutorForSedulingRecentAppKill().shutdownNow();
                         break;
 
                 }
@@ -978,37 +999,28 @@ public class LockScreenService extends Service {
 
     public String getCurrentApp() {
         String dum = null;
-        try {
-            if (Build.VERSION.SDK_INT >= 21) {
-                String currentApp = null;
-                UsageStatsManager usm = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-                }
-                long time = System.currentTimeMillis();
-                List<UsageStats> applist = null;
-                if (usm != null) {
-                    applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
-                }
-                if (applist != null && applist.size() > 0) {
-                    SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
-                    for (UsageStats usageStats : applist) {
-                        mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-                    }
-                    if (!mySortedMap.isEmpty()) {
-                        currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
-                    }
-                }
-                return currentApp;
-            } else {
-                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                String mm = null;
-                if (manager != null) {
-                    mm = (manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
-                }
 
-                return mm;
+
+        try {
+            String currentApp = null;
+            UsageStatsManager usm = null;
+            usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> applist = null;
+
+            if (usm != null) {
+                applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, time - 86400000, time);
             }
+            if (applist != null && applist.size() > 0) {
+                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+                for (UsageStats usageStats : applist) {
+                    mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                }
+                if (!mySortedMap.isEmpty()) {
+                    currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+                }
+            }
+            return currentApp;
         } catch (Exception e) {
             Timber.d("getCurrentApp: %s", e.getMessage());
 

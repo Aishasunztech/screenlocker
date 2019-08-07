@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.manual_load.DownloadCompleteListener;
 import com.screenlocker.secure.manual_load.DownloadPushedApps;
@@ -44,9 +43,7 @@ import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.UtilityFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,14 +54,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import timber.log.Timber;
@@ -108,7 +101,6 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
@@ -127,10 +119,8 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SYSTEM_APP;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
-import static com.screenlocker.secure.utils.AppConstants.result;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
@@ -799,6 +789,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             for (int i = 0; i < list.size(); i++) {
                                 InstallModel model = list.get(i);
                                 model.setType(type);
+                                model.setPolicy(isPolicy);
                                 list.set(i, model);
                             }
 
@@ -1384,6 +1375,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 try {
                     if (validateRequest(device_id, object.getString("device_id"))) {
+
+                        Timber.d(object.toString());
+
                         if (object.getBoolean("status")) {
 
                             if (policyResponse != null) {
