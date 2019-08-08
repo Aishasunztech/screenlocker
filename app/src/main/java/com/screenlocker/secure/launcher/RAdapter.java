@@ -31,6 +31,7 @@ import java.util.List;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
@@ -56,32 +57,31 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             img = itemView.findViewById(R.id.img);
 
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(v -> {
 
-                PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
-                openAppInfo(context, appsList.get(getAdapterPosition()).getPackageName());
-
-                return false;
-            });
-
-        }
-
-
-        private void openAppInfo(Context context, String packageName) {
-
-            try {
-                if (!packageName.equals(context.getPackageName())) {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(Uri.parse("package:" + packageName));
-                    context.startActivity(intent);
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
+//            itemView.setOnLongClickListener(v -> {
+//                PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
+//                openAppInfo(context, appsList.get(getAdapterPosition()).getPackageName());
+//                return false;
+//            });
 
         }
+
+
+//        private void openAppInfo(Context context, String packageName) {
+//
+//            try {
+//                if (!packageName.equals(context.getPackageName())) {
+//                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                    intent.setData(Uri.parse("package:" + packageName));
+//                    context.startActivity(intent);
+//                }
+//
+//            } catch (Exception e) {
+//                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//
+//        }
 
         @Override
         public void onClick(final View v) {
@@ -90,8 +90,32 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
             if (info.getPackageName().equals(context.getPackageName())) {
                 PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);
-
             }
+
+
+            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                String unique = info.getUniqueName();
+
+                switch (unique) {
+                    case AppConstants.SECURE_SETTINGS_UNIQUE:
+                        Intent i = new Intent(context, SecureSettingsMain.class);
+                        i.putExtra("show_default", "show_default");
+                        context.startActivity(i);
+                        break;
+                    case AppConstants.SUPPORT_UNIQUE:
+                        context.startActivity(new Intent(context, ChatActivity.class));
+                        break;
+                    case BuildConfig.APPLICATION_ID:
+                        Intent launch = new Intent(context, SettingsActivity.class);
+                        launch.setAction(ACTION_VIEW);
+                        context.startActivity(launch);
+                        break;
+                }
+
+
+                return;
+            }
+
 
             if (info.isEnable()) {
                 try {
@@ -101,7 +125,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SecureSettingsMain.class);
-                            if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);

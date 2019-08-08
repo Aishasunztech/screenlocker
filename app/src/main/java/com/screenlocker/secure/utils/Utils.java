@@ -191,6 +191,8 @@ public class Utils {
         params.gravity = Gravity.CENTER;
 
 
+
+
 //        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         final LayoutInflater inflater = LayoutInflater.from(context);

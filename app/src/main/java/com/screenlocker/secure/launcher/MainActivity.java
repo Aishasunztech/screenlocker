@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.R;
@@ -93,7 +95,7 @@ public class MainActivity extends
     private MainViewModel viewModel;
     private RecyclerView rvApps;
     private MainPresenter mainPresenter;
-    private AppCompatImageView background;
+    private ImageView background;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
 
@@ -299,6 +301,7 @@ public class MainActivity extends
     @Override
     protected void onResume() {
         super.onResume();
+
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
@@ -337,7 +340,7 @@ public class MainActivity extends
         super.onResume();
 
 //
-
+        refreshApps(this);
 //
     }
 
@@ -361,7 +364,7 @@ public class MainActivity extends
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
+                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
 //                        background.setImageResource(R.raw.audiblack);
 

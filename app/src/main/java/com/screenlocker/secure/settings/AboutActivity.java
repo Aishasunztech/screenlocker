@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        url_1 = findViewById(R.id.url_1);
+
 
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
@@ -316,5 +321,21 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onInternetConnectionStateChange(int socketState) {
 
+    }
+
+    private EditText url_1;
+
+    public void changeUrl(View view) {
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 }

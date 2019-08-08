@@ -168,11 +168,17 @@ public class WindowChangeDetectingService extends AccessibilityService {
         stepperPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
         stepperPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
+
+        // some global actions
         globalActions.add("com.android.systemui/.globalactions.GlobalActionsDialog$ExActionsDialog");
         globalActions.add("com.android.settings/android.app.Dialog");
         globalActions.add("com.android.settings/.bluetooth.RequestPermissionActivity");
+
         globalActions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         globalActions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
+        globalActions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity");
+        globalActions.add("com.samsung.android.incallui");
+
 
 
     }
@@ -191,6 +197,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
         config.flags = AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
 
         setServiceInfo(config);
+
+
     }
 
 
@@ -231,24 +239,24 @@ public class WindowChangeDetectingService extends AccessibilityService {
                         if (isActivity) {
                             if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
                                 Timber.d("dkjgdgrfghdghdr %s", "settings allowed");
-                                if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
+                                if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().equals(getPackageName())) {
                                 } else {
                                     checkAppStatus(componentName);
                                 }
                             } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
                                 Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
-                                if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
+                                if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().equals(getPackageName())) {
                                     Timber.d("dkjgdgrfghdghdr %s", "activity allowed");
                                 } else {
                                     Timber.d("dkjgdgrfghdghdr %s", "activity not allowed");
                                     checkAppStatus(componentName);
                                 }
-                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().contains(getPackageName())) {
+                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().equals(getPackageName())) {
                                 Timber.d("dkjgdgrfghdghdr %s", "permission granting");
                             } else {
                                 Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
 
-                                if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().contains(getPackageName()))
+                                if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().equals(getPackageName()))
                                     checkAppStatus(componentName);
                             }
                         }

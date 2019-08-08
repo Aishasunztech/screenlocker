@@ -90,7 +90,7 @@ public class AppConstants {
 
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL  _1 = "https://api.titansecureserver.com";//live TL
 //    public static final String URL_1 = "http://192.168.18.219:3000";//local
     public static final String URL_2 = "https://securenet.guru";

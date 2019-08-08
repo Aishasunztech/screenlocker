@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -105,8 +106,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+//        View decorView = getWindow().getDecorView();
+//        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+//        decorView.setSystemUiVisibility(uiOptions);
+
 
         WindowChangeDetectingService.serviceConnectedListener = this;
 
@@ -315,6 +322,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
         }
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
             launchPermissions();
@@ -371,6 +379,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //            }
 //
 //        }
+
+
         PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -390,6 +400,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 
             }
+//            else {
+//
+//                getWindow().getDecorView().setSystemUiVisibility(
+//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//
+//            }
         }
 
     }

@@ -451,5 +451,6 @@
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="policy_not_set">Default policy is not set by dealer.</string>
+    <string name="action_restricted">Action Restricted</string>
 
 </resources>

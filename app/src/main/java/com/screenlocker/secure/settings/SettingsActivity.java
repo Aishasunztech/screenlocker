@@ -185,7 +185,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
 
-
 //        runShellCommand("adb shell pm hide ")
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);

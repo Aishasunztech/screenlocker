@@ -26,7 +26,9 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -120,7 +122,7 @@ public class LockScreenService extends Service {
     private WindowManager windowManager;
     private FrameLayout frameLayout;
     private WindowManager.LayoutParams localLayoutParams;
-    private LinearLayout mView;
+    private FrameLayout mView;
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
     private boolean isLocked = false;
@@ -325,7 +327,7 @@ public class LockScreenService extends Service {
         }
 
         if (!getResources().getString(R.string.apktype).equals("BYOD")) {
-            scheduleUpdateCheck(this);
+//            scheduleUpdateCheck(this);
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
@@ -336,10 +338,15 @@ public class LockScreenService extends Service {
         //smalliew
         localLayoutParams = new WindowManager.LayoutParams();
         createLayoutParamsForSmallView();
-        mView = new LinearLayout(this);
 
-        mView.setOrientation(LinearLayout.VERTICAL);
-        mView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        mView = new FrameLayout(this);
+
+//        mView.setOrientation(LinearLayout.VERTICAL);
+
+
+        ViewGroup.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        mView.setLayoutParams(params);
 
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -384,7 +391,7 @@ public class LockScreenService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
-                addView(getResources().getDrawable(R.drawable.stepper_bg_gradient));
+                addView();
             } else {
                 removeView();
             }
@@ -637,7 +644,7 @@ public class LockScreenService extends Service {
                         break;
                     case "add":
                         Timber.d("ADD VIEW ");
-                        addView(getResources().getDrawable(R.drawable.stepper_bacground));
+                        addView();
                         break;
                     case "remove":
                         Timber.d("REMOVE VIEW ");
@@ -920,28 +927,45 @@ public class LockScreenService extends Service {
 
     private TextView textView;
 
-    protected void addView(Drawable drawable) {
+    private View view;
+
+    protected void addView() {
         Timber.d("addView: ");
         try {
-            mView.setBackground(drawable);
+//            mView.setBackground(drawable);
             if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
 
-                imageView = new ImageView(this);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
-                imageView.setLayoutParams(params);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.action_restricted_layout, null);
 
-                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
-
-                textView = new TextView(this);
-                textView.setGravity(Gravity.CENTER_HORIZONTAL);
-                textView.setText("Action not allowed !");
-                textView.setTextSize(18f);
-                textView.setTextColor(getResources().getColor(R.color.white));
+//                mView.getWindow().getDecorView().setSystemUiVisibility(
+//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
 
-                mView.addView(imageView);
-                mView.addView(textView);
+                mView.addView(view);
+
+
+//                imageView = new ImageView(this);
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
+//                imageView.setLayoutParams(params);
+//                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
+//
+//                textView = new TextView(this);
+//                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+//                textView.setText("Action not allowed !");
+//                textView.setTextSize(18f);
+//                textView.setTextColor(getResources().getColor(R.color.white));
+//
+//
+//                mView.addView(imageView);
+//                mView.addView(textView);
 
                 windowManager.addView(mView, localLayoutParams);
                 viewAdded = true;
@@ -958,8 +982,9 @@ public class LockScreenService extends Service {
         try {
             if (mView != null && mView.getWindowToken() != null) {
                 if (windowManager != null) {
-                    mView.removeView(imageView);
-                    mView.removeView(textView);
+//                    mView.removeView(imageView);
+//                    mView.removeView(textView);
+                    mView.removeView(view);
                     windowManager.removeViewImmediate(mView);
                     viewAdded = false;
                 }

@@ -91,6 +91,10 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha05'
 //    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
 
+
+    //multidex
+    implementation 'com.android.support:multidex:1.0.2'
+
 // Room
     implementation 'androidx.room:room-runtime:2.1.0-beta01'
     annotationProcessor 'androidx.room:room-compiler:2.1.0-beta01'
