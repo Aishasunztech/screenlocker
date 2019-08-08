@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -254,6 +255,17 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
+        }
+
+        boolean pendingDialog = PrefUtils.getBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG);
+        if(pendingDialog)
+        {
+            String dialogMessage = PrefUtils.getStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE);
+            if(!dialogMessage.equals("")){
+                Toast.makeText(this, dialogMessage, Toast.LENGTH_LONG).show();
+                PrefUtils.saveBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG,false);
+                PrefUtils.saveStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE,"");
+            }
         }
 
 //

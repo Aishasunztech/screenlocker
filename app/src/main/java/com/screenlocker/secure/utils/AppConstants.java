@@ -91,8 +91,8 @@ public class AppConstants {
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
 //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.149:3000";//local
+//        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -183,6 +183,8 @@ public class AppConstants {
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
     public static final String KEY_COLUMN_SIZE = "column_sizes";
+    public static final String PENDING_ALARM_DIALOG = "alarm_pending";
+    public static final String PENDING_DIALOG_MESSAGE = "alarm_dialog_message";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

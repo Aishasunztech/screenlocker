@@ -401,6 +401,8 @@
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.screenlocker.secure.service.AlarmReceiver"/>
 
         <service
             android:name=".service.CheckUpdateService"

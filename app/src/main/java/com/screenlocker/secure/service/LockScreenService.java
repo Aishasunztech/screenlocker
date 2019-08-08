@@ -1,7 +1,9 @@
 package com.screenlocker.secure.service;
 
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,12 +19,9 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -80,6 +79,8 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
+import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
@@ -256,6 +257,9 @@ public class LockScreenService extends Service {
 
     @Override
     public void onCreate() {
+
+        setAlarmManager(this,System.currentTimeMillis() + 60000);
+
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
@@ -431,10 +435,10 @@ public class LockScreenService extends Service {
         super.onDestroy();
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
+
 
 
         if (intent != null) {
@@ -480,6 +484,8 @@ public class LockScreenService extends Service {
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
     }
+
+
 
     public void stopCapture() {
         int windowType;
