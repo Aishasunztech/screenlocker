@@ -43,6 +43,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
+import com.screenlocker.secure.views.patternlock.PatternLockView;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -504,18 +505,20 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-                View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
+                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
+                pl.setUpRandomizedArray();
+                pl.invalidate();
                 support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
-                Button unlock = view.findViewById(R.id.t9_unlock);
+                Button unlock = mLayout.findViewById(R.id.t9_unlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
                 unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-                refreshKeypad(view);
+
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {

@@ -7,9 +7,11 @@ import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -30,7 +33,14 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
+import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 
+
+import java.util.List;
+
+import timber.log.Timber;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -99,24 +109,6 @@ public class PrepareLockScreen {
         //whole view
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
 
-        RadioGroup optionGroup = keypadView.findViewById(R.id.radio_group);
-        ViewSwitcher viewSwitcher = keypadView.findViewById(R.id.viewSwitcher);
-        optionGroup.check(R.id.radio_pin);
-        optionGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId){
-                case R.id.radio_pin:
-                    viewSwitcher.setInAnimation(context,R.anim.left_to_right);
-                    viewSwitcher.setOutAnimation(context,R.anim.exit_to_right);
-                    viewSwitcher.setDisplayedChild(0);
-                    break;
-                case R.id.radio_pattern:
-                    viewSwitcher.setInAnimation(context,R.anim.right_to_left);
-                    viewSwitcher.setOutAnimation(context,R.anim.exit_to_left);
-                    viewSwitcher.setDisplayedChild(1);
-                    break;
-            }
-        });
-
         TextView txtWarning = keypadView.findViewById(R.id.txtWarning);
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
         String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
@@ -127,9 +119,49 @@ public class PrepareLockScreen {
             rootView.setBackgroundResource(Integer.parseInt(bg));
         }
 
-        final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
+        Button unLockButton = keypadView.findViewById(R.id.t9_unlock);
+        EditText mPasswordField = keypadView.findViewById(R.id.password_field);
 
+        final PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
 
+        mPatternLockView.addPatternLockListener(new PatternLockViewListener() {
+            @Override
+            public void onStarted() {
+                Log.d(getClass().getName(), "Pattern drawing started");
+            }
+
+            @Override
+            public void onProgress(List<PatternLockView.Dot> progressPattern) {
+//                Log.d(getClass().getName(), "Pattern progress: " +
+//                        PatternLockUtils.patternToString(mPatternLockView, progressPattern));
+            }
+
+            @Override
+            public void onComplete(List<PatternLockView.Dot> pattern) {
+                if (pattern.size() == 1){
+                    mPasswordField.append(String.valueOf(pattern.get(0).getRandom()));
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    return;
+                }
+                String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
+                if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN))){
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    new Handler().postDelayed(mPatternLockView::clearPattern, 150);
+                    loginAsGuest(context);
+                    mPasswordField.setText(null);
+                    return;
+                }
+                mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+
+//                mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+            }
+
+            @Override
+            public void onCleared() {
+                Log.d(getClass().getName(), "Pattern has been cleared");
+            }
+        });
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
 
         if (device_id == null) {
@@ -209,8 +241,6 @@ public class PrepareLockScreen {
 
         });
 
-        Button unLockButton = keyboardView.findViewById(R.id.t9_unlock);
-        EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         ImageView backPress = keypadView.findViewById(R.id.t9_key_backspace);
         backPress.setOnClickListener(v -> {
             Editable editable = mPasswordField.getText();
@@ -254,7 +284,6 @@ public class PrepareLockScreen {
             mPasswordField.setText(null);
         });
 
-        keyboardView.setOnKeyClickListener(mPasswordField::append);
         long time_remaining = getTimeRemaining(context);
 
 

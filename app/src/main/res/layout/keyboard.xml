@@ -15,7 +15,6 @@
 
         <TextView
             android:id="@+id/t9_key_1"
-
             style="@style/keyboard_number_button"
             android:layout_height="65dp"
             android:text="@string/number_one" />

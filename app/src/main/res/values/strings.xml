@@ -438,4 +438,10 @@
     <string name="bugs"> \u25CB  Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. </string>
     <string name="what_s_new_v5_15">What\'s New v5.15</string>
 
+    <string name="lib_name">PatternLockView</string>
+    <string name="message_pattern_dot_added">Dot added to pattern</string>
+    <string name="message_pattern_started">Pattern drawing started</string>
+    <string name="message_pattern_detected">Pattern drawing completed</string>
+    <string name="message_pattern_cleared">Pattern cleared</string>
+
 </resources>

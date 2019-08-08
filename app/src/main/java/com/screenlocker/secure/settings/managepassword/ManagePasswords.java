@@ -119,8 +119,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                  * start the {@link SetUpLockActivity} to get the password
                  */
 //                settingsActivity.handleSetGuestPassword(ManagePasswords.this, rootLayout);
-//                handleSetGuestPassword(ManagePasswords.this,null,rootLayout);
-                startActivity(new Intent(this, PasswordOptionsAcitivity.class));
+                handleSetGuestPassword(ManagePasswords.this,null,rootLayout);
                 break;
 
             case R.id.tvSetMainPassword:    // handle the set main password click event
@@ -220,7 +219,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     // if password is right then allow user to change it
 
                     goToGuest = true;
-                    Intent intent = new Intent(activity, SetUpLockActivity.class);
+                    Intent intent = new Intent(activity, PasswordOptionsAcitivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
                     activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
 
@@ -263,7 +262,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                                 KEY_MAIN_PASSWORD))) {
                     // if password is right then allow user to change it
                     goToEncrypt = true;
-                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    Intent setUpLockActivityIntent = new Intent(activity, PasswordOptionsAcitivity.class);
                     setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 
@@ -312,7 +311,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                                 AppConstants.KEY_DURESS_PASSWORD))) {
                     // if password is right then allow user to change it
                     goToDuress = true;
-                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    Intent setUpLockActivityIntent = new Intent(activity, PasswordOptionsAcitivity.class);
                     setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
                     activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
 

@@ -38,6 +38,12 @@ public class AppConstants {
     public static final String BROADCAST_ACTION = "intentKey";
     public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
+    ///Pattern lock
+    public static final String GUEST_DEFAULT_CONFIG = "_guest_def_config";
+    public static final String GUEST_PATTERN = "_guest_pattern";
+    public static final String PIN_PASSWORD = "_pin_password";
+    public static final String PATTERN_PASSWORD = "_pattern_password";
+
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
 
@@ -87,9 +93,9 @@ public class AppConstants {
 
     //servers links
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
+        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
