@@ -375,20 +375,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
         });
 
-        notifications_container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(SecureSettingsMain.this,NotificationsActivity.class);
-//                intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-//                intent.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
-                Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
-                intent.setComponent(cn);
-                startActivity(intent);
-
-                getOverLayLayoutParams();
-            }
-        });
+        notifications_container.setOnClickListener(v -> startActivity(new Intent(SecureSettingsMain.this, AllNotificationActivity.class)));
 
 
     }
@@ -442,7 +429,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onDestroy() {
         unregisterReceiver(mBatInfoReceiver);
-        removeView();
+        removeview();
         super.onDestroy();
 
     }
@@ -501,15 +488,13 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
 //        battery_status.setText(getBatteryLevel(this) + " % " + getBatteryStatus());
-        removeView();
+        removeview();
 
     }
 
-    private void removeView() {
-        if(mView != null &&mView.getWindowToken() !=null)
-        {
-            if(wm != null)
-            {
+    private void removeview() {
+        if (mView != null && mView.getWindowToken() != null) {
+            if (wm != null) {
                 wm.removeViewImmediate(mView);
             }
         }

@@ -1,10 +1,19 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
+import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.room.Ignore;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class List {
 
+    public List()
+    {
+
+    }
 
     @SerializedName("apk_name")
     @Expose

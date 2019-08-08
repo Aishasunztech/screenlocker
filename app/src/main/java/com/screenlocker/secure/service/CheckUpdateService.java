@@ -16,6 +16,9 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.networkResponseModels.LoginModel;
+import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
@@ -42,8 +45,10 @@ import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.UEM_PKG;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.isProgress;
 
 public class CheckUpdateService extends JobService {
 
@@ -81,69 +86,118 @@ public class CheckUpdateService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
+        if (!AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown()){
+            AppExecutor.getInstance().getExecutorForUpdatingList().shutdownNow();
+        }
         return true;
     }
 
 
-
-
     //TODO:
     private void checkUpdatesIfAvailAble(JobParameters parameters) {
+        if (AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown() ){
+            AppExecutor.getInstance().prepareExecutorForUpdatingList();
+        }
         AppExecutor.getInstance().getExecutorForUpdatingList().execute(() -> {
-            try {
-                String currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-                Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                        .execute();
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().isApkStatus()) {
+            tryForCheckUpdates(parameters);
+        });
+    }
+
+    private void tryForCheckUpdates(JobParameters parameters) {
+        try {
+            String currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+            Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                    .execute();
+            if (response.isSuccessful()) {
+                if (response.body() != null && response.body().isSuccess()) {
+                    Timber.d("tryForCheckUpdates: %s", response.body());
+                    if (response.body().isApkStatus()) {
                         String url = response.body().getApkUrl();
                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url),getPackageName());
+                        downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), getPackageName());
                     }
-
                 } else {
-                    saveToken();
-                    checkUpdatesIfAvailAble(parameters);
+                    if (saveTokens())
+                        tryForCheckUpdates(parameters);
+                    return;
                 }
-                List<ApplicationInfo> packages = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
 
-                for (ApplicationInfo appInfo : packages) {
-                    String currAppName = getPackageManager().getApplicationLabel(appInfo).toString();
-                    try {
-                        String version = String.valueOf(getPackageManager().getPackageInfo(appInfo.packageName, 0).versionCode);
+            } else {
+                jobFinished(parameters,true);
+                return;
+            }
+            ApplicationInfo info = getPackageManager().getApplicationInfo(UEM_PKG, 0);
+            String uemCurrentVersion = String.valueOf(getPackageManager().getPackageInfo(UEM_PKG, 0).versionCode);
+            String uemName = getPackageManager().getApplicationLabel(info).toString();
+            Response<UpdateModel> uemResponse = MyApplication.oneCaller.getUpdate("getUpdate/" + uemCurrentVersion + "/" + UEM_PKG + "/" + uemName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                    .execute();
+            if (uemResponse.isSuccessful()) {
+                if (uemResponse.body() != null && uemResponse.body().isSuccess()) {
+                    if (uemResponse.body().isApkStatus()) {
+                        String url = uemResponse.body().getApkUrl();
+                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                        downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), UEM_PKG);
+                    }
+                }
+                else {
+                    if (saveTokens())
+                        tryForCheckUpdates(parameters);
+                    return;
+                }
 
-                        String srcDir = appInfo.sourceDir;
-                        //Log.d(TAG, currAppName+": "+srcDir);
-                        if (srcDir.startsWith("/data/app/") && getPackageManager().getLaunchIntentForPackage(appInfo.packageName) != null) {
-                            Response<UpdateModel> response2 = MyApplication.oneCaller
-                                    .getUpdate("getUpdate/" + version + "/" + appInfo.packageName + "/" + currAppName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                                    .execute();
-                            if (response2.isSuccessful()) {
-                                if (response2.body() != null && response2.body().isApkStatus()) {
+            } else {
+                jobFinished(parameters,true);
+                return;
+            }
+
+
+            List<ApplicationInfo> packages = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+
+            for (ApplicationInfo appInfo : packages) {
+                if (Thread.currentThread().isInterrupted()){
+                    return;
+                }
+               String currAppName = getPackageManager().getApplicationLabel(appInfo).toString();
+                try {
+                    String version = String.valueOf(getPackageManager().getPackageInfo(appInfo.packageName, 0).versionCode);
+
+                    String srcDir = appInfo.sourceDir;
+                    //Log.d(TAG, currAppName+": "+srcDir);
+                    if (srcDir.startsWith("/data/app/") && getPackageManager().getLaunchIntentForPackage(appInfo.packageName) != null) {
+                        Response<UpdateModel> response2 = MyApplication.oneCaller
+                                .getUpdate("getUpdate/" + version + "/" + appInfo.packageName + "/" + currAppName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                                .execute();
+                        if (response2.isSuccessful()) {
+                            if (response2.body() != null && response2.body().isSuccess()) {
+                                if (response2.body().isApkStatus()) {
                                     String url = response2.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                   downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), appInfo.packageName);
-
-
+                                    downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), appInfo.packageName);
                                 }
 
-                            } else {
-                                saveToken();
-                                checkUpdatesIfAvailAble(parameters);
                             }
+                            else {
+                                if (saveTokens())
+                                    tryForCheckUpdates(parameters);
+                                return;
+                            }
+
+                        } else {
+                           jobFinished(parameters, true);
+                           return;
                         }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
                     }
+                } catch (PackageManager.NameNotFoundException e) {
+                    Timber.d(e);
                 }
-                jobFinished(parameters,false);
-            } catch (PackageManager.NameNotFoundException e) {
-                Timber.d(e);
-            } catch (IOException e) {
-                e.printStackTrace();
-                jobFinished(parameters,false);
             }
-        });
+            jobFinished(parameters, false);
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.d(e);
+        } catch (IOException e) {
+            Timber.tag("").wtf(e, "tryForCheckUpdates: ");;
+            jobFinished(parameters, false);
+        }
     }
 
 
@@ -183,7 +237,7 @@ public class CheckUpdateService extends JobService {
 
 
                 //TODO:request installation
-                showInstallDialog(contentUri,pkg);
+                showInstallDialog(contentUri, pkg);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -215,6 +269,24 @@ public class CheckUpdateService extends JobService {
         launchIntent.putExtra("package", packageName);
         launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(launchIntent);
+    }
+
+    boolean saveTokens() throws IOException {
+        Timber.d("saveTokens");
+        Response<LoginResponse> response = MyApplication.oneCaller
+                .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getIPAddress(true))).execute();
+        if (response.isSuccessful()) {
+            if (response.body() != null) {
+                if (response.body().isStatus()) {
+                    Timber.d("saveTokens: true");
+                    PrefUtils.saveStringPref(CheckUpdateService.this, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                    return true;
+
+                }
+            }
+        }
+        return false;
+
     }
 
 }

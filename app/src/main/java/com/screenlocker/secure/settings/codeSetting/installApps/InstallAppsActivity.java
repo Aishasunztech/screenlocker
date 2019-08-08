@@ -3,9 +3,12 @@ package com.screenlocker.secure.settings.codeSetting.installApps;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -13,10 +16,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -39,10 +45,13 @@ import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.MarketFragment;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -55,6 +64,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,21 +72,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
+import static com.screenlocker.secure.utils.Utils.silentPullApp;
+import static com.secureMarket.MarketUtils.savePackages;
 
 
-public class InstallAppsActivity extends BaseActivity implements  InstallAppsAdapter.InstallAppListener {
+public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener,
+        LockScreenService.DownloadServiceCallBacks {
     private RecyclerView rvInstallApps;
     private TextView tvProgressText;
     private InstallAppsAdapter mAdapter;
     private List<com.screenlocker.secure.settings.codeSetting.installApps.List> appModelList;
     private AlertDialog progressDialog;
+    private ProgressDialog downloadProgressDialog;
     private ProgressBar mProgressBar;
     public static final String TAG = InstallAppsActivity.class.getSimpleName();
     private PackageManager mPackageManager;
@@ -85,6 +103,10 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
     private SwipeRefreshLayout refreshLayout;
 
     private AsyncCalls asyncCalls;
+    private String url = "";
+    private String fileName = "";
+    private LockScreenService mService = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +116,18 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         mPackageManager = getPackageManager();
         setRecyclerView();
         createProgressDialog();
+
+        downloadProgressDialog = new ProgressDialog(this);
+        downloadProgressDialog.setTitle(getResources().getString(R.string.downloading_app_title));
+        downloadProgressDialog.setCancelable(false);
+        downloadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        downloadProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text), (dialog, which) -> {
+            dialog.dismiss();
+            if(mService != null)
+            {
+                mService.cancelDownload();
+            }
+        });
 
         if (MyApplication.oneCaller == null) {
             String[] urls = {URL_1, URL_2};
@@ -124,7 +158,8 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
     }
 
-    private void setToolbar() {
+
+        private void setToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.installed_apps_title));
@@ -153,6 +188,9 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         }
     }
 
+
+
+
     private void getAllApps() {
         if (CommonUtils.isNetworkAvailable(this)) {
 
@@ -167,7 +205,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
                                 appModelList.addAll(response.body().getList());
                                 if (appModelList.size() == 0) {
-
+                                    //empty state should be here
                                 }
                                 checkAppInstalledOrNot(appModelList);
                                 mAdapter.notifyDataSetChanged();
@@ -190,28 +228,18 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
 
     private void checkAppInstalledOrNot(List<com.screenlocker.secure.settings.codeSetting.installApps.List> list) {
-        Log.d("CheckAppInstalledOrNot", "called");
         if (list != null && list.size() > 0) {
             for (com.screenlocker.secure.settings.codeSetting.installApps.List app :
                     list) {
-                String fileName = app.getApk();
-//                File file = getActivity().getFileStreamPath(fileName);
-                File apksPath = new File(getFilesDir(), "apk");
-                File file = new File(apksPath, fileName);
-                if (file.exists()) {
-                    Log.d("FileExists", "Yes");
-                    String appPackageName = getAppLabel(mPackageManager, file.getAbsolutePath());
-                    if (appPackageName != null)
-                        app.setInstalled(appInstalledOrNot(appPackageName));
-                }
+                app.setInstalled(appInstalledOrNot(app.getPackageName()));
             }
         }
 
     }
 
-    private boolean appInstalledOrNot(String uri) {
+    private boolean appInstalledOrNot(String packageName) {
         try {
-            mPackageManager.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            mPackageManager.getPackageInfo(packageName, 0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -236,6 +264,8 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
 
     }
+
+
 
     private void setRecyclerView() {
         refreshLayout = findViewById(R.id.container_layout);
@@ -317,8 +347,6 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
                                     appModelList.clear();
                                     mAdapter.notifyDataSetChanged();
                                 }
-
-
                             }
 
                         }
@@ -326,21 +354,128 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
                         Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    @Override
+    public void showProgressDialog(int progress) {
+
+        if (!this.isFinishing())
+        {
+            if(!downloadProgressDialog.isShowing())
+            {
+                downloadProgressDialog.show();
+            }
+            downloadProgressDialog.setProgress(progress);
+
+        }
+
+    }
+
+    @Override
+    public void downloadComplete(String filePath, String packagename) {
+        if(progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+        if(!filePath.equals("") && !packagename.equals(""))
+        {
+            showInstallDialog(new File(filePath),packagename);
+        }
+    }
+
+    private void showInstallDialog(File file, String packageName) {
+
+        String sha1 = "142ds";
+
+
+//            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
+//
+//            if (info != null) {
+//                try {
+//                    Signature[] releaseSig = info.signatures;
+//                    if (releaseSig != null) {
+//                        sha1 = getSHA1(releaseSig[0].toByteArray());
+//                    }
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+
+        //if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+        try {
+            PackageManager pm = this.getPackageManager();
+            pm.getPackageInfo("com.secure.systemcontrol64", 0);
+            if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
+                AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
+                alertDialog.setMessage("Are you sure you want to install this app?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
+                    Intent launchIntent = new Intent();
+                    ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
+//                        launchIntent.setAction(Intent.ACTION_VIEW);
+                    launchIntent.setAction(Intent.ACTION_MAIN);
+                    launchIntent.setComponent(componentName);
+                    launchIntent.setData(uri);
+                    launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
+                    launchIntent.putExtra("user_space", userType);
+                    launchIntent.putExtra("SecureMarket", true);
+                    launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
+                    launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//            contextWeakReference.get().sendBroadcast(sender);
+
+                    startActivity(launchIntent);
+                    Snackbar snackbar = Snackbar.make(
+                            ((ViewGroup) findViewById(android.R.id.content))
+                                    .getChildAt(0)
+                            , getString(R.string.install_app_message)
+                            , 3000);
+
+                    snackbar.show();
+
+                });
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            savePackages(packageName, INSTALLED_PACKAGES, userType, this);
+            Intent intent = ShareCompat.IntentBuilder.from((Activity) this)
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+        }
+//            } else {
+//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
+//            }
+
+
+//
+
+    }
+
+
     private static class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
         private String appName, url;
         private WeakReference<Context> contextWeakReference;
         private ProgressDialog dialog;
+        private String packageName;
 
         DownLoadAndInstallUpdate(Context context, final String url, String appName) {
             contextWeakReference = new WeakReference<>(context);
             this.url = url;
             this.appName = appName;
+            this.packageName = appName;
         }
 
         @Override
@@ -363,49 +498,48 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             FileOutputStream fileOutputStream = null;
             InputStream input = null;
             try {
-
+                appName = new Date().getTime() + ".apk";
                 File apksPath = new File(contextWeakReference.get().getFilesDir(), "apk");
                 File file = new File(apksPath, appName);
-//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
 
                 if (file.exists())
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-                try {
-                    fileOutputStream = new FileOutputStream(file);
-                    URL downloadUrl = new URL(url);
-                    URLConnection connection = downloadUrl.openConnection();
-                    int contentLength = connection.getContentLength();
+                    //  return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                    try {
+                        fileOutputStream = new FileOutputStream(file);
+                        URL downloadUrl = new URL(url);
+                        URLConnection connection = downloadUrl.openConnection();
+                        int contentLength = connection.getContentLength();
 
-                    // input = body.byteStream();
-                    input = new BufferedInputStream(downloadUrl.openStream());
-                    byte data[] = new byte[contentLength];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress((int) ((total * 100) / contentLength));
-                        fileOutputStream.write(data, 0, count);
+                        // input = body.byteStream();
+                        input = new BufferedInputStream(downloadUrl.openStream());
+                        byte data[] = new byte[contentLength];
+                        long total = 0;
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            total += count;
+                            publishProgress((int) ((total * 100) / contentLength));
+                            fileOutputStream.write(data, 0, count);
+                        }
+
+                        return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    } finally {
+                        if (fileOutputStream != null) {
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                        }
+                        if (input != null)
+                            input.close();
+                        file.setReadable(true, false);
+
+
                     }
-
-                    return FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                } finally {
-                    if (fileOutputStream != null) {
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-                    }
-                    if (input != null)
-                        input.close();
-                    file.setReadable(true, false);
-
-
-                }
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -442,6 +576,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             } catch (IOException e) {
                 Log.d("dddddgffdgg", "showInstallDialog: "+e.getMessage());;
             }*/
+            savePackages(packageName, INSTALLED_PACKAGES, PrefUtils.getStringPref(contextWeakReference.get(), CURRENT_KEY), contextWeakReference.get());
             Intent intent = ShareCompat.IntentBuilder.from((Activity) contextWeakReference.get())
                     .setStream(uri) // uri from FileProvider
                     .setType("text/html")
@@ -466,7 +601,6 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             }
 
             CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
-            Timber.e("getAppLabel: package name is " + packageInfo.packageName);
             return packageInfo.packageName;
 
         } else {
@@ -479,28 +613,52 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
 
         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+//        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
+//                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
+//                        CommonUtils.splitName(app.getApk()), app.getApk());
+//
+//        downLoadAndInstallUpdate.execute();
+        File apksPath = new File(getFilesDir(), "apk");
+        File file = new File(apksPath, app.getApk());
+//                File file = new File(Environment.getExternalStorageDirectory() + "/" + appName);
+        if (!apksPath.exists()) {
+            apksPath.mkdir();
+        }
+        url = live_url + MOBILE_END_POINT + "getApk/" +
+                CommonUtils.splitName(app.getApk());
+        fileName = file.getAbsolutePath();
+        if (!file.exists()) {
 
-        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
-                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
-                        CommonUtils.splitName(app.getApk()), app.getApk());
+            if (mService != null) {
+                mService.startDownload(url, fileName, app.getPackageName());
 
-        downLoadAndInstallUpdate.execute();
+            }
+
+        } else {
+            int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+            if (file_size >= (101 * 1024)) {
+                showInstallDialog(new File(fileName), app.getPackageName());
+            } else {
+                if (mService != null) {
+                    File file1 = new File(file.getAbsolutePath());
+                    file.delete();
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName());
+
+                }
+            }
+        }
+
 
 
     }
 
     @Override
     public void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position) {
-        String fileName = app.getApk();
-        File dir = new File(getFilesDir(), "apk");
-
-        File fileApk = new File(dir, fileName);
-        if (fileApk.exists()) {
-            Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-
-            startActivity(intent);
-        }
+        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
+        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+        intent.setData(Uri.parse("package:" + app.getPackageName()));
+        startActivity(intent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -511,6 +669,10 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelList);
         mAdapter.notifyDataSetChanged();
+        if(mService != null)
+        {
+            mService.setDownloadListener(this);
+        }
     }
 
     @Override
@@ -519,7 +681,7 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         if (!isBackPressed && !isInstallDialogOpen) {
             try {
                 //refreshLayout.setVisibility(View.INVISIBLE);
-                this.finish();
+//                this.finish();
                 if (CodeSettingActivity.codeSettingsInstance != null) {
 
                     //  finish previous activity and this activity
@@ -531,6 +693,14 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
 
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, LockScreenService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -540,6 +710,8 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
         }
+        unbindService(connection);
+
     }
 
     @Override
@@ -547,6 +719,8 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
         super.onBackPressed();
         isBackPressed = true;
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean installPackage(Context context, String abspath, String packageName)
@@ -582,4 +756,21 @@ public class InstallAppsActivity extends BaseActivity implements  InstallAppsAda
                 0);
         return pendingIntent.getIntentSender();
     }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
+            mService = binder.getService();
+            mService.setDownloadListener(InstallAppsActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
 }

@@ -1,26 +1,32 @@
 package com.secureMarket;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.room.AppsModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -28,7 +34,6 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOGO_END_POINT;
 
 public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapter.MyViewHolder> {
@@ -39,14 +44,17 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     private String fragmentType;
 
 
+
     public interface AppInstallUpdateListener {
-        void onInstallClick(List app);
+        void onInstallClick(List app,ProgressBar progressBar);
 
         void onUnInstallClick(List app, boolean status);
+
+        void setProgressBar(ProgressBar progressBar);
     }
 
     public SecureMarketAdapter(java.util.List<List> appModelList, Context context,
-                               AppInstallUpdateListener listener,String fragmentType) {
+                               AppInstallUpdateListener listener, String fragmentType) {
         this.appModelList = appModelList;
         this.context = context;
         this.listener = listener;
@@ -72,11 +80,9 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         if (app.isInstalled()) {
             holder.btnUnInstall.setVisibility(View.VISIBLE);
             holder.btnInstall.setVisibility(View.GONE);
-            if(fragmentType.equals("update"))
-            {
+            if (fragmentType.equals("update")) {
                 holder.btnUnInstall.setText(context.getResources().getString(R.string.update));
-            }
-            else{
+            } else {
                 holder.btnUnInstall.setText(context.getResources().getString(R.string.uninstall));
             }
 
@@ -97,7 +103,6 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         holder.tv_name.setText(appModelList.get(position).getApkName());
 
-
     }
 
     @Override
@@ -111,6 +116,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         ImageView imageView;
 
         TextView tv_name, btnInstall, btnUnInstall, apkSize;
+        ProgressBar progressBar;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,8 +126,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             btnInstall = itemView.findViewById(R.id.btnInstall);
             btnUnInstall = itemView.findViewById(R.id.btnUnInstall);
             apkSize = itemView.findViewById(R.id.apkSize);
+            progressBar = itemView.findViewById(R.id.downloadProgress);
 //            btnDownload = itemView.findViewById(R.id.btnDownload);
-
 
             btnInstall.setOnClickListener(this);
             btnUnInstall.setOnClickListener(this);
@@ -136,7 +142,10 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
                 if (listener != null) {
-                    listener.onInstallClick(app);
+                        listener.setProgressBar(progressBar);
+                        listener.onInstallClick(app,progressBar);
+
+                    //}
                 }
 
             } else if (v.getId() == R.id.btnUnInstall) {
@@ -149,13 +158,11 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                             boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
 
                             if (isGuest) {
-                                if(fragmentType.equals("update"))
-                                {
+                                if (fragmentType.equals("update")) {
                                     if (listener != null) {
-                                        listener.onInstallClick(app);
+                                        listener.onInstallClick(app,progressBar);
                                     }
-                                }
-                                else if(fragmentType.equals("uninstall")) {
+                                } else if (fragmentType.equals("uninstall")) {
                                     if (app.getIs_restrict_uninstall() == 0) {
                                         listener.onUnInstallClick(app, true);
                                     } else {
@@ -163,13 +170,11 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                                     }
                                 }
                             } else {
-                                if(fragmentType.equals("update"))
-                                {
+                                if (fragmentType.equals("update")) {
                                     if (listener != null) {
-                                        listener.onInstallClick(app);
+                                        listener.onInstallClick(app,progressBar);
                                     }
-                                }
-                                else if(fragmentType.equals("uninstall")) {
+                                } else if (fragmentType.equals("uninstall")) {
                                     listener.onUnInstallClick(app, false);
                                 }
                             }
@@ -182,13 +187,11 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                         new Thread(() -> {
                             boolean isEncrypted = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
                             if (isEncrypted) {
-                                if(fragmentType.equals("update"))
-                                {
+                                if (fragmentType.equals("update")) {
                                     if (listener != null) {
-                                        listener.onInstallClick(app);
+                                        listener.onInstallClick(app,progressBar);
                                     }
-                                }
-                                else if(fragmentType.equals("uninstall")) {
+                                } else if (fragmentType.equals("uninstall")) {
                                     if (app.getIs_restrict_uninstall() == 0) {
                                         listener.onUnInstallClick(app, true);
                                     } else {
@@ -201,13 +204,11 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 //                                    listener.onUnInstallClick(app, false);
 //                                }
                             } else {
-                                if(fragmentType.equals("update"))
-                                {
+                                if (fragmentType.equals("update")) {
                                     if (listener != null) {
-                                        listener.onInstallClick(app);
+                                        listener.onInstallClick(app,progressBar);
                                     }
-                                }
-                                else if(fragmentType.equals("uninstall")) {
+                                } else if (fragmentType.equals("uninstall")) {
                                     listener.onUnInstallClick(app, false);
                                 }
 //                                listener.onUnInstallClick(app, false);
@@ -218,9 +219,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
             }
 
-
         }
-    }
 
+    }
 
 }

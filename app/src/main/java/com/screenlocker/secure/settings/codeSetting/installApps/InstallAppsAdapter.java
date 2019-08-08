@@ -1,8 +1,10 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
 import android.content.pm.PackageManager;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,19 +73,12 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
             btInstall = itemView.findViewById(R.id.btInstall);
             ivLogo = itemView.findViewById(R.id.ivLogo);
 
-            btInstall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition());
-                }
+            btInstall.setOnClickListener(view -> {
+                mListener.onInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition());
+
             });
 
-            btUnInstall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onUnInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition());
-                }
-            });
+            btUnInstall.setOnClickListener(view -> mListener.onUnInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition()));
 
         }
 
@@ -93,12 +88,12 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
             tvAppName.setText(app.getApkName());
             //load logo
 
-            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(),AppConstants.LIVE_URL);
+            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.LIVE_URL);
 
             Glide.with(itemView.getContext())
-                    .load(live_url+LOGO_END_POINT+app.getLogo())
-                    .apply(new RequestOptions().centerCrop() .diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-                     .into(ivLogo);
+                    .load(live_url + LOGO_END_POINT + app.getLogo())
+                    .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                    .into(ivLogo);
 
             if (app.isInstalled()) {
                 btUnInstall.setVisibility(View.VISIBLE);

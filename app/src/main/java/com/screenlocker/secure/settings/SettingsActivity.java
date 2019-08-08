@@ -194,24 +194,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         progressBar = findViewById(R.id.progress);
         progressBar.setVisibility(View.VISIBLE);
 
-        asSupport = getIntent().getBooleanExtra("isSupport", false);
-
-        if (asSupport) {
-
-            tvManagePasswords.setVisibility(View.GONE);
-            tvChooseBackground.setVisibility(View.GONE);
-            tvCode.setVisibility(View.GONE);
-            tvLanguage.setVisibility(View.VISIBLE);
-            findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.divider5).setVisibility(View.GONE);
-            findViewById(R.id.divider15).setVisibility(View.GONE);
-            findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.tvTheme).setVisibility(View.GONE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
-            dividerAdvance.setVisibility(View.GONE);
-            tvAdvance.setVisibility(View.GONE);
-
-        }
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
@@ -434,24 +416,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void handleCheckForUpdate() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network n = manager.getActiveNetwork();
-        NetworkCapabilities nc = manager.getNetworkCapabilities(n);
-        if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Warning!")
-                        .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
-                        .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
-                            proccedToDownload();
-                        })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        }).show();
+        try {
+
+
+            NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Warning!")
+                            .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
+                            .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
+                                proccedToDownload();
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                dialog.dismiss();
+                            }).show();
+                }
+            } else {
+                proccedToDownload();
             }
-        } else {
-            proccedToDownload();
+        }catch (Exception e){
+            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -640,6 +629,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chatId);
         }
+
+        aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
+            startActivity(new Intent(this,WhatsNew.class));
+
+        });
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
             startActivity(new Intent(SettingsActivity.this, WhatsNew.class));

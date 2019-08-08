@@ -175,7 +175,6 @@ public class MainActivity extends BaseActivity {
         });
 
 
-
     }
 
     private void setToolbar(Toolbar mToolbar) {
@@ -301,6 +300,8 @@ public class MainActivity extends BaseActivity {
                                     case TRIAL:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.unSuspendDevice(MainActivity.this);
+                                        intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
+                                        startActivity(intent);
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;

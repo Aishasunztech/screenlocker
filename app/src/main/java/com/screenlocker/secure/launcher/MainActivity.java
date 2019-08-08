@@ -43,6 +43,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
@@ -234,6 +235,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+        super.onResume();
 
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
@@ -247,9 +249,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             setBackground(msg);
         }
 
-//        refreshApps(this);
-        super.onResume();
-//        allowScreenShot(PrefUtils.getBooleanPref(this, AppConstants.KEY_ALLOW_SCREENSHOT));
+//
+        refreshApps(this);
+//
     }
 
     private void runLayoutAnimation() {

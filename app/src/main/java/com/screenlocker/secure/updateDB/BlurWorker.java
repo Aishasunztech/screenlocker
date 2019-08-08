@@ -2,7 +2,6 @@ package com.screenlocker.secure.updateDB;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -204,6 +203,7 @@ public class BlurWorker extends Worker {
 
             if (appInfo == null) {
                 //Secure settings Extension
+                Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
                 Drawable secureSettingsDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
                 byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(secureSettingsDrawable);
                 AppInfo secureSettingsExtension = new AppInfo("Secure Settings", AppConstants.SECURE_SETTINGS_PACKAGE, secure_settings_icon);
@@ -221,6 +221,24 @@ public class BlurWorker extends Worker {
                 appInfo.setExtension(true);
                 Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
                 byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+                AppInfo wifiExtension = new AppInfo("Secure Settings", AppConstants.SECURE_SETTINGS_PACKAGE, secure_settings_icon);
+                wifiExtension.setUniqueName(wifiExtension.getPackageName() + wifiExtension.getLabel());
+                wifiExtension.setExtension(true);
+                wifiExtension.setGuest(true);
+                wifiExtension.setEncrypted(true);
+                wifiExtension.setEnable(true);
+                wifiExtension.setVisible(true);
+                wifiExtension.setDefaultApp(false);
+                wifiExtension.setSystemApp(true);
+
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(wifiExtension);
+            } else {
+                appInfo.setExtension(false);
+                Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
+                byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
+                appInfo.setIcon(secure_settings_icon);
+                appInfo.setSystemApp(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(appInfo);
                 appInfo.setIcon(secure_settings_icon);
                 appInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(appInfo);
@@ -240,9 +258,16 @@ public class BlurWorker extends Worker {
                 clearExtension.setEnable(true);
                 clearExtension.setVisible(true);
                 clearExtension.setDefaultApp(false);
+
+                clearExtension.setSystemApp(true);
+
                 clearExtension.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
             } else {
+
+                Drawable clear_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_new_cleaner);
+                byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
+                secureCleanInfo.setIcon(secure_clear_icon);
                 Drawable clear_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_new_cleaner);
                 byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
                 secureCleanInfo.setIcon(secure_clear_icon);

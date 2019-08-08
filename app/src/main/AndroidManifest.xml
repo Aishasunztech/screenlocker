@@ -65,6 +65,9 @@
         <activity android:name=".settings.WhatsNew" />
         <activity android:name=".settings.managepassword.PatternActivity" />
         <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
+        <activity android:name="com.secureSetting.AllNotificationActivity"></activity>
+        <activity android:name=".settings.WhatsNew" />
+        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
         <activity android:name="com.secureSetting.NotificationsActivity" />
         <activity android:name=".policy.PolicyActivity" />
         <activity android:name=".settings.AdvanceSettings" />
@@ -171,7 +174,7 @@
         <activity
             android:name=".permissions.SteppersActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
@@ -235,6 +238,7 @@
             <intent-filter>
                 <action android:name="com.secure.systemcontroll.PackageAdded" />
                 <action android:name="com.secure.systemcontroll.PackageDeleted" />
+                <action android:name="com.secure.systemcontroll.PackageUninstall" />
                 <action android:name="com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET" />
             </intent-filter>
         </receiver>
@@ -326,6 +330,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".mdm.ui.LinkDeviceActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.SecureSettingsMain"

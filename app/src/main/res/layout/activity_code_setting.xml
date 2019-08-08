@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/stepper_bg_gradient">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusableInTouchMode="true"
+
         tools:context=".settings.codeSetting.CodeSettingActivity">
 
         <include
@@ -85,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_settings_icons"
+            android:drawableStart="@drawable/ic_settings_small"
             android:drawablePadding="@dimen/_8sdp"
             android:padding="16dp"
             android:text="@string/settings_controls"
@@ -202,31 +204,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPolicyMenu" />
 
-        <TextView
-            android:id="@+id/tvIMEIMenu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_imei"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="IMEI"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPolicyMenu" />
+        <!--<TextView-->
+        <!--android:id="@+id/tvIMEIMenu"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="?selectableItemBackground"-->
+        <!--android:drawableStart="@drawable/ic_imei"-->
+        <!--android:drawablePadding="@dimen/_8sdp"-->
+        <!--android:padding="16dp"-->
+        <!--android:text="IMEI"-->
+        <!--android:textColor="@color/textColorPrimary"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/tvPolicyMenu" />-->
 
 
-        <View
-            android:id="@+id/divider20"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIMEIMenu" />
+        <!--<View-->
+        <!--android:id="@+id/divider20"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/tvIMEIMenu" />-->
 
         <TextView
             android:id="@+id/tvSim"
@@ -240,8 +242,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider20" />
-
+            app:layout_constraintTop_toBottomOf="@id/tvPolicyMenu" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

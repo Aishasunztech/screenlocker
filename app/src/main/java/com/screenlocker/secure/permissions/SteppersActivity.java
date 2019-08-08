@@ -15,6 +15,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
 import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
@@ -30,6 +32,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
+
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         /**
          * if user has completed setup wizard move to Home Activity
@@ -90,7 +94,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onComplete(Bundle data) {
         super.onComplete(data);
         //save the tour complete status in database
-        PrefUtils.saveBooleanPref(SteppersActivity.this, TOUR_STATUS, true);
         Intent intent;
         if (isEmergency){
             intent = new Intent(SteppersActivity.this, MainActivity.class);

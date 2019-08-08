@@ -186,7 +186,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tvInstallApps).setOnClickListener(this);
         findViewById(R.id.tvSim).setOnClickListener(this);
         findViewById(R.id.tvPolicyMenu).setOnClickListener(this);
-        findViewById(R.id.tvIMEIMenu).setOnClickListener(this);
+//        findViewById(R.id.tvIMEIMenu).setOnClickListener(this);
 
 
         rootLayout = findViewById(R.id.rootLayout);
@@ -220,10 +220,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tvSettingsControl:
                 handleSettingsApp();
                 break;
-            case R.id.tvIMEIMenu:
-                goToIMEIMenu = true;
-                startActivity(new Intent(CodeSettingActivity.this, IMEIActivity.class));
-                break;
+//            case R.id.tvIMEIMenu:
+//                goToIMEIMenu = true;
+//                startActivity(new Intent(CodeSettingActivity.this, IMEIActivity.class));
+//                break;
 
 
         }

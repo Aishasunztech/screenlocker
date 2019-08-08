@@ -63,11 +63,6 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
 
         AppInfo info = appsList.get(i);
         vh.tv.setText(info.getLabel());
-
-        if (info.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE)) {
-            vh.img.setColorFilter(ContextCompat.getColor(vh.img.getContext(), R.color.icon_tint), android.graphics.PorterDuff.Mode.MULTIPLY);
-        }
-
         // vh.img.setImageDrawable(info.getIcon());
         Glide.with(vh.img.getContext())
                 .load(appsList.get(i).getIcon())

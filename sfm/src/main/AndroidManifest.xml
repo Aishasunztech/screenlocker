@@ -21,7 +21,8 @@
             android:theme="@style/SplashTheme">
         </activity>
 
-        <activity android:name="com.simplemobiletools.filemanager.pro.activities.MainActivity">
+        <activity android:name="com.simplemobiletools.filemanager.pro.activities.MainActivity"
+            android:label="@string/sfm">
 
             <meta-data
                 android:name="android.app.default_searchable"

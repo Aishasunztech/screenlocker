@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import com.appsflyer.AppsFlyerConversionListener;
@@ -183,6 +185,12 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
+                    try{
+                        ((AppCompatActivity)activity).getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    }catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -216,6 +224,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             }
         });
+
         PreferenceManager.init(this);
         getApplicationContext().startService(new Intent(getApplicationContext(), AppService.class));
         DbIgnoreExecutor.init(getApplicationContext());

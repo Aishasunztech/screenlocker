@@ -61,4 +61,7 @@ public class AppExecutor {
     public ExecutorService getExecutorForUpdatingList() {
         return executorForUpdatingList;
     }
+    public void prepareExecutorForUpdatingList() {
+         executorForUpdatingList = Executors.newSingleThreadExecutor();
+    }
 }

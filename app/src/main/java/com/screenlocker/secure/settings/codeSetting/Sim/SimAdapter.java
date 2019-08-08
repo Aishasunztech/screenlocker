@@ -125,7 +125,8 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(context.getResources().getString(R.string.btn_save), null)
-                .setNegativeButton(context.getResources().getString(R.string.delete_title), (dialog, id) -> {
+                .setNegativeButton("Cancel",(dialog, which) -> dialog.dismiss())
+                .setNeutralButton(context.getResources().getString(R.string.delete_title), (dialog, id) -> {
                     mListener.onDeleteEntry(entry);
                 });
         AlertDialog dialog = builder.create();
