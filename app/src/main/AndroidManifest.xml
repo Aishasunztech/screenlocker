@@ -61,6 +61,24 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.secureSetting.AllNotificationActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".settings.WhatsNew"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.secureSetting.NotificationsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".policy.PolicyActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".settings.AdvanceSettings"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity android:name=".settings.managepassword.VerifyPatternActivity"></activity>
         <activity android:name=".settings.WhatsNew" />
         <activity android:name=".settings.managepassword.PatternActivity" />
@@ -73,7 +91,8 @@
         <activity android:name=".settings.AdvanceSettings" />
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
         <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
@@ -83,34 +102,45 @@
 
         <activity
             android:name=".settings.AboutActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".socket.TransparentActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".settings.Wallpaper.ChangeWallpaper"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.secureClear.SecureClearActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
         <activity
             android:name=".settings.codeSetting.IMEIActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".permissions.InstallAppSilently" />
+        <activity android:name=".permissions.InstallAppSilently"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".permissions.WelcomeScreenActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.ExitActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".settings.codeSetting.policy.PolicyActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <provider
@@ -128,7 +158,7 @@
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
@@ -155,11 +185,11 @@
         <!-- </activity-alias> -->
         <activity
             android:name=".socket.policy.ui.PolicyActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.SettingsActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -169,6 +199,7 @@
         </activity>
         <activity
             android:name=".settings$Wallpaper$WallpaperActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -180,14 +211,17 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".settings.managepassword.SetUpLockActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".appSelection.AppSelectionActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".settings.managepassword.ManagePasswords"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <service android:name=".utils.LifecycleReceiverService" />
@@ -218,6 +252,7 @@
         <!-- </service> -->
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
@@ -249,6 +284,7 @@
 
         <activity
             android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <receiver
@@ -316,16 +352,20 @@
         <!-- </receiver> -->
         <activity
             android:name=".settings.codeSetting.CodeSettingActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".settings$codeSetting$Sim$SimActivity"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".mdm.MainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -334,6 +374,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.SecureSettingsMain"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
 
@@ -341,6 +382,7 @@
 
         <activity
             android:name="com.secureMarket.SecureMarketActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
 
@@ -350,13 +392,16 @@
 
         <activity
             android:name=".settings.codeSetting.Sim.SimActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.contactSupport.ChatActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".offline.MyAlarmBroadcastReceiver"
@@ -378,16 +423,20 @@
 
         <activity
             android:name="com.secureSetting.t.ui.MainActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.t.ui.StateSettingsActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.t.ui.IgnoreActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
-            android:screenOrientation="nosensor" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

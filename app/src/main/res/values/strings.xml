@@ -442,6 +442,7 @@
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
+    <string name="set_column">App Screen Grid</string>
 
     <string name="lib_name">PatternLockView</string>
     <string name="message_pattern_dot_added">Dot added to pattern</string>

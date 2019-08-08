@@ -12,4 +12,9 @@
         <item>es:Espanol</item>
         <item>ar:العربية</item>
     </string-array>
+
+    <string-array name="column_sizes">
+        <item>3 Columns</item>
+        <item>4 Columns</item>
+    </string-array>
 </resources>

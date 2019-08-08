@@ -192,6 +192,7 @@ public class AppConstants {
     public static final String PACKAGE_NAME = "package_name";
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
+    public static final String KEY_COLUMN_SIZE = "column_sizes";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

@@ -35,6 +35,7 @@ import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
-        rvApps.setLayoutManager(new GridLayoutManager(this, AppConstants.LAUNCHER_GRID_SPAN));
+
         rvApps.setAdapter(adapter);
         rvApps.setItemViewCacheSize(30);
 
@@ -237,6 +238,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         super.onResume();
 
+        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        if(column_span == 0)
+        {
+            column_span = AppConstants.LAUNCHER_GRID_SPAN;
+        }
+        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {

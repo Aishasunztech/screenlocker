@@ -12,6 +12,7 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,6 +84,12 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         }
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.hideKeyboard(this);
     }
 
     /**

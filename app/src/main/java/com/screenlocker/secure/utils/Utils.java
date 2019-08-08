@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -359,6 +360,7 @@ public class Utils {
         PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
         packageInstaller.uninstall(packageName, i.getIntentSender());
     }
+
 
 
 }

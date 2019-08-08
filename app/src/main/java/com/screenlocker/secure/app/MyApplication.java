@@ -192,6 +192,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                         e.printStackTrace();
                     }
                 }
+
             }
 
             @Override
