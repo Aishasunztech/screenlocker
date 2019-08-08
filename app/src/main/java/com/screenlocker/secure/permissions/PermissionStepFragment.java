@@ -117,7 +117,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     // error message if user try to next without granting permission
     @Override
     public String error() {
-        return getResources().getString(R.string.please_grant_all_permissions);
+        return MyApplication.getAppContext().getResources().getString(R.string.please_grant_all_permissions);
     }
 
     /**

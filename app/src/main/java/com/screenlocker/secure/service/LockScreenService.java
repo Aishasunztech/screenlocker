@@ -721,6 +721,8 @@ public class LockScreenService extends Service {
     };
 
 
+
+
     protected void addView(int colorId) {
         mView.setBackgroundColor(getResources().getColor(colorId));
         windowManager.addView(mView, localLayoutParams);
@@ -750,10 +752,10 @@ public class LockScreenService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.y = (int) (72 * getResources().getDisplayMetrics().scaledDensity);
 
         localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (80 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.height = (int) (88 * getResources().getDisplayMetrics().scaledDensity);
 
         localLayoutParams.format = PixelFormat.TRANSLUCENT;
 

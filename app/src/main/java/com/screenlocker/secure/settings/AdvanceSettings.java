@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -11,7 +12,11 @@ import android.view.View;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.t.ui.MainActivity;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdvanceSettings extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,6 +31,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.tvDataUSage).setOnClickListener(this);
         findViewById(R.id.tvDataCunsumption).setOnClickListener(this);
         findViewById(R.id.tv_IMEI).setOnClickListener(this);
+        findViewById(R.id.tv_set_column).setOnClickListener(this);
     }
 
     @Override
@@ -48,8 +54,40 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.tv_IMEI:
                 startActivity(new Intent(this, IMEIActivity.class));
+            case R.id.tv_set_column:
+                setColumnSizes();
 
                 break;
         }
+    }
+
+    private void setColumnSizes()
+    {
+        int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        AtomicInteger selected = new AtomicInteger();
+        if (item != 0) {
+            if (item == 3) {
+                selected.set(0);
+
+            } else {
+                selected.set(1);
+            }
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick Column Span");
+        builder.setSingleChoiceItems(R.array.column_sizes, selected.get(), (dialog, which) -> {
+            selected.set(which);
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (selected.get() == 1) {
+                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 4);
+            } else if (selected.get() == 0) {
+                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 3);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
     }
 }
