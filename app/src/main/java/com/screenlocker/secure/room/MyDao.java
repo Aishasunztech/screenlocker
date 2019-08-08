@@ -44,7 +44,7 @@ public interface MyDao {
     List<AppInfo> getEncryptedApps(boolean isEncrypted);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("select uniqueName ,label, packageName, guest ,enable ,defaultApp,encrypted,extension,visible from AppInfo ")
+    @Query("select uniqueName ,label, packageName, guest ,enable ,defaultApp,encrypted,extension,visible, systemApp from AppInfo ")
     List<AppInfo> getAppsWithoutIcons();
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
@@ -90,7 +90,7 @@ public interface MyDao {
     void updateParticularApp(boolean guest, boolean encrypted, boolean enable, String uniqueName);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT guest,encrypted,enable,extension,uniqueName ,defaultApp, visible from AppInfo  WHERE uniqueName=:uniqueName")
+    @Query("SELECT guest,encrypted,enable,extension,uniqueName ,defaultApp, visible,systemApp from AppInfo  WHERE uniqueName=:uniqueName")
     AppInfo getAppStatus(String uniqueName);
 
     @Query("SELECT * from SubExtension  WHERE uniqueName=:uniqueName")

@@ -162,11 +162,13 @@ dependencies {
     implementation 'com.appsflyer:af-android-sdk:4+@aar'
     implementation 'com.android.installreferrer:installreferrer:1.0'
 
+    // DownloadManager
+    implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.4'
+
     //loading
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
-
-    // pattern Lock
-    implementation 'com.itsxtt:patternlockview:0.1.0'
+    //text mask
+    implementation 'com.github.santalu:mask-edittext:1.1.1'
 
     implementation project(':Stepper')
     implementation project(':chatkit')
