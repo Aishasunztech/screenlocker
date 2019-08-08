@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PasswordConfigs;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
@@ -42,7 +41,7 @@ public class PatternActivity extends AppCompatActivity {
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
                 getSupportActionBar().setTitle("Duress Pattern");
                 message.setText("Please Draw Pattern");
-            } else if (extra.equalsIgnoreCase(AppConstants.KEY_CODE)) {
+            } else if (extra.equalsIgnoreCase(AppConstants.KEY_MAIN)) {
                 getSupportActionBar().setTitle("Encrypted Pattern");
                 message.setText("Please Draw Pattern");
 
@@ -78,11 +77,30 @@ public class PatternActivity extends AppCompatActivity {
 
                 } else if (mTry == 1) {
                     if (tryPattern.equals(PatternLockUtils.patternToString(mPatternView, pattern))) {
-                        PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
-                        PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN, tryPattern);
-                        PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_GUEST_PASSWORD, null);
-                        Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
-                        finish();
+                        switch (extra){
+                            case AppConstants.KEY_MAIN:
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN, tryPattern);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_MAIN_PASSWORD, null);
+                                Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                            case AppConstants.KEY_GUEST:
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN, tryPattern);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_GUEST_PASSWORD, null);
+                                Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                            case AppConstants.KEY_DURESS:
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN, tryPattern);
+                                PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_DURESS_PASSWORD, null);
+                                Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                        }
+
 
                         //right pattern
                     } else {

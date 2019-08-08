@@ -11,10 +11,10 @@
     <TextView
         android:id="@+id/txtWarning"
         style="@style/icon_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_84sdp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="@dimen/_48sdp"
         android:layout_marginEnd="8dp"
         android:gravity="center_vertical|center_horizontal"
         android:minHeight="48dp"
@@ -22,7 +22,8 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Incorr \n \n gkhfgkhfgdsgnkfkgkhgkhgkl \n fdnhh \n \n kjkj" />
 
 
     <EditText
@@ -67,10 +68,11 @@
 
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"
-        android:layout_width="@dimen/_300sdp"
-        android:layout_height="@dimen/_300sdp"
+        android:layout_width="@dimen/_280sdp"
+        android:layout_height="@dimen/_280sdp"
         app:aspectRatio="height_bias"
         app:dotNormalSize="16dp"
+        app:dotAnimationDuration="100"
         app:correctStateColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

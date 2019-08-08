@@ -693,6 +693,13 @@ public class utils {
         } else {
             context.startService(service);
         }
+        //in case we need to stop service in future
+//        boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
+//        if (lock_screen) {
+//            Intent intent = new Intent(context, LockScreenService.class);
+//            context.stopService(intent);
+//            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+//        }
 
     }
 

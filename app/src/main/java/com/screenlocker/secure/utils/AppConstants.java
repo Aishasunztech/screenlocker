@@ -40,7 +40,11 @@ public class AppConstants {
 
     ///Pattern lock
     public static final String GUEST_DEFAULT_CONFIG = "_guest_def_config";
+    public static final String ENCRYPT_DEFAULT_CONFIG = "_encrypt_def_config";
+    public static final String DUERESS_DEFAULT_CONFIG = "_duress_def_config";
     public static final String GUEST_PATTERN = "_guest_pattern";
+    public static final String ENCRYPT_PATTERN = "_encrypt_pattern";
+    public static final String DURESS_PATTERN = "_duress_pattern";
     public static final String PIN_PASSWORD = "_pin_password";
     public static final String PATTERN_PASSWORD = "_pattern_password";
 

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -179,7 +180,9 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_GUEST:
 
                         if (keyOk) {
-                            PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_PATTERN, null);
+                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
                             setResult(RESULT_OK);
                             finish();
                         } else {
@@ -200,6 +203,9 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_MAIN:
 
                         if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_PATTERN, null);
+                            finish();
                             PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
                             setResult(RESULT_OK);
                             finish();
@@ -211,6 +217,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_DURESS:
 
                         if (keyOk) {
+                            PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
                             PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
                             setResult(RESULT_OK);
                             finish();
