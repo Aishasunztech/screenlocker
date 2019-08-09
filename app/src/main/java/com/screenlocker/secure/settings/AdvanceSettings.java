@@ -72,6 +72,8 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
             } else {
                 selected.set(1);
             }
+        }else {
+            selected.set(1);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Pick Column Span");

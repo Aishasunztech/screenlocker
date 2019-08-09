@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -136,6 +137,13 @@ public class PrepareLockScreen {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                     mPatternLockView.clearPattern();
                     return;
+                }else if (pattern.size()>1 && pattern.size()<4){
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> {
+                        mPatternLockView.clearPattern();
+
+                    }, 500);
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
                 if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN)) && device_status == null) {
@@ -165,7 +173,7 @@ public class PrepareLockScreen {
 
                     return;
                 } else if (device_status != null) {
-                    setDeviceId(context, txtWarning, finalDevice_id, device_status);
+                    setDeviceId(context, txtWarning, finalDevice_id ,mPatternLockView ,device_status);
                 } else {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     new Handler().postDelayed(() -> {
@@ -194,11 +202,12 @@ public class PrepareLockScreen {
 //            keyboardView.clearWaringText();
             txtWarning.setVisibility(INVISIBLE);
             txtWarning.setText(null);
+            mPatternLockView.setInputEnabled(true);
         }
 
 
         if (device_status != null) {
-            setDeviceId(context, txtWarning, device_id, device_status);
+            setDeviceId(context, txtWarning, device_id,mPatternLockView, device_status);
         }
 
 
@@ -206,32 +215,49 @@ public class PrepareLockScreen {
             if (status == null) {
                 txtWarning.setVisibility(INVISIBLE);
                 txtWarning.setText(null);
+                mPatternLockView.setInputEnabled(true);
 
             } else {
                 if (status.equals("suspended")) {
                     if (finalDevice_id != null) {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id));
+                        mPatternLockView.setInputEnabled(false);
 //                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
 
 
                     } else {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                        mPatternLockView.setInputEnabled(false);
 
                     }
                 } else if (status.equals("expired")) {
                     if (finalDevice_id != null) {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id));
+                        mPatternLockView.setInputEnabled(false);
 
                     } else {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+                        mPatternLockView.setInputEnabled(false);
 
 
                     }
+                }else if (status.equals("unlinked")) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked));
+                    mPatternLockView.setInputEnabled(false);
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                }else if (status.equals("flagged")){
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
+                    mPatternLockView.setInputEnabled(false);
                 }
+
+
+
             }
 
         });
@@ -343,7 +369,7 @@ public class PrepareLockScreen {
 
 
                 } else if (device_status1 != null) {
-                    setDeviceId(context, txtWarning, finalDevice_id1, device_status1);
+                    setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView,device_status1);
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
 
@@ -359,16 +385,19 @@ public class PrepareLockScreen {
         return params;
     }
 
-    private static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, String device_status1) {
+    private static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1,PatternLockView patternLockView, String device_status1) {
         switch (device_status1) {
             case "suspended":
                 if (finalDevice_id1 != null) {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id1));
+                    patternLockView.setInputEnabled(false);
+
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
                 } else {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                    patternLockView.setInputEnabled(false);
 //                                keyboardView.setWarningText("Your account with Device ID = N/A is Suspended. Please contact support");
 
                 }
@@ -377,16 +406,30 @@ public class PrepareLockScreen {
                 if (finalDevice_id1 != null) {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id1));
+                    patternLockView.setInputEnabled(false);
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
 
 
                 } else {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+                    patternLockView.setInputEnabled(false);
 //                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
 
                 }
                 break;
+            case "unlinked":
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked));
+                patternLockView.setInputEnabled(false);
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                break;
+            case "flagged":
+                txtWarning.setVisibility(VISIBLE);
+                txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
+                patternLockView.setInputEnabled(false);
+                break;
+
         }
     }
 

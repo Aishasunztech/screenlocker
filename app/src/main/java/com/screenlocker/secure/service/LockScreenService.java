@@ -130,7 +130,6 @@ public class LockScreenService extends Service {
             downloadListener.downloadComplete(filePath, packageName);
 
 
-
         }
 
         @Override
@@ -198,7 +197,6 @@ public class LockScreenService extends Service {
     private String url = "";
     private String filePath = "";
     private String packageName = "";
-
 
 
     public class LocalBinder extends Binder {
@@ -289,7 +287,7 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = PrepareLockScreen.getParams(LockScreenService.this,mLayout);
+        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -331,12 +329,12 @@ public class LockScreenService extends Service {
             }
         }
     };
-    BroadcastReceiver viewAddRemoveReceiver  = new BroadcastReceiver() {
+    BroadcastReceiver viewAddRemoveReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("add")){
+            if (intent.hasExtra("add")) {
                 addView(android.R.color.transparent);
-            }else {
+            } else {
                 removeView();
             }
         }
@@ -386,10 +384,9 @@ public class LockScreenService extends Service {
     }
 
 
-
     public void cancelDownload() {
-        if(downloadId != 0)
-        fetch.cancel(downloadId);
+        if (downloadId != 0)
+            fetch.cancel(downloadId);
     }
 
     public interface DownloadServiceCallBacks {
@@ -466,6 +463,8 @@ public class LockScreenService extends Service {
                         break;
                     case "locked":
                         startLockScreen(true);
+                    case "flagged":
+                        startLockScreen(true);
                         break;
                     case "lockedFromsim":
                         startLockScreen(false);
@@ -524,7 +523,6 @@ public class LockScreenService extends Service {
 
 
     private void startLockScreen(boolean refresh) {
-
 
 
         try {
@@ -704,13 +702,10 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = PrepareLockScreen.getParams(LockScreenService.this,mLayout);
+            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
         }
     };
-
-
-
 
 
     protected void addView(int colorId) {
@@ -726,6 +721,7 @@ public class LockScreenService extends Service {
             }
         }
     }
+
     private void createLayoutParamsForSmallView() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

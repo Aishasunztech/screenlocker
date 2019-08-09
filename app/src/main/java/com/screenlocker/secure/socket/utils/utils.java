@@ -450,6 +450,9 @@ public class utils {
             case "expired":
                 PrefUtils.saveStringPref(context, DEVICE_STATUS, "expired");
                 break;
+            case "flagged":
+                PrefUtils.saveStringPref(context, DEVICE_STATUS, "flagged");
+                break;
         }
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -482,8 +485,7 @@ public class utils {
 
 
     }
-
-    public static void unlinkDevice(Context context, boolean status) {
+    public static void newDevice(Context context, boolean status) {
 
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
@@ -495,10 +497,10 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-
-        String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
-        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+
+       /* String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
+        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
 
 
         if (guest_pass == null) {
@@ -507,7 +509,7 @@ public class utils {
         if (main_pass == null) {
             PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
 
-        }
+        }*/
 
 
         Intent socketService = new Intent(context, SocketService.class);
@@ -523,6 +525,52 @@ public class utils {
                 context.startService(lockScreen);
             }
         }
+
+
+    }
+
+
+    public static void unlinkDevice(Context context, boolean status) {
+
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, "unlinked");
+        PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
+//        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
+        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
+        PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+
+
+
+        /*String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
+        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
+        if (guest_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
+        }
+        if (main_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+
+        }*/
+
+
+        Intent socketService = new Intent(context, SocketService.class);
+        context.stopService(socketService);
+
+        Intent lockScreen = new Intent(context, LockScreenService.class);
+        lockScreen.setAction("unlinked");
+
+        if (status) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(lockScreen);
+            } else {
+                context.startService(lockScreen);
+            }
+        }
+        sendBroadcast(context, "unlinked");
 
 
     }

@@ -593,6 +593,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         Timber.d("<<< device wiped >>>");
                                         wipeDevice(SocketService.this);
                                         break;
+                                    case "flagged":
+                                        suspendedDevice(SocketService.this, "flagged");
+                                        break;
                                 }
                             }
 

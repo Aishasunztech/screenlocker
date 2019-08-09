@@ -134,9 +134,4 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 //        super.onBackPressed();
     }
 
-    @Override
-    protected void onResume() {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        super.onResume();
-    }
 }

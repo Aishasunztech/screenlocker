@@ -321,7 +321,7 @@ public class MainActivity extends BaseActivity {
                                         break;
                                     case NEW_DEVICE:
                                         if (isLinked) {
-                                            utils.unlinkDevice(MainActivity.this, true);
+                                            utils.newDevice(MainActivity.this, true);
                                         } else {
                                             showMainContent();
                                         }
@@ -434,6 +434,7 @@ public class MainActivity extends BaseActivity {
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     if (dealerPin.length() == 6) {
                         request(1, dealerPin);
+
                     } else if (dealerPin.length() == 7) {
                         request(2, dealerPin);
 

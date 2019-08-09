@@ -325,6 +325,8 @@
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
     <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
     <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
+    <string name="account_device_id_unlinked">Device unlinked, contact support.</string>
+    <string name="account_device_id_flagged">This Device is Flagged, contact Support.</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
@@ -442,7 +444,7 @@
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
-    <string name="set_column">App Screen Grid</string>
+    <string name="set_column">Apps Screen Grid</string>
 
     <string name="lib_name">PatternLockView</string>
     <string name="message_pattern_dot_added">Dot added to pattern</string>

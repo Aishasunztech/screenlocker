@@ -80,15 +80,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity android:name=".settings.managepassword.VerifyPatternActivity"></activity>
-        <activity android:name=".settings.WhatsNew" />
         <activity android:name=".settings.managepassword.PatternActivity" />
-        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
-        <activity android:name="com.secureSetting.AllNotificationActivity"></activity>
-        <activity android:name=".settings.WhatsNew" />
-        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity" />
-        <activity android:name="com.secureSetting.NotificationsActivity" />
-        <activity android:name=".policy.PolicyActivity" />
-        <activity android:name=".settings.AdvanceSettings" />
+
+
+
+
+
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
             android:launchMode="singleTask"

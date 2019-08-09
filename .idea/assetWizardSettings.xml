@@ -30,9 +30,9 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="0380ff" />
-                            <entry key="outputName" value="ic_pin" />
+                            <entry key="outputName" value="ic_grid" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\LockMEsh STuff\pin.svg" />
+                            <entry key="sourceFile" value="D:\LockMEsh STuff\grid.svg" />
                           </map>
                         </option>
                       </PersistentState>

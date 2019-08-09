@@ -27,7 +27,9 @@ import com.simplemobiletools.filemanager.pro.activities.MainActivity;
 
 import java.util.List;
 
+import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
@@ -60,6 +62,29 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         public void onClick(final View v) {
             final Context context = v.getContext();
             AppInfo info = appsList.get(getAdapterPosition());
+            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                String unique = info.getUniqueName();
+
+                switch (unique) {
+                    case AppConstants.SECURE_SETTINGS_UNIQUE:
+                        Intent i = new Intent(context, SecureSettingsMain.class);
+                        i.putExtra("show_default", "show_default");
+                        context.startActivity(i);
+                        break;
+                    case AppConstants.SUPPORT_UNIQUE:
+                        context.startActivity(new Intent(context, ChatActivity.class));
+                        break;
+                    case BuildConfig.APPLICATION_ID:
+                        Intent launch = new Intent(context, SettingsActivity.class);
+                        launch.setAction(ACTION_VIEW);
+                        context.startActivity(launch);
+                        break;
+                }
+
+
+                return;
+            }
+
             if (info.isEnable()) {
                 try {
 
@@ -68,7 +93,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SecureSettingsMain.class);
-                            if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+                            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
@@ -88,7 +113,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             break;
                         case BuildConfig.APPLICATION_ID:
                             Intent intent1 = new Intent(context, SettingsActivity.class);
-                            intent1.setAction(Intent.ACTION_VIEW);
+                            intent1.setAction(ACTION_VIEW);
                             context.startActivity(intent1);
                             break;
                         default: {
