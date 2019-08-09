@@ -443,5 +443,7 @@
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
     <string name="set_column">App Screen Grid</string>
+    <string name="expiry_alert_online_title">Expiry Alert</string>
+    <string name="expiry_alert_online_message">Your device will be expired in %1$s days"</string>
 
 </resources>

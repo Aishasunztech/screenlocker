@@ -258,7 +258,7 @@ public class LockScreenService extends Service {
     @Override
     public void onCreate() {
 
-        setAlarmManager(this,System.currentTimeMillis() + 60000);
+        setAlarmManager(this,System.currentTimeMillis() + 15000);
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);

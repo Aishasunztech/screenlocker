@@ -98,7 +98,7 @@ public class AppConstants {
     //super admin domain
     public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
 //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-    //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
+//            public static final String SUPER_ADMIN = "http://192.168.18.219:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
