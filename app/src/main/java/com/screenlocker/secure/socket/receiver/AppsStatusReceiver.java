@@ -24,6 +24,7 @@ import java.util.HashSet;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
@@ -94,6 +95,8 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         if (i == 0) {
                             MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                         }
+                        saveAppsList(context, true , appInfo,false);
+
                         sendMessage(context);
 
                     }).start();
@@ -172,6 +175,10 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
                 new Thread(() -> {
                     MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                    AppInfo info = new AppInfo();
+                    info.setPackageName(aPackageName);
+                    info.setUniqueName(aPackageName);
+                    saveAppsList(context, false , info,false);
                     sendMessage(context);
                 }).start();
 

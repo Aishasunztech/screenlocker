@@ -60,6 +60,7 @@ import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
+import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
@@ -270,6 +271,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         } else if (socketState == 2) {
             Timber.d("Socket is connected");
+
+            String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
+            String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
+
+            if (installedApps != null) {
+                saveAppsList(this, true, null, true);
+            }
+            if (uninstalledApps != null) {
+                saveAppsList(this, false, null, true);
+            }
 
             getSyncStatus();
             getPolicy();

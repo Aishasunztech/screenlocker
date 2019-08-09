@@ -3,6 +3,7 @@ package com.screenlocker.secure.mdm;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -269,6 +270,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
+                            Log.d(TAG, "onResponse: "+msg);
 
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
