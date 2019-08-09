@@ -5,6 +5,7 @@ import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -254,6 +256,30 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
         if (msg != null && !msg.equals("")) {
             setBackground(msg);
+        }
+
+        boolean pendingDialog = PrefUtils.getBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG);
+        if(pendingDialog)
+        {
+            String dialogMessage = PrefUtils.getStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE);
+            if(!dialogMessage.equals("")){
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.expiry_alert_online_title))
+                        .setMessage(dialogMessage)
+
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                PrefUtils.saveBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG,false);
+                PrefUtils.saveStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE,"");
+            }
         }
 
 //

@@ -79,8 +79,12 @@
         <activity android:name=".settings.AdvanceSettings"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.managepassword.VerifyPatternActivity"></activity>
-        <activity android:name=".settings.managepassword.PatternActivity" />
+        <activity android:name=".settings.managepassword.VerifyPatternActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".settings.managepassword.PatternActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
 
 
 
@@ -407,6 +411,8 @@
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.screenlocker.secure.service.AlarmReceiver"/>
 
         <service
             android:name=".service.CheckUpdateService"

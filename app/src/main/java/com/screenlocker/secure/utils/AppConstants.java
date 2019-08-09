@@ -193,6 +193,8 @@ public class AppConstants {
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
     public static final String KEY_COLUMN_SIZE = "column_sizes";
+    public static final String PENDING_ALARM_DIALOG = "alarm_pending";
+    public static final String PENDING_DIALOG_MESSAGE = "alarm_dialog_message";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

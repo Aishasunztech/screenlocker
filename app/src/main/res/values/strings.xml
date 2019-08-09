@@ -451,5 +451,7 @@
     <string name="message_pattern_started">Pattern drawing started</string>
     <string name="message_pattern_detected">Pattern drawing completed</string>
     <string name="message_pattern_cleared">Pattern cleared</string>
+    <string name="expiry_alert_online_title">Expiry Alert</string>
+    <string name="expiry_alert_online_message">Your device will be expired in %1$s days"</string>
 
 </resources>
