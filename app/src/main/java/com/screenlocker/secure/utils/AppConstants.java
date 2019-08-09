@@ -212,7 +212,7 @@ public class AppConstants {
     public static final int CODE_USAGE_ACCESS = 224;
     public static final int CODE_BATERY_OPTIMIZATION = 2255;
     public static final int CODE_LAUNCHER = 2265;
-    public static final int CODE_ACCESSIBILITY = 2222;
+    public static final int CODE_ACCESSIBILITY = 452;
 
 
     public static final String IS_SETTINGS_ALLOW = "is_settings_allow";
@@ -418,6 +418,13 @@ public class AppConstants {
     public static final String EMERGENCY_FLAG = "emergency_flag";
 
     public static final String TEMP_SETTINGS_ALLOW = "temp_settings_allow";
+
+    // installed and uninstalled apps for syncing with server
+    public static final String INSTALLED_APPS = "installed_apps";
+    public static final String UNINSTALLED_APPS = "uninstalled_apps";
+
+    public static final String SEND_UNINSTALLED_APPS = "send_uninstalled_apps_";
+    public static final String SEND_INSTALLED_APPS = "send_installed_apps_";
 
 
 }

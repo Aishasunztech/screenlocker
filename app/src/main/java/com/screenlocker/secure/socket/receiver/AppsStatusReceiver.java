@@ -24,6 +24,7 @@ import java.util.HashSet;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
@@ -96,12 +97,14 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
                             int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
 
-                            Timber.d("TEst%s", String.valueOf(i));
+                            Timber.d("Test%s", String.valueOf(i));
 
                             if (i == 0) {
                                 MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                             }
+                            saveAppsList(context, true, appInfo, false);
 //                            sendMessage(context);
+
 
                         }).start();
 
@@ -115,6 +118,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
             } else {
                 if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                     Intent pushedIntent = intent.setAction(ACTION_PUSH_APPS);
                     pushedIntent.putExtra("PackageName", installModel.getPackage_name());
@@ -162,6 +166,10 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             if (!aPackageName.equals(context.getPackageName())) {
                 new Thread(() -> {
                     MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                    AppInfo info = new AppInfo();
+                    info.setUniqueName(aPackageName);
+                    info.setPackageName(aPackageName);
+                    saveAppsList(context, false, info, false);
                     sendMessage(context);
                 }).start();
             }

@@ -88,23 +88,14 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     public boolean nextIf() {
 
 
-        if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ADMIN) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_OVERLAY) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_MODIFIY) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_USAGE) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_RUNTIME) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION) &&
-                PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_BATTERY)
-                && PrefUtils.getBooleanPref(MyApplication.getAppContext(), PER_ACCESS)
-        ) {
+        if (checkPermissions(MyApplication.getAppContext())) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
             //all the permissions are granted, can move t0o next
             return true;
+        } else {
+            return false;
         }
 
-
-        return false;
 
     }
 
@@ -220,34 +211,39 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
 
-//    private boolean checkPermissions(Context context) {
-//
-//        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-//        if (!devicePolicyManager.isAdminActive(compName)) {
-//            return false;
-//        } else if (!Settings.canDrawOverlays(context)) {
-//            return false;
-//        } else if (!Settings.System.canWrite(context)) {
-//            return false;
-//        } else if (!isAccessGranted(context)) {
-//            return false;
-//        } else if (context.checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-//                context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-//                context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-//                context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            return false;
-//        } else if (!isAccessServiceEnabled(context, WindowChangeDetectingService.class)) {
-//            return false;
-//        } else if (!isNotificationAccess(context)) {
-//            return false;
-//        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
-//            return false;
-//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.getPackageManager().canRequestPackageInstalls()) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
+    private boolean checkPermissions(Context context) {
+
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+        compName = new ComponentName(context, MyAdmin.class);
+        devicePolicyManager = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
+
+
+        if (!devicePolicyManager.isAdminActive(compName)) {
+            return false;
+        } else if (!Settings.canDrawOverlays(context)) {
+            return false;
+        } else if (!Settings.System.canWrite(context)) {
+            return false;
+        } else if (!isAccessGranted(context)) {
+            return false;
+        } else if (context.checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else if (!isAccessServiceEnabled(context, WindowChangeDetectingService.class)) {
+            return false;
+        } else if (!isNotificationAccess(context)) {
+            return false;
+        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+            return false;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.getPackageManager().canRequestPackageInstalls()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     private void showPermissionsMenus() {
         // 1
@@ -510,11 +506,11 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             case CODE_ACCESSIBILITY:
 
                 if (isAccessServiceEnabled(MyApplication.getAppContext(), WindowChangeDetectingService.class)) {
-                    setCheckedAndClickAble(batteryOptimization, false, true);
+                    setCheckedAndClickAble(accessibilityService, false, true);
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, true);
                 } else {
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, false);
-                    setCheckedAndClickAble(batteryOptimization, true, false);
+                    setCheckedAndClickAble(accessibilityService, true, false);
 
                 }
 

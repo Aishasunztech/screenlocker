@@ -20,6 +20,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
@@ -70,6 +71,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RE
 import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -79,10 +81,13 @@ import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
@@ -182,6 +187,76 @@ public class utils {
         }.start();
     }
 
+    // function to save installed or uninstalled apps that will be used to send to server
+    public static void saveAppsList(Context context, boolean install, AppInfo info, boolean status) {
+
+        Timber.d("<<<============= save installed or uninstalled apps ============>>>");
+
+        if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+            Timber.d("device is linked");
+            Gson gson = new Gson();
+            Timber.d("<<<====saved apps======>>>");
+
+            String json;
+            // flag will check is package installed or uninstalled
+
+            if (install) {
+                json = PrefUtils.getStringPref(context, INSTALLED_APPS);
+            } else {
+                json = PrefUtils.getStringPref(context, UNINSTALLED_APPS);
+            }
+
+
+            Type type = new TypeToken<ArrayList<InstallModel>>() {
+            }.getType();
+
+            ArrayList<AppInfo> list;
+            if (json != null) {
+                list = gson.fromJson(json, type);
+            } else {
+                list = new ArrayList<>();
+            }
+
+
+            if (!status) {
+                Timber.d("unique name %s", info.getUniqueName());
+                // adding package to list
+                if (!list.contains(info)) {
+                    list.add(info);
+                }
+                Timber.d("<<<======app added to list and saved======>>>");
+                json = gson.toJson(list);
+
+                if (install) {
+                    PrefUtils.saveStringPref(context, INSTALLED_APPS, json);
+                } else {
+                    PrefUtils.saveStringPref(context, UNINSTALLED_APPS, json);
+                }
+
+            }
+
+
+            Socket socket = SocketManager.getInstance().getSocket();
+            String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+            Timber.d("device id %s", device_id);
+
+            if (socket != null && socket.connected()) {
+                Timber.d("<<<=======Socket connected=============>>>");
+                if (install) {
+                    SocketManager.getInstance().getSocket().emit(SEND_INSTALLED_APPS + device_id, json);
+                    PrefUtils.saveStringPref(context, INSTALLED_APPS, null);
+                } else {
+                    SocketManager.getInstance().getSocket().emit(SEND_UNINSTALLED_APPS + device_id, json);
+                    PrefUtils.saveStringPref(context, UNINSTALLED_APPS, null);
+                }
+            }
+
+
+        } else {
+            Timber.d("device is not linked");
+        }
+    }
+
 
     public static void refreshApps(Context context) {
 
@@ -189,11 +264,9 @@ public class utils {
 
         String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
 
-        Log.i("checkresults", "refreshApps:  unInstalled apps : " + unInstalledPackage);
 
         if (unInstalledPackage != null) {
             String[] data = unInstalledPackage.split(",");
-
             PackageManager pm = context.getPackageManager();
             for (int i = 0; i < data.length; i++) {
                 String packageName = data[i].split(":")[0];
@@ -205,6 +278,13 @@ public class utils {
                     int finalI = i;
                     new Thread(() -> {
                         MyApplication.getAppDatabase(context).getDao().deletePackage(packageName);
+
+                        AppInfo info = new AppInfo();
+                        info.setPackageName(packageName);
+                        info.setUniqueName(packageName);
+
+                        saveAppsList(context, false, info, false);
+
                         if (finalI == data.length - 1) {
                             listener.onAppsRefresh();
                             PrefUtils.saveStringPref(context, UNINSTALLED_PACKAGES, null);
@@ -216,7 +296,6 @@ public class utils {
 
         String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
 
-        Log.i("checkresults", "refreshApps:  installed apps : " + installedPackages);
 
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
@@ -229,10 +308,7 @@ public class utils {
                     pm.getPackageInfo(packageName, 0);
                     Intent intent = new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
                     List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
-
-
                     for (ResolveInfo ri : allApps) {
                         if (ri.activityInfo.packageName.equals(packageName)) {
                             int finalI = i;
@@ -244,6 +320,7 @@ public class utils {
                             app.setEncrypted(false);
                             app.setGuest(false);
                             app.setVisible(true);
+                            app.setSystemApp(false);
                             switch (space) {
                                 case KEY_GUEST_PASSWORD:
                                     app.setGuest(true);
@@ -256,6 +333,7 @@ public class utils {
                             app.setEnable(true);
                             new Thread(() -> {
                                 MyApplication.getAppDatabase(context).getDao().insertApps(app);
+                                saveAppsList(context, true, app, false);
                                 if (finalI == data.length - 1) {
                                     listener.onAppsRefresh();
                                     PrefUtils.saveStringPref(context, INSTALLED_PACKAGES, null);

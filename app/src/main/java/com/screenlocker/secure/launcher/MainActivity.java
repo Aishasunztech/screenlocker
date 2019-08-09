@@ -338,9 +338,6 @@ public class MainActivity extends
 
 
         super.onResume();
-
-//
-        refreshApps(this);
 //
     }
 

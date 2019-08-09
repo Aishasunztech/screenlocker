@@ -67,6 +67,7 @@ import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
+import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
@@ -101,6 +102,7 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
 import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
@@ -113,13 +115,16 @@ import static com.screenlocker.secure.utils.AppConstants.PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
+import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
@@ -332,6 +337,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
             forceUpdateCheck();
             getSimUpdates();
 
+
+            String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
+            String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
+
+            if (installedApps != null) {
+                saveAppsList(this, true, null, true);
+            }
+            if (uninstalledApps != null) {
+                saveAppsList(this, false, null, true);
+            }
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
                     != null) {
@@ -1050,44 +1065,44 @@ public class SocketService extends Service implements OnSocketConnectionListener
 //
 //    }
 
-    public void installPackage(Context context, Uri uri, InstallModel app, boolean isPolicy, boolean islast)
-            throws IOException {
-
-        InputStream inputStream = getContentResolver().openInputStream(uri);
-
-        PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
-        PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
-                PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-        params.setAppPackageName(app.getPackage_name());
-        // set params
-        int sessionId = packageInstaller.createSession(params);
-        PackageInstaller.Session session = packageInstaller.openSession(sessionId);
-        OutputStream out = session.openWrite("COSU", 0, -1);
-        byte[] buffer = new byte[65536];
-        int c;
-        if (inputStream != null) {
-            while ((c = inputStream.read(buffer)) != -1) {
-                out.write(buffer, 0, c);
-            }
-        }
-        session.fsync(out);
-        if (inputStream != null) {
-            inputStream.close();
-        }
-        out.close();
-
-        Intent intent = new Intent(context, AppsStatusReceiver.class);  // for extra data if needed..
-        intent.setAction("com.secure.systemcontrol.PACKAGE_ADDED");
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.putExtra("pakageName", app.getPackage_name());
-        intent.putExtra("isLast", islast);
-        intent.putExtra("isPolicy", isPolicy);
-        intent.putExtra("packageAdded", new Gson().toJson(app));
-        Random generator = new Random();
-        PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), intent, 0);
-        session.commit(i.getIntentSender());
-
-    }
+//    public void installPackage(Context context, Uri uri, InstallModel app, boolean isPolicy, boolean islast)
+//            throws IOException {
+//
+//        InputStream inputStream = getContentResolver().openInputStream(uri);
+//
+//        PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
+//        PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+//                PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+//        params.setAppPackageName(app.getPackage_name());
+//        // set params
+//        int sessionId = packageInstaller.createSession(params);
+//        PackageInstaller.Session session = packageInstaller.openSession(sessionId);
+//        OutputStream out = session.openWrite("COSU", 0, -1);
+//        byte[] buffer = new byte[65536];
+//        int c;
+//        if (inputStream != null) {
+//            while ((c = inputStream.read(buffer)) != -1) {
+//                out.write(buffer, 0, c);
+//            }
+//        }
+//        session.fsync(out);
+//        if (inputStream != null) {
+//            inputStream.close();
+//        }
+//        out.close();
+//
+//        Intent intent = new Intent(context, AppsStatusReceiver.class);  // for extra data if needed..
+//        intent.setAction("com.secure.systemcontrol.PACKAGE_ADDED");
+//        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//        intent.putExtra("pakageName", app.getPackage_name());
+//        intent.putExtra("isLast", islast);
+//        intent.putExtra("isPolicy", isPolicy);
+//        intent.putExtra("packageAdded", new Gson().toJson(app));
+//        Random generator = new Random();
+//        PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), intent, 0);
+//        session.commit(i.getIntentSender());
+//
+//    }
 
     @Override
     public void getPulledApps() {

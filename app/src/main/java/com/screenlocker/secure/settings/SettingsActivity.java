@@ -985,9 +985,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void changeLanguage(String code) {
 
-        Intent intent = new Intent(BROADCAST_APPS_ACTION);
-        intent.putExtra(KEY_DATABASE_CHANGE, "apps");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         CommonUtils.setAppLocale(code, SettingsActivity.this);
         PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
         recreate();
