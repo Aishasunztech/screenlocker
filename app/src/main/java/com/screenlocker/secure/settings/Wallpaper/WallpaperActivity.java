@@ -2,6 +2,7 @@ package com.screenlocker.secure.settings.Wallpaper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
@@ -15,21 +16,29 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.settings.SettingsPresenter;
+import com.screenlocker.secure.settings.managepassword.ManagePasswords;
+import com.screenlocker.secure.settings.managepassword.PasswordOptionsAcitivity;
+import com.screenlocker.secure.settings.managepassword.VerifyPatternActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean isBackPressed = false;
     private boolean goToGuest,goToEncrypt,goToLockScreen;
+    private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTCODE = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +71,13 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnGuestWallpaper:
-                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
+                handleSetGuestPassword();
                 break;
             case R.id.btnEncryptedWallpaper:
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
+                handleSetMainPassword();
                 break;
             case R.id.btnLockScreenWallpaer:
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+                handleSetMainPasswordForLS();
                 break;
         }
     }
@@ -169,6 +178,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         alertDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
@@ -183,7 +193,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         {
             if(!goToGuest && !goToEncrypt && !goToLockScreen)
             {
-                this.finish();
+                //this.finish();
             }
         }
     }
@@ -192,5 +202,114 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     public void onBackPressed() {
         super.onBackPressed();
         isBackPressed = true;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        switch (requestCode) {
+
+            case RESULTENCRYPTED:
+                if (resultCode == RESULT_OK) {
+                    goToGuest = true;
+                    Intent intent = new Intent(this, ChangeWallpaper.class);
+                    intent.putExtra("TYPE", KEY_MAIN);
+                    startActivity(intent);
+                }
+                break;
+            case RESULTGUEST:
+                if (resultCode == RESULT_OK) {
+                    goToGuest = true;
+                    Intent intent = new Intent(this, ChangeWallpaper.class);
+                    intent.putExtra("TYPE", KEY_GUEST);
+                    startActivity(intent);
+                }
+                break;
+            case RESULTCODE:
+                if (resultCode == RESULT_OK) {
+                    goToLockScreen = true;
+
+                    Intent intent = new Intent(this, ChangeWallpaper.class);
+                    intent.putExtra("TYPE", KEY_CODE);
+                    startActivity(intent);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+    public void handleSetGuestPassword() {
+        String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
+        if (passConfig == null) {
+            if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
+                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
+            return;
+
+        }
+        switch (passConfig) {
+            case AppConstants.PATTERN_PASSWORD:
+                verifyCurrentPattern(AppConstants.KEY_GUEST);
+                break;
+            case AppConstants.PIN_PASSWORD:
+                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
+                break;
+        }
+
+
+    }
+    public void handleSetMainPassword() {
+        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        if (passConfig == null) {
+            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
+            return;
+
+        }
+        switch (passConfig) {
+            case AppConstants.PATTERN_PASSWORD:
+                verifyCurrentPattern(AppConstants.KEY_MAIN);
+                break;
+            case AppConstants.PIN_PASSWORD:
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
+                break;
+        }
+
+    }
+    public void handleSetMainPasswordForLS() {
+        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        if (passConfig == null) {
+            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+            return;
+
+        }
+        switch (passConfig) {
+            case AppConstants.PATTERN_PASSWORD:
+                verifyCurrentPattern(KEY_CODE);
+                break;
+            case AppConstants.PIN_PASSWORD:
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+                break;
+        }
+
+    }
+    private void verifyCurrentPattern(String userType) {
+        switch (userType) {
+            case AppConstants.KEY_MAIN:
+                Intent intent = new Intent(this, VerifyPatternActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                startActivityForResult(intent, RESULTENCRYPTED);
+                break;
+            case AppConstants.KEY_GUEST:
+                Intent intent2 = new Intent(this, VerifyPatternActivity.class);
+                intent2.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+                startActivityForResult(intent2, RESULTGUEST);
+                break;
+            case KEY_CODE:
+                Intent intent3 = new Intent(this, VerifyPatternActivity.class);
+                intent3.putExtra(Intent.EXTRA_TEXT, KEY_MAIN);
+                startActivityForResult(intent3, RESULTCODE);
+                break;
+        }
     }
 }
