@@ -31,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -143,6 +142,374 @@ public class Utils {
             }
         }
         return notificationItems;
+    }
+    @SuppressLint("ResourceType")
+    public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
+                                                                   List<NotificationItem> notifications, final Context context) {
+
+        int windowType;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            windowType = WindowManager.LayoutParams.TYPE_TOAST |
+                    WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        } else {
+            windowType = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+
+        DeviceStatusReceiver deviceStatusReceiver = new DeviceStatusReceiver();
+
+        registerDeviceStatusReceiver(context, deviceStatusReceiver);
+
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                windowType,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                        | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+
+                PixelFormat.TRANSLUCENT);
+
+        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        params.gravity = Gravity.CENTER;
+
+
+//        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        final LayoutInflater inflater = LayoutInflater.from(context);
+
+        final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
+
+        ConstraintLayout rootView = keypadView.findViewById(R.id.background);
+        String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
+        if (bg == null || bg.equals("")) {
+            rootView.setBackgroundResource(R.raw.remountan);
+
+        } else {
+            rootView.setBackgroundResource(Integer.parseInt(bg));
+        }
+
+        final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
+
+        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+
+        if (device_id == null) {
+            device_id = PrefUtils.getStringPref(context, OFFLINE_DEVICE_ID);
+        }
+
+        final String device_status = getDeviceStatus(context);
+
+        if (device_status == null) {
+            keyboardView.clearWaringText();
+        }
+
+
+        if (device_status != null) {
+            switch (device_status) {
+                case "suspended":
+                    if (device_id != null) {
+//                        keyboardView.setWarningText("Your account with Device ID = " + device_id + " is Suspended. Please contact support");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, device_id));
+
+                    } else {
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+
+                    }
+                    break;
+                case "expired":
+                    if (device_id != null) {
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, device_id));
+
+                    } else {
+//                        keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+
+
+                    }
+                    break;
+            }
+        }
+
+
+        String finalDevice_id = device_id;
+        deviceStatusReceiver.setListener(status -> {
+            if (status == null) {
+                keyboardView.clearWaringText();
+
+            } else {
+                if (status.equals("suspended")) {
+                    if (finalDevice_id != null) {
+//                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id));
+
+                    } else {
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+
+                    }
+                } else if (status.equals("expired")) {
+                    if (finalDevice_id != null) {
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id));
+
+                    } else {
+                        keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+
+
+                    }
+                } else if (status.equals("unlinked")) {
+
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked));
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                } else if (status.equals("flagged")){
+
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+
+
+                }
+            }
+
+        });
+
+        Button unLockButton = keypadView.findViewById(R.id.ivUnlock);
+        ImageView chatIcon = keyboardView.findViewById(R.id.chat_icon);
+        TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
+        supportButton.setOnClickListener(v -> {
+            chatLogin(context);
+            keyboardView.setPassword(null);
+        });
+        long time_remaining = getTimeRemaining(context);
+
+
+        int attempts = 10;
+        int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+        int x = attempts - count;
+
+        if (time_remaining != 0) {
+
+            if (count >= 5) {
+
+                if (count > 9) {
+                    wipeDevice(context);
+                }
+
+                switch (count) {
+                    case 5:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
+                        break;
+                    case 6:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
+                        break;
+                    case 7:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
+                        break;
+                    case 8:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
+                        break;
+                    case 9:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
+                        break;
+                    case 10:
+                        remainingTime(context, keyboardView, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
+                        break;
+                }
+            } else {
+                PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+                PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+            }
+
+        }
+
+
+        String finalDevice_id1 = device_id;
+        unLockButton.setOnClickListener(v -> {
+
+            String enteredPin = keyboardView.getInputText().trim();
+            String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
+            String device_status1 = getDeviceStatus(context);
+            if (enteredPin.length() != 0) {
+                if (getUserType(enteredPin, context).equals("guest") && device_status1 == null) {
+                    loginAsGuest(context);
+                    keyboardView.setPassword(null);
+                }
+                //if input is for eyncrypted
+                else if (getUserType(enteredPin, context).equals("encrypted") && device_status1 == null) {
+                    loginAsEncrypted(context);
+                    keyboardView.setPassword(null);
+                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
+                    boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
+                    if (lock_screen) {
+                        Intent intent = new Intent(context, LockScreenService.class);
+                        context.stopService(intent);
+                        PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+                    }
+                } else if (getUserType(enteredPin, context).equals("duress") && device_status1 == null) {
+                    wipeDevice(context);
+
+
+                }
+            /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
+
+// JUST a go through LOCK
+
+                WindowManager windowManager = (WindowManager) context.getSystemService(WINDOW_SERVICE);
+
+                if (windowManager != null) {
+                    LockScreenService.removeLockScreenView(windowManager);
+                //  handler.removeCallbacks(runnable);
+                }
+
+            }*/
+                else if (device_status1 != null) {
+
+                    switch (device_status1) {
+                        case "suspended":
+                            if (finalDevice_id1 != null) {
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id1));
+                            } else {
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Suspended. Please contact support");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+
+                            }
+                            break;
+                        case "expired":
+                            if (finalDevice_id1 != null) {
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id1));
+
+                            } else {
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+                                keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+
+
+                            }
+                            break;
+                        case "unlinked":
+                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked));
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                            break;
+                        case "flagged":
+                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+
+                            break;                    }
+                } else {
+//                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
+
+                    int attempts1 = 10;
+                    int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+                    int x1 = attempts1 - count1;
+
+                    if (count1 > 9) {
+                        wipeDevice(context);
+                    }
+
+                    switch (count1) {
+
+                        case 5:
+                            CountDownTimer countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_5, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        case 6:
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_6, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        case 7:
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_7, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        case 8:
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_8, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        case 9:
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_9, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        case 10:
+                            countDownTimer = timer(unLockButton, keyboardView, AppConstants.attempt_10, x1, context, count1);
+                            if (countDownTimer != null)
+                                countDownTimer.start();
+                            break;
+                        default:
+                            PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count1 + 1);
+                            unLockButton.setEnabled(true);
+                            unLockButton.setClickable(true);
+                            keyboardView.setPassword(null);
+//                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
+                            String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x1 + "");
+                            keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
+                    }
+
+                }
+
+            }
+
+        });
+
+
+        return params;
+    }
+
+    private static void remainingTime(Context context, KeyboardView keyboardView, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
+        long time;
+        CountDownTimer countDownTimer;
+        unLockButton.setEnabled(false);
+        unLockButton.setClickable(false);
+        time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
+        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        countDownTimer = timer(unLockButton, keyboardView, time, x, context, count);
+        if (countDownTimer != null)
+            countDownTimer.start();
+    }
+
+    private static CountDownTimer timer(Button unLockButton, KeyboardView keyboardView, long timeRemaining, int x, Context context, int count) {
+
+        CountDownTimer countDownTimer = null;
+        try {
+
+            unLockButton.setEnabled(false);
+            unLockButton.setClickable(false);
+
+            countDownTimer = new CountDownTimer(timeRemaining, 1000) {
+                @Override
+                public void onTick(long l) {
+//                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    keyboardView.setPassword(null);
+                    keyboardView.setWarningText(String.valueOf(Html.fromHtml(text_view_str)));
+                    PrefUtils.saveLongPref(context, TIME_REMAINING, l);
+                    setTimeRemaining(context);
+                }
+
+                @Override
+                public void onFinish() {
+                    unLockButton.setEnabled(true);
+                    unLockButton.setClickable(true);
+                    keyboardView.setPassword(null);
+                    keyboardView.clearWaringText();
+                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
+                    PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+                    PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+                }
+            };
+        } catch (Exception ignored) {
+
+        }
+
+        return countDownTimer;
     }
 
 

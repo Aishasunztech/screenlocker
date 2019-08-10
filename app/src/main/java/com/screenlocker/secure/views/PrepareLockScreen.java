@@ -57,7 +57,7 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  * @Date 8/3/2019.
  */
 public class PrepareLockScreen {
-    @SuppressLint("ResourceType")
+    /*@SuppressLint("ResourceType")
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
 
         int windowType;
@@ -540,5 +540,5 @@ public class PrepareLockScreen {
 
         return countDownTimer;
     }
-
+*/
 }

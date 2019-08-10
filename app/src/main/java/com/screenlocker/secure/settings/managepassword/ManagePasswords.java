@@ -1,10 +1,8 @@
 package com.screenlocker.secure.settings.managepassword;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,7 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.chip.Chip;
@@ -25,21 +22,18 @@ import com.screenlocker.secure.settings.SettingsModel;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
 
-import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class ManagePasswords extends BaseActivity implements View.OnClickListener {
-
-    private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTDURES = 102;
-
     private ConstraintLayout rootLayout;
+
+
     private SettingsActivity settingsActivity;
     private Toolbar mToolbar;
     private Chip duressStatus;
-    private boolean isBackPressed = false, goToGuest, goToEncrypt, goToDuress;
+    private boolean isBackPressed = false,goToGuest,goToEncrypt,goToDuress;
     /**
      * request code for the set password activity
      */
@@ -53,13 +47,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         setIds();
         if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
             duressStatus.setText(getResources().getString(R.string.activated_code));
-        } else {
-            if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
-                duressStatus.setText(getResources().getString(R.string.activated_code));
-            }else {
-                duressStatus.setText(getResources().getString(R.string.not_set));
-            }
-        }
+        } else duressStatus.setText(getResources().getString(R.string.not_set));
         setListeners();
         settingsActivity = new SettingsActivity();
 
@@ -68,37 +56,13 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-        switch (requestCode) {
-            case REQUEST_CODE_PASSWORD:
-                if (resultCode == RESULT_OK) {
-                    showAlertDialog(ManagePasswords.this, getResources().getString(R.string.password_changed_title), getResources().getString(R.string.password_changed_message), R.drawable.ic_checked);
-                }
-                break;
-            case RESULTENCRYPTED:
-                if (resultCode == RESULT_OK) {
-                    Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-                    startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-                }
-                break;
-            case RESULTGUEST:
-                if (resultCode == RESULT_OK) {
-                    Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-                    startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-                }
-                break;
-            case RESULTDURES:
-                if (resultCode == RESULT_OK) {
-                    Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                    startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-                }
-                break;
-        }
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PASSWORD) {
+            if (resultCode == RESULT_OK) {
+                showAlertDialog(ManagePasswords.this, getResources().getString(R.string.password_changed_title), getResources().getString(R.string.password_changed_message), R.drawable.ic_checked);
+            }
+        }
 
     }
 
@@ -126,6 +90,10 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
 
+
+
+
+
     private void setIds() {
         rootLayout = findViewById(R.id.rootLayout);
         mToolbar = findViewById(R.id.toolbar);
@@ -149,7 +117,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                  * start the {@link SetUpLockActivity} to get the password
                  */
 //                settingsActivity.handleSetGuestPassword(ManagePasswords.this, rootLayout);
-                handleSetGuestPassword(ManagePasswords.this, null, rootLayout);
+                handleSetGuestPassword(ManagePasswords.this,null,rootLayout);
                 break;
 
             case R.id.tvSetMainPassword:    // handle the set main password click event
@@ -157,7 +125,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                  * start the {@link SetUpLockActivity} to get the password
                  */
 //                settingsActivity.handleSetMainPassword(ManagePasswords.this, rootLayout);
-                handleSetMainPassword(ManagePasswords.this, null, rootLayout);
+                handleSetMainPassword(ManagePasswords.this,null,rootLayout);
                 break;
 
             case R.id.tvSetDuressPassword:    // handle the set duress password click event
@@ -166,7 +134,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                  */
 
 //                settingsActivity.handleSetDuressPassword(ManagePasswords.this, rootLayout);
-                handleSetDuressPassword(ManagePasswords.this, null, rootLayout);
+                handleSetDuressPassword(ManagePasswords.this,null,rootLayout);
                 break;
 
         }
@@ -186,7 +154,6 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
@@ -200,9 +167,11 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isBackPressed) {
-            if (!goToGuest && !goToEncrypt && !goToDuress) {
-                // this.finish();
+        if(!isBackPressed )
+        {
+            if(!goToGuest && !goToEncrypt && !goToDuress)
+            {
+                this.finish();
             }
 
         }
@@ -215,200 +184,144 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     public void handleSetGuestPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
-        if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
-                showGuestPin(activity, settingsPresenter);
-            return;
 
-        }
-        switch (passConfig) {
-            case AppConstants.PATTERN_PASSWORD:
-                verifyCurrentPattern(AppConstants.KEY_GUEST);
-                break;
-            case AppConstants.PIN_PASSWORD:
-                showGuestPin(activity, settingsPresenter);
-                break;
-        }
+        if (PrefUtils.getStringPref(activity, KEY_GUEST_PASSWORD) == null) {
+            goToGuest = true;
+            Intent intent = new Intent(activity, SetUpLockActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+            activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+        } else {
+            final EditText input = new EditText(activity);
 
+            if (settingsPresenter == null) {
+                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+                    @Override
+                    public int hashCode() {
+                        return super.hashCode();
+                    }
+                }, new SettingsModel(activity));
 
-    }
+            }
 
-    private void showGuestPin(AppCompatActivity activity, SettingsPresenter settingsPresenter) {
-        final EditText input = new EditText(activity);
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
-        if (settingsPresenter == null) {
-            settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                @Override
-                public int hashCode() {
-                    return super.hashCode();
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
+                    return;
                 }
-            }, new SettingsModel(activity));
 
-        }
+                if (input.getText().toString().
+                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                                KEY_GUEST_PASSWORD))) {
+                    // if password is right then allow user to change it
 
-        settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-
-            if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
-                return;
-            }
-
-            if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                            KEY_GUEST_PASSWORD))) {
-                // if password is right then allow user to change it
-
-                goToGuest = true;
-                Intent intent = new Intent(activity, PasswordOptionsAcitivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-                activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-
-            } else {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
-            }
-        }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
-    }
-
-    public void handleSetMainPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
-        if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
-                showEncryptedPin(activity, settingsPresenter);
-            return;
-
-        }
-        switch (passConfig) {
-            case AppConstants.PATTERN_PASSWORD:
-                verifyCurrentPattern(AppConstants.KEY_MAIN);
-                break;
-            case AppConstants.PIN_PASSWORD:
-                showEncryptedPin(activity, settingsPresenter);
-                break;
-        }
-
-    }
-
-    private void showEncryptedPin(AppCompatActivity activity, SettingsPresenter settingsPresenter) {
-        final EditText input = new EditText(activity);
-        if (settingsPresenter == null) {
-            settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                @Override
-                public int hashCode() {
-                    return super.hashCode();
-                }
-            }, new SettingsModel(activity));
-
-        }
-        settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
-
-            if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
-                return;
-            }
-
-            if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                            KEY_MAIN_PASSWORD))) {
-                // if password is right then allow user to change it
-                goToEncrypt = true;
-                Intent setUpLockActivityIntent = new Intent(activity, PasswordOptionsAcitivity.class);
-                setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-                activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
-
-            } else {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
-//                        Toast.makeText(StateSettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-            }
-        }, null, activity.getString(R.string.please_enter_current_encrypted_password));
-    }
-
-    public void handleSetDuressPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG);
-        if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_DURESS_PASSWORD) != null)
-                showDuressPin(activity, settingsPresenter);
-            else {
-                new AlertDialog.Builder(activity).
-                        setTitle(getResources().getString(R.string.duress_password_warning))
-                        .setMessage(getResources().getString(R.string.duress_password_message)).setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
-                    goToDuress = true;
-                    Intent intent = new Intent(activity, PasswordOptionsAcitivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                    goToGuest = true;
+                    Intent intent = new Intent(activity, SetUpLockActivity.class);
+                    intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
                     activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-                })
-                        .setNegativeButton(getResources().getString(R.string.cancel_text), (dialogInterface, i) -> dialogInterface.cancel())
-                        .show();
-            }
-            return;
 
-        }
-        switch (passConfig) {
-            case AppConstants.PATTERN_PASSWORD:
-                verifyCurrentPattern(AppConstants.KEY_DURESS);
-                break;
-            case AppConstants.PIN_PASSWORD:
-                showDuressPin(activity, settingsPresenter);
-                break;
-
-
-        }
-
-    }
-
-    private void showDuressPin(AppCompatActivity activity, SettingsPresenter settingsPresenter) {
-        final EditText input = new EditText(activity);
-        if (settingsPresenter == null) {
-            settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
-                @Override
-                public int hashCode() {
-                    return super.hashCode();
+                } else {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
                 }
-            }, new SettingsModel(activity));
-
+            }, null, activity.getResources().getString(R.string.please_enter_current_guest_password));
         }
-        settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
-            if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
-                return;
+
+    }
+
+    public void handleSetMainPassword(AppCompatActivity activity,SettingsPresenter settingsPresenter, View rootLayout) {
+
+        if (PrefUtils.getStringPref(activity, KEY_MAIN_PASSWORD) == null) {
+            goToEncrypt = true;
+            Intent i = new Intent(activity, SetUpLockActivity.class);
+            i.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+            activity.startActivityForResult(i, REQUEST_CODE_PASSWORD);
+        } else {
+            final EditText input = new EditText(activity);
+            if (settingsPresenter == null) {
+                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+                    @Override
+                    public int hashCode() {
+                        return super.hashCode();
+                    }
+                }, new SettingsModel(activity));
+
             }
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
 
-            if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
-                            AppConstants.KEY_DURESS_PASSWORD))) {
-                // if password is right then allow user to change it
-                goToDuress = true;
-                Intent setUpLockActivityIntent = new Intent(activity, PasswordOptionsAcitivity.class);
-                setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
+                    return;
+                }
 
-            } else {
-                showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
+                if (input.getText().toString().
+                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                                KEY_MAIN_PASSWORD))) {
+                    // if password is right then allow user to change it
+                    goToEncrypt = true;
+                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+
+                } else {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
 //                        Toast.makeText(StateSettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-            }
-        }, null, activity.getString(R.string.please_enter_current_duress_password));
+                }
+            }, null, activity.getString(R.string.please_enter_current_encrypted_password));
+        }
+
     }
 
-    private void verifyCurrentPattern(String userType) {
-        switch (userType) {
-            case AppConstants.KEY_MAIN:
-                Intent intent = new Intent(this, VerifyPatternActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
-                startActivityForResult(intent, RESULTENCRYPTED);
-                break;
-            case AppConstants.KEY_GUEST:
-                Intent intent2 = new Intent(this, VerifyPatternActivity.class);
-                intent2.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
-                startActivityForResult(intent2, RESULTGUEST);
-                break;
-            case AppConstants.KEY_DURESS:
-                Intent intent3 = new Intent(this, VerifyPatternActivity.class);
-                intent3.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
-                startActivityForResult(intent3, RESULTDURES);
-                break;
+    public void handleSetDuressPassword(AppCompatActivity activity,SettingsPresenter settingsPresenter, View rootLayout) {
+        if (PrefUtils.getStringPref(activity, AppConstants.KEY_DURESS_PASSWORD) == null) {
+            new AlertDialog.Builder(activity).
+                    setTitle(getResources().getString(R.string.duress_password_warning))
+                    .setMessage(getResources().getString(R.string.duress_password_message)).setPositiveButton(getResources().getString(R.string.ok_text), (dialogInterface, i) -> {
+                goToDuress = true;
+                Intent intent = new Intent(activity, SetUpLockActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                activity.startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+            })
+                    .setNegativeButton(getResources().getString(R.string.cancel_text), (dialogInterface, i) -> dialogInterface.cancel())
+                    .show();
+
+        } else {
+            final EditText input = new EditText(activity);
+            if (settingsPresenter == null) {
+                settingsPresenter = new SettingsPresenter(new SettingContract.SettingsMvpView() {
+                    @Override
+                    public int hashCode() {
+                        return super.hashCode();
+                    }
+                }, new SettingsModel(activity));
+
+            }
+            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
+                    return;
+                }
+
+                if (input.getText().toString().
+                        equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                                AppConstants.KEY_DURESS_PASSWORD))) {
+                    // if password is right then allow user to change it
+                    goToDuress = true;
+                    Intent setUpLockActivityIntent = new Intent(activity, SetUpLockActivity.class);
+                    setUpLockActivityIntent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                    activity.startActivityForResult(setUpLockActivityIntent, REQUEST_CODE_PASSWORD);
+
+                } else {
+                    showAlertDialog(activity, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
+//                        Toast.makeText(StateSettingsActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
+                }
+            }, null, activity.getString(R.string.please_enter_current_duress_password));
         }
     }
+
+
+
 
 
 }

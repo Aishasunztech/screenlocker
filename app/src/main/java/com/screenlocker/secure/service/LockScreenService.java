@@ -291,7 +291,7 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -673,20 +673,18 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
+                View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
-                pl.setUpRandomizedArray();
-                pl.invalidate();
                 support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
-                Button unlock = mLayout.findViewById(R.id.t9_unlock);
+                Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
                 unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-
+                refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {
@@ -708,7 +706,7 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+            params = params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
             //windowManager.removeViewImmediate(mLayout);
         }
     };
