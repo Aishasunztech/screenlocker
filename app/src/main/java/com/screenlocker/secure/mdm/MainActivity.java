@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -270,6 +271,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
+                            Log.d(TAG, "onResponse: "+msg);
 
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
@@ -322,7 +324,7 @@ public class MainActivity extends BaseActivity {
                                         break;
                                     case NEW_DEVICE:
                                         if (isLinked) {
-                                            utils.unlinkDevice(MainActivity.this, true);
+                                            utils.newDevice(MainActivity.this, true);
                                         } else {
                                             showMainContent();
                                         }
@@ -435,6 +437,7 @@ public class MainActivity extends BaseActivity {
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     if (dealerPin.length() == 6) {
                         request(1, dealerPin);
+
                     } else if (dealerPin.length() == 7) {
                         request(2, dealerPin);
 

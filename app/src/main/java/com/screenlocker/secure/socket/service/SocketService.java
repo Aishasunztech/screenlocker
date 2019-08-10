@@ -326,6 +326,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         } else if (socketState == 2) {
             Timber.d("Socket is connected");
 
+
             getSyncStatus();
             getPolicy();
             getDeviceStatus();
@@ -663,6 +664,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
                                         wipeDevice(SocketService.this);
+                                        break;
+                                    case "flagged":
+                                        suspendedDevice(SocketService.this, "flagged");
                                         break;
                                 }
                             }

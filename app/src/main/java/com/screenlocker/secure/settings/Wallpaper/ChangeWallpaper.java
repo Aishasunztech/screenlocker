@@ -44,6 +44,26 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setTitle(getResources().getString(R.string.wallpapers_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ids.add(R.raw._1231);
+        ids.add(R.raw._1232);
+        ids.add(R.raw._1234);
+        ids.add(R.raw._1235);
+        ids.add(R.raw._1236);
+        ids.add(R.raw._1237);
+        ids.add(R.raw._1238);
+        ids.add(R.raw._1239);
+        ids.add(R.raw._12310);
+        ids.add(R.raw._12311);
+        ids.add(R.raw._12312);
+        ids.add(R.raw._12314);
+        ids.add(R.raw._12315);
+        ids.add(R.raw._12316);
+        ids.add(R.raw._12317);
+        ids.add(R.raw._12318);
+        ids.add(R.raw._12319);
+        ids.add(R.raw._12320);
+        ids.add(R.raw._12321);
+        ids.add(R.raw._12323);
         ids.add(R.raw._12);
         ids.add(R.raw._13);
         ids.add(R.raw._14);

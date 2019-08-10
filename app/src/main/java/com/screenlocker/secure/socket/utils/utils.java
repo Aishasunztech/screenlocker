@@ -24,6 +24,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
@@ -543,6 +544,9 @@ public class utils {
             case "expired":
                 PrefUtils.saveStringPref(context, DEVICE_STATUS, "expired");
                 break;
+            case "flagged":
+                PrefUtils.saveStringPref(context, DEVICE_STATUS, "flagged");
+                break;
         }
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -576,7 +580,7 @@ public class utils {
 
     }
 
-    public static void unlinkDevice(Context context, boolean status) {
+    public static void newDevice(Context context, boolean status) {
 
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
@@ -588,10 +592,10 @@ public class utils {
         PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-
-        String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
-        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+
+       /* String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
+        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
 
 
         if (guest_pass == null) {
@@ -600,7 +604,7 @@ public class utils {
         if (main_pass == null) {
             PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
 
-        }
+        }*/
 
 
         Intent socketService = new Intent(context, SocketService.class);
@@ -616,6 +620,52 @@ public class utils {
                 context.startService(lockScreen);
             }
         }
+
+
+    }
+
+
+    public static void unlinkDevice(Context context, boolean status) {
+
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, "unlinked");
+        PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
+//        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
+        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
+        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
+        PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+
+
+
+        /*String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
+        String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
+        if (guest_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, DEFAULT_GUEST_PASS);
+        }
+        if (main_pass == null) {
+            PrefUtils.saveStringPref(context, AppConstants.KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+
+        }*/
+
+
+        Intent socketService = new Intent(context, SocketService.class);
+        context.stopService(socketService);
+
+        Intent lockScreen = new Intent(context, LockScreenService.class);
+        lockScreen.setAction("unlinked");
+
+        if (status) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(lockScreen);
+            } else {
+                context.startService(lockScreen);
+            }
+        }
+        sendBroadcast(context, "unlinked");
 
 
     }
@@ -744,13 +794,11 @@ public class utils {
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
-
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
-        service.putExtra(CURRENT_KEY, KEY_GUEST_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {
@@ -758,12 +806,14 @@ public class utils {
         }
     }
 
+
     public static void chatLogin(Context context) {
 
-        sendMessageToActivity(KEY_SUPPORT_PASSWORD, context);
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+//                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
+        sendMessageToActivity(AppConstants.KEY_SUPPORT_PASSWORD, context);
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
-        service.putExtra(CURRENT_KEY, KEY_SUPPORT_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {
@@ -776,19 +826,27 @@ public class utils {
         PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
 
         Intent service = new Intent(context, LockScreenService.class);
         service.setAction("unlocked");
-        service.putExtra(CURRENT_KEY, KEY_MAIN_PASSWORD);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             context.startForegroundService(service);
         } else {
             context.startService(service);
         }
+        //in case we need to stop service in future
+//        boolean lock_screen = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
+//        if (lock_screen) {
+//            Intent intent = new Intent(context, LockScreenService.class);
+//            context.stopService(intent);
+//            PrefUtils.saveBooleanPref(context, LOCK_SCREEN_STATUS, false);
+//        }
 
     }
+
 
     public static String getUserType(String enteredPin, Context context) {
 
@@ -933,26 +991,31 @@ public class utils {
     }
 
     public static void scheduleUpdateJob(Context context) {
-        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-        JobInfo jobInfo;
-        if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-        } else {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
+
+        if (!context.getResources().getString(R.string.apktype).equals("BYOD")) {
+            ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
+            JobInfo jobInfo;
+            if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
+                jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPeriodic(ONE_DAY_INTERVAL)
+                        .build();
+            } else {
+                jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                        .setPeriodic(ONE_DAY_INTERVAL)
+                        .build();
+            }
+            JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode = scheduler.schedule(jobInfo);
+            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+                Timber.d("Job Scheduled");
+            } else {
+                Timber.d("Job Scheduled Failed");
+            }
         }
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Timber.d("Job Scheduled");
-        } else {
-            Timber.d("Job Scheduled Failed");
-        }
+
+
     }
 
 

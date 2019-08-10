@@ -47,6 +47,8 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
@@ -84,16 +86,25 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
+import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
@@ -658,6 +669,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chatId);
         }
+
+        aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
+            startActivity(new Intent(this,WhatsNew.class));
+
+        });
+
+        aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
+            startActivity(new Intent(SettingsActivity.this, WhatsNew.class));
+        });
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
         TextView textView20 = aboutDialog.findViewById(R.id.textView20);

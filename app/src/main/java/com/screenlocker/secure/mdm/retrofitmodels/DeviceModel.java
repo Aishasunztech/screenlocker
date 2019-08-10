@@ -19,6 +19,9 @@ public class DeviceModel {
     @SerializedName("mac_address")
     @Expose
     private String macAddress;
+    @SerializedName("dealer_pin")
+    @Expose
+    private String dealerPin;
 
     public DeviceModel(String serialNo, String ip, String uniqueName, String macAddress) {
         this.serialNo = serialNo;

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ import com.secureSetting.t.ui.MainActivity;
 
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -317,6 +319,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
@@ -435,6 +438,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     public void resetPassword() {
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
+        PrefUtils.saveStringPref(CodeSettingActivity.this,AppConstants.GUEST_PATTERN,null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN,null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
 
 //        if (isServiceRunning()) {
 //            final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);

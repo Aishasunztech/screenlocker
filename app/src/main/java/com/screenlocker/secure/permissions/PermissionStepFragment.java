@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +29,6 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -49,7 +47,6 @@ import static com.screenlocker.secure.utils.AppConstants.CODE_UNKNOWN_RESOURCES;
 import static com.screenlocker.secure.utils.AppConstants.CODE_USAGE_ACCESS;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.NOFICATION_REQUEST;
-import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.PER_ACCESS;
 import static com.screenlocker.secure.utils.AppConstants.PER_ADMIN;
 import static com.screenlocker.secure.utils.AppConstants.PER_BATTERY;

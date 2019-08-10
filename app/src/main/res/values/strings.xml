@@ -325,6 +325,8 @@
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
     <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
     <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
+    <string name="account_device_id_unlinked">Device unlinked, contact support.</string>
+    <string name="account_device_id_flagged">This Device is Flagged, contact Support.</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
@@ -424,14 +426,13 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
-
+    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
+    <string name="dealer_pin">Dealer PIN</string>
     <string name="imei_1">IMEI 1</string>
     <string name="imei_2">IMEI 2</string>
     <string name="s_n">S/N</string>
-    <string name="dealer_pin">Dealer PIN</string>
     <string name="mac">MAC</string>
     <string name="ip_addr">IP Addr</string>
-    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
     <string name="change_default_home_dialog_body">change default home body</string>
     <string name="change_default_home_dialog_body_settings">change default home body settings</string>
     <string name="change_default_home_dialog_body_settings_tts">change default home dialog settings tts</string>
@@ -452,5 +453,14 @@
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="policy_not_set">Default policy is not set by dealer.</string>
     <string name="action_restricted">Action Restricted</string>
+    <string name="set_column">Apps Screen Grid</string>
+
+    <string name="lib_name">PatternLockView</string>
+    <string name="message_pattern_dot_added">Dot added to pattern</string>
+    <string name="message_pattern_started">Pattern drawing started</string>
+    <string name="message_pattern_detected">Pattern drawing completed</string>
+    <string name="message_pattern_cleared">Pattern cleared</string>
+    <string name="expiry_alert_online_title">Expiry Alert</string>
+    <string name="expiry_alert_online_message">Your device will be expired in %1$s days"</string>
 
 </resources>

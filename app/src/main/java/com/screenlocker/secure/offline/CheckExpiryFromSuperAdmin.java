@@ -4,6 +4,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -37,10 +38,6 @@ import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
-/**
- * @author Muhammad Nadeem
- * @Date 6/17/2019.
- */
 public class CheckExpiryFromSuperAdmin extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -70,7 +67,9 @@ public class CheckExpiryFromSuperAdmin extends JobService {
         }
         asyncCalls = new AsyncCalls(output -> {
             if (output != null) {
+
                 String url = output + SUPER_END_POINT;
+
                 ApiOneCaller service = RetrofitClientInstance.getRetrofitSecondInstance(url).create(ApiOneCaller.class);
                 service.getOfflineExpiry(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(context))).enqueue(new Callback<DeviceExpiryResponse>() {
                     @Override

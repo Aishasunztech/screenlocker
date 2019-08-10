@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
@@ -15,9 +14,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -30,13 +27,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,19 +41,19 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import com.bumptech.glide.Glide;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
-import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.screenlocker.secure.views.PrepareLockScreen;
+import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -73,8 +67,6 @@ import com.tonyodev.fetch2core.DownloadBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -86,7 +78,6 @@ import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
-import static android.view.View.VISIBLE;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
@@ -102,10 +93,8 @@ import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
-import static com.screenlocker.secure.utils.Utils.refreshKeypad;
-import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
-import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -231,7 +220,6 @@ public class LockScreenService extends Service {
         void onRecentAppKill();
     }
 
-
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -240,7 +228,7 @@ public class LockScreenService extends Service {
     }
 
 
-    public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
+   /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
 
         PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
                 packageName, PackageManager.GET_SIGNATURES);
@@ -269,7 +257,7 @@ public class LockScreenService extends Service {
         digest.update(sig);
         byte[] hashtext = digest.digest();
         return bytesToHex(hashtext);
-    }
+    }*/
 
     //util method to convert byte array to hex string
     public static String bytesToHex(byte[] bytes) {
@@ -289,6 +277,9 @@ public class LockScreenService extends Service {
 
     @Override
     public void onCreate() {
+
+        setAlarmManager(this,System.currentTimeMillis() + 15000);
+
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
@@ -308,12 +299,7 @@ public class LockScreenService extends Service {
         permittedPackages.add("com.google.android.packageinstaller");
         permittedPackages.add("com.android.packageinstaller");
 
-
-//        ArrayList<ActivityInfo> infos = getAllRunningActivities(this, "com.android.settings");
-//
-//        for (ActivityInfo info : infos) {
-//            Timber.d("kjfdgfuihgsuihgiuh %s", info.name);
-//        }
+        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
 
 
         OneTimeWorkRequest insertionWork =
@@ -323,7 +309,7 @@ public class LockScreenService extends Service {
 
 
         if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
-            scheduleExpiryCheck(this);
+            Utils.scheduleExpiryCheck(this);
         }
 
         if (!getResources().getString(R.string.apktype).equals("BYOD")) {
@@ -332,7 +318,7 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
+        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -365,8 +351,6 @@ public class LockScreenService extends Service {
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                notificationReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION_NOTIFICATION));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
@@ -580,7 +564,6 @@ public class LockScreenService extends Service {
             Timber.d("screen locker distorting.");
             unregisterReceiver(screenOffReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(notificationReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
@@ -598,10 +581,10 @@ public class LockScreenService extends Service {
         super.onDestroy();
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
+
 
 
         if (intent != null) {
@@ -629,11 +612,12 @@ public class LockScreenService extends Service {
                         startLockScreen(true);
                         break;
                     case "unlocked":
-                        String current_key = intent.getStringExtra(CURRENT_KEY);
-                        removeLockScreenView(current_key);
+                        removeLockScreenView();
                         simPermissionsCheck();
                         break;
                     case "locked":
+                        startLockScreen(true);
+                    case "flagged":
                         startLockScreen(true);
                         break;
                     case "lockedFromsim":
@@ -670,6 +654,8 @@ public class LockScreenService extends Service {
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
     }
+
+
 
     public void stopCapture() {
         int windowType;
@@ -718,6 +704,7 @@ public class LockScreenService extends Service {
 
     private void startLockScreen(boolean refresh) {
 
+
         try {
 //            setTimeRemaining(getAppContext());
             if (refresh)
@@ -728,12 +715,6 @@ public class LockScreenService extends Service {
                 isLocked = true;
                 removeView();
                 windowManager.addView(mLayout, params);
-                mLayout.setVisibility(View.GONE);
-                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-                in.setDuration(2000);
-                mLayout.setVisibility(VISIBLE);
-                mLayout.startAnimation(in);
-
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -741,7 +722,6 @@ public class LockScreenService extends Service {
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
                 PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
-
             }
 
 
@@ -756,22 +736,20 @@ public class LockScreenService extends Service {
         return binder;
     }
 
-    public void removeLockScreenView(String current_key) {
-
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, current_key);
-
-        if (mCallBacks != null) {
-            mCallBacks.onRecentAppKill();
-        }
+    public void removeLockScreenView() {
+//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
+//            //            setTimeRemaining(getAppContext());
+//        }
 
         try {
             if (mLayout != null) {
-                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-                in.setDuration(5000);
-                mLayout.setVisibility(View.GONE);
-                mLayout.startAnimation(in);
+//                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
+//
+//                in.setDuration(5000);
+//
+//                mLayout.setVisibility(View.GONE);
+//                mLayout.startAnimation(in);
                 windowManager.removeView(mLayout);
-
             }
             isLocked = false;
         } catch (Exception e) {
@@ -870,18 +848,20 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-                View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                Button unlock = mLayout.findViewById(R.id.ivUnlock);
-                EditText pin = mLayout.findViewById(R.id.password_field);
+                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
+                pl.setUpRandomizedArray();
+                pl.invalidate();
                 support.setText(getResources().getString(R.string.support));
+                TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
+                Button unlock = mLayout.findViewById(R.id.t9_unlock);
+                EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
                 unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-                refreshKeypad(view);
+
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {
@@ -903,20 +883,8 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = Utils.prepareLockScreenView(mLayout, null, this);
+            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
-        }
-    };
-    BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra("isShow", false)) {
-                if (mLayout != null)
-                    mLayout.findViewById(R.id.chat_icon).setVisibility(VISIBLE);
-            } else {
-                if (mLayout != null)
-                    mLayout.findViewById(R.id.chat_icon).setVisibility(View.GONE);
-            }
         }
     };
 

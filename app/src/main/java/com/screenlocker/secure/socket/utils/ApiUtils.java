@@ -124,7 +124,7 @@ public class ApiUtils implements ApiRequests {
                                         utils.unlinkDevice(context, true);
                                         break;
                                     case NEW_DEVICE:
-                                        utils.unlinkDevice(context, true);
+                                        utils.newDevice(context, true);
                                         break;
 
                                 }

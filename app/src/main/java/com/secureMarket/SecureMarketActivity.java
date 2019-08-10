@@ -24,7 +24,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
-import static com.screenlocker.secure.utils.Utils.hideKeyboard;
+import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 
 public class SecureMarketActivity extends BaseActivity {
 

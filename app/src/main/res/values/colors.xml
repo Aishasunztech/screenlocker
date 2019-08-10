@@ -32,6 +32,8 @@
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>
 
+    <color name="pomegranate">#f4511e</color>
+
 
 
 </resources>

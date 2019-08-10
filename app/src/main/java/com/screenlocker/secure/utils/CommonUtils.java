@@ -1,8 +1,11 @@
 package com.screenlocker.secure.utils;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.AlarmReceiver;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
 
@@ -411,6 +415,15 @@ public class CommonUtils {
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(new Locale(locale.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
+    }
+
+    public static void setAlarmManager(Context context,long timeInMillis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intentAlarm = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intentAlarm, 0);
+
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,timeInMillis , pendingIntent);
     }
 
 

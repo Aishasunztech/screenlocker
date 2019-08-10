@@ -86,6 +86,17 @@ public class AppConstants {
     public static final String DEVICE_ID = "device_id";
     public static final String TOKEN = "token";
     public static final String DFAULT_MAC = "default_mac";
+    public static final String GUEST_PATTERN = "guest_pattern";
+    public static final String ENCRYPT_PATTERN = "encrypt_pattern";
+    public static final String DURESS_PATTERN = "duress_pattern";
+    public static final String KEY_COLUMN_SIZE = "key_column_size";
+    public static final String DUERESS_DEFAULT_CONFIG = "duress_default_config";
+    public static final String GUEST_DEFAULT_CONFIG = "guest_default_config";
+    public static final String PATTERN_PASSWORD = "pattern_password";
+    public static final String PIN_PASSWORD = "pin_password";
+    public static final String ENCRYPT_DEFAULT_CONFIG = "encrypt_default_config";
+    public static final String PENDING_ALARM_DIALOG = "pending_alarm_dialog";
+    public static final String PENDING_DIALOG_MESSAGE = "pending_dialog_message";
 
 
     //servers links

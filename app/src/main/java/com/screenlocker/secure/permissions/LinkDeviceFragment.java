@@ -1,6 +1,7 @@
 package com.screenlocker.secure.permissions;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,7 +50,6 @@ public class LinkDeviceFragment extends AbstractStep {
     private AlertDialog.Builder dialogh;
 
 
-
     public LinkDeviceFragment() {
         // Required empty public constructor
     }
@@ -90,6 +90,7 @@ public class LinkDeviceFragment extends AbstractStep {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_link_device, container, false);
     }
@@ -106,11 +107,13 @@ public class LinkDeviceFragment extends AbstractStep {
             if (checkNetwork()) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivityForResult(intent, REQUEST_LINK_DEVICE);
-            }else
+            } else
                 showNetworkDialog(getContext());
         });
 
+
     }
+
 
 
     @Override
@@ -152,7 +155,8 @@ public class LinkDeviceFragment extends AbstractStep {
         super.onResume();
 
     }
-    private void showNetworkDialog( Context context) {
+
+    private void showNetworkDialog(Context context) {
 
         androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(context).create();
         alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
@@ -174,14 +178,16 @@ public class LinkDeviceFragment extends AbstractStep {
         alertDialog.show();
 
     }
-    private boolean checkNetwork(){
+
+    private boolean checkNetwork() {
         ConnectivityManager cm =
                 (ConnectivityManager) MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return  activeNetwork != null &&
+        return activeNetwork != null &&
                 activeNetwork.isConnected();
     }
-    public  void hideKeyboard(FragmentActivity activity) {
+
+    public void hideKeyboard(Activity activity) {
 
         try {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);

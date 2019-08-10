@@ -13,6 +13,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
@@ -23,6 +24,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
 
@@ -78,6 +80,12 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Utils.hideKeyboard(this);
+    }
+
     /**
      * User has complected all steps and ready to move welcome screen
      *
@@ -119,4 +127,5 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onBackPressed() {
 //        super.onBackPressed();
     }
+
 }
