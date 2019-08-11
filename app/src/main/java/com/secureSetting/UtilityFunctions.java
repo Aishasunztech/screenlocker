@@ -162,7 +162,7 @@ public class UtilityFunctions {
             String SSID = wifiInfo.getSSID().substring(1,wifiInfo.getSSID().length()-1);
             if(SSID.contains("unknown"))
             {
-                  return context.getResources().getString(R.string.not_connected);
+                  return "Unknown Network";
             }
             else{
 
