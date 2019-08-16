@@ -138,27 +138,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
 
 
-            /*new AsyncTask<Integer, Void, Boolean>() {
-                @Override
-                protected Boolean doInBackground(Integer... pos) {
-                    AppInfo appInfo = MyApplication
-                            .getAppDatabase(context)
-                            .getDao()
-                            .getParticularApp(appsList.get(pos[0]).getPackageName() + appsList.get(pos[0]).getLabel());
-                    if (appInfo == null) {
-                        return false;
-                    } else {
-                        return appInfo.isEnable();
-                    }
-
-                }
-
-                @Override
-                protected void onPostExecute(Boolean presentApp) {
-                    super.onPostExecute(presentApp);
-
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getAdapterPosition());*/
 
         }
 

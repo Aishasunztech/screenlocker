@@ -507,8 +507,7 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Log.d(TAG, "onResponse: "+msg);
-
+                            Timber.d("status from LinkDevice :%s",msg);
                             boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
 

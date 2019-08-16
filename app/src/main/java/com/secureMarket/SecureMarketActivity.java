@@ -2,6 +2,7 @@ package com.secureMarket;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -49,6 +50,7 @@ import com.secureClear.SecureClearActivity;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 
 public class SecureMarketActivity extends BaseActivity
@@ -161,6 +163,10 @@ public class SecureMarketActivity extends BaseActivity
         void searchOnQueryChange(String query);
     }
 
-
-
-}
+           @RequiresApi(api = Build.VERSION_CODES.M)
+           @Override
+           protected void onResume() {
+               super.onResume();
+               refreshApps(this);
+           }
+       }

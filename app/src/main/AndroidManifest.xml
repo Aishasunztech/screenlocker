@@ -137,7 +137,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
-            android:launchMode="standard"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".settings.codeSetting.policy.PolicyActivity"

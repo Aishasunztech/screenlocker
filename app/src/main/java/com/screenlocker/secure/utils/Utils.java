@@ -143,6 +143,7 @@ public class Utils {
         }
         return notificationItems;
     }
+
     @SuppressLint("ResourceType")
     public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
                                                                    List<NotificationItem> notifications, final Context context) {
@@ -194,7 +195,11 @@ public class Utils {
             rootView.setBackgroundResource(R.raw.remountan);
 
         } else {
-            rootView.setBackgroundResource(Integer.parseInt(bg));
+            try {
+                rootView.setBackgroundResource(Integer.parseInt(bg));
+            }catch (RuntimeException e){
+                rootView.setBackgroundResource(R.raw.remountan);
+            }
         }
 
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
@@ -235,6 +240,12 @@ public class Utils {
 
                     }
                     break;
+                case "flagged":
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+                    break;
+                case "unlinked":
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked, device_id));
+                    break;
             }
         }
 
@@ -265,9 +276,9 @@ public class Utils {
                     }
                 } else if (status.equals("unlinked")) {
 
-                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked));
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked,finalDevice_id));
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
-                } else if (status.equals("flagged")){
+                } else if (status.equals("flagged")) {
 
                     keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
 
@@ -392,13 +403,14 @@ public class Utils {
                             }
                             break;
                         case "unlinked":
-                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked));
+                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked,finalDevice_id1));
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
                             break;
                         case "flagged":
                             keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
 
-                            break;                    }
+                            break;
+                    }
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
 
@@ -511,9 +523,6 @@ public class Utils {
 
         return countDownTimer;
     }
-
-
-
 
 
 //    protected void onStop() {
@@ -712,7 +721,7 @@ public class Utils {
         return audioManager;
     }
 
-    public static void silentPullApp(Context context, String packageName){
+    public static void silentPullApp(Context context, String packageName) {
         PackageManager packageManger = context.getPackageManager();
         PackageInstaller packageInstaller = packageManger.getPackageInstaller();
         //intent broadcast by packageInstaller when system finish uninstalling deleting packages
@@ -727,7 +736,6 @@ public class Utils {
         PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
         packageInstaller.uninstall(packageName, i.getIntentSender());
     }
-
 
 
 }

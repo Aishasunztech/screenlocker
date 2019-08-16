@@ -99,9 +99,9 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
 //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
@@ -368,6 +368,7 @@ public class AppConstants {
     public static final String SUSPENDED = "Suspended";
     public static final String TRIAL = "Trial";
     public static final String PENDING = "Pending activation";
+    public static final String FLAGGED = "Flagged";
     public static final String NEW_DEVICE = "new device";
     public static final String UNLINKED_DEVICE = "Unlinked";
 

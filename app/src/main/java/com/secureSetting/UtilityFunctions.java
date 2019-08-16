@@ -151,23 +151,19 @@ public class UtilityFunctions {
         return seconds + " " + context.getResources().getString(R.string.seconds);
     }
 
-    public static String getWifiStatus(Context context)
-    {
+
+    public static String getWifiStatus(Context context) {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
 
-        if(isWifiConnected(context))
-        {
+        if (isWifiConnected(context)) {
 
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            String SSID = wifiInfo.getSSID().substring(1,wifiInfo.getSSID().length()-1);
-            if(SSID.contains("unknown"))
-            {
-                  return "Unknown Network";
-            }
-            else{
-
-                return SSID;
-
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+                String ssid = info.getExtraInfo();
+                return ssid.substring(1, ssid.length() - 1);
+            } else {
+                return context.getResources().getString(R.string.unknown);
             }
 
 
@@ -179,6 +175,7 @@ public class UtilityFunctions {
                 return context.getResources().getString(R.string.disabled);
             }
         }
+
     }
 
     public static String getBlueToothStatus(Context context)

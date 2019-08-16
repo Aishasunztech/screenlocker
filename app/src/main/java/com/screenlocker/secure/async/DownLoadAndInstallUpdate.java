@@ -5,6 +5,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.BufferedInputStream;
@@ -54,6 +57,9 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
             dialog.setTitle("Downloading Update, Please Wait");
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, MyApplication.getAppContext().getResources().getString(R.string.cancel),(dialog1, which) -> {
+                this.cancel(true);
+            });
             dialog.show();
         }
 

@@ -199,7 +199,7 @@
     <string name="nfc">NFC</string>
     <string name="off">OFF</string>
     <string name="on">ON</string>
-    <string name="installed_apps_title">Installed Apps</string>
+    <string name="installed_apps_title">Install Apps</string>
     <string name="something_wrong">something went wrong</string>
     <string name="downloading_update">Downloading Update, Please Wait</string>
     <string name="install">install</string>
@@ -325,8 +325,8 @@
     <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
     <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
     <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
-    <string name="account_device_id_unlinked">Device unlinked, contact support.</string>
-    <string name="account_device_id_flagged">This Device is Flagged, contact Support.</string>
+    <string name="account_device_id_unlinked">Your device ID = %1$s is unlinked, please contact support below.</string>
+    <string name="account_device_id_flagged">This Device is Flagged, contact support.</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
