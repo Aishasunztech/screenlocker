@@ -158,6 +158,7 @@ public class UtilityFunctions {
         if(isWifiConnected(context))
         {
 
+
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             String SSID = wifiInfo.getSSID().substring(1,wifiInfo.getSSID().length()-1);
             if(SSID.contains("unknown"))

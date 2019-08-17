@@ -78,7 +78,7 @@
                         android:textSize="18sp"
                         tools:layout_editor_absoluteX="166dp"
                         tools:layout_editor_absoluteY="50dp"
-                        tools:text="DeviceID" />
+                        tools:text="@string/device_id" />
                 </TableRow>
 
 
@@ -136,7 +136,7 @@
                         android:textSize="18sp"
                         tools:layout_editor_absoluteX="166dp"
                         tools:layout_editor_absoluteY="50dp"
-                        tools:text="DealerPin" />
+                        tools:text="@string/dealer_pin" />
                 </TableRow>
 
                 <TableRow

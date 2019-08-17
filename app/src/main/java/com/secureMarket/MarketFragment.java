@@ -536,6 +536,13 @@ public class MarketFragment extends Fragment implements
                 }
             } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
+
+                    AppExecutor.getInstance().getMainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
                     new AlertDialog.Builder(activity)
                             .setTitle("WiFi")
                             .setMessage("Please allow Secure Market to use WiFi for downloading Application.")

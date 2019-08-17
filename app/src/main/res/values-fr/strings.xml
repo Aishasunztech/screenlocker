@@ -109,7 +109,7 @@
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
     <string name="simtext">SIM:</string>
     <string name="slot">Slot :</string>
-    <string name="name">/ Prénom :</string>
+    <string name="name">/ Nom :</string>
     <string name="apn">/ Apn :</string>
     <string name="guest">Invité</string>
     <string name="encrypted">Crypté</string>
@@ -208,7 +208,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="uninstall">désinstaller</string>
     <string name="policy_title">Appliquer Politique</string>
     <string name="policy_warning_title">Attention!</string>
-    <string name="default_policy">default_policy</string>
+    <string name="default_policy">Politique par défaut</string>
     <string name="default_policy_message">Cela poussera la politique par défaut définie par votre Dealer.</string>
     <string name="enter_policy_name">veuillez entrer le nom de Policy</string>
     <string name="load_policy_to_device">Cela chargera la politique %1$s sur ce périphérique</string>
@@ -217,7 +217,7 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="cancel_capital">ANNULER</string>
     <string name="invalid_policy_name">Nom de Policy invalide</string>
     <string name="enter_policy_name_hint">Entrez le nom de Policy</string>
-    <string name="btn_load_policy">Charger Policy</string>
+    <string name="btn_load_policy">Appliquer Politique</string>
     <string name="dont_have_policy_message">Si vous n\'avez pas de nom de Policy, sélectionnez celle par défaut ci-dessous.</string>
     <string name="btn_default_policy">Policy par défaut</string>
     <string name="secure_settings_app">Paramètres Sécurisés App</string>
@@ -373,6 +373,8 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
  votre appareil</string>
     <string name="default_launcher_title">Default Launcher</string>
     <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
+
+    <string name="_10_days">10 Jours</string>
 
 
 
