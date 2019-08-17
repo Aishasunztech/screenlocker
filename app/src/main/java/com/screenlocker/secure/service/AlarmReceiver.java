@@ -16,16 +16,18 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String remainingDays = getRemainingDays(context);
-        if(remainingDays != null) {
+        if (remainingDays != null) {
 
-            int days = Integer.valueOf(remainingDays);
-            Log.d("kjshdf", "called: lksjdf");
-            if (days <= 7 && days >= 1) {
-                PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ALARM_DIALOG, true);
-                PrefUtils.saveStringPref(context, AppConstants.PENDING_DIALOG_MESSAGE, context.getResources().getString(R.string.expiry_alert_online_message,remainingDays));
+            if (!remainingDays.equals(context.getResources().getString(R.string.expired))) {
+                int days = Integer.valueOf(remainingDays);
+                if (days <= 7) {
+                    PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ALARM_DIALOG, true);
+                    PrefUtils.saveStringPref(context, AppConstants.PENDING_DIALOG_MESSAGE, context.getResources().getString(R.string.expiry_alert_online_message, remainingDays));
+                }
             }
+
         }
 
-        setAlarmManager(context,System.currentTimeMillis() + 86400000L);
+        setAlarmManager(context, System.currentTimeMillis() + 86400000L);
     }
 }

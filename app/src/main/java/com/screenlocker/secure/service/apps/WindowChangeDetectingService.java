@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
@@ -48,25 +46,15 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
     private HashSet<String> globalActions = new HashSet<>();
 
+    private HashSet<String> callingApps = new HashSet<>();
+
     public static ServiceConnectedListener serviceConnectedListener;
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
-        Timber.d("connected : " + connected.get());
-
-        connected.set(false);
-
-
-        if (serviceConnectedListener != null) {
-            serviceConnectedListener.serviceConnected(connected.get());
-        }
-
         return super.onStartCommand(intent, flags, startId);
-
-
     }
 
     @Override
@@ -103,7 +91,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         ssPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         ssPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity");
-
 
         ssPermissions.add("com.google.android.packageinstaller/.permission.ui.Manage.PermissionsActivity");
         ssPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.ManagePermissionsActivity");
@@ -177,8 +164,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         globalActions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         globalActions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity");
-        globalActions.add("com.samsung.android.incallui");
 
+        //calling app package name samsung
+        callingApps.add("com.samsung.android.incallui");
 
 
     }
@@ -214,19 +202,18 @@ public class WindowChangeDetectingService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
-        connected.set(true);
-
-
         Timber.d("dkjgdgrfghdghdr %s", event.getAction());
 
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+
+            if (event.getAction() == 1452) {
+                if (serviceConnectedListener != null) {
+                    serviceConnectedListener.serviceConnected(true);
+                }
+            }
+
             if (event.getPackageName() != null && event.getClassName() != null) {
-                ComponentName componentName = new ComponentName(
-                        event.getPackageName().toString(),
-                        event.getClassName().toString()
-                );
-
-
+                ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());
                 ActivityInfo activityInfo = tryGetActivity(componentName);
                 boolean isActivity = activityInfo != null;
                 Timber.d("dkjgdgrfghdghdr %s", componentName.flattenToShortString());
@@ -239,35 +226,30 @@ public class WindowChangeDetectingService extends AccessibilityService {
                         if (isActivity) {
                             if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
                                 Timber.d("dkjgdgrfghdghdr %s", "settings allowed");
-                                if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().equals(getPackageName())) {
+                                if (ssPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
                                 } else {
                                     checkAppStatus(componentName);
                                 }
                             } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
                                 Timber.d("dkjgdgrfghdghdr %s", "uninstall allowed");
-                                if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().equals(getPackageName())) {
+                                if (smPermissions.contains(componentName.flattenToShortString()) || componentName.flattenToShortString().contains(getPackageName())) {
                                     Timber.d("dkjgdgrfghdghdr %s", "activity allowed");
                                 } else {
                                     Timber.d("dkjgdgrfghdghdr %s", "activity not allowed");
                                     checkAppStatus(componentName);
                                 }
-                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().equals(getPackageName())) {
+                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING) || componentName.flattenToShortString().contains(getPackageName())) {
                                 Timber.d("dkjgdgrfghdghdr %s", "permission granting");
                             } else {
                                 Timber.d("dkjgdgrfghdghdr %s", "checking app permission");
-
-                                if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().equals(getPackageName()))
+                                if (!globalActions.contains(componentName.flattenToShortString()) || componentName.getPackageName().contains(getPackageName()) || !callingApps.contains(componentName.getPackageName())) {
                                     checkAppStatus(componentName);
+                                }
                             }
                         }
                     }
-
                 }
-
-
             }
-
-
         }
     }
 
@@ -356,9 +338,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
         return status;
     }
-
-
-    AtomicBoolean connected = new AtomicBoolean(false);
 
 
 }

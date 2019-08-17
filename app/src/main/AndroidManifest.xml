@@ -241,12 +241,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
 
-        <activity android:name=".settings.managepassword.VerifyPatternActivity"
+        <activity
+            android:name=".settings.managepassword.VerifyPatternActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".settings.managepassword.PatternActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.managepassword.PatternActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".appSelection.AppSelectionActivity"
@@ -471,6 +473,20 @@
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".crash.CustomErrorActivity"
+            android:label="@string/error_title"
+            android:launchMode="singleTask"
+            android:process=":error_activity"
+            android:screenOrientation="portrait">
+            <!-- You can also use this instead of using CustomActivityOnCrash.setErrorActivityClass(CustomErrorActivity.class); -->
+            <!--<intent-filter>-->
+            <!--<action android:name="cat.ereza.customactivityoncrash.ERROR" />-->
+            <!--</intent-filter>-->
+        </activity>
+
 
     </application>
 

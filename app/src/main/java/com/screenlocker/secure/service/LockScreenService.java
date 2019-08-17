@@ -52,8 +52,6 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
-import com.screenlocker.secure.views.PrepareLockScreen;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -95,6 +93,7 @@ import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
+import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -278,7 +277,10 @@ public class LockScreenService extends Service {
     @Override
     public void onCreate() {
 
-        setAlarmManager(this,System.currentTimeMillis() + 15000);
+        setAlarmManager(this, System.currentTimeMillis() + 15000);
+
+
+
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -299,8 +301,6 @@ public class LockScreenService extends Service {
         permittedPackages.add("com.google.android.packageinstaller");
         permittedPackages.add("com.android.packageinstaller");
 
-        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
-
 
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
@@ -318,7 +318,8 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+//        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+        params = Utils.prepareLockScreenView(mLayout, null, LockScreenService.this);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -425,19 +426,26 @@ public class LockScreenService extends Service {
 
     private void checkAppStatus(String packageName) {
 
-        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
-                .submit(() -> isAllowed(LockScreenService.this, packageName));
-        try {
-            boolean status = futureObject.get();
-            if (!status) {
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            if (blacklist.contains(packageName)) {
+                clearRecentApp(this);
+                return;
+            }
+
+            Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
+                    .submit(() -> isAllowed(LockScreenService.this, packageName));
+            try {
+                boolean status = futureObject.get();
+                if (!status) {
+                    clearRecentApp(this);
+                }
+            } catch (Exception e) {
                 clearRecentApp(this);
             }
-        } catch (Exception e) {
-            clearRecentApp(this);
         }
-    }
 
-    private boolean status = false;
+
+    }
 
 
     private void clearRecentApp(Context context) {
@@ -473,6 +481,7 @@ public class LockScreenService extends Service {
         Timber.d("<<< QUERYING DATA >>>");
 
         AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+        boolean status = false;
         if (info != null) {
             if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
                 status = true;
@@ -586,7 +595,6 @@ public class LockScreenService extends Service {
         Timber.d("screen locker starting.");
 
 
-
         if (intent != null) {
             String action = intent.getAction();
 
@@ -654,7 +662,6 @@ public class LockScreenService extends Service {
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
     }
-
 
 
     public void stopCapture() {
@@ -848,20 +855,18 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
+                View view = mLayout.findViewById(R.id.keypad);
                 TextView support = mLayout.findViewById(R.id.t9_key_support);
-                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
-                pl.setUpRandomizedArray();
-                pl.invalidate();
-                support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                clear.setText(getResources().getString(R.string.btn_backspace));
-                Button unlock = mLayout.findViewById(R.id.t9_unlock);
+                Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
+                support.setText(getResources().getString(R.string.support));
+                clear.setText(getResources().getString(R.string.btn_backspace));
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
                 unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-
+                refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {
@@ -883,7 +888,8 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+            params = Utils.prepareLockScreenView(mLayout, null, LockScreenService.this);
+
             //windowManager.removeViewImmediate(mLayout);
         }
     };

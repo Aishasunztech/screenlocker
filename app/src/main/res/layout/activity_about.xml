@@ -276,7 +276,7 @@
                 android:layout_marginTop="@dimen/_16sdp"
                 android:onClick="emergencyFlag"
                 android:text="ON/OFF"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider19" />
@@ -289,7 +289,7 @@
                 android:hint="http://192.168.18.219:3000"
                 android:inputType="textWebEmailAddress"
                 android:text="http://192.168.18.219:3000"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />
@@ -299,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="changeUrl"
                 android:text="Change Url"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/url_1" />
