@@ -258,7 +258,7 @@ public class LockScreenService extends Service {
     @Override
     public void onCreate() {
 
-        setAlarmManager(this,System.currentTimeMillis() + 15000);
+        setAlarmManager(this, System.currentTimeMillis() + 15000);
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -436,7 +436,6 @@ public class LockScreenService extends Service {
         Timber.d("screen locker starting.");
 
 
-
         if (intent != null) {
             String action = intent.getAction();
 
@@ -482,7 +481,6 @@ public class LockScreenService extends Service {
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
     }
-
 
 
     public void stopCapture() {
@@ -706,7 +704,7 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
+            params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
             //windowManager.removeViewImmediate(mLayout);
         }
     };
