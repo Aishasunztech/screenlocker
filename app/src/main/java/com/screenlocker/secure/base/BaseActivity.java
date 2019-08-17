@@ -15,9 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -40,7 +39,9 @@ import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
-import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
@@ -85,6 +86,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         return alertDialog;
     }
 
+    private static boolean isServiceConnected = false;
+
 
     BroadcastReceiver loadingPolicyReceiver = new BroadcastReceiver() {
         @Override
@@ -101,8 +104,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     };
 
 
-    private HashSet<String> blacklist = new HashSet<>();
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 //        decorView.setSystemUiVisibility(uiOptions);
 
-
         WindowChangeDetectingService.serviceConnectedListener = this;
+
 
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
@@ -306,6 +307,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     }
 
 
+    private Timer timer;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
@@ -314,6 +317,41 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        Intent intent = new Intent(this, WindowChangeDetectingService.class);
 //        intent.setAction("checkStatus");
 //        startService(intent);
+
+        AccessibilityManager manager = (AccessibilityManager) this.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (manager.isEnabled()) {
+            AccessibilityEvent event = AccessibilityEvent.obtain();
+            event.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+            event.setPackageName(getPackageName());
+            event.setClassName(this.getClass().toString());
+            event.setAction(1452);
+            manager.sendAccessibilityEvent(event);
+        }
+
+
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                if (isServiceConnected) {
+                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("stopThread"));
+                } else {
+                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("startThread"));
+                }
+
+                Timber.d("sdkjfvsdgjsgijjg before%s", isServiceConnected);
+
+                isServiceConnected = false;
+
+                Timber.d("sdkjfvsdgjsgijjg after%s", isServiceConnected);
+            }
+        }, 500);
 
 
         PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
@@ -330,21 +368,37 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else if (!Settings.System.canWrite(this)) {
             launchPermissions();
-        } else if (!isAccessGranted(this)) {
+        } else if (!
+
+                isAccessGranted(this)) {
             launchPermissions();
-        } else if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        } else if (
+                checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
+        } else if (!
+
+                isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
             launchPermissions();
             ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
-        } else if (!isNotificationAccess(this)) {
+        } else if (!
+
+                isNotificationAccess(this)) {
             launchPermissions();
-        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().
+
+                getPackageName())) {
             launchPermissions();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !
+
+                getPackageManager().
+
+                        canRequestPackageInstalls()) {
             launchPermissions();
         } else {
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
@@ -417,8 +471,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     @Override
     public void serviceConnected(boolean status) {
-//        Toast.makeText(this, "Service Staatus : " + status, Toast.LENGTH_SHORT).show();
-
+        isServiceConnected = status;
+        Timber.d("sdkjfvsdgjsgijjg in listener%s", isServiceConnected);
     }
 
 

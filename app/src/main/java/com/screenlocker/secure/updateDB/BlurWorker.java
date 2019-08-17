@@ -185,6 +185,18 @@ public class BlurWorker extends Worker {
                     MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
                 } else {
 
+                    if (app.getPackageName().equals(applicationContext.getPackageName()) && app.getLabel().contains("BYOD")) {
+                        app.setLabel(app.getLabel().replace("BYOD", ""));
+                        app.setGuest(app.isGuest());
+                        app.setEncrypted(true);
+                        app.setEnable(true);
+                        app.setExtension(false);
+                        app.setVisible(true);
+                        app.setDefaultApp(true);
+                        app.setSystemApp(true);
+                        MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                    }
+
                     if (app.getPackageName().equals(settingPackageName)) {
                         app.setGuest(false);
                         app.setVisible(false);

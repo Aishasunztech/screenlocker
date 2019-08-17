@@ -688,6 +688,7 @@ public class MainActivity extends BaseActivity {
         isBackPressed = false;
         pending = false;
         link = false;
+
     }
 
     private boolean pending = false;

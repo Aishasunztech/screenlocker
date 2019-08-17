@@ -177,18 +177,12 @@ public class LinkDeviceActivity extends BaseActivity {
 
     }
 
-    @SuppressLint({"LogNotTimber", "HardwareIds"})
+
     @Override
-    protected void init() {
-
-
+    protected void onResume() {
+        super.onResume();
         Intent intent = getIntent();
-
         String status = intent.getStringExtra(DEVICE_STATUS_KEY);
-
-
-        setToolbar(toolbar);
-
         if (status != null && status.equals(PENDING_STATE)) {
             pendingLinkViewState();
 
@@ -199,6 +193,13 @@ public class LinkDeviceActivity extends BaseActivity {
             newLinkViewState();
         }
 
+
+    }
+
+    @SuppressLint({"LogNotTimber", "HardwareIds"})
+    @Override
+    protected void init() {
+        setToolbar(toolbar);
 
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
         connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
@@ -518,7 +519,7 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Log.d(TAG, "onResponse: "+msg);
+                            Log.d(TAG, "onResponse: " + msg);
 
                             boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
@@ -626,7 +627,7 @@ public class LinkDeviceActivity extends BaseActivity {
                 });
             }
 
-        }, 5000);
+        }, 0, 5000);
     }
 
 

@@ -375,6 +375,11 @@ public class MainActivity extends
 //
     }
 
+
+
+
+
+
     private void runLayoutAnimation() {
         final Context context = rvApps.getContext();
         final LayoutAnimationController controller =

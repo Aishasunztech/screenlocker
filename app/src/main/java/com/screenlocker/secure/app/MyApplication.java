@@ -7,12 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -25,7 +22,8 @@ import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.crash.CustomErrorActivity;
+import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -33,9 +31,8 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.MyAppDatabase;
-import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
-import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -53,6 +50,7 @@ import com.secureSetting.t.util.PreferenceManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import cat.ereza.customactivityoncrash.config.CaocConfig;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,7 +89,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
-
     private LinearLayout createScreenShotView() {
         LinearLayout linearLayout = new LinearLayout(this);
         View btn = new View(this);
@@ -113,6 +110,19 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         appContext = getApplicationContext();
 
+        CaocConfig.Builder.create()
+                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
+                .enabled(true) //default: true
+                .showErrorDetails(true) //default: true
+                .showRestartButton(true) //default: true
+                .logErrorOnRestart(true) //default: true
+                .trackActivities(false) //default: false
+                .minTimeBetweenCrashesMs(2000) //default: 3000
+                .errorDrawable(R.drawable.customactivityoncrash_error_image) //default: bug image
+                .restartActivity(MainActivity.class) //default: null (your app's launch activity)
+                .errorActivity(CustomErrorActivity.class) //default: null (default error activity)
+                .eventListener(null) //default: null
+                .apply();
 
         networkChangeReceiver = new NetworkChangeReceiver();
         networkChangeReceiver.setNetworkChangeListener(this);
@@ -124,7 +134,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         try {
             Fabric.with(this, new Crashlytics());
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         compName = new ComponentName(this, MyAdmin.class);
@@ -148,7 +159,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .fallbackToDestructiveMigration()
+                        .addMigrations(new Migration_11_13(11, 13))
                         .build();
             }
         };

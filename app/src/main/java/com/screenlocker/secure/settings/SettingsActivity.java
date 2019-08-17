@@ -196,6 +196,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
 
+//        String crash[] = null;
+//        Toast.makeText(this, crash[0], Toast.LENGTH_SHORT).show();
+
 //        runShellCommand("adb shell pm hide ")
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
@@ -541,7 +544,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void update(ProgressDialog dialog) {
         MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -671,7 +674,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
-            startActivity(new Intent(this,WhatsNew.class));
+            startActivity(new Intent(this, WhatsNew.class));
 
         });
 
