@@ -361,10 +361,14 @@
     <string-array name="duration">
         <item>Today</item>
         <item>Yesterday</item>
+        <item>Last Week</item>
+        <item>Last Month</item>
     </string-array>
     <integer-array name="duration_int">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </integer-array>
 
 

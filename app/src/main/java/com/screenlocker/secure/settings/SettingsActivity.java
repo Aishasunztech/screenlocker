@@ -119,7 +119,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
     private NetworkChangeReceiver networkChangeReceiver;
-    private SharedPreferences sharedPref;
+
     private Toolbar mToolbar;
     /**
      * request code for the set password activity
@@ -183,15 +183,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
 
 
-        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
 
 //        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
@@ -249,8 +246,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
             findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.tvTheme).setVisibility(View.GONE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
             dividerAdvance.setVisibility(View.GONE);
             tvAdvance.setVisibility(View.GONE);
         } else {
@@ -262,8 +257,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider5).setVisibility(View.VISIBLE);
             findViewById(R.id.divider15).setVisibility(View.VISIBLE);
             findViewById(R.id.divider).setVisibility(View.VISIBLE);
-            findViewById(R.id.tvTheme).setVisibility(View.VISIBLE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.VISIBLE);
             dividerAdvance.setVisibility(View.VISIBLE);
             tvAdvance.setVisibility(View.VISIBLE);
         }
@@ -335,7 +328,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setVisibility(View.VISIBLE);
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvLanguage).setOnClickListener(this);
-        findViewById(R.id.tvTheme).setOnClickListener(this);
+
         tvAdvance.setOnClickListener(this);
 
     }
@@ -365,9 +358,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvCode:
                     handleCodeAdmin();
                     break;
-                case R.id.tvTheme:
-                    themeDialogue();
-                    break;
+
                 case R.id.tvAbout:
                     //handle the about click event
                     createAboutDialog();
@@ -851,66 +842,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private boolean asSupport = false;
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
 
-        if (intent.hasExtra("isSupport")) {
-            Log.d("kkogkooikn", "true: ");
-            asSupport = true;
-        } else {
-            Log.d("kkogkooikn", "false: ");
-            asSupport = false;
-        }
-    }
 
-    private void themeDialogue() {
-        int item;
-        AtomicInteger selected = new AtomicInteger();
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
-            item = 0;
-            selected.set(0);
-        } else {
-            item = 1;
-            selected.set(1);
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick A Theme");
-        builder.setSingleChoiceItems(R.array.themes, item, (dialog, which) -> {
-            selected.set(which);
-        });
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (selected.get() == 1) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, false);
-            } else if (selected.get() == 0) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, true);
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-            dialog.dismiss();
-        });
-        builder.show();
-    }
 
-    SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
-        if (key.equals(AppConstants.KEY_THEME)) {
-            if (PrefUtils.getBooleanPref(SettingsActivity.this, AppConstants.KEY_THEME)) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-            getDelegate().applyDayNight();
-            recreate();
-        }
-    };
+
+
 
     @Override
     protected void onDestroy() {
-        sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
+
         super.onDestroy();
     }
 

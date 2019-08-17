@@ -167,26 +167,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
 
-    @Override
-    public void onStateChange(int state) {            //<---
-        switch (state) {
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.e("onStateChange: BACKGROUND");
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                    this.finish();
-                }
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
 
 

@@ -67,8 +67,6 @@ public class AddSimDialog extends Fragment {
     MaskEditText manualIccid;
     @BindView(R.id.manualName)
     EditText manualName;
-    @BindView(R.id.manualEnable)
-    Switch manualEnable;
     @BindView(R.id.manualEncrypted)
     Switch manualEncrypted;
     @BindView(R.id.manualGuest)
@@ -134,7 +132,7 @@ public class AddSimDialog extends Fragment {
                 manualName.setError(null);
             }
             if (!isError) {
-                SimEntry se = new SimEntry(iccid, name, etNoteManual.getText().toString(), -1, manualGuest.isChecked(), manualEncrypted.isChecked(), manualEnable.isChecked(), getResources().getString(R.string.status_not_inserted));
+                SimEntry se = new SimEntry(iccid, name, etNoteManual.getText().toString(), -1, manualGuest.isChecked(), manualEncrypted.isChecked(), true, getResources().getString(R.string.status_not_inserted));
                 mListener.onManualInsert(se);
             }
 

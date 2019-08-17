@@ -254,24 +254,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    @Override
-    public void onStateChange(int state) {
-        switch (state) {
-
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.tag("TAGLLLL").e("onStateChange: BACKGROUND");
-                this.finish();
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

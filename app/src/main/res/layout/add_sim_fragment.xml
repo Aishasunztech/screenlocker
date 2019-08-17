@@ -289,11 +289,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_weight="1"
                     android:text="@string/guest"
                     app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
                     app:layout_constraintEnd_toStartOf="@+id/manualEncrypted"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/manualEncrypted" />
 
@@ -306,20 +307,11 @@
                     android:text="@string/encrypted"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.75"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Switch
-                    android:id="@+id/manualEnable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/enable"
-                    app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/manualEncrypted"
-                    app:layout_constraintTop_toTopOf="@+id/manualEncrypted" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button

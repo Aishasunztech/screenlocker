@@ -47,18 +47,13 @@ import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 
 
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, OnAppsRefreshListener {
+public abstract class BaseActivity extends AppCompatActivity implements  OnAppsRefreshListener {
     //    customViewGroup view;
 
     private boolean overlayIsAllowed;
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
-//    private static WindowManager manager, mWindowManager;
-
-
-
     private boolean statusViewAdded;
-    private LifecycleReceiver lifecycleReceiver;
 
     public boolean isOverLayAllowed() {
         return overlayIsAllowed;
@@ -113,10 +108,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
 
 
-        lifecycleReceiver = new LifecycleReceiver();            //<---
+
 //
-        registerReceiver(lifecycleReceiver, new IntentFilter(LIFECYCLE_ACTION));
-        lifecycleReceiver.setStateChangeListener(this);
+
+
 
 
     }
@@ -163,32 +158,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(lifecycleReceiver);
-        lifecycleReceiver.unsetStateChangeListener();
-
         if (alertDialog != null) {
             alertDialog.dismiss();
             alertDialog = null;
         }
     }
 
-    @Override
-    public void onStateChange(int state) {
-        switch (state) {
-
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.e("onStateChange: BACKGROUND");
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
     @Override
     protected void onStop() {
@@ -205,7 +180,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         LocalBroadcastManager.getInstance(this).registerReceiver(loadingPolicyReceiver, new IntentFilter(FINISH_POLICY));
 
         boolean status = PrefUtils.getBooleanPref(BaseActivity.this, LOADING_POLICY);
-//       PrefUtils.saveBooleanPref(BaseActivity.this, LOADING_POLICY,false);
 
         if (status) {
             if (!getPolicyDialog().isShowing()) {
@@ -300,7 +274,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
             launchPermissions();
-        } else if (!Settings.canDrawOverlays(this)) {
+        } else
+            if (!Settings.canDrawOverlays(this)) {
             launchPermissions();
         } else if (!Settings.System.canWrite(this)) {
             launchPermissions();
@@ -326,22 +301,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             a.putExtra("emergency", true);
         }
         startActivity(a);
-    }
-
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            if (!hasFocus) {
-
-// Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-// sendBroadcast(closeDialog);
-// Method that handles loss of window focus
-//                new BlockStatusBar(this, false).collapseNow();
-            }
-        }
     }
 
 

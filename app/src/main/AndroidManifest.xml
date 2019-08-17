@@ -190,7 +190,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.SettingsActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -375,7 +375,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.secureSetting.SecureSettingsMain"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
 

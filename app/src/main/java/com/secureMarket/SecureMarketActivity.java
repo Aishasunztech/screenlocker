@@ -41,6 +41,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 
-public class SecureMarketActivity extends BaseActivity
+public class SecureMarketActivity extends BaseActivity implements OnAppsRefreshListener
        {
 
     private PackageManager mPackageManager;
@@ -167,6 +168,6 @@ public class SecureMarketActivity extends BaseActivity
            @Override
            protected void onResume() {
                super.onResume();
-               refreshApps(this);
+               refreshApps(SecureMarketActivity.this);
            }
        }

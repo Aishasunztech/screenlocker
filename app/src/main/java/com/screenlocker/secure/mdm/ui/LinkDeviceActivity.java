@@ -615,7 +615,7 @@ public class LinkDeviceActivity extends BaseActivity {
                 });
             }
 
-        }, 5000);
+        },0, 5000);
     }
 
 

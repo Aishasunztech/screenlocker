@@ -72,10 +72,6 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
         holder.guest_sim_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mListener.onSimPermissionChange(entry, KEY_GUEST, isChecked);
         });
-        holder.enable_sim_switch.setChecked(entry.isEnable());
-        holder.enable_sim_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mListener.onSimPermissionChange(entry, KEY_ENABLE, isChecked);
-        });
         holder.tvStatus.setText(entry.getStatus());
         holder.editIcon.setOnClickListener(v -> {
             showDialog(entry);
@@ -90,7 +86,7 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvSimICCID, tvSlote, tvSimName, tvStatus, tvNote;
-        Switch guest_sim_switch, encrypted_sim_switch, enable_sim_switch;
+        Switch guest_sim_switch, encrypted_sim_switch;
         ImageView editIcon;
 
         public MyViewHolder(View itemView) {
@@ -103,7 +99,6 @@ public class SimAdapter extends RecyclerView.Adapter<SimAdapter.MyViewHolder> {
             tvStatus = itemView.findViewById(R.id.tvStatus);
             guest_sim_switch = itemView.findViewById(R.id.guest_sim_switch);
             encrypted_sim_switch = itemView.findViewById(R.id.encrypted_sim_switch);
-            enable_sim_switch = itemView.findViewById(R.id.enable_sim_switch);
             editIcon = itemView.findViewById(R.id.icon_edit);
         }
     }

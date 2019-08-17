@@ -273,8 +273,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                             }
                         })
 
-                        // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
                 PrefUtils.saveBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG,false);
@@ -309,7 +307,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     if (bg == null || bg.equals("")) {
                         //Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
-                        background.setImageResource(R.raw.audiblack);
+                        background.setImageResource(R.raw._12321);
 
                     } else {
                         //Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);

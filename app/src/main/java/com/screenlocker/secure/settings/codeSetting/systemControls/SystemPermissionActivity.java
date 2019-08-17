@@ -284,26 +284,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
     }
 
-    @Override
-    public void onStateChange(int state) {            //<---
-        switch (state) {
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.tag("TAGLLLL").e("onStateChange: BACKGROUND");
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                    this.finish();
-                }
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -390,7 +370,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                         mBluetoothAdapter.disable();
                     }
                 }
-
                 break;
             case R.id.switchHotSpot:
                 openHotSpot = isChecked;
