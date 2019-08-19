@@ -191,7 +191,7 @@ public class CommonUtils {
         wifi.setIcon(wifi_icon);
         wifi.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         wifi.setGuest(false);
-        wifi.setEncrypted(false);
+        wifi.setEncrypted(true);
         wifi.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "wi-fi");
         subExtensions.add(wifi);
 
@@ -216,7 +216,7 @@ public class CommonUtils {
         sim_card.setIcon(sim_card_icon);
         sim_card.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sim_card.setGuest(false);
-        sim_card.setEncrypted(false);
+        sim_card.setEncrypted(true);
         sim_card.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards");
         subExtensions.add(sim_card);
 
@@ -228,7 +228,7 @@ public class CommonUtils {
         dataRoaming.setIcon(data_roaming_icon);
         dataRoaming.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         dataRoaming.setGuest(false);
-        dataRoaming.setEncrypted(false);
+        dataRoaming.setEncrypted(true);
         dataRoaming.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming");
         subExtensions.add(dataRoaming);
 
@@ -240,7 +240,7 @@ public class CommonUtils {
         mobileData.setIcon(mobile_data_icon);
         mobileData.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         mobileData.setGuest(false);
-        mobileData.setEncrypted(false);
+        mobileData.setEncrypted(true);
         mobileData.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data");
         subExtensions.add(mobileData);
 
@@ -265,7 +265,7 @@ public class CommonUtils {
         screenLock.setIcon(screenLock_icon);
         screenLock.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         screenLock.setGuest(false);
-        screenLock.setEncrypted(false);
+        screenLock.setEncrypted(true);
         screenLock.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Finger Print + Lock");
         subExtensions.add(screenLock);
 
@@ -277,7 +277,7 @@ public class CommonUtils {
         brightness.setIcon(brightness_icon);
         brightness.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         brightness.setGuest(false);
-        brightness.setEncrypted(false);
+        brightness.setEncrypted(true);
         brightness.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Brightness");
         subExtensions.add(brightness);
 
@@ -289,7 +289,7 @@ public class CommonUtils {
         sleep.setIcon(sleep_icon);
         sleep.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sleep.setGuest(false);
-        sleep.setEncrypted(false);
+        sleep.setEncrypted(true);
         sleep.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sleep");
         subExtensions.add(sleep);
 
@@ -301,7 +301,7 @@ public class CommonUtils {
         battery.setIcon(battery_icon);
         battery.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         battery.setGuest(false);
-        battery.setEncrypted(false);
+        battery.setEncrypted(true);
         battery.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery");
         subExtensions.add(battery);
 
@@ -313,7 +313,7 @@ public class CommonUtils {
         sound.setIcon(sound_icon);
         sound.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sound.setGuest(false);
-        sound.setEncrypted(false);
+        sound.setEncrypted(true);
         sound.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound");
         subExtensions.add(sound);
 
@@ -325,7 +325,7 @@ public class CommonUtils {
         dateTime.setIcon(dateTime_icon);
         dateTime.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         dateTime.setGuest(false);
-        dateTime.setEncrypted(false);
+        dateTime.setEncrypted(true);
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
 
@@ -339,7 +339,7 @@ public class CommonUtils {
         language.setIcon(language_icon);
         language.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         language.setGuest(false);
-        language.setEncrypted(false);
+        language.setEncrypted(true);
         language.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input");
         subExtensions.add(language);
 
@@ -353,7 +353,7 @@ public class CommonUtils {
         notificaitons.setIcon(notificaitons_icon);
         notificaitons.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         notificaitons.setGuest(false);
-        notificaitons.setEncrypted(false);
+        notificaitons.setEncrypted(true);
         notificaitons.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Notifications");
         subExtensions.add(notificaitons);
 

@@ -42,6 +42,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_wallpaper);
         Toolbar toolbar = findViewById(R.id.toolbar);

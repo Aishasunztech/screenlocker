@@ -88,7 +88,8 @@ public class AppConstants {
     public static final String KEY_CODE = "code";
     public static final String DEFAULT_PASSWORD = "0000";
 
-    public static final String KEY_ENABLE_SCREENSHOT = "enable_screen_shot";
+    public static final String KEY_DISABLE_SCREENSHOT = "disable_screen_shot";
+    public static final String KEY_DEF_BRIGHTNESS = "def_brightness_";
     public static final String VALUE_SCREENSHOT_ENABLE = "enable";
     public static final String VALUE_SCREENSHOT_DISABLE = "disable";
 
@@ -99,10 +100,10 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
 //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
+        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain

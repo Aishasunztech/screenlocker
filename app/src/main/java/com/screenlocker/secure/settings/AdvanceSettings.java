@@ -155,4 +155,10 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
         sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
     }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+    }
 }

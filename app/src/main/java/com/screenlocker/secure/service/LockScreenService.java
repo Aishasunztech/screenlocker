@@ -1,9 +1,7 @@
 package com.screenlocker.secure.service;
 
-import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -11,9 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
@@ -45,8 +41,6 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
-import com.screenlocker.secure.views.PrepareLockScreen;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -60,33 +54,31 @@ import com.tonyodev.fetch2core.DownloadBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import timber.log.Timber;
 
-import static android.view.View.VISIBLE;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
+import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -110,6 +102,7 @@ public class LockScreenService extends Service {
     private WindowManager.LayoutParams params;
     private Fetch fetch;
     private int downloadId = 0;
+    /* Downloader used for SM app to download applications in background*/
     private FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NotNull Download download) {
@@ -237,7 +230,7 @@ public class LockScreenService extends Service {
         digest.update(sig);
         byte[] hashtext = digest.digest();
         return bytesToHex(hashtext);
-    }*/
+    }
 
     //util method to convert byte array to hex string
     public static String bytesToHex(byte[] bytes) {
@@ -253,8 +246,9 @@ public class LockScreenService extends Service {
         return new String(hexChars);
     }
 
-    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
 
+    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
+ */
     @Override
     public void onCreate() {
 
@@ -302,11 +296,16 @@ public class LockScreenService extends Service {
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        screenOffReceiver = new ScreenOffReceiver(() -> {
-            startLockScreen(true);
-        });
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
-            stopCapture();
+        screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
+            disableScreenShots();
+        }else{
+            allowScreenShoots();
+        }
+        //default brightness only once
+        if (!PrefUtils.getBooleanPref(this,KEY_DEF_BRIGHTNESS )){
+            setScreenBrightness(this, 102);
+            PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS,true);
         }
 
         //local
@@ -475,7 +474,7 @@ public class LockScreenService extends Service {
             }
         }
 
-//        stopCapture();
+//        disableScreenShots();
 
 
         Timber.i("Received start id " + startId + ": " + intent);
@@ -483,7 +482,7 @@ public class LockScreenService extends Service {
     }
 
 
-    public void stopCapture() {
+    public void disableScreenShots() {
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -511,17 +510,15 @@ public class LockScreenService extends Service {
 
                 PixelFormat.TRANSLUCENT);
 
-        if (!isLayoutAdded) {
+        if (frameLayout != null && frameLayout.getWindowToken() == null) {
 
             windowManager.addView(frameLayout, params);
-            isLayoutAdded = true;
         }
     }
 
-    public void startCapture() {
-        if (isLayoutAdded) {
+    public void allowScreenShoots() {
+        if (frameLayout != null && frameLayout.getWindowToken() != null) {
             windowManager.removeViewImmediate(frameLayout);
-            isLayoutAdded = false;
         }
     }
 
