@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,7 +113,7 @@ public class PrepareLockScreen {
             rootView.setBackgroundResource(Integer.parseInt(bg));
         }
 
-        Button unLockButton = keypadView.findViewById(R.id.t9_unlock);
+        TextView unLockButton = keypadView.findViewById(R.id.t9_unlock);
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
         final String finalDevice_id = device_id;
@@ -270,7 +272,7 @@ public class PrepareLockScreen {
                 editable.delete(charCount - 1, charCount);
             }
         });
-        TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
+        LinearLayout supportButton = keypadView.findViewById(R.id.t9_key_support);
         TextView clearAll = keypadView.findViewById(R.id.t9_key_clear);
         clearAll.setOnClickListener(v -> {
             mPasswordField.setText(null);
@@ -433,7 +435,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void wrongAttempt(Context context, TextView txtWarning, Button unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
+    private static void wrongAttempt(Context context, TextView txtWarning, TextView unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
         int attempts1 = 10;
         int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
@@ -486,7 +488,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void remainingTime(Context context, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
+    private static void remainingTime(Context context, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, TextView unLockButton, long time_remaining, int count, int x, int attempt_10) {
         long time;
         CountDownTimer countDownTimer;
         unLockButton.setEnabled(false);
@@ -500,7 +502,7 @@ public class PrepareLockScreen {
             countDownTimer.start();
     }
 
-    private static CountDownTimer timer(Button unLockButton, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
+    private static CountDownTimer timer(TextView unLockButton, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
 
         CountDownTimer countDownTimer = null;
         try {

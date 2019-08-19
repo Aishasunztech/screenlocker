@@ -26,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -667,18 +668,16 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-                TextView support = mLayout.findViewById(R.id.t9_key_support);
                 PatternLockView pl = mLayout.findViewById(R.id.patternLock);
                 pl.setUpRandomizedArray();
                 pl.invalidate();
-                support.setText(getResources().getString(R.string.support));
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
                 Button unlock = mLayout.findViewById(R.id.t9_unlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.pin));
-                unlock.setText(getResources().getString(R.string.unlock));
+//                unlock.setText(getResources().getString(R.string.unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
 
                 windowManager.updateViewLayout(mLayout, params);

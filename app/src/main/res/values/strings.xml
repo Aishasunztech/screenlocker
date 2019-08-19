@@ -12,7 +12,7 @@
     <string name="number_seven" translatable="false">7</string>
     <string name="number_eight" translatable="false">8</string>
     <string name="number_nine" translatable="false">9</string>
-    <string name="btn_backspace">CLEAR ALL</string>
+    <string name="btn_backspace">Clear</string>
     <string name="description_notification_icon">notification icon</string>
     <string name="description_app_image">app image</string>
     <string name="unlock">UNLOCK</string>
@@ -341,7 +341,7 @@
     <string name="please_wait_">Please wait...</string>
     <string name="account_disabled">Account disabled. Contact your dealer for assistance.</string>
     <string name="server_error">Server not responsive. Try again !</string>
-    <string name="incorrect_pin">Incorrect PIN!</string>
+    <string name="incorrect_pin">Incorrect PIN or Pattern!</string>
     <string name="version">Version</string>
     <string name="type">Type</string>
     <string name="change_language_dialog_title">Change Language</string>
@@ -451,5 +451,6 @@
     <string name="message_pattern_started">Pattern drawing started</string>
     <string name="message_pattern_detected">Pattern drawing completed</string>
     <string name="message_pattern_cleared">Pattern cleared</string>
+    <string name="enter_pin_or_draw_pattern_to_unlock">Enter Pin or Draw Pattern to unlock</string>
 
 </resources>

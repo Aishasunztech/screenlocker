@@ -16,6 +16,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import timber.log.Timber;
 
 
 /**
@@ -183,8 +186,11 @@ public class PatternLockView extends View {
                     ResourceUtils.getColor(getContext(), R.color.white));
             mWrongStateColor = typedArray.getColor(R.styleable.PatternLockView_wrongStateColor,
                     ResourceUtils.getColor(getContext(), R.color.pomegranate));
-            mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,
-                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));
+//            mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,
+//                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));
+
+            mDotNormalSize = (int)ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size);
+            Log.d("lsakjdflk",mDotNormalSize + "");
             mDotSelectedSize = (int) typedArray.getDimension(R.styleable
                             .PatternLockView_dotSelectedSize,
                     ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_selected_size));
@@ -1167,12 +1173,27 @@ public class PatternLockView extends View {
                             float size, boolean partOfPattern, float alpha, int value) {
         mDotPaint.setColor(getCurrentColor(partOfPattern));
         mDotPaint.setAlpha((int) (alpha * 255));
+        mDotPaint.setStyle(Paint.Style.STROKE);
+        mDotPaint.setStrokeWidth(5);
         canvas.drawCircle(centerX, centerY, size, mDotPaint);
-        mDotPaint.setTextSize(16 * getResources().getDisplayMetrics().density);
-        mDotPaint.setColor(Color.BLACK);
-        mDotPaint.setTextAlign(Paint.Align.CENTER);
 
-        canvas.drawText(String.valueOf(value), centerX, centerY + 12, mDotPaint);
+        Paint bgPaint = new Paint();
+        bgPaint.setColor(getResources().getColor(android.R.color.black));
+        bgPaint.setAlpha(80);
+        canvas.drawCircle(centerX, centerY, size, bgPaint);
+//        fillCircleStrokeBorder(canvas,centerX,centerY,size,android.R.color.black,20,android.R.color.white,mDotPaint);
+//        mDotPaint.setTextSize(20 * getResources().getDisplayMetrics().density);
+//        mDotPaint.setColor(Color.BLACK);
+//        mDotPaint.setTextAlign(Paint.Align.CENTER);
+//        canvas.drawText(String.valueOf(value), centerX, centerY + 12, mDotPaint);
+
+
+        Paint textPaint = new Paint();
+        textPaint.setTextSize(26 * getResources().getDisplayMetrics().density);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+
+        canvas.drawText(String.valueOf(value), centerX, centerY + 24, textPaint);
 
     }
 
