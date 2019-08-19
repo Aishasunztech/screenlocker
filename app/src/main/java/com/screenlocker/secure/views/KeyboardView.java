@@ -3,6 +3,9 @@ package com.screenlocker.secure.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+
+import androidx.annotation.IdRes;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
@@ -12,8 +15,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.IdRes;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.socket.interfaces.RefreshListener;
@@ -96,7 +97,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 
 //        $(R.id.t9_key_9).setOnClickListener(this);
 
-        mPasswordField.setTransformationMethod((TransformationMethod) new HiddenPassTransformationMethod());
+        mPasswordField.setTransformationMethod(new HiddenPassTransformationMethod());
 
         mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 

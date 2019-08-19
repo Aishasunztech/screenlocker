@@ -58,6 +58,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.tv_IMEI:
                 startActivity(new Intent(this, IMEIActivity.class));
+                break;
             case R.id.tv_set_column:
                 setColumnSizes();
 

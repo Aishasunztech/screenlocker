@@ -32,6 +32,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -45,6 +46,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.mdm.ui.LinkDeviceActivity.linkDeviceActivity;
+import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
@@ -55,6 +58,8 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.FINISH;
+import static com.screenlocker.secure.utils.AppConstants.FLAGGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_CONNECTED_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEALER_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
@@ -271,8 +276,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Log.d(TAG, "onResponse: "+msg);
-
+                            Timber.d("status from MDM :%s", msg);
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
 
@@ -315,14 +319,19 @@ public class MainActivity extends BaseActivity {
                                         startActivity(intent);
                                         finish();
                                         break;
+                                    case FLAGGED:
+                                        suspendedDevice(MainActivity.this, "flagged");
+                                        break;
                                 }
                             } else {
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        finishLinkDeviceActivity();
                                         showMainContent();
                                         //stop sevice
                                         break;
                                     case NEW_DEVICE:
+                                        finishLinkDeviceActivity();
                                         if (isLinked) {
                                             utils.newDevice(MainActivity.this, true);
                                         } else {
@@ -350,6 +359,12 @@ public class MainActivity extends BaseActivity {
 
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
+                        }
+                    }
+
+                    private void finishLinkDeviceActivity() {
+                        if (linkDeviceActivity != null) {
+                            linkDeviceActivity.finish();
                         }
                     }
 

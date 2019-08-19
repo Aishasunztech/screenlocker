@@ -520,30 +520,34 @@ public class MarketFragment extends Fragment implements
 
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                 if (PrefUtils.getIntegerPref(activity, SECUREMARKETSIM) != 1) {
-                    new AlertDialog.Builder(activity)
-                            .setTitle("Mobile Data")
-                            .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
-                            .setPositiveButton("Allow", (dialog1, which) -> {
-                                //
-                                downloadAndInstallApp(app);
-                            })
-                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                            .show();
+                    AppExecutor.getInstance().getMainThread().execute(() -> {
+                        new AlertDialog.Builder(activity)
+                                .setTitle("Mobile Data")
+                                .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
+                                .setPositiveButton("Allow", (dialog1, which) -> {
+                                    //
+                                    downloadAndInstallApp(app);
+                                })
+                                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                                .show();
+                    });
 
                 } else {
                     downloadAndInstallApp(app);
                 }
             } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(activity, SECUREMARKETWIFI) != 1) {
-                    new AlertDialog.Builder(activity)
-                            .setTitle("WiFi")
-                            .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
-                            .setPositiveButton("Allow", (dialog1, which) -> {
-                                //
-                                downloadAndInstallApp(app);
-                            })
-                            .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
-                            .show();
+                    AppExecutor.getInstance().getMainThread().execute(() -> {
+                        new AlertDialog.Builder(activity)
+                                .setTitle("WiFi")
+                                .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
+                                .setPositiveButton("Allow", (dialog1, which) -> {
+                                    //
+                                    downloadAndInstallApp(app);
+                                })
+                                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                                .show();
+                    });
 
                 } else {
                     downloadAndInstallApp(app);

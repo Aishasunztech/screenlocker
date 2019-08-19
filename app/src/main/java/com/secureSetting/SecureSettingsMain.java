@@ -250,12 +250,16 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         findViewById(R.id.bluetooth_container_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ComponentName cn = new ComponentName("com.android.settings",
-                        "com.android.settings.bluetooth.BluetoothSettings");
+                try {
+                    ComponentName cn = new ComponentName("com.android.settings",
+                            "com.android.settings.bluetooth.BluetoothSettings");
+                    Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                    intent.setComponent(cn);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(SecureSettingsMain.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
-                Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                intent.setComponent(cn);
-                startActivity(intent);
             }
         });
 

@@ -81,7 +81,7 @@ public class SocketManager {
             if (socket == null) {
                 IO.Options opts = new IO.Options();
                 opts.reconnectionDelay = 5000;
-                //                opts.reconnectionDelay = 10 * 60 * 60 * 1000L;
+//                opts.reconnectionDelay = 10 * 60 * 60 * 1000L;
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;

@@ -317,42 +317,42 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        Intent intent = new Intent(this, WindowChangeDetectingService.class);
 //        intent.setAction("checkStatus");
 //        startService(intent);
-
-        AccessibilityManager manager = (AccessibilityManager) this.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (manager.isEnabled()) {
-            AccessibilityEvent event = AccessibilityEvent.obtain();
-            event.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-            event.setPackageName(getPackageName());
-            event.setClassName(this.getClass().toString());
-            event.setAction(1452);
-            manager.sendAccessibilityEvent(event);
-        }
-
-
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                if (isServiceConnected) {
-                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("stopThread"));
-                } else {
-                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("startThread"));
-                }
-
-                Timber.d("sdkjfvsdgjsgijjg before%s", isServiceConnected);
-
-                isServiceConnected = false;
-
-                Timber.d("sdkjfvsdgjsgijjg after%s", isServiceConnected);
-            }
-        }, 500);
-
+//
+//        AccessibilityManager manager = (AccessibilityManager) this.getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        if (manager.isEnabled()) {
+//            AccessibilityEvent event = AccessibilityEvent.obtain();
+//            event.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+//            event.setPackageName(getPackageName());
+//            event.setClassName(this.getClass().toString());
+//            event.setAction(1452);
+//            manager.sendAccessibilityEvent(event);
+//        }
+//
+//
+//        if (timer != null) {
+//            timer.cancel();
+//            timer = null;
+//        }
+//
+//        timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//
+////                if (isServiceConnected) {
+////                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("stopThread"));
+////                } else {
+////                    ActivityCompat.startForegroundService(BaseActivity.this, new Intent(BaseActivity.this, LockScreenService.class).setAction("startThread"));
+////                }
+//
+//                Timber.d("sdkjfvsdgjsgijjg before%s", isServiceConnected);
+//
+//                isServiceConnected = false;
+//
+//                Timber.d("sdkjfvsdgjsgijjg after%s", isServiceConnected);
+//            }
+//        }, 500);
+//
 
         PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
 
@@ -385,7 +385,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
                 isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
             launchPermissions();
-            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
+//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
         } else if (!
 
                 isNotificationAccess(this)) {
@@ -402,7 +402,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
             launchPermissions();
         } else {
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
-            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
+//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
         }
 
 

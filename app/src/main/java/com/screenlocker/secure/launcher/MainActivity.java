@@ -5,7 +5,6 @@ import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
@@ -18,11 +17,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -49,7 +46,6 @@ import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.AppConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -306,8 +302,7 @@ public class MainActivity extends
         super.onResume();
 
         int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
-        if(column_span == 0)
-        {
+        if (column_span == 0) {
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
         rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
@@ -341,27 +336,20 @@ public class MainActivity extends
             startActivity(intent);
         }
 
-        boolean pendingDialog = PrefUtils.getBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG);
-        if(pendingDialog)
-        {
-            String dialogMessage = PrefUtils.getStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE);
-            if(!dialogMessage.equals("")){
+        boolean pendingDialog = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG);
+        if (pendingDialog) {
+            String dialogMessage = PrefUtils.getStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE);
+            if (!dialogMessage.equals("")) {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.expiry_alert_online_title))
                         .setMessage(dialogMessage)
-
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-
+                        .setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> dialog.dismiss())
                         // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(android.R.string.no, null)
+//                        .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                PrefUtils.saveBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG,false);
-                PrefUtils.saveStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE,"");
+                PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG, false);
+                PrefUtils.saveStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE, "");
             }
         }
 
@@ -374,10 +362,6 @@ public class MainActivity extends
         super.onResume();
 //
     }
-
-
-
-
 
 
     private void runLayoutAnimation() {

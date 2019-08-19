@@ -1,9 +1,8 @@
 package com.screenlocker.secure.mdm.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -59,6 +59,7 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.FINISH;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -144,6 +145,8 @@ public class LinkDeviceActivity extends BaseActivity {
     TextView tvSimId;
 
 
+    public static Activity linkDeviceActivity = null;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_link_device;
@@ -167,6 +170,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -179,10 +183,22 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onDestroy() {
+        linkDeviceActivity = null;
+        super.onDestroy();
+    }
+
+    @SuppressLint({"LogNotTimber", "HardwareIds"})
+    @Override
+    protected void init() {
+
+        linkDeviceActivity = this;
+
         Intent intent = getIntent();
         String status = intent.getStringExtra(DEVICE_STATUS_KEY);
+
+        setToolbar(toolbar);
+
         if (status != null && status.equals(PENDING_STATE)) {
             pendingLinkViewState();
 
@@ -193,13 +209,6 @@ public class LinkDeviceActivity extends BaseActivity {
             newLinkViewState();
         }
 
-
-    }
-
-    @SuppressLint({"LogNotTimber", "HardwareIds"})
-    @Override
-    protected void init() {
-        setToolbar(toolbar);
 
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
         connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
@@ -303,6 +312,7 @@ public class LinkDeviceActivity extends BaseActivity {
         } else {
             processingLinkViewState();
 
+
             if (MyApplication.oneCaller == null) {
                 if (asyncCalls != null) {
                     asyncCalls.cancel(true);
@@ -332,19 +342,9 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void linkDevice() {
 
-        String versionName = "1.0";
-
-        try {
-            PackageManager pm = getPackageManager();
-            PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
-
-            versionName = info.versionName;
-        } catch (PackageManager.NameNotFoundException ignored) {
-
-        }
         MyApplication.oneCaller
                 .linkDeviceToDealer(
-                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), versionName),
+                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.type), BuildConfig.VERSION_NAME),
                         PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
                 )
@@ -519,8 +519,7 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Log.d(TAG, "onResponse: " + msg);
-
+                            Timber.d("status from LinkDevice :%s", msg);
                             boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
 
@@ -542,6 +541,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+
                                         finish();
                                         break;
                                     case TRIAL:
@@ -600,8 +600,8 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         if (t != null) {
             t.cancel();
             t = null;

@@ -644,6 +644,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             String msg = object.getString("msg");
                             Timber.e("<<< device status =>>> %S", msg);
                             if (msg != null) {
+                                Timber.d("status from Socket :%s",msg);
                                 switch (msg) {
                                     case "suspended":
                                         suspendedDevice(SocketService.this, "suspended");

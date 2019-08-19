@@ -41,6 +41,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -83,14 +84,17 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
@@ -117,6 +121,19 @@ public class LockScreenService extends Service {
     private WindowManager.LayoutParams params;
     private Fetch fetch;
     private int downloadId = 0;
+
+
+    private HashSet<String> ssPermissions = new HashSet<>();
+
+    private HashSet<String> smPermissions = new HashSet<>();
+
+    private HashSet<String> stepperPermissions = new HashSet<>();
+
+    private HashSet<String> globalActions = new HashSet<>();
+
+    private HashSet<String> callingApps = new HashSet<>();
+
+
     private FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NotNull Download download) {
@@ -213,8 +230,6 @@ public class LockScreenService extends Service {
     public static ServiceCallbacks mCallBacks;
 
 
-    private static final String TAG = "LockScreenServiceMM";
-
     public interface ServiceCallbacks {
         void onRecentAppKill();
     }
@@ -280,6 +295,40 @@ public class LockScreenService extends Service {
         setAlarmManager(this, System.currentTimeMillis() + 15000);
 
 
+        // SS permission
+        ssPermissions.add("com.android.settings");
+        ssPermissions.add("com.android.phone");
+        ssPermissions.add("com.google.android.packageinstaller");
+        ssPermissions.add("com.android.packageinstaller");
+        ssPermissions.add("com.samsung.networkui");
+        ssPermissions.add("com.samsung.crane");
+        ssPermissions.add("com.android.bluetooth");
+        ssPermissions.add("com.huawei.systemmanager");
+        ssPermissions.add("com.hisi.mapcon");
+        ssPermissions.add("com.android.wifisettings");
+        ssPermissions.add("android");
+        ssPermissions.add("com.samsung.android.app.telephonyui");
+        ssPermissions.add("com.miui.securitycenter");
+
+        // SM permission
+        smPermissions.add("com.android.packageinstaller");
+        smPermissions.add("com.google.android.packageinstaller");
+
+
+//        wm.addView(mView, localLayoutParams);
+
+        stepperPermissions.add("com.google.android.packageinstaller");
+        stepperPermissions.add("com.android.packageinstaller");
+
+
+        // some global actions
+        globalActions.add("com.android.systemui");
+//        globalActions.add("com.android.settings");
+        globalActions.add("com.android.packageinstaller");
+        globalActions.add("com.google.android.packageinstaller");
+
+        //calling app package name samsung
+        callingApps.add("com.samsung.android.incallui");
 
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
@@ -298,6 +347,7 @@ public class LockScreenService extends Service {
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
         blacklist.add("com.huawei.android.launcher");
+
         permittedPackages.add("com.google.android.packageinstaller");
         permittedPackages.add("com.android.packageinstaller");
 
@@ -341,7 +391,7 @@ public class LockScreenService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> {
             Log.d("nadeem", "screeen off from reciver: ");
-            startLockScreen(true);
+//            startLockScreen(true);
         });
         if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
             stopCapture();
@@ -367,7 +417,7 @@ public class LockScreenService extends Service {
         public void onReceive(Context context, Intent intent) {
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
-//                sheduleScreenOffMonitor();
+                startRecentAppsKillThread();
             }
         }
     };
@@ -376,7 +426,7 @@ public class LockScreenService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
-                addView();
+                addView(context);
             } else {
                 removeView();
             }
@@ -410,19 +460,47 @@ public class LockScreenService extends Service {
 
                 Timber.d("current Package %s", package_name);
 
-
                 if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-                    if (package_name != null) {
-                        checkAppStatus(package_name);
-                    } else {
-                        clearRecentApp(this);
+
+                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                        Timber.d("Tour Completed");
+                        if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
+                            Timber.d("settings allowed");
+                            if (ssPermissions.contains(package_name)) {
+                                Timber.d("activity allowed");
+                            } else {
+                                if (!package_name.contains(BuildConfig.APPLICATION_ID)) {
+                                    checkAppStatus(package_name);
+                                }
+                            }
+                        } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
+                            Timber.d("uninstall allowed");
+                            if (smPermissions.contains(package_name)) {
+                                Timber.d("activity allowed");
+                            } else {
+                                Timber.d("activity not allowed");
+                                if (!package_name.contains(BuildConfig.APPLICATION_ID)) {
+                                    checkAppStatus(package_name);
+                                }
+                            }
+                        } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING)) {
+                            Timber.d("permission granting");
+                            checkAppStatus(package_name);
+
+                        } else {
+                            Timber.d("checking app permission");
+                            if ((!PrefUtils.getBooleanPref(this, TEMP_SETTINGS_ALLOW) && !globalActions.contains(package_name)) || package_name.contains(BuildConfig.APPLICATION_ID) || !callingApps.contains(package_name)) {
+                                checkAppStatus(package_name);
+                            }
+                        }
+
                     }
                 }
+
 
             }
         });
     }
-
 
     private void checkAppStatus(String packageName) {
 
@@ -450,55 +528,66 @@ public class LockScreenService extends Service {
 
     private void clearRecentApp(Context context) {
 
-        Intent i = new Intent(context, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(i);
-
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
-        }
-        handler = new Handler(Looper.getMainLooper());
-
-        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
-
-        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
+//
+//        if (handler != null) {
+//            handler.removeCallbacksAndMessages(null);
+//            handler = null;
+//        }
+//        handler = new Handler(Looper.getMainLooper());
+//
+//        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+//
+//        Intent i = new Intent(context, MainActivity.class);
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        startActivity(i);
+//
+//
+//        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
 
 
     }
 
 
-    private boolean isAllowed(Context context, String packageName) {
+    private String current_package = "temp";
+    boolean package_status = false;
+    private String current_space = "temp";
 
+
+    private boolean isAllowed(Context context, String packageName) {
         if (packageName.equals(context.getPackageName()) || (packageName.equals("com.android.settings") && PrefUtils.getBooleanPref(this, TEMP_SETTINGS_ALLOW))) {
             return true;
         }
 
+        if(packageName.equals("android")){
+            return true;
+        }
         String space = PrefUtils.getStringPref(context, CURRENT_KEY);
         String currentSpace = (space == null) ? "" : space;
-        Timber.d("<<< QUERYING DATA >>>");
 
-        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
-        boolean status = false;
-        if (info != null) {
-            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
-                status = true;
-            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
-                status = true;
-            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
-                status = true;
-            } else {
-                status = false;
+        if (!currentSpace.equals(current_space) || !current_package.equals(packageName)) {
+            current_space = currentSpace;
+            current_package = packageName;
+            Timber.d("<<< QUERYING DATA >>>");
+            AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+            boolean status = false;
+            if (info != null) {
+                if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+                    status = true;
+                } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
+                    status = true;
+                } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
+                    status = true;
+                }
             }
+            package_status = status;
+            return status;
 
         } else {
-            status = false;
+            return package_status;
         }
 
-
-        return status;
     }
 
 
@@ -636,7 +725,7 @@ public class LockScreenService extends Service {
                         break;
                     case "add":
                         Timber.d("ADD VIEW ");
-                        addView();
+                        addView(this);
                         break;
                     case "remove":
                         Timber.d("REMOVE VIEW ");
@@ -903,7 +992,7 @@ public class LockScreenService extends Service {
 
     private View view;
 
-    protected void addView() {
+    protected void addView(Context context) {
         Timber.d("addView: ");
         try {
 //            mView.setBackground(drawable);
@@ -949,6 +1038,13 @@ public class LockScreenService extends Service {
             viewAdded = false;
         }
 
+        Intent i = new Intent(context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+
+
     }
 
     protected void removeView() {
@@ -967,6 +1063,7 @@ public class LockScreenService extends Service {
             Timber.e(e);
             viewAdded = false;
         }
+
 
     }
 

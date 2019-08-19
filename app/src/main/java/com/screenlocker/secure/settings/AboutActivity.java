@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     private SocketManager socketManager;
 
+    private Button button, button2;
+
+    int clickCount = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvImei1 = findViewById(R.id.tvImei1);
         tvImei2 = findViewById(R.id.tvImei2);
         swipeRefreshLayout = findViewById(R.id.lytSwipeReferesh);
+
+        button2 = findViewById(R.id.button2);
+        button = findViewById(R.id.button);
+
 
         onlineStatus.setOnClickListener(this);
         tvDeviceId.setOnClickListener(this);
@@ -173,6 +183,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         } else {
             onlineStatus.setText(getResources().getString(R.string.status_disconnected));
         }
+
+
+        clickCount = 0;
+
+        button.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        url_1.setVisibility(View.GONE);
 
 
     }
@@ -337,5 +354,22 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         URL_1 = url;
 
         Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void counter(View view) {
+
+        clickCount++;
+        int total = 6;
+
+        if (clickCount == 6) {
+            button.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            url_1.setVisibility(View.VISIBLE);
+        } else {
+            if (clickCount >= 2 && clickCount <= 6) {
+                Toast.makeText(this, total - clickCount + " more clicks ", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

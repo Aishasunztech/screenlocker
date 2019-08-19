@@ -1,18 +1,19 @@
 package com.screenlocker.secure.utils;
 
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInstaller;
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
@@ -35,7 +36,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -151,7 +151,6 @@ public class Utils {
         return notificationItems;
     }
 
-
     @SuppressLint("ResourceType")
     public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
                                                                    List<NotificationItem> notifications, final Context context) {
@@ -177,10 +176,7 @@ public class Utils {
                 windowType,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-//                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-//                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                         | WindowManager.LayoutParams.FLAG_FULLSCREEN
                         | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -206,7 +202,11 @@ public class Utils {
             rootView.setBackgroundResource(R.raw.remountan);
 
         } else {
-            rootView.setBackgroundResource(Integer.parseInt(bg));
+            try {
+                rootView.setBackgroundResource(Integer.parseInt(bg));
+            }catch (RuntimeException e){
+                rootView.setBackgroundResource(R.raw.remountan);
+            }
         }
 
         final KeyboardView keyboardView = keypadView.findViewById(R.id.keypad);
@@ -247,6 +247,12 @@ public class Utils {
 
                     }
                     break;
+                case "flagged":
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+                    break;
+                case "unlinked":
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked, device_id));
+                    break;
             }
         }
 
@@ -275,6 +281,15 @@ public class Utils {
 
 
                     }
+                } else if (status.equals("unlinked")) {
+
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked,finalDevice_id));
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                } else if (status.equals("flagged")) {
+
+                    keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+
+
                 }
             }
 
@@ -332,8 +347,6 @@ public class Utils {
 
         String finalDevice_id1 = device_id;
         unLockButton.setOnClickListener(v -> {
-
-            Timber.d("fvksdifgseifgueri");
 
             String enteredPin = keyboardView.getInputText().trim();
             String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
@@ -395,6 +408,14 @@ public class Utils {
 
 
                             }
+                            break;
+                        case "unlinked":
+                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_unlinked,finalDevice_id1));
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                            break;
+                        case "flagged":
+                            keyboardView.setWarningText(context.getResources().getString(R.string.account_device_id_flagged));
+
                             break;
                     }
                 } else {
@@ -668,9 +689,6 @@ public class Utils {
         if (utils.isJobServiceOn(context, 1345)) {
             scheduler.cancel(1345);
         }
-        if (utils.isJobServiceOn(context, 1345)) {
-            scheduler.cancel(1345);
-        }
         int resultCode = scheduler.schedule(info);
 
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
@@ -746,6 +764,22 @@ public class Utils {
         audioManager.setMode(AudioManager.MODE_IN_CALL);
         // audioManager.setMode(AudioManager.ROUTE_SPEAKER);
         return audioManager;
+    }
+
+    public static void silentPullApp(Context context, String packageName) {
+        PackageManager packageManger = context.getPackageManager();
+        PackageInstaller packageInstaller = packageManger.getPackageInstaller();
+        //intent broadcast by packageInstaller when system finish uninstalling deleting packages
+        //package already uninstall
+        Intent delIntent = new Intent();
+        delIntent.setComponent(new ComponentName("com.secure.launcher", "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
+        delIntent.setAction("com.secure.systemcontroll.PackageUninstall");
+        delIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        //package name of deleted package
+        delIntent.putExtra("package", packageName);
+        Random generator = new Random();
+        PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
+        packageInstaller.uninstall(packageName, i.getIntentSender());
     }
 
 
