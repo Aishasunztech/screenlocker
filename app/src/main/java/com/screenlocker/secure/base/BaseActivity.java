@@ -38,6 +38,7 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,7 +53,6 @@ import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
-import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
@@ -354,7 +354,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        }, 500);
 //
 
-        PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
 
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
@@ -433,9 +433,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //            }
 //
 //        }
-
-
-        PrefUtils.saveBooleanPref(this, TEMP_SETTINGS_ALLOW, false);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!hasFocus) {

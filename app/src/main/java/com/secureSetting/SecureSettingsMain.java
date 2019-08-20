@@ -455,6 +455,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         super.onResume();
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");

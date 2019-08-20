@@ -1,5 +1,6 @@
 package com.screenlocker.secure.service;
 
+import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
@@ -84,17 +85,13 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
-import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
-import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
@@ -123,16 +120,7 @@ public class LockScreenService extends Service {
     private int downloadId = 0;
 
 
-    private HashSet<String> ssPermissions = new HashSet<>();
-
-    private HashSet<String> smPermissions = new HashSet<>();
-
-    private HashSet<String> stepperPermissions = new HashSet<>();
-
-    private HashSet<String> globalActions = new HashSet<>();
-
-    private HashSet<String> callingApps = new HashSet<>();
-
+    private HashSet<String> tempAllowed = new HashSet<>();
 
     private FetchListener fetchListener = new FetchListener() {
         @Override
@@ -224,8 +212,6 @@ public class LockScreenService extends Service {
 
     HashSet<String> blacklist = new HashSet<>();
 
-    HashSet<String> permittedPackages = new HashSet<>();
-
 
     public static ServiceCallbacks mCallBacks;
 
@@ -294,43 +280,6 @@ public class LockScreenService extends Service {
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
 
-
-        // SS permission
-        ssPermissions.add("com.android.settings");
-        ssPermissions.add("com.android.phone");
-        ssPermissions.add("com.google.android.packageinstaller");
-        ssPermissions.add("com.android.packageinstaller");
-        ssPermissions.add("com.samsung.networkui");
-        ssPermissions.add("com.samsung.crane");
-        ssPermissions.add("com.android.bluetooth");
-        ssPermissions.add("com.huawei.systemmanager");
-        ssPermissions.add("com.hisi.mapcon");
-        ssPermissions.add("com.android.wifisettings");
-        ssPermissions.add("android");
-        ssPermissions.add("com.samsung.android.app.telephonyui");
-        ssPermissions.add("com.miui.securitycenter");
-
-        // SM permission
-        smPermissions.add("com.android.packageinstaller");
-        smPermissions.add("com.google.android.packageinstaller");
-
-
-//        wm.addView(mView, localLayoutParams);
-
-        stepperPermissions.add("com.google.android.packageinstaller");
-        stepperPermissions.add("com.android.packageinstaller");
-
-
-        // some global actions
-        globalActions.add("com.android.systemui");
-//        globalActions.add("com.android.settings");
-        globalActions.add("com.android.packageinstaller");
-        globalActions.add("com.google.android.packageinstaller");
-
-        //calling app package name samsung
-        callingApps.add("com.samsung.android.incallui");
-
-
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
@@ -348,8 +297,20 @@ public class LockScreenService extends Service {
         blacklist.add("com.sec.android.app.launcher");
         blacklist.add("com.huawei.android.launcher");
 
-        permittedPackages.add("com.google.android.packageinstaller");
-        permittedPackages.add("com.android.packageinstaller");
+        tempAllowed.add("com.android.settings");
+        tempAllowed.add("com.android.phone");
+        tempAllowed.add("com.android.providers.telephony");
+        tempAllowed.add("com.google.android.packageinstaller");
+        tempAllowed.add("com.android.packageinstaller");
+        tempAllowed.add("com.android.bluetooth");
+        tempAllowed.add("com.samsung.networkui");
+        tempAllowed.add("com.samsung.crane");
+        tempAllowed.add("com.huawei.systemmanager");
+        tempAllowed.add("com.samsung.android.app.telephonyui");
+        tempAllowed.add("com.hisi.mapcon");
+        tempAllowed.add("com.android.wifisettings");
+        tempAllowed.add("com.miui.securitycenter");
+        tempAllowed.add("com.samsung.android.incallui");
 
 
         OneTimeWorkRequest insertionWork =
@@ -462,89 +423,71 @@ public class LockScreenService extends Service {
 
                 if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
 
-                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                        Timber.d("Tour Completed");
-                        if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                            Timber.d("settings allowed");
-                            if (ssPermissions.contains(package_name)) {
-                                Timber.d("activity allowed");
-                            } else {
-                                if (!package_name.contains(BuildConfig.APPLICATION_ID)) {
-                                    checkAppStatus(package_name);
-                                }
-                            }
-                        } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
-                            Timber.d("uninstall allowed");
-                            if (smPermissions.contains(package_name)) {
-                                Timber.d("activity allowed");
-                            } else {
-                                Timber.d("activity not allowed");
-                                if (!package_name.contains(BuildConfig.APPLICATION_ID)) {
-                                    checkAppStatus(package_name);
-                                }
-                            }
-                        } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING)) {
-                            Timber.d("permission granting");
+                    if (AppConstants.TEMP_SETTINGS_ALLOWED) {
+                        Timber.d("Settings are temporary on");
+                        if (!tempAllowed.contains(package_name)) {
                             checkAppStatus(package_name);
-
-                        } else {
-                            Timber.d("checking app permission");
-                            if ((!PrefUtils.getBooleanPref(this, TEMP_SETTINGS_ALLOW) && !globalActions.contains(package_name)) || package_name.contains(BuildConfig.APPLICATION_ID) || !callingApps.contains(package_name)) {
-                                checkAppStatus(package_name);
-                            }
                         }
 
+                    } else {
+                        if (blacklist.contains(package_name)) {
+                            clearRecentApp(this);
+                        }
+                        checkAppStatus(package_name);
                     }
                 }
 
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    Timber.e(e);
+                }
 
             }
         });
     }
 
+
     private void checkAppStatus(String packageName) {
 
-        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-            if (blacklist.contains(packageName)) {
-                clearRecentApp(this);
-                return;
-            }
 
-            Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
-                    .submit(() -> isAllowed(LockScreenService.this, packageName));
-            try {
-                boolean status = futureObject.get();
-                if (!status) {
-                    clearRecentApp(this);
-                }
-            } catch (Exception e) {
-                clearRecentApp(this);
-            }
+        Timber.d("package in checkApps status %s ", packageName);
+
+        if (packageName.equals(BuildConfig.APPLICATION_ID)) {
+            return;
         }
 
-
+        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
+                .submit(() -> isAllowed(LockScreenService.this, packageName));
+        try {
+            boolean status = futureObject.get();
+            if (!status) {
+                clearRecentApp(this);
+            }
+        } catch (Exception e) {
+            clearRecentApp(this);
+        }
     }
 
 
     private void clearRecentApp(Context context) {
 
-//
-//        if (handler != null) {
-//            handler.removeCallbacksAndMessages(null);
-//            handler = null;
-//        }
-//        handler = new Handler(Looper.getMainLooper());
-//
-//        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
-//
-//        Intent i = new Intent(context, MainActivity.class);
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//        startActivity(i);
-//
-//
-//        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
+        handler = new Handler(Looper.getMainLooper());
+
+        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+
+        Intent i = new Intent(context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+
+
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
 
 
     }
@@ -556,11 +499,12 @@ public class LockScreenService extends Service {
 
 
     private boolean isAllowed(Context context, String packageName) {
-        if (packageName.equals(context.getPackageName()) || (packageName.equals("com.android.settings") && PrefUtils.getBooleanPref(this, TEMP_SETTINGS_ALLOW))) {
+
+        if (packageName.equals("android")) {
             return true;
         }
 
-        if(packageName.equals("android")){
+        if (packageName.equals(BuildConfig.APPLICATION_ID)) {
             return true;
         }
         String space = PrefUtils.getStringPref(context, CURRENT_KEY);

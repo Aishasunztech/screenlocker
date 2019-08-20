@@ -666,6 +666,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         isBackPressed = false;
         isInstallDialogOpen = false;

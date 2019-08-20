@@ -610,7 +610,9 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private Timer t;
 
-    private void scheduleTimer() {
+    private boolean timerStatus = false;
+
+    private void scheduleTimer(boolean status) {
 
         if (t != null) {
             t.cancel();
@@ -618,6 +620,21 @@ public class LinkDeviceActivity extends BaseActivity {
         }
 
         t = new Timer();
+
+        if (!status) {
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> {
+                        lytSwipeReferesh.setRefreshing(true);
+                        listener.onRefresh();
+                    });
+                }
+
+            }, 0);
+            return;
+        }
+
         t.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -627,9 +644,14 @@ public class LinkDeviceActivity extends BaseActivity {
                 });
             }
 
-        }, 0, 5000);
+        }, 5000);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        timerStatus = false;
+    }
 
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
@@ -649,7 +671,8 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     private void pendingLinkViewState() {
-        scheduleTimer();
+        scheduleTimer(timerStatus);
+        timerStatus = true;
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);

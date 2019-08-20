@@ -100,8 +100,8 @@ public class AppConstants {
 
 
     //servers links
-//    public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //        public static final String URL_1 = "http://192.168.18.226:3000";//local
 //    public static final String URL_1 = "https://api.lockmesh.com";//live SL
@@ -431,8 +431,6 @@ public class AppConstants {
     //Emergency flag for BYOD
     public static final String EMERGENCY_FLAG = "emergency_flag";
 
-    public static final String TEMP_SETTINGS_ALLOW = "temp_settings_allow";
-
     // installed and uninstalled apps for syncing with server
     public static final String INSTALLED_APPS = "installed_apps";
     public static final String UNINSTALLED_APPS = "uninstalled_apps";
@@ -441,5 +439,7 @@ public class AppConstants {
     public static final String SEND_INSTALLED_APPS = "send_installed_apps_";
     public static final String FINISH = "finish";
 
+
+    public static boolean TEMP_SETTINGS_ALLOWED = false;
 
 }

@@ -30,6 +30,7 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Set;
@@ -58,7 +59,6 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -101,7 +101,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     public void onResume() {
         super.onResume();
 
-        PrefUtils.saveBooleanPref(MyApplication.getAppContext(), TEMP_SETTINGS_ALLOW, true);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
         //check if user already granted the permission
 
 //        if (!checkPermissions(MyApplication.getAppContext())) {
