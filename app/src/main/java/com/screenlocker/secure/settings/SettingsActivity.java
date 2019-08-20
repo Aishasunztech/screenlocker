@@ -677,102 +677,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-   /* private void createAccountDialog() {
-//        account device dialog
-
-        accountDialog = new Dialog(this);
-        accountDialog.setContentView(R.layout.dialoge_account);
-        WindowManager.LayoutParams params = Objects.requireNonNull(accountDialog.getWindow()).getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        accountDialog.getWindow().setAttributes(params);
-        accountDialog.setCancelable(true);
-
-        // Device ID
-        TextView tvDeviceId = accountDialog.findViewById(R.id.tvDeviceId);
-        TextView textView17 = accountDialog.findViewById(R.id.textViewDeviceId);
-        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
-        if (device_id != null) {
-            tvDeviceId.setVisibility(View.VISIBLE);
-            textView17.setVisibility(View.VISIBLE);
-            tvDeviceId.setText(device_id);
-        }
-
-        *//*Status*//*
-        TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
-        TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
-        String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
-        boolean b = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
-        if (b) {
-            tvStatus.setVisibility(View.VISIBLE);
-            textView18.setVisibility(View.VISIBLE);
-
-            if (device_status == null) {
-                tvStatus.setText("Active");
-            } else
-                tvStatus.setText(device_status);
-        }
-
-
-        // Expiry Date
-        TextView tvExpiresIn = accountDialog.findViewById(R.id.tvExpiresIn);
-        TextView textView16 = accountDialog.findViewById(R.id.textViewExpiry);
-
-        String remaining_days = getRemainingDays(SettingsActivity.this);
-
-        if (remaining_days != null) {
-            textView16.setVisibility(View.VISIBLE);
-            tvExpiresIn.setVisibility(View.VISIBLE);
-            tvExpiresIn.setText(remaining_days);
-//            else {
-//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
-//            }
-        }
-
-
-        List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
-
-
-        // IMEI 1
-        TextView tvImei1 = accountDialog.findViewById(R.id.tvImei1);
-        TextView textViewImei = accountDialog.findViewById(R.id.textViewImei);
-
-        tvImei1.setVisibility(View.VISIBLE);
-        textViewImei.setVisibility(View.VISIBLE);
-        tvImei1.setText("NULL");
-
-        if (imeis.size() > 0) {
-            String imei = imeis.get(0);
-            if (imei != null) {
-                tvImei1.setVisibility(View.VISIBLE);
-                textViewImei.setVisibility(View.VISIBLE);
-                tvImei1.setText(imei);
-            }
-        }
-
-        // IMEI 2
-        TextView tvImei2 = accountDialog.findViewById(R.id.tvImei2);
-        TextView textViewImei2 = accountDialog.findViewById(R.id.textViewImei2);
-
-        tvImei2.setVisibility(View.VISIBLE);
-        textViewImei2.setVisibility(View.VISIBLE);
-        tvImei2.setText("NULL");
-
-        if (imeis.size() > 1) {
-            String imei2 = imeis.get(1);
-            if (imei2 != null) {
-                tvImei2.setVisibility(View.VISIBLE);
-                textViewImei2.setVisibility(View.VISIBLE);
-                tvImei2.setText(imei2);
-            }
-        }
-
-
-        accountDialog.show();
-
-
-    }*/
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -820,15 +724,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onBackPressed() {
 
         try {
-//            if (settingsPresenter.isMyLauncherDefault()) {
-//                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
-//                startActivity(home);
-//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//                finish();
-//            } else {
+            if (settingsPresenter.isMyLauncherDefault()) {
+                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
+                startActivity(home);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            } else {
                 super.onBackPressed();
-//            }
-        } catch (Exception ignored) {
+            }
+        }catch (Exception ignored) {
         }
 
 

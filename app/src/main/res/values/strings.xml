@@ -446,7 +446,7 @@
 </string>
     <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
-    <string name="what_s_new_v5_15">What\'s New v5.152</string>
+    <string name="what_s_new_v5_15">What\'s New v5.153</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
