@@ -72,7 +72,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container;
 
     private ConstraintLayout settingsLayout;
 
@@ -193,6 +193,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming", dataRoamingContainer);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data", mobile_container);
         extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input", language_container);
+        extensions.put(AppConstants.SECURE_SETTINGS_UNIQUE + "Notifications", notifications_container);
 
         clickListeners();
 
@@ -232,6 +233,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         settingsLayout = findViewById(R.id.settings_layout);
         switch_mobile_data = findViewById(R.id.switch_mobile_data);
         switch_mobile_data.setOnCheckedChangeListener(this);
+        notifications_container = findViewById(R.id.notification_container);
 //        switch_airplane = findViewById(R.id.switch_air);
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
@@ -423,7 +425,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
 
         });
-
+        notifications_container.setOnClickListener(v -> startActivity(new Intent(SecureSettingsMain.this, AllNotificationActivity.class)));
 
     }
 

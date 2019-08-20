@@ -34,10 +34,7 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
-import com.screenlocker.secure.socket.interfaces.ChangeSettings;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.utils.WifiApControl;
@@ -55,22 +52,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import timber.log.Timber;
 
-import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
-import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_PROFILE;
-import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
-import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
-import static com.screenlocker.secure.utils.AppConstants.KEY_ALLOW_SCREENSHOT;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
-import static com.screenlocker.secure.utils.Utils.micOff;
 import static com.screenlocker.secure.utils.Utils.startNfcSettingsActivity;
 
 
@@ -236,10 +226,10 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         }
 
 
-        boolean isChecked = PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
+        boolean isChecked = PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT);
 
         //for screenshot
-        if (isChecked) {
+        if (!isChecked) {
             switchScreenShot.setChecked(true);
         } else {
             switchScreenShot.setChecked(false);
@@ -284,26 +274,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
     }
 
-    @Override
-    public void onStateChange(int state) {            //<---
-        switch (state) {
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.tag("TAGLLLL").e("onStateChange: BACKGROUND");
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                    this.finish();
-                }
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -390,7 +360,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                         mBluetoothAdapter.disable();
                     }
                 }
-
                 break;
             case R.id.switchHotSpot:
                 openHotSpot = isChecked;
@@ -451,25 +420,16 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 startActivityForResult(myIntent, REQUEST_CODE_LOCATION_GPS);
                 break;
             case R.id.switchScreenShot:
-//                String isChecked = PrefUtils.getStringPref(this, AppConstants.KEY_ENABLE_SCREENSHOT);
-//                if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_ENABLE)) {
-//                    switchScreenShot.setChecked(true);
-////                    disableScreenShotBlocker(true);
-//                } else if (isChecked.equals(AppConstants.VALUE_SCREENSHOT_DISABLE)) {
-//                    switchScreenShot.setChecked(false);
-////                    enableScreenShotBlocker(true);
-//                }
-
                 if (switchScreenShot.isChecked()) {
                     if (mService != null) {
-                        mService.startCapture();
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, true);
+                        mService.allowScreenShoots();
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT, false);
 
                     }
                 } else {
                     if (mService != null) {
-                        mService.stopCapture();
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT, false);
+                        mService.disableScreenShots();
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT, true);
 
                     }
 

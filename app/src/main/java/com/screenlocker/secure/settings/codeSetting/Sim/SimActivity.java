@@ -257,7 +257,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                             update = true;
                             simEntry.setSlotNo(0);
                         }
-                        if (simEntry.isEnable()) {
+                        if (simEntry.isGuest() || simEntry.isEncrypted()) {
                             if (!simEntry.getStatus().equals(getResources().getString(R.string.status_active))) {
                                 update = true;
                                 simEntry.setStatus(getResources().getString(R.string.status_active));
@@ -277,7 +277,7 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                             update = true;
                             simEntry.setSlotNo(1);
                         }
-                        if (simEntry.isEnable()) {
+                        if (simEntry.isGuest() || simEntry.isEncrypted()) {
                             if (!simEntry.getStatus().equals(getResources().getString(R.string.status_active))) {
                                 update = true;
                                 simEntry.setStatus(getResources().getString(R.string.status_active));

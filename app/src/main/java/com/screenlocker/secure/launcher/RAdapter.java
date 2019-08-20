@@ -86,7 +86,14 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         @Override
         public void onClick(final View v) {
             final Context context = v.getContext();
-            AppInfo info = appsList.get(getAdapterPosition());
+            AppInfo info;
+
+            try {
+                 info = appsList.get(getAdapterPosition());
+            }catch (ArrayIndexOutOfBoundsException e ){
+                return;
+            }
+
 
             if (info.getPackageName().equals(context.getPackageName())) {
                 PrefUtils.saveBooleanPref(context, IS_SETTINGS_ALLOW, true);

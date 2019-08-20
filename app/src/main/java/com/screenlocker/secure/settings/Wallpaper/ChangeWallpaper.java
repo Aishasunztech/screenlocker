@@ -118,6 +118,7 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.gun);
         ids.add(R.raw.red_flowrs);
         ids.add(R.raw.stadium);
+        ids.add(R.raw._1232);
 
         WallpaperAdapter adapter = new WallpaperAdapter(ids, this, this);
         RecyclerView rvWallpaper = findViewById(R.id.RVWallpaper);

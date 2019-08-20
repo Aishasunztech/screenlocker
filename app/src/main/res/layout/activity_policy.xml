@@ -72,7 +72,7 @@
                 android:hint="@string/enter_policy_name_hint"
                 android:imeOptions="actionDone"
                 android:inputType="text"
-                android:textSize="14sp"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
@@ -81,11 +81,12 @@
             <Button
                 android:id="@+id/btnLoadPolicy"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_height="@dimen/_27sdp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/btn_stepper_bg"
                 android:text="@string/btn_load_policy"
                 app:layout_constraintEnd_toEndOf="@+id/edtTxtPin"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/edtTxtPin"
                 app:layout_constraintTop_toBottomOf="@+id/edtTxtPin" />
 
@@ -94,6 +95,7 @@
                 android:layout_width="@dimen/_250sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textSize="@dimen/_12ssp"
                 android:text="@string/dont_have_policy_message"
                 android:textAlignment="center"
                 app:layout_constraintLeft_toLeftOf="@+id/btnLoadPolicy"
@@ -103,7 +105,7 @@
             <Button
                 android:id="@+id/btnDefaultPolicy"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_27sdp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_stepper_bg"
                 android:text="@string/btn_default_policy"

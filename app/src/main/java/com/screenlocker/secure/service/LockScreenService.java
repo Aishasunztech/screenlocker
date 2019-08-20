@@ -1,6 +1,5 @@
 package com.screenlocker.secure.service;
 
-import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
@@ -12,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Binder;
@@ -22,7 +19,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +27,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +51,8 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.screenlocker.secure.views.PrepareLockScreen;
+import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -68,7 +67,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +83,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -95,6 +94,9 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.refreshKeypad;
+import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
+import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
+import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 /**
  * this service is the startForeground service to kepp the lock screen going when user lock the phone
@@ -118,10 +120,15 @@ public class LockScreenService extends Service {
     private WindowManager.LayoutParams params;
     private Fetch fetch;
     private int downloadId = 0;
+    private boolean viewAdded = false;
+    private View view;
 
 
     private HashSet<String> tempAllowed = new HashSet<>();
+    private HashSet<String> blacklist = new HashSet<>();
 
+
+    /* Downloader used for SM app to download applications in background*/
     private FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NotNull Download download) {
@@ -139,6 +146,7 @@ public class LockScreenService extends Service {
 
         @Override
         public void onCompleted(@NotNull Download download) {
+
             downloadListener.downloadComplete(filePath, packageName);
 
 
@@ -210,15 +218,6 @@ public class LockScreenService extends Service {
     private String filePath = "";
     private String packageName = "";
 
-    HashSet<String> blacklist = new HashSet<>();
-
-
-    public static ServiceCallbacks mCallBacks;
-
-
-    public interface ServiceCallbacks {
-        void onRecentAppKill();
-    }
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -228,69 +227,58 @@ public class LockScreenService extends Service {
     }
 
 
-   /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
+    /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
 
-        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
-                packageName, PackageManager.GET_SIGNATURES);
-        //note sample just checks the first signature
-        for (Signature signature : packageInfo.signatures) {
-            // SHA1 the signature
-            String sha1 = getSHA1(signature.toByteArray());
-            Timber.e("SHA1:" + sha1);
-            // check is matches hardcoded value
-            return APP_SIGNATURE.equals(sha1);
-        }
+         PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
+                 packageName, PackageManager.GET_SIGNATURES);
+         //note sample just checks the first signature
+         for (Signature signature : packageInfo.signatures) {
+             // SHA1 the signature
+             String sha1 = getSHA1(signature.toByteArray());
+             Timber.e("SHA1:" + sha1);
+             // check is matches hardcoded value
+             return APP_SIGNATURE.equals(sha1);
+         }
 
-        return false;
-    }
+         return false;
+     }
 
-    public static boolean validateAppSignatureFile(String sha1) {
+     public static boolean validateAppSignatureFile(String sha1) {
 
-        return APP_SIGNATURE.equals(sha1);
+         return APP_SIGNATURE.equals(sha1);
 
-    }
+     }
 
 
-    //computed the sha1 hash of the signature
-    public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA1");
-        digest.update(sig);
-        byte[] hashtext = digest.digest();
-        return bytesToHex(hashtext);
-    }*/
+     //computed the sha1 hash of the signature
+     public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
+         MessageDigest digest = MessageDigest.getInstance("SHA1");
+         digest.update(sig);
+         byte[] hashtext = digest.digest();
+         return bytesToHex(hashtext);
+     }
 
-    //util method to convert byte array to hex string
-    public static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for (int j = 0; j < bytes.length; j++) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
+     //util method to convert byte array to hex string
+     public static String bytesToHex(byte[] bytes) {
+         final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
+                 '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+         char[] hexChars = new char[bytes.length * 2];
+         int v;
+         for (int j = 0; j < bytes.length; j++) {
+             v = bytes[j] & 0xFF;
+             hexChars[j * 2] = hexArray[v >>> 4];
+             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+         }
+         return new String(hexChars);
+     }
 
-    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
 
+     public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
+  */
     @Override
     public void onCreate() {
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
-
-        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        sharedPref.registerOnSharedPreferenceChangeListener(listener);
-        myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-
-        PackageManager packageManager = getPackageManager();
-
-        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(3)
-                .build();
-        fetch = Fetch.Impl.getInstance(fetchConfiguration);
-        fetch.addListener(fetchListener);
 
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
@@ -313,6 +301,21 @@ public class LockScreenService extends Service {
         tempAllowed.add("com.samsung.android.incallui");
 
 
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(listener);
+        myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        PackageManager packageManager = getPackageManager();
+
+        FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
+                .setDownloadConcurrentLimit(3)
+                .build();
+        fetch = Fetch.Impl.getInstance(fetchConfiguration);
+        fetch.addListener(fetchListener);
+
+
+        Timber.d("status : %s", packageManager.checkSignatures("com.secure.launcher", "com.secure.systemcontrol"));
+
+
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
@@ -320,42 +323,39 @@ public class LockScreenService extends Service {
 
 
         if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
-            Utils.scheduleExpiryCheck(this);
+            scheduleExpiryCheck(this);
         }
 
         if (!getResources().getString(R.string.apktype).equals("BYOD")) {
-//            scheduleUpdateCheck(this);
+            scheduleUpdateCheck(this);
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-//        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
-        params = Utils.prepareLockScreenView(mLayout, null, LockScreenService.this);
+        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
         localLayoutParams = new WindowManager.LayoutParams();
         createLayoutParamsForSmallView();
-
         mView = new FrameLayout(this);
-
-//        mView.setOrientation(LinearLayout.VERTICAL);
-
-
         ViewGroup.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         mView.setLayoutParams(params);
-
-
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        screenOffReceiver = new ScreenOffReceiver(() -> {
-            Log.d("nadeem", "screeen off from reciver: ");
-//            startLockScreen(true);
-        });
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENABLE_SCREENSHOT)) {
-            stopCapture();
+        screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
+            disableScreenShots();
+        } else {
+            allowScreenShoots();
+        }
+        //default brightness only once
+        if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
+            //40% brightness by default
+            setScreenBrightness(this, 102);
+            PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS, true);
         }
 
         //local
@@ -378,25 +378,165 @@ public class LockScreenService extends Service {
         public void onReceive(Context context, Intent intent) {
 
             if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
+//                sheduleScreenOffMonitor();
                 startRecentAppsKillThread();
             }
         }
     };
-
     BroadcastReceiver viewAddRemoveReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
-                addView(context);
+                //addView(android.R.color.transparent);
             } else {
-                removeView();
+                //removeView();
             }
         }
     };
 
-    private PowerManager powerManager;
+    PowerManager powerManager;
 
-    private AppExecutor appExecutor;
+    AppExecutor appExecutor;
+
+//    private void sheduleScreenOffMonitor() {
+//        if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
+//            appExecutor.readyNewExecutor();
+//        }
+//        appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
+//            while (!Thread.currentThread().isInterrupted()) {
+//                if (!powerManager.isInteractive()) {
+//                    appExecutor.getMainThread().execute(() -> startLockScreen(true));
+//                    return;
+//                } else {
+//                    if (myKM.inKeyguardRestrictedInputMode()) {
+//                        //it is locked
+//                        appExecutor.getMainThread().execute(() -> startLockScreen(true));
+//                        return;
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+    public void startDownload(String url, String filePath, String packageName) {
+        this.url = url;
+        this.filePath = filePath;
+        this.packageName = packageName;
+        Request request = new Request(url, filePath);
+        request.setPriority(Priority.HIGH);
+        request.setNetworkType(NetworkType.ALL);
+        request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
+
+        fetch.enqueue(request, updatedRequest -> {
+            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
+
+            //Request was successfully enqueued for download.
+        }, error -> {
+            Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            //An error occurred enqueuing the request.
+        });
+    }
+
+
+    public void cancelDownload() {
+        if (downloadId != 0)
+            fetch.cancel(downloadId);
+    }
+
+    public interface DownloadServiceCallBacks {
+        void showProgressDialog(int progress);
+
+        void downloadComplete(String filePath, String packagename);
+
+    }
+
+    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
+        if (downloadListener != null) {
+            this.downloadListener = downloadListener;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+
+        try {
+            Timber.d("screen locker distorting.");
+            unregisterReceiver(screenOffReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
+            PrefUtils.saveToPref(this, false);
+            Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
+            sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+
+
+        super.onDestroy();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Timber.d("screen locker starting.");
+
+
+        if (intent != null) {
+            String action = intent.getAction();
+
+            Timber.d("locker screen action :%s", action);
+            if (action == null) {
+                String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
+                if (main_password == null) {
+                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+                }
+                startLockScreen(false);
+            } else {
+                switch (action) {
+                    case "suspended":
+                        startLockScreen(true);
+                        break;
+                    case "expired":
+                        startLockScreen(true);
+                        break;
+                    case "reboot":
+                        startLockScreen(false);
+                        break;
+                    case "unlinked":
+                        startLockScreen(true);
+                        break;
+                    case "unlocked":
+                        removeLockScreenView();
+                        simPermissionsCheck();
+                        break;
+                    case "locked":
+                        startLockScreen(true);
+                    case "flagged":
+                        startLockScreen(true);
+                        break;
+                    case "lockedFromsim":
+                        startLockScreen(false);
+                    case "add":
+                        addView(this);
+                        break;
+                    case "remove":
+                        removeView();
+                        break;
+                }
+            }
+        }
+
+//        disableScreenShots();
+
+
+        Timber.i("Received start id " + startId + ": " + intent);
+        return START_STICKY;
+    }
 
     private boolean running = false;
 
@@ -469,6 +609,7 @@ public class LockScreenService extends Service {
         }
     }
 
+    private Handler handler;
 
     private void clearRecentApp(Context context) {
 
@@ -535,169 +676,7 @@ public class LockScreenService extends Service {
     }
 
 
-    private void disableComponent(Context context, String packageName, String klass) {
-
-        ComponentName name = new ComponentName(packageName, klass);
-        PackageManager pm = context.getPackageManager();
-
-        // We need the DONT_KILL_APP flag, otherwise we will be killed
-        // immediately because we are in the same app.
-        pm.setComponentEnabledSetting(name, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
-    }
-
-
-    public ArrayList<ActivityInfo> getAllRunningActivities(Context context, String packageName) {
-        try {
-            PackageInfo pi = context.getPackageManager().getPackageInfo(
-                    packageName, PackageManager.GET_ACTIVITIES);
-
-            return new ArrayList<>(Arrays.asList(pi.activities));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public void startDownload(String url, String filePath, String packageName) {
-        this.url = url;
-        this.filePath = filePath;
-        this.packageName = packageName;
-        Request request = new Request(url, filePath);
-        request.setPriority(Priority.HIGH);
-        request.setNetworkType(NetworkType.ALL);
-        request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
-
-        fetch.enqueue(request, updatedRequest -> {
-            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
-            //Request was successfully enqueued for download.
-        }, error -> {
-            Timber.e(error.getThrowable());
-            Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-            //An error occurred enqueuing the request.
-        });
-    }
-
-
-    public void cancelDownload() {
-        if (downloadId != 0)
-            fetch.cancel(downloadId);
-    }
-
-    public interface DownloadServiceCallBacks {
-        void showProgressDialog(int progress);
-
-        void downloadComplete(String filePath, String packagename);
-
-    }
-
-    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
-        if (downloadListener != null) {
-            this.downloadListener = downloadListener;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-
-        try {
-            Timber.d("screen locker distorting.");
-            unregisterReceiver(screenOffReceiver);
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
-            PrefUtils.saveToPref(this, false);
-            Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            } else {
-                startService(intent);
-            }
-            sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("screen locker starting.");
-
-
-        if (intent != null) {
-            String action = intent.getAction();
-
-            Timber.d("locker screen action :%s", action);
-            if (action == null) {
-                String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
-                if (main_password == null) {
-                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
-                }
-                startLockScreen(false);
-            } else {
-                switch (action) {
-                    case "suspended":
-                        startLockScreen(true);
-                        break;
-                    case "expired":
-                        startLockScreen(true);
-                        break;
-                    case "reboot":
-                        startLockScreen(false);
-                        break;
-                    case "unlinked":
-                        startLockScreen(true);
-                        break;
-                    case "unlocked":
-                        removeLockScreenView();
-                        simPermissionsCheck();
-                        break;
-                    case "locked":
-                        startLockScreen(true);
-                    case "flagged":
-                        startLockScreen(true);
-                        break;
-                    case "lockedFromsim":
-                        startLockScreen(false);
-                        break;
-                    case "na":
-                        startLockScreen(true);
-                        break;
-                    case "add":
-                        Timber.d("ADD VIEW ");
-                        addView(this);
-                        break;
-                    case "remove":
-                        Timber.d("REMOVE VIEW ");
-                        removeView();
-                        break;
-                    case "startThread":
-                        if (!running) {
-                            startRecentAppsKillThread();
-                        }
-                        break;
-                    case "stopThread":
-                        running = false;
-                        appExecutor.getExecutorForSedulingRecentAppKill().shutdownNow();
-                        break;
-
-                }
-            }
-        }
-
-//        stopCapture();
-
-
-        Timber.i("Received start id " + startId + ": " + intent);
-        return START_STICKY;
-    }
-
-
-    public void stopCapture() {
+    public void disableScreenShots() {
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -725,22 +704,18 @@ public class LockScreenService extends Service {
 
                 PixelFormat.TRANSLUCENT);
 
-        if (!isLayoutAdded) {
+        if (frameLayout != null && frameLayout.getWindowToken() == null) {
 
             windowManager.addView(frameLayout, params);
-            isLayoutAdded = true;
         }
     }
 
-    public void startCapture() {
-        if (isLayoutAdded) {
+    public void allowScreenShoots() {
+        if (frameLayout != null && frameLayout.getWindowToken() != null) {
             windowManager.removeViewImmediate(frameLayout);
-            isLayoutAdded = false;
         }
     }
 
-
-    private Handler handler;
 
     private void startLockScreen(boolean refresh) {
 
@@ -757,11 +732,11 @@ public class LockScreenService extends Service {
                 windowManager.addView(mLayout, params);
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
-                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, KEY_SUPPORT_PASSWORD);
             }
 
 
@@ -795,8 +770,6 @@ public class LockScreenService extends Service {
         } catch (Exception e) {
             Timber.d(e);
         }
-
-
     }
 
     private void simPermissionsCheck() {
@@ -873,6 +846,7 @@ public class LockScreenService extends Service {
                     } else {
                         //disable sim slote for this user
                         broadCastIntent(false, slot);
+
                     }
                 } else {
                     //disable in any case
@@ -888,18 +862,15 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-                View view = mLayout.findViewById(R.id.keypad);
-                TextView support = mLayout.findViewById(R.id.t9_key_support);
+                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
+                pl.setUpRandomizedArray();
+                pl.invalidate();
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
-                Button unlock = mLayout.findViewById(R.id.ivUnlock);
-                EditText pin = mLayout.findViewById(R.id.password_field);
-                support.setText(getResources().getString(R.string.support));
                 clear.setText(getResources().getString(R.string.btn_backspace));
+                EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
-                pin.setHint(getResources().getString(R.string.pin));
-                unlock.setText(getResources().getString(R.string.unlock));
+                pin.setHint(getResources().getString(R.string.enter_pin_or_draw_pattern_to_unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-                refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {
@@ -921,21 +892,25 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = Utils.prepareLockScreenView(mLayout, null, LockScreenService.this);
-
+            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
         }
     };
 
 
-    private boolean viewAdded = false;
-
-    private ImageView imageView;
-
-    private TextView textView;
-
-    private View view;
-
+    //    protected void addView(int colorId) {
+//        mView.setBackgroundColor(getResources().getColor(colorId));
+//        windowManager.addView(mView, localLayoutParams);
+//    }
+//
+//    protected void removeView() {
+//        Timber.d("removeView: ");
+//        if (mView != null && mView.getWindowToken() != null) {
+//            if (windowManager != null) {
+//                windowManager.removeViewImmediate(mView);
+//            }
+//        }
+//    }
     protected void addView(Context context) {
         Timber.d("addView: ");
         try {

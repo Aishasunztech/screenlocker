@@ -10,15 +10,14 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +56,7 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  * @Date 8/3/2019.
  */
 public class PrepareLockScreen {
-    /*@SuppressLint("ResourceType")
+    @SuppressLint("ResourceType")
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
 
         int windowType;
@@ -105,28 +104,28 @@ public class PrepareLockScreen {
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
         String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
         if (bg == null || bg.equals("")) {
-            rootView.setBackgroundResource(R.raw.remountan);
+            rootView.setBackgroundResource(R.raw._1232);
 
         } else {
-            rootView.setBackgroundResource(Integer.parseInt(bg));
+            try {
+                rootView.setBackgroundResource(Integer.parseInt(bg));
+            } catch (RuntimeException e) {
+                rootView.setBackgroundResource(R.raw._1232);
+            }
         }
 
-        Button unLockButton = keypadView.findViewById(R.id.t9_unlock);
+        TextView unLockButton = keypadView.findViewById(R.id.t9_unlock);
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
-        final String finalDevice_id = device_id;
         final PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
 
         mPatternLockView.addPatternLockListener(new PatternLockViewListener() {
             @Override
             public void onStarted() {
-                Log.d(getClass().getName(), "Pattern drawing started");
             }
 
             @Override
             public void onProgress(List<PatternLockView.Dot> progressPattern) {
-//                Log.d(getClass().getName(), "Pattern progress: " +
-//                        PatternLockUtils.patternToString(mPatternLockView, progressPattern));
             }
 
             @Override
@@ -137,57 +136,86 @@ public class PrepareLockScreen {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                     mPatternLockView.clearPattern();
                     return;
-                }else if (pattern.size()>1 && pattern.size()<4){
+                } else if (pattern.size() > 1 && pattern.size() < 4) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(() -> {
-                        mPatternLockView.clearPattern();
-
-                    }, 500);
+                    new Handler().postDelayed(() -> mPatternLockView.clearPattern(), 500);
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
-                if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN)) && device_status == null) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                    new Handler().postDelayed(() -> {
-                        mPatternLockView.clearPattern();
-                        loginAsGuest(context);
-                        mPasswordField.setText(null);
-                    }, 150);
+                boolean clearance;
+                if (device_status == null) {
+                    clearance = false;
+                } else {
+                    clearance = device_status.equals("suspended") || device_status.equals("expired");
+
+                }
+
+                if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN))) {
+                    if (clearance) {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            chatLogin(context);
+                            mPasswordField.setText(null);
+                        }, 150);
+                    } else {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            loginAsGuest(context);
+                            mPasswordField.setText(null);
+                        }, 150);
+                    }
 
                     return;
-                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_PATTERN)) && device_status == null) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                    new Handler().postDelayed(() -> {
-                        mPatternLockView.clearPattern();
-                        loginAsEncrypted(context);
-                        mPasswordField.setText(null);
-                    }, 150);
+                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_PATTERN))) {
 
+                    if (clearance) {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            chatLogin(context);
+                            mPasswordField.setText(null);
+                        }, 150);
+                    } else {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            loginAsEncrypted(context);
+                            mPasswordField.setText(null);
+                        }, 150);
+                    }
                     return;
-                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_PATTERN)) && device_status == null) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                    new Handler().postDelayed(() -> {
-                        mPatternLockView.clearPattern();
-                        wipeDevice(context);
-                    }, 150);
-
+                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_PATTERN))) {
+                    if (clearance) {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            chatLogin(context);
+                        }, 150);
+                    } else {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                            wipeDevice(context);
+                        }, 150);
+                    }
                     return;
                 } else if (device_status != null) {
-                    setDeviceId(context, txtWarning, finalDevice_id ,mPatternLockView ,device_status);
+                    String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+                    setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
                 } else {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
-                        wrongAttempt(context, txtWarning, unLockButton,mPatternLockView, mPasswordField);
+                        wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField);
                     }, 500);
                 }
-
-//                mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
             }
 
             @Override
             public void onCleared() {
-                Log.d(getClass().getName(), "Pattern has been cleared");
+
             }
         });
 
@@ -207,7 +235,7 @@ public class PrepareLockScreen {
 
 
         if (device_status != null) {
-            setDeviceId(context, txtWarning, device_id,mPatternLockView, device_status);
+            setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
         }
 
 
@@ -218,44 +246,50 @@ public class PrepareLockScreen {
                 mPatternLockView.setInputEnabled(true);
 
             } else {
+                String dev_id = PrefUtils.getStringPref(context, DEVICE_ID);
                 if (status.equals("suspended")) {
-                    if (finalDevice_id != null) {
+                    if (dev_id != null) {
                         txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id));
-                        mPatternLockView.setInputEnabled(false);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, dev_id));
+                        // mPatternLockView.setInputEnabled(false);
 //                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
 
 
                     } else {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
-                        mPatternLockView.setInputEnabled(false);
+                        //mPatternLockView.setInputEnabled(false);
 
                     }
                 } else if (status.equals("expired")) {
-                    if (finalDevice_id != null) {
+                    if (dev_id != null) {
                         txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id));
-                        mPatternLockView.setInputEnabled(false);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, dev_id));
+                        //mPatternLockView.setInputEnabled(false);
 
                     } else {
                         txtWarning.setVisibility(VISIBLE);
                         txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
-                        mPatternLockView.setInputEnabled(false);
+                        //mPatternLockView.setInputEnabled(false);
 
 
                     }
-                }else if (status.equals("unlinked")) {
-                    txtWarning.setVisibility(VISIBLE);
-                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked));
-                    mPatternLockView.setInputEnabled(false);
+                } else if (status.equals("unlinked")) {
+                    if (dev_id != null) {
+                        txtWarning.setVisibility(VISIBLE);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, dev_id));
+                        mPatternLockView.setInputEnabled(false);
+                    } else {
+                        txtWarning.setVisibility(VISIBLE);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                        mPatternLockView.setInputEnabled(false);
+                    }
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
-                }else if (status.equals("flagged")){
+                } else if (status.equals("flagged")) {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
                     mPatternLockView.setInputEnabled(false);
                 }
-
 
 
             }
@@ -270,7 +304,7 @@ public class PrepareLockScreen {
                 editable.delete(charCount - 1, charCount);
             }
         });
-        TextView supportButton = keypadView.findViewById(R.id.t9_key_support);
+        LinearLayout supportButton = keypadView.findViewById(R.id.t9_key_support);
         TextView clearAll = keypadView.findViewById(R.id.t9_key_clear);
         clearAll.setOnClickListener(v -> {
             mPasswordField.setText(null);
@@ -322,22 +356,22 @@ public class PrepareLockScreen {
 
                 switch (count) {
                     case 5:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
                         break;
                     case 6:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
                         break;
                     case 7:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
                         break;
                     case 8:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
                         break;
                     case 9:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
                         break;
                     case 10:
-                        remainingTime(context, mPasswordField,mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
+                        remainingTime(context, mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
                         break;
                 }
             } else {
@@ -352,28 +386,46 @@ public class PrepareLockScreen {
         unLockButton.setOnClickListener(v -> {
 
             String enteredPin = mPasswordField.getText().toString();
-            String main_key = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
             String device_status1 = getDeviceStatus(context);
+            boolean clearance;
+            if (device_status == null) {
+                clearance = false;
+            } else {
+                clearance = device_status.equals("suspended") || device_status.equals("expired");
+
+            }
+
             if (enteredPin.length() != 0) {
-                if (getUserType(enteredPin, context).equals("guest") && device_status1 == null) {
-                    loginAsGuest(context);
-                    mPasswordField.setText(null);
+                if (getUserType(enteredPin, context).equals("guest")) {
+                    if (clearance) {
+                        chatLogin(context);
+                        mPasswordField.setText(null);
+                    } else {
+                        loginAsGuest(context);
+                        mPasswordField.setText(null);
+                    }
                 }
                 //if input is for eyncrypted
-                else if (getUserType(enteredPin, context).equals("encrypted") && device_status1 == null) {
-                    loginAsEncrypted(context);
-                    mPasswordField.setText(null);
+                else if (getUserType(enteredPin, context).equals("encrypted")) {
+                    if (!clearance) {
+                        loginAsEncrypted(context);
+                        mPasswordField.setText(null);
+                    } else {
+                        chatLogin(context);
+                        mPasswordField.setText(null);
+                    }
 
-                } else if (getUserType(enteredPin, context).equals("duress") && device_status1 == null) {
-                    wipeDevice(context);
-
+                } else if (getUserType(enteredPin, context).equals("duress")) {
+                    if (!clearance)
+                        wipeDevice(context);
+                    else chatLogin(context);
 
                 } else if (device_status1 != null) {
-                    setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView,device_status1);
+                    setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView, device_status1);
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
 
-                    wrongAttempt(context, txtWarning, unLockButton,mPatternLockView, mPasswordField);
+                    wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField);
 
                 }
 
@@ -385,19 +437,19 @@ public class PrepareLockScreen {
         return params;
     }
 
-    private static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1,PatternLockView patternLockView, String device_status1) {
+    private static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
         switch (device_status1) {
             case "suspended":
                 if (finalDevice_id1 != null) {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, finalDevice_id1));
-                    patternLockView.setInputEnabled(false);
+                    //patternLockView.setInputEnabled(false);
 
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
                 } else {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
-                    patternLockView.setInputEnabled(false);
+                    //patternLockView.setInputEnabled(false);
 //                                keyboardView.setWarningText("Your account with Device ID = N/A is Suspended. Please contact support");
 
                 }
@@ -406,7 +458,7 @@ public class PrepareLockScreen {
                 if (finalDevice_id1 != null) {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, finalDevice_id1));
-                    patternLockView.setInputEnabled(false);
+                    //patternLockView.setInputEnabled(false);
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
 
 
@@ -419,9 +471,15 @@ public class PrepareLockScreen {
                 }
                 break;
             case "unlinked":
+                if (finalDevice_id1 != null) {
                     txtWarning.setVisibility(VISIBLE);
-                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked));
-                patternLockView.setInputEnabled(false);
+                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, finalDevice_id1));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                    patternLockView.setInputEnabled(false);
+                }
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
                 break;
             case "flagged":
@@ -433,7 +491,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void wrongAttempt(Context context, TextView txtWarning, Button unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
+    private static void wrongAttempt(Context context, TextView txtWarning, TextView unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
         int attempts1 = 10;
         int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
@@ -486,7 +544,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void remainingTime(Context context, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
+    private static void remainingTime(Context context, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, TextView unLockButton, long time_remaining, int count, int x, int attempt_10) {
         long time;
         CountDownTimer countDownTimer;
         unLockButton.setEnabled(false);
@@ -495,12 +553,12 @@ public class PrepareLockScreen {
         time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
         PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
         PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        countDownTimer = timer(unLockButton, mPasswordField,patternLockView, txtWarning, time, x, context, count);
+        countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, time, x, context, count);
         if (countDownTimer != null)
             countDownTimer.start();
     }
 
-    private static CountDownTimer timer(Button unLockButton, EditText mPasswordField,PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
+    private static CountDownTimer timer(TextView unLockButton, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
 
         CountDownTimer countDownTimer = null;
         try {
@@ -540,5 +598,4 @@ public class PrepareLockScreen {
 
         return countDownTimer;
     }
-*/
 }

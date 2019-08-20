@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
 
     </style>
 
@@ -15,12 +16,12 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
 
-
     </style>
 
     <style name="HomeScreen" parent="AppTheme">
 
         <item name="android:windowTranslucentStatus">true</item>
+
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
 
     </style>
@@ -94,7 +95,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
     </style>
 
 
@@ -154,6 +155,13 @@
     <style name="chipTheme" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:background">@color/colorWhite</item>
+    </style>
+
+    <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
     </style>
 
 

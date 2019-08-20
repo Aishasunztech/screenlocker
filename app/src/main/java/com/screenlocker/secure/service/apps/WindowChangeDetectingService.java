@@ -110,6 +110,24 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
 
         // samsung
+        ssPermissions.add("com.android.settings/.Settings$ConnectionsSettingsActivity");
+
+
+        // huwei
+        ssPermissions.add("com.android.phone/.MSimMobileNetworkSettings");
+        ssPermissions.add("com.android.phone/android.app.AlertDialog");
+
+        //SS notification related
+        ssPermissions.add("com.android.settings/.Settings$AppNotificationSettingsActivity");
+        ssPermissions.add("com.android.settings/.Settings$ConfigureNotificationSettingsActivity");
+        ssPermissions.add("android/com.android.internal.app.ResolverActivity");
+        ssPermissions.add("com.android.documentsui/.picker.PickActivity");
+
+
+        ssPermissions.add(getPackageName() + "/android.widget.FrameLayout");
+        ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
+
+        // samsung
         ssPermissions.add("com.samsung.networkui/android.widget.FrameLayout");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettings");
         ssPermissions.add("com.samsung.crane/com.android.settings.Settings$ApnSettingsActivity");
@@ -225,6 +243,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
         //calling app package name samsung
         callingApps.add("com.samsung.android.incallui");
+        callingApps.add("com.android.incallui/.InCallActivity");
 
 
     }

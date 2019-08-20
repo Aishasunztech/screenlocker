@@ -347,27 +347,6 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 
     }
 
-    @Override
-    public void onStateChange(int state) {            //<---
-        switch (state) {
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case BACKGROUND:
-                Timber.e("onStateChange: BACKGROUND");
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                    this.finish();
-                }
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
 
     @Override

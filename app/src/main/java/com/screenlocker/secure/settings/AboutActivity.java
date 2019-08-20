@@ -60,6 +60,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
@@ -173,6 +174,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        super.onPause();
     }
 
     @Override

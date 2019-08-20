@@ -32,33 +32,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvTheme"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_theme"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/theme"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBar"
-            tools:layout_editor_absoluteY="160dp" />
-
-        <View
-            android:id="@+id/tvthemeDevider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTheme" />
 
         <TextView
             android:id="@+id/tvManagePasswords"
@@ -75,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvthemeDevider"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
             tools:layout_editor_absoluteY="160dp" />
 
         <View

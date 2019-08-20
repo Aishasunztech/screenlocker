@@ -120,7 +120,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
     private NetworkChangeReceiver networkChangeReceiver;
-    private SharedPreferences sharedPref;
+
     private Toolbar mToolbar;
     /**
      * request code for the set password activity
@@ -191,7 +191,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
@@ -201,8 +200,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 //        runShellCommand("adb shell pm hide ")
 
-        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         networkChangeReceiver = new NetworkChangeReceiver();
 
 //        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
@@ -221,6 +218,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
         } else {
 
@@ -269,8 +267,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider5).setVisibility(View.GONE);
             findViewById(R.id.divider15).setVisibility(View.GONE);
             findViewById(R.id.divider).setVisibility(View.GONE);
-            findViewById(R.id.tvTheme).setVisibility(View.GONE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
             dividerAdvance.setVisibility(View.GONE);
             tvAdvance.setVisibility(View.GONE);
         } else {
@@ -283,8 +279,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.divider5).setVisibility(View.VISIBLE);
             findViewById(R.id.divider15).setVisibility(View.VISIBLE);
             findViewById(R.id.divider).setVisibility(View.VISIBLE);
-            findViewById(R.id.tvTheme).setVisibility(View.VISIBLE);
-            findViewById(R.id.tvthemeDevider).setVisibility(View.VISIBLE);
             dividerAdvance.setVisibility(View.VISIBLE);
             tvAdvance.setVisibility(View.VISIBLE);
         }
@@ -356,7 +350,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tvAccount).setVisibility(View.VISIBLE);
         findViewById(R.id.tvAccount).setOnClickListener(this);
         findViewById(R.id.tvLanguage).setOnClickListener(this);
-        findViewById(R.id.tvTheme).setOnClickListener(this);
+
         tvAdvance.setOnClickListener(this);
 
     }
@@ -377,19 +371,19 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvManagePasswords:
                     Intent passwordsIntent = new Intent(SettingsActivity.this, ManagePasswords.class);
                     startActivity(passwordsIntent);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvChooseBackground:     // handle the choose apps click event
 //                    handleChooseABackground();
                     Intent cwi = new Intent(this, WallpaperActivity.class);
                     startActivity(cwi);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
 
                 case R.id.tvCode:
                     handleCodeAdmin();
                     break;
-                case R.id.tvTheme:
-                    themeDialogue();
-                    break;
+
                 case R.id.tvAbout:
                     //handle the about click event
                     createAboutDialog();
@@ -397,6 +391,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvAccount:
                     Intent account = new Intent(SettingsActivity.this, AboutActivity.class);
                     startActivity(account);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
@@ -404,6 +399,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvAdvance:
                     startActivity(new Intent(this, AdvanceSettings.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvlinkDevice:
 
@@ -416,6 +412,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     if (isConnected) {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     } else {
                         showNetworkDialog();
                     }
@@ -442,6 +439,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(this, SetUpLockActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_CODE);
             startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         } else {
             final EditText input = new EditText(SettingsActivity.this);
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
@@ -454,6 +452,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     // start Code settings activity if the code password entered is correct
 
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     dialogInterface.dismiss();
                 } else {
                     showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
@@ -603,6 +602,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         });
 
@@ -675,11 +675,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
             startActivity(new Intent(this, WhatsNew.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         });
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
             startActivity(new Intent(SettingsActivity.this, WhatsNew.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
@@ -848,6 +850,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (settingsPresenter.isMyLauncherDefault()) {
                 Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
                 startActivity(home);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             } else {
                 super.onBackPressed();
@@ -878,66 +881,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private boolean asSupport = false;
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        if (intent.hasExtra("isSupport")) {
-            Log.d("kkogkooikn", "true: ");
-            asSupport = true;
-        } else {
-            Log.d("kkogkooikn", "false: ");
-            asSupport = false;
-        }
-    }
-
-    private void themeDialogue() {
-        int item;
-        AtomicInteger selected = new AtomicInteger();
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
-            item = 0;
-            selected.set(0);
-        } else {
-            item = 1;
-            selected.set(1);
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick A Theme");
-        builder.setSingleChoiceItems(R.array.themes, item, (dialog, which) -> {
-            selected.set(which);
-        });
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (selected.get() == 1) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, false);
-            } else if (selected.get() == 0) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, true);
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-            dialog.dismiss();
-        });
-        builder.show();
-    }
-
-    SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
-        if (key.equals(AppConstants.KEY_THEME)) {
-            if (PrefUtils.getBooleanPref(SettingsActivity.this, AppConstants.KEY_THEME)) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-            getDelegate().applyDayNight();
-            recreate();
-        }
-    };
 
     @Override
     protected void onDestroy() {
-        sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
+
         super.onDestroy();
     }
 

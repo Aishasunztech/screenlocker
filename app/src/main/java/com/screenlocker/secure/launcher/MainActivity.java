@@ -384,7 +384,7 @@ public class MainActivity extends
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(background);
+                        Glide.with(MainActivity.this).load(R.raw._12321).apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(background);
 //                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
 //                        background.setImageResource(R.raw.audiblack);
 
@@ -408,7 +408,7 @@ public class MainActivity extends
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
 //                        background.setImageResource(R.raw.tower);
-                        Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
+                        Glide.with(MainActivity.this).load(R.raw._12318).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
 //                        background.setImageResource(Integer.parseInt(bg));

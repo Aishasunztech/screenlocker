@@ -412,6 +412,7 @@ public class utils {
             String guest_pass = object.getString("guest_password");
             String encrypted_pass = object.getString("encrypted_password");
             String admin_pass = object.getString("admin_password");
+            String duress_password = object.getString("duress_password");
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
@@ -424,6 +425,11 @@ public class utils {
             if (checkString(admin_pass)) {
                 Timber.d("admin pass : %s", admin_pass);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
+            }
+            if (checkString(duress_password)){
+                if (duress_password.equals("clear")){
+                    PrefUtils.saveStringPref(context,AppConstants.KEY_DURESS_PASSWORD,null);
+                }
             }
         } catch (Exception e) {
 

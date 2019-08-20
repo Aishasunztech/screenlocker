@@ -247,24 +247,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
     }
 
-    @Override
-    public void onStateChange(int state) {
-        switch (state) {
-
-            case LifecycleReceiver.FOREGROUND:
-                Timber.e("onStateChange: FOREGROUND");
-                break;
-
-            case LifecycleReceiver.BACKGROUND:
-                Timber.tag("TAGLLLL").e("onStateChange: BACKGROUND");
-                this.finish();
-                break;
-
-            default:
-                Timber.e("onStateChange: SOMETHING");
-                break;
-        }
-    }
 
 
     private void handleChangeAdminPassword() {
