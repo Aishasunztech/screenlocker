@@ -16,7 +16,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -98,13 +100,15 @@ public class LockScreenService extends Service {
     private WindowManager windowManager;
     private FrameLayout frameLayout;
     private WindowManager.LayoutParams localLayoutParams;
-    private LinearLayout mView;
+    private FrameLayout mView;
     private final IBinder binder = new LocalBinder();
     private boolean isLayoutAdded = false;
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
     private Fetch fetch;
     private int downloadId = 0;
+    private boolean viewAdded = false;
+    private View view;
     /* Downloader used for SM app to download applications in background*/
     private FetchListener fetchListener = new FetchListener() {
         @Override
@@ -204,54 +208,54 @@ public class LockScreenService extends Service {
     }
 
 
-   /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
+    /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
 
-        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
-                packageName, PackageManager.GET_SIGNATURES);
-        //note sample just checks the first signature
-        for (Signature signature : packageInfo.signatures) {
-            // SHA1 the signature
-            String sha1 = getSHA1(signature.toByteArray());
-            Timber.e("SHA1:" + sha1);
-            // check is matches hardcoded value
-            return APP_SIGNATURE.equals(sha1);
-        }
+         PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
+                 packageName, PackageManager.GET_SIGNATURES);
+         //note sample just checks the first signature
+         for (Signature signature : packageInfo.signatures) {
+             // SHA1 the signature
+             String sha1 = getSHA1(signature.toByteArray());
+             Timber.e("SHA1:" + sha1);
+             // check is matches hardcoded value
+             return APP_SIGNATURE.equals(sha1);
+         }
 
-        return false;
-    }
+         return false;
+     }
 
-    public static boolean validateAppSignatureFile(String sha1) {
+     public static boolean validateAppSignatureFile(String sha1) {
 
-        return APP_SIGNATURE.equals(sha1);
+         return APP_SIGNATURE.equals(sha1);
 
-    }
-
-
-    //computed the sha1 hash of the signature
-    public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA1");
-        digest.update(sig);
-        byte[] hashtext = digest.digest();
-        return bytesToHex(hashtext);
-    }
-
-    //util method to convert byte array to hex string
-    public static String bytesToHex(byte[] bytes) {
-        final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-        for (int j = 0; j < bytes.length; j++) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
+     }
 
 
-    public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
- */
+     //computed the sha1 hash of the signature
+     public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
+         MessageDigest digest = MessageDigest.getInstance("SHA1");
+         digest.update(sig);
+         byte[] hashtext = digest.digest();
+         return bytesToHex(hashtext);
+     }
+
+     //util method to convert byte array to hex string
+     public static String bytesToHex(byte[] bytes) {
+         final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
+                 '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+         char[] hexChars = new char[bytes.length * 2];
+         int v;
+         for (int j = 0; j < bytes.length; j++) {
+             v = bytes[j] & 0xFF;
+             hexChars[j * 2] = hexArray[v >>> 4];
+             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+         }
+         return new String(hexChars);
+     }
+
+
+     public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
+  */
     @Override
     public void onCreate() {
 
@@ -294,22 +298,24 @@ public class LockScreenService extends Service {
         //smalliew
         localLayoutParams = new WindowManager.LayoutParams();
         createLayoutParamsForSmallView();
-        mView = new LinearLayout(this);
+        mView = new FrameLayout(this);
+        ViewGroup.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        mView.setLayoutParams(params);
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
         if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
             disableScreenShots();
-        }else{
+        } else {
             allowScreenShoots();
         }
         //default brightness only once
-        if (!PrefUtils.getBooleanPref(this,KEY_DEF_BRIGHTNESS )){
+        if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
             //40% brightness by default
             setScreenBrightness(this, 102);
-            PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS,true);
+            PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS, true);
         }
 
         //local
@@ -340,9 +346,9 @@ public class LockScreenService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
-                addView(android.R.color.transparent);
+                //addView(android.R.color.transparent);
             } else {
-                removeView();
+                //removeView();
             }
         }
     };
@@ -474,6 +480,12 @@ public class LockScreenService extends Service {
                         break;
                     case "lockedFromsim":
                         startLockScreen(false);
+                    case "add":
+                        addView(this);
+                        break;
+                    case "remove":
+                        removeView();
+                        break;
                 }
             }
         }
@@ -708,18 +720,92 @@ public class LockScreenService extends Service {
     };
 
 
-    protected void addView(int colorId) {
-        mView.setBackgroundColor(getResources().getColor(colorId));
-        windowManager.addView(mView, localLayoutParams);
+    //    protected void addView(int colorId) {
+//        mView.setBackgroundColor(getResources().getColor(colorId));
+//        windowManager.addView(mView, localLayoutParams);
+//    }
+//
+//    protected void removeView() {
+//        Timber.d("removeView: ");
+//        if (mView != null && mView.getWindowToken() != null) {
+//            if (windowManager != null) {
+//                windowManager.removeViewImmediate(mView);
+//            }
+//        }
+//    }
+    protected void addView(Context context) {
+        Timber.d("addView: ");
+        try {
+//            mView.setBackground(drawable);
+            if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
+
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.action_restricted_layout, null);
+
+//                mView.getWindow().getDecorView().setSystemUiVisibility(
+//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+
+                mView.addView(view);
+
+
+//                imageView = new ImageView(this);
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
+//                imageView.setLayoutParams(params);
+//                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
+//
+//                textView = new TextView(this);
+//                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+//                textView.setText("Action not allowed !");
+//                textView.setTextSize(18f);
+//                textView.setTextColor(getResources().getColor(R.color.white));
+//
+//
+//                mView.addView(imageView);
+//                mView.addView(textView);
+
+                windowManager.addView(mView, localLayoutParams);
+                viewAdded = true;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+            viewAdded = false;
+        }
+
+        Intent i = new Intent(context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+
+
     }
 
     protected void removeView() {
         Timber.d("removeView: ");
-        if (mView != null && mView.getWindowToken() != null) {
-            if (windowManager != null) {
-                windowManager.removeViewImmediate(mView);
+        try {
+            if (mView != null && mView.getWindowToken() != null) {
+                if (windowManager != null) {
+//                    mView.removeView(imageView);
+//                    mView.removeView(textView);
+                    mView.removeView(view);
+                    windowManager.removeViewImmediate(mView);
+                    viewAdded = false;
+                }
             }
+        } catch (Exception e) {
+            Timber.e(e);
+            viewAdded = false;
         }
+
+
     }
 
     private void createLayoutParamsForSmallView() {
@@ -738,10 +824,10 @@ public class LockScreenService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (72 * getResources().getDisplayMetrics().scaledDensity);
+//        localLayoutParams.y = WindowManager.LayoutParams.MATCH_PARENT;
 
         localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (88 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
 
         localLayoutParams.format = PixelFormat.TRANSLUCENT;
 

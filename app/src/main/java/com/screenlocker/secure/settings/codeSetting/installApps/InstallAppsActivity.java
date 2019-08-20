@@ -75,9 +75,11 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
@@ -645,6 +647,9 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     @Override
     protected void onResume() {
         super.onResume();
+
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         isBackPressed = false;
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelList);

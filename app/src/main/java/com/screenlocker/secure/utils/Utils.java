@@ -18,8 +18,10 @@ import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -735,6 +737,36 @@ public class Utils {
         Random generator = new Random();
         PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
         packageInstaller.uninstall(packageName, i.getIntentSender());
+    }
+    public static boolean isAccessServiceEnabled(Context mContext, Class accessibilityServiceClass) {
+        int accessibilityEnabled = 0;
+        final String service = mContext.getPackageName() + "/" + accessibilityServiceClass.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+
+                    if (accessibilityService.equalsIgnoreCase(service)) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+        }
+
+        return false;
     }
 
 

@@ -419,4 +419,14 @@ public class AppConstants {
     public static final String SEND_UNINSTALLED_APPS = "send_uninstalled_apps_";
     public static final String SEND_INSTALLED_APPS = "send_installed_apps_";
 
+    //Accesibility
+    public static boolean TEMP_SETTINGS_ALLOWED = false;
+    //Emergency flag for BYOD
+    public static final String EMERGENCY_FLAG = "emergency_flag";
+    public static final String IS_SETTINGS_ALLOW = "is_settings_allow";
+    public static final String UNINSTALL_ALLOWED = "uninstall_allowed";
+    public static final String PERMISSION_GRANTING = "permission_granting";
+    public static final String PER_ACCESS = "per_access";
+    public static final int CODE_ACCESSIBILITY = 452;
+
 }

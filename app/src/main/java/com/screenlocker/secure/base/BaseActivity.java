@@ -28,6 +28,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
@@ -40,14 +41,16 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
-public abstract class BaseActivity extends AppCompatActivity implements  OnAppsRefreshListener {
+public abstract class BaseActivity extends AppCompatActivity implements OnAppsRefreshListener {
     //    customViewGroup view;
 
     private boolean overlayIsAllowed;
@@ -88,7 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity implements  OnAppsR
         super.onCreate(savedInstanceState);
 
 
-
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -108,10 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity implements  OnAppsR
         }
 
 
-
 //
-
-
 
 
     }
@@ -147,11 +146,6 @@ public abstract class BaseActivity extends AppCompatActivity implements  OnAppsR
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
-
-
-
-
-
 
 
     @Override
@@ -267,31 +261,55 @@ public abstract class BaseActivity extends AppCompatActivity implements  OnAppsR
         super.onResume();
         Intent intent1 = new Intent(AppConstants.BROADCAST_VIEW_ADD_REMOVE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
+
         String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
         }
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
             launchPermissions();
-        } else
-            if (!Settings.canDrawOverlays(this)) {
+        } else if (!Settings.canDrawOverlays(this)) {
             launchPermissions();
         } else if (!Settings.System.canWrite(this)) {
             launchPermissions();
-        } else if (!isAccessGranted(this)) {
+        } else if (!
+
+                isAccessGranted(this)) {
             launchPermissions();
-        } else if (checkSelfPermission(android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        } else if (
+                checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!getPackageManager().canRequestPackageInstalls()) {
+        } else if (!
+
+                isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
             launchPermissions();
-        } else if (!isNotificationAccess(this)) {
+//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
+        } else if (!
+
+                isNotificationAccess(this)) {
             launchPermissions();
-        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
+        } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().
+
+                getPackageName())) {
             launchPermissions();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !
+
+                getPackageManager().
+
+                        canRequestPackageInstalls()) {
+            launchPermissions();
+        } else {
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
+//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
         }
     }
 

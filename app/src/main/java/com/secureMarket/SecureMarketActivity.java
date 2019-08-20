@@ -46,12 +46,14 @@ import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.List;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secureClear.SecureClearActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 
 public class SecureMarketActivity extends BaseActivity implements OnAppsRefreshListener
@@ -166,6 +168,8 @@ public class SecureMarketActivity extends BaseActivity implements OnAppsRefreshL
            @Override
            protected void onResume() {
                super.onResume();
+               PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+               AppConstants.TEMP_SETTINGS_ALLOWED = true;
                refreshApps(SecureMarketActivity.this);
            }
        }

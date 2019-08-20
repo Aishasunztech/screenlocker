@@ -48,6 +48,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
@@ -438,7 +439,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onResume() {
         super.onResume();
-
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
