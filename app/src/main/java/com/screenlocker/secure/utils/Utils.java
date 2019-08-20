@@ -145,7 +145,7 @@ public class Utils {
     }
 
     @SuppressLint("ResourceType")
-    public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
+    /*public static WindowManager.LayoutParams prepareLockScreenView(final RelativeLayout layout,
                                                                    List<NotificationItem> notifications, final Context context) {
 
         int windowType;
@@ -365,7 +365,7 @@ public class Utils {
 
 
                 }
-            /*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
+            *//*else if (enteredPin.equals(AppConstants.SUPER_ADMIN_KEY)) {
 
 // JUST a go through LOCK
 
@@ -376,7 +376,7 @@ public class Utils {
                 //  handler.removeCallbacks(runnable);
                 }
 
-            }*/
+            }*//*
                 else if (device_status1 != null) {
 
                     switch (device_status1) {
@@ -472,7 +472,7 @@ public class Utils {
 
 
         return params;
-    }
+    }*/
 
     private static void remainingTime(Context context, KeyboardView keyboardView, Button unLockButton, long time_remaining, int count, int x, int attempt_10) {
         long time;

@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.screenlocker.secure.views.PrepareLockScreen;
+import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -285,7 +288,7 @@ public class LockScreenService extends Service {
 
         mLayout = new RelativeLayout(LockScreenService.this);
         notificationItems = new ArrayList<>();
-        params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
+        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -669,18 +672,15 @@ public class LockScreenService extends Service {
     public void refreshKeyboard() {
         try {
             if (mLayout != null) {
-                View view = mLayout.findViewById(R.id.keypad);
-                TextView support = mLayout.findViewById(R.id.t9_key_support);
-                support.setText(getResources().getString(R.string.support));
+                PatternLockView pl = mLayout.findViewById(R.id.patternLock);
+                pl.setUpRandomizedArray();
+                pl.invalidate();
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 clear.setText(getResources().getString(R.string.btn_backspace));
-                Button unlock = mLayout.findViewById(R.id.ivUnlock);
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
-                pin.setHint(getResources().getString(R.string.pin));
-                unlock.setText(getResources().getString(R.string.unlock));
+                pin.setHint(getResources().getString(R.string.enter_pin_or_draw_pattern_to_unlock));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
-                refreshKeypad(view);
                 windowManager.updateViewLayout(mLayout, params);
             }
         } catch (Exception e) {
@@ -702,7 +702,7 @@ public class LockScreenService extends Service {
             mLayout = null;
             mLayout = new RelativeLayout(LockScreenService.this);
             params = null;
-            params = Utils.prepareLockScreenView(mLayout, notificationItems, LockScreenService.this);
+            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
         }
     };

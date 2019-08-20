@@ -820,14 +820,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onBackPressed() {
 
         try {
-            if (settingsPresenter.isMyLauncherDefault()) {
-                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
-                startActivity(home);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                finish();
-            } else {
+//            if (settingsPresenter.isMyLauncherDefault()) {
+//                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
+//                startActivity(home);
+//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//                finish();
+//            } else {
                 super.onBackPressed();
-            }
+//            }
         } catch (Exception ignored) {
         }
 

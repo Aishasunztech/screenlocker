@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -296,6 +297,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         rvApps.scheduleLayoutAnimation();
     }
 
+    @SuppressLint("ResourceType")
     private void setBackground(String message) {
 
         try {
@@ -327,7 +329,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 } else {
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        background.setImageResource(R.raw.tower);
+                        background.setImageResource(R.raw._12318);
                         //Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {

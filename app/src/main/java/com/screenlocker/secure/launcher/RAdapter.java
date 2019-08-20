@@ -63,7 +63,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             final Context context = v.getContext();
             AppInfo info;
             try {
-
                  info = appsList.get(getAdapterPosition());
             }catch (ArrayIndexOutOfBoundsException e ){
                 return;
@@ -91,7 +90,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 return;
             }
-
             if (info.isEnable()) {
                 try {
 

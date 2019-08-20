@@ -142,8 +142,10 @@ public class PatternActivity extends AppCompatActivity {
                         } else {
                             mTry = 0;
                             Toast.makeText(PatternActivity.this, "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                            mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                            new Handler().postDelayed(() -> mPatternView.clearPattern(), 500);
                             message.setText("Please Draw Pattern");
-                            mPatternView.clearPattern();
+
                         }
                     }
                 }
