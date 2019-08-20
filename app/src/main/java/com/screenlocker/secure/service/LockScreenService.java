@@ -304,6 +304,7 @@ public class LockScreenService extends Service {
         }
         //default brightness only once
         if (!PrefUtils.getBooleanPref(this,KEY_DEF_BRIGHTNESS )){
+            //40% brightness by default
             setScreenBrightness(this, 102);
             PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS,true);
         }
