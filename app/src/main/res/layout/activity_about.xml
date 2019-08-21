@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:onClick="emergencyFlag"
-                android:text="ON/OFF"
+                android:text="SECURITY ON/OFF"
                 android:visibility="visible"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

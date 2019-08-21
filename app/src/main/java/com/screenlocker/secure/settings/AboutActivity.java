@@ -332,10 +332,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     public void emergencyFlag(View view) {
 
         if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-            Toast.makeText(this, "EMERGENCY FLAG OFF", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
             PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
         } else {
-            Toast.makeText(this, "EMERGENCY FLAG ON", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
             PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
         }
 

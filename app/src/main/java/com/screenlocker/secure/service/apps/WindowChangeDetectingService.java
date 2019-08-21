@@ -238,6 +238,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.settings/.Settings$ManageAppExternalSourcesActivity");
         globalActions.add("com.android.settings/.DeviceAdminAdd");
         globalActions.add("com.android.settings/.applications.InstalledAppDetailsTop");
+        globalActions.add("com.android.vpndialogs/android.app.Dialog");
+
 
         //calling app package name samsung
         callingApps.add("com.samsung.android.incallui");
@@ -280,10 +282,10 @@ public class WindowChangeDetectingService extends AccessibilityService {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
 
             if (event.getAction() == 1452) {
-                Timber.d("Custom Event");
+//                Timber.d("Custom Event");
                 if (serviceConnectedListener != null) {
                     serviceConnectedListener.serviceConnected(true);
-                    Timber.d("call back fire");
+//                    Timber.d("call back fire");
                 }
                 return;
             }

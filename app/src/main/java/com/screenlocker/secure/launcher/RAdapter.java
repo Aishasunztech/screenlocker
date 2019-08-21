@@ -89,8 +89,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             AppInfo info;
 
             try {
-                 info = appsList.get(getAdapterPosition());
-            }catch (ArrayIndexOutOfBoundsException e ){
+                info = appsList.get(getAdapterPosition());
+            } catch (ArrayIndexOutOfBoundsException e) {
                 return;
             }
 
@@ -175,8 +175,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.app_disabled), Toast.LENGTH_SHORT).show();
             }
-
-
 
 
         }

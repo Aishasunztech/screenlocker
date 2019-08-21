@@ -313,6 +313,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         tempAllowed.add("com.android.wifisettings");
         tempAllowed.add("com.miui.securitycenter");
         tempAllowed.add("com.samsung.android.incallui");
+        tempAllowed.add("com.android.vpndialogs");
 
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);

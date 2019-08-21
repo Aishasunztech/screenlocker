@@ -12,10 +12,13 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -59,13 +62,21 @@ public class BlurWorker extends Worker {
 
         Context applicationContext = getApplicationContext();
 
-
         Timber.d("sjhdbfsjhfhsafsa");
         try {
 
             PackageManager pm = applicationContext.getPackageManager();
 
             List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getAppsForBlurWorker(false);
+
+            for (AppInfo info : dbApps) {
+                String packageName = info.getPackageName();
+                if (!isAppInstalled(applicationContext, packageName) && !isSystemApp(packageName, applicationContext) && !info.isSystemApp()) {
+                    Timber.w("DELETING PACKAGE : %s", packageName);
+                    MyApplication.getAppDatabase(applicationContext).getDao().deleteOne(packageName);
+                }
+            }
+
 
             Intent i = new Intent(Intent.ACTION_MAIN, null);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -83,53 +94,15 @@ public class BlurWorker extends Worker {
             //getRunningApps(pm);
 
             for (int j = 0; j < allApps.size(); j++) {
-
-
                 ResolveInfo ri = allApps.get(j);
-
-
                 AppInfo app = new AppInfo(String.valueOf(ri.loadLabel(pm)),
-
                         ri.activityInfo.packageName, CommonUtils.convertDrawableToByteArray(ri.activityInfo.loadIcon(pm)));
-
                 app.setUniqueName(app.getPackageName());
-
                 Timber.d("app package %s", ri.loadLabel(pm));
-
-                for (AppInfo dbApp : dbApps) {
-
-                    if (dbApp.getUniqueName().equals(app.getUniqueName())) {
-                        String dbLabel = dbApp.getLabel();
-                        String label = app.getLabel();
-
-                        boolean isSystemApp = isSystemApp(app.getPackageName(), MyApplication.getAppContext());
-
-                        if (!dbLabel.equals(label)) {
-                            dbApp.setLabel(label);
-                            MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
-                            Timber.e("databaseLabel :%s", dbLabel);
-                            Timber.e("Label :%s", label);
-                            break;
-                        } else if (isSystemApp) {
-                            boolean is_dbApp_system = isSystemApp(dbApp.getPackageName(), MyApplication.getAppContext());
-                            if (!is_dbApp_system) {
-                                dbApp.setSystemApp(true);
-                                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
-                                break;
-                            }
-                        }
-                    }
-
-
-                }
-
-
 //                if (!dbLabel.equals(label)) {
 //                    dbApps.get(j).setLabel(label);
 //                    MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApps.get(j));
 //                }
-//
-
 
                 if (!dbApps.contains(app)) {
 
@@ -206,8 +179,6 @@ public class BlurWorker extends Worker {
                         app.setSystemApp(true);
                         MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
                     }
-
-
                 }
 
             }
@@ -380,6 +351,16 @@ public class BlurWorker extends Worker {
             // Thus if there were errors, we're return FAILURE
             Timber.tag(TAG).e(throwable, "Error applying blur");
             return Result.failure();
+        }
+    }
+
+
+    public static boolean isAppInstalled(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 }

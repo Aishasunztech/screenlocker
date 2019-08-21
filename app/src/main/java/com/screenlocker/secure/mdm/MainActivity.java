@@ -279,7 +279,6 @@ public class MainActivity extends BaseActivity {
                             Timber.d("status from MDM :%s", msg);
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
-
                             if (response.body().isStatus()) {
 
                                 switch (msg) {
