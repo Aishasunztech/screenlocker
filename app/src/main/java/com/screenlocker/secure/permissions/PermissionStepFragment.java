@@ -392,7 +392,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             }
     }
 
-
     private void setCheckedAndClickAble(Switch item, boolean click, boolean check) {
 
         if (click) {

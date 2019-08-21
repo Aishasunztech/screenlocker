@@ -242,9 +242,17 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
         findViewById(R.id.wif_container_layout)
                 .setOnClickListener(v -> {
-                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    try {
+                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+
 //                Intent intent = new Intent(SettingsMainActivity.this,WifiMainActivity.class);
-                    startActivity(intent);
+
                 });
         findViewById(R.id.bluetooth_container_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +260,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 try {
                     ComponentName cn = new ComponentName("com.android.settings",
                             "com.android.settings.bluetooth.BluetoothSettings");
-                    Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                    Intent intent = new Intent(Intent.ACTION_MAIN, null).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.setComponent(cn);
                     startActivity(intent);
                 } catch (Exception e) {

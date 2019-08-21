@@ -239,6 +239,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.settings/.DeviceAdminAdd");
         globalActions.add("com.android.settings/.applications.InstalledAppDetailsTop");
         globalActions.add("com.android.vpndialogs/android.app.Dialog");
+        globalActions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
 
 
         //calling app package name samsung
@@ -289,6 +290,10 @@ public class WindowChangeDetectingService extends AccessibilityService {
                 }
                 return;
             }
+
+
+//            performGlobalAction(GLOBAL_ACTION_RECENTS);
+
 
             if (event.getPackageName() != null && event.getClassName() != null) {
                 ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());

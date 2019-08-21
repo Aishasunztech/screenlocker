@@ -47,6 +47,8 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -509,11 +511,18 @@ public class MainActivity extends
         List<UsageStats> list = CommonUtils.getCurrentApp(this);
         if (list != null) {
             for (UsageStats usageStats : list) {
-                if (!usageStats.getPackageName().equals(getPackageName()))
+                if (!usageStats.getPackageName().equals(getPackageName())) {
                     assert activityManager != null;
-                activityManager.killBackgroundProcesses(usageStats.getPackageName());
+                    activityManager.killBackgroundProcesses(usageStats.getPackageName());
+                }
+
             }
         }
+
+//        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        Method method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
+//        method.invoke(am, pkgName);
+
     }
 
     private void clearNotif() {

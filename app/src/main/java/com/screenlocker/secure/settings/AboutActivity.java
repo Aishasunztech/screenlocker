@@ -65,6 +65,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_about);
 
         url_1 = findViewById(R.id.url_1);
+        url_1.setText(URL_1);
 
 
         socketManager = SocketManager.getInstance();
@@ -350,6 +351,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     private EditText url_1;
 
     public void changeUrl(View view) {
+
         String url = url_1.getText().toString();
 
         if (TextUtils.isEmpty(url)) {

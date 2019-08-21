@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment;
 
 import com.screenlocker.secure.FakeLauncherActivity;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 
 import timber.log.Timber;
 
@@ -168,19 +170,7 @@ public class PermissionUtils {
         if (!adminActive) {
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
-            activity.startActivityForResult(intent, RESULT_ENABLE);
-        }
-    }
-
-    public static void permissionAdmin(AppCompatActivity activity, DevicePolicyManager devicePolicyManager, ComponentName compName) {
-
-        boolean adminActive = devicePolicyManager.isAdminActive(compName);
-
-        if (!adminActive) {
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "You need to activate Device Administrator to proceed further with " + MyApplication.getAppContext().getResources().getString(R.string.app_name) + " !");
             activity.startActivityForResult(intent, RESULT_ENABLE);
         }
     }
