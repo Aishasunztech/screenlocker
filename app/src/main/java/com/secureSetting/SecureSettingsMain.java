@@ -238,9 +238,6 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
 
-    WindowManager wm;
-    FrameLayout mView;
-
     private void clickListeners() {
 
         findViewById(R.id.wif_container_layout)
@@ -358,13 +355,6 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, 3);
-                mView = new FrameLayout(this);
-                getOverLayLayoutParams();
-                createLayoutParams();
-
-                wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-                mView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-                wm.addView(mView, localLayoutParams);
             } catch (Exception e) {
                 Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -441,11 +431,6 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onDestroy() {
         unregisterReceiver(mBatInfoReceiver);
-        try {
-            if (wm != null && mView != null)
-                wm.removeViewImmediate(mView);
-        } catch (Exception ignored) {
-        }
 
         super.onDestroy();
 
@@ -523,45 +508,8 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     }
 
 
-    private WindowManager.LayoutParams localLayoutParams;
-
-    private void createLayoutParams() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-
-        } else {
-
-            localLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }
-
-        localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-// this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-// Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        localLayoutParams.y = (int) (24 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.width = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
-        localLayoutParams.height = (int) (56 * getResources().getDisplayMetrics().scaledDensity);
-
-        localLayoutParams.format = PixelFormat.TRANSLUCENT;
-
-    }
-
-    public void getOverLayLayoutParams() {
-        if (localLayoutParams == null) {
-            localLayoutParams = new WindowManager.LayoutParams();
-            createLayoutParams();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 3) {
-            if (wm != null && mView != null)
-                wm.removeViewImmediate(mView);
-        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 

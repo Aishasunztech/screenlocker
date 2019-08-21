@@ -1,5 +1,6 @@
 package com.screenlocker.secure.service;
 
+import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
@@ -24,11 +25,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +45,10 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.room.SimEntry;
+import com.screenlocker.secure.service.apps.ServiceConnectedListener;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
@@ -88,12 +91,13 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
-import static com.screenlocker.secure.utils.Utils.refreshKeypad;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
@@ -104,7 +108,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service {
+public class LockScreenService extends Service implements ServiceConnectedListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -218,6 +222,14 @@ public class LockScreenService extends Service {
     private String filePath = "";
     private String packageName = "";
 
+    private static boolean isServiceConnected = false;
+
+    @Override
+    public void serviceConnected(boolean status) {
+        isServiceConnected = status;
+        Timber.d("access service running %s ", isServiceConnected);
+    }
+
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -279,6 +291,8 @@ public class LockScreenService extends Service {
     public void onCreate() {
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
+
+        WindowChangeDetectingService.serviceConnectedListener = this;
 
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
@@ -466,7 +480,6 @@ public class LockScreenService extends Service {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
             } else {
@@ -484,6 +497,10 @@ public class LockScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
+
+        if (WindowChangeDetectingService.serviceConnectedListener == null) {
+            WindowChangeDetectingService.serviceConnectedListener = this;
+        }
 
 
         if (intent != null) {
@@ -522,10 +539,13 @@ public class LockScreenService extends Service {
                     case "lockedFromsim":
                         startLockScreen(false);
                     case "add":
-                        addView(this);
+                        addView(this, false);
                         break;
                     case "remove":
                         removeView();
+                        break;
+                    case "addreboot":
+                        addView(this, true);
                         break;
                 }
             }
@@ -540,6 +560,10 @@ public class LockScreenService extends Service {
 
     private boolean running = false;
 
+    private boolean permissionStatus = false;
+
+    private int count = 0;
+
     private void startRecentAppsKillThread() {
 
         if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
@@ -553,6 +577,7 @@ public class LockScreenService extends Service {
                 if (!powerManager.isInteractive()) {
                     appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     running = false;
+                    count = 0;
                     return;
                 }
                 running = true;
@@ -571,14 +596,66 @@ public class LockScreenService extends Service {
 
                     } else {
                         if (blacklist.contains(package_name)) {
-                            clearRecentApp(this);
+                            clearRecentApp(this, false);
                         }
                         checkAppStatus(package_name);
                     }
                 }
 
+
+                if (WindowChangeDetectingService.serviceConnectedListener == null) {
+                    WindowChangeDetectingService.serviceConnectedListener = this;
+                }
+
+                AccessibilityManager manager = (AccessibilityManager) this.getSystemService(Context.ACCESSIBILITY_SERVICE);
+                if (manager.isEnabled()) {
+                    AccessibilityEvent event = AccessibilityEvent.obtain();
+                    event.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+                    event.setPackageName(getPackageName());
+                    event.setClassName(this.getClass().toString());
+                    event.setAction(1452);
+                    manager.sendAccessibilityEvent(event);
+                }
+
                 try {
                     Thread.sleep(400);
+                    if (isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
+
+                        Timber.d("access service condition %s", isServiceConnected);
+
+                        if (!isServiceConnected) {
+                            if (!PrefUtils.getBooleanPref(MyApplication.getAppContext(), EMERGENCY_FLAG)) {
+                                count++;
+                                if (count >= 4) {
+                                    clearRecentApp(this, true);
+                                    count = 0;
+                                }
+                            }
+
+                        } else {
+                            Timber.d("Service connected");
+                            isServiceConnected = false;
+                            Timber.d("access service status in thread %s", isServiceConnected);
+//                            clearRecentApp(this, true);
+                        }
+                    } else {
+                        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+                        String component = BuildConfig.APPLICATION_ID + "/com.screenlocker.secure.permissions.SteppersActivity";
+                        if (!component.equals(cn.flattenToShortString())) {
+                            if (!permissionStatus) {
+                                launchPermissions();
+                                permissionStatus = true;
+                                Timber.d("launching permissions");
+                            }
+                            Timber.d("launched permissions");
+
+                        } else {
+                            Timber.d("permission denied");
+                        }
+                    }
+
+
                 } catch (InterruptedException e) {
                     Timber.e(e);
                 }
@@ -602,16 +679,28 @@ public class LockScreenService extends Service {
         try {
             boolean status = futureObject.get();
             if (!status) {
-                clearRecentApp(this);
+                clearRecentApp(this, false);
             }
         } catch (Exception e) {
-            clearRecentApp(this);
+            clearRecentApp(this, false);
         }
     }
 
     private Handler handler;
 
-    private void clearRecentApp(Context context) {
+    private void launchPermissions() {
+        Intent a = new Intent(this, SteppersActivity.class);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        a.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        a.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, true);
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            a.putExtra("emergency", true);
+        }
+        startActivity(a);
+    }
+
+    private void clearRecentApp(Context context, boolean reboot) {
 
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
@@ -619,16 +708,23 @@ public class LockScreenService extends Service {
         }
         handler = new Handler(Looper.getMainLooper());
 
-        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+        if (reboot) {
+            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("addreboot"));
+        } else {
+            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+        }
 
         Intent i = new Intent(context, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
-
-
         handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
+
+//        handler.postDelayed(this::removeView, 200);
+
+
+//        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
 
 
     }
@@ -732,7 +828,7 @@ public class LockScreenService extends Service {
                 windowManager.addView(mLayout, params);
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
@@ -911,14 +1007,23 @@ public class LockScreenService extends Service {
 //            }
 //        }
 //    }
-    protected void addView(Context context) {
+    protected void addView(Context context, boolean reboot) {
         Timber.d("addView: ");
         try {
 //            mView.setBackground(drawable);
             if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.action_restricted_layout, null);
+                if (reboot) {
+                    view = inflater.inflate(R.layout.reboot_layout, null);
+                } else {
+                    view = inflater.inflate(R.layout.action_restricted_layout, null);
+                }
+
+//                Looper.prepare();
+//
+//                TextView textView = view.findViewById(R.id.text);
+//                textView.setText(text);
 
 //                mView.getWindow().getDecorView().setSystemUiVisibility(
 //                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -927,7 +1032,6 @@ public class LockScreenService extends Service {
 //                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 //                                | View.SYSTEM_UI_FLAG_FULLSCREEN
 //                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
 
                 mView.addView(view);
 

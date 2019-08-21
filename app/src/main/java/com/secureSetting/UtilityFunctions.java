@@ -174,13 +174,17 @@ public class UtilityFunctions {
     }
 
     public static String getBlueToothStatus(Context context) {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter.isEnabled()) {
-            return context.getResources().getString(R.string.enabled);
-        } else {
-            return context.getResources().getString(R.string.disabled);
-
+        try {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter.isEnabled()) {
+                return context.getResources().getString(R.string.enabled);
+            } else {
+                return context.getResources().getString(R.string.disabled);
+            }
+        } catch (Exception e) {
+            return e.getMessage();
         }
+
     }
 
     public static void checkPermissions(Activity activity) {

@@ -465,6 +465,7 @@
     <string name="expiry_alert_online_message">Your device will be expired in %1$s days"</string>
     <string name="_10_days">10 days</string>
     <string name="enter_pin_or_draw_pattern_to_unlock">Enter Pin or Draw Pattern to unlock</string>
+    <string name="reboot_your_device">Please restart your device.</string>
 
 
 </resources>

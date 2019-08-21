@@ -20,10 +20,9 @@ public class ShutDownReceiver extends BroadcastReceiver {
             PrefUtils.saveStringPref(context, AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_TRUE);
 
             if (PrefUtils.getBooleanPref(context, AppConstants.TOUR_STATUS)) {
-                PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+                PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
 
-            Toast.makeText(context, "System shutting down", Toast.LENGTH_SHORT).show();
             Timber.e("onReceive: shutdown" + PrefUtils.getStringPref(context, AppConstants.KEY_SHUT_DOWN));
 
             //context.stopService(new Intent(context, BluetoothPanService.class));

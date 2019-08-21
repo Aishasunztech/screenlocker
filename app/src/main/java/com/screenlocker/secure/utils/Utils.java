@@ -1,5 +1,7 @@
 package com.screenlocker.secure.utils;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
@@ -581,6 +583,20 @@ public class Utils {
             arr[pos] = temp;
         }
     }
+
+//
+//    public static boolean isAccessServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
+//        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        List<AccessibilityServiceInfo> enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+//
+//        for (AccessibilityServiceInfo enabledService : enabledServices) {
+//            ServiceInfo enabledServiceInfo = enabledService.getResolveInfo().serviceInfo;
+//            if (enabledServiceInfo.packageName.equals(context.getPackageName()) && enabledServiceInfo.name.equals(service.getName()))
+//                return true;
+//        }
+//
+//        return false;
+//    }
 
 
     public static boolean isAccessServiceEnabled(Context mContext, Class accessibilityServiceClass) {

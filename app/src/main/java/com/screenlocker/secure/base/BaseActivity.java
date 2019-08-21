@@ -15,14 +15,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
@@ -30,7 +27,6 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.apps.ServiceConnectedListener;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
@@ -38,11 +34,8 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.AppConst;
 
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
@@ -60,7 +53,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess
 import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener, ServiceConnectedListener {
+public abstract class BaseActivity extends AppCompatActivity implements LifecycleReceiver.StateChangeListener {
     //    customViewGroup view;
 
     private boolean overlayIsAllowed;
@@ -85,8 +78,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
         }
         return alertDialog;
     }
-
-    private static boolean isServiceConnected = false;
 
 
     BroadcastReceiver loadingPolicyReceiver = new BroadcastReceiver() {
@@ -114,8 +105,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        View decorView = getWindow().getDecorView();
 //        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 //        decorView.setSystemUiVisibility(uiOptions);
-
-        WindowChangeDetectingService.serviceConnectedListener = this;
 
 
         createAlertDialog();
@@ -411,6 +400,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
     private void launchPermissions() {
         Intent a = new Intent(this, SteppersActivity.class);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        a.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        a.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, true);
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             a.putExtra("emergency", true);
@@ -464,12 +456,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //            }
         }
 
-    }
-
-    @Override
-    public void serviceConnected(boolean status) {
-        isServiceConnected = status;
-        Timber.d("sdkjfvsdgjsgijjg in listener%s", isServiceConnected);
     }
 
 

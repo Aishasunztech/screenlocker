@@ -125,14 +125,14 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
 
         ssPermissions.add(getPackageName() + "/android.widget.FrameLayout");
-        ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
+
 
         // samsung
         ssPermissions.add("com.samsung.networkui/android.widget.FrameLayout");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettings");
         ssPermissions.add("com.samsung.crane/com.android.settings.Settings$ApnSettingsActivity");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettingsTab");
-        ssPermissions.add("com.android.settings/.Settings$ConnectionsSettingsActivity");
+
         ssPermissions.add("com.samsung.android.app.telephonyui/.netsettings.ui.NetSettingsActivity");
         ssPermissions.add("com.android.settings/com.samsung.android.settings.face.FaceLockSettings");
         ssPermissions.add("com.android.settings/com.samsung.android.settings.biometrics.BiometricsDisclaimerActivity");
@@ -144,8 +144,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.huawei.systemmanager/.netassistant.ui.setting.TrafficSettingFragment$TrafficSettingActivity");
         ssPermissions.add("com.huawei.systemmanager/.netassistant.ui.setting.OverLimitNotifyFragment$OverLimitNotifyActivity");
         ssPermissions.add("com.huawei.systemmanager/.netassistant.traffic.trafficranking.TrafficRankingListActivity");
-        ssPermissions.add("com.android.phone/.MSimMobileNetworkSettings");
-        ssPermissions.add("com.android.phone/android.app.AlertDialog");
         ssPermissions.add("com.hisi.mapcon/com.android.settings.Settings$ApnSettingsActivity");
 
 
@@ -282,9 +280,12 @@ public class WindowChangeDetectingService extends AccessibilityService {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
 
             if (event.getAction() == 1452) {
+                Timber.d("Custom Event");
                 if (serviceConnectedListener != null) {
                     serviceConnectedListener.serviceConnected(true);
+                    Timber.d("call back fire");
                 }
+                return;
             }
 
             if (event.getPackageName() != null && event.getClassName() != null) {
@@ -319,7 +320,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
                                 Timber.d("permission granting");
                                 AppConstants.TEMP_SETTINGS_ALLOWED = true;
                             } else {
-                                AppConstants.TEMP_SETTINGS_ALLOWED = false;
                                 Timber.d("checking app permission");
                                 checkAppStatus(componentName);
                             }
@@ -353,6 +353,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         try {
             boolean status = futureObject.get();
             if (!status) {
+                AppConstants.TEMP_SETTINGS_ALLOWED = false;
                 clearRecentApp(this);
             } else {
                 AppConstants.TEMP_SETTINGS_ALLOWED = true;
