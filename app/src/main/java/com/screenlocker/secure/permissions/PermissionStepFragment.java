@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,9 +88,10 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
         if (checkPermissions(MyApplication.getAppContext())) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
-            //all the permissions are granted, can move t0o next
+            //all the permissions are granted, can move to next
             return true;
         } else {
+            showPermissionsMenus();
             return false;
         }
 
@@ -111,7 +113,14 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 //            Toast.makeText(mStepper, "Permissions are allowed ", Toast.LENGTH_SHORT).show();
 //
 //        }
-
+//
+//        if (checkPermissions(MyApplication.getAppContext())) {
+//            Toast.makeText(mStepper, "Please click on next button.", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(mStepper, "Some permissions missing", Toast.LENGTH_SHORT).show();
+//            showPermissionsMenus();
+//        }
+//
 
     }
 

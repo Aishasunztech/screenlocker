@@ -424,22 +424,22 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         } else {
             MyApplication.oneCaller
-                    .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                    if (response.body() != null) {
-                        if (response.body().isStatus()) {
-                            PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                        if (response.body() != null) {
+                            if (response.body().isStatus()) {
+                                PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
+                    @Override
+                    public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
         }
 
 

@@ -606,6 +606,7 @@ public class LinkDeviceActivity extends BaseActivity {
             t.cancel();
             t = null;
         }
+        finish();
     }
 
     private Timer t;

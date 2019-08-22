@@ -426,9 +426,11 @@ public class utils {
                 Timber.d("admin pass : %s", admin_pass);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
             }
-            if (checkString(duress_password)){
-                if (duress_password.equals("clear")){
-                    PrefUtils.saveStringPref(context,AppConstants.KEY_DURESS_PASSWORD,null);
+            if (checkString(duress_password)) {
+                if (duress_password.equals("clear")) {
+                    PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
                 }
             }
         } catch (Exception e) {
