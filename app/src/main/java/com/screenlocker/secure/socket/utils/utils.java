@@ -418,6 +418,8 @@ public class utils {
             if (checkString(duress_password)){
                 if (duress_password.equals("clear")){
                     PrefUtils.saveStringPref(context,AppConstants.KEY_DURESS_PASSWORD,null);
+                    PrefUtils.saveStringPref(context,AppConstants.DURESS_PATTERN,null);
+                    PrefUtils.saveStringPref(context,AppConstants.DUERESS_DEFAULT_CONFIG,null);
                 }
             }
         } catch (Exception e) {

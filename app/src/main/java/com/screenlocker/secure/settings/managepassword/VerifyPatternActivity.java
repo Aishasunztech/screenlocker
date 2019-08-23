@@ -11,16 +11,11 @@ import android.widget.ImageView;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
-import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
+import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
+import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 
 import java.util.List;
-
-import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
-import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
-import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
-import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 
 public class VerifyPatternActivity extends AppCompatActivity {
 private String extra ;
@@ -45,52 +40,52 @@ private String extra ;
                     break;
             }
         }
-        PatternLockView mPatternLockView = findViewById(R.id.patter_lock_view);
-        mPatternLockView.addPatternLockListener(new PatternLockViewListener() {
+        PatternLockWithDotsOnly mPatternLockView = findViewById(R.id.patter_lock_view);
+        mPatternLockView.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
                 Log.d(getClass().getName(), "Pattern drawing started");
             }
 
             @Override
-            public void onProgress(List<PatternLockView.Dot> progressPattern) {
+            public void onProgress(List<PatternLockWithDotsOnly.Dot> progressPattern) {
 //                Log.d(getClass().getName(), "Pattern progress: " +
 //                        PatternLockUtils.patternToString(mPatternLockView, progressPattern));
             }
 
             @Override
-            public void onComplete(List<PatternLockView.Dot> pattern) {
+            public void onComplete(List<PatternLockWithDotsOnly.Dot> pattern) {
 
                 if (pattern.size() < 4) {
 
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     mPatternLockView.clearPattern();
                     return;
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
                 if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.GUEST_PATTERN)) && extra.equals(AppConstants.KEY_GUEST)) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
                 } else if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.ENCRYPT_PATTERN))&& extra.equals(AppConstants.KEY_MAIN)) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
                 } else if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.DURESS_PATTERN)) && extra.equals(AppConstants.KEY_DURESS)) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
                 } else {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                     }, 500);

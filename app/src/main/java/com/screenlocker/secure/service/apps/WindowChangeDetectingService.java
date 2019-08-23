@@ -214,6 +214,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.settings/.Settings$ManageAppExternalSourcesActivity");
         globalActions.add("com.android.settings/.DeviceAdminAdd");
         globalActions.add("com.android.settings/.applications.InstalledAppDetailsTop");
+        globalActions.add("com.android.vpndialogs/android.app.Dialog");
 
         //calling app package name samsung
         callingApps.add("com.samsung.android.incallui");

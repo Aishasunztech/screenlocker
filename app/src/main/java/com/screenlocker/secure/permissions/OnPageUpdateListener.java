@@ -5,7 +5,6 @@ package com.screenlocker.secure.permissions;
  * @Date 6/10/2019.
  */
 public interface OnPageUpdateListener {
-    public interface PageUpdate {
+
         void onPageUpdate(int pageNo);
-    }
 }

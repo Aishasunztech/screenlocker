@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
-import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
+import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
+import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PatternActivity extends AppCompatActivity {
     private String extra;
     private TextView message;
-    private PatternLockView mPatternView;
+    private PatternLockWithDotsOnly mPatternView;
     private int mTry = 0;
     private String tryPattern;
 
@@ -50,23 +50,23 @@ public class PatternActivity extends AppCompatActivity {
                 //
             }
         }
-        mPatternView.addPatternLockListener(new PatternLockViewListener() {
+        mPatternView.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
 
             }
 
             @Override
-            public void onProgress(List<PatternLockView.Dot> progressPattern) {
+            public void onProgress(List<PatternLockWithDotsOnly.Dot> progressPattern) {
 
             }
 
             @Override
-            public void onComplete(List<PatternLockView.Dot> pattern) {
+            public void onComplete(List<PatternLockWithDotsOnly.Dot> pattern) {
 
                 if (pattern.size() < 4) {
                     Toast.makeText(PatternActivity.this, "Pattern is too Short", Toast.LENGTH_SHORT).show();
-                    mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     new Handler().postDelayed(mPatternView::clearPattern, 500);
                     return;
                 }
@@ -76,7 +76,7 @@ public class PatternActivity extends AppCompatActivity {
                         case AppConstants.KEY_MAIN:
                             if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN))) {
                                 Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
-                                mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                                mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
                                 }, 150);
@@ -87,7 +87,7 @@ public class PatternActivity extends AppCompatActivity {
                         case AppConstants.KEY_GUEST:
                             if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN))) {
                                 Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
-                                mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                                mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
                                 }, 150);
@@ -97,7 +97,7 @@ public class PatternActivity extends AppCompatActivity {
                         case AppConstants.KEY_DURESS:
                             if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN))) {
                                 Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
-                                mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                                mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
                                 }, 150);
@@ -142,7 +142,7 @@ public class PatternActivity extends AppCompatActivity {
                         } else {
                             mTry = 0;
                             Toast.makeText(PatternActivity.this, "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                            mPatternView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                            mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                             new Handler().postDelayed(() -> mPatternView.clearPattern(), 500);
                             message.setText("Please Draw Pattern");
 

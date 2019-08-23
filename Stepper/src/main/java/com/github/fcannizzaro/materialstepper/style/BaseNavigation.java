@@ -69,8 +69,11 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
     @Override
     public void onSkip() {
         boolean isLast = mSteps.current() == mSteps.total() - 1;
-        if (!isLast){
-            mSteps.current(mSteps.current() + 1);
+        if (!isLast) {
+            if (mSteps.current() == 5) {
+                mSteps.current(7);
+            } else
+                mSteps.current(mSteps.current() + 1);
             onUpdate();
         }
     }

@@ -121,14 +121,14 @@ public class AppConstants {
     public static final String LIVE_URL = "live_url";
     //End points
 
-    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
+//    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
+    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-//    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
+    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+//    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -176,6 +176,14 @@ public class AppConstants {
     public static final String PER_NOTIFICATION = "per_notification";
     public static final String PERMISSIONS_NUMBER = "permission_numbers";
     public static final String DEF_PAGE_NO = "def_page_no";
+
+    // Password Opt
+    public static final String GUEST_PASSORD_OPTION = "_g_p";
+    public static final String ENCRYPT_PASSORD_OPTION = "_e_p";
+    public static final String DURESS_PASSORD_OPTION = "_d_p";
+    public static final int OPTION_PIN = 1;
+    public static final int OPTION_PATTERN = 2;
+
 
     public static final int NOFICATION_REQUEST = 1323;
 

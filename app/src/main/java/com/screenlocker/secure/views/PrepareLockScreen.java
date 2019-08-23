@@ -388,10 +388,10 @@ public class PrepareLockScreen {
             String enteredPin = mPasswordField.getText().toString();
             String device_status1 = getDeviceStatus(context);
             boolean clearance;
-            if (device_status == null) {
+            if (device_status1 == null) {
                 clearance = false;
             } else {
-                clearance = device_status.equals("suspended") || device_status.equals("expired");
+                clearance = device_status1.equals("suspended") || device_status1.equals("expired");
 
             }
 

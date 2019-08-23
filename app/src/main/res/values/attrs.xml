@@ -17,4 +17,21 @@
         <attr name="dotAnimationDuration" format="integer"/>
         <attr name="pathEndAnimationDuration" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="PatternLockWithDotsOnly">
+        <attr name="dotCount1" format="integer"/>
+        <attr name="dotNormalSize1" format="dimension"/>
+        <attr name="dotSelectedSize1" format="dimension"/>
+        <attr name="pathWidth1" format="dimension"/>
+        <attr name="aspectRatioEnabled1" format="boolean"/>
+        <attr name="aspectRatio1" format="enum">
+            <enum name="square1" value="0"/>
+            <enum name="width_bias1" value="1"/>
+            <enum name="height_bias1" value="2"/>
+        </attr>
+        <attr name="normalStateColor1" format="color"/>
+        <attr name="correctStateColor1" format="color"/>
+        <attr name="wrongStateColor1" format="color"/>
+        <attr name="dotAnimationDuration1" format="integer"/>
+        <attr name="pathEndAnimationDuration1" format="integer"/>
+    </declare-styleable>
 </resources>

@@ -19,6 +19,7 @@ package com.screenlocker.secure.views.patternlock.utils;
 
 
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -60,6 +61,20 @@ public class PatternLockUtils {
         }
         return stringBuilder.toString();
     }
+    public static String patternToString(PatternLockWithDotsOnly patternLockView,
+                                         List<PatternLockWithDotsOnly.Dot> pattern) {
+        if (pattern == null) {
+            return "";
+        }
+        int patternSize = pattern.size();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < patternSize; i++) {
+            PatternLockWithDotsOnly.Dot dot = pattern.get(i);
+            stringBuilder.append((dot.getRow() * patternLockView.getDotCount() + dot.getColumn()));
+        }
+        return stringBuilder.toString();
+    }
 
     /**
      * De-serializes a given string to its equivalent pattern representation
@@ -74,6 +89,23 @@ public class PatternLockUtils {
         for (int i = 0; i < string.length(); i++) {
             int number = Character.getNumericValue(string.charAt(i));
             result.add(PatternLockView.Dot.of(number / patternLockView.getDotCount(),
+                    number % patternLockView.getDotCount()));
+        }
+        return result;
+    }
+    /**
+     * De-serializes a given string to its equivalent pattern representation
+     *
+     * @param string The pattern serialized with {@link #patternToString}
+     * @return The actual pattern
+     */
+    public static List<PatternLockWithDotsOnly.Dot> stringToPattern(PatternLockWithDotsOnly patternLockView,
+                                                            String string) {
+        List<PatternLockWithDotsOnly.Dot> result = new ArrayList<>();
+
+        for (int i = 0; i < string.length(); i++) {
+            int number = Character.getNumericValue(string.charAt(i));
+            result.add(PatternLockWithDotsOnly.Dot.of(number / patternLockView.getDotCount(),
                     number % patternLockView.getDotCount()));
         }
         return result;

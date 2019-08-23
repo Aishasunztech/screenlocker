@@ -46,7 +46,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 public class LinkDeviceFragment extends AbstractStep {
     public static final int REQUEST_LINK_DEVICE = 7;
 
-    private OnPageUpdateListener.PageUpdate pageUpdate;
+    private OnPageUpdateListener pageUpdate;
     private AlertDialog.Builder dialogh;
 
 
@@ -60,7 +60,7 @@ public class LinkDeviceFragment extends AbstractStep {
     public void onSkip() {
         super.onSkip();
         //save the status of this step as completed
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
     }
 
     //next only if device is linked other wise skip
@@ -69,7 +69,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
 
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
             return true;
         }
         return false;
@@ -124,7 +124,7 @@ public class LinkDeviceFragment extends AbstractStep {
     @Override
     public void onAttach(@NonNull Context context) {
         try {
-            pageUpdate = (OnPageUpdateListener.PageUpdate) context;
+            pageUpdate = (OnPageUpdateListener) context;
         } catch (Exception ignored) {
 
         }

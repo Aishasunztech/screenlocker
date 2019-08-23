@@ -40,7 +40,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 public class SetDefaultLauncherFragment extends AbstractStep {
 
 
-    OnPageUpdateListener.PageUpdate mListener;
+    OnPageUpdateListener mListener;
     private Context mContext;
 
     public SetDefaultLauncherFragment() {
@@ -51,7 +51,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public boolean nextIf() {
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
             return true;
         }
         return false;
@@ -61,9 +61,9 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public void onStepVisible() {
         super.onStepVisible();
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
             if (mListener != null){
-                mListener.onPageUpdate(6);
+                mListener.onPageUpdate(9);
             }
         }
     }
@@ -132,7 +132,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (OnPageUpdateListener.PageUpdate) context;
+            mListener = (OnPageUpdateListener) context;
         } catch (Exception ignored) {
 
         }
