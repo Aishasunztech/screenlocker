@@ -37,10 +37,10 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="50dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:paddingTop="30dp"
+                android:paddingTop="20dp"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -51,7 +51,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="30dp">
+                    android:layout_marginTop="30dp"
+                    >
 
                     <TextView
                         android:id="@+id/textViewSystemId"
@@ -92,7 +93,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewDeviceId"
@@ -111,9 +113,7 @@
                         android:id="@+id/tvDeviceId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="N/A"
@@ -131,7 +131,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle"
+                    >
 
                     <TextView
                         android:id="@+id/textLinkStatus"
@@ -150,9 +152,7 @@
                         android:id="@+id/tvLinkedStatus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/status_online"
@@ -171,7 +171,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewStatus"
@@ -190,9 +191,7 @@
                         android:id="@+id/tvDeviceStatus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="N/A"
@@ -211,14 +210,14 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewExpiry"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/accountheadingsStyle"
-                        android:layout_weight="1"
                         android:text="@string/expiry"
                         android:textSize="@dimen/textTitle"
                         app:layout_constraintStart_toStartOf="parent"
@@ -229,9 +228,7 @@
                         android:id="@+id/tvExpiresIn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="10 days"
@@ -250,7 +247,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewImei"
@@ -269,9 +267,7 @@
                         android:id="@+id/tvImei1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="5141281304"
@@ -280,8 +276,6 @@
 
 
                 </TableRow>
-
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -292,7 +286,8 @@
                 <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                 <TextView
                     android:id="@+id/textViewImei2"
@@ -311,9 +306,7 @@
                     android:id="@+id/tvImei2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    style="@style/accountValueStyle"
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="5141281304"
@@ -322,8 +315,6 @@
 
 
             </TableRow>
-
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -334,7 +325,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewCurrentDealer"
@@ -364,8 +356,6 @@
 
 
                 </TableRow>
-
-
                 <View
                     android:id="@+id/dividerCurrentDealer"
                     android:layout_width="0dp"
@@ -377,7 +367,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewDealerPin"
@@ -396,9 +387,7 @@
                         android:id="@+id/tvLinkedDealerPin"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/dealer_pin"
@@ -407,8 +396,6 @@
 
 
                 </TableRow>
-
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -418,7 +405,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewSim1"
@@ -437,9 +425,7 @@
                         android:id="@+id/tvSimNo"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="SimNo"
@@ -448,8 +434,6 @@
 
 
                 </TableRow>
-
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -459,7 +443,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewSim2"
@@ -478,9 +463,7 @@
                         android:id="@+id/tvSimNo2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="SimNo 2"
@@ -489,8 +472,6 @@
 
 
                 </TableRow>
-
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -500,7 +481,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewS_N"
@@ -519,9 +501,7 @@
                         android:id="@+id/tvSerialNo"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="SimNo 2"
@@ -530,7 +510,6 @@
 
 
                 </TableRow>
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -540,7 +519,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewMAC"
@@ -559,9 +539,7 @@
                         android:id="@+id/tvMAC"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="MAC"
@@ -570,7 +548,6 @@
 
 
                 </TableRow>
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -580,7 +557,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewIP"
@@ -599,9 +577,7 @@
                         android:id="@+id/tvIP"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="IP Addr"
@@ -619,7 +595,8 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewPGPEMAIl"
@@ -638,9 +615,7 @@
                         android:id="@+id/tvPgpEmail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        style="@style/accountValueStyle"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:textSize="@dimen/textSize"
@@ -659,7 +634,8 @@
                     android:id="@+id/chatId"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewCHATID"
@@ -701,7 +677,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    style="@style/accountRowStyle">
 
                     <TextView
                         android:id="@+id/textViewSIMID"
@@ -730,7 +707,6 @@
 
 
                 </TableRow>
-
                 <View
                     android:id="@+id/dividerSimId"
                     android:layout_width="0dp"
@@ -755,8 +731,8 @@
 
 
                         <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
                             android:src="@drawable/ic_guest_icon_24"
                             app:layout_constraintLeft_toLeftOf="@id/centerPoint"
                             app:layout_constraintRight_toRightOf="@id/centerPoint"

@@ -401,6 +401,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             for (UsageStats usageStats : list) {
                 if (!usageStats.getPackageName().equals(getPackageName()))
                     assert activityManager != null;
+//                activityManager.killBackgroundProcesses(usageStats.getPackageName());
+                activityManager.restartPackage(usageStats.getPackageName());
                 activityManager.killBackgroundProcesses(usageStats.getPackageName());
             }
         }
