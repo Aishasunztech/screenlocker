@@ -57,6 +57,9 @@ public interface SocketEvents {
     void finishPolicyExtensions();
 
     void finishPolicy();
+
     void getSimUpdates();
+
+    void sendSystemEvents();
 
 }

@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -292,6 +293,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             imeiHistory();
             forceUpdateCheck();
             getSimUpdates();
+            sendSystemEvents();
 
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -1337,6 +1339,32 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         } catch (Exception e) {
             Timber.d(e);
+        }
+    }
+
+    @Override
+    public void sendSystemEvents() {
+        if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
+            Timber.d("<<< FINISH POLICY EXTENSIONS >>>");
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode){
+                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION,getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                    JSONObject object =  new JSONObject();
+                    object.put("type", getResources().getString(R.string.apktype));
+
+                    object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+                    jsonObject.put("action",ACTION_DEVICE_TYPE_VERSION );
+                    jsonObject.put("object",object );
+                    socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+                }
+
+            } catch (JSONException e) {
+                Timber.d(e);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

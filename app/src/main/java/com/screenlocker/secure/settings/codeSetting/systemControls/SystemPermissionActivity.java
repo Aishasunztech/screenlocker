@@ -133,6 +133,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchBlockCall.setOnCheckedChangeListener(this);
         switchCamera.setOnCheckedChangeListener(this);
         switchSpeaker.setOnCheckedChangeListener(this);
+        switchMic.setOnCheckedChangeListener(this);
         switchFileSharing.setOnCheckedChangeListener(this);
         switchLocation.setOnClickListener(this);
         switchScreenShot.setOnClickListener(this);
@@ -390,21 +391,19 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 }
                 break;
             case R.id.switchSpeaker:
-                //mDPM.setMasterVolumeMuted(compName, isChecked);
-                if (isChecked) {
-                    Utils.speaker(this);
-                } else {
-                    Utils.speakerOff(this);
-                }
+//                Intent intent = new Intent("com.secure.systemcontrol.POLICY");
+//                intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//                intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+//                sendBroadcast(intent);
                 break;
             case R.id.switchFileSharing:
                 //mDPM.setScreenCaptureDisabled(compName, isChecked);
                 break;
             case R.id.switchMic:
-                if (mDPM.isDeviceOwnerApp(getPackageName())) {
-                    Timber.d("device owner: ");
-                    mDPM.setMasterVolumeMuted(compName, isChecked);
-                }
+//                Intent intent1 = new Intent("com.secure.systemcontrol.AADMIN");
+//                intent1.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//                intent1.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+//                sendBroadcast(intent1);
                 //micOff(this);
                 break;
 

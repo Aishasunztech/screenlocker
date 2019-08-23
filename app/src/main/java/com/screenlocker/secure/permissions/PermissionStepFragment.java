@@ -84,15 +84,14 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     @Override
     public boolean nextIf() {
 
-
         if (checkPermissions(MyApplication.getAppContext())) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
-            //all the permissions are granted, can move t0o next
+            //all the permissions are granted, can move to next
             return true;
         } else {
+            showPermissionsMenus();
             return false;
         }
-
 
     }
 

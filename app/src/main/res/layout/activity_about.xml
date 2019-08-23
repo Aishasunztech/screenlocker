@@ -6,270 +6,996 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="wrap_content"
 
-        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/appBar"
+            layout="@layout/main_toolbar"/>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/appBar"
-                layout="@layout/main_toolbar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textViewSystemId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="System Id"
-                android:textSize="@dimen/textTitle"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appBar" />
-
-            <TextView
-                android:id="@+id/tvSystemId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:textSize="@dimen/textSize"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewSystemId"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewSystemId"
-                tools:text="368768BHH7" />
-
-            <View
-                android:id="@+id/divider14"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewSystemId" />
-
-            <TextView
-                android:id="@+id/textViewDeviceId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/device_id"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider14" />
-
-            <TextView
-                android:id="@+id/tvDeviceId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="N/A"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewDeviceId"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewDeviceId"
-                tools:text="Vortex Secure" />
-
-            <View
-                android:id="@+id/divider15"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewDeviceId" />
-
-            <TextView
-                android:id="@+id/textLinkStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/mode"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider15" />
-
-            <TextView
-                android:id="@+id/tvLinkedStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/status_online"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textLinkStatus"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textLinkStatus" />
-
-            <View
-                android:id="@+id/divider12"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textLinkStatus" />
-
-            <TextView
-                android:id="@+id/textViewStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/status"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider12" />
-
-            <TextView
-                android:id="@+id/tvDeviceStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="N/A"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewStatus"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewStatus" />
-
-            <View
-                android:id="@+id/divider16"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />
-
-            <TextView
-                android:id="@+id/textViewExpiry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/expiry"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider16" />
-
-            <TextView
-                android:id="@+id/tvExpiresIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/_10_days"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewExpiry"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewExpiry" />
-
-            <View
-                android:id="@+id/divider17"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewExpiry" />
-
-            <!-- IMEI 1-->
-
-            <TextView
-                android:id="@+id/textViewImei"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="IMEI 1"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider17" />
-
-            <TextView
-                android:id="@+id/tvImei1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="5141281304"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewImei"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewImei" />
-
-            <View
-                android:id="@+id/divider18"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewImei" />
-
-            <!--IMEI 2-->
-            <TextView
-                android:id="@+id/textViewImei2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="IMEI 2"
-                android:textSize="@dimen/textTitle"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider18" />
-
-            <TextView
-                android:id="@+id/tvImei2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="5141281304"
-                android:textSize="@dimen/textSize"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewImei2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewImei2" />
-
-            <View
-                android:id="@+id/divider19"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewImei2" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+
+                <TableLayout
+                    android:id="@+id/linearContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/guest_password_bg"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="50dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="20dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="30dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/textViewSystemId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="System Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSystemId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="gone"
+                            tools:text="368768BHH7" />
+
+
+                    </TableRow>
+                    <View
+                        android:id="@+id/SystemIdDivider"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewDeviceId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/device_id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvDeviceId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="N/A"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle"
+                        >
+
+                        <TextView
+                            android:id="@+id/textLinkStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/mode"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvLinkedStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="@string/status_online"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/status"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvDeviceStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="N/A"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewExpiry"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/expiry"
+                            android:textSize="@dimen/textTitle"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvExpiresIn"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="10 days"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewImei"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="IMEI 1"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvImei1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="5141281304"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewImei2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="IMEI 2"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvImei2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="5141281304"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewCurrentDealer"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/current_dealer"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvCurrentDealerID"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="@string/dealer_pin"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:id="@+id/dividerCurrentDealer"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewDealerPin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/dealer_pin"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvLinkedDealerPin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="@string/dealer_pin"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewSim1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/sim_1"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSimNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="SimNo"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewSim2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/sim_2"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSimNo2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="SimNo 2"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewS_N"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/s_n"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSerialNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="SimNo 2"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewMAC"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/mac"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvMAC"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="MAC"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewIP"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/ip_addr"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvIP"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="IP Addr"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewPGPEMAIl"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="PGP Email"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvPgpEmail"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            tools:text="7992PFY@ARMORSEC.XYZ"  />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <TableRow
+                        android:id="@+id/chatId"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewCHATID"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="Chat Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvChatId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            tools:text="5141281304" />
+
+
+                    </TableRow>
+                    <View
+                        android:id="@+id/dividerChatId"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <TableRow
+                        android:id="@+id/simId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewSIMID"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="Sim Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSimId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            tools:text="5141281304"/>
+
+
+                    </TableRow>
+                    <View
+                        android:id="@+id/dividerSimId"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+
+
+                </TableLayout>
+
+
+                <View
+                    android:id="@+id/centerPoint"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@+id/linearContainer"
+                    app:layout_constraintRight_toRightOf="@+id/linearContainer"
+                    app:layout_constraintTop_toTopOf="@+id/linearContainer"/>
+
+
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/ic_guest_icon_24"
+                    app:layout_constraintLeft_toLeftOf="@id/centerPoint"
+                    app:layout_constraintRight_toRightOf="@id/centerPoint"
+                    app:layout_constraintTop_toTopOf="@id/centerPoint"
+                    app:layout_constraintBottom_toBottomOf="@id/centerPoint"
+
+                    />
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!--<TextView-->
+        <!--android:id="@+id/textViewSystemId"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--android:text="System Id"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/appBar" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvSystemId"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewSystemId"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewSystemId"-->
+        <!--tools:text="368768BHH7" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider14"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewSystemId" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textViewDeviceId"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--android:text="@string/device_id"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/divider14" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvDeviceId"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="N/A"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewDeviceId"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewDeviceId"-->
+        <!--tools:text="Vortex Secure" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider15"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewDeviceId" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textLinkStatus"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="@string/mode"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/divider15" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvLinkedStatus"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="@string/status_online"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textLinkStatus"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textLinkStatus" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider12"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textLinkStatus" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textViewStatus"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="@string/status"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/divider12" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvDeviceStatus"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="N/A"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewStatus"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewStatus" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider16"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textViewExpiry"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="@string/expiry"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/divider16" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvExpiresIn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="10 days"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewExpiry"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewExpiry" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider17"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewExpiry" />-->
+
+        <!--&lt;!&ndash; IMEI 1&ndash;&gt;-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textViewImei"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="IMEI 1"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/divider17" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvImei1"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="5141281304"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewImei"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewImei" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider18"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewImei" />-->
+
+        <!--&lt;!&ndash;IMEI 2&ndash;&gt;-->
+        <!--<TextView-->
+        <!--android:id="@+id/textViewImei2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="IMEI 2"-->
+        <!--android:textSize="@dimen/textTitle"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/divider18" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvImei2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:text="5141281304"-->
+        <!--android:textSize="@dimen/textSize"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/textViewImei2"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/textViewImei2" />-->
+
+        <!--<View-->
+        <!--android:id="@+id/divider19"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/colorLine"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewImei2" />-->
+
+
+
+    </LinearLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

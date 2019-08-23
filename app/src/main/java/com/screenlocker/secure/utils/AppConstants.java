@@ -100,16 +100,16 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
+//        public static final String URL_1 = "http://192.168.18.140:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-    //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
+    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//            public static final String SUPER_ADMIN = "http://192.168.18.240:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -183,6 +183,7 @@ public class AppConstants {
     public static final String DURESS_PASSORD_OPTION = "_d_p";
     public static final int OPTION_PIN = 1;
     public static final int OPTION_PATTERN = 2;
+    public static final String PERVIOUS_VERSION = "previous_version";
 
 
     public static final int NOFICATION_REQUEST = 1323;
@@ -363,6 +364,7 @@ public class AppConstants {
     public static final String FINISH_POLICY_APPS = "finish_policy_apps_";
     public static final String FINISH_POLICY_SETTINGS = "finish_policy_settings_";
     public static final String FINISH_POLICY_EXTENSIONS = "finish_policy_extensions_";
+    public static final String SYSTEM_EVENT_BUS = "system_event_";
     public static final String FINISH_POLICY = "finish_policy_";
     public static final String POLICY_NAME = "policy_name";
 
@@ -414,6 +416,9 @@ public class AppConstants {
     public static final int UPDATE_JOB = 1234;
     public static final String  UNSYNC_ICCIDS = "un_sync_iccid";
     public static final String  DELETED_ICCIDS = "deleted_iccid";
+    //Socket Actions
+
+    public static final String  ACTION_DEVICE_TYPE_VERSION = "type_version";
     public static final String  SIM_UNREGISTER_FLAG = "unregisterflag";
     public static final String  SIM_ACTION_DELETED = "sim_delete";
     public static final String  SIM_ACTION_UPDATE = "sim_update";

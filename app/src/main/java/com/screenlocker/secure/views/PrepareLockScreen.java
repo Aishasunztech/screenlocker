@@ -204,6 +204,12 @@ public class PrepareLockScreen {
                 } else if (device_status != null) {
                     String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
                     setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
+                    if (clearance){
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                        }, 500);
+                    }
                 } else {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     new Handler().postDelayed(() -> {
@@ -421,6 +427,9 @@ public class PrepareLockScreen {
                     else chatLogin(context);
 
                 } else if (device_status1 != null) {
+                    if (clearance){
+                        mPasswordField.setText(null);
+                    }
                     setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView, device_status1);
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);

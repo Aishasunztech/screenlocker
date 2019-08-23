@@ -1,11 +1,5 @@
 package com.screenlocker.secure.settings;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +8,12 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -24,7 +23,6 @@ import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -33,20 +31,58 @@ import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
+    @BindView(R.id.tvSystemId)
+    TextView tvSystemId;
+    @BindView(R.id.tvLinkedStatus)
+    TextView tvLinkedStatus;
+    @BindView(R.id.tvDeviceStatus)
+    TextView tvDeviceStatus;
+    @BindView(R.id.tvCurrentDealerID)
+    TextView tvCurrentDealerID;
+    @BindView(R.id.tvLinkedDealerPin)
+    TextView tvLinkedDealerPin;
+    @BindView(R.id.tvSimNo)
+    TextView tvSimNo;
+    @BindView(R.id.tvSimNo2)
+    TextView tvSimNo2;
+    @BindView(R.id.tvSerialNo)
+    TextView tvSerialNo;
+    @BindView(R.id.tvMAC)
+    TextView tvMAC;
+    @BindView(R.id.tvIP)
+    TextView tvIP;
+    @BindView(R.id.tvPgpEmail)
+    TextView tvPgpEmail;
+    @BindView(R.id.tvChatId)
+    TextView tvChatId;
+    @BindView(R.id.tvSimId)
+    TextView tvSimId;
+    @BindView(R.id.chatId)
+    TableRow chatId;
+    @BindView(R.id.dividerChatId)
+    View dividerChatId;
+    @BindView(R.id.simId)
+    TableRow simId;
+    @BindView(R.id.dividerSimId)
+    View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -54,9 +90,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        ButterKnife.bind(this);
 
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
@@ -152,6 +188,28 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 tvImei2.setText(getResources().getString(R.string.n_a));
             }
         }
+        String linkedDealerPin = PrefUtils.getStringPref(this, KEY_DEVICE_LINKED);
+        if (linkedDealerPin != null) {
+            tvLinkedDealerPin.setText(linkedDealerPin);
+        }
+        tvMAC.setText(DeviceIdUtils.getMacAddress());
+        tvSerialNo.setText(DeviceIdUtils.getSerialNumber());
+        tvIP.setText(DeviceIdUtils.getIPAddress(true));
+
+        String chat_Id = PrefUtils.getStringPref(this, CHAT_ID);
+        if (chat_Id != null) {
+            chatId.setVisibility(View.VISIBLE);
+            dividerChatId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chat_Id);
+        }
+        // sim ID
+        String sim_Id = PrefUtils.getStringPref(this, SIM_ID);
+        if (sim_Id != null) {
+            simId.setVisibility(View.VISIBLE);
+            dividerSimId.setVisibility(View.VISIBLE);
+            tvSimId.setText(chat_Id);
+        }
+
     }
 
     @Override
@@ -161,12 +219,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onPause() {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        super.onPause();
     }
 
     @Override
@@ -230,7 +282,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                         String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+                        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
                         Timber.d("LinkStatus :" + linkStatus);
                         if (linkStatus) {
                             Timber.d("LinkStatus :" + linkStatus);
