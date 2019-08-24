@@ -61,7 +61,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         @Override
         public void onClick(final View v) {
             final Context context = v.getContext();
-            AppInfo info = appsList.get(getAdapterPosition());
+
+            AppInfo info;
+            try {
+                info = appsList.get(getAdapterPosition());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return;
+            }
+
+
             if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                 String unique = info.getUniqueName();
 

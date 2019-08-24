@@ -99,15 +99,15 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
+    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+    //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+    //        public static final String URL_1 = "http://192.168.18.226:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
     public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //        public static final String SUPER_ADMIN = "http://192.168.0.121:8042";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -121,7 +121,7 @@ public class AppConstants {
     //End points
 
     public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-//    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    //    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
     public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
 //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
@@ -402,13 +402,13 @@ public class AppConstants {
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";
     public static final int UPDATE_JOB = 1234;
-    public static final String  UNSYNC_ICCIDS = "un_sync_iccid";
-    public static final String  DELETED_ICCIDS = "deleted_iccid";
-    public static final String  SIM_UNREGISTER_FLAG = "unregisterflag";
-    public static final String  SIM_ACTION_DELETED = "sim_delete";
-    public static final String  SIM_ACTION_UPDATE = "sim_update";
-    public static final String  SIM_ACTION_UNREGISTER = "sim_unregister";
-    public static final String  UEM_PKG = "com.rim.mobilefusion.client";
+    public static final String UNSYNC_ICCIDS = "un_sync_iccid";
+    public static final String DELETED_ICCIDS = "deleted_iccid";
+    public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
+    public static final String SIM_ACTION_DELETED = "sim_delete";
+    public static final String SIM_ACTION_UPDATE = "sim_update";
+    public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
+    public static final String UEM_PKG = "com.rim.mobilefusion.client";
 
     // installed and uninstalled apps for syncing with server
     public static final String INSTALLED_APPS = "installed_apps";

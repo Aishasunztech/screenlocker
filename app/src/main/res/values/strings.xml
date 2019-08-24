@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name" translatable="false">Titan Locker</string>
-    <string name="toolbar_title" translatable="false">Titan Locker</string>
+    <integer-array name="duration_int">
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
     <string name="apktype" translatable="false">SW</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
@@ -56,10 +60,10 @@
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
     <string name="sim_title">SIM</string>
-    <string name="set_duress_pass">Set Duress Password</string>
 
     // MDM strings
 
+    <string name="set_duress_pass">Set Duress Password</string>
     <string name="no_internet">Internet not available</string>
     <string name="processing">Activating device please wait.</string>
     <string name="submit">Submit</string>
@@ -74,27 +78,27 @@
     <string name="device_not_linked">Device not linked!</string>
     <string name="stop_linking">Stop Linking</string>
     <string name="session_expired">Session expired</string>
-    <string name="expired">expired</string>
 
     <!-- : Remove or change this placeholder text -->
+    <string name="expired">expired</string>
     <string name="system_controls">System Permissions</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
-    <string name="settings_controls">Secure Settings Permission</string>
     <!--SecureSeting strings-->
 
+    <string name="settings_controls">Secure Settings Permission</string>
     <string name="gps_not_found_title">GPS not found</string>
     <string name="gps_not_found_message">Please turn on gps to further proceed</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <!-- : Remove or change this placeholder text -->
     <string name="fine_location_and_cross_location">Fine Location</string>
 
     <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">Some Error Occurred!</string>
-
-    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="language">Languages</string>
@@ -127,8 +131,8 @@
     <string name="enable_all_registered">Enable All \n<small>(Registered)</small></string>
     <string name="status_disconnected">Offline</string>
     <string name="note">Note: </string>
-    <string name="note_hint">Note</string>
 
+    <string name="note_hint">Note</string>
     <string name="support">SUPPORT</string>
     <string name="manage_passwords_settings">Manage Passwords</string>
     <string name="set_background_image_settings">Set Background Image</string>
@@ -313,8 +317,8 @@
     <string name="clearing_cache_successfull">Cache successfully cleared</string>
     <string name="search">Search</string>
     <string name="expiry">Expiry (days remaining)</string>
-    <string name="device_id">Device Id</string>
 
+    <string name="device_id">Device Id</string>
     <string name="please_grant_all_permissions">Please Grant all permissions</string>
     <string name="invalid_link_code">Invalid link code</string>
     <string name="register_manual">Register Manual</string>
@@ -354,72 +358,58 @@
     <string name="link_device_message">Hit the button below to link your device</string>
     <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
     <string name="default_launcher_title">Default Launcher</string>
+
+
     <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
-
-
-    <string-array name="sort">
-        <item>Total</item>
-        <item>Date</item>
-        <item>Frequency</item>
-        <item>Mobile data</item>
-    </string-array>
-    <string-array name="duration">
-        <item>Today</item>
-        <item>Yesterday</item>
-    </string-array>
-    <integer-array name="duration_int">
-        <item>0</item>
-        <item>1</item>
-    </integer-array>
-
-
     <string name="close">Close</string>
-
     <string name="detail">Details</string>
+
+
     <string name="duration">Duration</string>
 
     <string name="enable_apps_monitor">Enable apps monitor</string>
     <string name="enable_apps_monitoring">Apps monitoring</string>
 
     <string name="feedback">feedback: zhishoumowen@gmail.com</string>
-
     <string name="grant_success">Permission Granted</string>
 
     <string name="hide_system_apps">Hide system Apps</string>
+
     <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
 
     <string name="ignore">Ignore this app</string>
     <string name="ignore_hint">Apps in this list will be hidden</string>
+
     <string name="ignore_list">Ignore list</string>
     <string name="ignore_success">Move to ignore list successfully</string>
-
     <string name="more">More detail</string>
     <string name="app_info">App info</string>
 
     <string name="notification_title">AppTimeline running</string>
     <string name="notification_message">monitoring your app usage</string>
+
     <string name="not_support">You device not support monitoring</string>
-
     <string name="open">Open</string>
-
     <string name="refresh">Refresh</string>
 
     <string name="settings">Settings</string>
+
     <string name="settings_function">Functions</string>
+
     <string name="settings_more">More</string>
     <string name="share">Like and share</string>
     <string name="share_desc">Hey check out this app, it\'s so cool, it can help checkout every app\'s time your spend on: %1$s%2$s</string>
     <string name="slogan">Monitor Apps usage</string>
     <string name="sort">Sort By</string>
-
     <string name="toast_permission">Please find \"AppsTimeline\" and grant the permission</string>
     <string name="times">%1$s · %2$d times</string>
+
     <string name="times_only">times</string>
     <string name="total">%1$s</string>
-
-
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
+
+
     <string name="updates">Updates</string>
     <string name="update">Update</string>
     <string name="sim">SIM</string>
@@ -436,22 +426,32 @@
     <string name="notifications">Notifications</string>
     <string name="all_apps">All Apps</string>
     <string name="no_connection">No Internet Connection</string>
-
     <string name="features">\u25CB SFM as extension app. \n\u25CB Auto updates for all apps.\n\u25CB New Update Tab in Sm.\n\u25CB Disable camera feature. \n\u25CB Notification Menu in SS.\n\u25CB New Welcome screen with animation.\n\u25CB New Icons for SM, SS and SC apps.\n\u25CB SIM Settings synchronization with LM. \n\u25CB Updated Install app menu(code.).
 </string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
+
     <string name="what_s_new_v5_15">What\'s New v5.15</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
     <string name="set_column">Home Screen Layout</string>
-
     <string name="lib_name">PatternLockView</string>
     <string name="message_pattern_dot_added">Dot added to pattern</string>
+
     <string name="message_pattern_started">Pattern drawing started</string>
     <string name="message_pattern_detected">Pattern drawing completed</string>
     <string name="message_pattern_cleared">Pattern cleared</string>
     <string name="expiry_alert_online_title">Expiry Alert</string>
     <string name="expiry_alert_online_message">Your device will be expired in %1$s days"</string>
+    <string-array name="sort">
+        <item>Total</item>
+        <item>Date</item>
+        <item>Frequency</item>
+        <item>Mobile data</item>
+    </string-array>
+    <string-array name="duration">
+        <item>Today</item>
+        <item>Yesterday</item>
+    </string-array>
 
 </resources>

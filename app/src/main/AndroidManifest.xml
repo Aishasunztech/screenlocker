@@ -2,55 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.screenlocker.secure">
 
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
-    <uses-permission android:name="android.permission.REORDER_TASKS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.TETHER_PRIVILEGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- bluetooth permission -->
-    <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-    <uses-permission android:name="android.permission.GET_TASKS" /> <!-- permisions for overlay windows -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-    <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" /> <!-- critical permissions -->
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
-    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
-    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
-    <uses-permission android:name="android.permission.REBOOT" />
-    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
-    <uses-permission android:name="android.permission.STATUS_BAR" />
-    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.SUSPEND_APPS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.MANAGE_USERS" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
-
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -61,71 +12,72 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.secureSetting.AllNotificationActivity"
-            android:launchMode="singleTask"
+        <activity
+            android:name="com.secureSetting.AllNotificationActivity"
+            android:launchMode="standard"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".settings.WhatsNew"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".settings.WhatsNew"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".settings.managepassword.PasswordOptionsAcitivity"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name="com.secureSetting.NotificationsActivity"
-            android:launchMode="singleTask"
+        <activity
+            android:name="com.secureSetting.NotificationsActivity"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name=".policy.PolicyActivity"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".policy.PolicyActivity"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.AdvanceSettings"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".settings.AdvanceSettings"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.managepassword.VerifyPatternActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".settings.managepassword.PatternActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-
-
+        <activity
+            android:name=".settings.managepassword.VerifyPatternActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.managepassword.PatternActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
 
 
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-
-        <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
-            <intent-filter>
-                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name=".settings.AboutActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".socket.TransparentActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".settings.Wallpaper.ChangeWallpaper"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.secureClear.SecureClearActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
         <activity
             android:name=".settings.codeSetting.IMEIActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-        <activity android:name=".permissions.InstallAppSilently"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".permissions.InstallAppSilently"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".permissions.WelcomeScreenActivity"
@@ -133,27 +85,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.ExitActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.policy.PolicyActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
         <activity
             android:name=".launcher.MainActivity"
             android:clearTaskOnLaunch="true"
@@ -175,6 +116,22 @@
                 <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".socket.policy.ui.PolicyActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity> <!-- <activity-alias -->
         <!-- android:name=".launcher.FakeLauncherActivity" -->
         <!-- android:targetActivity=".launcher.MdmMainActivity"> -->
@@ -185,22 +142,8 @@
         <!-- </intent-filter> -->
         <!-- </activity-alias> -->
         <activity
-            android:name=".socket.policy.ui.PolicyActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.SettingsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".settings$Wallpaper$WallpaperActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -212,35 +155,46 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".settings.managepassword.SetUpLockActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".appSelection.AppSelectionActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".settings.managepassword.ManagePasswords"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
+            android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
+            android:launchMode="standard"
             android:screenOrientation="portrait" />
 
-        <service android:name=".utils.LifecycleReceiverService" />
-        <service
-            android:name=".service.LockScreenService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".service.DeviceNotificationListener"
-            android:enabled="true"
-            android:exported="true"
+        <activity
+            android:name=".settings.codeSetting.CodeSettingActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.codeSetting.installApps.InstallAppsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings$codeSetting$Sim$SimActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mdm.MainActivity"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
-        <service android:name=".socket.service.SocketService" /> <!-- <service -->
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" /> <!-- <service -->
         <!-- android:name=".utils.MyAccessibilityService" -->
         <!-- android:label="@string/app_name" -->
         <!-- android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"> -->
@@ -252,11 +206,91 @@
         <!-- android:resource="@xml/my_accessibility_service"/> -->
         <!-- </service> -->
         <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
+            android:name=".mdm.ui.LinkDeviceActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+        <activity
+            android:name="com.secureSetting.SecureSettingsMain"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme" />
+        <activity
+            android:name="com.secureMarket.SecureMarketActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:theme="@style/SecureSettingsTheme" />
+        <activity
+            android:name=".settings.codeSetting.Sim.SimActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".settings.Wallpaper.WallpaperActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.contactSupport.ChatActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.secureSetting.t.ui.MainActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.secureSetting.t.ui.StateSettingsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" /> <!-- reciever to block calls -->
+        <activity
+            android:name="com.secureSetting.t.ui.IgnoreActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <!--
+    <receiver android:name="com.screenlocker.secure.settings.codeSetting.installApps.UpdateReceiver" android:enabled="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                    <data android:scheme="package" />
+                </intent-filter>
+                <intent-filter>
+                    <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                    <data android:scheme="package" />
+                </intent-filter>
+            </receiver>
+        -->
+        <activity
+            android:name="com.secureSetting.t.ui.StateAboutActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" /> <!-- <activity android:name=".launcher.FakeLauncherActivity" android:enabled="true" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.HOME" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <!-- <receiver android:name=".settingsMenu.SystemPermissionActivity$WifiAPReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
+            <intent-filter>
+                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".ReBootReciever">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -279,26 +313,18 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".MyService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <activity
-            android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
         <receiver
             android:name=".MyAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/policies" />
-
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/policies" />
         </receiver>
+
         <receiver
             android:name=".utils.AppInstallReceiver"
             android:enabled="true"
@@ -310,7 +336,8 @@
 
                 <data android:scheme="package" />
             </intent-filter>
-        </receiver> <!-- reciever to block calls -->
+        </receiver>
+
         <receiver
             android:name=".settings.disableCalls.PhoneCallReceiver"
             android:enabled="true"
@@ -319,18 +346,7 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        <!--
-    <receiver android:name="com.screenlocker.secure.settings.codeSetting.installApps.UpdateReceiver" android:enabled="true">
-                <intent-filter>
-                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                    <data android:scheme="package" />
-                </intent-filter>
-                <intent-filter>
-                    <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                    <data android:scheme="package" />
-                </intent-filter>
-            </receiver>
-        -->
+
         <receiver
             android:name=".socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
@@ -340,70 +356,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver> <!-- <activity android:name=".launcher.FakeLauncherActivity" android:enabled="true" > -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.HOME" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-        <!-- <receiver android:name=".settingsMenu.SystemPermissionActivity$WifiAPReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
-        <activity
-            android:name=".settings.codeSetting.CodeSettingActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.codeSetting.installApps.InstallAppsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".settings$codeSetting$Sim$SimActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".mdm.MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".mdm.ui.LinkDeviceActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.secureSetting.SecureSettingsMain"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme" />
-
-        <service android:name=".mdm.utils.LifecycleReceiverService" />
-
-        <activity
-            android:name="com.secureMarket.SecureMarketActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
-
-        <activity
-            android:name=".settings.codeSetting.Sim.SimActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.Wallpaper.WallpaperActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="com.contactSupport.ChatActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
+        </receiver>
         <receiver
             android:name=".offline.MyAlarmBroadcastReceiver"
             android:exported="true">
@@ -411,9 +364,30 @@
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="com.screenlocker.secure.service.AlarmReceiver"/>
+        <receiver android:name="com.screenlocker.secure.service.AlarmReceiver" />
 
+        <service android:name=".utils.LifecycleReceiverService" />
+        <service
+            android:name=".service.LockScreenService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".service.DeviceNotificationListener"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+        <service android:name=".socket.service.SocketService" />
+        <service
+            android:name=".MyService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service android:name=".mdm.utils.LifecycleReceiverService" />
         <service
             android:name=".service.CheckUpdateService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -423,23 +397,56 @@
         <service
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <activity
-            android:name="com.secureSetting.t.ui.MainActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.secureSetting.t.ui.StateSettingsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.secureSetting.t.ui.IgnoreActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.secureSetting.t.ui.StateAboutActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
     </application>
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.TETHER_PRIVILEGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- bluetooth permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- permisions for overlay windows -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" /> <!-- critical permissions -->
+    <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+    <uses-permission android:name="android.permission.STATUS_BAR" />
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.SUSPEND_APPS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.MANAGE_USERS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
 </manifest>

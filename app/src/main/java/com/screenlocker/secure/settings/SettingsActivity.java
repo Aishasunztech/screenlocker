@@ -253,7 +253,19 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             findViewById(R.id.tvthemeDevider).setVisibility(View.GONE);
             dividerAdvance.setVisibility(View.GONE);
             tvAdvance.setVisibility(View.GONE);
+        } else {
+            tvManagePasswords.setVisibility(View.VISIBLE);
+            tvChooseBackground.setVisibility(View.VISIBLE);
+            tvCode.setVisibility(View.VISIBLE);
+            tvLanguage.setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider5).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider15).setVisibility(View.VISIBLE);
+            findViewById(R.id.divider).setVisibility(View.VISIBLE);
+            dividerAdvance.setVisibility(View.VISIBLE);
+            tvAdvance.setVisibility(View.VISIBLE);
         }
+
 
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
@@ -450,7 +462,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             } else {
                 proccedToDownload();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
         }
 
@@ -531,7 +543,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                 String url = response.body().getApkUrl();
 
                                                 String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null,getPackageName());
+                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null, getPackageName());
                                                 obj.execute();
                                             }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
                                                 dialog1.dismiss();
@@ -642,7 +654,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
-            startActivity(new Intent(this,WhatsNew.class));
+            startActivity(new Intent(this, WhatsNew.class));
 
         });
 
