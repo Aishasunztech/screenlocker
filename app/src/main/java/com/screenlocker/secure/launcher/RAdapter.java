@@ -2,6 +2,7 @@ package com.screenlocker.secure.launcher;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
+import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -23,6 +25,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
+import com.secureSetting.t.AppConst;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
 
 import java.util.List;
@@ -116,6 +119,11 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             intent1.setAction(ACTION_VIEW);
                             context.startActivity(intent1);
                             break;
+                        case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
+                            Intent intent2 = new Intent(context,LiveClientChatActivity.class);
+                            context.startActivity(intent2);
+                            break;
+
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
                             if (launchIntent != null) {
@@ -129,6 +137,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
 
                 } catch (Exception e) {
+
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

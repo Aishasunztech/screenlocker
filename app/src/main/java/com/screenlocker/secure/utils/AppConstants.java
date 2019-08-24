@@ -193,6 +193,7 @@ public class AppConstants {
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
     public static final String KEY_COLUMN_SIZE = "column_sizes";
+    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/livezilla/chat.php?ptn=";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 
@@ -267,6 +268,10 @@ public class AppConstants {
     //unique name for secure market
     public static final String SECURE_MARKET_UNIQUE = "com.secureMarket.SecureMarketActivitySecure Market";
     public static final String SECURE_MARKET_PACKAGE = "com.secureMarket.SecureMarketActivity";
+
+    //unique name for secure market
+    public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Client Chat App";
+    public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
 
     // secure app
 

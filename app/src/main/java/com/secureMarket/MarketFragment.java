@@ -313,6 +313,7 @@ public class MarketFragment extends Fragment implements
                                 installedApps.clear();
                                 unInstalledApps.clear();
                                 updateApps.clear();
+                                Log.d("lkjshdf",appModelList.size() + "");
 
                                 checkAppInstalledOrNot(appModelList);
                                 for (List app : appModelList) {

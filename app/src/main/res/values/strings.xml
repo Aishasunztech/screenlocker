@@ -455,5 +455,6 @@
     <string name="current_dealer">Current Dealer</string>
     <string name="your_device_is_linked">Your Device is Linked !</string>
     <string name="waiting_for_approval">Waiting for approval...</string>
+    <string name="live_client_chat_app">Live Client Chat App</string>
 
 </resources>

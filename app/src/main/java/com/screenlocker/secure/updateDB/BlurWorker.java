@@ -250,10 +250,38 @@ public class BlurWorker extends Worker {
                 secureCleanInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
+
+
+            AppInfo liveClientChatInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.LIVE_CLIENT_CHAT_UNIQUE);
+
+            if (liveClientChatInfo == null) {
+                //Live Client Chat Extension
+                Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+                byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
+                AppInfo clientChatExtension = new AppInfo("Live Client Chat App", AppConstants.LIVE_CLIENT_CHAT_PACKAGE, live_chat_icon);
+                clientChatExtension.setUniqueName(clientChatExtension.getPackageName() + clientChatExtension.getLabel());
+                clientChatExtension.setExtension(false);
+                clientChatExtension.setGuest(false);
+                clientChatExtension.setEncrypted(true);
+                clientChatExtension.setEnable(true);
+                clientChatExtension.setVisible(true);
+                clientChatExtension.setDefaultApp(false);
+                clientChatExtension.setSystemApp(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clientChatExtension);
+            } else {
+                Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+                byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
+                liveClientChatInfo.setIcon(live_chat_icon);
+                liveClientChatInfo.setExtension(false);
+                liveClientChatInfo.setSystemApp(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(liveClientChatInfo);
+            }
+
+
             AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
 
             if (supportInfo == null) {
-                //Secure clear Extension
+                //Contact Support Extension
                 Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
                 byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
                 AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);

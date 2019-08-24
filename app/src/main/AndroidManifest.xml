@@ -61,31 +61,35 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.secureSetting.AllNotificationActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".settings.WhatsNew"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity android:name=".settings.managepassword.PasswordOptionsAcitivity"
+        <activity android:name="com.liveAgenChat.LiveAgentChatActivity"></activity>
+        <activity android:name="com.liveClientChat.LiveClientChatActivity" />
+        <activity android:name="com.liveClientChat.liveClientChatActivity" />
+        <activity
+            android:name="com.secureSetting.AllNotificationActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name="com.secureSetting.NotificationsActivity"
+        <activity
+            android:name=".settings.WhatsNew"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".policy.PolicyActivity"
+        <activity
+            android:name=".settings.managepassword.PasswordOptionsAcitivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.AdvanceSettings"
+        <activity
+            android:name="com.secureSetting.NotificationsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.managepassword.VerifyPatternActivity"></activity>
+        <activity
+            android:name=".policy.PolicyActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.AdvanceSettings"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".settings.managepassword.VerifyPatternActivity" />
         <activity android:name=".settings.managepassword.PatternActivity" />
-
-
-
-
-
         <activity
             android:name=".settings.dataConsumption.DataConsumptionActivity"
             android:launchMode="singleTask"
@@ -120,7 +124,8 @@
             android:name=".settings.codeSetting.IMEIActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".permissions.InstallAppSilently"
+        <activity
+            android:name=".permissions.InstallAppSilently"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
@@ -134,7 +139,7 @@
         <activity
             android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings.codeSetting.policy.PolicyActivity"
             android:launchMode="singleTask"
@@ -354,11 +359,11 @@
         <activity
             android:name=".settings.codeSetting.installApps.InstallAppsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".settings$codeSetting$Sim$SimActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mdm.MainActivity"
             android:label="@string/app_name"
@@ -394,7 +399,7 @@
         <activity
             android:name=".settings.Wallpaper.WallpaperActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.contactSupport.ChatActivity"
             android:launchMode="singleTask"
@@ -433,7 +438,7 @@
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

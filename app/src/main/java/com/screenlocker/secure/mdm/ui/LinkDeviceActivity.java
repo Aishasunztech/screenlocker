@@ -679,7 +679,6 @@ public class LinkDeviceActivity extends BaseActivity {
         setProgressViews(false);
 
         btnLinkDevice.setEnabled(false);
-        btnLinkDevice.setText(R.string.processing);
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         tvLinkedStatus.setText(R.string.link_request_pending);
@@ -696,11 +695,12 @@ public class LinkDeviceActivity extends BaseActivity {
 
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setEnabled(false);
-        btnStopLink.setText(R.string.processing);
         btnStopLink.setVisibility(View.VISIBLE);
         tvLinkedStatus.setText(R.string.link_request_pending);
         tvLinkedStatus.setTextColor(Color.BLUE);
         tvLinkedStatus.setVisibility(View.INVISIBLE);
+
+        showContainer(0);
     }
 
     private void freshViewState() {
