@@ -175,5 +175,10 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="addSimHeadingStyle">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

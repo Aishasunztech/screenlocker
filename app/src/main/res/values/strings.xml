@@ -106,9 +106,9 @@
     <string name="link_heading">To generate a valid IMEI please go to </string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
     <string name="link_title">Link</string>
-    <string name="simtext">SIM:</string>
+    <string name="simtext">SIM</string>
     <string name="slot">Slot :</string>
-    <string name="name">/ Name :</string>
+    <string name="name">Name :</string>
     <string name="apn">/ Apn :</string>
     <string name="guest">Guest</string>
     <string name="encrypted">Encrypted</string>

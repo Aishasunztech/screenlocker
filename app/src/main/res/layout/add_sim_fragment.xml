@@ -21,12 +21,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="8dp"
+            android:background="@drawable/guest_password_bg"
+            android:layout_margin="10dp"
             android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/simName1"
@@ -37,19 +35,34 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/simtext"
-                    android:textSize="@dimen/_13ssp"
+                    android:textSize="@dimen/_16ssp"
+                    android:layout_gravity="center"
                     android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/_15sdp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/addSimHeadingStyle"
+                    android:text="ICCID: "
+                    android:layout_gravity="center"
+                    />
+
+
 
                 <TextView
                     android:id="@+id/tvSimICCID1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
                     android:textSize="@dimen/_13ssp"
                     tools:text="8900000000000000000" />
+
             </LinearLayout>
 
 
@@ -57,16 +70,16 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/slot" />
+                    android:text="@string/slot"
+                    style="@style/addSimHeadingStyle"/>
 
                 <TextView
                     android:id="@+id/tvSlote1"
@@ -76,11 +89,18 @@
                     android:layout_marginRight="@dimen/_4sdp"
                     tools:text="1" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:layout_marginRight="@dimen/_4sdp"
+                    style="@style/addSimHeadingStyle"
                     android:text="@string/name" />
 
                 <TextView
@@ -94,36 +114,60 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/etNote1"
+            <!--<EditText-->
+                <!--android:id="@+id/etNote1"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginEnd="16dp"-->
+                <!--android:inputType="textCapSentences"-->
+                <!--android:hint="Note" />-->
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/note1_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="textCapSentences"
-                android:hint="Note" />
+                android:theme="@style/TextLabelTheme"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+
+                >
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNote1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="10"
+                    android:inputType="numberPassword"
+
+                    android:maxLength="10"
+                    android:paddingLeft="@dimen/_10sdp"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/registerSim1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="end"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/_15sdp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_stepper_bg"
                 android:text="Register" />
 
-            <View
-                android:id="@+id/view1"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_1sdp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="9dp"
-                android:background="@color/colorLine" />
+
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -132,29 +176,42 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="8dp"
+            android:background="@drawable/guest_password_bg"
+            android:layout_margin="10dp"
             android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/simName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/simtext"
-                    android:textSize="@dimen/_13ssp"
+                    android:textSize="@dimen/_16ssp"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/registerButton2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/registerButton2" />
+                    />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/_15sdp">
+
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/addSimHeadingStyle"
+                    android:text="ICCID: "
+                    android:layout_gravity="center"
+                    />
+
+            <TextView
                     android:id="@+id/tvSimICCID2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -173,7 +230,7 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/_15sdp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal">
@@ -181,6 +238,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/addSimHeadingStyle"
                     android:text="@string/slot" />
 
                 <TextView
@@ -191,11 +249,19 @@
                     android:layout_marginRight="@dimen/_4sdp"
                     tools:text="1" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:layout_marginRight="@dimen/_4sdp"
+                    style="@style/addSimHeadingStyle"
                     android:text="@string/name" />
 
                 <TextView
@@ -209,52 +275,77 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/etNote2"
+            <!--<EditText-->
+                <!--android:id="@+id/etNote2"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginEnd="16dp"-->
+                <!--android:inputType="textCapSentences"-->
+                <!--android:hint="Note" />-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/note2_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="textCapSentences"
-                android:hint="Note" />
+                android:theme="@style/TextLabelTheme"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+
+                >
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNote2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="10"
+                    android:inputType="numberPassword"
+
+                    android:maxLength="10"
+                    android:paddingLeft="@dimen/_10sdp"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/registerButton2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="end"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_stepper_bg"
                 android:text="Register" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_1sdp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="9dp"
-                android:background="@color/colorLine" />
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="@string/manual_registration"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_16sdp"
-            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@drawable/guest_password_bg"
+            android:layout_margin="10dp"
             android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/manual_registration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <com.santalu.maskedittext.MaskEditText
                 android:id="@+id/manualICCID"
                 android:layout_width="match_parent"
@@ -325,8 +416,9 @@
             <Button
                 android:id="@+id/btnManualRegister"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="end"
+                android:background="@drawable/btn_stepper_bg"
                 android:layout_margin="8dp"
                 android:paddingLeft="@dimen/_8sdp"
                 android:paddingRight="@dimen/_8sdp"

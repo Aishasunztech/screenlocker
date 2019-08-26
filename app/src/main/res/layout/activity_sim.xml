@@ -135,12 +135,13 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:text="@string/registered_sim_cards"/>
+
             <Button
                 android:id="@+id/btnadd"
-                android:backgroundTint="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_add"/>
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/btn_add" />
         </LinearLayout>
     </LinearLayout>
 
