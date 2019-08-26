@@ -4,8 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/material-1.0.0.aar/af809d3dba8b623dbd4d738bd6c3a50e/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/material-1.0.0.aar/af809d3dba8b623dbd4d738bd6c3a50e/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/material-1.0.0.aar/af809d3dba8b623dbd4d738bd6c3a50e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/material-1.0.0.aar/af809d3dba8b623dbd4d738bd6c3a50e/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

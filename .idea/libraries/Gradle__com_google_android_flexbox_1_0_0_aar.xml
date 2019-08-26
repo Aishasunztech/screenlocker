@@ -4,8 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-flexbox-1.0.0.aar/f414c5c4bffc3b71bd381b18885a083b/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-flexbox-1.0.0.aar/f414c5c4bffc3b71bd381b18885a083b/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-flexbox-1.0.0.aar/f414c5c4bffc3b71bd381b18885a083b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-flexbox-1.0.0.aar/f414c5c4bffc3b71bd381b18885a083b/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
