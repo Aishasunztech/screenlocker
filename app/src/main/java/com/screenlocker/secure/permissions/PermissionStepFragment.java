@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +37,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
@@ -91,7 +91,27 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             //all the permissions are granted, can move to next
             return true;
         } else {
-            showPermissionsMenus();
+            try {
+
+                Timber.d("Show remaining permission");
+
+                showPermissionsMenus();
+
+            } catch (Exception e) {
+                Timber.d("Error Occurred %s ", e.getMessage());
+                init();
+                // setting listeners
+                activeAdmin.setOnCheckedChangeListener(this);
+                drawoverlay.setOnCheckedChangeListener(this);
+                usageAccess.setOnCheckedChangeListener(this);
+                runtimePermissions.setOnCheckedChangeListener(this);
+                unknownResources.setOnCheckedChangeListener(this);
+                notificationAccess.setOnCheckedChangeListener(this);
+                batteryOptimization.setOnCheckedChangeListener(this);
+                accessibilityService.setOnCheckedChangeListener(this);
+                modifiSystemState.setOnCheckedChangeListener(this);
+                showPermissionsMenus();
+            }
             return false;
         }
 
@@ -195,6 +215,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.permmision_layout, container, false);
         ButterKnife.bind(this, v);
+
         init();
 
         // setting listeners
