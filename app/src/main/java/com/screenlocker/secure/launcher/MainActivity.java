@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.Gravity;
+import android.provider.Settings;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -256,8 +257,6 @@ public class MainActivity extends
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-
-            Timber.d("svklsfdijgosdifgosdifgos");
 
             adapter.appsList.clear();
             adapter.notifyDataSetChanged();

@@ -463,6 +463,7 @@ public class PatternLockView extends View {
         if (!mInputEnabled || !isEnabled()) {
             return false;
         }
+        Log.d("Abdul", "onTouchEvent: "+event.getAction());
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

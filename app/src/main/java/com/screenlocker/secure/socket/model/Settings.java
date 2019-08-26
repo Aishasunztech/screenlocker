@@ -7,6 +7,12 @@ public class Settings {
     private boolean wifi_status;
     private boolean screenshot_status;
     private boolean hotspot_status;
+    private boolean location_status;
+    private boolean bluetooth_sharing_status;
+    private boolean nfc_status;
+    private boolean speaker_status;
+    private boolean camera_status;
+    private boolean mic_status;
 
     public Settings() {
     }
@@ -49,5 +55,53 @@ public class Settings {
 
     public boolean isHotspot_status() {
         return hotspot_status;
+    }
+
+    public boolean isLocation_status() {
+        return location_status;
+    }
+
+    public void setLocation_status(boolean location_status) {
+        this.location_status = location_status;
+    }
+
+    public boolean isBluetooth_sharing_status() {
+        return bluetooth_sharing_status;
+    }
+
+    public void setBluetooth_sharing_status(boolean bluetooth_sharing_status) {
+        this.bluetooth_sharing_status = bluetooth_sharing_status;
+    }
+
+    public boolean isNfc_status() {
+        return nfc_status;
+    }
+
+    public void setNfc_status(boolean nfc_status) {
+        this.nfc_status = nfc_status;
+    }
+
+    public boolean isSpeaker_status() {
+        return speaker_status;
+    }
+
+    public void setSpeaker_status(boolean speaker_status) {
+        this.speaker_status = speaker_status;
+    }
+
+    public boolean isCamera_status() {
+        return camera_status;
+    }
+
+    public void setCamera_status(boolean camera_status) {
+        this.camera_status = camera_status;
+    }
+
+    public boolean isMic_status() {
+        return mic_status;
+    }
+
+    public void setMic_status(boolean mic_status) {
+        this.mic_status = mic_status;
     }
 }

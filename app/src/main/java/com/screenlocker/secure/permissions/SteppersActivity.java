@@ -2,6 +2,8 @@ package com.screenlocker.secure.permissions;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
@@ -19,7 +22,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
-public class SteppersActivity extends DotStepper implements OnPageUpdateListener.PageUpdate {
+public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
     private boolean isEmergency = false;
 
     @Override
@@ -59,15 +62,20 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
                 }
             }*/
             addStep(new PermissionStepFragment());//0
-            addStep(new SetGuestPasswordFragment());//1
-            addStep(new SetEncryptedPasswordFragment());//2
-            addStep(new SetDuressPasswordFragment());//3
-            addStep(new LinkDeviceFragment());//4
-            addStep(new SetDefaultLauncherFragment());//5
-            addStep(new FinishFragment());//6
+            addStep(new PasswordOptionsStepFragment());//1
+            addStep(new SetGuestPasswordFragment());//2
+            addStep(new EncryptPasswordOptionsFragment());//3
+            addStep(new SetEncryptedPasswordFragment());//4
+            addStep(new DuressPasswordOptionFragment());//5
+            addStep(new SetDuressPasswordFragment());//6
+            addStep(new LinkDeviceFragment());//7
+            addStep(new SetDefaultLauncherFragment());//8
+            addStep(new FinishFragment());//9
         }
 
         super.onCreate(savedInstanceState);
+
+        //mPager.requestDisallowInterceptTouchEvent(true);
         //move user to position were he/she left
         int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
 

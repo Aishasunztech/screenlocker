@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="textSize">16sp</dimen>
+    <dimen name="headings">20sp</dimen>
     <dimen name="textTitle">18sp</dimen>
     <dimen name="_12ssp">12sp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->

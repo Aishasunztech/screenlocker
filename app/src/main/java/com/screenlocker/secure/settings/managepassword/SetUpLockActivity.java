@@ -183,6 +183,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_PATTERN, null);
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();
                         } else {
@@ -205,9 +206,9 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                         if (keyOk) {
                             PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_PATTERN, null);
-                            finish();
                             PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
                             setResult(RESULT_OK);
+                            Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             etConfirmPin.setError(getResources().getString(R.string.password_taken));
@@ -220,6 +221,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
                             PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
+                            Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();
                         } else {

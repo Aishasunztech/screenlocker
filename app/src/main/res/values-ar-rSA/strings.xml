@@ -424,4 +424,10 @@
     <string name="data_consumption_settings">Data Consumption Settings</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
+    <string name="chose_password_option">Screen Lock Type</string>
+    <string name="current_dealer">Current Dealer</string>
+    <string name="your_device_is_linked">Your Device is Linked !</string>
+    <string name="waiting_for_approval">Waiting for approval...</string>
+
+
 </resources>

@@ -27,13 +27,13 @@ public class LifecycleReceiver extends BroadcastReceiver {
     {
         switch (intent.getIntExtra(STATE,0)){
 
-            case FOREGROUND:
-                listener.onStateChange(FOREGROUND);
-                break;
-
-            case BACKGROUND:
-                listener.onStateChange(BACKGROUND);
-                break;
+//            case FOREGROUND:
+//                listener.onStateChange(FOREGROUND);
+//                break;
+//
+//            case BACKGROUND:
+//                listener.onStateChange(BACKGROUND);
+//                break;
         }
     }
 
