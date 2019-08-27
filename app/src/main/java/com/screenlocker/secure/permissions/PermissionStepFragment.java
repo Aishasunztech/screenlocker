@@ -92,11 +92,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             return true;
         } else {
             try {
-
                 Timber.d("Show remaining permission");
-
                 showPermissionsMenus();
-
             } catch (Exception e) {
                 Timber.d("Error Occurred %s ", e.getMessage());
                 init();

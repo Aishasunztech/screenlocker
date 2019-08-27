@@ -77,6 +77,7 @@ import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
+import static com.screenlocker.secure.utils.AppConstants.ACTION_DEVICE_TYPE_VERSION;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
@@ -123,6 +124,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
 import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
@@ -337,7 +339,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             imeiHistory();
             forceUpdateCheck();
             getSimUpdates();
-
+            sendSystemEvents();
 
             String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
             String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
@@ -644,7 +646,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             String msg = object.getString("msg");
                             Timber.e("<<< device status =>>> %S", msg);
                             if (msg != null) {
-                                Timber.d("status from Socket :%s",msg);
+                                Timber.d("status from Socket :%s", msg);
                                 switch (msg) {
                                     case "suspended":
                                         suspendedDevice(SocketService.this, "suspended");
@@ -1573,6 +1575,31 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         } catch (Exception e) {
             Timber.d(e);
+        }
+    }
+
+    @Override
+    public void sendSystemEvents() {
+        if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
+            Timber.d("<<< FINISH POLICY EXTENSIONS >>>");
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                    JSONObject object = new JSONObject();
+                    object.put("type", getResources().getString(R.string.apktype));
+                    object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+                    jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
+                    jsonObject.put("object", object);
+                    socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                }
+
+            } catch (JSONException e) {
+                Timber.d(e);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

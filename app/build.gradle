@@ -21,8 +21,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 5147
-        versionName "5.147"
+        versionCode 5148
+        versionName "5.148"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -35,23 +35,15 @@ android {
         abortOnError false
     }
 
-    signingConfigs {
-        release {
-            storeFile file("my-release-key.keystore")
-            storePassword 'vortex@sunztech786'
-            keyAlias 'release-key'
-            keyPassword 'vortex@sunztech786'
-        }
-    }
-
     buildTypes {
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
         debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
         }
     }

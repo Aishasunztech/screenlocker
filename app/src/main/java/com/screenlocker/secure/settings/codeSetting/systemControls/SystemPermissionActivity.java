@@ -391,10 +391,15 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 }
                 break;
             case R.id.switchSpeaker:
-//                Intent intent = new Intent("com.secure.systemcontrol.POLICY");
-//                intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-//                sendBroadcast(intent);
+                DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+                ComponentName compName = new ComponentName(this, MyAdmin.class);
+
+                if (devicePolicyManager.isDeviceOwnerApp(getPackageName())) {
+                    Toast.makeText(this, "Yes...........", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Oops..........", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.switchFileSharing:
                 //mDPM.setScreenCaptureDisabled(compName, isChecked);

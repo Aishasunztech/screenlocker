@@ -35,7 +35,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 public class SetDefaultLauncherFragment extends AbstractStep {
 
 
-    OnPageUpdateListener.PageUpdate mListener;
+    OnPageUpdateListener mListener;
     private Context mContext;
 
     public SetDefaultLauncherFragment() {
@@ -130,7 +130,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (OnPageUpdateListener.PageUpdate) context;
+            mListener = (OnPageUpdateListener) context;
         } catch (Exception ignored) {
 
         }
