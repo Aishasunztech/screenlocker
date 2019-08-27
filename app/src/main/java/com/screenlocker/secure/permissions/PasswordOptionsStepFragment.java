@@ -20,9 +20,13 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.Timer;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
@@ -52,7 +56,6 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     @BindView(R.id.layout_combination)
     LinearLayout layout_combination;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,15 +76,14 @@ public class PasswordOptionsStepFragment extends AbstractStep {
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(2);
-
-
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
         });
         layout_pattern.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(2);
-
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
 
         });
         layout_combination.setOnClickListener(v -> {
@@ -95,7 +97,12 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
         return false;
     }
 
@@ -113,6 +120,7 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     public void onNext() {
         super.onNext();
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

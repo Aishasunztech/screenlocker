@@ -83,8 +83,13 @@ public class LinkDeviceFragment extends AbstractStep {
 
     // user can skip the current step
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return true;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
+        return false;
     }
 
     @Override

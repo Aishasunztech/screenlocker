@@ -15,10 +15,15 @@ public interface Nextable {
 
     void onSkip();
 
+    void onPrevious();
+
     String optional();
 
     String error();
 
-    boolean setSkipable();
+    boolean isSkipable();
+
+    boolean isPreviousAllow();
+
 
 }

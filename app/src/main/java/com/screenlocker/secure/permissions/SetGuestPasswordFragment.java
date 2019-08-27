@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,8 @@ public class SetGuestPasswordFragment extends AbstractStep {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION)) {
             case OPTION_PIN:
-                viewSwitcher.setDisplayedChild(1);
+                if (viewSwitcher != null)
+                    viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
                     etEnterPin.setFocusable(true);
                     etEnterPin.setFocusableInTouchMode(true);
@@ -76,10 +78,40 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 }
                 break;
             case OPTION_PATTERN:
-                viewSwitcher.setDisplayedChild(0);
+                if (viewSwitcher != null)
+                    viewSwitcher.setDisplayedChild(0);
 
         }
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+//        if (getView() == null) {
+//            Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        getView().setFocusableInTouchMode(true);
+//        getView().requestFocus();
+//        getView().setOnKeyListener((v, keyCode, event) -> {
+//            Toast.makeText(mContext, "Hi ", Toast.LENGTH_SHORT).show();
+//            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//                int current_step = PrefUtils.getIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO);
+//                if (current_step == 2) {
+//                    // handle back button's click listener
+//                    if (mListener != null) {
+//                        mListener.onPageUpdate(1);
+//                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
+//                    }
+//                }
+//                return true;
+//            }
+//            return false;
+//        });
+//
+//    }
 
     @Override
     public boolean nextIf() {
@@ -94,8 +126,20 @@ public class SetGuestPasswordFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public void onPrevious() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
+        super.onPrevious();
+    }
+
+
+    @Override
+    public boolean isSkipable() {
         return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
+        return true;
     }
 
     @Override
@@ -196,16 +240,14 @@ public class SetGuestPasswordFragment extends AbstractStep {
                         mListener.onPageUpdate(3);
 
                     }
-
-
                     //wrong pattern
-                } else {
-                    mTry = 0;
-                    Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                    patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
-                    new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
-                    responsTitle.setText("Please Draw Pattern");
-
+                    else {
+                        mTry = 0;
+                        Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
+                        responsTitle.setText("Please Draw Pattern");
+                    }
                 }
             }
 
@@ -254,6 +296,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
 
         }
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {

@@ -79,6 +79,12 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     }
 
     @Override
+    public void onPrevious() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 3);
+        super.onPrevious();
+    }
+
+    @Override
     public void onStepVisible() {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
@@ -103,8 +109,13 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
+        return true;
     }
 
     @Override
@@ -199,16 +210,15 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                         mListener.onPageUpdate(5);
 
                     }
-
-
                     //wrong pattern
-                } else {
-                    mTry = 0;
-                    Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                    patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
-                    new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
-                    responsTitle.setText("Please Draw Pattern");
+                    else {
+                        mTry = 0;
+                        Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
+                        responsTitle.setText("Please Draw Pattern");
 
+                    }
                 }
             }
 

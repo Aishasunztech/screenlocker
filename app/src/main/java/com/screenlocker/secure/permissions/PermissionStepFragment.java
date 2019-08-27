@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,10 +88,10 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     @Override
     public boolean nextIf() {
 
-
         if (checkPermissions(MyApplication.getAppContext())) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
             //all the permissions are granted, can move to next
+
             return true;
         } else {
             try {
@@ -143,7 +146,12 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
     // user can,'t skip this
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
         return false;
     }
 
@@ -381,6 +389,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
 
+    private Timer timer;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -389,6 +399,19 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             switch (buttonView.getId()) {
                 case R.id.active_admin:
                     permissionAdmin(this, devicePolicyManager, compName);
+
+                    if (timer == null) {
+                        timer = new Timer();
+                        timer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Log.i("dsjidioiadoi", "run: ");
+                                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+
+                                ActivityCompat.finishAffinity(intent.resolveActivity());
+                            }
+                        }, 0, 100);
+                    }
                     break;
                 case R.id.active_drawoverlay:
                     requestOverlayPermission();

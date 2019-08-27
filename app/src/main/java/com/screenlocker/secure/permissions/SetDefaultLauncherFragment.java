@@ -64,7 +64,12 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
         return false;
     }
 

@@ -27,8 +27,8 @@ public abstract class AbstractStep extends Fragment implements Nextable {
         return mStepper.getStepDataFor(step);
     }
 
-    protected Bundle getLastStepData(){
-        return mStepper.getStepDataFor(mStepper.steps()-1);
+    protected Bundle getLastStepData() {
+        return mStepper.getStepDataFor(mStepper.steps() - 1);
     }
 
     @Override
@@ -69,12 +69,17 @@ public abstract class AbstractStep extends Fragment implements Nextable {
     }
 
     @Override
+    public void onPrevious() {
+
+    }
+
+    @Override
     public String error() {
         return "No error";
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
     }
 }

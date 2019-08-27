@@ -1,9 +1,15 @@
 package com.github.fcannizzaro.materialstepper.style;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
@@ -11,6 +17,7 @@ import com.github.fcannizzaro.materialstepper.R;
 import com.github.fcannizzaro.materialstepper.util.TintUtils;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 /**
  * @author Francesco Cannizzaro (fcannizzaro).
@@ -57,8 +64,14 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
         AbstractStep step = mSteps.getCurrent();
 
         if (view == mPrev) {
-            step.onSkip();
-            onSkip();
+            if (step.isSkipable()) {
+                step.onSkip();
+                onSkip();
+            } else if (step.isPreviousAllow()) {
+                step.onPrevious();
+                onPrevious();
+            }
+
         } else if (view == mNext || view == mEnd) {
             step.onNext();
             onNext();
@@ -77,6 +90,7 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
             onUpdate();
         }
     }
+
 
     @Override
     public void onError() {
@@ -97,15 +111,43 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
     public void onUpdate() {
         super.onUpdate();
         boolean isLast = mSteps.current() == mSteps.total() - 1;
-        boolean isSkipable = mSteps.getCurrent().setSkipable();
+        boolean isSkipable = mSteps.getCurrent().isSkipable();
         boolean isFirst = mSteps.current() == 0;
+
         if (isLast)
             mPrev.setVisibility(View.GONE);
         else
             mPrev.setVisibility(isSkipable ? View.VISIBLE : View.GONE);
         mNext.setVisibility(isLast ? View.GONE : View.VISIBLE);
         mEnd.setVisibility(!isLast ? View.GONE : View.VISIBLE);
+
+        if (!isSkipable) {
+            boolean isPreviouse = mSteps.getCurrent().isPreviousAllow();
+            if (isPreviouse) {
+                mPrev.setVisibility(View.VISIBLE);
+                mPrev.setText(R.string.ms_prev1);
+//                Drawable drawable = changeDrawableColor(getBaseContext(), R.drawable.ic_keyboard_arrow_left_black_24dp, Color.WHITE);
+//                mPrev.setCompoundDrawables(drawable, null, null, null);
+//
+            } else {
+                mPrev.setVisibility(View.GONE);
+                mPrev.setText(R.string.ms_prev);
+            }
+        } else {
+            mPrev.setVisibility(View.VISIBLE);
+            mPrev.setText(R.string.ms_prev);
+        }
+
         getToolbar().setTitle(mSteps.getCurrent().name());
         if (mSwitch.getDisplayedChild() != 0) mSwitch.setDisplayedChild(0);
     }
+
+
+//    public static Drawable changeDrawableColor(Context context, int icon, int newColor) {
+//        Drawable mDrawable = ContextCompat.getDrawable(context, icon).mutate();
+//        mDrawable.setColorFilter(new PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN));
+//        return mDrawable;
+//    }
+
+
 }

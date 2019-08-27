@@ -44,4 +44,8 @@ public class FinishFragment extends AbstractStep {
         return MyApplication.getAppContext().getResources().getString(R.string.launch_application);
     }
 
+    @Override
+    public boolean isPreviousAllow() {
+        return false;
+    }
 }

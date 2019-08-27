@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -27,17 +28,30 @@ public class AllNotificationActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         findViewById(R.id.app_notification).setOnClickListener(v -> {
 
-            Intent intent = new Intent(this, NotificationsActivity.class);
-            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-            intent.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(this, NotificationsActivity.class);
+                intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                intent.putExtra("android.provider.extra.APP_PACKAGE", getPackageName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
 //
         });
         findViewById(R.id.gen_notification).setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
-            intent.setComponent(cn);
-            startActivity(intent);
+
+            try {
+                Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$ConfigureNotificationSettingsActivity");
+                intent.setComponent(cn);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         });
     }
 

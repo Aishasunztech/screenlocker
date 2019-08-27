@@ -91,7 +91,12 @@ public class TabStepper extends BasePager implements View.OnClickListener {
         mPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSkip();
+                String label = mPreviousButton.getText().toString();
+                if (label.equals(getResources().getString(R.string.ms_prev))) {
+                    onSkip();
+                } else if (label.equals(getResources().getString(R.string.ms_prev1))) {
+
+                }
             }
         });
 
@@ -218,6 +223,12 @@ public class TabStepper extends BasePager implements View.OnClickListener {
     @Override
     public void onSkip() {
         super.onSkip();
+        updateScrolling(mSteps.current() + 1);
+    }
+
+    @Override
+    public void onPrevious() {
+        super.onPrevious();
         updateScrolling(mSteps.current() - 1);
     }
 

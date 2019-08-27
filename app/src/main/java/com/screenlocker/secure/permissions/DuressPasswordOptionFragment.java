@@ -26,6 +26,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DURESS_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
@@ -65,6 +66,13 @@ public class DuressPasswordOptionFragment extends AbstractStep {
     }
 
     @Override
+    public void onPrevious() {
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        super.onPrevious();
+    }
+
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
@@ -92,6 +100,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
 
         });
+
         layout_pattern.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
@@ -110,8 +119,20 @@ public class DuressPasswordOptionFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return true;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
+        return false;
+    }
+
+    @Override
+    public void onSkip() {
+        super.onSkip();
+        //save the status of this step as completed
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 7);
     }
 
     @Override
@@ -128,6 +149,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
     public void onNext() {
         super.onNext();
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -137,15 +159,17 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
         }
     }
+
     @Override
     public void onStepVisible() {
         super.onStepVisible();
         try {
             hideKeyboard(Objects.requireNonNull(getActivity()));
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null) {
-
-            builder.show();
+            if (builder != null)
+                builder.show();
         }
     }
 }

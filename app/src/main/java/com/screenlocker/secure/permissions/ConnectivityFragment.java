@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -56,8 +57,13 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return true;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
+        return false;
     }
 
     @Override
@@ -65,7 +71,6 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
         PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
         super.onSkip();
     }
-
     @Override
     public String name() {
         return "Connectivity";
@@ -73,7 +78,7 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnWifi:
                 Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
                 startActivity(wifiIntent);
