@@ -1,5 +1,6 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
@@ -20,6 +22,7 @@ import com.screenlocker.secure.utils.Utils;
 
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
+import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
@@ -88,6 +91,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -108,6 +112,9 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             intent = new Intent(SteppersActivity.this, MainActivity.class);
         } else {
             intent = new Intent(SteppersActivity.this, WelcomeScreenActivity.class);
+            PrefUtils.saveBooleanPref(this, TOUR_STATUS, true);
+            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
+            PrefUtils.saveIntegerPref(this, DEF_PAGE_NO, 9);
         }
 
         startActivity(intent);

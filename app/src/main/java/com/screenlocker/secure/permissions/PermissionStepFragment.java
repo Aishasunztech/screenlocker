@@ -1,6 +1,7 @@
 package com.screenlocker.secure.permissions;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,6 +31,7 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -63,6 +65,7 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -85,6 +88,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
      * <p>
      * User is only allowed to move to next step if he/she has granted all the permissions
      */
+
+
     @Override
     public boolean nextIf() {
 
@@ -141,6 +146,18 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 //            showPermissionsMenus();
 //        }
 //
+
+        if (!PrefUtils.getBooleanPref(MyApplication.getAppContext(), TOUR_STATUS)) {
+            if (checkPermissions(MyApplication.getAppContext())) {
+                if (mListener != null) {
+                    mListener.onPageUpdate(1);
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
+                }
+
+            }
+
+        }
+
 
     }
 
@@ -235,7 +252,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         accessibilityService.setOnCheckedChangeListener(this);
         modifiSystemState.setOnCheckedChangeListener(this);
 
-
         //check if user already granted the permission
         showPermissionsMenus();
 
@@ -266,7 +282,9 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             return false;
         } else if (!isAccessServiceEnabled(context, WindowChangeDetectingService.class)) {
             return false;
-        } else if (!isNotificationAccess(context)) {
+        }
+//
+        else if (!isNotificationAccess(context)) {
             return false;
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
             return false;
@@ -389,6 +407,18 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
 
+    private OnPageUpdateListener mListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnPageUpdateListener) context;
+        } catch (Exception ignored) {
+
+        }
+    }
+
     private Timer timer;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -399,19 +429,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             switch (buttonView.getId()) {
                 case R.id.active_admin:
                     permissionAdmin(this, devicePolicyManager, compName);
-
-                    if (timer == null) {
-                        timer = new Timer();
-                        timer.scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                Log.i("dsjidioiadoi", "run: ");
-                                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-
-                                ActivityCompat.finishAffinity(intent.resolveActivity());
-                            }
-                        }, 0, 100);
-                    }
                     break;
                 case R.id.active_drawoverlay:
                     requestOverlayPermission();
@@ -436,7 +453,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                             CODE_BATERY_OPTIMIZATION);
                     break;
                 case R.id.active_accessibility:
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), CODE_ACCESSIBILITY);
+                    Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivityForResult(intent, CODE_ACCESSIBILITY);
                     break;
 
             }

@@ -1,7 +1,6 @@
 package com.github.fcannizzaro.materialstepper.style;
 
 
-
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.R;
 import com.github.fcannizzaro.materialstepper.adapter.PageAdapter;

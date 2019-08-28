@@ -33,9 +33,7 @@ public class DotStepper extends BaseNavigation {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         super.onCreate(savedInstanceState);
-
         applyTheme();
-
         setContentView(R.layout.style_dots);
         mDots = (LinearLayout) findViewById(R.id.dots);
 

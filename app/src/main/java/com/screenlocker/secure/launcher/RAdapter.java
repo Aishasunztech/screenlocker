@@ -105,15 +105,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 switch (unique) {
                     case AppConstants.SECURE_SETTINGS_UNIQUE:
-                        Intent i = new Intent(context, SecureSettingsMain.class);
+                        Intent i = new Intent(context, SecureSettingsMain.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
                         break;
                     case AppConstants.SUPPORT_UNIQUE:
-                        context.startActivity(new Intent(context, ChatActivity.class));
+                        context.startActivity(new Intent(context, ChatActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                     case BuildConfig.APPLICATION_ID:
-                        Intent launch = new Intent(context, SettingsActivity.class);
+                        Intent launch = new Intent(context, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         launch.setAction(ACTION_VIEW);
                         context.startActivity(launch);
                         break;
@@ -131,7 +131,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
-                            Intent i = new Intent(context, SecureSettingsMain.class);
+                            Intent i = new Intent(context, SecureSettingsMain.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }
@@ -141,17 +141,17 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             showCacheDialog();
                             break;
                         case AppConstants.SECURE_MARKET_UNIQUE:
-                            Intent intent = new Intent(context, SecureMarketActivity.class);
+                            Intent intent = new Intent(context, SecureMarketActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(intent);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
-                            context.startActivity(new Intent(context, ChatActivity.class));
+                            context.startActivity(new Intent(context, ChatActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             break;
                         case AppConstants.SFM_UNIQUE:
-                            context.startActivity(new Intent(context, MainActivity.class));
+                            context.startActivity(new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             break;
                         case BuildConfig.APPLICATION_ID:
-                            Intent launch = new Intent(context, SettingsActivity.class);
+                            Intent launch = new Intent(context, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
                             break;
@@ -160,8 +160,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
                             if (launchIntent != null) {
                                 launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
+
                             context.startActivity(launchIntent);
                             break;
                         }

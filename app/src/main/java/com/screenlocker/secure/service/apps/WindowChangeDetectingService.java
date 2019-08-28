@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
@@ -331,8 +333,17 @@ public class WindowChangeDetectingService extends AccessibilityService {
                                 checkAppStatus(componentName);
                             }
                         }
+                    } else {
+                        if (componentName.flattenToShortString().equals("com.android.settings/.Settings$AccessibilitySettingsActivity")) {
+                            Intent i = new Intent(this, SteppersActivity.class);
+                            startActivity(i);
+
+                            Timber.d("cdjvnfdsnsk");
+                        }
                     }
                 }
+
+
             }
         }
     }

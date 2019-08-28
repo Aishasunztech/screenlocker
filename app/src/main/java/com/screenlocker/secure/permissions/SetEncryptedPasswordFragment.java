@@ -89,7 +89,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
             case OPTION_PIN:
-                viewSwitcher.setDisplayedChild(1);
+                if (viewSwitcher != null)
+                    viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
                     etEnterPin.setFocusable(true);
                     etEnterPin.setFocusableInTouchMode(true);
@@ -103,7 +104,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                 }
                 break;
             case OPTION_PATTERN:
-                viewSwitcher.setDisplayedChild(0);
+                if (viewSwitcher != null)
+                    viewSwitcher.setDisplayedChild(0);
 
         }
     }
