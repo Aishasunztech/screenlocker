@@ -51,8 +51,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_wifi"
+                    android:contentDescription="TODO" android:src="@drawable/ic_wifi"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -147,8 +146,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_bluetooth"
+                    android:contentDescription="TODO" android:src="@drawable/ic_bluetooth"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -197,8 +195,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_sim_card"
+                    android:contentDescription="TODO" android:src="@drawable/ic_sim_card"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -237,8 +234,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_mobile_data"
+                    android:contentDescription="TODO" android:src="@drawable/ic_mobile_data"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -285,8 +281,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_mobile_data"
+                    android:contentDescription="TODO" android:src="@drawable/ic_mobile_data"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -325,8 +320,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_wifi_hotspot"
+                    android:contentDescription="TODO" android:src="@drawable/ic_wifi_hotspot"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -365,8 +359,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_screen_lock"
+                    android:contentDescription="TODO" android:src="@drawable/ic_screen_lock"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -405,8 +398,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_settings_brightness"
+                    android:contentDescription="TODO" android:src="@drawable/ic_settings_brightness"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -457,8 +449,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_sleep"
+                    android:contentDescription="TODO" android:src="@drawable/ic_sleep"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -509,8 +500,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_battery"
+                    android:contentDescription="TODO" android:src="@drawable/ic_battery"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -561,8 +551,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_sound"
+                    android:contentDescription="TODO" android:src="@drawable/ic_sound"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -611,8 +600,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_language"
+                    android:contentDescription="TODO" android:src="@drawable/ic_language"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -659,8 +647,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_date_time"
+                    android:contentDescription="TODO" android:src="@drawable/ic_date_time"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -697,8 +684,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/ic_notifications"
+                    android:contentDescription="TODO" android:src="@drawable/ic_notifications"
                     android:tint="@android:color/black" />
 
                 <LinearLayout

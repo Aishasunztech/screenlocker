@@ -4,31 +4,51 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.app.admin.DevicePolicyManager;
+import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.t.ui.MainActivity;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
+import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 public class AdvanceSettings extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advance_settings);
 
@@ -45,6 +65,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.tv_IMEI).setOnClickListener(this);
         findViewById(R.id.tv_set_column).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
+        findViewById(R.id.tvRestore).setOnClickListener(this);
     }
 
     @Override
@@ -73,6 +94,9 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.tvTheme:
                 themeDialogue();
+                break;
+            case R.id.tvRestore:
+                restoreLocker();
                 break;
         }
     }
@@ -160,5 +184,126 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
     protected void onPause() {
 
         super.onPause();
+    }
+
+    private void restoreLocker() {
+        new AlertDialog.Builder(this)
+                .setTitle("Restore " + getResources().getString(R.string.app_name))
+                .setMessage("Warning! your current Preferences will be restored to defaults.")
+                .setNegativeButton(getResources().getString(R.string.cancel), (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton("Restore", (dialog, which) -> {
+                    resetSettings();
+                })
+                .setIcon(R.drawable.ic_warning2).
+                show();
+
+
+    }
+
+    private void resetSettings() {
+
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Restoring Settings");
+        dialog.setMessage("Please wait while we are restoring your default settings. Don not turn off your mobile.");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        //  default Brightness
+        setScreenBrightness(this, 102);
+
+        //default wallpapers
+
+        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._12318));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_SUPPORT_IMAGE, String.valueOf(R.raw.texture));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._12321));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._1232));
+
+        //enable wifi by default
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
+
+        //bluetooth disable
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter.disable();
+
+        //Reset System Setting
+        DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, MyAdmin.class);
+
+        //enable dada toggle
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                cm.setDataEnabled(true);
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
+            Settings.Global.putInt(getContentResolver(), Settings.Global.DATA_ROAMING, 1);
+        }
+
+        // allow camera
+        dpm.setCameraDisabled(compName, false);
+
+        if (dpm.isDeviceOwnerApp(getPackageName())) {
+            dpm.setScreenCaptureDisabled(compName,false);
+            dpm.setBluetoothContactSharingDisabled(compName, false);
+            dpm.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+            dpm.setMasterVolumeMuted(compName, false);
+            dpm.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+        }
+        //block calls
+        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, false);
+        //SS app permissions to default
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            List<SubExtension> subExtensions = MyApplication.getAppDatabase(this).getDao().getAllSubExtensions();
+            for (SubExtension subExtension : subExtensions) {
+                if (subExtension.getUniqueExtension().equals("Bluetooth") || subExtension.getUniqueExtension().equals("Hotspot")) {
+                    subExtension.setEncrypted(false);
+                    subExtension.setGuest(false);
+                } else {
+                    subExtension.setEncrypted(true);
+                    subExtension.setGuest(false);
+                }
+                MyApplication.getAppDatabase(this).getDao().updateSubExtention(subExtension);
+            }
+        });
+
+        //Application permissions
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            List<AppInfo> allapps = MyApplication.getAppDatabase(this).getDao().getApps();
+            for (AppInfo app : allapps) {
+                if (app.getUniqueName().equals(AppConstants.SECURE_MARKET_UNIQUE) ||
+                        app.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE) ||
+                        app.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
+                    app.setEnable(true);
+                    app.setEncrypted(true);
+                    app.setGuest(false);
+                } else if (app.getUniqueName().equals(AppConstants.SFM_UNIQUE)) {
+                    app.setEnable(true);
+                    app.setEncrypted(true);
+                    app.setGuest(false);
+                } else if (app.getPackageName().equals(getPackageName())) {
+                    app.setEncrypted(true);
+                    app.setGuest(false);
+                    app.setEnable(true);
+                } else if (app.isSystemApp()) {
+                    app.setEnable(false);
+                    app.setGuest(true);
+                    app.setEncrypted(false);
+                } else {
+                    app.setEncrypted(true);
+                    app.setGuest(false);
+                    app.setEnable(true);
+                }
+                MyApplication.getAppDatabase(this).getDao().updateApps(app);
+            }
+            if (dialog != null &&dialog.isShowing()){
+                dialog.dismiss();
+            }
+        });
+
     }
 }

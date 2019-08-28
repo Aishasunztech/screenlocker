@@ -74,7 +74,12 @@ public abstract class AbstractStep extends Fragment implements Nextable {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
         return false;
     }
 }

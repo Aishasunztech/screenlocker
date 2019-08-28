@@ -103,7 +103,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
     }
 
@@ -202,13 +202,14 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
 
                     //wrong pattern
-                } else {
-                    mTry = 0;
-                    Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                    patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
-                    new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
-                    responsTitle.setText("Please Draw Pattern");
+                    else {
+                        mTry = 0;
+                        Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
+                        responsTitle.setText("Please Draw Pattern");
 
+                    }
                 }
             }
 

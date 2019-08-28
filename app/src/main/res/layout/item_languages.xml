@@ -22,7 +22,7 @@
         android:layout_height="@dimen/_15sdp"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/_10sdp"
-        android:src="@drawable/ic_united_states"/>
+        android:contentDescription="TODO" android:src="@drawable/ic_united_states"/>
     <TextView
         android:id="@+id/langName"
         android:layout_width="match_parent"

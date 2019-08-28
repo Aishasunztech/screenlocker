@@ -1,9 +1,16 @@
 package com.screenlocker.secure.permissions;
 
+import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,6 +30,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import timber.log.Timber;
 
 import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
 import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
@@ -49,6 +58,21 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         rotation.setFillAfter(true);
         imageView.startAnimation(rotation);
 
+        //enable dada toggle by default
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                cm.setDataEnabled(true);
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
+            Settings.Global.putInt(getContentResolver(), Settings.Global.DATA_ROAMING, 1);
+            try {
+                Timber.d("DATA_ROAMING: %s", Settings.Global.getInt(getContentResolver(), Settings.Global.DATA_ROAMING));
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         Handler handler = new Handler();
 

@@ -150,7 +150,7 @@
                 android:id="@+id/guest_image_icon"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:src="@drawable/ic_guest_icon"
+                android:contentDescription="TODO" android:src="@drawable/ic_guest_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/setImage"
                 app:layout_constraintLeft_toLeftOf="@+id/setImage"
                 app:layout_constraintRight_toRightOf="@+id/setImage"

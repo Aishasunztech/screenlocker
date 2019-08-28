@@ -28,14 +28,10 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-
-import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
@@ -44,10 +40,8 @@ import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
-import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements OnAppsRefreshListener {
@@ -288,12 +282,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!
-
-                isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
-            launchPermissions();
-//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
-        } else if (!
+        }  else if (!
 
                 isNotificationAccess(this)) {
             launchPermissions();
@@ -301,13 +290,15 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                 getPackageName())) {
             launchPermissions();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !
-
-                getPackageManager().
-
-                        canRequestPackageInstalls()) {
-            launchPermissions();
-        } else {
+        }
+//        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !
+//
+//                getPackageManager().
+//
+//                        canRequestPackageInstalls()) {
+//            launchPermissions();
+//        }
+        else {
             PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
 //            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
         }

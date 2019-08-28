@@ -110,7 +110,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return true;
     }
 

@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RecoverySystem;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.utils.WifiApControl;
 
+import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -52,6 +54,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import timber.log.Timber;
 
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
@@ -87,12 +92,10 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
     DevicePolicyManager mDPM;
     private ComponentName compName;
-    private ImageView appImage;
-    private LockScreenService mService;
-    private boolean mBound = false;
     static final int REQUEST_PROVISION_MANAGED_PROFILE = 1;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,16 +106,9 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         getSupportActionBar().setTitle(getResources().getString(R.string.system_controls));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ResolveInfo settingResolveInfo = querySettingPkgName();
-        PackageManager packageManager = getPackageManager();
         mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
-
-        switchDisable = findViewById(R.id.switchDisable);
         switchCamera = findViewById(R.id.switchCamera);
-        if (!mDPM.getCameraDisabled(compName)) {
-            switchCamera.setChecked(true);
-        } else
-            switchCamera.setChecked(false);
         switchSpeaker = findViewById(R.id.switchSpeaker);
         switchMic = findViewById(R.id.switchMic);
         switchFileSharing = findViewById(R.id.switchFileSharing);
@@ -126,7 +122,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchBlockCall = findViewById(R.id.switchBlockCall);
         switchNFC = findViewById(R.id.switchNFC);
         containerLayout = findViewById(R.id.container_layout);
-        appImage = findViewById(R.id.appImage);
         switchWifi.setOnCheckedChangeListener(this);
         switchBluetooth.setOnCheckedChangeListener(this);
         switchHotSpot.setOnCheckedChangeListener(this);
@@ -136,13 +131,10 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         switchMic.setOnCheckedChangeListener(this);
         switchFileSharing.setOnCheckedChangeListener(this);
         switchLocation.setOnClickListener(this);
-        switchScreenShot.setOnClickListener(this);
+        switchScreenShot.setOnCheckedChangeListener(this);
         switchNFC.setOnClickListener(this);
-
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (settingResolveInfo != null) {
             settingPrimaryKey = settingResolveInfo.activityInfo.packageName;
@@ -150,25 +142,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
 
 
         setDefaultState();
-    }
-
-    public void youDesirePermissionCode(AppCompatActivity context, boolean isChecked) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permission = Settings.System.canWrite(context);
-        } else {
-            permission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
-        }
-        if (permission) {
-            WifiApControl.turnOnOffHotspot(isChecked, wifiManager);
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                intent.setData(Uri.parse("package:" + context.getPackageName()));
-                context.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
-            } else {
-                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_SETTINGS}, CODE_WRITE_SETTINGS_PERMISSION);
-            }
-        }
     }
 
 
@@ -218,6 +191,37 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     }
 
     private void setDefaultState() {
+        //switch file sharing
+        if (mDPM.isDeviceOwnerApp(getPackageName())) {
+            switchFileSharing.setChecked(!mDPM.getBluetoothContactSharingDisabled(compName));
+        } else {
+            switchFileSharing.setChecked(false);
+        }
+
+        //switch mic
+        Bundle bundle1 = mDPM.getUserRestrictions(compName);
+        if (!bundle1.getBoolean(DISALLOW_UNMUTE_MICROPHONE)) {
+            switchMic.setChecked(true);
+        } else {
+            switchMic.setChecked(false);
+        }
+
+        //switch speaker
+        if (mDPM.isDeviceOwnerApp(getPackageName())) {
+
+            switchSpeaker.setChecked(!mDPM.isMasterVolumeMuted(compName));
+
+        } else {
+            switchSpeaker.setChecked(false);
+        }
+
+        //for camera
+        if (!mDPM.getCameraDisabled(compName)) {
+            switchCamera.setChecked(true);
+        } else
+            switchCamera.setChecked(false);
+
+
         //for wifi
         switchWifi.setChecked(wifiManager.isWifiEnabled());
         //for bluetooth
@@ -227,20 +231,24 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         }
 
 
-        boolean isChecked = PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT);
-
         //for screenshot
-        if (!isChecked) {
-            switchScreenShot.setChecked(true);
+        if (mDPM.isDeviceOwnerApp(getPackageName())) {
+            if (mDPM.getScreenCaptureDisabled(compName))
+                switchScreenShot.setChecked(false);
+            else
+                switchScreenShot.setChecked(true);
         } else {
-            switchScreenShot.setChecked(false);
+            switchScreenShot.setChecked(true);
         }
 
         //for hotspot
-        isHotSpotEnabled = WifiApControl.isWifiApEnabled(wifiManager);
+        Bundle bundle = mDPM.getUserRestrictions(compName);
+        if (bundle.getBoolean(DISALLOW_CONFIG_TETHERING)) {
+            switchHotSpot.setChecked(false);
+        } else {
+            switchHotSpot.setChecked(false);
+        }
 
-
-        switchHotSpot.setChecked(isHotSpotEnabled);
 
         if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -249,28 +257,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             switchLocation.setChecked(false);
         }
         switchBlockCall.setChecked(PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_CALLS));
-
-        new Thread() {
-            @Override
-            public void run() {
-
-                appInfo = MyApplication.getAppDatabase(SystemPermissionActivity.this)
-                        .getDao().getParticularApp(settingPrimaryKey);
-                if (appInfo == null) {
-                    MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().insertApps(appInfo);
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switchGuest.setChecked(appInfo.isGuest());
-                            switchEncrypt.setChecked(appInfo.isEncrypted());
-                            switchDisable.setChecked(appInfo.isEnable());
-                            Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
-                        }
-                    });
-                }
-            }
-        }.start();
 
 
     }
@@ -325,8 +311,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
             }
         }.start();
 
-        unbindService(connection);
-        mBound = false;
 
     }
 
@@ -363,17 +347,11 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 }
                 break;
             case R.id.switchHotSpot:
-                openHotSpot = isChecked;
                 if (isChecked) {
-                    if (!WifiApControl.isWifiApEnabled(wifiManager))
-                        youDesirePermissionCode(this, true);
+                    mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                 } else {
-                    if (WifiApControl.isWifiApEnabled(wifiManager)) {
-                        youDesirePermissionCode(this, false);
-                    }
-
+                    mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                 }
-
                 break;
             case R.id.switchBlockCall:
                 PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, isChecked);
@@ -381,7 +359,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 break;
             case R.id.switchCamera:
                 try {
-
                     mDPM.setCameraDisabled(compName, isChecked);
                 } catch (SecurityException e) {
                     Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
@@ -391,20 +368,32 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 }
                 break;
             case R.id.switchSpeaker:
-//                Intent intent = new Intent("com.secure.systemcontrol.POLICY");
-//                intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-//                sendBroadcast(intent);
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                    mDPM.setMasterVolumeMuted(compName, !isChecked);
+                } else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.switchFileSharing:
-                //mDPM.setScreenCaptureDisabled(compName, isChecked);
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                    mDPM.setBluetoothContactSharingDisabled(compName, !isChecked);
+                } else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.switchMic:
-//                Intent intent1 = new Intent("com.secure.systemcontrol.AADMIN");
-//                intent1.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                intent1.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
-//                sendBroadcast(intent1);
-                //micOff(this);
+                if (isChecked) {
+                    mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                } else
+                    mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                break;
+            case R.id.switchScreenShot:
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                    mDPM.setScreenCaptureDisabled(compName, !isChecked);
+                } else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
         }
@@ -418,26 +407,14 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivityForResult(myIntent, REQUEST_CODE_LOCATION_GPS);
                 break;
-            case R.id.switchScreenShot:
-                if (switchScreenShot.isChecked()) {
-                    if (mService != null) {
-                        mService.allowScreenShoots();
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT, false);
-
-                    }
-                } else {
-                    if (mService != null) {
-                        mService.disableScreenShots();
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT, true);
-
-                    }
-
-
-                }
-
-                break;
             case R.id.switchNFC:
                 startNfcSettingsActivity(this);
+                try {
+//                    RecoverySystem.rebootWipeCache(this);
+                    RecoverySystem.rebootWipeUserData(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 
@@ -499,31 +476,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
         super.onBackPressed();
         isBackPressed = true;
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(this, LockScreenService.class);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
-    }
-
-
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
 
 
 }

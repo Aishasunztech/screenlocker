@@ -12,12 +12,10 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.provider.Settings;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -39,7 +37,6 @@ import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.AppConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +87,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         allDbApps = new ArrayList<>();
@@ -233,7 +229,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onPause() {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onPause();
     }
 
@@ -248,7 +243,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
         rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);
@@ -283,7 +277,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 //
-        refreshApps(this);
+        //refreshApps(this);
 //
     }
 

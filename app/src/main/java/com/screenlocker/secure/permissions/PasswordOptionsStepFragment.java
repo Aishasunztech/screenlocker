@@ -95,7 +95,7 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
     }
 

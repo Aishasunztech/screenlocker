@@ -14,14 +14,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:src="@drawable/ic_upper_dots_welcome"
-        android:scaleType="center"
+        android:contentDescription="TODO" android:scaleType="center"
         />
 
     <ImageView
         android:id="@+id/rotating_image"
         android:layout_width="@dimen/_280sdp"
         android:layout_height="@dimen/_280sdp"
-        android:src="@drawable/ic_rotating_welcome"
+        android:contentDescription="TODO" android:src="@drawable/ic_rotating_welcome"
         app:layout_constraintTop_toTopOf="@+id/main_image"
         app:layout_constraintLeft_toLeftOf="@+id/main_image"
         app:layout_constraintRight_toRightOf="@+id/main_image"
@@ -32,7 +32,7 @@
         android:id="@+id/main_image"
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_250sdp"
-        android:src="@drawable/ic_lock_welcome"
+        android:contentDescription="TODO" android:src="@drawable/ic_lock_welcome"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -119,7 +119,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="center"
+        android:contentDescription="TODO" android:scaleType="center"
         android:src="@drawable/ic_lower_arc_welcome"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -133,7 +133,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:scaleType="center"/>
+        android:contentDescription="TODO" android:scaleType="center"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

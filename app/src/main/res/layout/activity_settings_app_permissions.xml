@@ -37,7 +37,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/textView5"
         app:layout_constraintEnd_toStartOf="@+id/textView5"
         app:layout_constraintTop_toTopOf="@+id/textView5"
-        android:contentDescription="TODO" app:srcCompat="@drawable/ic_secure_settings" />
+        android:contentDescription="TODO"
+        app:srcCompat="@drawable/ic_secure_settings" />
 
     <Switch
         android:id="@+id/switchGuest"

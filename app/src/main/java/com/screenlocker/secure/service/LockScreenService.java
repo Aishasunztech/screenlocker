@@ -3,6 +3,7 @@ package com.screenlocker.secure.service;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.view.Gravity;
@@ -34,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
@@ -65,6 +68,10 @@ import java.util.Optional;
 
 import timber.log.Timber;
 
+import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS;
+import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_HOME;
+import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_NONE;
+import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
@@ -92,17 +99,19 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 
 public class LockScreenService extends Service {
+
+    private static final String KIOSK_PACKAGE = "com.secure.launcher";
+    private static final String[] APP_PACKAGES = {KIOSK_PACKAGE};
+
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
     private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
-    private FrameLayout frameLayout;
     private WindowManager.LayoutParams localLayoutParams;
     private FrameLayout mView;
     private final IBinder binder = new LocalBinder();
-    private boolean isLayoutAdded = false;
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
     private Fetch fetch;
@@ -160,10 +169,7 @@ public class LockScreenService extends Service {
             if (downloadListener != null) {
                 downloadListener.showProgressDialog(download.getProgress());
 
-
             }
-
-
         }
 
         @Override
@@ -208,54 +214,7 @@ public class LockScreenService extends Service {
     }
 
 
-    /* public boolean validateAppSignature(Context context, String packageName) throws PackageManager.NameNotFoundException, NoSuchAlgorithmException {
-
-         PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
-                 packageName, PackageManager.GET_SIGNATURES);
-         //note sample just checks the first signature
-         for (Signature signature : packageInfo.signatures) {
-             // SHA1 the signature
-             String sha1 = getSHA1(signature.toByteArray());
-             Timber.e("SHA1:" + sha1);
-             // check is matches hardcoded value
-             return APP_SIGNATURE.equals(sha1);
-         }
-
-         return false;
-     }
-
-     public static boolean validateAppSignatureFile(String sha1) {
-
-         return APP_SIGNATURE.equals(sha1);
-
-     }
-
-
-     //computed the sha1 hash of the signature
-     public static String getSHA1(byte[] sig) throws NoSuchAlgorithmException {
-         MessageDigest digest = MessageDigest.getInstance("SHA1");
-         digest.update(sig);
-         byte[] hashtext = digest.digest();
-         return bytesToHex(hashtext);
-     }
-
-     //util method to convert byte array to hex string
-     public static String bytesToHex(byte[] bytes) {
-         final char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                 '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-         char[] hexChars = new char[bytes.length * 2];
-         int v;
-         for (int j = 0; j < bytes.length; j++) {
-             v = bytes[j] & 0xFF;
-             hexChars[j * 2] = hexArray[v >>> 4];
-             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-         }
-         return new String(hexChars);
-     }
-
-
-     public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
-  */
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
 
@@ -294,7 +253,6 @@ public class LockScreenService extends Service {
         notificationItems = new ArrayList<>();
         params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
         appExecutor = AppExecutor.getInstance();
-        frameLayout = new FrameLayout(this);
         //smalliew
         localLayoutParams = new WindowManager.LayoutParams();
         createLayoutParamsForSmallView();
@@ -306,11 +264,7 @@ public class LockScreenService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
-            disableScreenShots();
-        } else {
-            allowScreenShoots();
-        }
+
         //default brightness only once
         if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
             //40% brightness by default
@@ -326,6 +280,40 @@ public class LockScreenService extends Service {
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
+        // Whitelist two apps.
+
+
+// ...
+
+
+        DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(this, MyAdmin.class);
+//        * {@link #addPersistentPreferredActivity(ComponentName, IntentFilter, ComponentName)}, and its
+//     * package needs to be whitelisted for LockTask with
+//     * {@link #setLockTaskPackages(ComponentName, String[])}.
+//     *
+//     * @see #setLockTaskFeatures(ComponentName, int)
+//
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.CATEGORY_HOME);
+        filter.addAction(Intent.ACTION_DEFAULT);
+        mDPM.addPersistentPreferredActivity(compName,filter, new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity"));
+//        mDPM.setLockTaskPackages(compName, APP_PACKAGES);
+//        mDPM.setLockTaskFeatures(compName, LOCK_TASK_FEATURE_NONE|LOCK_TASK_FEATURE_HOME);
+        if (mDPM.isDeviceOwnerApp(getPackageName())) {
+            try {
+                if (!mDPM.isUninstallBlocked(compName, getPackageName()))
+                    mDPM.setUninstallBlocked(compName, getPackageName(), true);
+                mDPM.setStatusBarDisabled(compName, true);
+                Bundle bundle = mDPM.getUserRestrictions(compName);
+                if (!bundle.getBoolean(DISALLOW_INSTALL_UNKNOWN_SOURCES))
+                    mDPM.addUserRestriction(compName, DISALLOW_INSTALL_UNKNOWN_SOURCES);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
 
 
         startForeground(R.string.app_name, notification);
@@ -498,46 +486,6 @@ public class LockScreenService extends Service {
     }
 
 
-    public void disableScreenShots() {
-        int windowType;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            windowType = WindowManager.LayoutParams.TYPE_TOAST |
-                    WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        } else {
-            windowType = WindowManager.LayoutParams.TYPE_PHONE;
-        }
-
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT,
-                windowType,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        | WindowManager.LayoutParams.FLAG_SECURE
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
-
-                PixelFormat.TRANSLUCENT);
-
-        if (frameLayout != null && frameLayout.getWindowToken() == null) {
-
-            windowManager.addView(frameLayout, params);
-        }
-    }
-
-    public void allowScreenShoots() {
-        if (frameLayout != null && frameLayout.getWindowToken() != null) {
-            windowManager.removeViewImmediate(frameLayout);
-        }
-    }
-
 
     private void startLockScreen(boolean refresh) {
 
@@ -548,9 +496,11 @@ public class LockScreenService extends Service {
                 refreshKeyboard();
             notificationItems.clear();
 
-            if (!isLocked) {
-                isLocked = true;
+            if (mLayout.getWindowToken() == null) {
                 removeView();
+                if (params == null){
+                    params = PrepareLockScreen.getParams(this, mLayout);
+                }
                 windowManager.addView(mLayout, params);
                 //clear home with our app to front
                 Intent i = new Intent(LockScreenService.this, MainActivity.class);
@@ -579,16 +529,9 @@ public class LockScreenService extends Service {
 //        }
 
         try {
-            if (mLayout != null) {
-//                final Animation in = AnimationUtils.loadAnimation(this, R.anim.in_from_rigth);
-//
-//                in.setDuration(5000);
-//
-//                mLayout.setVisibility(View.GONE);
-//                mLayout.startAnimation(in);
+            if (mLayout != null && mLayout.getWindowToken() !=null) {
                 windowManager.removeView(mLayout);
             }
-            isLocked = false;
         } catch (Exception e) {
             Timber.d(e);
         }

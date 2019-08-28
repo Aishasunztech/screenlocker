@@ -11,7 +11,7 @@
         android:id="@+id/imageIcon"
         android:layout_marginTop="@dimen/_80sdp"
         android:layout_marginBottom="@dimen/_16sdp"
-        android:layout_width="@dimen/_80sdp"
+        android:layout_width="@dimen/_80sdp" android:contentDescription="TODO" 
         android:layout_height="@dimen/_80sdp"
         android:layout_gravity="center"
 
@@ -45,7 +45,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_pin_password"/>
+            android:contentDescription="TODO" android:src="@drawable/ic_pin_password"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_pattern_small"/>
+            android:contentDescription="TODO" android:src="@drawable/ic_pattern_small"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_combo_lock"/>
+            android:contentDescription="TODO" android:src="@drawable/ic_combo_lock"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

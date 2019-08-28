@@ -136,8 +136,6 @@ public class utils {
             boolean adminActive = devicePolicyManager.isAdminActive(compName);
             if (adminActive) {
                 devicePolicyManager.wipeData(0);
-
-
             }
         }
 

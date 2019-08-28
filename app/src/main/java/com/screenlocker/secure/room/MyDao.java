@@ -164,6 +164,8 @@ public interface MyDao {
     void insertMessage(ChatMessages msg);
     @Delete
     void deleteMessage(ChatMessages msg);
+    @Update
+    void updateSubExtention(SubExtension extension);
 
 
 }

@@ -54,6 +54,7 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -67,12 +68,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -1068,80 +1071,15 @@ public class MarketFragment extends Fragment implements
 
     private void showInstallDialog(File file, String packageName) {
 
-        String sha1 = "142ds";
-
-
-//            PackageInfo info = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_SIGNATURES);
-//
-//            if (info != null) {
-//                try {
-//                    Signature[] releaseSig = info.signatures;
-//                    if (releaseSig != null) {
-//                        sha1 = getSHA1(releaseSig[0].toByteArray());
-//                    }
-//                } catch (NoSuchAlgorithmException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-
-        //if (validateAppSignatureFile(sha1) || !validateAppSignatureFile(sha1)) {
-        String userType = PrefUtils.getStringPref(activity, CURRENT_KEY);
-        Uri uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+        // we need to install app sielently
         try {
-            PackageManager pm = activity.getPackageManager();
-            pm.getPackageInfo("com.secure.systemcontrol64", 0);
-            if (!AppConstants.INSTALLING_APP_NAME.equals("") && !AppConstants.INSTALLING_APP_PACKAGE.equals("")) {
-                AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-                alertDialog.setTitle(AppConstants.INSTALLING_APP_NAME);
-                alertDialog.setMessage("Are you sure you want to install this app?");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "INSTALL", (dialog, which) -> {
-                    Intent launchIntent = new Intent();
-                    ComponentName componentName = new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.MainActivity");
-//                        launchIntent.setAction(Intent.ACTION_VIEW);
-                    launchIntent.setAction(Intent.ACTION_MAIN);
-                    launchIntent.setComponent(componentName);
-                    launchIntent.setData(uri);
-                    launchIntent.putExtra("package", AppConstants.INSTALLING_APP_PACKAGE);
-                    launchIntent.putExtra("user_space", userType);
-                    launchIntent.putExtra("SecureMarket", true);
-                    launchIntent.putExtra("appName", AppConstants.INSTALLING_APP_NAME);
-                    launchIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//            contextWeakReference.get().sendBroadcast(sender);
-
-                    activity.startActivity(launchIntent);
-                    Snackbar snackbar = Snackbar.make(
-                            ((ViewGroup) activity.findViewById(android.R.id.content))
-                                    .getChildAt(0)
-                            , activity.getString(R.string.install_app_message)
-                            , 3000);
-
-                    snackbar.show();
-
-                });
-
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                        (dialog, which) -> dialog.dismiss());
-                alertDialog.show();
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            savePackages(packageName, INSTALLED_PACKAGES, userType, activity);
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) activity)
-                    .setStream(uri) // uri from FileProvider
-                    .setType("text/html")
-                    .getIntent()
-                    .setAction(Intent.ACTION_VIEW) //Change if needed
-                    .setDataAndType(uri, "application/vnd.android.package-archive")
-                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivity(intent);
+            Uri uri = Uri.fromFile(file);
+            Utils.installSielentInstall(activity , Objects.requireNonNull(activity.getContentResolver().openInputStream(uri)), packageName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-//            } else {
-//                Toast.makeText(context, "Signature is not matched.", Toast.LENGTH_SHORT).show();
-//            }
-
-
-//
-
     }
 
 }

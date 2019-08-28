@@ -170,6 +170,6 @@ public class SecureMarketActivity extends BaseActivity implements OnAppsRefreshL
                super.onResume();
                PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
                AppConstants.TEMP_SETTINGS_ALLOWED = true;
-               refreshApps(SecureMarketActivity.this);
+               //refreshApps(SecureMarketActivity.this);
            }
        }

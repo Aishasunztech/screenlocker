@@ -33,9 +33,10 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
+        broadCastIntent();
+
 
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
@@ -43,7 +44,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
          * if user has completed setup wizard move to Home Activity
          */
         boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
-        boolean isEmer = PrefUtils.getBooleanPref(SteppersActivity.this, IS_EMERGANCY);
 
 
         if (getIntent().hasExtra("emergency" )) {
@@ -141,5 +141,10 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onBackPressed() {
 //        super.onBackPressed();
     }
-
+    void broadCastIntent() {
+        Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
+    }
 }

@@ -68,7 +68,7 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         tittleIcon.setImageResource(R.drawable.ic_encrypted_third);
-        titleText.setText("Encrypt SPACE LOCK");
+        titleText.setText("ENCRYPT SPACE LOCK");
 
 
         layout_pin.setOnClickListener(v -> {
@@ -97,7 +97,7 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
     }
 

@@ -56,7 +56,7 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return true;
     }
 

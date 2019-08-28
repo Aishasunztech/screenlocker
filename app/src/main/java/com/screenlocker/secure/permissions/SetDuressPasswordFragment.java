@@ -38,6 +38,7 @@ import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
+import static com.screenlocker.secure.utils.AppConstants.DURESS_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
@@ -74,7 +75,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     }
 
     @Override
-    public boolean setSkipable() {
+    public boolean isSkipable() {
         return false;
     }
 
@@ -85,7 +86,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION)) {
+        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION)) {
             case OPTION_PIN:
                 viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
@@ -226,13 +227,14 @@ public class SetDuressPasswordFragment extends AbstractStep {
 
 
                     //wrong pattern
-                } else {
-                    mTry = 0;
-                    Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                    patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
-                    new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
-                    responsTitle.setText("Please Draw Pattern");
+                    else {
+                        mTry = 0;
+                        Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
+                        responsTitle.setText("Please Draw Pattern");
 
+                    }
                 }
             }
 

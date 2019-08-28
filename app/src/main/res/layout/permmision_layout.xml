@@ -35,7 +35,7 @@
                     <ImageView
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_admin_permission" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_admin_permission" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -81,7 +81,7 @@
                     <ImageView
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_overlay" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_overlay" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -129,7 +129,7 @@
                         android:layout_height="@dimen/_24sdp"
 
 
-                        android:src="@drawable/ic_write_settings_permission" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_write_settings_permission" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -177,7 +177,7 @@
                         android:layout_height="@dimen/_24sdp"
 
 
-                        android:src="@drawable/ic_usage_access_permission" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_usage_access_permission" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -224,7 +224,7 @@
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
 
-                        android:src="@drawable/ic_running" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_running" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -259,6 +259,7 @@
                 android:id="@+id/layout_allow_installPackages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -272,7 +273,7 @@
                         android:layout_height="@dimen/_24sdp"
 
 
-                        android:src="@drawable/ic_download" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_download" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -318,7 +319,7 @@
                     <ImageView
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_notification_permission" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_notification_permission" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -364,7 +365,7 @@
                     <ImageView
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_charging" />
+                        android:contentDescription="TODO" android:src="@drawable/ic_charging" />
 
                     <TextView
                         style="@style/permissions_title_theme"
@@ -387,53 +388,6 @@
                     android:layout_height="wrap_content"
                     android:paddingEnd="@dimen/_48sdp"
                     android:text="@string/allow_device_admin_message" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:background="@color/colorLine" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_accessibility"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_16sdp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_charging" />
-
-                    <TextView
-                        style="@style/permissions_title_theme"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="@dimen/_8sdp"
-                        android:paddingEnd="@dimen/_8sdp"
-                        android:text="@string/on_accessibility_service" />
-
-                    <Switch
-                        android:id="@+id/active_accessibility"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <TextView
-                    style="@style/permissions_message_theme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="@dimen/_48sdp"
-                    android:text="@string/accessibility_service_msg" />
 
                 <View
                     android:layout_width="match_parent"

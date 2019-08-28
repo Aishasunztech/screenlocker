@@ -19,6 +19,8 @@ public interface Nextable {
 
     String error();
 
-    boolean setSkipable();
+    boolean isSkipable();
+
+    boolean isPreviousAllow();
 
 }

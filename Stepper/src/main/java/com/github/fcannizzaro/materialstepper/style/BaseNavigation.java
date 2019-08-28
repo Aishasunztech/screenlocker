@@ -97,7 +97,7 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
     public void onUpdate() {
         super.onUpdate();
         boolean isLast = mSteps.current() == mSteps.total() - 1;
-        boolean isSkipable = mSteps.getCurrent().setSkipable();
+        boolean isSkipable = mSteps.getCurrent().isSkipable();
         boolean isFirst = mSteps.current() == 0;
         if (isLast)
             mPrev.setVisibility(View.GONE);

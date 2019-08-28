@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_shield"
-                android:padding="@dimen/_20sdp"
+                android:contentDescription="TODO" android:padding="@dimen/_20sdp"
 
                 />
         </androidx.cardview.widget.CardView>
