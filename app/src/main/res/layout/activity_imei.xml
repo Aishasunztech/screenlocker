@@ -97,7 +97,6 @@
 
 
         <TextView
-            android:id="@+id/link_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 

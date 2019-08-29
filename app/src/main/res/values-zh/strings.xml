@@ -14,9 +14,7 @@
     <string name="btn_backspace">清除所有</string>
     <string name="description_notification_icon">通知图标</string>
     <string name="description_app_image">应用程序图像</string>
-    <string name="unlock">解锁</string>
     <string name="enter_pin">输入密码</string>
-    <string name="re_enter_pin">重新输入密码</string>
     <string name="confirm_pin">设置密码</string>
     <string name="ok">好的</string>
     <string name="cancel">取消</string>
@@ -25,8 +23,6 @@
     <string name="set_encrypted_password">设置加密密码</string>
     <string name="please_enter_your_current_password">请输入您的当前密码。</string>
     <string name="wrong_password_entered">您输入了错误的密码。</string>
-    <string name="password_changed">密码改变了</string>
-    <string name="password_not_changed">密码没有改变</string>
     <string name="hint_please_enter_guest_pin">请输入客户密码</string>
     <string name="hint_please_enter_duress_pin">请输入强制密码</string>
     <string name="hint_please_confirm_your_pin">请确认您的密码</string>
@@ -37,7 +33,6 @@
     <string name="set_guest_code">客人Pin码</string>
     <string name="set_duress_code">强制Pin码</string>
     <string name="set_encrypted_code">加密的Pin码</string>
-    <string name="set_background_for">设置背景</string>
     <string name="guest_all">打开所有的客人</string>
     <string name="encryption_all">开启加密所有</string>
     <string name="enable_all">启用所有</string>
@@ -49,7 +44,6 @@
     <string name="hint_please_enter_code_pin">请输入密码pin</string>
     <string name="please_enter_code_admin_password">请输入代码管理密码。</string>
     <string name="code">代码</string>
-    <string name="set_apps_permissions">应用程序权限</string>
     <string name="reset_guest_encrypted_pass">重置客户和加密的通行证</string>
     <string name="change_admin_panel_code">更改管理面板代码</string>
     <string name="password_is_changed_to_default">密码设置为默认值</string>
@@ -66,10 +60,8 @@
     <string name="permission_required">我们需要这个权限来读取硬件id来保护您的设备</string>
     <string name="dont_have_permission">我们没有得到许可。</string>
     <string name="permission_denied">没有权限</string>
-    <string name="info">信息:</string>
     <string name="device_already_linked">设备连接成功</string>
     <string name="link_request_pending">链接请求等待!</string>
-    <string name="something_went_wrong">发生了一些错误</string>
     <string name="link_device">链接设备</string>
     <string name="device_not_linked">设备未连接!</string>
     <string name="stop_linking">停止连接</string>
@@ -95,7 +87,6 @@
     <string name="some_error_occurred">发生了一些错误!</string>
 
     <!-- : Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">账户</string>
     <string name="language">語言</string>
     <string name="install_app_activity">installAppActivity</string>
@@ -108,19 +99,14 @@
     <string name="simtext">SIM卡:</string>
     <string name="slot">槽 :</string>
     <string name="name">/ 名称 :</string>
-    <string name="apn">/ Apn :</string>
     <string name="guest">客人</string>
     <string name="encrypted">加密</string>
     <string name="status">状态 :</string>
     <string name="status_active">活跃的</string>
     <string name="status_disabled">禁用</string>
     <string name="status_not_inserted">未插入</string>
-    <string name="title_activity_secure_simsettings">安全的SIM卡设置</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
     <string name="sim_1">SIM卡 1</string>
     <string name="sim_2">SIM卡 2</string>
-    <string name="add">添加 +</string>
     <string name="status_online">在线</string>
     <string name="enable_all_unregistered">启用所有 \n<small>(未注册的)</small></string>
     <string name="enable_all_registered">启用所有 \n<small>(登记的)</small></string>
@@ -202,7 +188,6 @@
     <string name="off">关闭</string>
     <string name="on">接通</string>
     <string name="installed_apps_title">安装应用程序</string>
-    <string name="something_wrong">发生了一些错误</string>
     <string name="downloading_update">下载更新，请稍候</string>
     <string name="install">安装</string>
     <string name="uninstall">卸载</string>
@@ -279,19 +264,12 @@
     <string name="allow_device_admin">允许设备管理</string>
     <string name="allow_device_admin_message">激活屏幕锁设备管理。它将提供更安全的环境</string>
     <string name="allow_overlay_permission">允许覆盖许可</string>
-    <string name="allow_overlay_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_modify_system_state">允许修改系统状态</string>
-    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_usage_access">允许使用访问</string>
-    <string name="allow_usage_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_run_time_permission">允许运行时权限</string>
-    <string name="allow_run_time_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_install_packages">允许安装包</string>
-    <string name="allow_install_packages_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_notification_access">允许通知访问</string>
-    <string name="allow_notification_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_access_battery_optimization">允许访问电池优化</string>
-    <string name="allow_access_battery_optimization_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="guest_password">客人密码</string>
     <string name="please_set_encrypted_password">请设置加密密码</string>
     <string name="encrypted_password">加密的密码</string>
@@ -312,7 +290,6 @@
     <string name="welcome">欢迎光临!</string>
     <string name="welcome_message">我们正在准备第一次启动系统，请稍候。</string>
     <string name="inactivity_message">在%1$s秒的不活动之后</string>
-    <string name="change_language_title">語言</string>
     <string name="dealer_pin_or_activation_code">经销商Pin或激活码</string>
     <string name="clearing_cache">清除缓存</string>
     <string name="clearing_cache_successfull">成功清除缓存</string>
@@ -342,7 +319,6 @@
     <string name="device_admin_changed">示例设备管理：密码更改</string>
     <string name="device_admin_failed">示例设备管理：密码失败</string>
     <string name="device_admin_succeeded">示例设备管理：密码成功</string>
-    <string name="language_is_changed">语言已更改</string>
     <string name="please_wait_">请稍等……</string>
     <string name="account_disabled">帐户禁用。
  联系您的经销商寻求帮助。</string>
@@ -350,8 +326,6 @@
     <string name="incorrect_pin">不正确的销</string>
     <string name="version">版本</string>
     <string name="type">Type</string>
-    <string name="change_language_dialog_title">Change Language</string>
-    <string name="change_language_dialog_message">Proceed with changing the language?</string>
     <string name="policy">Politique</string>
 
     <string name="mode">模式</string>

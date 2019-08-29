@@ -3,8 +3,6 @@
     <string name="cancel">Поништи</string>
     <string name="save_as">Сачувај као</string>
     <string name="file_saved">Датотека успешно сачувана</string>
-    <string name="invalid_file_format">Нетачан формат датотеке</string>
-    <string name="out_of_memory_error">Недовољно меморије - грешка</string>
     <string name="an_error_occurred">Дошло је до грешке: %s</string>
     <string name="open_with">Отвори са</string>
     <string name="edit_with">Измени са</string>
@@ -12,19 +10,8 @@
     <string name="set_as">Подеси као</string>
     <string name="value_copied_to_clipboard">Вредност копирана у клипборд</string>
     <string name="unknown">Непознато</string>
-    <string name="always">Увек</string>
-    <string name="never">Никад</string>
-    <string name="details">Детаљи</string>
-    <string name="notes">Белешке</string>
-    <string name="deleting_folder">Бришем фасциклу \'%s\'</string>
-    <string name="none">Ни један</string>
     <string name="label">Ознака</string>
-    <string name="transparent">Провидан</string>
-    <string name="transparent_color">Провидна боја</string>
-    <string name="select_a_different_color">Изабери другу боју</string>
     <string name="download">Преузимање</string>
-    <string name="notification">Обавештење</string>
-    <string name="email">Е-пошта</string>
 
     <!-- Favorites -->
     <string name="favorites">Омиљено</string>
@@ -37,47 +24,23 @@
     <string name="type_2_characters">Укуцај најмање 2 карактера да стартујеш претрагу.</string>
 
     <!-- Filters -->
-    <string name="filter">Филтер</string>
     <string name="no_items_found">Нема резултата.</string>
-    <string name="change_filter">Промени филтер</string>
 
     <!-- Permissions -->
     <string name="no_storage_permissions">Неопходна је дозвола за складиштење</string>
-    <string name="no_contacts_permission">Неопходна је дозвола за контакте</string>
-    <string name="no_camera_permissions">Неопходна је дозвола за камеру</string>
-    <string name="no_audio_permissions">Неопходна је дозвола за аудио</string>
 
     <!-- Renaming -->
-    <string name="rename_file">Преименуј датотеку</string>
-    <string name="rename_folder">Преименуј фасциклу</string>
-    <string name="rename_file_error">Не могу да преименујем датотеку</string>
-    <string name="rename_folder_error">Не могу да преименујем фасциклу</string>
-    <string name="rename_folder_empty">Име фасцикле не сме да буде празно</string>
-    <string name="rename_folder_exists">Фасцикла са тим именом већ постоји</string>
-    <string name="rename_folder_root">Није могуће преименовати почетну фасциклу складишта</string>
-    <string name="rename_folder_ok">Фасцикла је успешно преименована</string>
-    <string name="renaming_folder">Мења се име фасцикле</string>
     <string name="filename_cannot_be_empty">Име датотеке не може бити празно</string>
     <string name="filename_invalid_characters">Име датотеке садржи недозвољене карактере</string>
-    <string name="filename_invalid_characters_placeholder">Име датотеке \'%s\' садржи недозвољене карактере</string>
-    <string name="extension_cannot_be_empty">Тип датотеке не може бити празан</string>
     <string name="source_file_doesnt_exist">Изворни код датотеке %s не постоји</string>
     <string name="prepend_filenames">Додај префикс именима датотека</string>
     <string name="append_filenames">Додај суфикс именима датотека</string>
     <string name="rename_date_time_pattern">%Y - year\n%M - month\n%D - day\n%h - hour\n%m - minute\n%s - second</string>
 
     <!-- Copy / Move -->
-    <string name="copy">Копирај</string>
-    <string name="move">Премести</string>
-    <string name="copy_move">Копирај / Премести</string>
     <string name="copy_to">Копирај у</string>
     <string name="move_to">Премести у</string>
-    <string name="source">Извор</string>
-    <string name="destination">Одредиште</string>
-    <string name="select_destination">Изабери одредиште</string>
-    <string name="click_select_destination">Кликни да изабереш одредиште</string>
     <string name="invalid_destination">Не могу да пишем у изабрано одредиште</string>
-    <string name="please_select_destination">Изабери одредиште</string>
     <string name="source_and_destination_same">Извор и одредиште не могу бити исти</string>
     <string name="copy_failed">Не могу да копирам датотеке</string>
     <string name="copying">Копирам…</string>
@@ -87,11 +50,8 @@
     <string name="moving_success">Датотеке успешно премештене</string>
     <string name="moving_success_partial">Неке датотеке се не могу преместити</string>
     <string name="copying_success_partial">Неке датотеке се не могу ископирати</string>
-    <string name="no_files_selected">Ни једна датотека није означена</string>
-    <string name="saving">Чувам…</string>
     <string name="could_not_create_folder">Не могу да направим фасциклу %s</string>
     <string name="could_not_create_file">Не могу да направим датотеку %s</string>
-    <string name="no_new_items">No new items have been found</string>
 
     <!-- Create new -->
     <string name="create_new">Направи ново</string>
@@ -111,7 +71,6 @@
     <string name="keep_both">Задржи оба</string>
     <string name="overwrite">Препиши</string>
     <string name="skip">Прескочи</string>
-    <string name="append">Додај суфикс \'_1\'</string>
     <string name="apply_to_all">Примени на све</string>
 
     <!-- File picker -->
@@ -133,11 +92,6 @@
         <item quantity="other">%d ставки</item>
     </plurals>
 
-    <plurals name="deleting_items">
-        <item quantity="one">Бришем %d ставку</item>
-        <item quantity="other">Бришем %d ставки</item>
-    </plurals>
-
     <!-- Storages -->
     <string name="select_storage">Изабери складиште</string>
     <string name="internal">Унутрашња</string>
@@ -157,10 +111,6 @@
     <string name="duration">Дужина</string>
     <string name="artist">Уметник</string>
     <string name="album">Албум</string>
-    <string name="focal_length">Фокусна дужина</string>
-    <string name="exposure_time">Време експозиције</string>
-    <string name="iso_speed">ISO брзина</string>
-    <string name="f_number">Ф-број</string>
     <string name="camera">Камера</string>
     <string name="exif">EXIF</string>
     <string name="song_title">Име песме</string>
@@ -171,19 +121,12 @@
     <string name="background_color">Боја позадине</string>
     <string name="text_color">Боја текста</string>
     <string name="primary_color">Главна боја</string>
-    <string name="foreground_color">Позадинска боја</string>
     <string name="app_icon_color">Боја иконе апликације</string>
-    <string name="bottom_navigation_bar_color">Боја доње навигационе линије</string>
-    <string name="restore_defaults">Врати на подразумевана подешавања</string>
-    <string name="change_color">Промени боју</string>
     <string name="theme">Тема</string>
     <string name="changing_color_description">Изменом боје започињете прилагођену тему</string>
     <string name="save">Сачувај</string>
     <string name="discard">Одбаци</string>
-    <string name="undo_changes">Поништи измене</string>
-    <string name="undo_changes_confirmation">Да ли желите да поништите измене?</string>
     <string name="save_before_closing">Имате несачуване измене. Сачувај пре изласка?</string>
-    <string name="apply_to_all_apps">Примени боје на све Simple Apps</string>
     <string name="app_icon_color_warning">УПОЗОРЕЊЕ: Неки покретачи се не зналазе са изменама икона апликација. Ако икона нестане, покрените апликацију преко Гугл плеја или неког виџета, ако су доступни.
         Када покренете, подесите подразумевајућу наранџасту икону #F57C00. У најгорем случају ћете морати да реинсталирате апликацију.</string>
     <string name="share_colors_success">Боје су ажуриране успешно. Нова тема под именом \'Shared\' је додата, молимо вас да је користите за ажурирање свих боја у будућности.</string>
@@ -196,7 +139,6 @@
     <!-- Themes -->
     <string name="light_theme">Светла</string>
     <string name="dark_theme">Тамна</string>
-    <string name="solarized">Осветљена</string>
     <string name="dark_red">Тамно црвена</string>
     <string name="black_white">Црно &amp; Бела</string>
     <string name="custom">Прилагођена</string>
@@ -210,19 +152,13 @@
     <string name="delete">Обриши</string>
     <string name="remove">Уклони</string>
     <string name="rename">Преименуј</string>
-    <string name="share">Подели</string>
     <string name="share_via">Подели путем</string>
     <string name="select_all">Означи све</string>
     <string name="hide">Сакриј</string>
     <string name="unhide">Прикажи</string>
-    <string name="hide_folder">Склони фасциклу</string>
-    <string name="unhide_folder">Прикажи фасциклу</string>
     <string name="temporarily_show_hidden">Привремено прикажи скривено</string>
     <string name="stop_showing_hidden">Прекини са приказивањем скривених медија</string>
     <string name="maximum_share_reached">Не можете поделити оволико садржаја одједном</string>
-    <string name="empty_and_disable_recycle_bin">Испразни и онемогући канту за отпатке</string>
-    <string name="undo">Поништи измене</string>
-    <string name="redo">Поврати измене</string>
     <string name="print">Штампај</string>
     <string name="create_shortcut">Create shortcut</string>
 
@@ -232,31 +168,18 @@
     <string name="size">Величина</string>
     <string name="last_modified">Задњи пут измењено</string>
     <string name="date_taken">Датум настанка</string>
-    <string name="title">Наслов</string>
     <string name="filename">Име фајла</string>
     <string name="extension">Тип фајла</string>
-    <string name="random">Насумично</string>
-    <string name="sort_randomly">Сортирај насумично</string>
     <string name="ascending">Растуће</string>
     <string name="descending">Опадајуће</string>
     <string name="use_for_this_folder">Користи само за ову фасциклу</string>
-    <string name="sort_numeric_parts">Sort numeric parts by actual value</string>
 
     <!-- Confirmation dialog -->
     <string name="proceed_with_deletion">Да ли сте сигурни да желите да наставите са брисањем?</string>
     <string name="deletion_confirmation">Да ли сте сигурни да желите обришете %s?</string>    <!-- Are you sure you want to delete 5 items? -->
-    <string name="move_to_recycle_bin_confirmation">Да ли сте сигурни да желите да преместите %s у канту за отпатке?</string>    <!-- Are you sure you want to move 3 items into the Recycle Bin? -->
-    <string name="are_you_sure_delete">Да ли сте сигурни да желите да обришете ову ставку?</string>
-    <string name="are_you_sure_recycle_bin">Да ли сте сигурни да желите да преместите ову ставку у канту за отпатке?</string>
-    <string name="do_not_ask_again">Не питај више у овој сеанси</string>
+    <!-- Are you sure you want to move 3 items into the Recycle Bin? -->
     <string name="yes">Да</string>
     <string name="no">Не</string>
-    <string name="maybe">Можда</string>
-
-    <plurals name="delete_warning">
-        <item quantity="one">УПОЗОРЕЊЕ: Бришете %d фасциклу</item>
-        <item quantity="other">УПОЗОРЕЊЕ: Бришете  %d фасцикла</item>
-    </plurals>
 
     <!-- Password protection -->
     <string name="pin">ПИН</string>
@@ -268,23 +191,15 @@
     <string name="insert_pattern">Унесите шаблон</string>
     <string name="wrong_pattern">Погрешан шаблон</string>
     <string name="repeat_pattern">Поновите шаблон</string>
-    <string name="fingerprint">Отисак прста</string>
-    <string name="add_fingerprint">Додајте отисак прста</string>
     <string name="place_finger">Молимо вас ставите ваш прст на сензор за отисак прста</string>
     <string name="authentication_failed">Провера идентитета неуспешна</string>
     <string name="authentication_blocked">Провера идентитета блокирана, покушајте поново касније</string>
     <string name="no_fingerprints_registered">Немате регистрованих отисака прстију, додајте неке у Подешавања вашег уређаја</string>
-    <string name="go_to_settings">Иди у подешавања</string>
     <string name="protection_setup_successfully">Успешно подешена шифра. Поново инсталирајте апликацију за случај да изгубите шифру.</string>
     <string name="fingerprint_setup_successfully">Заштита је успешно подешена. Поново инсталирајте апликацију за случај да имате проблема са ресетовањем отиска прста.</string>
-    <string name="lock_folder">Lock folder</string>
-    <string name="unlock_folder">Unlock folder</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>
 
     <!-- Times -->
-    <string name="yesterday">Јуче</string>
-    <string name="today">Данас</string>
-    <string name="tomorrow">Сутра</string>
     <string name="seconds_raw">секунде</string>
     <string name="minutes_raw">минуте</string>
     <string name="hours_raw">сати</string>
@@ -306,48 +221,8 @@
         <item quantity="one">%d дан</item>
         <item quantity="other">%d дана</item>
     </plurals>
-    <plurals name="weeks">
-        <item quantity="one">%d недеља</item>
-        <item quantity="other">%d недеља</item>
-    </plurals>
-    <plurals name="months">
-        <item quantity="one">%d месец</item>
-        <item quantity="other">%d месеци</item>
-    </plurals>
-    <plurals name="years">
-        <item quantity="one">%d година</item>
-        <item quantity="other">%d година</item>
-    </plurals>
 
     <!-- For example: I will be there in 5 minutes -->
-    <plurals name="in_seconds">
-        <item quantity="one">%d секунда</item>
-        <item quantity="other">%d секунди</item>
-    </plurals>
-    <plurals name="in_minutes">
-        <item quantity="one">%d минут</item>
-        <item quantity="other">%d минута</item>
-    </plurals>
-    <plurals name="in_hours">
-        <item quantity="one">%d сат</item>
-        <item quantity="other">%d сати</item>
-    </plurals>
-    <plurals name="in_days">
-        <item quantity="one">%d дан</item>
-        <item quantity="other">%d дана</item>
-    </plurals>
-    <plurals name="in_weeks">
-        <item quantity="one">%d недеља</item>
-        <item quantity="other">%d недеља</item>
-    </plurals>
-    <plurals name="in_months">
-        <item quantity="one">%d месец</item>
-        <item quantity="other">%d месеци</item>
-    </plurals>
-    <plurals name="in_years">
-        <item quantity="one">%d година</item>
-        <item quantity="other">%d година</item>
-    </plurals>
 
     <!-- For example: Event reminder: 3 minutes before -->
     <plurals name="seconds_before">
@@ -410,16 +285,9 @@
     </plurals>
 
     <!-- For example: Time remaining till the alarm goes off: 6 hours, 5 minutes -->
-    <string name="alarm_goes_off_in">Преостало време до активације аларма:\n%s</string>
-    <string name="reminder_triggers_in">Преостало време до активације подсетника:\n%s</string>
-    <string name="alarm_warning">Проверите да ли аларм ради како треба пре него што кренете да се ослањате на њега. Дешава се да не ради како треба због ограничења у систему која се односе на уштеду батерије.</string>
-    <string name="reminder_warning">Уверите се да подсетник ради како треба пре него што кренете да се ослањате на њега. Дешава се да не ради како треба због ограничења у систему која се односе на уштеду батерије.</string>
-    <string name="notifications_disabled">Обавештења ове апликације су онемогућена. У подешавањима уређаја их можете укључити.</string>
 
     <!-- Alarms -->
     <string name="alarm">Аларм</string>
-    <string name="snooze">Успавај</string>
-    <string name="dismiss">Вољно</string>
     <string name="no_reminder">Без подсетника</string>
     <string name="at_start">Приликом старта</string>
     <string name="system_sounds">Системски звукови</string>
@@ -429,79 +297,29 @@
 
     <!-- Settings -->
     <string name="settings">Подешавања</string>
-    <string name="purchase_simple_thank_you">Пазарите Simple Thank You</string>
     <string name="customize_colors">Прилагодите боје</string>
-    <string name="customize_widget_colors">Прилагодите боје виџета</string>
     <string name="use_english_language">Користи енглески језик</string>
     <string name="show_hidden_items">Прикажи скривене ставке</string>
-    <string name="font_size">Величина фонта</string>
-    <string name="small">Мали</string>
     <string name="medium">Средњи</string>
-    <string name="large">Велики</string>
-    <string name="extra_large">Додатно велик</string>
     <string name="password_protect_hidden_items">Заштити шифром видљивост скривених ставки</string>
     <string name="password_protect_whole_app">Заштити шифром целу апликацију</string>
     <string name="password_protect_file_deletion">Заштити шифром брисање фајла и премештање</string>
     <string name="keep_last_modified">Задржи задње измењено</string>
     <string name="show_info_bubble">Прикажи балончић са информацијама приликом скроловања</string>
-    <string name="prevent_phone_from_sleeping">Спречи телефон од успављивања када је апликација у првом плану</string>
-    <string name="skip_delete_confirmation">Увек прескочи дијалог за потврду брисања</string>
-    <string name="enable_pull_to_refresh">Омогући повуци-да-освежиш са врха</string>
     <string name="use_24_hour_time_format">Користи 24-часовни формат за време</string>
     <string name="change_date_and_time_format">Измени формат за датум и време</string>
-    <string name="sunday_first">Старт седмице у недељу</string>
-    <string name="widgets">Виџети</string>
-    <string name="use_same_snooze">Увек користи исто време за успављивање</string>
-    <string name="snooze_time">Време успављивања</string>
-    <string name="vibrate_on_button_press">Вибрирај на притисак дугмета</string>
-    <string name="move_items_into_recycle_bin">Премести ставке у канту за отпатке уместо брисања</string>
-    <string name="recycle_bin_cleaning_interval">Временски интервал за чишћење канте за отпатке</string>
-    <string name="empty_recycle_bin">Испразни канту за смеће</string>
-    <string name="force_portrait_mode">Форсирај режим портрета</string>
     <string name="export_settings">Извези подешавања</string>
-    <string name="import_settings">Увези подешавања</string>
     <string name="settings_exported_successfully">Подешавања извежена успешно</string>
-    <string name="settings_imported_successfully">Подешавања увежена успешно</string>
 
     <!-- Setting sections -->
     <string name="visibility">Видљивост</string>
     <string name="security">Безбедност</string>
     <string name="scrolling">Скроловање</string>
     <string name="file_operations">Операције над датотекама</string>
-    <string name="recycle_bin">Канта за смеће</string>
-    <string name="saving_label">Чување</string>
-    <string name="startup">Стартовање</string>
-    <string name="text">Текст</string>
-    <string name="migrating">Селидба</string>
 
     <!-- Recycle Bin -->
-    <string name="restore_this_file">Поврати овај фајл</string>
-    <string name="restore_selected_files">Поврати изабране датотеке</string>
-    <string name="restore_all_files">Поврати све датотеке</string>
-    <string name="recycle_bin_emptied">Канта за отпатке је успешно испражњена</string>
-    <string name="files_restored_successfully">Фајлови су повраћени успешно</string>
-    <string name="empty_recycle_bin_confirmation">Да ли сте сигурни да желите да испразните канту за отпатке? Датотеке ће бити трајно обрисане.</string>
-    <string name="recycle_bin_empty">Канта за отпатке је празна</string>
-    <string name="moving_recycle_bin_items_disabled">Премештање ставки из канте за отпатке је онемогућено, употребите повраћај датотека.</string>
-    <string name="show_the_recycle_bin">Прикажи канту за отпатке</string>
-    <string name="hide_the_recycle_bin">Сакриј канту за отпатке</string>
-
-    <plurals name="moving_items_into_bin">
-        <item quantity="one">Премештам %d ставку у канту за отпатке</item>
-        <item quantity="other">Премештам %d ставки у канту за отпатке</item>
-    </plurals>
 
     <!-- Import / Export -->
-    <string name="importing">Увозим…</string>
-    <string name="exporting">Извозим…</string>
-    <string name="importing_successful">Увоз успешан</string>
-    <string name="exporting_successful">Извоз успешан</string>
-    <string name="importing_failed">Увожење неуспешно</string>
-    <string name="exporting_failed">Извожење успешно</string>
-    <string name="importing_some_entries_failed">Увоз одређених ставки није успело</string>
-    <string name="exporting_some_entries_failed">Извоз одређених ставки није успело</string>
-    <string name="no_entries_for_importing">Нема ставки за увоз</string>
-    <string name="no_entries_for_exporting">Нема ставки за извоз</string>
 
     <!-- OTG devices -->
     <string name="usb">УСБ</string>
@@ -510,48 +328,8 @@
     <string name="wrong_root_selected_usb">Изабрана је погрешна фасцикла, изаберите почетну фасциклу УСБ уређаја</string>
 
     <!-- Dates -->
-    <string name="january">Јануар</string>
-    <string name="february">Фебруар</string>
-    <string name="march">Март</string>
-    <string name="april">Април</string>
-    <string name="may">Мај</string>
-    <string name="june">Јуни</string>
-    <string name="july">Јули</string>
-    <string name="august">Август</string>
-    <string name="september">Септембар</string>
-    <string name="october">Октобар</string>
-    <string name="november">Новембар</string>
-    <string name="december">Децембар</string>
 
     <!-- in January -->
-    <string name="in_january">у јануару</string>
-    <string name="in_february">у фебруару</string>
-    <string name="in_march">у марту</string>
-    <string name="in_april">у априлу</string>
-    <string name="in_may">у мају</string>
-    <string name="in_june">у јуну</string>
-    <string name="in_july">у јулу</string>
-    <string name="in_august">у августу</string>
-    <string name="in_september">у септембру</string>
-    <string name="in_october">у октобру</string>
-    <string name="in_november">у новембру</string>
-    <string name="in_december">у децембру</string>
-
-    <string name="monday">Понедељак</string>
-    <string name="tuesday">Уторак</string>
-    <string name="wednesday">Среда</string>
-    <string name="thursday">Четвртак</string>
-    <string name="friday">Петак</string>
-    <string name="saturday">Субота</string>
-    <string name="sunday">Недеља</string>
-
-    <string name="monday_letter">П</string>
-    <string name="tuesday_letter">У</string>
-    <string name="wednesday_letter">С</string>
-    <string name="thursday_letter">Ч</string>
-    <string name="friday_letter">П</string>
-    <string name="saturday_letter">С</string>
-    <string name="sunday_letter">Н</string>
 
     <string name="monday_short">Пон</string>
     <string name="tuesday_short">Уто</string>
@@ -563,10 +341,8 @@
 
     <!-- Pro version -->
     <string name="upgrade_to_pro_long">Ова верзија апликације се више не одржава. Унапредите се на професионалну верзију.</string>
-    <string name="it_is_free">Бесплатна је до: %s. Ако је преузмете до тада, моћи ћете да је користите бесплатно заувек.</string>
     <string name="more_info">Више информација</string>
     <string name="upgrade">Унапређивање</string>
-    <string name="upgrade_calendar">Морате да преселите локално складиштене догађаје ручно преко извожења у .ics датотеку, а затим да увезете. Можете наћи дугмад за увоз и извоз у главном екрану.</string>
 
     <!-- About -->
     <string name="about">О апликацији</string>
@@ -580,11 +356,8 @@
     <string name="invite_via">Позовите преко</string>
     <string name="rate_us_underlined"><u>Оцените нас</u></string>
     <string name="rate">Rate</string>
-    <string name="donate">Донирај</string>
-    <string name="donate_underlined"><u>Донирај</u></string>
     <string name="follow_us">Запратите нас</string>
     <string name="copyright">v %1$s\nАуторска права © Simple Mobile Tools %2$d</string>
-    <string name="additional_info">Додатне информације</string>
     <string name="app_version">Верзија апликације: %s</string>
     <string name="device_os">Оперативни систем уређаја: %s</string>
     <string name="donate_please">
@@ -620,16 +393,10 @@
     <!-- FAQ -->
     <string name="frequently_asked_questions">Најчешће постављена питања</string>
     <string name="before_asking_question">Пре него поставите питање, прво прочитајте</string>
-    <string name="faq_1_title_commons">Зашто не видим виџете ове апликације у листи виџета?</string>
-    <string name="faq_1_text_commons">Највероватније јер сте преместили апликацију на СД картицу. Постоји ограничење Андроид система које скрива виџете у том случају. Једино решење је да вратите апликацију у интерно складиште преко подешавања уређаја.</string>
     <string name="faq_2_title_commons">Желим да вам дам подршку, али не могу да донирам новац. Да ли могу да учиним нешто друго?</string>
     <string name="faq_2_text_commons">Наравно. Можете да ширите информацију о апликацијама или да сачините добру повратну информацију (рецензију) и дате нам добру оцену. Такође можете помоћи тако што ћете превести апликације на нови језик, или да освежите неке већ постојеће преводе. Можете наћи упутство на https://github.com/SimpleMobileTools/General-Discussion , или ми једноставно послати поруку на hello@simplemobiletools.com ако вам треба помоћ..</string>
     <string name="faq_3_title_commons">Обрисао сам неке датотеке грешком, како их могу повратити?</string>
     <string name="faq_3_text_commons">Нажалост не можете. Датотеке се бришу одмах након дијалога за потврду, не постоји канта за отпатке.</string>
-    <string name="faq_4_title_commons">Не свиђају ми се боје виџета, да ли могу да их променим?</string>
-    <string name="faq_4_text_commons">Да, како вучете виџет на ваш екран, прозор за подешавање виџета се појављује. Видећете квадрате у бојама у доњем левом ћошку, једноставно их притисните да изаберете нову боју. Можете употребити и клизач да одредите финесе боје.</string>
-    <string name="faq_5_title_commons">Да ли могу да повратим обрисане фајлове?</string>
-    <string name="faq_5_text_commons">If they were really deleted, you cannot. However, there is a Recycle Bin enabled by default, it will cause the files just be moved in the Bin instead of deleting them.</string>
     <string name="faq_6_title_commons">Икона покретача апликација је нестала. Шта да урадим?</string>
     <string name="faq_6_text_commons">То је узроковано изостатком подршке вашег покретача за прилагођавање икона. Пробајте да покренете апликацију преко Гугл плеја или неког виџета, ако су доступни.
         Кад се покрене, подесите подразумевајућу наранџасту икону #F57C00. Можда будете морали да реинсталирате апликацију, у најгорем случају.</string>
@@ -663,6 +430,4 @@
     <string name="gesture_views_title">Gesture Views (зумирање слика)</string>
 
     <!-- Google Play listing -->
-    <string name="deprecated_app">DEPRECATED: This version of the app is no longer maintained, get the Pro version at https://play.google.com/store/apps/details?id=com.simplemobiletools.xxx.pro</string>
-    <string name="pro_app_refund">Don\'t forget that if you uninstall any paid app within 2 hours, you will automatically be refunded. If you want a refund anytime later, just contact us at hello@simplemobiletools.com and you will get it. That makes it easy to try it out :)</string>
 </resources>

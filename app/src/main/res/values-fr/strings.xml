@@ -15,9 +15,7 @@
     <string name="btn_backspace">Tout Effacer</string>
     <string name="description_notification_icon">icône de notification</string>
     <string name="description_app_image">image de l\'application</string>
-    <string name="unlock">OUVRIR</string>
     <string name="enter_pin">Entrer Code PIN</string>
-    <string name="re_enter_pin">Ré-entrer Code PIN</string>
     <string name="confirm_pin">Définir Code PIN</string>
     <string name="ok">OK</string>
     <string name="cancel">Annuler</string>
@@ -26,8 +24,6 @@
     <string name="set_encrypted_password">Définir le mot de passe Crypté</string>
     <string name="please_enter_your_current_password">Veuillez entrer votre mot de passe actuel</string>
     <string name="wrong_password_entered">Mot de passe incorrect</string>
-    <string name="password_changed">Mot de passe changé</string>
-    <string name="password_not_changed">Mot de passe non changé</string>
     <string name="hint_please_enter_guest_pin">Entrer Code Pin Invité</string>
     <string name="hint_please_enter_duress_pin">Entrer Code Duress</string>
     <string name="hint_please_confirm_your_pin">Confirmer votre Code PIN</string>
@@ -37,7 +33,6 @@
     <string name="set_guest_code">Code PIN invité</string>
     <string name="set_duress_code">Code PIN Duress</string>
     <string name="set_encrypted_code">Code PIN Crypté</string>
-    <string name="set_background_for">Définir le fond d\'écran</string>
     <string name="guest_all">Activer Tout Invité</string>
     <string name="encryption_all">Activer Tout Crypté</string>
     <string name="enable_all">Activer Tout</string>
@@ -49,7 +44,6 @@
     <string name="hint_please_enter_code_pin">Entrer Code PIN</string>
     <string name="please_enter_code_admin_password">Entrer Code PIN Administrateur</string>
     <string name="code">CODE</string>
-    <string name="set_apps_permissions">Permission d\'Application</string>
     <string name="reset_guest_encrypted_pass">Réinitialiser les passes Invité et Crypté</string>
     <string name="change_admin_panel_code">Changer le code du panneau d\'administrateur</string>
     <string name="password_is_changed_to_default">Le mot de passe est défini par défaut</string>
@@ -66,10 +60,8 @@
     <string name="permission_required">Nous avons besoin de cette autorisation pour lire les identifiants de matériel afin de sécuriser votre appareil.</string>
     <string name="dont_have_permission">Nous n\'avons pas la permission.</string>
     <string name="permission_denied">Permission refusée</string>
-    <string name="info">Info :</string>
     <string name="device_already_linked">Appareil est lié avec succès</string>
     <string name="link_request_pending">Demande de liason en attente!</string>
-    <string name="something_went_wrong">Il y avait une erreur</string>
     <string name="link_device">Lier appareil</string>
     <string name="device_not_linked">Appareil non lié!</string>
     <string name="stop_linking">Arrêter le lien</string>
@@ -96,7 +88,6 @@
     <string name="some_error_occurred">Une erreur est survenue!</string>
 
     <!-- : Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Compte</string>
     <string name="language">Langues</string>
 
@@ -110,19 +101,14 @@
     <string name="simtext">SIM:</string>
     <string name="slot">Slot :</string>
     <string name="name">/ Nom :</string>
-    <string name="apn">/ Apn :</string>
     <string name="guest">Invité</string>
     <string name="encrypted">Crypté</string>
     <string name="status">Statut :</string>
     <string name="status_active">Actif</string>
     <string name="status_disabled">Désactivé</string>
     <string name="status_not_inserted">Non Inséré</string>
-    <string name="title_activity_secure_simsettings">Paramètres sécurisés de la carte SIM</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
-    <string name="add">AJOUTER +</string>
     <string name="status_online">En ligne</string>
     <string name="enable_all_unregistered">Activer tout \n<small>(Non enregistré)</small></string>
     <string name="enable_all_registered">Activer tout \n<small>(Enregistré)</small></string>
@@ -202,7 +188,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="off">OFF</string>
     <string name="on">ON</string>
     <string name="installed_apps_title">Applications installées</string>
-    <string name="something_wrong">quelque chose s\'est mal passé</string>
     <string name="downloading_update">Téléchargement de la mise à jour, veuillez patienter</string>
     <string name="install">installer</string>
     <string name="uninstall">désinstaller</string>
@@ -279,19 +264,12 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="allow_device_admin">Autoriser l\'administrateur de l\'appareil</string>
     <string name="allow_device_admin_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="allow_overlay_permission">Autoriser l\'autorisation de superposition</string>
-    <string name="allow_overlay_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_modify_system_state">Autoriser la modification de l\'état du système</string>
-    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_usage_access">Autoriser l\'accès à l\'utilisation</string>
-    <string name="allow_usage_access_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="allow_run_time_permission">Autoriser l\'autorisation d\'exécution</string>
-    <string name="allow_run_time_permission_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="allow_install_packages">Autoriser l\'installation de paquet</string>
-    <string name="allow_install_packages_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="allow_notification_access">Autoriser l\'accès aux notifications</string>
-    <string name="allow_notification_access_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="allow_access_battery_optimization">Autoriser accès l\'optimisation de la batterie d\'</string>
-    <string name="allow_access_battery_optimization_message">Activer paramètres de l\'administrateur pour ScreenLocker. Il fournira un environnement plus sécurisé</string>
     <string name="guest_password">Mot de passe invité</string>
     <string name="please_set_encrypted_password">Veuillez définir un mot de passe crypté</string>
     <string name="encrypted_password">Mot de passe crypté</string>
@@ -313,7 +291,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="welcome_message">Nous nous préparons à lancer le système pour la première fois.</string>
     <string name="inactivity_message">Après %1$s secondes d\'inactivité</string>
     <string name="dealer_pin_or_activation_code">Code Revendeur ou code d\'Activation</string>
-    <string name="change_language_title">Langues</string>
     <string name="clearing_cache">Videz la mémoire cache</string>
     <string name="clearing_cache_successfull">Cache vidé avec succès</string>
     <string name="search">Rechercher</string>
@@ -349,7 +326,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="device_admin_succeeded">Exemple d’administrateur de périphérique: mot de passe réussi</string>
 
 
-    <string name="language_is_changed">La langue est changée</string>
     <string name="please_wait_">Veuillez patienter...</string>
     <string name="account_disabled">Compte désactivé.\n
     Contactez votre revendeur pour obtenir de l\'aide.</string>
@@ -362,8 +338,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="mode">Mode</string>
 
 
-    <string name="change_language_dialog_title">Changer de langue</string>
-    <string name="change_language_dialog_message">Êtes-vous sûr de vouloir changer de langue?</string>
     <string name="theme">Thème</string>
     <string name="light_theme">Thème Claire</string>
     <string name="dark_theme">Thème Sombre</string>
@@ -373,13 +347,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
  votre appareil</string>
     <string name="default_launcher_title">Default Launcher</string>
     <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
-
-    <string name="_10_days">10 Jours</string>
-
-
-
-
-
 
 
 </resources>

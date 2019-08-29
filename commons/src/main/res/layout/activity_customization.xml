@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/customization_scrollview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,7 +21,6 @@
             android:paddingTop="@dimen/bigger_margin">
 
             <com.simplemobiletools.commons.views.MyTextView
-                android:id="@+id/customization_theme_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -55,7 +53,6 @@
             android:padding="@dimen/activity_margin">
 
             <com.simplemobiletools.commons.views.MyTextView
-                android:id="@+id/customization_text_color_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -85,7 +82,6 @@
             android:padding="@dimen/activity_margin">
 
             <com.simplemobiletools.commons.views.MyTextView
-                android:id="@+id/customization_background_color_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -115,7 +111,6 @@
             android:padding="@dimen/activity_margin">
 
             <com.simplemobiletools.commons.views.MyTextView
-                android:id="@+id/customization_primary_color_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -145,7 +140,6 @@
             android:padding="@dimen/activity_margin">
 
             <com.simplemobiletools.commons.views.MyTextView
-                android:id="@+id/customization_app_icon_color_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -166,7 +160,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/apply_to_all_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/customization_app_icon_color_holder"

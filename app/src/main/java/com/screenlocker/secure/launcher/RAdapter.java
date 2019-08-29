@@ -132,6 +132,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SecureSettingsMain.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                             if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }

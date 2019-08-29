@@ -3,8 +3,6 @@
     <string name="cancel">Batal</string>
     <string name="save_as">Simpan sebagai</string>
     <string name="file_saved">Berkas berhasil disimpan</string>
-    <string name="invalid_file_format">Format berkas tidak valid</string>
-    <string name="out_of_memory_error">Error kehabisan memori</string>
     <string name="an_error_occurred">Kesalahan: %s</string>
     <string name="open_with">Buka dengan</string>
     <string name="edit_with">Sunting dengan</string>
@@ -12,19 +10,8 @@
     <string name="set_as">Setel sebagai</string>
     <string name="value_copied_to_clipboard">Nilai disalin ke papan klip</string>
     <string name="unknown">Tidak diketahui</string>
-    <string name="always">Selalu</string>
-    <string name="never">Jangan pernah</string>
-    <string name="details">Detail</string>
-    <string name="notes">Catatan</string>
-    <string name="deleting_folder">Menghapus folder \'%s\'</string>
-    <string name="none">Tidak ada</string>
     <string name="label">Label</string>
-    <string name="transparent">Transparan</string>
-    <string name="transparent_color">Warna transparan</string>
-    <string name="select_a_different_color">Pilih warna berbeda</string>
     <string name="download">Unduh</string>
-    <string name="notification">Notifikasi</string>
-    <string name="email">Email</string>
 
     <!-- Favorites -->
     <string name="favorites">Favorit</string>
@@ -37,47 +24,23 @@
     <string name="type_2_characters">Ketik paling tidak 2 karakter untuk mencari.</string>
 
     <!-- Filters -->
-    <string name="filter">Filter</string>
     <string name="no_items_found">Item tidak ditemukan.</string>
-    <string name="change_filter">Ubah filter</string>
 
     <!-- Permissions -->
     <string name="no_storage_permissions">Izin penyimpanan diperlukan</string>
-    <string name="no_contacts_permission">Izin kontak diperlukan</string>
-    <string name="no_camera_permissions">Izin kamera diperlukan</string>
-    <string name="no_audio_permissions">Izin audio diperlukan</string>
 
     <!-- Renaming -->
-    <string name="rename_file">Ubah nama berkas</string>
-    <string name="rename_folder">Ubah nama folder</string>
-    <string name="rename_file_error">Tidak bisa mengubah nama berkas</string>
-    <string name="rename_folder_error">Tidak bisa mengubah nama folder</string>
-    <string name="rename_folder_empty">Nama folder tidak boleh kosong</string>
-    <string name="rename_folder_exists">Folder dengan nama sama sudah ada</string>
-    <string name="rename_folder_root">Tidak bisa mengubah nama folder root penyimpanan</string>
-    <string name="rename_folder_ok">Nama folder berhasil diubah</string>
-    <string name="renaming_folder">Mengubah nama folder</string>
     <string name="filename_cannot_be_empty">Nama berkas tidak boleh kosong</string>
     <string name="filename_invalid_characters">Nama berkas berisi karakter tidak valid</string>
-    <string name="filename_invalid_characters_placeholder">\'%s\' berisi karakter tidak valid</string>
-    <string name="extension_cannot_be_empty">Ekstensi tidak boleh kosong</string>
     <string name="source_file_doesnt_exist">Berkas sumber %s tidak ada</string>
     <string name="prepend_filenames">Tambah akhiran nama berkas</string>
     <string name="append_filenames">Tambah awalan nama berkas</string>
     <string name="rename_date_time_pattern">%Y - tahun\n%M - bulan\n%D - hari\n%h - jam\n%m - menit\n%s - detik</string>
 
     <!-- Copy / Move -->
-    <string name="copy">Salin</string>
-    <string name="move">Pindah</string>
-    <string name="copy_move">Salin / Pindah</string>
     <string name="copy_to">Salin ke</string>
     <string name="move_to">Pindah ke</string>
-    <string name="source">Sumber</string>
-    <string name="destination">Tujuan</string>
-    <string name="select_destination">Pilih tujuan</string>
-    <string name="click_select_destination">Klik di sini untuk memilih tujuan</string>
     <string name="invalid_destination">Tidak bisa menyimpan ke tujuan ini</string>
-    <string name="please_select_destination">Silakan pilih tujuan</string>
     <string name="source_and_destination_same">Sumber dan tujuan tidak boleh sama</string>
     <string name="copy_failed">Tidak bisa menyalin berkas</string>
     <string name="copying">Menyalin…</string>
@@ -87,11 +50,8 @@
     <string name="moving_success">Berkas berhasil dipindahkan</string>
     <string name="moving_success_partial">Beberapa berkas tidak bisa dipindahkan</string>
     <string name="copying_success_partial">Beberapa berkas tidak bisa disalin</string>
-    <string name="no_files_selected">Tidak ada berkas yang dipilih</string>
-    <string name="saving">Menyimpan…</string>
     <string name="could_not_create_folder">Tidak bisa membuat folder %s</string>
     <string name="could_not_create_file">Tidak bisa membuat berkas %s</string>
-    <string name="no_new_items">Tidak ada item baru yang ditemukan</string>
 
     <!-- Create new -->
     <string name="create_new">Buat baru</string>
@@ -111,7 +71,6 @@
     <string name="keep_both">Simpan keduanya</string>
     <string name="overwrite">Timpa</string>
     <string name="skip">Lewati</string>
-    <string name="append">Akhiri dengan \'_1\'</string>
     <string name="apply_to_all">Terapkan ke semua</string>
 
     <!-- File picker -->
@@ -129,10 +88,6 @@
     <!-- Are you sure you want to delete 5 items? -->
     <plurals name="delete_items">
         <item quantity="other">%d item</item>
-    </plurals>
-
-    <plurals name="deleting_items">
-        <item quantity="other">Menghapus %d item</item>
     </plurals>
 
     <!-- Storages -->
@@ -155,10 +110,6 @@
     <string name="duration">Durasi</string>
     <string name="artist">Artis</string>
     <string name="album">Album</string>
-    <string name="focal_length">Jarak fokus</string>
-    <string name="exposure_time">Waktu paparan</string>
-    <string name="iso_speed">Kecepatan ISO</string>
-    <string name="f_number">Bukaan</string>
     <string name="camera">Kamera</string>
     <string name="exif">EXIF</string>
     <string name="song_title">Judul lagu</string>
@@ -169,19 +120,12 @@
     <string name="background_color">Warna latar belakang</string>
     <string name="text_color">Warna teks</string>
     <string name="primary_color">Warna utama</string>
-    <string name="foreground_color">Warna latar depan</string>
     <string name="app_icon_color">Warna ikon aplikasi</string>
-    <string name="bottom_navigation_bar_color">Warna bilah navigasi bawah</string>
-    <string name="restore_defaults">Kembalikan ke default</string>
-    <string name="change_color">Ubah warna</string>
     <string name="theme">Tema</string>
     <string name="changing_color_description">Mengubah warna akan mengalihkannya ke tema Khusus</string>
     <string name="save">Simpan</string>
     <string name="discard">Abaikan</string>
-    <string name="undo_changes">Urungkan perubahan</string>
-    <string name="undo_changes_confirmation">Apakah anda yakin ingin mengurungkan perubahan?</string>
     <string name="save_before_closing">Perubahan anda belum disimpan. Simpan sebelum keluar?</string>
-    <string name="apply_to_all_apps">Terapkan warna ke semua Simple Apps</string>
     <string name="app_icon_color_warning">PERINGATAN: Beberapa aplikasi launcher tidak mendukung kustomisasi ikon aplikasi. Jika ikon hilang, coba jalankan aplikasi via Google Play atau widget, jika tersedia.
         Setelah dijalankan, kembalikan warna default ikon #F57C00. Jika masih tidak bisa, anda mungkin harus memasang ulang aplikasi.</string>
     <string name="share_colors_success">Warna berhasil diperbarui. Tema baru dengan nama \'Saling Berbagi\' telah ditambahkan. Kedepannya, silakan gunakan untuk memperbarui semua warna aplikasi.</string>
@@ -194,7 +138,6 @@
     <!-- Themes -->
     <string name="light_theme">Terang</string>
     <string name="dark_theme">Gelap</string>
-    <string name="solarized">Solarized</string>
     <string name="dark_red">Merah gelap</string>
     <string name="black_white">Hitam &amp; Putih</string>
     <string name="custom">Khusus</string>
@@ -208,19 +151,13 @@
     <string name="delete">Hapus</string>
     <string name="remove">Buang</string>
     <string name="rename">Ubah nama</string>
-    <string name="share">Bagikan</string>
     <string name="share_via">Bagikan via</string>
     <string name="select_all">Pilih semua</string>
     <string name="hide">Sembunyikan</string>
     <string name="unhide">Tampilkan</string>
-    <string name="hide_folder">Sembunyikan folder</string>
-    <string name="unhide_folder">Tampilkan folder</string>
     <string name="temporarily_show_hidden">Sementara tampilkan yang tersembunyi</string>
     <string name="stop_showing_hidden">Berhenti tampilkan media tersembunyi</string>
     <string name="maximum_share_reached">Anda tidak bisa membagikan konten sebanyak ini sekaligus</string>
-    <string name="empty_and_disable_recycle_bin">Kosongkan dan nonaktifkan Keranjang Sampah</string>
-    <string name="undo">Urungkan</string>
-    <string name="redo">Ulangi</string>
     <string name="print">Cetak</string>
     <string name="create_shortcut">Buat pintasan</string>
 
@@ -230,30 +167,18 @@
     <string name="size">Ukuran</string>
     <string name="last_modified">Terakhir diubah</string>
     <string name="date_taken">Tanggal diambil</string>
-    <string name="title">Judul</string>
     <string name="filename">Nama berkas</string>
     <string name="extension">Ekstensi</string>
-    <string name="random">Acak</string>
-    <string name="sort_randomly">Urutkan secara acak</string>
     <string name="ascending">Naik</string>
     <string name="descending">Turun</string>
     <string name="use_for_this_folder">Gunakan hanya untuk folder ini saja</string>
-    <string name="sort_numeric_parts">Urutkan bagian numerik menurut nilai sebenarnya</string>
 
     <!-- Confirmation dialog -->
     <string name="proceed_with_deletion">Apakah anda yakin ingin melanjutkan penghapusan?</string>
     <string name="deletion_confirmation">Apakah anda yakin ingin menghapus %s?</string>    <!-- Are you sure you want to delete 5 items? -->
-    <string name="move_to_recycle_bin_confirmation">Anda yakin ingin memindahkan %s ke Keranjang Sampah?</string>    <!-- Are you sure you want to move 3 items into the Recycle Bin? -->
-    <string name="are_you_sure_delete">Apakah anda yakin ingin menghapus item ini?</string>
-    <string name="are_you_sure_recycle_bin">Apakah anda yakin ingin memindahkan item ini ke Keranjang Sampah?</string>
-    <string name="do_not_ask_again">Jangan tanya lagi untuk sesi ini</string>
+    <!-- Are you sure you want to move 3 items into the Recycle Bin? -->
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
-    <string name="maybe">Mungkin</string>
-
-    <plurals name="delete_warning">
-        <item quantity="other">PERHATIAN: Anda akan menghapus %d folder</item>
-    </plurals>
 
     <!-- Password protection -->
     <string name="pin">PIN</string>
@@ -265,23 +190,15 @@
     <string name="insert_pattern">Masukkan pola</string>
     <string name="wrong_pattern">Pola salah</string>
     <string name="repeat_pattern">Ulangi pola</string>
-    <string name="fingerprint">Sidik jari</string>
-    <string name="add_fingerprint">Tambah sidik jari</string>
     <string name="place_finger">Tempatkan jari anda pada sensor sidik jari</string>
     <string name="authentication_failed">Autentikasi gagal</string>
     <string name="authentication_blocked">Autentikasi diblokir, silakan coba lagi nanti</string>
     <string name="no_fingerprints_registered">Anda belum mendaftarkan sidik jari, silakan tambahkan di Pengaturan perangkat anda</string>
-    <string name="go_to_settings">Buka Pengaturan</string>
     <string name="protection_setup_successfully">Sandi berhasil dibuat. Silakan pasang ulang aplikasi jika anda melupakannya.</string>
     <string name="fingerprint_setup_successfully">Perlindungan berhasil dibuat. Silakan pasang ulang aplikasi jika ada masalah dalam menyetel ulang.</string>
-    <string name="lock_folder">Kunci folder</string>
-    <string name="unlock_folder">Buka kunci folder</string>
     <string name="lock_folder_notice">Perlindungan ini hanya bekerja di aplikasi ini saja, tidak dibuat untuk menggantikan fitur enkripsi folder keseluruhan sistem.</string>
 
     <!-- Times -->
-    <string name="yesterday">Kemarin</string>
-    <string name="today">Hari ini</string>
-    <string name="tomorrow">Besok</string>
     <string name="seconds_raw">detik</string>
     <string name="minutes_raw">menit</string>
     <string name="hours_raw">jam</string>
@@ -299,38 +216,8 @@
     <plurals name="days">
         <item quantity="other">%d hari</item>
     </plurals>
-    <plurals name="weeks">
-        <item quantity="other">%d minggu</item>
-    </plurals>
-    <plurals name="months">
-        <item quantity="other">%d bulan</item>
-    </plurals>
-    <plurals name="years">
-        <item quantity="other">%d tahun</item>
-    </plurals>
 
     <!-- For example: I will be there in 5 minutes -->
-    <plurals name="in_seconds">
-        <item quantity="other">%d detik</item>
-    </plurals>
-    <plurals name="in_minutes">
-        <item quantity="other">%d menit</item>
-    </plurals>
-    <plurals name="in_hours">
-        <item quantity="other">%d jam</item>
-    </plurals>
-    <plurals name="in_days">
-        <item quantity="other">%d hari</item>
-    </plurals>
-    <plurals name="in_weeks">
-        <item quantity="other">%d minggu</item>
-    </plurals>
-    <plurals name="in_months">
-        <item quantity="other">%d bulan</item>
-    </plurals>
-    <plurals name="in_years">
-        <item quantity="other">%d tahun</item>
-    </plurals>
 
     <!-- For example: Event reminder: 3 minutes before -->
     <plurals name="seconds_before">
@@ -379,16 +266,9 @@
     </plurals>
 
     <!-- For example: Time remaining till the alarm goes off: 6 hours, 5 minutes -->
-    <string name="alarm_goes_off_in">Sisa waktu hingga alarm berbunyi:\n%s</string>
-    <string name="reminder_triggers_in">Sisa waktu hingga pengingat muncul:\n%s</string>
-    <string name="alarm_warning">Silakan pastikan alarm berfungsi dengan baik sebelum menggunakannya. Bisa saja terjadi salah tindakan karena keterbatasan sistem terkait penghematan baterai.</string>
-    <string name="reminder_warning">Silakan pastikan pengingat berfungsi dengan baik sebelum menggunakannya. Bisa saja terjadi salah tindakan karena keterbatasan sistem terkait penghematan baterai.</string>
-    <string name="notifications_disabled">Notifikasi aplikasi ini dinonaktifkan. Silakan buka pengaturan perangkat untuk mengaktifkannya.</string>
 
     <!-- Alarms -->
     <string name="alarm">Alarm</string>
-    <string name="snooze">Tunda</string>
-    <string name="dismiss">Abaikan</string>
     <string name="no_reminder">Tidak ada pengingat</string>
     <string name="at_start">Waktu mulai</string>
     <string name="system_sounds">Suara sistem</string>
@@ -398,78 +278,29 @@
 
     <!-- Settings -->
     <string name="settings">Pengaturan</string>
-    <string name="purchase_simple_thank_you">Beli Simple Thank You</string>
     <string name="customize_colors">Sesuaikan warna</string>
-    <string name="customize_widget_colors">Sesuaikan warna widget</string>
     <string name="use_english_language">Gunakan bahasa Inggris</string>
     <string name="show_hidden_items">Tampilkan item tersembunyi</string>
-    <string name="font_size">Ukuran fon</string>
-    <string name="small">Kecil</string>
     <string name="medium">Medium</string>
-    <string name="large">Besar</string>
-    <string name="extra_large">Sangat besar</string>
     <string name="password_protect_hidden_items">Lindungi visibilitas item tersembunyi dengan sandi</string>
     <string name="password_protect_whole_app">Lindungi seluruh aplikasi dengan sandi</string>
     <string name="password_protect_file_deletion">Lindungi penghapusan dan pemindahan berkas dengan sandi</string>
     <string name="keep_last_modified">Keep old last-modified value at file operations</string>
     <string name="show_info_bubble">Tampilkan info saat menggeser bilah gulir</string>
-    <string name="prevent_phone_from_sleeping">Cegah ponsel tidur saat aplikasi terbuka</string>
-    <string name="skip_delete_confirmation">Selalu lewati dialog konfirmasi hapus</string>
-    <string name="enable_pull_to_refresh">Aktifkan fitur tarik untuk memperbarui</string>
     <string name="use_24_hour_time_format">Gunakan format waktu 24 jam</string>
     <string name="change_date_and_time_format">Ubah format tanggal dan waktu</string>
-    <string name="sunday_first">Awal pekan hari Minggu</string>
-    <string name="widgets">Widget</string>
-    <string name="use_same_snooze">Selalu gunakan waktu tunda yang sama</string>
-    <string name="snooze_time">Waktu tunda</string>
-    <string name="vibrate_on_button_press">Getar saat tombol disentuh</string>
-    <string name="move_items_into_recycle_bin">Pindahkan item ke Keranjang Sampah alih-alih dihapus</string>
-    <string name="recycle_bin_cleaning_interval">Interval pengosongan Keranjang Sampah</string>
-    <string name="empty_recycle_bin">Kosongkan Keranjang Sampah</string>
-    <string name="force_portrait_mode">Paksa mode potret</string>
     <string name="export_settings">Ekspor pengaturan</string>
-    <string name="import_settings">Impor pengaturan</string>
     <string name="settings_exported_successfully">Pengaturan berhail diekspor</string>
-    <string name="settings_imported_successfully">Pengaturan berhail diimpor</string>
 
     <!-- Setting sections -->
     <string name="visibility">Visibilitas</string>
     <string name="security">Keamanan</string>
     <string name="scrolling">Menggulir</string>
     <string name="file_operations">Operasi berkas</string>
-    <string name="recycle_bin">Keranjang Sampah</string>
-    <string name="saving_label">Menyimpan</string>
-    <string name="startup">Memulai</string>
-    <string name="text">Teks</string>
-    <string name="migrating">Memindahkan</string>
 
     <!-- Recycle Bin -->
-    <string name="restore_this_file">Pulihkan berkas ini</string>
-    <string name="restore_selected_files">Pulihkan berkas yang dipilih</string>
-    <string name="restore_all_files">Pulihkan semua berkas</string>
-    <string name="recycle_bin_emptied">Keranjang Sampah berhasil dikosongkan</string>
-    <string name="files_restored_successfully">Berkas berhasil dipulihkan</string>
-    <string name="empty_recycle_bin_confirmation">Apakah anda yakin ingin mengosongkan Keranjang Sampah? File akan dihapus secara permanen.</string>
-    <string name="recycle_bin_empty">Keranjang Sampah kosong</string>
-    <string name="moving_recycle_bin_items_disabled">Memindahkan item Keranjang Sampah dinonaktifkan, silakan gunakan fitur Pemulihan</string>
-    <string name="show_the_recycle_bin">Tampilkan Keranjang Sampah</string>
-    <string name="hide_the_recycle_bin">Sembunyikan Keranjang Sampah</string>
-
-    <plurals name="moving_items_into_bin">
-        <item quantity="other">Memindahkan %d item ke Keranjang Sampah</item>
-    </plurals>
 
     <!-- Import / Export -->
-    <string name="importing">Mengimpor…</string>
-    <string name="exporting">Mengekspor…</string>
-    <string name="importing_successful">Berhasil mengimpor</string>
-    <string name="exporting_successful">Berhasil mengekspor</string>
-    <string name="importing_failed">Gagal mengimpor</string>
-    <string name="exporting_failed">Gagal mengekspor</string>
-    <string name="importing_some_entries_failed">Gagal mengimpor beberapa entri</string>
-    <string name="exporting_some_entries_failed">Gagal mengekspor beberapa entri</string>
-    <string name="no_entries_for_importing">Tidak ditemukan entri untuk bisa diimpor</string>
-    <string name="no_entries_for_exporting">Tidak ditemukan entri untuk bisa diekspor</string>
 
     <!-- OTG devices -->
     <string name="usb">USB</string>
@@ -478,48 +309,8 @@
     <string name="wrong_root_selected_usb">Folder yang dipilih salah, silakan pilih folder root perangkat USB</string>
 
     <!-- Dates -->
-    <string name="january">Januari</string>
-    <string name="february">Februari</string>
-    <string name="march">Maret</string>
-    <string name="april">April</string>
-    <string name="may">Mei</string>
-    <string name="june">Juni</string>
-    <string name="july">Juli</string>
-    <string name="august">Agustus</string>
-    <string name="september">September</string>
-    <string name="october">Oktober</string>
-    <string name="november">November</string>
-    <string name="december">Desember</string>
 
     <!-- in January -->
-    <string name="in_january">pada Januari</string>
-    <string name="in_february">pada Februari</string>
-    <string name="in_march">pada Maret</string>
-    <string name="in_april">pada April</string>
-    <string name="in_may">pada Mei</string>
-    <string name="in_june">pada Juni</string>
-    <string name="in_july">pada Juli</string>
-    <string name="in_august">pada Agustus</string>
-    <string name="in_september">pada September</string>
-    <string name="in_october">pada Oktober</string>
-    <string name="in_november">pada November</string>
-    <string name="in_december">pada Desember</string>
-
-    <string name="monday">Senin</string>
-    <string name="tuesday">Selasa</string>
-    <string name="wednesday">Rabu</string>
-    <string name="thursday">Kamis</string>
-    <string name="friday">Jumat</string>
-    <string name="saturday">Sabtu</string>
-    <string name="sunday">Minggu</string>
-
-    <string name="monday_letter">S</string>
-    <string name="tuesday_letter">S</string>
-    <string name="wednesday_letter">R</string>
-    <string name="thursday_letter">K</string>
-    <string name="friday_letter">J</string>
-    <string name="saturday_letter">S</string>
-    <string name="sunday_letter">M</string>
 
     <string name="monday_short">Sen</string>
     <string name="tuesday_short">Sel</string>
@@ -531,10 +322,8 @@
 
     <!-- Pro version -->
     <string name="upgrade_to_pro_long">Versi aplikasi ini telah berhenti dikembangkan. Silakan tingkatkan ke versi Pro.</string>
-    <string name="it_is_free">Versi Pro tetap gratis hingga: %s. Jika anda mengunduhnya sampai batas waktu tersebut, anda bisa menggunakannya gratis selamanya.</string>
     <string name="more_info">Info selengkapnya</string>
     <string name="upgrade">Tingkatkan</string>
-    <string name="upgrade_calendar">Anda perlu memindahkan acara yang disimpan lokal secara manual dengan cara mengekspornya ke berkas .ics, lalu mengimpornya kembali. Anda bisa menemukan tombol ekspor/impor di layar menu utama.</string>
 
     <!-- About -->
     <string name="about">Tentang</string>
@@ -548,11 +337,8 @@
     <string name="invite_via">Undang via</string>
     <string name="rate_us_underlined"><u>Nilai kami</u></string>
     <string name="rate">Nilai</string>
-    <string name="donate">Donasi</string>
-    <string name="donate_underlined"><u>Donasi</u></string>
     <string name="follow_us">Ikuti kami</string>
     <string name="copyright">v %1$s\nHak cipta © Simple Mobile Tools %2$d</string>
-    <string name="additional_info">Info tambahan</string>
     <string name="app_version">Versi aplikasi: %s</string>
     <string name="device_os">OS perangkat: %s</string>
     <string name="donate_please">
@@ -588,18 +374,11 @@
     <!-- FAQ -->
     <string name="frequently_asked_questions">FAQ</string>
     <string name="before_asking_question">Sebelum anda bertanya, silakan baca</string>
-    <string name="faq_1_title_commons">Kenapa saya tidak melihat widget aplikasi ini di daftar widget?</string>
-    <string name="faq_1_text_commons">Kemungkinan besar karena anda memindahkan aplikasi ke kartu SD. Ada keterbatasan sistem Android yang akan menyembunyikan widget aplikasi
-        karena hal tersebut. Satu-satunya solusi adalah memindahkannya kembali ke Penyimpanan Internal melalui pengaturan perangkat anda.</string>
     <string name="faq_2_title_commons">Saya ingin mendukung Anda, tetapi saya tidak bisa berdonasi. Adakah cara lain yang bisa saya lakukan?</string>
     <string name="faq_2_text_commons">Tentu saja ada. Anda bisa membagikan aplikasi ini atau memberikan umpanbalik dan nilai yang baik. Anda juga bisa membantu menerjemahkan aplikasi ke dalam bahasa baru, atau cukup perbarui terjemahan yang sudah ada.
         Anda bisa melihat panduannya di https://github.com/SimpleMobileTools/General-Discussion , atau email saya di hello@simplemobiletools.com jika butuh bantuan.</string>
     <string name="faq_3_title_commons">Saya tidak sengaja menghapus berkas, bagaimana saya memulihkannya?</string>
     <string name="faq_3_text_commons">Sayangnya tidak bisa. Berkas akan dihapus secara permanen setelah dialog konfirmasi, tidak ada keranjang keranjang sampah yang tersedia.</string>
-    <string name="faq_4_title_commons">Saya tidak suka warna widget, bisakah saya mengubahnya?</string>
-    <string name="faq_4_text_commons">Ya, setelah anda menyeret widget pada layar beranda, layar konfigurasi widget akan muncul. Anda akan melihat kotak warna di pojok bawah kiri, cukup sentuh untuk memilih warna baru. Anda juga bisa menyeret penggeser untuk menyesuaikan transparansi.</string>
-    <string name="faq_5_title_commons">Bisakah saya memulihkan berkas yang terhapus?</string>
-    <string name="faq_5_text_commons">Jika berkas memang benar-benar terhapus, anda tidak bisa memulihkannya. Tetapi, jika Recycle Bin diaktifkan secara default, tindakan hapus hanya akan menyebabkan berkas dipindah ke Keranjang Sampah.</string>
     <string name="faq_6_title_commons">Ikon launcher aplikasi menghilang. Apa yang bisa saya lakukan?</string>
     <string name="faq_6_text_commons">Hal tersebut disebabkan oleh launcher anda yang tidak mendukung kustomisasi ikon dengan benar. Coba jalankan aplikasi melalui Google Play atau widget, jika tersedia.
         Setelah dijalankan, cukup kembalikan warna ikon default oranye #F57C00. Jika masih tidak bisa, anda mungkin harus memasang ulang aplikasi.</string>
@@ -633,6 +412,4 @@
     <string name="gesture_views_title">Gesture Views (zoomable images)</string>
 
     <!-- Google Play listing -->
-    <string name="deprecated_app">TIDAK DIDUKUNG: Versi aplikasi ini tidak lagi dikembangkan, dapatkan versi Pro di https://play.google.com/store/apps/details?id=com.simplemobiletools.xxx.pro</string>
-    <string name="pro_app_refund">Jangan lupa, jika anda untuk mencopot aplikasi berbayar manapun dalam waktu 2 jam, uang anda akan otomatis dikembalikan. Jika anda ingin pengembalian dilakukan lain waktu, cukup hubungi hello@simplemobiletools.com dan anda akan mendapatkannya. Mempermudah anda untuk mencobanya terlebih dahulu. :)</string>
 </resources>

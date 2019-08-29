@@ -5,9 +5,7 @@
     <string name="btn_backspace">BORRAR TODO</string>
     <string name="description_notification_icon">icono de notificación</string>
     <string name="description_app_image">imagen de aplicación</string>
-    <string name="unlock">DESBLOQUEAR</string>
     <string name="enter_pin">Introduzca el pin</string>
-    <string name="re_enter_pin">Vuelva a introducir el pin</string>
     <string name="confirm_pin">Establecer pin</string>
     <string name="ok">ok</string>
     <string name="cancel">Cancelar</string>
@@ -16,8 +14,6 @@
     <string name="set_encrypted_password">Establecer contraseña encriptada</string>
     <string name="please_enter_your_current_password">Por favor, introduzca su contraseña actual.</string>
     <string name="wrong_password_entered">Ha introducido una contraseña incorrecta.</string>
-    <string name="password_changed">contraseña modificada</string>
-    <string name="password_not_changed">contraseña no modificada</string>
     <string name="hint_please_enter_guest_pin">Por favor, introduzca el pin de invitado</string>
     <string name="hint_please_enter_duress_pin">Por favor, introduzca el pin de coacción</string>
     <string name="hint_please_confirm_your_pin">Por favor, confirme su pin</string>
@@ -27,7 +23,6 @@
     <string name="set_guest_code">Código Pin de Invitado</string>
     <string name="set_duress_code">Código Pin de coacción</string>
     <string name="set_encrypted_code">Código PIN encriptado</string>
-    <string name="set_background_for">Fijar fondo para</string>
     <string name="guest_all">ACTIVAR invitado TODO</string>
     <string name="encryption_all">ACTIVAR Encriptado TODO</string>
     <string name="enable_all">Habilitar todo</string>
@@ -39,7 +34,6 @@
     <string name="hint_please_enter_code_pin">Por favor, introduzca el código pin</string>
     <string name="please_enter_code_admin_password">Por favor, introduzca la contraseña de administrador.</string>
     <string name="code">Código</string>
-    <string name="set_apps_permissions">Permiso de aplicación</string>
     <string name="reset_guest_encrypted_pass">Restablecer invitado y pases encriptados</string>
     <string name="change_admin_panel_code">Cambiar el código del panel de administración</string>
     <string name="password_is_changed_to_default">La contraseña está configurada como predeterminada</string>
@@ -56,10 +50,8 @@
     <string name="permission_required">Necesitamos este permiso para leer los IDs de hardware para proteger su dispositivo.</string>
     <string name="dont_have_permission">No tenemos permiso.</string>
     <string name="permission_denied">Permiso denegado</string>
-    <string name="info">Información:</string>
     <string name="device_already_linked">Dispositivo enlazado con éxito</string>
     <string name="link_request_pending">¡Solicitud de enlace pendiente!</string>
-    <string name="something_went_wrong">Algo salió mal</string>
     <string name="link_device">Enlazar dispositivo</string>
     <string name="device_not_linked">¡Dispositivo no enlazado!</string>
     <string name="stop_linking">Dejar de enlazar</string>
@@ -85,7 +77,6 @@
     <string name="some_error_occurred">¡Algo salió mal!</string>
 
     <!-- : Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Cuenta</string>
     <string name="language">Idiomas</string>
     <string name="install_app_activity">installAppActivity</string>
@@ -98,19 +89,14 @@
     <string name="simtext">SIM:</string>
     <string name="slot">Ranura :</string>
     <string name="name">/ Nombre :</string>
-    <string name="apn">/ Apn :</string>
     <string name="guest">Invitado</string>
     <string name="encrypted">Encriptado</string>
     <string name="status">Estado :</string>
     <string name="status_active">Activo</string>
     <string name="status_disabled">Desactivado</string>
     <string name="status_not_inserted">No insertado</string>
-    <string name="title_activity_secure_simsettings">Configuración segura de la tarjeta SIM</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
-    <string name="add">AGREGAR +</string>
     <string name="status_online">AGREGAR</string>
     <string name="enable_all_unregistered">EHabilitar todo \n<small>(No registrado)</small></string>
     <string name="enable_all_registered">Habilitar todo \n<small>(Registrado)</small></string>
@@ -192,7 +178,6 @@
     <string name="off">APAGADO</string>
     <string name="on">ENCENDIDO</string>
     <string name="installed_apps_title">Aplicaciones instaladas</string>
-    <string name="something_wrong">algo salió mal</string>
     <string name="downloading_update">Descargando la actualización, por favor espere</string>
     <string name="install">instalar</string>
     <string name="uninstall">desinstalar</string>
@@ -269,19 +254,12 @@
     <string name="allow_device_admin">Permitir dispositivo de administrador</string>
     <string name="allow_device_admin_message">Activar bloqueo de pantalla de administrador. Esto proporcionará un entorno más seguro</string>
     <string name="allow_overlay_permission">Conceder permiso de superposición</string>
-    <string name="allow_overlay_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_modify_system_state">Permitir modificar el estado del sistema</string>
-    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_usage_access">Permitir el acceso al uso</string>
-    <string name="allow_usage_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_run_time_permission">Conceder el permiso tiempo de ejecución</string>
-    <string name="allow_run_time_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_install_packages">Permitir la instalación de paquetes</string>
-    <string name="allow_install_packages_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_notification_access">Permitir el acceso a las notificaciones</string>
-    <string name="allow_notification_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_access_battery_optimization">Permitir el acceso a la optimización de la batería</string>
-    <string name="allow_access_battery_optimization_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="guest_password">Contraseña de Invitado</string>
     <string name="please_set_encrypted_password">Por favor, establezca una contraseña encriptada</string>
     <string name="encrypted_password">Contraseña encriptada</string>
@@ -302,7 +280,6 @@
     <string name="welcome">¡Bienvenido!</string>
     <string name="welcome_message">Nos estamos preparando para iniciar el sistema por primera vez, por favor espere.</string>
     <string name="inactivity_message">After %1$s of inactivity</string>
-    <string name="change_language_title">Languages</string>
     <string name="dealer_pin_or_activation_code">Pin o código de activación del distribuidor</string>
     <string name="clearing_cache">Borrar la caché</string>
     <string name="clearing_cache_successfull">Borrado satisfactorio de la caché</string>
@@ -330,15 +307,12 @@
     <string name="device_admin_changed">Administrador de dispositivos de muestra: contraseña cambiada</string>
     <string name="device_admin_failed">Administrador de dispositivos de muestra: contraseña incorrecta</string>
     <string name="device_admin_succeeded">Administrador de dispositivos de muestra: contraseña exitosa</string>
-    <string name="language_is_changed">Se cambia el idioma</string>
     <string name="please_wait_">Por favor, espere...</string>
     <string name="account_disabled">Cuenta desactivada. Póngase en contacto con su distribuidor para obtener ayuda.</string>
     <string name="server_error">El servidor no responde. ¡Inténtelo de nuevo!</string>
     <string name="incorrect_pin">PIN incorrecto</string>
     <string name="version">Version</string>
     <string name="type">Type</string>
-    <string name="change_language_dialog_title">Change Language</string>
-    <string name="change_language_dialog_message">Proceed with changing the language?</string>
     <string name="policy">Policy</string>
     <string name="theme">Theme</string>
     <string name="light_theme">Light Theme</string>

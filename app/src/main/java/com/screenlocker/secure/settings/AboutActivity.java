@@ -427,12 +427,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         int total = 6;
 
         if (clickCount == 6) {
+            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
             button.setVisibility(View.VISIBLE);
             button2.setVisibility(View.VISIBLE);
             url_1.setVisibility(View.VISIBLE);
         } else {
             if (clickCount >= 2 && clickCount <= 6) {
-                Toast.makeText(this, total - clickCount + " more clicks ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -30,7 +30,6 @@
         app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
     <View
-        android:id="@+id/dividerDataCunsumption"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorLine"
@@ -56,7 +55,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
 
     <View
-        android:id="@+id/dividerDataUSage"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorLine"
@@ -82,7 +80,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
 
     <View
-        android:id="@+id/dividerIMEI"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorLine"
@@ -135,7 +132,6 @@
         tools:layout_editor_absoluteY="160dp" />
 
     <View
-        android:id="@+id/tvthemeDevider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorLine"

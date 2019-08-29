@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="_14ssp">14sp</dimen>
-    <style name="stepper_theme">
-        <item name="android:colorPrimary">@color/colorBlack</item>
-        <item name="android:colorPrimaryDark">@color/colorBlack</item>
-        <item name="android:colorAccent">@color/colorBlack</item>
-    </style>
 </resources>

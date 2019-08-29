@@ -11,14 +11,6 @@
     </style>
 
 
-    <style name="FullScreen" parent="AppTheme">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-
-
-    </style>
-
     <style name="HomeScreen" parent="AppTheme">
 
         <item name="android:windowTranslucentStatus">true</item>
@@ -71,10 +63,6 @@
 
     </style>
 
-    <style name="TextColor">
-        <item name="android:textColor">@color/seekbarColor</item>
-    </style>
-
 
     <style name="MainActivityItemsStyle">
         <item name="android:paddingTop">@dimen/_10sdp</item>
@@ -89,15 +77,6 @@
         <item name="android:paddingLeft">@dimen/_10sdp</item>
     </style>
 
-    <style name="CustomThem" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-    </style>
-
 
     //Secure Settings theme
 
@@ -110,22 +89,6 @@
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
     </style>
 
-    <style name="Theme.Transparent" parent="@android:style/Theme.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-
-
-    </style>
-
-    <style name="stepper_theme">
-        <item name="android:colorPrimary">@color/colorBlack</item>
-        <item name="android:colorPrimaryDark">@color/colorBlack</item>
-        <item name="android:colorAccent">@color/colorBlack</item>
-    </style>
     <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
         <item name="android:activityOpenExitAnimation">@anim/fade_out</item>

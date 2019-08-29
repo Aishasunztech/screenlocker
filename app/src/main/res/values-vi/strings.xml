@@ -15,9 +15,7 @@
     <string name="btn_backspace">XOÁ TẤT CẢ</string>
     <string name="description_notification_icon">biểu tượng thông báo</string>
     <string name="description_app_image">hình ảnh ứng dụng</string>
-    <string name="unlock">MỞ KHOÁ</string>
     <string name="enter_pin">Nhập mã PIN</string>
-    <string name="re_enter_pin">Nhập lại mã pin</string>
     <string name="confirm_pin">Cài đặt mã PIN</string>
     <string name="ok">Đồng ý</string>
     <string name="cancel">Hủy bỏ</string>
@@ -26,8 +24,6 @@
     <string name="set_encrypted_password">Đặt mật khẩu được mã hóa</string>
     <string name="please_enter_your_current_password">Vui lòng nhập mật khẩu hiện tại của bạn.</string>
     <string name="wrong_password_entered">Bạn đã nhập sai mật khẩu.</string>
-    <string name="password_changed">mật khẩu đã thay đổi</string>
-    <string name="password_not_changed">mật khẩu không thay đổi</string>
     <string name="hint_please_enter_guest_pin">Vui lòng nhập mã pin khách</string>
     <string name="hint_please_enter_duress_pin">Vui lòng nhập pin ép buộc</string>
     <string name="hint_please_confirm_your_pin">Vui lòng xác nhận mã pin của bạn</string>
@@ -37,7 +33,6 @@
     <string name="set_guest_code">Mã Pin Khách</string>
     <string name="set_duress_code">Mã Pin Ép buộc</string>
     <string name="set_encrypted_code">Mã Pin Được mã hoá</string>
-    <string name="set_background_for">Cài Hình nền cho</string>
     <string name="guest_all">Cho Phép TẤT CẢ Khách</string>
     <string name="encryption_all">Mở TẤT CẢ Mã được mã hoá</string>
     <string name="enable_all">Cho phép Tất cả</string>
@@ -49,7 +44,6 @@
     <string name="hint_please_enter_code_pin">Vui lòng nhập mã pin</string>
     <string name="please_enter_code_admin_password">Vui lòng nhập mật khẩu mã quản trị</string>
     <string name="code">Mã</string>
-    <string name="set_apps_permissions">Giấy phép Ứng dụng</string>
     <string name="reset_guest_encrypted_pass">Thiết lập lại các Mật khẩu khách &amp; Được mã hoá</string>
     <string name="change_admin_panel_code">Thay đổi Mã Bảng Quản trị</string>
     <string name="password_is_changed_to_default">Mật khẩu được đặt làm mặc định</string>
@@ -66,10 +60,8 @@
     <string name="permission_required">Chúng tôi cần quyền này để đọc ID phần cứng để bảo mật thiết bị của bạn</string>
     <string name="dont_have_permission">Chúng tôi không có quyền.</string>
     <string name="permission_denied">Quyền bị từ chối</string>
-    <string name="info">Thông tin:</string>
     <string name="device_already_linked">Thiết bị được liên kết thành công</string>
     <string name="link_request_pending">Yêu cầu liên kết đang chờ xử lý!</string>
-    <string name="something_went_wrong">Đã xảy ra lỗi</string>
     <string name="link_device">Liên kết thiết bị</string>
     <string name="device_not_linked">Thiết bị không thể liên kết!</string>
     <string name="stop_linking">Ngừng Liên kết</string>
@@ -95,7 +87,6 @@
     <string name="some_error_occurred">Đã Xảy ra Lỗi!</string>
 
     <!-- : Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Tài khoản</string>
     <string name="language">Ngôn ngữ </string>
     <string name="install_app_activity">installAppActivity</string>
@@ -108,19 +99,14 @@
     <string name="simtext">SIM:</string>
     <string name="slot">Khe cắm :</string>
     <string name="name">/ Tên :</string>
-    <string name="apn">/ Apn :</string>
     <string name="guest">Khách</string>
     <string name="encrypted">Được mã hóa</string>
     <string name="status">Trạng thái :</string>
     <string name="status_active">Đang hoạt động</string>
     <string name="status_disabled">Ngưng hoạt động</string>
     <string name="status_not_inserted">Chưa được cắm vào</string>
-    <string name="title_activity_secure_simsettings">Cài đặt SIM bảo mật</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
-    <string name="add">THÊM VÀO +</string>
     <string name="status_online">Trực tuyến</string>
     <string name="enable_all_unregistered">Cho phép Tất cả \n<small>(Chưa đăng ký)</small></string>
     <string name="enable_all_registered">Cho phép Tất cả \n<small>(Đã đăng ký)</small></string>
@@ -198,7 +184,6 @@
     <string name="off">TẮT</string>
     <string name="on">MỞ</string>
     <string name="installed_apps_title">Ứng dụng Đã cài đặt</string>
-    <string name="something_wrong">đã xảy ra lỗi</string>
     <string name="downloading_update">Đang tải Cập nhật, Vui lòng Đợi</string>
     <string name="install">cài đặt</string>
     <string name="uninstall">gỡ cài đặt</string>
@@ -275,19 +260,12 @@
     <string name="allow_device_admin">Cho phép Quản trị Thiết bị</string>
     <string name="allow_device_admin_message">Kích hoạt Quản trị viên Khoá màn hình Thiết bị. Nó sẽ cung cấp môi trường an toàn hơn</string>
     <string name="allow_overlay_permission">Cho phép Quyền Lớp phủ</string>
-    <string name="allow_overlay_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_modify_system_state">Cho phép Sửa đổi Trạng thái Hệ thống</string>
-    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_usage_access">Cho phép Truy cập Sử dụng</string>
-    <string name="allow_usage_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_run_time_permission">Cho phép Quyền Thời gian chạy</string>
-    <string name="allow_run_time_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_install_packages">Cho phép Gói Cài đặt</string>
-    <string name="allow_install_packages_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_notification_access">Cho phép Truy cập Thông báo</string>
-    <string name="allow_notification_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="allow_access_battery_optimization">Cho phép Truy cập Tối ưu hóa pin</string>
-    <string name="allow_access_battery_optimization_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
     <string name="guest_password">Mật khẩu Khách</string>
     <string name="please_set_encrypted_password">Vui lòng Đặt Mật khẩu Được mã hóa</string>
     <string name="encrypted_password">Mật khẩu Được mã hóa</string>
@@ -308,7 +286,6 @@
     <string name="welcome">Chào mừng bạn!</string>
     <string name="welcome_message">Chúng tôi đang chuẩn bị ra mắt hệ thống lần đầu tiên.</string>
     <string name="inactivity_message">Sau %1$s không hoạt động</string>
-    <string name="change_language_title">Ngôn ngữ</string>
     <string name="dealer_pin_or_activation_code">Mã Đại lý hoặc Mã Kích hoạt</string>
     <string name="clearing_cache">Đang xoá bộ nhớ cache</string>
     <string name="clearing_cache_successfull">Đã xoá bộ nhớ cache thành công</string>
@@ -341,7 +318,6 @@
     <string name="device_admin_changed">Quản trị Thiết bị mẫu: mật khẩu đã thay đổi</string>
     <string name="device_admin_failed">Quản trị Thiết bị mẫu: mật khẩu thất bại</string>
     <string name="device_admin_succeeded">Quản trị Thiết bị mẫu: mật khẩu đã thành công</string>
-    <string name="language_is_changed">Ngôn ngữ được thay đổi</string>
     <string name="please_wait_">Vui lòng chờ ...</string>
     <string name="account_disabled">Tài khoản bị vô hiệu hóa.
  Liên hệ với đại lý của bạn để được hỗ trợ.</string>
@@ -352,9 +328,6 @@
     <string name="type">Kiểu</string>
     <string name="policy">Chính sáchu</string>
     <string name="mode">Chế độ</string>
-    <string name="change_language_dialog_title">Thay đổi ngôn ngữ</string>
-    <string name="change_language_dialog_message">Tiến hành thay đổi ngôn ngữ?</string>
-
 
 
     <string name="theme">Chủ đề</string>

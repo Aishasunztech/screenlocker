@@ -10,23 +10,15 @@
     <string name="copy_path">Скопіювати шлях у буфер обміну</string>
     <string name="path_copied">Шлях скопійовано</string>
     <string name="select_audio_file">Будь ласка, оберіть аудіо файл</string>
-    <string name="search_folder">Шукати теку</string>
     <string name="rooted_device_only">Ця команда працює лише на пристроях з root-доступом</string>
 
     <!-- Open as -->
-    <string name="open_as">Відкрити як файл</string>
-    <string name="text_file">Текстовий</string>
-    <string name="image_file">Зображення</string>
-    <string name="audio_file">Аудіо</string>
-    <string name="video_file">Відео</string>
-    <string name="other_file">Інший тип</string>
 
     <!-- Compression -->
     <string name="compress">Стиснути</string>
     <string name="decompress">Розпакувати</string>
     <string name="compress_as">Стиснути як</string>
     <string name="compressing">Триває стиснення…</string>
-    <string name="decompressing">Триває розпакування…</string>
     <string name="compression_successful">Успішно стиснено</string>
     <string name="decompression_successful">Успішно розпаковано</string>
     <string name="compressing_failed">Не вдалося стиснути</string>
@@ -45,16 +37,6 @@
 
     <!-- Strings displayed only on Google Play Store. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->
-    <string name="app_short_description">Простий менеджер файлів для перегляду та редагування файлів і тек.</string>
-    <string name="app_long_description">
-        Можна використовувати для пошуку root-файлів та переглядати вміст SD картки. Можна легко перейменовувати, копіювати, переміщати, видаляти та надсилати будь-які файли.
-
-        Щоб заблокувати перегляд прихованих елементів або доступ до додатка, можна скористатись сканером відбитка пальця.
-
-        Цей додаток не буде показувати рекламу, потрібні лише найнеобхідніші дозволи. Додаток має повністю відкритий програмний код, кольори оформлення можна легко налаштувати.
-
-        Простий Менеджер Файлів є лише одним із ряду додатків від Simple Mobile Tools. Ви знайдете інші за адресою https://www.simplemobiletools.com
-    </string>
 
     <!--
         Haven't found some strings? There's more at

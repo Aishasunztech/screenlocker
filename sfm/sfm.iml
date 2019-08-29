@@ -26,7 +26,7 @@
       </configuration>
     </facet>
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JVM 1.6" useProjectSettings="false">
+      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/src/debug/kotlin;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/debug/java;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/release/kotlin;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/release/java;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/debugAndroidTest/kotlin;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/debugUnitTest/kotlin;/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/sfm/src/releaseUnitTest/kotlin">
         <compilerSettings>
           <option name="additionalArguments" value="-Xallow-no-source-files" />
         </compilerSettings>

@@ -55,7 +55,6 @@
                         >
 
                         <TextView
-                            android:id="@+id/textViewSystemId"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -83,7 +82,6 @@
 
                     </TableRow>
                     <View
-                        android:id="@+id/SystemIdDivider"
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/colorLine"
@@ -97,7 +95,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewDeviceId"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -136,7 +133,6 @@
                         >
 
                         <TextView
-                            android:id="@+id/textLinkStatus"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -329,7 +325,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewCurrentDealer"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -357,7 +352,6 @@
 
                     </TableRow>
                     <View
-                        android:id="@+id/dividerCurrentDealer"
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/colorLine"
@@ -371,7 +365,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewDealerPin"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -409,7 +402,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewSim1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -447,7 +439,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewSim2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -485,7 +476,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewS_N"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -523,7 +513,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewMAC"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -561,7 +550,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewIP"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -599,7 +587,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewPGPEMAIl"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -638,7 +625,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewCHATID"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"
@@ -681,7 +667,6 @@
                         style="@style/accountRowStyle">
 
                         <TextView
-                            android:id="@+id/textViewSIMID"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             style="@style/accountheadingsStyle"

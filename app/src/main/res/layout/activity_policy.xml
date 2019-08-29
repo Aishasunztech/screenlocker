@@ -52,7 +52,6 @@
                 >
 
                 <ImageView
-                    android:id="@+id/df_launcher_icon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/_10sdp"

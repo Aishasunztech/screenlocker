@@ -25,7 +25,6 @@
         android:layout_marginBottom="@dimen/_16sdp"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
     <View
-        android:id="@+id/divider4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/_16sdp"
@@ -142,7 +141,6 @@
             android:paddingEnd="@dimen/_16sdp"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/tvCombination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/combination"
