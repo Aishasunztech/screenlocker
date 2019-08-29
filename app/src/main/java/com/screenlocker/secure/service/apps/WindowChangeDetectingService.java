@@ -333,13 +333,6 @@ public class WindowChangeDetectingService extends AccessibilityService {
                                 checkAppStatus(componentName);
                             }
                         }
-                    } else {
-                        if (componentName.flattenToShortString().equals("com.android.settings/.Settings$AccessibilitySettingsActivity")) {
-                            Intent i = new Intent(this, SteppersActivity.class);
-                            startActivity(i);
-
-                            Timber.d("cdjvnfdsnsk");
-                        }
                     }
                 }
 

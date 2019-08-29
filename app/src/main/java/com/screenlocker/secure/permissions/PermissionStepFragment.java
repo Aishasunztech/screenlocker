@@ -1,7 +1,6 @@
 package com.screenlocker.secure.permissions;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,13 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,14 +30,12 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +62,6 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -96,29 +92,23 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         if (checkPermissions(MyApplication.getAppContext())) {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
             //all the permissions are granted, can move to next
-
             return true;
         } else {
-            try {
-                Timber.d("Show remaining permission");
-                showPermissionsMenus();
-            } catch (Exception e) {
-                Timber.d("Error Occurred %s ", e.getMessage());
-                init();
-                // setting listeners
-                activeAdmin.setOnCheckedChangeListener(this);
-                drawoverlay.setOnCheckedChangeListener(this);
-                usageAccess.setOnCheckedChangeListener(this);
-                runtimePermissions.setOnCheckedChangeListener(this);
-                unknownResources.setOnCheckedChangeListener(this);
-                notificationAccess.setOnCheckedChangeListener(this);
-                batteryOptimization.setOnCheckedChangeListener(this);
-                accessibilityService.setOnCheckedChangeListener(this);
-                modifiSystemState.setOnCheckedChangeListener(this);
-                showPermissionsMenus();
-            }
-            return false;
+
+            init();
+            // setting listeners
+            activeAdmin.setOnCheckedChangeListener(this);
+            drawoverlay.setOnCheckedChangeListener(this);
+            usageAccess.setOnCheckedChangeListener(this);
+            runtimePermissions.setOnCheckedChangeListener(this);
+            unknownResources.setOnCheckedChangeListener(this);
+            notificationAccess.setOnCheckedChangeListener(this);
+            batteryOptimization.setOnCheckedChangeListener(this);
+            accessibilityService.setOnCheckedChangeListener(this);
+            modifiSystemState.setOnCheckedChangeListener(this);
+            showPermissionsMenus();
         }
+        return false;
 
 
     }
@@ -147,16 +137,16 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 //        }
 //
 
-        if (!PrefUtils.getBooleanPref(MyApplication.getAppContext(), TOUR_STATUS)) {
-            if (checkPermissions(MyApplication.getAppContext())) {
-                if (mListener != null) {
-                    mListener.onPageUpdate(1);
-                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
-                }
-
-            }
-
-        }
+//        if (!PrefUtils.getBooleanPref(MyApplication.getAppContext(), TOUR_STATUS)) {
+//            if (checkPermissions(MyApplication.getAppContext())) {
+//                if (mListener != null) {
+//                    mListener.onPageUpdate(1);
+//                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
+//                }
+//
+//            }
+//
+//        }
 
 
     }
@@ -238,6 +228,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         View v = inflater.inflate(R.layout.permmision_layout, container, false);
         ButterKnife.bind(this, v);
 
+
         init();
 
         // setting listeners
@@ -296,46 +287,39 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
     private void showPermissionsMenus() {
+
         // 1
         if (devicePolicyManager.isAdminActive(compName)) {
             setCheckedAndClickAble(activeAdmin, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, true);
             layoutAdmin.setVisibility(GONE);
         } else {
             setCheckedAndClickAble(activeAdmin, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ADMIN, false);
             layoutAdmin.setVisibility(View.VISIBLE);
         }
         //2
         if (Settings.canDrawOverlays(getContext())) {
             layoutOverLay.setVisibility(GONE);
             setCheckedAndClickAble(drawoverlay, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, true);
 
         } else {
             layoutOverLay.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(drawoverlay, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_OVERLAY, false);
         }
         //3
         if (Settings.System.canWrite(getActivity())) {
             layoutModifySystem.setVisibility(GONE);
             setCheckedAndClickAble(modifiSystemState, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_MODIFIY, true);
         } else {
             layoutModifySystem.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(modifiSystemState, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_MODIFIY, false);
         }
         //4
         if (isAccessGranted(MyApplication.getAppContext())) {
             layoutUsage.setVisibility(GONE);
             setCheckedAndClickAble(usageAccess, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, true);
         } else {
             layoutUsage.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(usageAccess, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_USAGE, false);
         }
         //5
         if (getActivity() != null && getActivity().checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
@@ -344,11 +328,9 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                 getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             layoutRuntime.setVisibility(GONE);
             setCheckedAndClickAble(runtimePermissions, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
         } else {
             layoutRuntime.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(runtimePermissions, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
         }
 
         //6
@@ -356,48 +338,40 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             if (MyApplication.getAppContext().getPackageManager().canRequestPackageInstalls()) {
                 layoutInstall.setVisibility(GONE);
                 setCheckedAndClickAble(unknownResources, false, true);
-                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
             } else {
                 layoutInstall.setVisibility(View.VISIBLE);
                 setCheckedAndClickAble(unknownResources, true, false);
-                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, false);
             }
         } else {
             layoutInstall.setVisibility(GONE);
             setCheckedAndClickAble(unknownResources, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_UNKNOWN, true);
         }
         //7
         if (isNotificationAccess(getContext())) {
             layoutNotification.setVisibility(GONE);
             setCheckedAndClickAble(notificationAccess, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION, true);
         } else {
             layoutNotification.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(notificationAccess, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_NOTIFICATION, false);
         }
         //8
         PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
         if (pm.isIgnoringBatteryOptimizations(getContext().getPackageName())) {
             layoutIgnore.setVisibility(GONE);
             setCheckedAndClickAble(batteryOptimization, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, true);
         } else {
             layoutIgnore.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(batteryOptimization, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_BATTERY, false);
         }
         //9
         if (isAccessServiceEnabled(MyApplication.getAppContext(), WindowChangeDetectingService.class)) {
             layoutAccessibility.setVisibility(GONE);
             setCheckedAndClickAble(batteryOptimization, false, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, true);
         } else {
             layoutAccessibility.setVisibility(View.VISIBLE);
             setCheckedAndClickAble(batteryOptimization, true, false);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_ACCESS, false);
         }
+
     }
 
     @Override
@@ -453,10 +427,11 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                             CODE_BATERY_OPTIMIZATION);
                     break;
                 case R.id.active_accessibility:
-                    Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivityForResult(intent, CODE_ACCESSIBILITY);
+                    if (!isAccessServiceEnabled(MyApplication.getAppContext(), WindowChangeDetectingService.class)) {
+                        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                        startActivityForResult(intent, CODE_ACCESSIBILITY);
+                    }
                     break;
-
             }
     }
 

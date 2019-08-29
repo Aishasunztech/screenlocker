@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
@@ -86,9 +87,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
                 if (getPolicyDialog().isShowing()) {
                     getPolicyDialog().dismiss();
                 }
-
                 showpolicyConfirmstion();
-
             }
         }
     };
@@ -104,6 +103,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //        View decorView = getWindow().getDecorView();
 //        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 //        decorView.setSystemUiVisibility(uiOptions);
+
+
+        if (PrefUtils.getBooleanPref(BaseActivity.this, AppConstants.KEY_THEME)) {
+            switch (AppCompatDelegate.getDefaultNightMode()) {
+                case AppCompatDelegate.MODE_NIGHT_UNSPECIFIED:
+                case AppCompatDelegate.MODE_NIGHT_NO:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().applyDayNight();
+                    recreate();
+                    break;
+            }
+        }
 
 
         createAlertDialog();
