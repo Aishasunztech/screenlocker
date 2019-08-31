@@ -3,10 +3,12 @@ package com.screenlocker.secure.mdm.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,6 +81,14 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private static final String TAG = LinkDeviceActivity.class.getSimpleName();
     private static final String DEALER_ID_DEFAULT = "not linked yet";
+    @BindView(R.id.not_linked_container)
+    LinearLayout notLinkedContainer;
+    @BindView(R.id.linked_container)
+    LinearLayout linkedContainer;
+    @BindView(R.id.stop_linking_container)
+    LinearLayout stopLinkingContainer;
+
+    private boolean isFirstTime = true;
 
     @BindView(R.id.lytSwipeReferesh)
     SwipeRefreshLayout lytSwipeReferesh;
@@ -134,6 +145,8 @@ public class LinkDeviceActivity extends BaseActivity {
     TableRow chatId;
     @BindView(R.id.tvChatId)
     TextView tvChatId;
+    @BindView(R.id.tv_linked_dealerPin)
+    TextView tv_label_dealer_pin;
 
     // Sim ID view
     @BindView(R.id.simId)
@@ -151,7 +164,6 @@ public class LinkDeviceActivity extends BaseActivity {
     public LinkDeviceActivity() {
 
     }
-
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -276,6 +288,7 @@ public class LinkDeviceActivity extends BaseActivity {
         tvMAC.setText(MAC);
         tvIP.setText(IP);
         lytSwipeReferesh.setOnRefreshListener(listener);
+
 
     }
 
@@ -507,7 +520,8 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Timber.d("status from LinkDevice :%s",msg);
+
+
                             boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
 
@@ -598,9 +612,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private Timer t;
 
-    private boolean timerStatus = false;
-
-    private void scheduleTimer(boolean status) {
+    private void scheduleTimer() {
 
         if (t != null) {
             t.cancel();
@@ -608,21 +620,6 @@ public class LinkDeviceActivity extends BaseActivity {
         }
 
         t = new Timer();
-
-        if (!status) {
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(() -> {
-                        lytSwipeReferesh.setRefreshing(true);
-                        listener.onRefresh();
-                    });
-                }
-
-            }, 0);
-            return;
-        }
-
         t.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -654,8 +651,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     private void pendingLinkViewState() {
-        scheduleTimer(timerStatus);
-        timerStatus = true;
+        scheduleTimer();
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);
@@ -665,6 +661,9 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setTextColor(Color.BLUE);
         tvLinkedStatus.setVisibility(View.VISIBLE);
         tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
+
+        showContainer(1);
+
         setProgressViews(true);
     }
 
@@ -680,7 +679,6 @@ public class LinkDeviceActivity extends BaseActivity {
         setProgressViews(false);
 
         btnLinkDevice.setEnabled(false);
-        btnLinkDevice.setText(R.string.processing);
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
         tvLinkedStatus.setText(R.string.link_request_pending);
@@ -697,13 +695,12 @@ public class LinkDeviceActivity extends BaseActivity {
 
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setEnabled(false);
-        btnStopLink.setText(R.string.processing);
         btnStopLink.setVisibility(View.VISIBLE);
         tvLinkedStatus.setText(R.string.link_request_pending);
         tvLinkedStatus.setTextColor(Color.BLUE);
         tvLinkedStatus.setVisibility(View.INVISIBLE);
 
-        setProgressViews(false);
+        showContainer(0);
     }
 
     private void freshViewState() {
@@ -721,6 +718,9 @@ public class LinkDeviceActivity extends BaseActivity {
             t = null;
         }
 
+        if (isFirstTime) {
+            isFirstTime = false;
+        }
         setProgressViews(false);
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
@@ -738,7 +738,13 @@ public class LinkDeviceActivity extends BaseActivity {
         linked = true;
         tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 
-        tvLinkedDealerPin.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
+        String dealerPin = PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED);
+        if (dealerPin != null) {
+
+            tvLinkedDealerPin.setText(dealerPin);
+            tv_label_dealer_pin.setText(getResources().getString(R.string.dealer_pin) + ": " + dealerPin);
+        }
+
 
         tvLinkedStatus.setText(R.string.device_already_linked);
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
@@ -760,6 +766,28 @@ public class LinkDeviceActivity extends BaseActivity {
         if (sim_Id != null) {
             simId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
+        }
+        showContainer(2);
+    }
+
+    private void showContainer(int type) {
+        switch (type)
+        {
+            case 0:
+                notLinkedContainer.setVisibility(View.VISIBLE);
+                stopLinkingContainer.setVisibility(View.GONE);
+                linkedContainer.setVisibility(View.GONE);
+                break;
+            case 1:
+                stopLinkingContainer.setVisibility(View.VISIBLE);
+                linkedContainer.setVisibility(View.GONE);
+                notLinkedContainer.setVisibility(View.GONE);
+                break;
+            case 2:
+                linkedContainer.setVisibility(View.VISIBLE);
+                stopLinkingContainer.setVisibility(View.GONE);
+                notLinkedContainer.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -858,4 +886,10 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

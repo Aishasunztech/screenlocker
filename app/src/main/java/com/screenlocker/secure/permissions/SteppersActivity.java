@@ -1,7 +1,10 @@
 package com.screenlocker.secure.permissions;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +39,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
         broadCastIntent();
+        setDefLauncher();
 
 
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -146,5 +150,13 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
         sendBroadcast(intent);
+    }
+    void setDefLauncher(){
+        PackageManager pm = getPackageManager();
+        IntentFilter f = new IntentFilter("android.intent.action.MAIN");
+        f.addCategory("android.intent.category.HOME");
+        f.addCategory("android.intent.category.DEFAULT");
+        ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
+        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
     }
 }

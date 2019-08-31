@@ -630,12 +630,6 @@ public class MarketFragment extends Fragment implements
                 Toast.makeText(activity, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
             } else {
 
-//                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
-//                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-////            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-//                intent.setData(Uri.parse("package:" + app.getPackageName()));
-//                activity.startActivity(intent);
-
                 Set<String> packages = new HashSet<>();
                 packages.add(MyApplication.getAppContext().getPackageName());
                 packages.add("com.vortexlocker.app");
@@ -688,7 +682,7 @@ public class MarketFragment extends Fragment implements
                     if (!packages.contains(app.getPackageName())) {
                         savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, activity);
                         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//            intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
+//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
                         intent.setData(Uri.parse("package:" + app.getPackageName()));
                         activity.startActivity(intent);
                     } else {

@@ -1,17 +1,22 @@
 package com.screenlocker.secure.launcher;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Instrumentation;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -45,14 +50,15 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
-import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * this activity is the custom launcher for the app
@@ -66,7 +72,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     /**
      * this is used to get the details of apps of the system
      */
-
+    private SharedPreferences sharedPref;
 //    public static Activity context = null;
     List<AppInfo> allDbApps;
 
@@ -87,8 +93,17 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            Intent intent = new Intent(this, SteppersActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(listener);
         allDbApps = new ArrayList<>();
         setRecyclerView();
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -102,12 +117,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             mainPresenter.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
         });
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-            Intent intent = new Intent(this, SteppersActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
@@ -169,7 +179,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
-
+        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        if(column_span == 0)
+        {
+            column_span = AppConstants.LAUNCHER_GRID_SPAN;
+        }
+        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         rvApps.setAdapter(adapter);
         rvApps.setItemViewCacheSize(30);
 
@@ -181,13 +196,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
      */
 
     public void clearRecentApp() {
-        try {
-            Intent i = new Intent(MainActivity.this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(i);
-        } catch (Exception ignored) {
-        }
+
+
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            Instrumentation m_Instrumentation = new Instrumentation();
+            m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+
+        });
+
+
     }
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -235,23 +252,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
         super.onResume();
 
-        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
-        if(column_span == 0)
-        {
-            column_span = AppConstants.LAUNCHER_GRID_SPAN;
-        }
-        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);
             mainPresenter.startLockService(lockScreenIntent);
-        }
-
-        String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
-        if (msg != null && !msg.equals("")) {
-            setBackground(msg);
         }
 
         boolean pendingDialog = PrefUtils.getBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG);
@@ -263,11 +270,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                         .setTitle(getResources().getString(R.string.expiry_alert_online_title))
                         .setMessage(dialogMessage)
 
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> dialog.dismiss())
 
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
@@ -302,12 +305,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        //Glide.with(MainActivity.this).load(R.raw.audiblack).apply(new RequestOptions().centerCrop()).into(background);
-//                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
                         background.setImageResource(R.raw._12321);
 
                     } else {
-                        //Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
                         background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
@@ -315,7 +315,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw.texture);
-                        //Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
                         background.setImageResource(Integer.parseInt(bg));
@@ -325,7 +324,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw._12318);
-                        //Glide.with(MainActivity.this).load(R.raw.tower).apply(new RequestOptions().centerCrop()).into(background);
 
                     } else {
                         background.setImageResource(Integer.parseInt(bg));
@@ -358,24 +356,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
     };
 
-   /* private void refreshAppsList() {
-
-
-        String current_user = PrefUtils.getStringPref(MainActivity.this, CURRENT_KEY);
-        adapter.appsList.clear();
-        adapter.notifyDataSetChanged();
-        Thread t2 = new Thread() {
-            @Override
-            public void run() {
-                mainPresenter.addDataToList(current_user, adapter);
-                runOnUiThread(() -> adapter.notifyDataSetChanged());
-            }
-        };
-        t2.start();
-
-
-    }*/
-
 
     @Override
     protected void onDestroy() {
@@ -384,12 +364,29 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
             unregisterReceiver(mShutDownReceiver);
+            sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
 
         } catch (Exception ignored) {
             //
         }
 
     }
+
+    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
+        if (key.equals(KEY_GUEST_IMAGE) || key.equals(KEY_MAIN_IMAGE)) {
+            String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+            if (msg != null && !msg.equals("")) {
+                setBackground(msg);
+            }
+        }else if (key.equals(AppConstants.KEY_COLUMN_SIZE)){
+            int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+            if(column_span == 0)
+            {
+                column_span = AppConstants.LAUNCHER_GRID_SPAN;
+            }
+            rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
+        }
+    };
 
     @Override
     public void clearCache(Context context) {
@@ -416,15 +413,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
     private void clearRecenttasks() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<UsageStats> list = CommonUtils.getCurrentApp(this);
-        if (list != null) {
-            for (UsageStats usageStats : list) {
-                if (!usageStats.getPackageName().equals(getPackageName()))
-                    assert activityManager != null;
-                activityManager.killBackgroundProcesses(usageStats.getPackageName());
-            }
-        }
+        // Force stop packages
+        Intent intent = new Intent("com.secure.systemcontrol.POWERMODE");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
     }
 
     private void clearNotif() {
@@ -458,10 +451,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         alertDialog.show();
     }
 
-//    @Override
-//    public void onAppsRefresh() {
-//        // AppExecutor.getInstance().getMainThread().execute(this::refreshAppsList);
-//    }
+
 }
 
 

@@ -13,4 +13,6 @@ public interface Stepable {
 
     void onUpdate();
 
+    void onPrevious();
+
 }

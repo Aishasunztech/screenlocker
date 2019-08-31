@@ -733,7 +733,8 @@
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:contentDescription="TODO" android:src="@drawable/ic_guest_icon_24"
+                    android:contentDescription="ic_guest_icon_24"
+                    android:src="@drawable/ic_guest_icon_24"
                     app:layout_constraintLeft_toLeftOf="@id/centerPoint"
                     app:layout_constraintRight_toRightOf="@id/centerPoint"
                     app:layout_constraintTop_toTopOf="@id/centerPoint"

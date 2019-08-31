@@ -215,6 +215,16 @@ public class BaseStyle extends AppCompatActivity implements Stepable {
         // to be redefined
     }
 
+    @Override
+    public void onPrevious() {
+        if (mSteps.current() <= 0)
+            return;
+
+        mSteps.current(mSteps.current() - 1);
+        onUpdate();
+
+    }
+
     // wrap stepper in every step
 
     private AbstractStep wrap(AbstractStep step) {

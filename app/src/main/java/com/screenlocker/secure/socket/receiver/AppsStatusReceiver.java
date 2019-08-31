@@ -263,6 +263,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     if (i == 0) {
                         MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                     }
+                    saveAppsList(context, true , appInfo,false);
 
                     sendMessage(context);
 
@@ -271,6 +272,8 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+        }else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")){
+
         }
     }
 

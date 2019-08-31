@@ -17,8 +17,7 @@
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"
             android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:contentDescription="TODO" android:src="@drawable/ic_lock_restricted" />
+            android:layout_gravity="center" android:contentDescription="restricted" android:src="@drawable/ic_lock_restricted" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -431,41 +431,7 @@ public class utils {
         return string != null && !string.equals("") && !string.equals("null");
     }
 
-    public static Settings getCurrentSettings(Context context) {
 
-        //Calls setting
-        Settings settings = new Settings();
-        boolean callStatus = PrefUtils.getBooleanPref(context, AppConstants.KEY_DISABLE_CALLS);
-        settings.setCall_status(callStatus);
-        //Bluetooth setting
-        try {
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            boolean bluetoothStatus = mBluetoothAdapter.isEnabled();
-            settings.setBluetooth_status(bluetoothStatus);
-        } catch (Exception e) {
-            settings.setBluetooth_status(false);
-        }
-
-        //Wifi setting
-        try {
-            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager != null) {
-                boolean wifiStatus = wifiManager.isWifiEnabled();
-                settings.setWifi_status(wifiStatus);
-            } else {
-                settings.setWifi_status(true);
-            }
-        } catch (Exception e) {
-            settings.setWifi_status(true);
-        }
-
-        //Screenshot setting
-        settings.setScreenshot_status(false);
-        //Hotspot setting
-        settings.setHotspot_status(false);
-
-        return settings;
-    }
 
     public static void changeSettings(Context context, Settings settings) {
 

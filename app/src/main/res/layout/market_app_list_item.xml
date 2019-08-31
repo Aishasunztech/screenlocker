@@ -23,7 +23,8 @@
         android:id="@+id/marketImageView"
         android:layout_width="@dimen/_45sdp"
         android:layout_height="@dimen/_45sdp"
-        app:layout_constraintTop_toTopOf="parent"   android:contentDescription="TODO"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="markrt"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
@@ -57,7 +58,8 @@
         <ImageView
             android:id="@+id/size_icon"
             android:layout_width="@dimen/_12sdp"
-            android:layout_height="@dimen/_12sdp" android:contentDescription="TODO" android:src="@drawable/ic_size"
+            android:layout_height="@dimen/_12sdp"
+            android:contentDescription="ic_size" android:src="@drawable/ic_size"
             app:layout_constraintTop_toBottomOf="@+id/market_app_name"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="@dimen/_5sdp"

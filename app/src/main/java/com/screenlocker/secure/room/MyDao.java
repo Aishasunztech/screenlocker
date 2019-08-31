@@ -17,6 +17,7 @@ import androidx.room.Update;
 
 import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.socket.model.Settings;
 
 import java.util.List;
 import java.util.Set;
@@ -156,8 +157,20 @@ public interface MyDao {
 
     @Query("SELECT * FROM sim")
     List<SimEntry> getAllSimInService();
+
     @Query("SELECT * FROM messages order by mDate desc")
     LiveData<List<ChatMessages>> getAllMessages();
+
+
+    @Query("SELECT * FROM Settings")
+    List<Settings> getSettings();
+
+    @Update
+    void updateSetting(Settings setting);
+
+    @Insert
+    void insertSetting(Settings settings);
+
     @Update
     void updateMessage(ChatMessages msg);
     @Insert

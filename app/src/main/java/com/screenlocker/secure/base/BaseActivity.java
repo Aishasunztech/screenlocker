@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
@@ -28,6 +29,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.settings.AdvanceSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
@@ -83,8 +85,17 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        if (PrefUtils.getBooleanPref(BaseActivity.this, AppConstants.KEY_THEME)) {
+            switch (AppCompatDelegate.getDefaultNightMode()) {
+                case AppCompatDelegate.MODE_NIGHT_UNSPECIFIED:
+                case AppCompatDelegate.MODE_NIGHT_NO:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().applyDayNight();
+                    recreate();
+                    break;
+            }
+        }
         createAlertDialog();
         compName = new ComponentName(this, MyAdmin.class);
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -282,7 +293,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        }  else if (!
+        } else if (!
 
                 isNotificationAccess(this)) {
             launchPermissions();

@@ -80,6 +80,11 @@ public class SetDuressPasswordFragment extends AbstractStep {
     }
 
     @Override
+    public boolean isPreviousAllow() {
+        return true;
+    }
+
+    @Override
     public String error() {
         return error;
     }

@@ -53,26 +53,13 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
         imageView = findViewById(R.id.rotating_image);
+        //enable data and roaming
+        broadCastIntent();
         PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate_infinite);
         rotation.setFillAfter(true);
         imageView.startAnimation(rotation);
 
-        //enable dada toggle by default
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                cm.setDataEnabled(true);
-            }
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
-            Settings.Global.putInt(getContentResolver(), Settings.Global.DATA_ROAMING, 1);
-            try {
-                Timber.d("DATA_ROAMING: %s", Settings.Global.getInt(getContentResolver(), Settings.Global.DATA_ROAMING));
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
 
         Handler handler = new Handler();
 
@@ -114,5 +101,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             ActivityCompat.startForegroundService(this, lockScreen);
             finish();
         }
+    }
+
+    void broadCastIntent() {
+        Intent intent = new Intent("com.secure.systemcontrol.DATA_AND_ROAMING");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
     }
 }

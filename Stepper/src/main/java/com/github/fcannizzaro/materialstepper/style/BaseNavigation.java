@@ -18,7 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 public class BaseNavigation extends BasePager implements View.OnClickListener {
 
     // view
-    protected TextView mPrev, mNext, mEnd, mError;
+    protected TextView mSkip,mPrev, mNext, mEnd, mError;
     protected ViewSwitcher mSwitch;
     Toolbar toolbar;
 
@@ -27,7 +27,8 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
 
         super.init();
 
-        mPrev = (TextView) findViewById(R.id.stepPrev);
+        mSkip = (TextView) findViewById(R.id.stepPrev);
+        mPrev = (TextView) findViewById(R.id.stepPrevious);
         mNext = (TextView) findViewById(R.id.stepNext);
         mEnd = (TextView) findViewById(R.id.stepEnd);
         mError = (TextView) findViewById(R.id.stepError);
@@ -39,15 +40,16 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
         mSwitch.setOutAnimation(BaseNavigation.this, R.anim.out_to_bottom);
 
         // tint & color
-        TintUtils.tintTextView(mPrev, tintColor);
+        TintUtils.tintTextView(mSkip, tintColor);
         TintUtils.tintTextView(mNext, tintColor);
 
         mEnd.setTextColor(primaryColor);
 
         // listener
-        mPrev.setOnClickListener(this);
+        mSkip.setOnClickListener(this);
         mNext.setOnClickListener(this);
         mEnd.setOnClickListener(this);
+        mPrev.setOnClickListener(this);
 
     }
 
@@ -56,12 +58,14 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
 
         AbstractStep step = mSteps.getCurrent();
 
-        if (view == mPrev) {
+        if (view == mSkip) {
             step.onSkip();
             onSkip();
         } else if (view == mNext || view == mEnd) {
             step.onNext();
             onNext();
+        }else if (view == mPrev){
+            onPrevious();
         }
 
     }
@@ -76,6 +80,15 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
                 mSteps.current(mSteps.current() + 1);
             onUpdate();
         }
+    }
+
+    @Override
+    public void onPrevious() {
+        if (mSteps.current() <= 0)
+            return;
+
+        mSteps.current(mSteps.current() - 1);
+        onUpdate();
     }
 
     @Override
@@ -98,11 +111,14 @@ public class BaseNavigation extends BasePager implements View.OnClickListener {
         super.onUpdate();
         boolean isLast = mSteps.current() == mSteps.total() - 1;
         boolean isSkipable = mSteps.getCurrent().isSkipable();
+        boolean isPreviousAllow = mSteps.getCurrent().isPreviousAllow();
         boolean isFirst = mSteps.current() == 0;
         if (isLast)
-            mPrev.setVisibility(View.GONE);
-        else
-            mPrev.setVisibility(isSkipable ? View.VISIBLE : View.GONE);
+            mSkip.setVisibility(View.GONE);
+        else {
+            mSkip.setVisibility(isSkipable ? View.VISIBLE : View.GONE);
+        }
+        mPrev.setVisibility(isPreviousAllow?View.VISIBLE:View.GONE);
         mNext.setVisibility(isLast ? View.GONE : View.VISIBLE);
         mEnd.setVisibility(!isLast ? View.GONE : View.VISIBLE);
         getToolbar().setTitle(mSteps.getCurrent().name());

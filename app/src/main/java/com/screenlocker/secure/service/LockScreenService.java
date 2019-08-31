@@ -1,5 +1,6 @@
 package com.screenlocker.secure.service;
 
+import android.app.Instrumentation;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.Service;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,6 +221,7 @@ public class LockScreenService extends Service {
     public void onCreate() {
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
+        broadCastIntentForActivatingAdmin();
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -294,17 +297,17 @@ public class LockScreenService extends Service {
 //     *
 //     * @see #setLockTaskFeatures(ComponentName, int)
 //
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.CATEGORY_HOME);
-        filter.addAction(Intent.ACTION_DEFAULT);
-        mDPM.addPersistentPreferredActivity(compName,filter, new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity"));
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Intent.CATEGORY_HOME);
+//        filter.addAction(Intent.ACTION_DEFAULT);
+//        mDPM.addPersistentPreferredActivity(compName,filter, new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity"));
 //        mDPM.setLockTaskPackages(compName, APP_PACKAGES);
 //        mDPM.setLockTaskFeatures(compName, LOCK_TASK_FEATURE_NONE|LOCK_TASK_FEATURE_HOME);
         if (mDPM.isDeviceOwnerApp(getPackageName())) {
             try {
                 if (!mDPM.isUninstallBlocked(compName, getPackageName()))
                     mDPM.setUninstallBlocked(compName, getPackageName(), true);
-                mDPM.setStatusBarDisabled(compName, true);
+                //mDPM.setStatusBarDisabled(compName, true);
                 Bundle bundle = mDPM.getUserRestrictions(compName);
                 if (!bundle.getBoolean(DISALLOW_INSTALL_UNKNOWN_SOURCES))
                     mDPM.addUserRestriction(compName, DISALLOW_INSTALL_UNKNOWN_SOURCES);
@@ -486,28 +489,26 @@ public class LockScreenService extends Service {
     }
 
 
-
     private void startLockScreen(boolean refresh) {
 
 
         try {
-//            setTimeRemaining(getAppContext());
             if (refresh)
                 refreshKeyboard();
             notificationItems.clear();
 
             if (mLayout.getWindowToken() == null) {
                 removeView();
-                if (params == null){
+                if (params == null) {
                     params = PrepareLockScreen.getParams(this, mLayout);
                 }
                 windowManager.addView(mLayout, params);
                 //clear home with our app to front
-                Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(i);
+                Instrumentation m_Instrumentation = new Instrumentation();
+                AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                    m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+
+                });
                 PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
 
@@ -524,12 +525,8 @@ public class LockScreenService extends Service {
     }
 
     public void removeLockScreenView() {
-//        if (!PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)){
-//            //            setTimeRemaining(getAppContext());
-//        }
-
         try {
-            if (mLayout != null && mLayout.getWindowToken() !=null) {
+            if (mLayout != null && mLayout.getWindowToken() != null) {
                 windowManager.removeView(mLayout);
             }
         } catch (Exception e) {
@@ -775,6 +772,13 @@ public class LockScreenService extends Service {
         localLayoutParams.format = PixelFormat.TRANSLUCENT;
 
 
+    }
+
+    void broadCastIntentForActivatingAdmin() {
+        Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
     }
 
 }

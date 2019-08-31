@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -76,13 +77,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         Intent i = new Intent(context, SecureSettingsMain.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
+                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                         break;
                     case AppConstants.SUPPORT_UNIQUE:
                         context.startActivity(new Intent(context, ChatActivity.class));
+                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
-                        launch.setAction(ACTION_VIEW);
+                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                         context.startActivity(launch);
                         break;
                 }
@@ -102,24 +105,30 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         case AppConstants.SECURE_MARKET_UNIQUE:
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         case BuildConfig.APPLICATION_ID:
                             Intent intent1 = new Intent(context, SettingsActivity.class);
                             intent1.setAction(ACTION_VIEW);
                             context.startActivity(intent1);
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
@@ -128,6 +137,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
                             context.startActivity(launchIntent);
+                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             break;
                         }
                     }

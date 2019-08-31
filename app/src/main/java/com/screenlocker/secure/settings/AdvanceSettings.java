@@ -18,10 +18,12 @@ import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
@@ -66,6 +68,13 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.tv_set_column).setOnClickListener(this);
         findViewById(R.id.tvTheme).setOnClickListener(this);
         findViewById(R.id.tvRestore).setOnClickListener(this);
+        Switch powersaver = findViewById(R.id.powerMode);
+        PowerManager pm  = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        powersaver.setChecked(pm.isPowerSaveMode());
+        powersaver.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            updatePower(isChecked);
+        });
+
     }
 
     @Override
@@ -234,15 +243,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         ComponentName compName = new ComponentName(this, MyAdmin.class);
 
         //enable dada toggle
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                cm.setDataEnabled(true);
-            }
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
-            Settings.Global.putInt(getContentResolver(), Settings.Global.DATA_ROAMING, 1);
-        }
+        broadCastIntent();
 
         // allow camera
         dpm.setCameraDisabled(compName, false);
@@ -260,7 +261,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<SubExtension> subExtensions = MyApplication.getAppDatabase(this).getDao().getAllSubExtensions();
             for (SubExtension subExtension : subExtensions) {
-                if (subExtension.getUniqueExtension().equals("Bluetooth") || subExtension.getUniqueExtension().equals("Hotspot")) {
+                if (subExtension.getLabel().equals("Bluetooth") || subExtension.getLabel().equals("Hotspot")) {
                     subExtension.setEncrypted(false);
                     subExtension.setGuest(false);
                 } else {
@@ -271,20 +272,23 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
             }
         });
 
+        //change Grid Size to default
+        PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE,AppConstants.LAUNCHER_GRID_SPAN);
+
         //Application permissions
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<AppInfo> allapps = MyApplication.getAppDatabase(this).getDao().getApps();
             for (AppInfo app : allapps) {
-                if (app.getUniqueName().equals(AppConstants.SECURE_MARKET_UNIQUE) ||
+                if (app.getUniqueName().equals(AppConstants.SFM_UNIQUE) ||
                         app.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE) ||
                         app.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
                     app.setEnable(true);
                     app.setEncrypted(true);
                     app.setGuest(false);
-                } else if (app.getUniqueName().equals(AppConstants.SFM_UNIQUE)) {
+                } else if (app.getUniqueName().equals(AppConstants.SECURE_MARKET_UNIQUE)) {
                     app.setEnable(true);
                     app.setEncrypted(true);
-                    app.setGuest(false);
+                    app.setGuest(true);
                 } else if (app.getPackageName().equals(getPackageName())) {
                     app.setEncrypted(true);
                     app.setGuest(false);
@@ -300,10 +304,24 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 }
                 MyApplication.getAppDatabase(this).getDao().updateApps(app);
             }
-            if (dialog != null &&dialog.isShowing()){
-                dialog.dismiss();
-            }
+            AppExecutor.getInstance().getMainThread().execute(() -> {
+                PrefUtils.saveBooleanPref(AdvanceSettings.this, AppConstants.KEY_THEME,false);
+                if (dialog != null && dialog.isShowing()){
+                    dialog.dismiss();
+                }
+            });
+
         });
+
+    }
+
+    void broadCastIntent() {
+        Intent intent = new Intent("com.secure.systemcontrol.DATA_AND_ROAMING");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
+    }
+    void updatePower(boolean state) {
 
     }
 }

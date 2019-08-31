@@ -99,6 +99,11 @@ public class SetGuestPasswordFragment extends AbstractStep {
     }
 
     @Override
+    public boolean isPreviousAllow() {
+        return true;
+    }
+
+    @Override
     public String error() {
         return error;
     }

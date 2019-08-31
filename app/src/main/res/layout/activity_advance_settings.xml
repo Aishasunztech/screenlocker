@@ -110,7 +110,7 @@
         android:drawableStart="@drawable/ic_restore"
         android:drawablePadding="@dimen/_8sdp"
         android:padding="16dp"
-        android:text="Restore SL"
+        android:text="@string/restore"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
         android:visibility="visible" />
@@ -118,6 +118,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
+    <Switch
+        android:visibility="gone"
+        android:id="@+id/powerMode"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/_8sdp"
+        android:drawableStart="@drawable/ic_secure"
+        android:text="Kill Recent"/>
 
 
 

@@ -100,10 +100,10 @@ public class AppConstants {
 
 
     //servers links
-    public static final String URL_1 = "https://api.lockmesh.com";//live SL
+//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
 //    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
 //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.140:3000";//local
+        public static final String URL_1 = "http://192.168.18.28:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -441,5 +441,17 @@ public class AppConstants {
     public static final String PERMISSION_GRANTING = "permission_granting";
     public static final String PER_ACCESS = "per_access";
     public static final int CODE_ACCESSIBILITY = 452;
+
+    //Settings Names
+
+    public static final String SET_WIFI = "Wifi";
+    public static final String SET_BLUETOOTH = "Bluetooth";
+    public static final String SET_BLUE_FILE_SHARING = "Bluetooth File Sharing";
+    public static final String SET_HOTSPOT = "Hotspot Configuration";
+    public static final String SET_SS = "Screen Capture";
+    public static final String SET_CALLS = "Block Calls";
+    public static final String SET_CAM = "Camera";
+    public static final String SET_MIC = "Microphone";
+    public static final String SET_SPEAKER = "Speaker";
 
 }

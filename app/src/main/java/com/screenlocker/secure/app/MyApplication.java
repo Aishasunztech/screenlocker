@@ -34,6 +34,7 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.room.MigrationSettingsTable;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.MyRoomMigration;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
@@ -132,24 +133,13 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         screenShotView = createScreenShotView();
 
 
-        // your oncreate code should be
-
-
-//        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-
-//        OnEventsChangeListener onEventsChangeListener = (OnEventsChangeListener) this;
-//
-//        if (onEventsChangeListener != null) {
-//            Log.d(TAG, "listener not null");
-//            onEventsChangeListener.onAppSettings(true);
-//        }
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         Thread thread = new Thread() {
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new MyRoomMigration(11,13))
+                        .addMigrations(new MyRoomMigration(11,13), new MigrationSettingsTable(13,14))
                         .build();
             }
         };

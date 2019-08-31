@@ -52,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 
 import timber.log.Timber;
 
@@ -60,7 +59,6 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
-import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
@@ -488,7 +486,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         String settings = obj.getString("settings");
 
         if (!settings.equals("{}") && !isPolicy) {
-            changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
+            ///changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
             Timber.d(" settings applied ");
         }
 
@@ -634,8 +632,13 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         try {
             if (socketManager.getSocket().connected()) {
-                socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(SocketService.this)));
-                PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
+                AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+                   List<Settings> settings =  MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
+                    socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
+                    PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
+                });
+
+
             } else {
                 Timber.d("Socket not connected");
             }
