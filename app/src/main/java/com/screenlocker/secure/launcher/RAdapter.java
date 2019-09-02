@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -105,17 +106,20 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 switch (unique) {
                     case AppConstants.SECURE_SETTINGS_UNIQUE:
-                        Intent i = new Intent(context, SecureSettingsMain.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Intent i = new Intent(context, SecureSettingsMain.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
+                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                     case AppConstants.SUPPORT_UNIQUE:
-                        context.startActivity(new Intent(context, ChatActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        context.startActivity(new Intent(context, ChatActivity.class));
+                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                     case BuildConfig.APPLICATION_ID:
-                        Intent launch = new Intent(context, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Intent launch = new Intent(context, SettingsActivity.class);
                         launch.setAction(ACTION_VIEW);
                         context.startActivity(launch);
+                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                 }
 
@@ -131,41 +135,46 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
-                            Intent i = new Intent(context, SecureSettingsMain.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            Intent i = new Intent(context, SecureSettingsMain.class);
 
                             if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
                             break;
                         case AppConstants.SECURE_MARKET_UNIQUE:
-                            Intent intent = new Intent(context, SecureMarketActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
-                            context.startActivity(new Intent(context, ChatActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            context.startActivity(new Intent(context, ChatActivity.class));
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SFM_UNIQUE:
-                            context.startActivity(new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            context.startActivity(new Intent(context, MainActivity.class));
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case BuildConfig.APPLICATION_ID:
-                            Intent launch = new Intent(context, SettingsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            Intent launch = new Intent(context, SettingsActivity.class);
                             launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
                             if (launchIntent != null) {
                                 launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
 
                             context.startActivity(launchIntent);
+                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         }
                     }

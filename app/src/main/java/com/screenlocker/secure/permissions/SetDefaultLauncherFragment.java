@@ -45,8 +45,10 @@ public class SetDefaultLauncherFragment extends AbstractStep {
 
     @Override
     public boolean nextIf() {
+
+
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 6);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
             return true;
         }
         return false;

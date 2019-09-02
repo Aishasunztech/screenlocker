@@ -193,7 +193,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
@@ -213,44 +212,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         constraintLayout = findViewById(R.id.rootLayout);
-        constraintLayout.setVisibility(View.GONE);
+        constraintLayout.setVisibility(View.VISIBLE);
         progressBar = findViewById(R.id.progress);
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
 
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
-        } else {
-
-            String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
-
-            if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
-                constraintLayout.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-
-                return;
-            }
-            OneTimeWorkRequest insertionWork =
-                    new OneTimeWorkRequest.Builder(BlurWorker.class)
-                            .build();
-            WorkManager.getInstance().enqueue(insertionWork);
-
-            WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-                    .observe(this, workInfo -> {
-                        // Do something with the status
-                        if (workInfo != null && workInfo.getState().isFinished()) {
-                            PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
-                            constraintLayout.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.INVISIBLE);
-
-                        }
-                    });
-
         }
-
     }
 
 
@@ -374,13 +345,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvManagePasswords:
                     Intent passwordsIntent = new Intent(SettingsActivity.this, ManagePasswords.class);
                     startActivity(passwordsIntent);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvChooseBackground:     // handle the choose apps click event
 //                    handleChooseABackground();
                     Intent cwi = new Intent(this, WallpaperActivity.class);
                     startActivity(cwi);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
 
                 case R.id.tvCode:
@@ -394,7 +363,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 case R.id.tvAccount:
                     Intent account = new Intent(SettingsActivity.this, AboutActivity.class);
                     startActivity(account);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvCheckForUpdate:     //handle the about click event
                     handleCheckForUpdate();
@@ -402,7 +370,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvAdvance:
                     startActivity(new Intent(this, AdvanceSettings.class));
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     break;
                 case R.id.tvlinkDevice:
 
@@ -415,7 +382,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     if (isConnected) {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     } else {
                         showNetworkDialog();
                     }
@@ -442,7 +408,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(this, SetUpLockActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_CODE);
             startActivityForResult(intent, REQUEST_CODE_PASSWORD);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         } else {
             final EditText input = new EditText(SettingsActivity.this);
             settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
@@ -454,9 +419,28 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
                     // start Code settings activity if the code password entered is correct
 
-                    startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    dialogInterface.dismiss();
+
+                    constraintLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    OneTimeWorkRequest insertionWork =
+                            new OneTimeWorkRequest.Builder(BlurWorker.class)
+                                    .build();
+                    WorkManager.getInstance().enqueue(insertionWork);
+
+                    WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
+                            .observe(this, workInfo -> {
+                                // Do something with the status
+                                if (workInfo != null && workInfo.getState().isFinished()) {
+                                    PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
+                                    constraintLayout.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
+                                    dialogInterface.dismiss();
+                                }
+                            });
+
+
                 } else {
                     showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.ic_dialog_alert);
                 }
@@ -605,7 +589,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         });
 
@@ -678,13 +661,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
             startActivity(new Intent(this, WhatsNew.class));
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         });
 
         aboutDialog.findViewById(R.id.tvWhatsNew).setOnClickListener(v -> {
             startActivity(new Intent(SettingsActivity.this, WhatsNew.class));
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
@@ -845,24 +826,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-
-    @Override
-    public void onBackPressed() {
-
-        try {
-            if (settingsPresenter.isMyLauncherDefault()) {
-                Intent home = new Intent(SettingsActivity.this, com.screenlocker.secure.launcher.MainActivity.class);
-                startActivity(home);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                finish();
-            } else {
-                super.onBackPressed();
-            }
-        } catch (Exception ignored) {
-        }
-
-
-    }
 
     @Override
     public void isConnected(boolean state) {

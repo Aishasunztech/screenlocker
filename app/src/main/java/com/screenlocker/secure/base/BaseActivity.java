@@ -124,7 +124,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 
         if (PermissionUtils.canDrawOver(this)) {
-
             statusViewAdded = true;
         } else {
             if (alertDialog == null) {

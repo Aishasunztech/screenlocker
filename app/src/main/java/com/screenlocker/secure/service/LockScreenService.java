@@ -619,7 +619,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 }
 
                 try {
-                    Thread.sleep(400);
+                    Thread.sleep(600);
                     if (isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
 
                         Timber.d("access service condition %s", isServiceConnected);

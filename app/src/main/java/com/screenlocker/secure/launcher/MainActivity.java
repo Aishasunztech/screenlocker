@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +62,7 @@ import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
@@ -68,6 +70,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * this activity is the custom launcher for the app
@@ -127,14 +130,22 @@ public class MainActivity extends
 
     }
 
+
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         SocketService.downloadCompleteListener = this;
 
+        Timber.d("skldnfdnnneeare %s", "onCreate");
+
+
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(listener);
 
         allDbApps = new ArrayList<>();
         setRecyclerView();
@@ -214,11 +225,18 @@ public class MainActivity extends
 
 
     private void setRecyclerView() {
+
         rvApps = findViewById(R.id.rvApps);
         int resId = R.anim.layout_animation;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
 
+        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        if (column_span == 0) {
+            column_span = AppConstants.LAUNCHER_GRID_SPAN;
+        }
+
+        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
 
@@ -291,23 +309,26 @@ public class MainActivity extends
 
     }
 
-    @Override
-    protected void onPause() {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        super.onPause();
-    }
+    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
+        if (key.equals(KEY_GUEST_IMAGE) || key.equals(KEY_MAIN_IMAGE)) {
+            String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+            if (msg != null && !msg.equals("")) {
+                setBackground(msg);
+            }
+        } else if (key.equals(AppConstants.KEY_COLUMN_SIZE)) {
+            int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+            if (column_span == 0) {
+                column_span = AppConstants.LAUNCHER_GRID_SPAN;
+            }
+            rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         super.onResume();
-
-        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
-        if (column_span == 0) {
-            column_span = AppConstants.LAUNCHER_GRID_SPAN;
-        }
-        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
@@ -406,7 +427,7 @@ public class MainActivity extends
                     }
 
                 } else {
-                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
+                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
 //                        background.setImageResource(R.raw.tower);
                         Glide.with(MainActivity.this).load(R.raw._12318).apply(new RequestOptions().centerCrop()).into(background);
@@ -469,8 +490,8 @@ public class MainActivity extends
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         try {
+            sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
             unregisterReceiver(mShutDownReceiver);
             unregisterReceiver(screenOffReceiver);

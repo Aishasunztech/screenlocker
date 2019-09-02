@@ -1,10 +1,7 @@
 package com.screenlocker.secure.permissions;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -16,9 +13,10 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+
+import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
@@ -82,10 +80,11 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         //move user to position were he/she left
         int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
 
+        Timber.d("CURRENT STEP : %s", position);
+
         if (!getIntent().hasExtra("emergency")) {
             mSteps.current(position);
             onUpdate();
-
         }
 
 

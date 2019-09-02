@@ -2,16 +2,22 @@ package com.screenlocker.secure.service.apps;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.app.MyApplication;
@@ -20,6 +26,9 @@ import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -29,6 +38,7 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -361,16 +371,19 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
         Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
                 .submit(() -> isAllowed(WindowChangeDetectingService.this, componentName.getPackageName()));
+
+
         try {
             boolean status = futureObject.get();
+            Timber.d("isAllowed : %s", status);
             if (!status) {
                 AppConstants.TEMP_SETTINGS_ALLOWED = false;
-                clearRecentApp(this);
+                clearRecentApp(this, componentName.getPackageName());
             } else {
                 AppConstants.TEMP_SETTINGS_ALLOWED = true;
             }
         } catch (Exception e) {
-            clearRecentApp(this);
+            clearRecentApp(this, componentName.getPackageName());
         }
     }
 
@@ -383,8 +396,10 @@ public class WindowChangeDetectingService extends AccessibilityService {
     private Handler handler;
 
 
-    private void clearRecentApp(Context context) {
+    private void clearRecentApp(Context context, String packageName) {
 
+        ActivityManager am = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+        am.killBackgroundProcesses(packageName);
 
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
