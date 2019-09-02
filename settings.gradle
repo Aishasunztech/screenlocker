@@ -1,1 +1,1 @@
-include ':app', ':Stepper', ':chatkit', ':commons', ':sfm';
+include ':app', ':Stepper', ':chatkit', ':commons', ':sfm', ':org.eclipse.paho.android.sample', ':org.eclipse.paho.android.service';

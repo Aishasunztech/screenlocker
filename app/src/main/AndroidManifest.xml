@@ -61,9 +61,8 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.liveAgenChat.LiveAgentChatActivity"></activity>
-        <activity android:name="com.liveClientChat.LiveClientChatActivity" />
-        <activity android:name="com.liveClientChat.liveClientChatActivity" />
+        <activity android:name="com.liveClientChat.LiveClientChatActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.secureSetting.AllNotificationActivity"
             android:launchMode="singleTask"
@@ -258,6 +257,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+
+
         <receiver android:name=".ReBootReciever">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

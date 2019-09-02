@@ -2,6 +2,7 @@ package com.secureMarket;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.t.AppConst;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Type;
@@ -90,6 +92,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             holder.btnInstall.setVisibility(View.VISIBLE);
             holder.btnUnInstall.setVisibility(View.GONE);
         }
+
 
         String live_url = PrefUtils.getStringPref(context, LIVE_URL);
 
@@ -222,5 +225,13 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         }
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public List getAppItem(String packageName)
+    {
+       return appModelList.stream().filter(List -> packageName.equals(List.getPackageName())).findAny().orElse(null);
+    }
+
+
 
 }

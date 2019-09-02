@@ -40,11 +40,16 @@ import androidx.work.WorkManager;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
@@ -76,6 +81,7 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
@@ -94,7 +100,7 @@ import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
  */
 
 
-public class LockScreenService extends Service {
+public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -113,11 +119,13 @@ public class LockScreenService extends Service {
     private FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NotNull Download download) {
+            Log.d("lksjd", "Added");
+
         }
 
         @Override
         public void onQueued(@NotNull Download download, boolean b) {
-
+            Log.d("lksjd", "Queued");
         }
 
         @Override
@@ -199,6 +207,15 @@ public class LockScreenService extends Service {
     private String filePath = "";
     private String packageName = "";
 
+    private SocketManager socketManager;
+
+    @Override
+    public void isConnected(boolean state) {
+        if (!state) {
+            destroyClientChatSocket();
+        }
+    }
+
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -255,6 +272,10 @@ public class LockScreenService extends Service {
 
     public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
 
+    public void destroyClientChatSocket() {
+        socketManager.destroyClientChatSocket();
+    }
+
     @Override
     public void onCreate() {
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
@@ -262,8 +283,10 @@ public class LockScreenService extends Service {
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         PackageManager packageManager = getPackageManager();
 
+        socketManager = SocketManager.getInstance();
+
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(3)
+                .setDownloadConcurrentLimit(1)
                 .build();
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
         fetch.addListener(fetchListener);
@@ -425,6 +448,7 @@ public class LockScreenService extends Service {
         }
 
 
+        PrefUtils.saveBooleanPref(this, DEVICE_ID, false);
         super.onDestroy();
     }
 
@@ -432,7 +456,6 @@ public class LockScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("screen locker starting.");
-
 
         if (intent != null) {
             String action = intent.getAction();
@@ -478,6 +501,18 @@ public class LockScreenService extends Service {
 
         Timber.i("Received start id " + startId + ": " + intent);
         return START_STICKY;
+    }
+
+    public void connectClientChatSocket() {
+        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
+
+        if (deviceId == null) {
+            String serialNumber = DeviceIdUtils.getSerialNumber();
+            Log.d("serialslkdj", serialNumber);
+            deviceId = DeviceIdUtils.getSerialNumber();
+        }
+        Log.d("lkashdf", deviceId);
+        socketManager.connectClientChatSocket(deviceId, "http://104.248.19.72:30040");
     }
 
     public void stopCapture() {
