@@ -153,21 +153,13 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     }
 
     public void youDesirePermissionCode(AppCompatActivity context, boolean isChecked) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permission = Settings.System.canWrite(context);
-        } else {
-            permission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
-        }
+        permission = Settings.System.canWrite(context);
         if (permission) {
             WifiApControl.turnOnOffHotspot(isChecked, wifiManager);
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                intent.setData(Uri.parse("package:" + context.getPackageName()));
-                context.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
-            } else {
-                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_SETTINGS}, CODE_WRITE_SETTINGS_PERMISSION);
-            }
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
         }
     }
 
@@ -259,14 +251,11 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 if (appInfo == null) {
                     MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().insertApps(appInfo);
                 } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switchGuest.setChecked(appInfo.isGuest());
-                            switchEncrypt.setChecked(appInfo.isEncrypted());
-                            switchDisable.setChecked(appInfo.isEnable());
-                            Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
-                        }
+                    runOnUiThread(() -> {
+                        switchGuest.setChecked(appInfo.isGuest());
+                        switchEncrypt.setChecked(appInfo.isEncrypted());
+                        switchDisable.setChecked(appInfo.isEnable());
+                        Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
                     });
                 }
             }
@@ -377,7 +366,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 break;
             case R.id.switchBlockCall:
                 PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, isChecked);
-
                 break;
             case R.id.switchCamera:
                 try {

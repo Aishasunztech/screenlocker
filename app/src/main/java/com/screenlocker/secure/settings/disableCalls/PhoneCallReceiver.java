@@ -2,6 +2,7 @@ package com.screenlocker.secure.settings.disableCalls;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,13 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+
 import androidx.core.content.ContextCompat;
+
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.screenlocker.secure.utils.AppConstants;
@@ -23,69 +28,78 @@ import timber.log.Timber;
 
 public class PhoneCallReceiver extends BroadcastReceiver {
     private ITelephony telephonyService;
-public static final String TAG=PhoneCallReceiver.class.getSimpleName();
-    @Override
-    public void onReceive(Context context, Intent intent) {
- //  TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
- // PhoneCallStateListener customPhoneListener = new PhoneCallStateListener(context);
- //  telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-        TelephonyManager telephony = (TelephonyManager)
-                context.getSystemService(Context.TELEPHONY_SERVICE);
-//        try {
-//            Class c = Class.forName(telephony.getClass().getName());
-//            Method m = c.getDeclaredMethod("getITelephony");
-//            m.setAccessible(true);
-//            telephonyService = (ITelephony) m.invoke(telephony);
-//            //telephonyService.silenceRinger();
-//            telephonyService.endCall();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        endCall(context);
+    public static final String TAG = PhoneCallReceiver.class.getSimpleName();
 
-//        ITelephony telephonyService;
-//        try {
-//            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-//            String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-//
-//            if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING)) {
-//                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-//                try {
-//                    Method m = tm.getClass().getDeclaredMethod("getITelephony");
-//
-//                    m.setAccessible(true);
-//                    telephonyService = (ITelephony) m.invoke(tm);
-//
-//                    if ((number != null)) {
-//                        telephonyService.endCall();
-//                        Toast.makeText(context, "Ending the call from: " + number, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//                Toast.makeText(context, "Ring " + number, Toast.LENGTH_SHORT).show();
-//
-//            }
-//            if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-//                Toast.makeText(context, "Answered " + number, Toast.LENGTH_SHORT).show();
-//            }
-//            if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)) {
-//                Toast.makeText(context, "Idle " + number, Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    private static boolean incomingFlag = false;
+
+    private static String incoming_number = null;
+
+
+    @Override
+
+    public void onReceive(Context context, Intent intent) {
+
+
+        if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+
+            incomingFlag = false;
+
+            String phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+
+            Log.i(TAG, "call OUT:" + phoneNumber);
+
+        } else {
+
+            TelephonyManager tm =
+
+                    (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
+
+
+            switch (tm.getCallState()) {
+
+                case TelephonyManager.CALL_STATE_RINGING:
+
+                    incomingFlag = true;
+
+                    incoming_number = intent.getStringExtra("incoming_number");
+
+                    Log.i(TAG, "RINGING :" + incoming_number);
+
+                    endCall(context);
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+
+                    if (incomingFlag) {
+
+                        Log.i(TAG, "incoming ACCEPT :" + incoming_number);
+
+                    }
+
+                    break;
+
+
+                case TelephonyManager.CALL_STATE_IDLE:
+
+                    if (incomingFlag) {
+                        Log.i(TAG, "incoming IDLE");
+                    }
+
+                    break;
+
+            }
+
+        }
+
+
     }
 
     @SuppressLint("PrivateApi")
     public static void endCall(Context context) {
         boolean isCallDisable = PrefUtils.getBooleanPref(context, AppConstants.KEY_DISABLE_CALLS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
             if (telecomManager != null && ContextCompat.checkSelfPermission(context, Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED) {
-                //telecomManager.endCall();
+                telecomManager.endCall();
                 return;
             }
             return;
@@ -105,12 +119,12 @@ public static final String TAG=PhoneCallReceiver.class.getSimpleName();
             final Method serviceMethod = telephonyStubClass.getMethod("asInterface", IBinder.class);
             final Object telephonyObject = serviceMethod.invoke(null, retbinder);
             Method telephonyEndCall = null;
-            if(isCallDisable)
-            telephonyEndCall = telephonyClass.getMethod("endCall");
+            if (isCallDisable)
+                telephonyEndCall = telephonyClass.getMethod("endCall");
             else
-            telephonyClass.getMethod("answerRingingCall");
-            if (telephonyEndCall!=null)
-            telephonyEndCall.invoke(telephonyObject);
+                telephonyClass.getMethod("answerRingingCall");
+            if (telephonyEndCall != null)
+                telephonyEndCall.invoke(telephonyObject);
         } catch (Exception e) {
             e.printStackTrace();
             Timber.e(e, "endCall: ");
