@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
+import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -164,6 +165,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
                             ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            break;
+                        case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
+                            Intent intent2 = new Intent(context, LiveClientChatActivity.class);
+                            context.startActivity(intent2);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());

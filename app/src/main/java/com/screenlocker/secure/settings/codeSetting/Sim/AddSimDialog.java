@@ -1,6 +1,5 @@
 package com.screenlocker.secure.settings.codeSetting.Sim;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.telephony.SubscriptionInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,9 +18,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.santalu.maskedittext.MaskEditText;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SimEntry;
@@ -75,6 +74,15 @@ public class AddSimDialog extends Fragment {
     Button btnManualRegister;
     @BindView(R.id.manualNote)
     EditText etNoteManual;
+    @BindView(R.id.note1_input_layout)
+    TextInputLayout note_input_layout;
+    @BindView(R.id.etNote1)
+    TextInputEditText etnote1;
+    @BindView(R.id.note2_input_layout)
+    TextInputLayout note2_input_layout;
+    @BindView(R.id.etNote2)
+    TextInputEditText etNote2;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -100,13 +108,16 @@ public class AddSimDialog extends Fragment {
             slot1.setText(String.valueOf(infoSim1.getSimSlotIndex()));
 
         }
+        note_input_layout.setHint("Note");
+        note2_input_layout.setHint("Note");
+
         btnRegister1.setOnClickListener(v -> {
-            EditText note1 = view.findViewById(R.id.etNote1);
-            mListener.onSimRegistered(infoSim1, note1.getText().toString());
+            etnote1 = view.findViewById(R.id.etNote1);
+            mListener.onSimRegistered(infoSim1, etnote1.getText().toString());
         });
         btnRegister2.setOnClickListener(v -> {
-            EditText note2 = view.findViewById(R.id.etNote2);
-            mListener.onSimRegistered(infoSim2, note2.getText().toString());
+            etNote2 = view.findViewById(R.id.etNote2);
+            mListener.onSimRegistered(infoSim2, etNote2.getText().toString());
         });
         if (infoSim2 != null) {
             layout2.setVisibility(View.VISIBLE);

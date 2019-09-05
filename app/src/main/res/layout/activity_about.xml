@@ -12,15 +12,15 @@
         android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
 
-        <include
-            android:id="@+id/appBar"
-            layout="@layout/main_toolbar"/>
+            <include
+                android:id="@+id/appBar"
+                layout="@layout/main_toolbar"/>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -733,42 +733,42 @@
 
 
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:onClick="emergencyFlag"
-            android:text="SECURITY ON/OFF"
-            android:visibility="visible" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:onClick="emergencyFlag"
+                android:text="SECURITY ON/OFF"
+                android:visibility="visible" />
 
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:onClick="changeUrl"
-            android:text="Change Url"
-            android:visibility="visible"
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="changeUrl"
+                android:text="Change Url"
+                android:visibility="visible"
 
-            />
+                />
 
 
-        <EditText
-            android:id="@+id/url_1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:hint="http://192.168.18.219:3000"
-            android:inputType="textWebEmailAddress"
-            android:text="http://192.168.18.219:3000"
+            <EditText
+                android:id="@+id/url_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:hint="http://192.168.18.219:3000"
+                android:inputType="textWebEmailAddress"
+                android:text="http://192.168.18.219:3000"
 
-            android:visibility="visible" />
+                android:visibility="visible" />
 
-    </LinearLayout>
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 

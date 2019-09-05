@@ -129,13 +129,6 @@
         <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
     </style>
 
-    <style name="accountheadingsStyle">
-        <!--<item name="android:layout_marginStart">10dp</item>-->
-        <!--<item name="android:layout_marginTop">10dp</item>-->
-        <!--<item name="android:layout_marginBottom">10dp</item>-->
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="accountValueStyle">
 
 
@@ -149,5 +142,18 @@
     </style>
 
 
+    <style name="accountheadingsStyle">
+        <!--<item name="android:layout_marginStart">10dp</item>-->
+        <!--<item name="android:layout_marginTop">10dp</item>-->
+        <!--<item name="android:layout_marginBottom">10dp</item>-->
+        <item name="android:textStyle">bold</item>
+    </style>
 
+
+    <style name="addSimHeadingStyle">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <color name="black">#000</color>
 </resources>

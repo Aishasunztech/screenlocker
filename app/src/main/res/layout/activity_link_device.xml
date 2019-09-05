@@ -6,15 +6,135 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="wrap_content"
-
-        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.LinkDeviceActivity">
+
+
+
+                <LinearLayout
+                    android:id="@+id/not_linked_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    >
+
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_warning"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/device_not_linked"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="30dp"/>
+
+                    <Button
+                        android:id="@+id/btnLinkDevice"
+                        android:layout_width="200dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_stepper_bg"
+                        android:text="@string/link_device" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linked_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/your_device_is_linked"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="30dp"/>
+
+
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_checked"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/tv_linked_dealerPin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:layout_marginTop="30dp"/>
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stop_linking_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone"
+                >
+
+
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/ic_hourglass"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/waiting_for_approval"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"/>
+
+                <Button
+                    android:id="@+id/btnStopLink"
+                    android:layout_width="200dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/btn_stepper_bg"
+                    android:text="@string/stop_linking" />
+            </LinearLayout>
+
+
 
             <include
                 android:id="@+id/include"
@@ -22,6 +142,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:visibility="gone">
+
 
 
             <TextView
@@ -433,26 +562,26 @@
 
             </TableLayout>
 
-            <Button
-                android:id="@+id/btnLinkDevice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/link_device"
-                app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/tableLayout2"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+            <!--<Button-->
+                <!--android:id="@+id/btnLinkDevice"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:text="@string/link_device"-->
+                <!--app:layout_constraintEnd_toEndOf="@+id/tableLayout2"-->
+                <!--app:layout_constraintHorizontal_bias="0.5"-->
+                <!--app:layout_constraintStart_toStartOf="@+id/tableLayout2"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />-->
 
-            <Button
-                android:id="@+id/btnStopLink"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/stop_linking"
-                app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
-                app:layout_constraintStart_toStartOf="@+id/tableLayout2"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+            <!--<Button-->
+                <!--android:id="@+id/btnStopLink"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:text="@string/stop_linking"-->
+                <!--app:layout_constraintEnd_toEndOf="@+id/tableLayout2"-->
+                <!--app:layout_constraintStart_toStartOf="@+id/tableLayout2"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />-->
 
 
             <ProgressBar
@@ -478,7 +607,8 @@
                 tools:layout_editor_absoluteY="483dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

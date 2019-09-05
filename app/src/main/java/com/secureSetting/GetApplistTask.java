@@ -8,6 +8,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -45,7 +46,8 @@ public class GetApplistTask extends AsyncTask<Void,Void, List<AppInfo>>
                             appInfo.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE)||
                             appInfo.getUniqueName().equals(AppConstants.SECURE_MARKET_UNIQUE) ||
                             appInfo.getUniqueName().equals(AppConstants.SFM_UNIQUE) ||
-                            appInfo.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE) );
+                            appInfo.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE) ||
+                            appInfo.getUniqueName().equals(AppConstants.LIVE_CLIENT_CHAT_UNIQUE));
                 }
                 listener.getApps(appInfos);
             }
