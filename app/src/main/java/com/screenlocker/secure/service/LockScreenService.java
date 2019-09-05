@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +84,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.IS_MARKET_DOWNLOAD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -136,6 +138,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         @Override
         public void onCompleted(@NotNull Download download) {
 
+            PrefUtils.saveStringPref(LockScreenService.this,IS_MARKET_DOWNLOAD,null);
             downloadListener.downloadComplete(filePath, packageName);
 
 
@@ -166,7 +169,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         public void onProgress(@NotNull Download download, long l, long l1) {
 
             if (downloadListener != null) {
-                downloadListener.showProgressDialog(download.getProgress());
+                downloadListener.showProgressDialog(download.getProgress(),packageName);
 
 
             }
@@ -187,7 +190,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         public void onCancelled(@NotNull Download download) {
             File file = new File(filePath);
             file.delete();
-
+            PrefUtils.saveStringPref(LockScreenService.this,IS_MARKET_DOWNLOAD,null);
             Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
         }
 
@@ -414,7 +417,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     }
 
     public interface DownloadServiceCallBacks {
-        void showProgressDialog(int progress);
+        void showProgressDialog(int progress, String packageName);
 
         void downloadComplete(String filePath, String packagename);
 
@@ -512,7 +515,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             deviceId = DeviceIdUtils.getSerialNumber();
         }
         Log.d("lkashdf", deviceId);
-        socketManager.connectClientChatSocket(deviceId, "http://104.248.19.72:30040");
+        socketManager.connectClientChatSocket(deviceId, "http://104.248.19.72:3004");
     }
 
     public void stopCapture() {

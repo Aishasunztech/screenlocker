@@ -193,9 +193,10 @@ public class AppConstants {
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
     public static final String KEY_COLUMN_SIZE = "column_sizes";
-//    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/livezilla/chat.php?ptn=";//Live Chat
-    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
+    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
+//    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
     public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
+    public static final String IS_MARKET_DOWNLOAD = "is_secure_market_downloading";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 

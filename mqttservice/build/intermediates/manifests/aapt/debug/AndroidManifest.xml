@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.igenius.mqttservice"
+    android:versionCode="9"
+    android:versionName="1.6.6" >
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="27" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application>
+        <service
+            android:name="net.igenius.mqttservice.MQTTService"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

@@ -224,6 +224,7 @@ public class SocketManager {
                         clientChatSocket.disconnect();
                 }).on(Socket.EVENT_DISCONNECT, args -> {
                     Log.e(TAG, "clientChatSocket disconnect event");
+                    socket.off(notify);
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,false);
 
                 }).on(Socket.EVENT_ERROR, args -> {

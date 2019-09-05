@@ -75,6 +75,7 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.IS_MARKET_DOWNLOAD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
@@ -360,13 +361,16 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void showProgressDialog(int progress) {
+    public void showProgressDialog(int progress,String packageName) {
 
         if (!this.isFinishing())
         {
             if(!downloadProgressDialog.isShowing())
             {
-                downloadProgressDialog.show();
+                String isMarket = PrefUtils.getStringPref(this,IS_MARKET_DOWNLOAD);
+                if(isMarket != null && isMarket.equals("No")) {
+                    downloadProgressDialog.show();
+                }
             }
             downloadProgressDialog.setProgress(progress);
 
@@ -630,7 +634,17 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName());
+                String isMarket = PrefUtils.getStringPref(this,IS_MARKET_DOWNLOAD);
+
+
+                if(isMarket == null)
+                {
+                    PrefUtils.saveStringPref(this,AppConstants.IS_MARKET_DOWNLOAD,"No");
+                    mService.startDownload(url, fileName, app.getPackageName());
+                }
+                else{
+                    Toast.makeText(mService, "Already Downloading", Toast.LENGTH_SHORT).show();
+                }
 
             }
 
@@ -642,7 +656,15 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName());
+                    String isMarket = PrefUtils.getStringPref(this,IS_MARKET_DOWNLOAD);
+                    if(isMarket == null)
+                    {
+                        PrefUtils.saveStringPref(this,AppConstants.IS_MARKET_DOWNLOAD,"No");
+                        mService.startDownload(url, fileName, app.getPackageName());
+                    }
+                    else{
+                        Toast.makeText(mService, "Already Downloading", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }

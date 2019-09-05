@@ -1,6 +1,7 @@
 package com.secureMarket;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -54,6 +55,7 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.t.AppConst;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -83,6 +85,7 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.IS_MARKET_DOWNLOAD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PACKAGE_NAME;
@@ -117,6 +120,7 @@ public class MarketFragment extends Fragment implements
     private String userSpace;
     private String url = "", fileName = "";
     private SecureMarketAdapter installedAdapter, uninstalledAdapter, updateAdapter;
+    private SecureMarketAdapter adapter;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -234,6 +238,9 @@ public class MarketFragment extends Fragment implements
 
         swipeRefreshLayout = view.findViewById(R.id.refresh_Market);
         swipeRefreshLayout.setOnRefreshListener(() -> refreshList());
+        adapter = new SecureMarketAdapter(null,activity,MarketFragment.this,fragmentType);
+        rc.setAdapter(adapter);
+        rc.setLayoutManager(new GridLayoutManager(activity,1));
 
 
 
@@ -339,14 +346,24 @@ public class MarketFragment extends Fragment implements
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(uninstalledAdapter);
+//                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(uninstalledAdapter);
+
+//                                    listener = uninstalledAdapter;
+
+                                    adapter.setItems(unInstalledApps);
+                                    adapter.notifyDataSetChanged();
                                 } else if (fragmentType.equals("uninstall")) {
-                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(installedAdapter);
+//                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(installedAdapter);
+                                    adapter.setItems(installedApps);
+                                    adapter.notifyDataSetChanged();
                                 } else if (fragmentType.equals("update")) {
-                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(updateAdapter);
+//                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(updateAdapter);
+
+                                    adapter.setItems(updateApps);
+                                    adapter.notifyDataSetChanged();
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
                                 tvInfo.setVisibility(View.GONE);
@@ -430,17 +447,27 @@ public class MarketFragment extends Fragment implements
                                 }
 
                                 if (fragmentType.equals("install")) {
-                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(uninstalledAdapter);
+//                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(uninstalledAdapter);
+
+                                    adapter.setItems(unInstalledApps);
+                                    adapter.notifyDataSetChanged();
                                 } else if (fragmentType.equals("uninstall")) {
-                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(installedAdapter);
+//                                    installedAdapter = new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(installedAdapter);
+                                    adapter.setItems(installedApps);
+                                    adapter.notifyDataSetChanged();
                                 } else if (fragmentType.equals("update")) {
-                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(updateAdapter);
+//                                    updateAdapter = new SecureMarketAdapter(updateApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(updateAdapter);
+                                    adapter.setItems(updateApps);
+                                    adapter.notifyDataSetChanged();
                                 } else {
-                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
-                                    rc.setAdapter(uninstalledAdapter);
+//                                    uninstalledAdapter = new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType);
+//                                    rc.setAdapter(uninstalledAdapter);
+                                    adapter.setItems(unInstalledApps);
+                                    adapter.notifyDataSetChanged();
+
                                 }
                                 rc.setLayoutManager(new GridLayoutManager(activity, 1));
 
@@ -588,7 +615,16 @@ public class MarketFragment extends Fragment implements
                 if (!file.exists()) {
 
                     if (mService != null) {
-                        mService.startDownload(url, fileName, app.getPackageName());
+                        String isMarket = PrefUtils.getStringPref(activity,IS_MARKET_DOWNLOAD);
+                        if(isMarket == null)
+                        {
+                            PrefUtils.saveStringPref(activity,AppConstants.IS_MARKET_DOWNLOAD,"Yes");
+                            mService.startDownload(url, fileName, app.getPackageName());
+                        }
+                        else{
+                            Toast.makeText(mService, "Already Downloading", Toast.LENGTH_SHORT).show();
+                        }
+
 
                     }
 
@@ -600,7 +636,15 @@ public class MarketFragment extends Fragment implements
                         if (mService != null) {
                             File file1 = new File(file.getAbsolutePath());
                             file.delete();
-                            mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName());
+                            String isMarket = PrefUtils.getStringPref(activity,IS_MARKET_DOWNLOAD);
+                            if(isMarket == null)
+                            {
+                                PrefUtils.saveStringPref(activity,AppConstants.IS_MARKET_DOWNLOAD,"Yes");
+                                mService.startDownload(url, fileName, app.getPackageName());
+                            }
+                            else{
+                                Toast.makeText(mService, "Already Downloading", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
                     }
@@ -717,7 +761,6 @@ public class MarketFragment extends Fragment implements
     @Override
     public void searchOnQueryChange(String query) {
         if (fragmentType.equals("install")) {
-
             searchUninstalledApps(query);
 
         } else if (fragmentType.equals("uninstall")) {
@@ -738,11 +781,16 @@ public class MarketFragment extends Fragment implements
                         searchedList.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
+//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                adapter.setItems(searchedList);
+                adapter.notifyDataSetChanged();
             } else {
-                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
+////                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+
+                adapter.setItems(installedApps);
+                adapter.notifyDataSetChanged();
             }
 
         }
@@ -758,11 +806,15 @@ public class MarketFragment extends Fragment implements
                         searchedList.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
+//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                adapter.setItems(searchedList);
+                adapter.notifyDataSetChanged();
             } else {
-                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
+//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                adapter.setItems(updateApps);
+                adapter.notifyDataSetChanged();
             }
 
         }
@@ -778,25 +830,38 @@ public class MarketFragment extends Fragment implements
                         searchedList.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(searchedList, activity, MarketFragment.this, fragmentType));
+//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+
+                adapter.setItems(searchedList);
+                adapter.notifyDataSetChanged();
             } else {
-                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+//                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
+//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+
+                adapter.setItems(unInstalledApps);
+                adapter.notifyDataSetChanged();
             }
 
         }
     }
 
+
+    private List app;
     @Override
-    public void showProgressDialog(int progress) {
+    public void showProgressDialog(int progress,String packageName) {
 
 
             if (!activity.isFinishing())
             {
                 if(!progressDialog.isShowing())
                 {
-                    progressDialog.show();
+                   String isMarket = PrefUtils.getStringPref(activity, AppConstants.IS_MARKET_DOWNLOAD);
+                    if(isMarket != null && isMarket.equals("Yes"))
+                   {
+                       progressDialog.show();
+                   }
+
                 }
                 progressDialog.setProgress(progress);
 
@@ -806,6 +871,7 @@ public class MarketFragment extends Fragment implements
                 }
 
             }
+
 
     }
 
@@ -1139,6 +1205,7 @@ public class MarketFragment extends Fragment implements
 //
 
     }
+
 
 }
 
