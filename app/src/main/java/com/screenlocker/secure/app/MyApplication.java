@@ -2,12 +2,15 @@ package com.screenlocker.secure.app;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +50,7 @@ import com.secureSetting.t.db.DbIgnoreExecutor;
 import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +73,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_2;
  */
 public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener {
 
-
+public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
     private MyAppDatabase myAppDatabase;
     private ComponentName compName;
@@ -141,6 +145,20 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         compName = new ComponentName(this, MyAdmin.class);
         screenShotView = createScreenShotView();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel1 = new NotificationChannel(
+                    CHANNEL_1_ID,
+                    "Channel Chat",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel1.setDescription("This is Chat channel");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel1);
+
+        }
+
+
 
         // your oncreate code should be
 
@@ -174,6 +192,10 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 .build();
 
         apiOneCaller = component.getApiOneCaller();
+
+//             MQTTService.NAMESPACE = "com.secure.launcher"; //or BuildConfig.APPLICATION_ID;
+//        MQTTService.KEEP_ALIVE_INTERVAL = 60; //in seconds
+//        MQTTService.CONNECT_TIMEOUT = 30; //in seconds
 
 
 //   startService(new Intent(this,LifecycleReceiverService.class));

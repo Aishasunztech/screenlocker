@@ -241,7 +241,7 @@ public class BlurWorker extends Worker {
                 //Live Client Chat Extension
                 Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
                 byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
-                AppInfo clientChatExtension = new AppInfo("Live Client Chat App", AppConstants.LIVE_CLIENT_CHAT_PACKAGE, live_chat_icon);
+                AppInfo clientChatExtension = new AppInfo("Live Chat Support", AppConstants.LIVE_CLIENT_CHAT_PACKAGE, live_chat_icon);
                 clientChatExtension.setUniqueName(clientChatExtension.getPackageName() + clientChatExtension.getLabel());
                 clientChatExtension.setExtension(false);
                 clientChatExtension.setGuest(false);

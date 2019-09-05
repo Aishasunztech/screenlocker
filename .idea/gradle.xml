@@ -12,6 +12,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/chatkit" />
             <option value="$PROJECT_DIR$/commons" />
+            <option value="$PROJECT_DIR$/org.eclipse.paho.android.sample" />
+            <option value="$PROJECT_DIR$/org.eclipse.paho.android.service" />
             <option value="$PROJECT_DIR$/sfm" />
           </set>
         </option>

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.Stericson:RootShell:1.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/RootShell-1.6.aar/5e7dbe02c65c6b7d844c2eb3b1f3039a/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/RootShell-1.6.aar/5e7dbe02c65c6b7d844c2eb3b1f3039a/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/RootShell-1.6.aar/be85975c5b37ace687fcdf7cbc504754/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/RootShell-1.6.aar/be85975c5b37ace687fcdf7cbc504754/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

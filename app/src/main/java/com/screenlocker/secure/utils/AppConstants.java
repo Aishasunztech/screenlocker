@@ -98,6 +98,7 @@ public class AppConstants {
     public static final String ENCRYPT_DEFAULT_CONFIG = "encrypt_default_config";
     public static final String PENDING_ALARM_DIALOG = "pending_alarm_dialog";
     public static final String PENDING_DIALOG_MESSAGE = "pending_dialog_message";
+    public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
 
 
     //servers links

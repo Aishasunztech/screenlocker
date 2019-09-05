@@ -123,5 +123,8 @@ public class List {
         this.packageName = packageName;
     }
 
+   private boolean isProgress;
+
+
 
 }

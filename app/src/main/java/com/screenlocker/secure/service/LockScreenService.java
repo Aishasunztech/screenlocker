@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +45,15 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.service.apps.ServiceConnectedListener;
 import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -84,6 +88,7 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
@@ -108,7 +113,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements ServiceConnectedListener {
+public class LockScreenService extends Service implements ServiceConnectedListener , NetworkChangeReceiver.NetworkChangeListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -126,7 +131,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private int downloadId = 0;
     private boolean viewAdded = false;
     private View view;
-
+    private SocketManager socketManager;
 
     private HashSet<String> tempAllowed = new HashSet<>();
     private HashSet<String> blacklist = new HashSet<>();
@@ -231,6 +236,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     }
 
 
+    @Override
+    public void isConnected(boolean state) {
+
+    }
+
+
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -287,13 +298,30 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
      public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
   */
+    public void connectClientChatSocket() {
+        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
+
+        if (deviceId == null) {
+            String serialNumber = DeviceIdUtils.getSerialNumber();
+            Log.d("serialslkdj", serialNumber);
+            deviceId = DeviceIdUtils.getSerialNumber();
+        }
+        Log.d("lkashdf", deviceId);
+        socketManager.connectClientChatSocket(deviceId, "http://104.248.19.72:3004");
+    }
+
+    public void destroyClientChatSocket() {
+        socketManager.destroyClientChatSocket();
+    }
+
+
     @Override
     public void onCreate() {
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
 
         WindowChangeDetectingService.serviceConnectedListener = this;
-
+        socketManager = SocketManager.getInstance();
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
         blacklist.add("com.sec.android.app.launcher");
