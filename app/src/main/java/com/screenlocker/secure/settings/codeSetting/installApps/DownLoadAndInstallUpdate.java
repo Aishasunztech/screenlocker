@@ -85,7 +85,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
 
                 // input = body.byteStream();
                 input = new BufferedInputStream(downloadUrl.openStream());
-                byte data[] = new byte[contentLength];
+                byte[] data = new byte[contentLength];
                 long total = 0;
                 int count;
                 while ((count = input.read(data)) != -1) {

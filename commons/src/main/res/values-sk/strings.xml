@@ -194,10 +194,6 @@
     <string name="insert_pattern">Zadajte vzor</string>
     <string name="wrong_pattern">Nesprávny vzor</string>
     <string name="repeat_pattern">Zopakujte vzor</string>
-    <string name="place_finger">Prosím priložte prst ku senzoru odtlačku prsta</string>
-    <string name="authentication_failed">Overovanie zlyhalo</string>
-    <string name="authentication_blocked">Overovanie je zablokované, prosím skúste o chvíľu</string>
-    <string name="no_fingerprints_registered">Nemáte zaregistrované žiadne odtlačky, prosím pridajte nejaké v Nastaveniach zariadenia</string>
     <string name="protection_setup_successfully">Heslo bolo úspešne nastavené. Ak ho zabudnete, prosím preinštalujte aplikáciu.</string>
     <string name="fingerprint_setup_successfully">Ochrana bola úspešne nastavená. Prosím preinštalujte aplikáciu v prípade problémov s jej zmenou.</string>
     <string name="lock_folder_notice">Táto ochrana funguje iba v tejto aplikácii, nemá za cieľ nahradiť šifrovanie fungujúce po celom systéme.</string>

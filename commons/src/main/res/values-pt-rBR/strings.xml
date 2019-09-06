@@ -190,10 +190,6 @@
     <string name="insert_pattern">Inserir padrão</string>
     <string name="wrong_pattern">Padrão errado</string>
     <string name="repeat_pattern">Repetir padrão</string>
-    <string name="place_finger">Posicione seu dedo sobre o leitor de digitais</string>
-    <string name="authentication_failed">Autenticação falhou</string>
-    <string name="authentication_blocked">Autenticação bloqueada, favor tentar novamente em instantes</string>
-    <string name="no_fingerprints_registered">Você não tem digitais cadastradas. Favor adiconar alguma nas configurações do seu aparelho</string>
     <string name="protection_setup_successfully">Senha criada com sucesso. Reinstale o app caso você a esqueça.</string>
     <string name="fingerprint_setup_successfully">Proteção criada com sucesso. Reinstale o app caso tenha problemas em redefinir.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

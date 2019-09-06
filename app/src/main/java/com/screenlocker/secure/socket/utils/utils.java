@@ -125,9 +125,7 @@ public class utils {
         }
 
         if (duress != null) {
-            if (duress.equals(key)) {
-                return false;
-            }
+            return !duress.equals(key);
 
         }
 

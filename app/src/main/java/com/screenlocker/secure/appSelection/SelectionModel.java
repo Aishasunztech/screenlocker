@@ -75,21 +75,15 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
                 if (appInfo.isEnable()) {
                     allDisable = true;
                 } else {
-                    if ((appInfo.getUniqueName().equals(settingPackageName))
-                            || (appInfo.getUniqueName().equals(projectPrimaryKey)))
-                        allDisable = true;
-                    else
-                        allDisable = false;
+                    allDisable = (appInfo.getUniqueName().equals(settingPackageName))
+                            || (appInfo.getUniqueName().equals(projectPrimaryKey));
                 }
             }
             if (allGuest) {
                 if (appInfo.isGuest()) {
                     allGuest = true;
                 } else {
-                    if (appInfo.getUniqueName().equals(settingPackageName))
-                        allGuest = true;
-                    else
-                        allGuest = false;
+                    allGuest = appInfo.getUniqueName().equals(settingPackageName);
                 }
             }
 
@@ -97,11 +91,8 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
                 if (appInfo.isEncrypted()) {
                     allEncrypted = true;
                 } else {
-                    if ((settingPackageName != null && appInfo.getUniqueName().equals(settingPackageName))
-                            || (appInfo.getUniqueName().equals(projectPrimaryKey)))
-                        allEncrypted = true;
-                    else
-                        allEncrypted = false;
+                    allEncrypted = (settingPackageName != null && appInfo.getUniqueName().equals(settingPackageName))
+                            || (appInfo.getUniqueName().equals(projectPrimaryKey));
                 }
             }
 

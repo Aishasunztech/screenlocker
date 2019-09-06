@@ -191,10 +191,6 @@
     <string name="insert_pattern">Унесите шаблон</string>
     <string name="wrong_pattern">Погрешан шаблон</string>
     <string name="repeat_pattern">Поновите шаблон</string>
-    <string name="place_finger">Молимо вас ставите ваш прст на сензор за отисак прста</string>
-    <string name="authentication_failed">Провера идентитета неуспешна</string>
-    <string name="authentication_blocked">Провера идентитета блокирана, покушајте поново касније</string>
-    <string name="no_fingerprints_registered">Немате регистрованих отисака прстију, додајте неке у Подешавања вашег уређаја</string>
     <string name="protection_setup_successfully">Успешно подешена шифра. Поново инсталирајте апликацију за случај да изгубите шифру.</string>
     <string name="fingerprint_setup_successfully">Заштита је успешно подешена. Поново инсталирајте апликацију за случај да имате проблема са ресетовањем отиска прста.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

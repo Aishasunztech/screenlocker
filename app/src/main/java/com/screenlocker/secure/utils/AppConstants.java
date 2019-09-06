@@ -286,7 +286,7 @@ public class AppConstants {
     public static final String SECURE_MARKET_PACKAGE = "com.secureMarket.SecureMarketActivity";
 
     //unique name for secure market
-    public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Client Chat App";
+    public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
     public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
 
     // secure app

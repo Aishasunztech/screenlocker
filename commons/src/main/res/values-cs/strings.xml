@@ -194,10 +194,6 @@
     <string name="insert_pattern">Zadejte vzor</string>
     <string name="wrong_pattern">Nesprávný vzor</string>
     <string name="repeat_pattern">Opakovat vzor</string>
-    <string name="place_finger">Prosím přiložte prst na senzor otisku prstu</string>
-    <string name="authentication_failed">Ověření selhalo</string>
-    <string name="authentication_blocked">Ověření je zablokováno, prosím zkuste to později</string>
-    <string name="no_fingerprints_registered">Nejsou registrovány žádné otisky prstu, prosím přidejte nějaké v Nastavení svého zařízení</string>
     <string name="protection_setup_successfully">Heslo bylo úspěšně nastaveno. Pokud jej zapomenete, prosím přeinstalujte aplikaci.</string>
     <string name="fingerprint_setup_successfully">Ochrana byla úspěšně nastavena. V případě problémů s její změnou prosím přeinstalujte aplikaci.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

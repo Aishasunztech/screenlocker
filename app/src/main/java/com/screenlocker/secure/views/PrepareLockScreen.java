@@ -62,11 +62,9 @@ public class PrepareLockScreen {
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else {
             windowType = WindowManager.LayoutParams.TYPE_TOAST |
                     WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        } else {
-            windowType = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
         DeviceStatusReceiver deviceStatusReceiver = new DeviceStatusReceiver();
@@ -139,7 +137,7 @@ public class PrepareLockScreen {
                 } else if (pattern.size() > 1 && pattern.size() < 4) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(() -> mPatternLockView.clearPattern(), 500);
+                    new Handler().postDelayed(mPatternLockView::clearPattern, 500);
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
                 boolean clearance;
@@ -206,9 +204,7 @@ public class PrepareLockScreen {
                     setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
                     if (clearance){
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                        }, 500);
+                        new Handler().postDelayed(mPatternLockView::clearPattern, 500);
                     }
                 } else {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);

@@ -191,10 +191,6 @@
     <string name="insert_pattern">Minta beillesztése</string>
     <string name="wrong_pattern">Hibás minta</string>
     <string name="repeat_pattern">Minta ismétlése</string>
-    <string name="place_finger">Helyezze az ujját az ujjlenyomat érzékelőre</string>
-    <string name="authentication_failed">Sikertelen hitelesítés</string>
-    <string name="authentication_blocked">A hitelesítés blokkolva, próbálkozzon újra egy kicsit később</string>
-    <string name="no_fingerprints_registered">Nincsenek regisztrált ujjlenyomatok, kérjük, adjon hozzá néhányat a készülék Beállításaiban</string>
     <string name="protection_setup_successfully">A jelszó beállítása sikerült. Ha elfelejteti, akkor újra kell telepíteni az alkalmazást.</string>
     <string name="fingerprint_setup_successfully">A védelem beállítása sikerült. Az újraindítással kapcsolatos problémák esetén telepítse újra az alkalmazást.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

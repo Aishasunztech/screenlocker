@@ -192,10 +192,6 @@
     <string name="insert_pattern">Model daxil edin</string>
     <string name="wrong_pattern">Yanlış model</string>
     <string name="repeat_pattern">Modeli təkrarlayın</string>
-    <string name="place_finger">Xahiş olunur barmağınızı barmaq izi sensoru üzərinə yerləşdirin</string>
-    <string name="authentication_failed">Uyğunlaşdırma uğursuzdur</string>
-    <string name="authentication_blocked">Uyğunlaşdırma bloklanıb, biraz sonra yoxlayın</string>
-    <string name="no_fingerprints_registered">Qeydiyyata alınmış heçbir barmaq izi yoxdur, xahiş olunur cihazınızın Parametrlərindən əlavə edəsiniz</string>
     <string name="protection_setup_successfully">Şifrə təyini uğurludur. Əgər şifrəni unutsanız, tətbiqi yenidən yükləyin.</string>
     <string name="fingerprint_setup_successfully">Qoruma təyini uğurludur. Əgər təzələmə problemi yaşasanız, tətbiqi yenidən yükləyin.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

@@ -120,11 +120,7 @@ public class LiveClientChatActivity extends AppCompatActivity{
     private boolean isConnected() {
         ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
-        if (netInfo == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return netInfo != null;
     }
 
     private ServiceConnection connection = new ServiceConnection() {

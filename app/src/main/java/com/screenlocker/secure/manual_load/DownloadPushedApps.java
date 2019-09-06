@@ -144,7 +144,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
                 int contentLength = connection.getContentLength();
                 // input = body.byteStream();
                 input = new BufferedInputStream(downloadUrl.openStream());
-                byte data[] = new byte[contentLength];
+                byte[] data = new byte[contentLength];
                 long total = 0;
                 int count;
 

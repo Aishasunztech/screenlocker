@@ -200,10 +200,6 @@
     <string name="insert_pattern">Rho batrwm</string>
     <string name="wrong_pattern">Patrwm anghywir</string>
     <string name="repeat_pattern">Rho\'r patrwm eto</string>
-    <string name="place_finger">Gosoda dy fys ar y synhwyrydd olion bysedd</string>
-    <string name="authentication_failed">Methodd y dilysiad</string>
-    <string name="authentication_blocked">Rhwystrwyd y dilysiad. Rho gynnig arall arni mewn eiliad</string>
-    <string name="no_fingerprints_registered">Does dim olion bysedd wedi\'u cofrestru. Ychwanega rai yn Gosodiadau dy ddyfais.</string>
     <string name="protection_setup_successfully">Gosodwyd cyfrinair yn llwyddiannus. Ailosoda\'r ap os wyt yn ei anghofio.</string>
     <string name="fingerprint_setup_successfully">Gosodwyd diogelwch yn llwyddiannus. Ailosoda\'r ap os wyt yn cael problemau yn ei ailosod.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

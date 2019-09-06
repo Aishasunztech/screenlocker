@@ -195,10 +195,6 @@
     <string name="insert_pattern">Narišite vzorec</string>
     <string name="wrong_pattern">Napačen vzorec</string>
     <string name="repeat_pattern">Ponovite vzorec</string>
-    <string name="place_finger">Postavite prst na čitalec prstnih odtisov</string>
-    <string name="authentication_failed">Overitev ni uspela</string>
-    <string name="authentication_blocked">Overitev je blokirana, prosimo počakajte trenutek</string>
-    <string name="no_fingerprints_registered">Registrirali še niste nobenega prstnega odtisa. Prosimo, dodajte jih v nastavitvah naprave</string>
     <string name="protection_setup_successfully">Geslo uspešno nastavljeno. Če ga pozabite, izbrišite in ponovno naložite aplikacijo.</string>
     <string name="fingerprint_setup_successfully">Zaščita uspešno nastavljena. Če pride do težav s ponastavitvijo, izbrišite in ponovno naložite aplikacijo.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

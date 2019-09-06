@@ -113,7 +113,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements ServiceConnectedListener , NetworkChangeReceiver.NetworkChangeListener {
+public class LockScreenService extends Service implements ServiceConnectedListener, NetworkChangeReceiver.NetworkChangeListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -350,7 +350,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         PackageManager packageManager = getPackageManager();
 
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(3)
+                .setDownloadConcurrentLimit(1)
+                .setProgressReportingInterval(100)
                 .build();
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
         fetch.addListener(fetchListener);

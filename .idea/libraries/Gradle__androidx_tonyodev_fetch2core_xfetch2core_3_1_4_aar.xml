@@ -1,10 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.tonyodev.fetch2core:xfetch2core:3.1.4@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/xfetch2core-3.1.4.aar/2b3e4ae30508ab2c8ebb9c7ab24c4c99/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/xfetch2core-3.1.4.aar/2b3e4ae30508ab2c8ebb9c7ab24c4c99/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/xfetch2core-3.1.4.aar/fa13cfe88f8603bd5a2c9005e0b59d2e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/xfetch2core-3.1.4.aar/fa13cfe88f8603bd5a2c9005e0b59d2e/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.tonyodev.fetch2core/xfetch2core/3.1.4/32eca39d44e85a182409d613479b669bbe106237/xfetch2core-3.1.4-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.tonyodev.fetch2core/xfetch2core/3.1.4/5e24e459aa0a676a0514b7ab72371789f6fd63db/xfetch2core-3.1.4-sources.jar!/" />
     </SOURCES>

@@ -192,10 +192,6 @@
     <string name="insert_pattern">Įtraukti modelį</string>
     <string name="wrong_pattern">Klaidingas modelis</string>
     <string name="repeat_pattern">Pakartoti modelį</string>
-    <string name="place_finger">Prašome uždėti savo pirštą ant pirštų atspaudų jutiklio</string>
-    <string name="authentication_failed">Autentifikacija nepavyko</string>
-    <string name="authentication_blocked">Autentifikacija blokuojama, prašome pabandyti iš naujo vėliau</string>
-    <string name="no_fingerprints_registered">Neturite registruotų pirštų atspaudų, prašome įtraukti Jūsų įrenginio nustatymuose</string>
     <string name="protection_setup_successfully">Slaptažodis nustatytas sėkmingai. Prašome įdiegti programėlę iš naujo jei pamiršite slaptažodį.</string>
     <string name="fingerprint_setup_successfully">Apsauga nustatyta sėkmingai. Prašome įdiegti programėlę iš naujo jei bus problemų su apsaugos nustatymu iš naujo.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

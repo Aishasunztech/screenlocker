@@ -192,10 +192,6 @@
     <string name="insert_pattern">Syötä kuvio</string>
     <string name="wrong_pattern">Väärä kuvio</string>
     <string name="repeat_pattern">Toista kuvio</string>
-    <string name="place_finger">Aseta sormi sormenjälkitunnistimelle</string>
-    <string name="authentication_failed">Kirjautuminen epäonnistui</string>
-    <string name="authentication_blocked">Kirjautuminen estetty, yritä myöhemmin uudelleen</string>
-    <string name="no_fingerprints_registered">Sinulla ei ole tallennettuja sormenjälkiä, lisää niitä laitteesi asetuksista</string>
     <string name="protection_setup_successfully">Salasana tallennettu. Asenna sovellus uudelleen jos unohdat sen.</string>
     <string name="fingerprint_setup_successfully">Suojaus onnistui. Asenna sovellus uudelleen jos kohtaat ongelmia.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

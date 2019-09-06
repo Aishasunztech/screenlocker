@@ -438,11 +438,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
                 status = true;
             } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
                 status = true;
-            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
-                status = true;
-            } else {
-                status = false;
-            }
+            } else status = currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()));
 
         } else {
             status = false;

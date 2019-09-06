@@ -192,10 +192,6 @@
     <string name="insert_pattern">Muster zeichnen</string>
     <string name="wrong_pattern">Falsches Muster</string>
     <string name="repeat_pattern">Muster wiederholen</string>
-    <string name="place_finger">Bitte den Finger auf den Fingerabdrucksensor legen</string>
-    <string name="authentication_failed">Authentifizierung fehlgeschlagen</string>
-    <string name="authentication_blocked">Authentifizierung blockiert, bitte in Kürze erneut versuchen</string>
-    <string name="no_fingerprints_registered">Keine Fingerabdrücke registriert, bitte in den Geräteeinstellungen hinzufügen</string>
     <string name="protection_setup_successfully">Muster/PIN erfolgreich gespeichert. Falls vergessen, muss die App neu installiert werden.</string>
     <string name="fingerprint_setup_successfully">Schutz erfolgreich eingerichtet. Falls beim Zurücksetzen Probleme auftreten, bitte die App neu installieren.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

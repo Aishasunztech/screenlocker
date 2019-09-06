@@ -194,10 +194,6 @@
     <string name="insert_pattern">Unesite uzorak</string>
     <string name="wrong_pattern">Krivi uzorak</string>
     <string name="repeat_pattern">Ponovite uzorak</string>
-    <string name="place_finger">Molimo postavite prst na senzor otiska prsta</string>
-    <string name="authentication_failed">Neuspješna autentifikacija</string>
-    <string name="authentication_blocked">Blokirana autentifikacija, molimo pokušajte za par trenutaka</string>
-    <string name="no_fingerprints_registered">Nemate registiranih otisaka prstiju, molimo dodajte ih u postavkama Vašeg uređaja</string>
     <string name="protection_setup_successfully">Uspješno postavljanje lozinke. Molimo reinstalirajte aplikaciju u slučaju da je zaboravite.</string>
     <string name="fingerprint_setup_successfully">Uspješno postavljanje zaštite. Molimo reinstalirajte aplikaciju u slučaju problema s resetiranjem.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

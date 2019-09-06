@@ -23,6 +23,7 @@ import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -122,15 +123,13 @@ public class PatternLockUtils {
                                        List<PatternLockView.Dot> pattern) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(SHA1);
-            messageDigest.update(patternToString(patternLockView, pattern).getBytes(UTF8));
+            messageDigest.update(patternToString(patternLockView, pattern).getBytes(StandardCharsets.UTF_8));
 
             byte[] digest = messageDigest.digest();
             BigInteger bigInteger = new BigInteger(1, digest);
             return String.format((Locale) null,
                     "%0" + (digest.length * 2) + "x", bigInteger).toLowerCase();
         } catch (NoSuchAlgorithmException e) {
-            return null;
-        } catch (UnsupportedEncodingException e) {
             return null;
         }
     }
@@ -146,15 +145,13 @@ public class PatternLockUtils {
                                       List<PatternLockView.Dot> pattern) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(MD5);
-            messageDigest.update(patternToString(patternLockView, pattern).getBytes(UTF8));
+            messageDigest.update(patternToString(patternLockView, pattern).getBytes(StandardCharsets.UTF_8));
 
             byte[] digest = messageDigest.digest();
             BigInteger bigInteger = new BigInteger(1, digest);
             return String.format((Locale) null,
                     "%0" + (digest.length * 2) + "x", bigInteger).toLowerCase();
         } catch (NoSuchAlgorithmException e) {
-            return null;
-        } catch (UnsupportedEncodingException e) {
             return null;
         }
     }

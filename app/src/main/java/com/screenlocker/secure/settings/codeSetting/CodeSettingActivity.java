@@ -360,11 +360,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             etConfirmPassword.requestFocus();
             Toast.makeText(this, getResources().getString(R.string.password_not_matched), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!passwordsOk(this, etConfirmPassword.getText().toString())) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return passwordsOk(this, etConfirmPassword.getText().toString());
     }
 
 

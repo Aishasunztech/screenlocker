@@ -192,10 +192,6 @@
     <string name="insert_pattern">Introduza o padrão</string>
     <string name="wrong_pattern">Padrão inválido</string>
     <string name="repeat_pattern">Repita o padrão</string>
-    <string name="place_finger">Coloque o seu dedo no sensor de impressões digitais</string>
-    <string name="authentication_failed">Falha de autenticação</string>
-    <string name="authentication_blocked">Autenticação bloqueada. Por favor tente mais tarde.</string>
-    <string name="no_fingerprints_registered">Não tem impressões digitais registadas. Adicione a sua impressão digital nas definições do dispositivo.</string>
     <string name="protection_setup_successfully">Palavra-passe definida com sucesso. Deve reinstalar esta aplicação se não se lembrar da palavra-passe.</string>
     <string name="fingerprint_setup_successfully">Proteção definida com sucesso. Deve reinstalar a aplicação se ocorrerem problemas.</string>
     <string name="lock_folder_notice">A proteção aqui definida apenas funciona para esta aplicação e não protege o restante conteúdo do seu sistema.</string>

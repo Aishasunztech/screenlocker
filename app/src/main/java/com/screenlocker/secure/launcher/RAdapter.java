@@ -22,6 +22,7 @@ import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -110,17 +111,14 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         Intent i = new Intent(context, SecureSettingsMain.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
-                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                     case AppConstants.SUPPORT_UNIQUE:
                         context.startActivity(new Intent(context, ChatActivity.class));
-                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
                         launch.setAction(ACTION_VIEW);
                         context.startActivity(launch);
-                        ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         break;
                 }
 
@@ -142,7 +140,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
@@ -150,21 +147,17 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SECURE_MARKET_UNIQUE:
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case BuildConfig.APPLICATION_ID:
                             Intent launch = new Intent(context, SettingsActivity.class);
                             launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
                             Intent intent2 = new Intent(context, LiveClientChatActivity.class);
@@ -177,16 +170,16 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                                 launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
-
                             context.startActivity(launchIntent);
-                            ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             break;
                         }
                     }
 
 
                 } catch (Exception e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "App not found", Toast.LENGTH_LONG).show();
+                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
+                        new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName())).start();
                 }
 
             } else {

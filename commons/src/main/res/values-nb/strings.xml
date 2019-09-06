@@ -192,10 +192,6 @@
     <string name="insert_pattern">Tegn mønster</string>
     <string name="wrong_pattern">Feil mønster</string>
     <string name="repeat_pattern">Gjenta mønster</string>
-    <string name="place_finger">Plasser fingeren på fingeravtrykksensoren</string>
-    <string name="authentication_failed">Autentisering feilet</string>
-    <string name="authentication_blocked">Autentisering blokkert, prøv igjen</string>
-    <string name="no_fingerprints_registered">Du har ingen fingeravtrykk registrert, legg til i enhetens innstillinger</string>
     <string name="protection_setup_successfully">Passord er stilt inn. Installer appen på nytt hvis du glemmer det.</string>
     <string name="fingerprint_setup_successfully">Beskyttelse er stilt inn. Installer appen på nytt i tilfelle problemer med å tilbakestille.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

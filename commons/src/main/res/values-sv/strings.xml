@@ -192,10 +192,6 @@
     <string name="insert_pattern">Rita mönster</string>
     <string name="wrong_pattern">Du har ritat fel mönster</string>
     <string name="repeat_pattern">Upprepa mönster</string>
-    <string name="place_finger">Placera fingret på fingeravtrycksläsaren</string>
-    <string name="authentication_failed">Autentiseringen misslyckades</string>
-    <string name="authentication_blocked">Autentisering blockeras, försök igen om en stund</string>
-    <string name="no_fingerprints_registered">Du har inga registrerade fingeravtryck, lägg till några i Inställningarna på din enhet</string>
     <string name="protection_setup_successfully">Lösenordet har ställts in. Installera om appen om du glömmer bort det.</string>
     <string name="fingerprint_setup_successfully">Skyddet har ställts in. Installera om appen om du inte kan ta bort skyddet.</string>
     <string name="lock_folder_notice">This protection works in this app only, it is not supposed to replace a real systemwide folder encryption.</string>

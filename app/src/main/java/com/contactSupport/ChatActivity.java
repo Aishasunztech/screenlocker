@@ -62,7 +62,7 @@ public class ChatActivity extends AppCompatActivity implements MessagesListAdapt
             actionBar.setDisplayShowCustomEnabled(true);
             View customView = getLayoutInflater().inflate(R.layout.actionbar_title, null);
             // Get the textview of the title
-            TextView customTitle = (TextView) customView.findViewById(R.id.actionbarTitle);
+            TextView customTitle = customView.findViewById(R.id.actionbarTitle);
 
 
             // Change the font family (optional)

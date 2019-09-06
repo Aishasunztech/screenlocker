@@ -339,8 +339,7 @@ public class SocketManager {
      * @param onSocketConnectionListenerListener the on socket connection listener listener
      */
     public void removeSocketConnectionListener(OnSocketConnectionListener onSocketConnectionListenerListener) {
-        if (onSocketConnectionListenerList != null
-                && onSocketConnectionListenerList.contains(onSocketConnectionListenerListener)) {
+        if (onSocketConnectionListenerList != null) {
             onSocketConnectionListenerList.remove(onSocketConnectionListenerListener);
         }
     }

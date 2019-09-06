@@ -952,13 +952,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
         ApplicationInfo info = null;
         try {
             info = getPackageManager().getApplicationInfo(packageName, 0);
-            if (info.sourceDir.startsWith("/data/app/")) {
-                //Non-system app
-                return false;
-            } else {
-                //System app
-                return true;
-            }
+            //Non-system app
+            //System app
+            return !info.sourceDir.startsWith("/data/app/");
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }

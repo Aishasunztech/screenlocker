@@ -28,7 +28,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setTitle(getResources().getString(R.string.permission));
 

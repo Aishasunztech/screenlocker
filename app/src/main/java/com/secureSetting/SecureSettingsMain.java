@@ -97,7 +97,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
                 batteryStatus = "Charging";
             }
-            battery_status.setText(String.valueOf(level) + "% " + batteryStatus);
+            battery_status.setText(level + "% " + batteryStatus);
         }
     };
 

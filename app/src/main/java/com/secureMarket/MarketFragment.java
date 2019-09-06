@@ -216,7 +216,7 @@ public class MarketFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.from(activity).inflate(R.layout.fragment_market, container, false);
+        View view = LayoutInflater.from(activity).inflate(R.layout.fragment_market, container, false);
         rc = view.findViewById(R.id.appList);
         tvInfo = view.findViewById(R.id.tvNoDataFound);
         progressBar = view.findViewById(R.id.marketFragmentProgress);
@@ -1036,10 +1036,7 @@ public class MarketFragment extends Fragment implements
         if (packageName.equals(activity.getPackageName())) {
             return false;
         }
-        if (packageName.equals("com.secure.systemcontrol")) {
-            return false;
-        }
-        return true;
+        return !packageName.equals("com.secure.systemcontrol");
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -1118,7 +1115,7 @@ public class MarketFragment extends Fragment implements
             }
         } catch (PackageManager.NameNotFoundException e) {
             savePackages(packageName, INSTALLED_PACKAGES, userType, activity);
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) activity)
+            Intent intent = ShareCompat.IntentBuilder.from(activity)
                     .setStream(uri) // uri from FileProvider
                     .setType("text/html")
                     .getIntent()

@@ -443,7 +443,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
             Timber.e("vsdikfjviosdijsejifosefesfgefgefefesf");
 
-            Intent intent = ShareCompat.IntentBuilder.from((Activity) this)
+            Intent intent = ShareCompat.IntentBuilder.from(this)
                     .setStream(uri) // uri from FileProvider
                     .setType("text/html")
                     .getIntent()
@@ -512,7 +512,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
                         // input = body.byteStream();
                         input = new BufferedInputStream(downloadUrl.openStream());
-                        byte data[] = new byte[contentLength];
+                        byte[] data = new byte[contentLength];
                         long total = 0;
                         int count;
                         while ((count = input.read(data)) != -1) {

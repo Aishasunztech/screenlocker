@@ -81,10 +81,7 @@ public class UtilityFunctions {
 
     public static boolean checkLocationStatus(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return false;
-        }
-        return true;
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static void turnOnLocation(final Activity activity) {

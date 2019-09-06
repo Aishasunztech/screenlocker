@@ -305,10 +305,7 @@ public class DeviceIdUtils {
 
             System.out.println("Output : Sum = " + sum);
 
-            if (sum % 10 == 0 && sum != 0)
-                return true;
-            else
-                return false;
+            return sum % 10 == 0 && sum != 0;
         }
     }
 

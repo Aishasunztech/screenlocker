@@ -279,11 +279,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             return false;
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
             return false;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.getPackageManager().canRequestPackageInstalls()) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return Build.VERSION.SDK_INT < Build.VERSION_CODES.O || context.getPackageManager().canRequestPackageInstalls();
     }
 
     private void showPermissionsMenus() {

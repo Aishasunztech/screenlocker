@@ -32,8 +32,8 @@ public class FinishFragment extends AbstractStep {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_finish, container, false);;
-                CardView card = view.findViewById(R.id.complete_card);
+        View view =inflater.inflate(R.layout.fragment_finish, container, false);
+        CardView card = view.findViewById(R.id.complete_card);
         card.setBackgroundResource(R.drawable.black_circle);
         // Inflate the layout for this fragment
         return view;

@@ -6,10 +6,10 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chatkit/chatkit.iml" filepath="$PROJECT_DIR$/chatkit/chatkit.iml" />
       <module fileurl="file://$PROJECT_DIR$/commons/commons.iml" filepath="$PROJECT_DIR$/commons/commons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/org.eclipse.paho.android.sample/org.eclipse.paho.android.sample.iml" filepath="$PROJECT_DIR$/org.eclipse.paho.android.sample/org.eclipse.paho.android.sample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/org.eclipse.paho.android.service/org.eclipse.paho.android.service.iml" filepath="$PROJECT_DIR$/org.eclipse.paho.android.service/org.eclipse.paho.android.service.iml" />
       <module fileurl="file://$PROJECT_DIR$/screenlocker.iml" filepath="$PROJECT_DIR$/screenlocker.iml" />
       <module fileurl="file://$PROJECT_DIR$/sfm/sfm.iml" filepath="$PROJECT_DIR$/sfm/sfm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test1/test1.iml" filepath="$PROJECT_DIR$/test1/test1.iml" />
     </modules>
   </component>
 </project>

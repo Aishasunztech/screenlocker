@@ -135,7 +135,6 @@ public class MainActivity extends
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -327,7 +326,6 @@ public class MainActivity extends
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         super.onResume();
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
