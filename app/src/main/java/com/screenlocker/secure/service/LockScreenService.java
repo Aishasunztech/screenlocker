@@ -97,6 +97,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
+import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -749,7 +750,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
-        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), 2000);
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
 
 //        handler.postDelayed(this::removeView, 200);
 

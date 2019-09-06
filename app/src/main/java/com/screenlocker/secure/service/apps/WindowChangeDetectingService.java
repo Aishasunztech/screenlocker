@@ -45,6 +45,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
+import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
@@ -409,7 +410,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
         ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
 
-        handler.postDelayed(() -> ActivityCompat.startForegroundService(WindowChangeDetectingService.this, new Intent(WindowChangeDetectingService.this, LockScreenService.class).setAction("remove")), 2000);
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(WindowChangeDetectingService.this, new Intent(WindowChangeDetectingService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
 
 
     }
@@ -438,7 +439,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
                 status = true;
             } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
                 status = true;
-            } else status = currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()));
+            } else
+                status = currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()));
 
         } else {
             status = false;

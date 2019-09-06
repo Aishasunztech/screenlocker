@@ -460,4 +460,7 @@ public class AppConstants {
     public static boolean TEMP_SETTINGS_ALLOWED = false;
 
 
+    public static int RESTRICTION_DELAY = 500;
+
+
 }
