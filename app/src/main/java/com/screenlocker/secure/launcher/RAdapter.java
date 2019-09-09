@@ -22,6 +22,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.SMActivity;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
@@ -85,8 +86,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
-                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                         context.startActivity(launch);
+                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                         break;
                 }
 

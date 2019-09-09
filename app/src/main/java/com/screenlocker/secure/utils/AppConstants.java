@@ -1,7 +1,5 @@
 package com.screenlocker.secure.utils;
 
-import android.content.Context;
-
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 
@@ -38,7 +36,6 @@ public class AppConstants {
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 4;
     public static final String BROADCAST_ACTION = "intentKey";
-    public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
     ///Pattern lock
     public static final String GUEST_DEFAULT_CONFIG = "_guest_def_config";
@@ -56,7 +53,6 @@ public class AppConstants {
 
     public static final String BROADCAST_KEY = "key";
     public static final String BROADCAST_VIEW_ADD_REMOVE = "add_view";
-    public static final String SUPER_ADMIN_KEY = "11111";
 
     public static final String KEY_SERVICE_RUNNING = "lock_service";
     public static final String KEY_GUEST_ALL = "guest_all";
@@ -100,16 +96,16 @@ public class AppConstants {
 
 
     //servers links
-//    public static final String URL_1 = "https://api.lockmesh.com";//live SL
-//    public static final String URL_1 = "https://devapi.lockmesh.com";// Dev
-//        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-        public static final String URL_1 = "http://192.168.18.28:3000";//local
+//        public static String URL_1 = "https://api.lockmesh.com";//live SL
+    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//                public static String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-//            public static final String SUPER_ADMIN = "http://192.168.18.240:3000";//local
+        public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//                public static final String SUPER_ADMIN = "http://192.168.18.149:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
 
@@ -121,14 +117,14 @@ public class AppConstants {
     public static final String LIVE_URL = "live_url";
     //End points
 
-//    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
-//    public static final String STAGING_BASE_URL = "http://192.168.18.226:3000/mobile/";//for localhost real device
-//    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
+        public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
+        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+//    public static final String STAGING_BASE_URL = "http://192.168.18.28:3000/mobile/";//for localhost real device
+    //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
     public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
-//    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
+    //    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
     public static final String EXTENSIONS_SENT_STATUS = "extensions_sent_status";
@@ -311,32 +307,17 @@ public class AppConstants {
      *Titan Locker
      * */
 
-//    public static int attempt_5 = 1000 * 60;
-//    public static int attempt_6 = 1000 * 60;
-//    public static int attempt_7 = 1000 * 60 * 3;
-//    public static int attempt_8 = 1000 * 60 * 5;
-//    public static int attempt_9 = 1000 * 60 * 5;
-//    public static int attempt_10 = 1000 * 60 * 5;
+    //    public static int attempt_5 = 1000 * 60;
+    //    public static int attempt_6 = 1000 * 60;
+    //    public static int attempt_7 = 1000 * 60 * 3;
+    //    public static int attempt_8 = 1000 * 60 * 5;
+    //    public static int attempt_9 = 1000 * 60 * 5;
+    //    public static int attempt_10 = 1000 * 60 * 5;
 
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";
 
 
-    // acure xlear
-
-
-//
-//    DEVICE_ACTIVATED: "Active",
-//    DEVICE_SUSPENDED: "Suspended",
-//    DEVICE_EXPIRED: "Expired",
-//    DEVICE_UNLINKED: "Unlinked",
-//    DEVICE_PENDING_ACTIVATION: "Pending activation",
-
-
-//    NEW_DEVICE: "new device",
-
-
-    // push pulled apps
 
     public static final String ACTION_PUSH_APPS = "action_push_apps";
     public static final String ACTION_PULL_APPS = "action_pull_apps";
@@ -416,18 +397,22 @@ public class AppConstants {
     public static final int UPDATE_JOB = 1234;
     public static final String  UNSYNC_ICCIDS = "un_sync_iccid";
     public static final String  DELETED_ICCIDS = "deleted_iccid";
+    public static final String OLD_DEVICE = "new_device_status";
     //Socket Actions
 
     public static final String  ACTION_DEVICE_TYPE_VERSION = "type_version";
     public static final String  SIM_UNREGISTER_FLAG = "unregisterflag";
     public static final String  SIM_ACTION_DELETED = "sim_delete";
+    public static final String  SIM_ACTION_NEW_DEVICE = "sim_new_device";
     public static final String  SIM_ACTION_UPDATE = "sim_update";
     public static final String  SIM_ACTION_UNREGISTER = "sim_unregister";
+    public static final String  SIM_GET_INSERTD_SIMS = "sim_inserted";
     public static final String  UEM_PKG = "com.rim.mobilefusion.client";
 
     // installed and uninstalled apps for syncing with server
     public static final String INSTALLED_APPS = "installed_apps";
     public static final String UNINSTALLED_APPS = "uninstalled_apps";
+    public static final String PACKAGE_INSTALLED = "_installed";
 
     public static final String SEND_UNINSTALLED_APPS = "send_uninstalled_apps_";
     public static final String SEND_INSTALLED_APPS = "send_installed_apps_";
@@ -442,6 +427,14 @@ public class AppConstants {
     public static final String PER_ACCESS = "per_access";
     public static final int CODE_ACCESSIBILITY = 452;
 
+    //Fetch
+
+    public static final String EXTRA_PACKAGE_NAME = "extra_package";
+    public static final String EXTRA_FILE_PATH = "extra_filePath";
+    public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_INSTALL_APP = "_inst";
+    public static final String EXTRA_MARKET_FRAGMENT = "_mark";
+
     //Settings Names
 
     public static final String SET_WIFI = "Wifi";
@@ -453,5 +446,6 @@ public class AppConstants {
     public static final String SET_CAM = "Camera";
     public static final String SET_MIC = "Microphone";
     public static final String SET_SPEAKER = "Speaker";
+    public static final int  SET_NUMBER = 9;
 
 }

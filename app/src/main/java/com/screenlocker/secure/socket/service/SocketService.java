@@ -1,5 +1,6 @@
 package com.screenlocker.secure.socket.service;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -12,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -468,8 +471,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
 
-
-
     private void setScreenLock() {
         Intent intent = new Intent(SocketService.this, LockScreenService.class);
 
@@ -483,12 +484,17 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
-        String settings = obj.getString("settings");
 
-        if (!settings.equals("{}") && !isPolicy) {
-            ///changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
-            Timber.d(" settings applied ");
+        String settings = obj.getString("settings");
+        try {
+            if (!settings.equals("[]")) {
+                changeSettings(SocketService.this, settings);
+                Timber.d(" settings applied ");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         if (isPolicy) {
             finishPolicySettings();
@@ -583,7 +589,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             String msg = object.getString("msg");
                             Timber.e("<<< device status =>>> %S", msg);
                             if (msg != null) {
-                                Timber.d("status from Socket :%s",msg);
+                                Timber.d("status from Socket :%s", msg);
                                 switch (msg) {
                                     case "suspended":
                                         suspendedDevice(SocketService.this, "suspended");
@@ -633,7 +639,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         try {
             if (socketManager.getSocket().connected()) {
                 AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-                   List<Settings> settings =  MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
+                    List<Settings> settings = MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
                     socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
                     PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
                 });
@@ -671,6 +677,24 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 }
 
+                if (!PrefUtils.getBooleanPref(this, OLD_DEVICE)) {
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("action", SIM_ACTION_NEW_DEVICE);
+                            json.put("entries", new Gson().toJson(entries));
+                            socketManager.getSocket().emit(SEND_SIM + device_id, json);
+                            PrefUtils.saveBooleanPref(this, OLD_DEVICE, true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    });
+
+
+                }
+
                 Set<String> set1 = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
                 if (set1 != null && set1.size() > 0) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
@@ -687,11 +711,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     });
 
                 }
-                if (PrefUtils.getBooleanPref(this, SIM_UNREGISTER_FLAG)){
+                if (PrefUtils.getBooleanPref(this, SIM_UNREGISTER_FLAG)) {
                     JSONObject json = new JSONObject();
                     try {
                         json.put("action", SIM_ACTION_UNREGISTER);
-                        json.put("entries", new JSONObject().put("unrGuest",PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("unrEncrypt",PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
+                        json.put("entries", new JSONObject().put("unrGuest", PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("unrEncrypt", PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
                         socketManager.getSocket().emit(SEND_SIM + device_id, json);
                         PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, false);
                     } catch (JSONException e) {
@@ -1287,7 +1311,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                             Gson gson = builder.create();
                             switch (action) {
                                 case SIM_ACTION_DELETED:
-                                    Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() { }.getType());
+                                    Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() {
+                                    }.getType());
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         MyApplication.getAppDatabase(this).getDao().deleteSims(set);
                                         try {
@@ -1299,7 +1324,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     break;
                                 case SIM_ACTION_UPDATE:
 
-                                    ArrayList<SimEntry> simEntries =gson.fromJson(obj.getString("entries"), new TypeToken<ArrayList<SimEntry>>() {}.getType());
+                                    ArrayList<SimEntry> simEntries = gson.fromJson(obj.getString("entries"), new TypeToken<ArrayList<SimEntry>>() {
+                                    }.getType());
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
                                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
@@ -1320,12 +1346,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     UnRegisterModel sim = gson.fromJson(obj.getString("entries"), UnRegisterModel.class);
 
                                     PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isUnrGuest());
-                                     PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
+                                    PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
                                     try {
                                         socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                     } catch (JSONException e) {
                                         Timber.e(" JSON error : %s", e.getMessage());
                                     }
+                                    break;
+                                case SIM_GET_INSERTD_SIMS:
+                                    Timber.d("SIM_GET_INSERTD_SIMS: ");
+                                    sendInsertedUnregisteredSims();
                                     break;
                             }
 
@@ -1345,6 +1375,57 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
+    private void sendInsertedUnregisteredSims() {
+        try {
+            SubscriptionManager manager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                return;
+            }
+            SubscriptionInfo infoSim1 = manager.getActiveSubscriptionInfoForSimSlotIndex(0);
+            SubscriptionInfo infoSim2 = manager.getActiveSubscriptionInfoForSimSlotIndex(1);
+
+            AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                //TODO
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("action", SIM_GET_INSERTD_SIMS);
+
+                    SimEntry first = null, second = null;
+                    List<SimEntry> entries = new ArrayList<>();
+                    if (infoSim1 != null) {
+                        first = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim1.getIccId());
+                    }
+                    if (infoSim2 != null) {
+                        second = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim2.getIccId());
+                    }
+                    if (first == null && infoSim1 != null) {
+                        first = new SimEntry(infoSim1.getIccId(), infoSim1.getDisplayName().toString(), "", false, false);
+                        entries.add(first);
+                    }
+                    if (second == null && infoSim2 != null) {
+                        second = new SimEntry(infoSim2.getIccId(), infoSim2.getDisplayName().toString(), "", false, false);
+                        entries.add(second);
+                    }
+                    json.put("entries", new Gson().toJson(entries));
+                    socketManager.getSocket().emit(SEND_SIM + device_id, json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (Exception ignored) {
+
+        }
+    }
+
     @Override
     public void sendSystemEvents() {
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
@@ -1352,14 +1433,14 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
             JSONObject jsonObject = new JSONObject();
             try {
-                if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode){
-                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION,getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-                    JSONObject object =  new JSONObject();
+                if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                    JSONObject object = new JSONObject();
                     object.put("type", getResources().getString(R.string.apktype));
 
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-                    jsonObject.put("action",ACTION_DEVICE_TYPE_VERSION );
-                    jsonObject.put("object",object );
+                    jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
+                    jsonObject.put("object", object);
                     socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
                 }
 

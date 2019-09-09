@@ -248,7 +248,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-
     private void handleChangeAdminPassword() {
 
         final Dialog dialog = new Dialog(this);
@@ -378,9 +377,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 //        Intent i = new Intent(Intent.ACTION_MAIN, null);
 //        i.addCategory(Intent.CATEGORY_LAUNCHER);
 //
-//        List<ResolveInfo> appsFromSystem = getPackageManager().queryIntentActivities(i, 0);
+//        ServerAppInfo<ResolveInfo> appsFromSystem = getPackageManager().queryIntentActivities(i, 0);
 //        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
-//        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+//        ServerAppInfo<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 //        String settingPackageName = null;
 //        if (resolveInfos != null || resolveInfos.size() != 0) {
 //            settingPackageName = resolveInfos.get(0).activityInfo.packageName;
@@ -420,10 +419,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     public void resetPassword() {
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this,AppConstants.GUEST_PATTERN,null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN,null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
 
 //        if (isServiceRunning()) {
 //            final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);

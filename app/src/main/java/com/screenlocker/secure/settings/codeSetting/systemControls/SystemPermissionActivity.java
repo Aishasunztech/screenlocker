@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -29,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
@@ -44,8 +47,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
     private boolean isSettingsChanged = false;
     private SystemPermissionAdaptor adaptor;
     private List<Settings> settings = new ArrayList<>();
-    private WifiManager wifiManager;
-    private BluetoothAdapter mBluetoothAdapter;
 
     private DevicePolicyManager mDPM;
     private ComponentName compName;
@@ -69,12 +70,11 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
         mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
 
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
             settings = MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().getSettings();
+            adaptor.setSettings(settings);
             AppExecutor.getInstance().getMainThread().execute(() -> adaptor.notifyDataSetChanged());
 
         });
@@ -113,21 +113,23 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
     @Override
     public void OnPermisionChangeListener(Settings setting, boolean isChecked) {
+        Log.d("doWork", "OnPermisionChangeListener: "+setting.getSetting_name()+" : "+isChecked);
         switch (setting.getSetting_name()) {
             case AppConstants.SET_WIFI:
-                wifiManager.setWifiEnabled(isChecked);
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                }
+
                 break;
             case AppConstants.SET_BLUETOOTH:
-                if (isChecked) {
-                    if (!mBluetoothAdapter.isEnabled()) {
-                        //if bluetooth is not enabled enabled it
-                        mBluetoothAdapter.enable();
-                    }
-                } else {
-                    //disable bluetooth
-                    if (mBluetoothAdapter.isEnabled()) {
-                        mBluetoothAdapter.disable();
-                    }
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                 }
                 break;
             case AppConstants.SET_BLUE_FILE_SHARING:

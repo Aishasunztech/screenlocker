@@ -23,7 +23,11 @@ public class SystemPermissionAdaptor extends RecyclerView.Adapter<SystemPermissi
     private List<Settings> settings;
     private PermissionSateChangeListener mListener;
 
-    public SystemPermissionAdaptor(List<Settings> settings,PermissionSateChangeListener mListener) {
+    public void setSettings(List<Settings> settings) {
+        this.settings = settings;
+    }
+
+    public SystemPermissionAdaptor(List<Settings> settings, PermissionSateChangeListener mListener) {
         this.settings = settings;
         this.mListener = mListener;
     }
@@ -39,7 +43,7 @@ public class SystemPermissionAdaptor extends RecyclerView.Adapter<SystemPermissi
 
         holder.aSwitch.setChecked(settings.get(position).isSetting_status());
         holder.aSwitch.setText(settings.get(position).getSetting_name());
-        holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->mListener.OnPermisionChangeListener(settings.get(position), isChecked));
+
 
     }
 
@@ -54,6 +58,9 @@ public class SystemPermissionAdaptor extends RecyclerView.Adapter<SystemPermissi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             aSwitch = itemView.findViewById(R.id._switch);
+            aSwitch.setOnClickListener(v -> {
+                mListener.OnPermisionChangeListener(settings.get(getAdapterPosition()), ((Switch)v).isChecked());
+            });
         }
     }
 }

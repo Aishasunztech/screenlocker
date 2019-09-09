@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -39,6 +43,7 @@ import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -88,11 +93,20 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     private SocketManager socketManager;
 
+    private Button button, button2;
+
+    int clickCount = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
+
+        url_1 = findViewById(R.id.url_1);
+        url_1.setText(URL_1);
+
 
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
@@ -112,6 +126,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvImei1 = findViewById(R.id.tvImei1);
         tvImei2 = findViewById(R.id.tvImei2);
         swipeRefreshLayout = findViewById(R.id.lytSwipeReferesh);
+
+        button2 = findViewById(R.id.button2);
+        button = findViewById(R.id.button);
+
 
         onlineStatus.setOnClickListener(this);
         tvDeviceId.setOnClickListener(this);
@@ -229,6 +247,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         } else {
             onlineStatus.setText(getResources().getString(R.string.status_disconnected));
         }
+
+
+        clickCount = 0;
+
+        button.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        url_1.setVisibility(View.GONE);
 
 
     }
@@ -361,8 +386,56 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    public void emergencyFlag(View view) {
+
+        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
+        } else {
+            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
+        }
+
+    }
+
+
     @Override
     public void onInternetConnectionStateChange(int socketState) {
+
+    }
+
+    private EditText url_1;
+
+    public void changeUrl(View view) {
+
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void counter(View view) {
+
+        clickCount++;
+        int total = 6;
+
+        if (clickCount == 6) {
+            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+            button.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            url_1.setVisibility(View.VISIBLE);
+        } else {
+            if (clickCount >= 2 && clickCount <= 6) {
+                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }

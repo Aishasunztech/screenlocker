@@ -142,10 +142,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     View dividerAdvance;
     private TextView tvlinkDevice;
 
-    private ConstraintLayout constraintLayout;
-
-    private ProgressBar progressBar;
-
     private Dialog aboutDialog = null, accountDialog = null;
 
     @Override
@@ -187,34 +183,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         init();
         tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        constraintLayout = findViewById(R.id.rootLayout);
-        constraintLayout.setVisibility(View.GONE);
-        progressBar = findViewById(R.id.progress);
-        progressBar.setVisibility(View.VISIBLE);
-
 
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
 
             finish();
-        } else {
-            OneTimeWorkRequest insertionWork =
-                    new OneTimeWorkRequest.Builder(BlurWorker.class)
-                            .build();
-            WorkManager.getInstance().enqueue(insertionWork);
-
-            WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
-                    .observe(this, workInfo -> {
-                        // Do something with the status
-                        if (workInfo != null && workInfo.getState().isFinished()) {
-                            PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
-                            constraintLayout.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.INVISIBLE);
-
-
-                        }
-                    });
         }
 
 

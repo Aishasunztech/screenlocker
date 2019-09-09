@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -28,10 +29,12 @@ import android.widget.Switch;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
+import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -42,7 +45,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
@@ -69,7 +76,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.tvTheme).setOnClickListener(this);
         findViewById(R.id.tvRestore).setOnClickListener(this);
         Switch powersaver = findViewById(R.id.powerMode);
-        PowerManager pm  = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         powersaver.setChecked(pm.isPowerSaveMode());
         powersaver.setOnCheckedChangeListener((buttonView, isChecked) -> {
             updatePower(isChecked);
@@ -198,7 +205,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
     private void restoreLocker() {
         new AlertDialog.Builder(this)
                 .setTitle("Restore " + getResources().getString(R.string.app_name))
-                .setMessage("Warning! your current Preferences will be restored to defaults.")
+                .setMessage("Warning this will restore all Settings back to factory settings, you will not lose data but your device appearance such as wallpapers or apps showing and settings may change. Would you like to continue?")
                 .setNegativeButton(getResources().getString(R.string.cancel), (dialog, which) -> {
                     dialog.dismiss();
                 })
@@ -249,7 +256,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         dpm.setCameraDisabled(compName, false);
 
         if (dpm.isDeviceOwnerApp(getPackageName())) {
-            dpm.setScreenCaptureDisabled(compName,false);
+            dpm.setScreenCaptureDisabled(compName, false);
             dpm.setBluetoothContactSharingDisabled(compName, false);
             dpm.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
             dpm.setMasterVolumeMuted(compName, false);
@@ -273,7 +280,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         });
 
         //change Grid Size to default
-        PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE,AppConstants.LAUNCHER_GRID_SPAN);
+        PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, AppConstants.LAUNCHER_GRID_SPAN);
 
         //Application permissions
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
@@ -305,8 +312,19 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 MyApplication.getAppDatabase(this).getDao().updateApps(app);
             }
             AppExecutor.getInstance().getMainThread().execute(() -> {
-                PrefUtils.saveBooleanPref(AdvanceSettings.this, AppConstants.KEY_THEME,false);
-                if (dialog != null && dialog.isShowing()){
+
+                Intent intent = new Intent(BROADCAST_APPS_ACTION);
+                intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
+                LocalBroadcastManager.getInstance(AdvanceSettings.this).sendBroadcast(intent);
+
+                PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+                PrefUtils.saveBooleanPref(AdvanceSettings.this, AppConstants.KEY_THEME, false);
+                PrefUtils.saveBooleanPref(AdvanceSettings.this, APPS_SETTING_CHANGE, true);
+
+                Intent intent1 = new Intent(BROADCAST_APPS_ACTION);
+                intent1.putExtra(KEY_DATABASE_CHANGE, "apps");
+                LocalBroadcastManager.getInstance(AdvanceSettings.this).sendBroadcast(intent1);
+                if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
             });
@@ -321,6 +339,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
         sendBroadcast(intent);
     }
+
     void updatePower(boolean state) {
 
     }

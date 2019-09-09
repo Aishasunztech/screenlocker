@@ -179,7 +179,34 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.AppBarOverlaySM" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
+        <item name="colorAccent">@color/pomegranate</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlaySM" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
+        <item name="colorAccent">@color/pomegranate</item>
+    </style>
+    <style name="GalaxyZooThemeToolbarDarkOverflow" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/SettingsColorPrimary</item>
+        <item name="android:background">@android:color/white</item>
+
+        <item name="actionMenuTextColor">@color/SettingsColorPrimary</item>
+        <!-- android:textColorSecondary is the color of the menu
+             overflow icon (three vertical dots) -->
+        <item name="android:textColorSecondary">@color/SettingsColorPrimary</item>
+    </style>
 
 
 </resources>

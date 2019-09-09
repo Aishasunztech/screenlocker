@@ -50,6 +50,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_IMAGE;
@@ -280,7 +281,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 //
-        //refreshApps(this);
+        refreshApps(this);
 //
     }
 

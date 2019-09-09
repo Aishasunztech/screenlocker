@@ -1,82 +1,92 @@
 package com.secureMarket;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.screenlocker.secure.R;
+import com.secureMarket.ui.home.InstalledAppsFragment;
+import com.secureMarket.ui.home.MarketFragment;
+import com.secureMarket.ui.home.UpdateAppsFragment;
 
-public class MainMarketPagerAdapter extends FragmentStatePagerAdapter {
-    private Context context;
-    public MainMarketPagerAdapter(@NonNull FragmentManager fm,Context context) {
+public class MainMarketPagerAdapter extends FragmentPagerAdapter {
+
+    private MarketFragment marketFragment;
+    private InstalledAppsFragment installedAppsFragment;
+    private UpdateAppsFragment updateAppsFragment;
+
+    @StringRes
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
+    private final Context mContext;
+
+    public MainMarketPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
-        this.context = context;
+        mContext = context;
     }
 
-    @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position)
-        {
+        // getItem is called to instantiate the fragment for the given page.
+        // Return a PlaceholderFragment (defined as a static inner class below).
+        switch (position) {
             case 0:
-                MarketFragment fragment = new MarketFragment();
-                Bundle b = new Bundle();
-                b.putString("check","install");
-                fragment.setArguments(b);
-
-                return fragment;
-
+                return new MarketFragment();
             case 1:
-                MarketFragment fragmentUninstall = new MarketFragment();
-                Bundle b1 = new Bundle();
-                b1.putString("check","uninstall");
-                fragmentUninstall.setArguments(b1);
-
-                return fragmentUninstall;
+                return new UpdateAppsFragment();
             case 2:
-                MarketFragment fragmentUpdate = new MarketFragment();
-                Bundle b3 = new Bundle();
-                b3.putString("check","update");
-                fragmentUpdate.setArguments(b3);
+                return new InstalledAppsFragment();
 
-                return fragmentUpdate;
             default:
-                MarketFragment fragmentDefault = new MarketFragment();
-                Bundle b2 = new Bundle();
-                b2.putString("check","install");
-
-                fragmentDefault.setArguments(b2);
-
-                return fragmentDefault;
+                return null;
         }
-
-    }
-
-    @Override
-    public int getCount() {
-        return 3;
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position)
-        {
+        return mContext.getResources().getString(TAB_TITLES[position]);
+    }
+
+    @Override
+    public int getCount() {
+        // Show 3 total pages.
+        return 3;
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+        // save the appropriate reference depending on position
+        switch (position) {
             case 0:
-                return context.getResources().getString(R.string.install);
+                marketFragment = (MarketFragment) createdFragment;
+                break;
             case 1:
-                return context.getResources().getString(R.string.uninstall);
+                updateAppsFragment = (UpdateAppsFragment)createdFragment;
+                break;
             case 2:
-                return context.getResources().getString(R.string.updates);
-            default:
-                return context.getResources().getString(R.string.install);
-
+                installedAppsFragment = (InstalledAppsFragment) createdFragment;
+                break;
         }
+        return createdFragment;
+    }
 
+    public MarketFragment getMarketFragment() {
+        return marketFragment;
+    }
+
+    public InstalledAppsFragment getInstalledAppsFragment() {
+        return installedAppsFragment;
+    }
+
+    public UpdateAppsFragment getUpdateAppsFragment() {
+        return updateAppsFragment;
     }
 }

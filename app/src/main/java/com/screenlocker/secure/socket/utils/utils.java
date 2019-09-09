@@ -1,10 +1,10 @@
 package com.screenlocker.secure.socket.utils;
 
 import android.app.ActivityManager;
+import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -25,8 +25,10 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
@@ -55,6 +57,10 @@ import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
+import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
@@ -178,6 +184,7 @@ public class utils {
             }
         }.start();
     }
+
     // function to save installed or uninstalled apps that will be used to send to server
     public static void saveAppsList(Context context, boolean install, AppInfo info, boolean status) {
 
@@ -249,7 +256,6 @@ public class utils {
     }
 
 
-
     public static void refreshApps(Context context) {
 
         OnAppsRefreshListener listener = (OnAppsRefreshListener) context;
@@ -282,7 +288,7 @@ public class utils {
                 }
             }
         }
-        String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
+        /*String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
 
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
@@ -296,7 +302,7 @@ public class utils {
                     Intent intent = new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-                    List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
+                    ServerAppInfo<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
 
                     for (ResolveInfo ri : allApps) {
                         if (ri.activityInfo.packageName.equals(packageName)) {
@@ -336,7 +342,7 @@ public class utils {
 
                 }
             }
-        }
+        }*/
 
 
     }
@@ -413,11 +419,11 @@ public class utils {
                 Timber.d("admin pass : %s", admin_pass);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
             }
-            if (checkString(duress_password)){
-                if (duress_password.equals("clear")){
-                    PrefUtils.saveStringPref(context,AppConstants.KEY_DURESS_PASSWORD,null);
-                    PrefUtils.saveStringPref(context,AppConstants.DURESS_PATTERN,null);
-                    PrefUtils.saveStringPref(context,AppConstants.DUERESS_DEFAULT_CONFIG,null);
+            if (checkString(duress_password)) {
+                if (duress_password.equals("clear")) {
+                    PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
                 }
             }
         } catch (Exception e) {
@@ -432,61 +438,15 @@ public class utils {
     }
 
 
+    public static void changeSettings(Context context, String settingList) {
 
-    public static void changeSettings(Context context, Settings settings) {
+        Type listType = new TypeToken<ArrayList<Settings>>() {
+        }.getType();
 
-//        Timber.d("changeSettings: ");
-//        //Calls setting
-//        boolean callStatus = settings.isCall_status();
-//        Timber.d("callStatus: %s", callStatus);
-//        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, callStatus);
-//        //Bluetooth setting
-//        boolean bluetoothStatus = settings.isBluetooth_status();
-//        try {
-//            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//            if (bluetoothStatus) {
-//                mBluetoothAdapter.enable();
-//            } else {
-//                mBluetoothAdapter.disable();
-//            }
-//        } catch (Exception ignored) {
-//
-//        }
-//
-//        Timber.d("bluetoothStatus: %s", bluetoothStatus);
-//
-//        //wifi setting
-//        boolean wifiStatus = settings.isWifi_status();
-//        try {
-//            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-//            if (wifiManager != null) {
-//                if (wifiManager.isWifiEnabled())
-//                    wifiManager.setWifiEnabled(wifiStatus);
-//            }
-//        } catch (Exception ignored) {
-//        }
-//
-//        Timber.d("wifiStatus: %s", wifiStatus);
-//
-//
-//        //screenshot setting
-//        boolean screenShotStatus = settings.isScreenshot_status();
-//
-////        if (screenShotStatus) {
-////            enableScreenShotBlocker(true);
-////        } else {
-////            disableScreenShotBlocker(true);
-////        }
-//
-//        //HotSpotSetting
-//        boolean hotSpotStatus = settings.isHotspot_status();
-//        try {
-//            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-//            WifiApControl.turnOnOffHotspot(false, wifiManager);
-//            Timber.d("hotSpotStatus: %s", hotSpotStatus);
-//
-//        } catch (Exception ignored) {
-//        }
+        List<Settings> settings = new Gson().fromJson(settingList, listType);
+        for (Settings setting : settings) {
+            applySettings(context, setting, setting.isSetting_status());
+        }
     }
 
     public static void suspendedDevice(final Context context, String msg) {
@@ -540,6 +500,7 @@ public class utils {
 
 
     }
+
     public static void newDevice(Context context, boolean status) {
 
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
@@ -972,5 +933,96 @@ public class utils {
         } else {
             Timber.d("Job Scheduled Failed");
         }
+    }
+
+    private static void applySettings(Context context, Settings setting, boolean isChecked) {
+        Timber.d("OnPermisionChangeListener: " + setting.getSetting_name() + " : " + isChecked);
+
+        DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(context, MyAdmin.class);
+        switch (setting.getSetting_name()) {
+            case AppConstants.SET_WIFI:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                }
+
+                break;
+            case AppConstants.SET_BLUETOOTH:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                }
+                break;
+            case AppConstants.SET_BLUE_FILE_SHARING:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setBluetoothContactSharingDisabled(compName, !isChecked);
+                } else {
+                    Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            case AppConstants.SET_CALLS:
+                PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, isChecked);
+                break;
+            case AppConstants.SET_CAM:
+                try {
+                    if (mDPM.hasGrantedPolicy(compName, DeviceAdminInfo.USES_POLICY_DISABLE_CAMERA)) {
+                        mDPM.setCameraDisabled(compName, !isChecked);
+                    } else {
+//                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+//                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+//                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "We need this permission to go in GOD mode.");
+//                        context.startActivityForResult(intent, RESULT_ENABLE);
+                    }
+
+                } catch (SecurityException e) {
+//                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+//                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+//                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "We need this permission to go in GOD mode.");
+//                    startActivityForResult(intent, RESULT_ENABLE);
+                }
+                break;
+            case AppConstants.SET_HOTSPOT:
+                if (isChecked) {
+                    mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                } else {
+                    mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                }
+
+                break;
+            case AppConstants.SET_MIC:
+                if (isChecked) {
+                    mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                } else
+                    mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                break;
+            case AppConstants.SET_SPEAKER:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setMasterVolumeMuted(compName, !isChecked);
+                } else {
+                    //Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case AppConstants.SET_SS:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setScreenCaptureDisabled(compName, !isChecked);
+                } else {
+                    //Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                return;
+
+
+        }
+        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+            MyApplication.getAppDatabase(context).getDao().updateSetting(setting);
+        });
+
     }
 }

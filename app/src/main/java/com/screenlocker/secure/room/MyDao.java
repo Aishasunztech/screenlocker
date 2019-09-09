@@ -152,6 +152,9 @@ public interface MyDao {
     @Query("SELECT * FROM sim WHERE iccid IN (:ids)")
     List<SimEntry> getSims(Set<String> ids);
 
+    @Query("SELECT * FROM sim WHERE iccid =:id")
+    SimEntry getSimById(String id);
+
     @Query("DELETE from sim WHERE iccid IN (:ids)")
     int deleteSims(Set<String> ids);
 

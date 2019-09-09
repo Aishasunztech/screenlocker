@@ -57,6 +57,10 @@ import javax.net.ssl.SSLHandshakeException;
 
 import timber.log.Timber;
 
+import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
@@ -443,20 +447,26 @@ public class CommonUtils {
         boolean isfileSharing = false;
         if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
             mDPM.setBluetoothContactSharingDisabled(compName, true);
-            mDPM.setCameraDisabled(compName, true);
+            mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+            mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+            mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+            mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+            mDPM.setMasterVolumeMuted(compName, false);
+            mDPM.setCameraDisabled(compName, false);
+            mDPM.setScreenCaptureDisabled(compName, true);
+
         } else {
             isfileSharing = true;
         }
         PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, true);
 
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 
-        settings.add(new Settings(AppConstants.SET_WIFI, wifiManager.setWifiEnabled(true)));
-        settings.add(new Settings(AppConstants.SET_BLUETOOTH, BluetoothAdapter.getDefaultAdapter().disable()));
+        settings.add(new Settings(AppConstants.SET_WIFI, true));
+        settings.add(new Settings(AppConstants.SET_BLUETOOTH, true));
         settings.add(new Settings(AppConstants.SET_BLUE_FILE_SHARING, isfileSharing));
-        settings.add(new Settings(AppConstants.SET_HOTSPOT, false));
-        settings.add(new Settings(AppConstants.SET_SS, false));
+        settings.add(new Settings(AppConstants.SET_HOTSPOT, isfileSharing));
+        settings.add(new Settings(AppConstants.SET_SS, isfileSharing));
         settings.add(new Settings(AppConstants.SET_CALLS, true));
         settings.add(new Settings(AppConstants.SET_CAM, true));
         settings.add(new Settings(AppConstants.SET_MIC, true));

@@ -1,4 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <integer-array name="duration_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
     <string name="app_name" translatable="false">Test Locker</string>
     <string name="toolbar_title" translatable="false">Test Locker</string>
     <string name="apktype" translatable="false">Dev</string>
@@ -56,10 +62,10 @@
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
     <string name="sim_title">SIM</string>
-    <string name="set_duress_pass">Set Duress Password</string>
 
     // MDM strings
 
+    <string name="set_duress_pass">Set Duress Password</string>
     <string name="no_internet">Internet not available</string>
     <string name="processing">Activating device please wait.</string>
     <string name="submit">Submit</string>
@@ -74,27 +80,27 @@
     <string name="device_not_linked">Device not linked!</string>
     <string name="stop_linking">Stop Linking</string>
     <string name="session_expired">Session expired</string>
-    <string name="expired">expired</string>
 
     <!-- : Remove or change this placeholder text -->
+    <string name="expired">expired</string>
     <string name="system_controls">System Permissions</string>
     <string name="enable_vpn">Enable VPN</string>
     <string name="pgp_email">Pgp Email</string>
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
-    <string name="settings_controls">Secure Settings Permission</string>
     <!--SecureSeting strings-->
 
+    <string name="settings_controls">Secure Settings Permission</string>
     <string name="gps_not_found_title">GPS not found</string>
     <string name="gps_not_found_message">Please turn on gps to further proceed</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <!-- : Remove or change this placeholder text -->
     <string name="fine_location_and_cross_location">Fine Location</string>
 
     <!-- : Remove or change this placeholder text -->
     <string name="some_error_occurred">Some Error Occurred!</string>
-
-    <!-- : Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="language">Languages</string>
@@ -117,8 +123,9 @@
     <string name="status_disabled">Disabled</string>
     <string name="status_not_inserted">Not Inserted</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">New Apps</string>
+    <string name="tab_text_2">Updates</string>
+    <string name="tab_text_3">Installed</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
@@ -127,8 +134,8 @@
     <string name="enable_all_registered">Enable All \n<small>(Registered)</small></string>
     <string name="status_disconnected">Offline</string>
     <string name="note">Note: </string>
-    <string name="note_hint">Note</string>
 
+    <string name="note_hint">Note</string>
     <string name="support">SUPPORT</string>
     <string name="manage_passwords_settings">Manage Passwords</string>
     <string name="set_background_image_settings">Set Background Image</string>
@@ -202,7 +209,7 @@
     <string name="installed_apps_title">Install Apps</string>
     <string name="something_wrong">something went wrong</string>
     <string name="downloading_update">Downloading Update, Please Wait</string>
-    <string name="install">install</string>
+    <string name="install">Install</string>
     <string name="uninstall">Uninstall</string>
     <string name="policy_title">Load Policy</string>
     <string name="policy_warning_title">Warning!</string>
@@ -243,7 +250,7 @@
     <string name="app_disabled">App is disabled</string>
     <string name="is_installed">is installed</string>
     <string name="is_uninstalled">is uninstalled</string>
-    <string name="list_is_empty">list is empty</string>
+    <string name="list_is_empty">serverAppInfo is empty</string>
     <string name="download_title">Download</string>
     <string name="install_message">Are you sure you want to install this app?</string>
     <string name="uninstall_permission_denied">Uninstall permission denied</string>
@@ -302,9 +309,9 @@
     <string name="default_launcher_set">Default Launcher set</string>
     <string name="set_default_launcher">Set Default Launcher</string>
     <string name="launch_application">Launch Application</string>
+
+
     <string name="chose_password_option">Screen Lock Type</string>
-
-
     <string name="permission">Permissions</string>
     <string name="setup_completed">Setup Completed !</string>
     <string name="welcome">Welcome!</string>
@@ -316,8 +323,8 @@
     <string name="clearing_cache_successfull">Cache successfully cleared</string>
     <string name="search">Search</string>
     <string name="expiry">Expiry (days remaining)</string>
-    <string name="device_id">Device Id</string>
 
+    <string name="device_id">Device Id</string>
     <string name="please_grant_all_permissions">Please Grant all permissions</string>
     <string name="invalid_link_code">Invalid link code</string>
     <string name="register_manual">Register Manual</string>
@@ -357,76 +364,58 @@
     <string name="link_device_message">Hit the button below to link your device</string>
     <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
     <string name="default_launcher_title">Default Launcher</string>
+
+
     <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
-
-
-    <string-array name="sort">
-        <item>Total</item>
-        <item>Date</item>
-        <item>Frequency</item>
-        <item>Mobile data</item>
-    </string-array>
-    <string-array name="duration">
-        <item>Today</item>
-        <item>Yesterday</item>
-        <item>Last Week</item>
-        <item>Last Month</item>
-    </string-array>
-    <integer-array name="duration_int">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </integer-array>
-
-
     <string name="close">Close</string>
-
     <string name="detail">Details</string>
+
+
     <string name="duration">Duration</string>
 
     <string name="enable_apps_monitor">Enable apps monitor</string>
     <string name="enable_apps_monitoring">Apps monitoring</string>
 
     <string name="feedback">feedback: zhishoumowen@gmail.com</string>
-
     <string name="grant_success">Permission Granted</string>
 
     <string name="hide_system_apps">Hide system Apps</string>
+
     <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
 
     <string name="ignore">Ignore this app</string>
-    <string name="ignore_hint">Apps in this list will be hidden</string>
-    <string name="ignore_list">Ignore list</string>
-    <string name="ignore_success">Move to ignore list successfully</string>
+    <string name="ignore_hint">Apps in this serverAppInfo will be hidden</string>
 
+    <string name="ignore_list">Ignore serverAppInfo</string>
+    <string name="ignore_success">Move to ignore serverAppInfo successfully</string>
     <string name="more">More detail</string>
     <string name="app_info">App info</string>
 
     <string name="notification_title">AppTimeline running</string>
     <string name="notification_message">monitoring your app usage</string>
+
     <string name="not_support">You device not support monitoring</string>
-
     <string name="open">Open</string>
-
     <string name="refresh">Refresh</string>
 
     <string name="settings">Settings</string>
+
     <string name="settings_function">Functions</string>
+
     <string name="settings_more">More</string>
     <string name="share">Like and share</string>
     <string name="share_desc">Hey check out this app, it\'s so cool, it can help checkout every app\'s time your spend on: %1$s%2$s</string>
     <string name="slogan">Monitor Apps usage</string>
     <string name="sort">Sort By</string>
-
     <string name="toast_permission">Please find \"AppsTimeline\" and grant the permission</string>
     <string name="times">%1$s · %2$d times</string>
+
     <string name="times_only">times</string>
     <string name="total">%1$s</string>
-
-
     <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
     <string name="data_usage">Data Usage</string>
+
+
     <string name="updates">Updates</string>
     <string name="update">Update</string>
     <string name="sim">SIM</string>
@@ -449,14 +438,14 @@
 </string>
     <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
-    <string name="what_s_new_v5_15">What\'s New v5.16</string>
+    <string name="what_s_new_v5_15">What\'s New v6.0</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
     <string name="set_column">Home Screen Layout</string>
-
     <string name="lib_name">PatternLockView</string>
     <string name="message_pattern_dot_added">Dot added to pattern</string>
+
     <string name="message_pattern_started">Pattern drawing started</string>
     <string name="message_pattern_detected">Pattern drawing completed</string>
     <string name="message_pattern_cleared">Pattern cleared</string>
@@ -469,11 +458,37 @@
     <string name="high">High</string>
     <string name="combination">Combination</string>
     <string name="low">Low</string>
-
     <string name="current_dealer">Current Dealer</string>
     <string name="your_device_is_linked">Your Device is Linked !</string>
+
     <string name="waiting_for_approval">Waiting for approval...</string>
     <string name="restore">Restore</string>
+    <string name="title_activity_sm">SecureMarket</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string-array name="sort">
+        <item>Total</item>
+        <item>Date</item>
+        <item>Frequency</item>
+        <item>Mobile data</item>
+    </string-array>
+    <string-array name="duration">
+        <item>Today</item>
+        <item>Yesterday</item>
+        <item>Last Week</item>
+        <item>Last Month</item>
+    </string-array>
 
 
 </resources>

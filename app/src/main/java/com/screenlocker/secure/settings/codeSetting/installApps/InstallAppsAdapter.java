@@ -1,7 +1,5 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
-import android.content.pm.PackageManager;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,18 +25,23 @@ import static com.screenlocker.secure.utils.AppConstants.LOGO_END_POINT;
 
 public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.MyViewHolder> {
 
-    private List<com.screenlocker.secure.settings.codeSetting.installApps.List> appModelList;
+    private List<ServerAppInfo> appModelServerAppInfo;
 
     public interface InstallAppListener {
-        void onInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position);
+        void onInstallClick(View v, ServerAppInfo app, int position);
 
-        void onUnInstallClick(View v, com.screenlocker.secure.settings.codeSetting.installApps.List app, int position);
+        void onUnInstallClick(View v, ServerAppInfo app, int position);
     }
 
     InstallAppListener mListener;
 
-    public InstallAppsAdapter(List<com.screenlocker.secure.settings.codeSetting.installApps.List> appModelList, InstallAppListener installAppListener) {
-        this.appModelList = appModelList;
+    public void updateProgressOfItem(ServerAppInfo app, int index) {
+        appModelServerAppInfo.set(index, app);
+        notifyItemChanged(index);
+    }
+
+    public InstallAppsAdapter(List<ServerAppInfo> appModelServerAppInfo, InstallAppListener installAppListener) {
+        this.appModelServerAppInfo = appModelServerAppInfo;
         mListener = installAppListener;
     }
 
@@ -49,70 +53,84 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(appModelList.get(position));
+
+        ServerAppInfo app = appModelServerAppInfo.get(position);
+        holder.tvAppName.setText(app.getApkName());
+        //load logo
+
+        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.LIVE_URL);
+
+        Glide.with(holder.itemView.getContext())
+                .load(live_url + LOGO_END_POINT + app.getLogo())
+                .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                .into(holder.ivLogo);
+
+        if (app.getType() == ServerAppInfo.PROG_TYPE.GONE) {
+            holder.progressBar.setVisibility(View.INVISIBLE);
+            holder.speedMsg.setVisibility(View.GONE);
+            holder.btInstall.setEnabled(true);
+        } else if (app.getType() == ServerAppInfo.PROG_TYPE.VISIBLE) {
+            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progressBar.setProgress(app.getProgres());
+            holder.speedMsg.setText(String.valueOf(app.getSpeed() / 1000) + "Kb/s");
+            holder.speedMsg.setVisibility(View.VISIBLE);
+            holder.progressBar.setIndeterminate(false);
+            holder.btInstall.setEnabled(false);
+        } else if (app.getType() == ServerAppInfo.PROG_TYPE.LOADING) {
+
+            holder.speedMsg.setText("Pending Installation");
+            holder.speedMsg.setVisibility(View.VISIBLE);
+            holder.progressBar.setIndeterminate(true);
+            holder.btInstall.setEnabled(false);
+        } else {
+            holder.speedMsg.setText("Installation...");
+            holder.speedMsg.setVisibility(View.VISIBLE);
+            holder.progressBar.setIndeterminate(true);
+            holder.btInstall.setEnabled(false);
+        }
+        if (app.isInstalled()) {
+            //btUnInstall.setVisibility(View.VISIBLE);
+            holder.btInstall.setText(R.string.uninstall);
+        } else {
+            //btUnInstall.setVisibility(View.INVISIBLE);
+            holder.btInstall.setText(R.string.install);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return appModelList.size();
+        return appModelServerAppInfo.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvAppName;
+        TextView tvAppName, speedMsg;
         ImageView ivLogo;
-        Button btUnInstall;
         Button btInstall;
-        PackageManager pm;
+        ProgressBar progressBar;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            pm = itemView.getContext().getPackageManager();
+
+            progressBar = itemView.findViewById(R.id.progress);
             tvAppName = itemView.findViewById(R.id.tvAppName);
-            btUnInstall = itemView.findViewById(R.id.btUnInstall);
+            speedMsg = itemView.findViewById(R.id.msg);
             btInstall = itemView.findViewById(R.id.btInstall);
             ivLogo = itemView.findViewById(R.id.ivLogo);
 
             btInstall.setOnClickListener(view -> {
-                mListener.onInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition());
+                if (btInstall.getText().toString().equals(itemView.getContext().getResources().getString(R.string.install))) {
+                    mListener.onInstallClick(view, appModelServerAppInfo.get(getAdapterPosition()), getAdapterPosition());
+                    progressBar.setIndeterminate(true);
+                    speedMsg.setText("Pending Installation");
+                    speedMsg.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
 
+                } else if (btInstall.getText().toString().equals(itemView.getContext().getResources().getString(R.string.uninstall))) {
+                    mListener.onUnInstallClick(view, appModelServerAppInfo.get(getAdapterPosition()), getAdapterPosition());
+                }
             });
 
-            btUnInstall.setOnClickListener(view -> mListener.onUnInstallClick(view, appModelList.get(getAdapterPosition()), getAdapterPosition()));
-
-        }
-
-        //secret temptation green
-
-        public void bind(com.screenlocker.secure.settings.codeSetting.installApps.List app) {
-            tvAppName.setText(app.getApkName());
-            //load logo
-
-            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.LIVE_URL);
-
-            Glide.with(itemView.getContext())
-                    .load(live_url + LOGO_END_POINT + app.getLogo())
-                    .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-                    .into(ivLogo);
-
-            if (app.isInstalled()) {
-                btUnInstall.setVisibility(View.VISIBLE);
-                btInstall.setVisibility(View.INVISIBLE);
-            } else {
-                btUnInstall.setVisibility(View.INVISIBLE);
-                btInstall.setVisibility(View.VISIBLE);
-            }
-
-
-            //if app is installed then show app uninstall button else show install button
-
-//            if (isAppInstalled(app.getAppPackage())) {
-//                btUnInstall.setVisibility(View.VISIBLE);
-//                btInstall.setVisibility(View.INVISIBLE);
-//            } else {
-//                btUnInstall.setVisibility(View.INVISIBLE);
-//                btInstall.setVisibility(View.VISIBLE);
-//            }
 
         }
 

@@ -1,172 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/_4sdp"
-    android:elevation="@dimen/_5sdp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/_10sdp"
-    android:paddingLeft="@dimen/_10sdp"
-    android:paddingRight="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_10sdp"
-
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="@dimen/_8sdp"
+    android:layout_margin="@dimen/_4sdp"
+    android:elevation="@dimen/_5sdp">
 
 
-    <ImageView
-        android:id="@+id/marketImageView"
-        android:layout_width="@dimen/_45sdp"
-        android:layout_height="@dimen/_45sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="markrt"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/marketImageView"
-        app:layout_constraintLeft_toRightOf="@+id/marketImageView"
-        app:layout_constraintBottom_toBottomOf="@+id/marketImageView"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+
         >
-
-        <TextView
-            android:id="@+id/market_app_name"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-
-            android:textSize="@dimen/_14ssp"
-            android:layout_marginLeft="@dimen/_10sdp"
-
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            />
 
 
         <ImageView
-            android:id="@+id/size_icon"
-            android:layout_width="@dimen/_12sdp"
-            android:layout_height="@dimen/_12sdp"
-            android:contentDescription="ic_size" android:src="@drawable/ic_size"
-            app:layout_constraintTop_toBottomOf="@+id/market_app_name"
+            android:id="@+id/marketImageView"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            tools:src="@drawable/ic_about"
+            android:contentDescription="markrt"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginLeft="@dimen/_10sdp"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/apkSize"
+
+        <!--<LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_48sdp"
+            android:background="@drawable/install_button_bg"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/download_title"
+                android:textColor="@android:color/white"
+                android:visibility="visible" />
+            <ProgressBar
+                android:id="@+id/progress"
+                android:visibility="visible"
+                android:indeterminate="true"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:elevation="8dp"
+                app:elevation= "8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+
+        </LinearLayout>-->
+
+
+
+
+
+
+        <!--<TextView
+            android:id="@+id/btnUnInstall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="24Mb"
-            android:textColor="@android:color/black"
-            app:layout_constraintTop_toTopOf="@+id/size_icon"
-            app:layout_constraintLeft_toRightOf="@+id/size_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/size_icon"
-            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:background="@drawable/install_button_bg"
+            android:gravity="center"
+            android:text="@string/uninstall"
+            android:textColor="@android:color/white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/marketImageView"
+            app:layout_constraintLeft_toRightOf="@+id/marketImageView"
+            app:layout_constraintTop_toTopOf="@+id/marketImageView">
+
+            <ImageView
+                android:id="@+id/size_icon"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:contentDescription="ic_size"
+                android:src="@drawable/ic_size"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/market_app_name" />
 
 
+            <TextView
+                android:id="@+id/market_app_name"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:ellipsize="marquee"
+                android:gravity="start"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                tools:text="Whatsapp: online messenger application with text messages and my morw"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            />
+            <TextView
+                android:id="@+id/apkSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:text="24Mb"
+                android:textColor="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/size_icon"
+                app:layout_constraintLeft_toRightOf="@+id/size_icon"
+                app:layout_constraintTop_toTopOf="@+id/size_icon"
 
 
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--<TextView-->
-        <!--android:id="@+id/market_app_name"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:textStyle="bold"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/marketImageView"-->
-
-        <!--android:textSize="@dimen/_14ssp"-->
-        <!--android:layout_marginLeft="@dimen/_10sdp"-->
-        <!--app:layout_constraintLeft_toRightOf="@+id/marketImageView"-->
-        <!--android:ellipsize="marquee"-->
-        <!--android:singleLine="true"-->
-        <!--/>-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/size_icon"-->
-        <!--android:layout_width="@dimen/_10sdp"-->
-        <!--android:layout_height="@dimen/_10sdp"-->
-        <!--android:src="@drawable/ic_size"-->
-        <!--app:layout_constraintLeft_toRightOf="@+id/marketImageView"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/market_app_name"-->
-        <!--android:layout_marginTop="@dimen/_2sdp"-->
-        <!--android:layout_marginLeft="@dimen/_10sdp"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="24Mb"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/size_icon"-->
-        <!--app:layout_constraintLeft_toRightOf="@+id/size_icon"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/size_icon"-->
-        <!--android:layout_marginLeft="@dimen/_5sdp"-->
-
-
-
-        <!--/>-->
-
-    <TextView
-        android:id="@+id/btnInstall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:background="@drawable/install_button_bg"
-        android:text="@string/download_title"
-        android:visibility="gone"
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/btnUnInstall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:background="@drawable/install_button_bg"
-        android:text="@string/uninstall"
-        android:visibility="gone"
-        android:gravity="center"/>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/downloadProgress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        android:layout_gravity="bottom"/>
 
 
 </androidx.cardview.widget.CardView>

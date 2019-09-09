@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,11 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,19 +58,21 @@ import com.tonyodev.fetch2.NetworkType;
 import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
+import com.tonyodev.fetch2core.Extras;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import timber.log.Timber;
 
-import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS;
-import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_HOME;
-import static android.app.admin.DevicePolicyManager.LOCK_TASK_FEATURE_NONE;
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
@@ -80,6 +80,11 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
@@ -89,7 +94,6 @@ import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
-import static com.screenlocker.secure.utils.Utils.refreshKeypad;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
@@ -102,8 +106,6 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 public class LockScreenService extends Service {
 
-    private static final String KIOSK_PACKAGE = "com.secure.launcher";
-    private static final String[] APP_PACKAGES = {KIOSK_PACKAGE};
 
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
@@ -138,16 +140,62 @@ public class LockScreenService extends Service {
 
         @Override
         public void onCompleted(@NotNull Download download) {
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+            try {
+                switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                    case EXTRA_INSTALL_APP:
+                        if (installAppListener != null) {
 
-            downloadListener.downloadComplete(filePath, packageName);
+                            installAppListener.downloadComplete(path, packageName);
+                        } else {
+                            Uri uri = Uri.fromFile(new File(path));
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                        }
+                        break;
+                    case EXTRA_MARKET_FRAGMENT:
+                        if (marketDoaLoadLister != null)
+                            marketDoaLoadLister.downloadComplete(path, packageName);
+                        else {
+                            Uri uri = Uri.fromFile(new File(path));
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+
+                        }
+                        break;
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
 
         @Override
         public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
-            Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
-            File file = new File(filePath);
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.downloadError(packageName);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.downloadError(packageName);
+                    break;
+
+            }
+            File file = new File(path);
             file.delete();
 
 
@@ -161,16 +209,43 @@ public class LockScreenService extends Service {
         @Override
         public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
 
-            downloadId = download.getId();
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.onDownloadStarted(packageName);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.onDownloadStarted(packageName);
+                    break;
+            }
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onProgress(@NotNull Download download, long l, long l1) {
 
-            if (downloadListener != null) {
-                downloadListener.showProgressDialog(download.getProgress());
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
 
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                    break;
             }
         }
 
@@ -185,7 +260,7 @@ public class LockScreenService extends Service {
 
         @Override
         public void onCancelled(@NotNull Download download) {
-            File file = new File(filePath);
+            File file = new File(download.getFile());
             file.delete();
 
             Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
@@ -198,14 +273,11 @@ public class LockScreenService extends Service {
 
         @Override
         public void onDeleted(@NotNull Download download) {
-            File file = new File(filePath);
+            File file = new File(download.getFile());
             file.delete();
         }
     };
-    private DownloadServiceCallBacks downloadListener;
-    private String url = "";
-    private String filePath = "";
-    private String packageName = "";
+    private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
 
 
     public class LocalBinder extends Binder {
@@ -230,6 +302,7 @@ public class LockScreenService extends Service {
 
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
                 .setDownloadConcurrentLimit(3)
+                .setProgressReportingInterval(500)
                 .build();
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
         fetch.addListener(fetchListener);
@@ -368,17 +441,20 @@ public class LockScreenService extends Service {
         });
     }
 
-    public void startDownload(String url, String filePath, String packageName) {
-        this.url = url;
-        this.filePath = filePath;
-        this.packageName = packageName;
+    public void startDownload(String url, String filePath, String packageName, String type) {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
+        Map<String, String> map = new HashMap<>();
+        map.put(EXTRA_PACKAGE_NAME, packageName);
+        map.put(EXTRA_FILE_PATH, filePath);
+        map.put(EXTRA_REQUEST, type);
+        Extras extras = new Extras(map);
+        request.setExtras(extras);
+
 
         fetch.enqueue(request, updatedRequest -> {
-            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
 
             //Request was successfully enqueued for download.
         }, error -> {
@@ -393,17 +469,15 @@ public class LockScreenService extends Service {
             fetch.cancel(downloadId);
     }
 
-    public interface DownloadServiceCallBacks {
-        void showProgressDialog(int progress);
 
-        void downloadComplete(String filePath, String packagename);
+    public void setInstallAppDownloadListener(DownloadServiceCallBacks downloadListener) {
+
+        this.installAppListener = downloadListener;
 
     }
 
-    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
-        if (downloadListener != null) {
-            this.downloadListener = downloadListener;
-        }
+    public void setMarketDownloadListener(DownloadServiceCallBacks downloadListener) {
+        this.marketDoaLoadLister = downloadListener;
     }
 
     @Override
@@ -449,25 +523,18 @@ public class LockScreenService extends Service {
             } else {
                 switch (action) {
                     case "suspended":
-                        startLockScreen(true);
-                        break;
                     case "expired":
+                    case "unlinked":
+                    case "locked":
+                    case "flagged":
                         startLockScreen(true);
                         break;
                     case "reboot":
                         startLockScreen(false);
                         break;
-                    case "unlinked":
-                        startLockScreen(true);
-                        break;
                     case "unlocked":
                         removeLockScreenView();
                         simPermissionsCheck();
-                        break;
-                    case "locked":
-                        startLockScreen(true);
-                    case "flagged":
-                        startLockScreen(true);
                         break;
                     case "lockedFromsim":
                         startLockScreen(false);
@@ -506,7 +573,7 @@ public class LockScreenService extends Service {
                 //clear home with our app to front
                 Instrumentation m_Instrumentation = new Instrumentation();
                 AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                    m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+                    m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
                 });
                 PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);

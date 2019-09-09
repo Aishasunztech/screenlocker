@@ -365,11 +365,11 @@ public class BlurWorker extends Worker {
 
             List<com.screenlocker.secure.socket.model.Settings> settings = MyApplication.getAppDatabase(applicationContext)
                     .getDao().getSettings();
-            List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
-
-            if (localSettings.size()!= settings.size()){
+            if (settings.size() != AppConstants.SET_NUMBER) {
+                Log.d(TAG, "doWork: Yahan par sirf aik bar ana chahiye");
+                List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
                 for (com.screenlocker.secure.socket.model.Settings localSetting : localSettings) {
-                    if (!settings.contains(localSetting)){
+                    if (!settings.contains(localSetting)) {
                         MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(localSetting);
                     }
                 }
