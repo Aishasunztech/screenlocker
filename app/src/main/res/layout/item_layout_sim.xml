@@ -85,6 +85,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:contentDescription="nadeem"
         android:padding="8dp"
         android:src="@drawable/ic_edit_icon"
         app:layout_constraintEnd_toEndOf="parent"

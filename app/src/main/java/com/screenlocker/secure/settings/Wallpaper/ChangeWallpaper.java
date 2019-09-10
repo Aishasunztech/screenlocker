@@ -178,11 +178,5 @@ public class ChangeWallpaper extends AppCompatActivity
         isBackPressed = false;
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (!isBackPressed) {
-//            this.finish();
-        }
-    }
+
 }

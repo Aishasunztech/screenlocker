@@ -26,17 +26,18 @@
             android:visibility="gone">
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/simtext"
-                    android:textSize="@dimen/_16ssp"
-                    android:layout_gravity="center"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/simName1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/simtext"
+                android:textSize="@dimen/_16ssp"
+                android:layout_gravity="center"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,14 +115,14 @@
             </LinearLayout>
 
             <!--<EditText-->
-                <!--android:id="@+id/etNote1"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:inputType="textCapSentences"-->
-                <!--android:hint="Note" />-->
+            <!--android:id="@+id/etNote1"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="16dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="16dp"-->
+            <!--android:inputType="textCapSentences"-->
+            <!--android:hint="Note" />-->
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -181,19 +182,19 @@
 
 
 
-                <TextView
-                    android:id="@+id/simName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/simtext"
-                    android:textSize="@dimen/_16ssp"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    />
+            <TextView
+                android:id="@+id/simName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/simtext"
+                android:textSize="@dimen/_16ssp"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -210,7 +211,7 @@
                     android:layout_gravity="center"
                     />
 
-            <TextView
+                <TextView
                     android:id="@+id/tvSimICCID2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -275,14 +276,14 @@
             </LinearLayout>
 
             <!--<EditText-->
-                <!--android:id="@+id/etNote2"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:inputType="textCapSentences"-->
-                <!--android:hint="Note" />-->
+            <!--android:id="@+id/etNote2"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="16dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="16dp"-->
+            <!--android:inputType="textCapSentences"-->
+            <!--android:hint="Note" />-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/note2_input_layout"
@@ -369,47 +370,32 @@
                 android:inputType="textCapSentences"
                 android:hint="@string/note_hint" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <Switch
                     android:id="@+id/manualGuest"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="@string/guest"
-                    app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
-                    app:layout_constraintEnd_toStartOf="@+id/manualEncrypted"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/manualEncrypted" />
+                    android:layout_marginLeft="@dimen/_32sdp"
+                    android:text="@string/guest" />
 
                 <Switch
                     android:id="@+id/manualEncrypted"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_marginRight="@dimen/_32sdp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/encrypted"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="@string/encrypted" />
 
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/enable"
-                    app:layout_constraintBottom_toBottomOf="@+id/manualEncrypted"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/manualEncrypted"
-                    app:layout_constraintTop_toTopOf="@+id/manualEncrypted" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnManualRegister"

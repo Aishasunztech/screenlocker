@@ -34,7 +34,7 @@
                 android:layout_width="@dimen/material_stepper_step_circle"
                 android:layout_height="@dimen/material_stepper_step_circle"
                 android:background="@drawable/circle_bg"
-                android:contentDescription="TODO" android:scaleType="centerInside"
+                android:contentDescription="someting" android:scaleType="centerInside"
                 android:src="@drawable/ic_done_white_18dp"
                 android:visibility="gone" />
 

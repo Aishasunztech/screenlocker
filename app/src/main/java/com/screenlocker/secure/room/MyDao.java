@@ -17,6 +17,7 @@ import androidx.room.Update;
 
 import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.socket.model.Settings;
 
 import java.util.List;
 import java.util.Set;
@@ -151,6 +152,9 @@ public interface MyDao {
     @Query("SELECT * FROM sim WHERE iccid IN (:ids)")
     List<SimEntry> getSims(Set<String> ids);
 
+    @Query("SELECT * FROM sim WHERE iccid =:id")
+    SimEntry getSimById(String id);
+
     @Query("DELETE from sim WHERE iccid IN (:ids)")
     int deleteSims(Set<String> ids);
 
@@ -160,6 +164,17 @@ public interface MyDao {
     @Query("SELECT * FROM messages order by mDate desc")
     LiveData<List<ChatMessages>> getAllMessages();
 
+
+    @Query("SELECT * FROM Settings")
+    List<Settings> getSettings();
+
+    @Update
+    void updateSetting(Settings setting);
+
+    @Insert
+    void insertSetting(Settings settings);
+
+
     @Update
     void updateMessage(ChatMessages msg);
 
@@ -168,6 +183,8 @@ public interface MyDao {
 
     @Delete
     void deleteMessage(ChatMessages msg);
+    @Update
+    void updateSubExtention(SubExtension extension);
 
 
 }

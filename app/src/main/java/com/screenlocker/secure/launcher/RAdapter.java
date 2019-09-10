@@ -1,10 +1,7 @@
 package com.screenlocker.secure.launcher;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +30,6 @@ import com.simplemobiletools.filemanager.pro.activities.MainActivity;
 import java.util.List;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 
@@ -177,9 +173,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
 
                 } catch (Exception e) {
-                    Toast.makeText(context, "App not found", Toast.LENGTH_LONG).show();
-                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
-                        new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName())).start();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "App not found", Toast.LENGTH_LONG).show();
+//                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
+//                        new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName())).start();
                 }
 
             } else {

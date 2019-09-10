@@ -2,7 +2,6 @@ package com.screenlocker.secure.socket.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -10,9 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -38,8 +35,6 @@ import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.model.Settings;
-import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
@@ -49,24 +44,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
-import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
-import static com.screenlocker.secure.socket.utils.utils.getCurrentSettings;
 import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
@@ -116,12 +105,9 @@ import static com.screenlocker.secure.utils.AppConstants.PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
-import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
@@ -552,7 +538,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         String settings = obj.getString("settings");
 
         if (!settings.equals("{}") && !isPolicy) {
-            changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
+//            changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
             Timber.d(" settings applied ");
         }
 
@@ -695,7 +681,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         try {
             if (socketManager.getSocket().connected()) {
-                socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(SocketService.this)));
+//                socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(SocketService.this)));
                 PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
             } else {
                 Timber.d("Socket not connected");

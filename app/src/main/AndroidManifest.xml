@@ -251,10 +251,6 @@
             android:theme="@style/SecureSettingsTheme" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <activity
-            android:name="com.secureMarket.SecureMarketActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme" />
-        <activity
             android:name=".settings.codeSetting.Sim.SimActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -290,6 +286,13 @@
                 </intent-filter>
             </receiver>
         -->
+        <activity
+            android:name="com.secureMarket.SecureMarketActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.secureMarket.SMActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".crash.CustomErrorActivity"
             android:label="@string/error_title"

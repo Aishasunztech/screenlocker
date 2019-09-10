@@ -1,19 +1,13 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
-import android.widget.ProgressBar;
 
-import androidx.annotation.Nullable;
-import androidx.room.Ignore;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class List {
+public class ServerAppInfo {
 
-    public List()
-    {
-
-    }
+    public ServerAppInfo()    {    }
 
     @SerializedName("apk_name")
     @Expose
@@ -56,6 +50,42 @@ public class List {
     @Expose
     private String version_code;
 
+    public enum PROG_TYPE{
+        GONE,
+        VISIBLE,
+        LOADING,
+        INSTALLING
+    }
+
+    private PROG_TYPE type = PROG_TYPE.GONE;
+
+    public PROG_TYPE getType() {
+        return type;
+    }
+
+    public void setType(PROG_TYPE type) {
+        this.type = type;
+    }
+
+    private int progres = -1;
+    private long speed = 0;
+
+    public int getProgres() {
+        return progres;
+    }
+
+    public void setProgres(int progres) {
+        this.progres = progres;
+    }
+
+    public long getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(long speed) {
+        this.speed = speed;
+    }
+
     public String getVersion_code() {
         return version_code;
     }
@@ -72,7 +102,16 @@ public class List {
         this.is_restrict_uninstall = is_restrict_uninstall;
     }
 
-    private boolean installed;
+    private boolean installed = false;
+    private boolean update = false;
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
 
     public boolean isInstalled() {
         return installed;

@@ -346,7 +346,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         MyApplication.oneCaller
                 .linkDeviceToDealer(
-                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.type), BuildConfig.VERSION_NAME),
+                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME),
                         PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
                 )

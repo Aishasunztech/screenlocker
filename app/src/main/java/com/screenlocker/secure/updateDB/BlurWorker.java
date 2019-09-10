@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -329,8 +330,11 @@ public class BlurWorker extends Worker {
             }
 
 
+            Log.d(TAG, "doWork: Agya");
+
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
+
 
             boolean isPresent = false;
 
@@ -361,6 +365,19 @@ public class BlurWorker extends Worker {
                         }
 
 
+                    }
+                }
+
+            }
+
+            List<com.screenlocker.secure.socket.model.Settings> settings = MyApplication.getAppDatabase(applicationContext)
+                    .getDao().getSettings();
+            if (settings.size() != AppConstants.SET_NUMBER) {
+                Log.d(TAG, "doWork: Yahan par sirf aik bar ana chahiye");
+                List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
+                for (com.screenlocker.secure.socket.model.Settings localSetting : localSettings) {
+                    if (!settings.contains(localSetting)) {
+                        MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(localSetting);
                     }
                 }
 

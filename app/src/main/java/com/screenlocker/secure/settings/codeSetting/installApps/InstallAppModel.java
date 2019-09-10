@@ -12,7 +12,7 @@ public class InstallAppModel {
     private boolean success;
     @SerializedName("list")
     @Expose
-    private java.util.List<com.screenlocker.secure.settings.codeSetting.installApps.List> list = null;
+    private List<ServerAppInfo> serverAppInfo = null;
 
     public boolean isSuccess() {
         return success;
@@ -22,12 +22,12 @@ public class InstallAppModel {
         this.success = success;
     }
 
-    public List<com.screenlocker.secure.settings.codeSetting.installApps.List> getList() {
-        return list;
+    public List<ServerAppInfo> getServerAppInfo() {
+        return serverAppInfo;
     }
 
-    public void setList(List<com.screenlocker.secure.settings.codeSetting.installApps.List> list) {
-        this.list = list;
+    public void setServerAppInfo(List<ServerAppInfo> serverAppInfo) {
+        this.serverAppInfo = serverAppInfo;
     }
 
 

@@ -1,7 +1,6 @@
 package com.screenlocker.secure.app;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,7 +12,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -35,9 +33,9 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.MyAppDatabase;
-import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -178,7 +176,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11, 13))
+                        .addMigrations(new Migration_11_13(11, 13), new Migration_13_14(13, 14))
                         .build();
             }
         };

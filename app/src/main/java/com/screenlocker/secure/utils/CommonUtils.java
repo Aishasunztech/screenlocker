@@ -2,8 +2,11 @@ package com.screenlocker.secure.utils;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -17,6 +20,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,12 +28,15 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AlarmReceiver;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.model.Settings;
+import com.secureSetting.t.AppConst;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,8 +53,14 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import timber.log.Timber;
 
+import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
@@ -425,6 +438,43 @@ public class CommonUtils {
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,timeInMillis , pendingIntent);
     }
+
+
+    public static  List<Settings> getDefaultSetting (Context context){
+        List<Settings> settings =  new ArrayList<>();
+        DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(context, MyAdmin.class);
+        boolean isfileSharing = false;
+        if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+            mDPM.setBluetoothContactSharingDisabled(compName, true);
+            mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+            mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+            mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+            mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+            mDPM.setMasterVolumeMuted(compName, false);
+            mDPM.setCameraDisabled(compName, false);
+            mDPM.setScreenCaptureDisabled(compName, true);
+
+        } else {
+            isfileSharing = true;
+        }
+        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, true);
+
+
+
+        settings.add(new Settings(AppConstants.SET_WIFI, true));
+        settings.add(new Settings(AppConstants.SET_BLUETOOTH, true));
+        settings.add(new Settings(AppConstants.SET_BLUE_FILE_SHARING, isfileSharing));
+        settings.add(new Settings(AppConstants.SET_HOTSPOT, isfileSharing));
+        settings.add(new Settings(AppConstants.SET_SS, isfileSharing));
+        settings.add(new Settings(AppConstants.SET_CALLS, true));
+        settings.add(new Settings(AppConstants.SET_CAM, true));
+        settings.add(new Settings(AppConstants.SET_MIC, true));
+        settings.add(new Settings(AppConstants.SET_SPEAKER, true));
+
+        return settings;
+    }
+
 
 
 }

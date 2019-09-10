@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.screenlocker.secure.settings.AdvanceSettings">
-
     <include
         android:id="@+id/appBar"
-        layout="@layout/main_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        layout="@layout/main_toolbar" />
     <TextView
         android:id="@+id/tvDataCunsumption"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawableStart="@drawable/ic_consumption"
@@ -23,23 +19,16 @@
         android:padding="16dp"
         android:text="@string/data_consumption_settings"
         android:textColor="@color/textColorPrimary"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar" />
+        android:textSize="@dimen/textSize" />
 
     <View
-        android:layout_width="0dp"
+        android:id="@+id/dividerDataCunsumption"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
-
+        android:background="@color/colorLine" />
     <TextView
         android:id="@+id/tvDataUSage"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawableStart="@drawable/ic_data_usage"
@@ -48,23 +37,17 @@
         android:text="@string/data_usage"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDataCunsumption" />
+        android:visibility="visible"/>
 
     <View
-        android:layout_width="0dp"
+        android:id="@+id/dividerDataUSage"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
+        android:background="@color/colorLine" />
 
     <TextView
         android:id="@+id/tv_IMEI"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawableStart="@drawable/ic_imei"
@@ -73,24 +56,18 @@
         android:text="IMEI"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDataUSage" />
+        android:visibility="visible"/>
 
     <View
-        android:layout_width="0dp"
+        android:id="@+id/dividerIMEI"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_IMEI" />
+        android:background="@color/colorLine" />
 
 
     <TextView
         android:id="@+id/tv_set_column"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawableStart="@drawable/ic_grid"
@@ -99,23 +76,16 @@
         android:text="@string/set_column"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_IMEI" />
+        android:visibility="visible" />
 
     <View
         android:id="@+id/dividerColumn"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_set_column" />
+        android:background="@color/colorLine"/>
     <TextView
         android:id="@+id/tvTheme"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
         android:background="?selectableItemBackground"
         android:drawableStart="@drawable/ic_theme"
@@ -124,21 +94,41 @@
         android:text="@string/theme"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dividerColumn"
-        tools:layout_editor_absoluteY="160dp" />
+        android:visibility="visible" />
 
     <View
-        android:layout_width="0dp"
+        android:id="@+id/tvthemeDevider"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTheme" />
+        android:background="@color/colorLine" />
+
+    <TextView
+        android:id="@+id/tvRestore"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_restore"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/restore"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+    <Switch
+        android:visibility="gone"
+        android:id="@+id/powerMode"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/_8sdp"
+        android:drawableStart="@drawable/ic_secure"
+        android:text="Kill Recent"/>
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

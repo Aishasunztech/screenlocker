@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -23,7 +25,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -211,6 +217,40 @@ public class UtilityFunctions {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public static Context setupTheme(Context context) {
+
+        Resources res = context.getResources();
+        int mode = res.getConfiguration().uiMode;
+        switch (getTheme(context)) {
+            case 1:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                mode = Configuration.UI_MODE_NIGHT_YES;
+                break;
+            case 0:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                mode = Configuration.UI_MODE_NIGHT_NO;
+                break;
+            default:
+                break;
+        }
+
+        Configuration config = new Configuration(res.getConfiguration());
+        config.uiMode = mode;
+        if (Build.VERSION.SDK_INT >= 17) {
+            context = context.createConfigurationContext(config);
+        } else {
+            res.updateConfiguration(config, res.getDisplayMetrics());
+        }
+        return context;
+    }
+
+    private static int getTheme(Context context){
+        if (PrefUtils.getBooleanPref(context, AppConstants.KEY_THEME)){
+            return 1;
+        }return 0;
+
     }
 
 

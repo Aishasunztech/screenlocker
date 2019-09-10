@@ -357,9 +357,9 @@
     <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
 
     <string name="ignore">Ignore this app</string>
-    <string name="ignore_hint">Apps in this list will be hidden</string>
-    <string name="ignore_list">Ignore list</string>
-    <string name="ignore_success">Move to ignore list successfully</string>
+    <string name="ignore_hint">Apps in this serverAppInfo will be hidden</string>
+    <string name="ignore_list">Ignore serverAppInfo</string>
+    <string name="ignore_success">Move to ignore serverAppInfo successfully</string>
 
     <string name="not_support">You device not support monitoring</string>
 

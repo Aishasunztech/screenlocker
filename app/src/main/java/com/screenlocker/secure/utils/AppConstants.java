@@ -1,7 +1,5 @@
 package com.screenlocker.secure.utils;
 
-import android.content.Context;
-
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 
@@ -38,7 +36,6 @@ public class AppConstants {
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 4;
     public static final String BROADCAST_ACTION = "intentKey";
-    public static final String BROADCAST_ACTION_NOTIFICATION = "_notification";
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
@@ -46,7 +43,6 @@ public class AppConstants {
 
     public static final String BROADCAST_KEY = "key";
     public static final String BROADCAST_VIEW_ADD_REMOVE = "add_view";
-    public static final String SUPER_ADMIN_KEY = "11111";
 
     public static final String KEY_SERVICE_RUNNING = "lock_service";
     public static final String KEY_GUEST_ALL = "guest_all";
@@ -331,22 +327,6 @@ public class AppConstants {
     public static final String REBOOT_STATUS = "rebootStatus";
 
 
-    // acure xlear
-
-
-//
-//    DEVICE_ACTIVATED: "Active",
-//    DEVICE_SUSPENDED: "Suspended",
-//    DEVICE_EXPIRED: "Expired",
-//    DEVICE_UNLINKED: "Unlinked",
-//    DEVICE_PENDING_ACTIVATION: "Pending activation",
-
-
-//    NEW_DEVICE: "new device",
-
-
-    // push pulled apps
-
     public static final String ACTION_PUSH_APPS = "action_push_apps";
     public static final String ACTION_PULL_APPS = "action_pull_apps";
     public static final String APPS_HASH_MAP = "apps_hash_map";
@@ -426,16 +406,17 @@ public class AppConstants {
     public static final int UPDATE_JOB = 1234;
     public static final String UNSYNC_ICCIDS = "un_sync_iccid";
     public static final String DELETED_ICCIDS = "deleted_iccid";
-    public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
-    public static final String SIM_ACTION_DELETED = "sim_delete";
-    public static final String SIM_ACTION_UPDATE = "sim_update";
-    public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
-    public static final String UEM_PKG = "com.rim.mobilefusion.client";
-
+    public static final String OLD_DEVICE = "new_device_status";
     //Socket Actions
 
     public static final String ACTION_DEVICE_TYPE_VERSION = "type_version";
-
+    public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
+    public static final String SIM_ACTION_DELETED = "sim_delete";
+    public static final String SIM_ACTION_NEW_DEVICE = "sim_new_device";
+    public static final String SIM_ACTION_UPDATE = "sim_update";
+    public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
+    public static final String SIM_GET_INSERTD_SIMS = "sim_inserted";
+    public static final String UEM_PKG = "com.rim.mobilefusion.client";
 
     // push pull apps
     public static final String SYSTEM_APP = "system_app";
@@ -451,6 +432,7 @@ public class AppConstants {
     // installed and uninstalled apps for syncing with server
     public static final String INSTALLED_APPS = "installed_apps";
     public static final String UNINSTALLED_APPS = "uninstalled_apps";
+    public static final String PACKAGE_INSTALLED = "_installed";
 
     public static final String SEND_UNINSTALLED_APPS = "send_uninstalled_apps_";
     public static final String SEND_INSTALLED_APPS = "send_installed_apps_";
@@ -461,6 +443,29 @@ public class AppConstants {
 
 
     public static int RESTRICTION_DELAY = 500;
+    public static int REBOOT_RESTRICTION_DELAY = 2000;
+
+
+    //Fetch
+
+    public static final String EXTRA_PACKAGE_NAME = "extra_package";
+    public static final String EXTRA_FILE_PATH = "extra_filePath";
+    public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_INSTALL_APP = "_inst";
+    public static final String EXTRA_MARKET_FRAGMENT = "_mark";
+
+    //Settings Names
+
+    public static final String SET_WIFI = "Wifi";
+    public static final String SET_BLUETOOTH = "Bluetooth";
+    public static final String SET_BLUE_FILE_SHARING = "Bluetooth File Sharing";
+    public static final String SET_HOTSPOT = "Hotspot Configuration";
+    public static final String SET_SS = "Screen Capture";
+    public static final String SET_CALLS = "Block Calls";
+    public static final String SET_CAM = "Camera";
+    public static final String SET_MIC = "Microphone";
+    public static final String SET_SPEAKER = "Speaker";
+    public static final int SET_NUMBER = 9;
 
 
 }

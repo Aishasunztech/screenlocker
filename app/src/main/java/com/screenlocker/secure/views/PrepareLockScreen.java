@@ -112,7 +112,7 @@ public class PrepareLockScreen {
             }
         }
 
-        TextView unLockButton = keypadView.findViewById(R.id.t9_unlock);
+        ImageView unLockButton = keypadView.findViewById(R.id.t9_unlock);
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
         final PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
@@ -496,7 +496,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void wrongAttempt(Context context, TextView txtWarning, TextView unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
+    private static void wrongAttempt(Context context, TextView txtWarning, ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
         int attempts1 = 10;
         int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
@@ -549,7 +549,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void remainingTime(Context context, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, TextView unLockButton, long time_remaining, int count, int x, int attempt_10) {
+    private static void remainingTime(Context context, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, ImageView unLockButton, long time_remaining, int count, int x, int attempt_10) {
         long time;
         CountDownTimer countDownTimer;
         unLockButton.setEnabled(false);
@@ -563,7 +563,7 @@ public class PrepareLockScreen {
             countDownTimer.start();
     }
 
-    private static CountDownTimer timer(TextView unLockButton, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
+    private static CountDownTimer timer(ImageView unLockButton, EditText mPasswordField, PatternLockView patternLockView, TextView txtWarning, long timeRemaining, int x, Context context, int count) {
 
         CountDownTimer countDownTimer = null;
         try {

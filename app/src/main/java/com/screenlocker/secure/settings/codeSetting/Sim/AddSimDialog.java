@@ -143,7 +143,7 @@ public class AddSimDialog extends Fragment {
                 manualName.setError(null);
             }
             if (!isError) {
-                SimEntry se = new SimEntry(iccid, name, etNoteManual.getText().toString(), -1, manualGuest.isChecked(), manualEncrypted.isChecked(), true, getResources().getString(R.string.status_not_inserted));
+                SimEntry se = new SimEntry(iccid, name, etNoteManual.getText().toString(), -1, manualGuest.isChecked(), manualEncrypted.isChecked(), false, getResources().getString(R.string.status_not_inserted));
                 mListener.onManualInsert(se);
             }
 

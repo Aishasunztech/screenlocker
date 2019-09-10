@@ -15,6 +15,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -32,6 +33,7 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DELETE_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.PACKAGE_INSTALLED;
 
 public class AppsStatusReceiver extends BroadcastReceiver {
 
@@ -248,6 +250,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     appInfo.setPackageName(packageName);
                     appInfo.setUniqueName(packageName);
                     appInfo.setIcon(icon);
+                    appInfo.setSystemApp(false);
                     appInfo.setVisible(true);
                     int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
 
@@ -255,19 +258,28 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     if (i == 0) {
                         MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                     }
+                    saveAppsList(context, true , appInfo,false);
 
-                    sendMessage(context);
+                    sendMessage(context, packageName);
 
                 }).start();
 
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+        }else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")){
+
+
         }
     }
 
     private void sendMessage(Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
+    }
+    private void sendMessage(Context context, String pn) {
+        Intent intent = new Intent(PACKAGE_INSTALLED);
+        intent.putExtra(AppConstants.EXTRA_PACKAGE_NAME, pn);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
 

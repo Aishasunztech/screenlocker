@@ -436,5 +436,14 @@
     <string name="your_device_is_linked">Your Device is Linked !</string>
     <string name="waiting_for_approval">Waiting for approval...</string>
 
+    <string name="restore">Restore</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+
+    <string name="tab_text_1">New Apps</string>
+    <string name="tab_text_2">Updates</string>
+    <string name="tab_text_3">Installed</string>
+
 
 </resources>

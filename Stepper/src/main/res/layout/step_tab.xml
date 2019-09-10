@@ -29,7 +29,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/circle_bg"
-            android:contentDescription="TODO" android:scaleType="centerInside"
+            android:contentDescription="image" android:scaleType="centerInside"
             android:src="@drawable/ic_done_white_18dp"
             android:visibility="gone" />
 

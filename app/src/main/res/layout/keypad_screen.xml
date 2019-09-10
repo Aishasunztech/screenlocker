@@ -5,26 +5,7 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_icon"
     android:fitsSystemWindows="true">
-
-    <TextView
-        android:id="@+id/txtWarning"
-        style="@style/icon_text"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_84sdp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="48dp"
-        android:textColor="#fa8c16"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Incorr \n \n gkhfgkhfgdsgnkfkgkhgkhgkl \n fdnhh \n \n kjkj" />
-
 
     <EditText
         android:id="@+id/password_field"
@@ -54,18 +35,110 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtWarning" />
 
+
     <ImageView
         android:id="@+id/t9_key_backspace"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="8dp"
-        android:contentDescription="TODO"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:contentDescription="img"
         android:src="@drawable/img"
         app:layout_constraintBottom_toBottomOf="@+id/password_field"
-        app:layout_constraintTop_toTopOf="@+id/password_field"
         app:layout_constraintRight_toRightOf="@id/password_field"
-        android:layout_marginRight="@dimen/_5sdp"/>
+        app:layout_constraintTop_toTopOf="@+id/password_field" />
 
+    <ImageView
+        android:id="@+id/t9_unlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:padding="@dimen/_18sdp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_action_capture"
+        android:elevation="@dimen/_8sdp"
+        android:stateListAnimator="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/patternLock"
+        app:layout_constraintEnd_toEndOf="@+id/patternLock" />
+
+
+    <LinearLayout
+        android:id="@+id/t9_key_support"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:contentDescription="ic_support"
+            android:src="@drawable/ic_support"
+            android:tint="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:shadowColor="#000000"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="5"
+            android:text="@string/support"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/patternLock"
+
+            />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txtWarning"
+        style="@style/icon_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_84sdp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:minHeight="48dp"
+        android:textColor="#fa8c16"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Incorr \n \n gkhfgkhfgdsgnkfkgkhgkhgkl \n fdnhh \n \n kjkj" />
+
+
+    <TextView
+        android:id="@+id/t9_key_clear"
+        style="@style/keyboard_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:elevation="@dimen/_2sdp"
+        android:shadowRadius="5"
+        android:text="@string/btn_backspace"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/patternLock"
+        app:layout_constraintLeft_toLeftOf="@id/patternLock" />
 
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"
@@ -78,79 +151,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_field" />
-
-
-    <TextView
-        android:id="@+id/t9_unlock"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="@dimen/_26sdp"
-        android:layout_marginBottom="@dimen/_24sdp"
-        android:background="@drawable/ic_action_capture"
-        style="@style/icon_text"
-        android:gravity="center"
-        android:stateListAnimator="@null"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toBottomOf="@+id/patternLock"
-        app:layout_constraintEnd_toEndOf="@+id/patternLock" />
-
-
-    <LinearLayout
-        android:id="@+id/t9_key_support"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp">
-
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/ic_support"
-            android:tint="@android:color/white"
-            android:layout_gravity="center"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/patternLock"
-            android:shadowColor="#000000"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="5"
-            android:text="@string/support"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_12ssp"
-
-           />
-    </LinearLayout>
-
-
-
-    <TextView
-        android:id="@+id/t9_key_clear"
-        style="@style/keyboard_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:shadowColor="#000000"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="5"
-        android:text="@string/btn_backspace"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/patternLock"
-        app:layout_constraintLeft_toLeftOf="@id/patternLock" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -69,13 +70,18 @@ import com.tonyodev.fetch2.NetworkType;
 import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
+import com.tonyodev.fetch2core.Extras;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -91,12 +97,18 @@ import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
+import static com.screenlocker.secure.utils.AppConstants.REBOOT_RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
@@ -156,16 +168,60 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         @Override
         public void onCompleted(@NotNull Download download) {
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+            try {
+                switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                    case EXTRA_INSTALL_APP:
+                        if (installAppListener != null) {
 
-            downloadListener.downloadComplete(filePath, packageName);
+                            installAppListener.downloadComplete(path, packageName);
+                        } else {
+                            Uri uri = Uri.fromFile(new File(path));
+//                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                        }
+                        break;
+                    case EXTRA_MARKET_FRAGMENT:
+                        if (marketDoaLoadLister != null)
+                            marketDoaLoadLister.downloadComplete(path, packageName);
+                        else {
+                            Uri uri = Uri.fromFile(new File(path));
+//                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+
+                        }
+                        break;
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
 
         @Override
         public void onError(@NotNull Download download, @NotNull Error error, @org.jetbrains.annotations.Nullable Throwable throwable) {
-            Toast.makeText(LockScreenService.this, "Downloading error", Toast.LENGTH_SHORT).show();
-            File file = new File(filePath);
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.downloadError(packageName);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.downloadError(packageName);
+                    break;
+
+            }
+            File file = new File(path);
             file.delete();
 
 
@@ -179,20 +235,44 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         @Override
         public void onStarted(@NotNull Download download, java.util.@NotNull List<? extends DownloadBlock> list, int i) {
 
-            downloadId = download.getId();
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.onDownloadStarted(packageName);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.onDownloadStarted(packageName);
+                    break;
+            }
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onProgress(@NotNull Download download, long l, long l1) {
 
-            if (downloadListener != null) {
-                downloadListener.showProgressDialog(download.getProgress());
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
 
-
+            switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                case EXTRA_INSTALL_APP:
+                    if (installAppListener != null)
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                    break;
+                case EXTRA_MARKET_FRAGMENT:
+                    if (marketDoaLoadLister != null)
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                    break;
             }
-
-
         }
 
         @Override
@@ -206,7 +286,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         @Override
         public void onCancelled(@NotNull Download download) {
-            File file = new File(filePath);
+            File file = new File(download.getFile());
             file.delete();
 
             Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
@@ -219,10 +299,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         @Override
         public void onDeleted(@NotNull Download download) {
-            File file = new File(filePath);
+            File file = new File(download.getFile());
             file.delete();
         }
     };
+
+
     private DownloadServiceCallBacks downloadListener;
     private String url = "";
     private String filePath = "";
@@ -443,7 +525,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     AppExecutor appExecutor;
 
-//    private void sheduleScreenOffMonitor() {
+    //    private void sheduleScreenOffMonitor() {
 //        if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
 //            appExecutor.readyNewExecutor();
 //        }
@@ -462,18 +544,20 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 //            }
 //        });
 //    }
-
-    public void startDownload(String url, String filePath, String packageName) {
-        this.url = url;
-        this.filePath = filePath;
-        this.packageName = packageName;
+    public void startDownload(String url, String filePath, String packageName, String type) {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
+        Map<String, String> map = new HashMap<>();
+        map.put(EXTRA_PACKAGE_NAME, packageName);
+        map.put(EXTRA_FILE_PATH, filePath);
+        map.put(EXTRA_REQUEST, type);
+        Extras extras = new Extras(map);
+        request.setExtras(extras);
+
 
         fetch.enqueue(request, updatedRequest -> {
-            Toast.makeText(getAppContext(), "Download Pending", Toast.LENGTH_LONG).show();
 
             //Request was successfully enqueued for download.
         }, error -> {
@@ -488,12 +572,18 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             fetch.cancel(downloadId);
     }
 
-    public interface DownloadServiceCallBacks {
-        void showProgressDialog(int progress);
+    private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
 
-        void downloadComplete(String filePath, String packagename);
+    public void setInstallAppDownloadListener(DownloadServiceCallBacks downloadListener) {
+
+        this.installAppListener = downloadListener;
 
     }
+
+    public void setMarketDownloadListener(DownloadServiceCallBacks downloadListener) {
+        this.marketDoaLoadLister = downloadListener;
+    }
+
 
     public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
         if (downloadListener != null) {
@@ -741,8 +831,10 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         if (reboot) {
             ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("addreboot"));
+            handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), REBOOT_RESTRICTION_DELAY);
         } else {
             ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+            handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
         }
 
         Intent i = new Intent(context, MainActivity.class);
@@ -750,7 +842,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
-        handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
+
 
 //        handler.postDelayed(this::removeView, 200);
 

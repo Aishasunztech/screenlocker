@@ -6,30 +6,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import androidx.core.content.FileProvider;
+
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.socket.model.InstallModel;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-
-import androidx.core.content.FileProvider;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
-import static com.secureMarket.MarketUtils.savePackages;
 
 public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
     private String appName, url;
