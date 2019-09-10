@@ -149,22 +149,10 @@ public class IMEIActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!backPress) {
-            if (CodeSettingActivity.codeSettingsInstance != null) {
-                //  finish previous activity and this activity
-                CodeSettingActivity.codeSettingsInstance.finish();
-            }
-        }
-        finish();
-
-    }
 
     @OnClick(R.id.link_to_generate)
     public void linkToGenerate() {
-        String linkText = link.getText().toString().substring(1,link.getText().toString().length()-1);
-        Utils.copyToClipBoard(this,AppConstants.COPIED_URL,linkText,"Link copied to clipboard");
+        String linkText = link.getText().toString().substring(1, link.getText().toString().length() - 1);
+        Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "Link copied to clipboard");
     }
 }

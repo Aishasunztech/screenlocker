@@ -225,7 +225,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void doUnbindService() {
-        mService.setListener(null);
+        if (mService != null)
+            mService.setListener(null);
         unbindService(connection);
     }
 
@@ -272,24 +273,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed && !isNetworkDialogOpen && !isLinkDialogOpen) {
-            try {
-                containerLayout.setVisibility(View.INVISIBLE);
-                finish();
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
@@ -298,6 +281,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);
         }
+
     }
 
     @Override

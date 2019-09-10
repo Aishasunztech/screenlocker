@@ -173,7 +173,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                 Timber.tag("TAG").d("MdmMainActivity.CODE_WRITE_SETTINGS_PERMISSION success");
                 //do your code
                 WifiApControl.turnOnOffHotspot(openHotSpot, wifiManager);
-                Toast.makeText(this, "onactivityresult", Toast.LENGTH_SHORT).show();
             } else {
                 isHotSpotEnabled = WifiApControl.isWifiApEnabled(wifiManager);
                 if (isHotSpotEnabled) {
@@ -255,7 +254,7 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
                         switchGuest.setChecked(appInfo.isGuest());
                         switchEncrypt.setChecked(appInfo.isEncrypted());
                         switchDisable.setChecked(appInfo.isEnable());
-                        Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
+//                        Glide.with(SystemPermissionActivity.this).load(appInfo.getIcon()).into(appImage);
                     });
                 }
             }
@@ -458,22 +457,6 @@ public class SystemPermissionActivity extends BaseActivity implements CompoundBu
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (!isBackPressed && !isSwitchLocationClicked) {
-            containerLayout.setVisibility(View.INVISIBLE);
-            try {
-                this.finish();
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-
-        PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
 
 
     }

@@ -56,7 +56,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         } else {
             if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
-            }else {
+            } else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
             }
         }
@@ -196,7 +196,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         } else {
             if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
-            }else {
+            } else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
             }
         }
@@ -204,15 +204,16 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if (!isBackPressed) {
             if (!goToGuest && !goToEncrypt && !goToDuress) {
-                // this.finish();
+//                this.finish();
             }
 
         }
     }
+
 
     @Override
     public void onBackPressed() {

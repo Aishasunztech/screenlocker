@@ -174,10 +174,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
             case LifecycleReceiver.BACKGROUND:
                 Timber.e("onStateChange: BACKGROUND");
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                    this.finish();
-                }
+
                 break;
 
             default:
@@ -679,25 +676,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed && !isInstallDialogOpen && !isUnstallDialogOpen) {
-            try {
-                //refreshLayout.setVisibility(View.INVISIBLE);
-                this.finish();
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-    }
-
-
-    @Override
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, LockScreenService.class);
@@ -708,7 +686,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     protected void onStop() {
         super.onStop();
 
-        if (!isBackPressed && !isInstallDialogOpen) {
+        if (!isBackPressed && !isInstallDialogOpen && !isUnstallDialogOpen) {
             Intent intent = new Intent(LIFECYCLE_ACTION);
             intent.putExtra(STATE, BACKGROUND);
             sendBroadcast(intent);

@@ -179,10 +179,10 @@ public class ChangeWallpaper extends AppCompatActivity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if (!isBackPressed) {
-            this.finish();
+//            this.finish();
         }
     }
 }

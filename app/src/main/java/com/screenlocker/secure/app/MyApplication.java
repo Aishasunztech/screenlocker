@@ -1,6 +1,7 @@
 package com.screenlocker.secure.app;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -36,6 +37,7 @@ import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.settings.codeSetting.ExitActivity;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -73,7 +75,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_2;
  */
 public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener {
 
-public static final String CHANNEL_1_ID = "channel_1_id";
+    public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
     private MyAppDatabase myAppDatabase;
     private ComponentName compName;
@@ -107,12 +109,12 @@ public static final String CHANNEL_1_ID = "channel_1_id";
         return appContext;
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
 
         appContext = getApplicationContext();
+
 
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
@@ -157,7 +159,6 @@ public static final String CHANNEL_1_ID = "channel_1_id";
             manager.createNotificationChannel(channel1);
 
         }
-
 
 
         // your oncreate code should be
@@ -240,11 +241,11 @@ public static final String CHANNEL_1_ID = "channel_1_id";
             @Override
             public void onActivityPaused(Activity activity) {
 
+
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-
             }
 
             @Override
@@ -446,22 +447,22 @@ public static final String CHANNEL_1_ID = "channel_1_id";
 
         } else {
             MyApplication.oneCaller
-                        .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                        if (response.body() != null) {
-                            if (response.body().isStatus()) {
-                                PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                    .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().isStatus()) {
+                            PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
-                            }
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
+                @Override
+                public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
 
-                    }
-                });
+                }
+            });
         }
 
 

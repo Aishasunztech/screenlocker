@@ -1,9 +1,7 @@
 package com.screenlocker.secure.settings.codeSetting;
 
-import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -11,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,38 +20,30 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
-import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.ui.MainActivity;
 
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import timber.log.Timber;
-
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
-import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -65,20 +56,11 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private Toolbar mToolbar;
     private CodeSettingPresenter mPresenter;
     AlertDialog adminPasswordDialog;
-    public static AppCompatActivity codeSettingsInstance;
-
-    private boolean goToAppSelection;
-    private boolean gotoSystemControl;
-    private boolean goToInstallApps;
-    private boolean goToPolicyMenu;
-    private boolean goToIMEIMenu;
-    private boolean goToSettingsAppPermission, goToSimActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_setting);
-        codeSettingsInstance = this;
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mPresenter = new CodeSettingPresenter(new CodeSettingModel(this), this);
         setIds();
@@ -92,7 +74,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
                 List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
                 String settingPackageName = null;
-                if (resolveInfos != null || resolveInfos.size() != 0) {
+                if (resolveInfos != null && resolveInfos.size() != 0) {
                     settingPackageName = resolveInfos.get(0).activityInfo.packageName;
                 }
                 if (settingPackageName != null) {
@@ -118,7 +100,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     private void createAdminPasswordDialog() {
         final EditText input = new EditText(this);
-
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle(getString(R.string.please_enter_code_admin_password));
         alertDialog.setCancelable(false);
@@ -126,12 +107,8 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         lp.setMargins(10, 10, 10, 10);
-
         input.setGravity(Gravity.CENTER);
-
-
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         input.setLayoutParams(lp);
         alertDialog.setView(input);
         alertDialog.setIcon(R.mipmap.ic_launcher);
@@ -161,11 +138,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 });
 
         alertDialog.setNegativeButton(R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        dialog.cancel();
-                    }
+                (dialog, which) -> {
+                    finish();
+                    dialog.cancel();
                 });
 
         adminPasswordDialog = alertDialog.create();
@@ -213,9 +188,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tvInstallApps:
                 handleInstallApps();
                 break;
-            case R.id.tvSim:
-                handleSim();
-                break;
+//            case R.id.tvSim:
+//                handleSim();
+//                break;
             case R.id.tvPolicyMenu:
                 handlePolicyMenu();
                 break;
@@ -226,27 +201,21 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 //                goToIMEIMenu = true;
 //                startActivity(new Intent(CodeSettingActivity.this, IMEIActivity.class));
 //                break;
-
-
         }
     }
 
     private void handleSim() {
-        goToSimActivity = true;
         startActivity(new Intent(this, SimActivity.class));
     }
 
     private void handleInstallApps() {
-        goToInstallApps = true;
         startActivity(new Intent(CodeSettingActivity.this, InstallAppsActivity.class));
     }
 
     // method to handle policy menu
     private void handlePolicyMenu() {
-        goToPolicyMenu = true;
         startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
     }
-
 
 
     private void handleChangeAdminPassword() {
@@ -267,34 +236,27 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         etNewPassword = dialog.findViewById(R.id.etNewPassword);
         confirmPassword = dialog.findViewById(R.id.etNewConfirmPassword);
         btOk = dialog.findViewById(R.id.btOk);
-        dialog.findViewById(R.id.btCancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                if (dialog.isShowing())
-                    dialog.cancel();
+        dialog.findViewById(R.id.btCancel).setOnClickListener(view -> {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (dialog.isShowing())
+                dialog.cancel();
 
-            }
         });
 
         //validate password
-        btOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validatePassword(etOldText, etNewPassword, confirmPassword)) {
-//                    boolean keyOk = passwordsOk(this, reEnteredPassword);
-                    PrefUtils.saveStringPref(CodeSettingActivity.this,
-                            AppConstants.KEY_CODE_PASSWORD, etNewPassword.getText().toString().trim());
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        btOk.setOnClickListener(view -> {
+            if (validatePassword(etOldText, etNewPassword, confirmPassword)) {
+                PrefUtils.saveStringPref(CodeSettingActivity.this,
+                        AppConstants.KEY_CODE_PASSWORD, etNewPassword.getText().toString().trim());
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                    if (dialog != null && dialog.isShowing()) {
-                        dialog.cancel();
-                    }
-                    Snackbar.make(rootLayout, getResources().getString(R.string.admin_password_changed), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(CodeSettingActivity.this, getResources().getString(R.string.password_taken), Toast.LENGTH_SHORT).show();
-
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
                 }
+                Snackbar.make(rootLayout, getResources().getString(R.string.admin_password_changed), Snackbar.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(CodeSettingActivity.this, getResources().getString(R.string.password_taken), Toast.LENGTH_SHORT).show();
+
             }
         });
         dialog.show();
@@ -305,13 +267,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
-        goToAppSelection = false;
-        gotoSystemControl = false;
-        goToInstallApps = false;
-        goToPolicyMenu = false;
-        goToSettingsAppPermission = false;
-        goToIMEIMenu = false;
-        goToSimActivity = false;
         Intent intent = new Intent(LIFECYCLE_ACTION);
         intent.putExtra(STATE, FOREGROUND);
         sendBroadcast(intent);
@@ -319,23 +274,9 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu && !goToSimActivity) {
-            Intent intent = new Intent(LIFECYCLE_ACTION);
-            intent.putExtra(STATE, BACKGROUND);
-            sendBroadcast(intent);
-        }
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu && !goToSimActivity) {
-            hideKeyboard(CodeSettingActivity.this);
-            finish();
-        }
-
+        hideKeyboard(CodeSettingActivity.this);
     }
 
     private boolean validatePassword(EditText etOldText, EditText etNewPassword, EditText etConfirmPassword) {
@@ -366,49 +307,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void handleSetAppsPermission() {
-        goToAppSelection = true;
-
-
         startActivity(new Intent(this, AppSelectionActivity.class));
-//
-//        Intent i = new Intent(Intent.ACTION_MAIN, null);
-//        i.addCategory(Intent.CATEGORY_LAUNCHER);
-//
-//        List<ResolveInfo> appsFromSystem = getPackageManager().queryIntentActivities(i, 0);
-//        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
-//        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-//        String settingPackageName = null;
-//        if (resolveInfos != null || resolveInfos.size() != 0) {
-//            settingPackageName = resolveInfos.get(0).activityInfo.packageName;
-//        }
-//
-//
-//        for (ResolveInfo ri : appsFromSystem) {
-//
-//            AppInfo appInfo = new AppInfo();
-//            appInfo.setLabel(String.valueOf(ri.loadLabel(packageManager)));
-//            appInfo.setPackageName(ri.activityInfo.packageName);
-//            appInfo.setIcon(ri.activityInfo.loadIcon(packageManager));
-//
-//            for (int i = 0; i < apps.size(); i++) {
-//                if ((appInfo.getPackageName() + appInfo.getLabel()).equals(apps.get(i).getPackageName())) {
-//                    appInfo.setHide(true);
-//                    break;
-//                }
-//
-//            }   for (int i = 0; i < disabledApps.size(); i++) {
-//                if ((appInfo.getPackageName() + appInfo.getLabel()).equals(disabledApps.get(i).getPackageName())) {
-//                    appInfo.setEnable(true);
-//                    break;
-//                }
-//
-//            }
-//
-//            if (settingPackageName == null || !appInfo.getPackageName().equals(settingPackageName)) {
-//                appsList.add(appInfo);
-//            }
-//
-//        }
     }
 
 
@@ -416,119 +315,21 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     public void resetPassword() {
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this,AppConstants.GUEST_PATTERN,null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN,null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG,AppConstants.PIN_PASSWORD);
-
-//        if (isServiceRunning()) {
-//            final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);
-//            stopService(lockScreenIntent);
-//        }
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
         Snackbar.make(rootLayout, R.string.password_is_changed_to_default, Snackbar.LENGTH_SHORT);
-
     }
-
-    private boolean isServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (LockScreenService.class.getName().equals(service.service.getClassName())) {
-
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private void handleSettingsApp() {
-        goToSettingsAppPermission = true;
         startActivity(new Intent(CodeSettingActivity.this, SecureSettingsActivity.class));
     }
 
     private void handleSettingsMenu() {
-        gotoSystemControl = true;
         startActivity(new Intent(CodeSettingActivity.this, SystemPermissionActivity.class));
-
-    /*    if (PrefUtils.getStringPref(this, AppConstants.KEY_MAIN_PASSWORD) == null) {
-            Snackbar.make(rootLayout, R.string.please_add_encrypted_password, Snackbar.LENGTH_SHORT).show();
-//            Toast.makeText(this, R.string.please_add_encrypted_password, Toast.LENGTH_LONG).show();
-        } else {
-            final EditText input = new EditText(CodeSettingActivity.this);
-            showAlertDialog(input, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                        Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
-//                        Toast.makeText(CodeSettingActivity.this, R.string.please_enter_your_current_password, Toast.LENGTH_SHORT).show();
-                        //   imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                        return;
-                    }
-                    if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
-                        startActivity(new Intent(CodeSettingActivity.this, SystemPermissionActivity.class));
-                    } else {
-                        Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
-//                        Toast.makeText(CodeSettingActivity.this, R.string.wrong_password_entered, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }, null, getString(R.string.please_enter_encrypted_password));
-
-        }*/
-
-
     }
 
-    public void showAlertDialog(final EditText input, final DialogInterface.OnClickListener onClickListener, final DialogInterface.OnClickListener onNegativeClick, String title) {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle(title);
-        alertDialog.setCancelable(false);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(10, 10, 10, 10);
-
-        input.setGravity(Gravity.CENTER);
-
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-        input.setLayoutParams(lp);
-        alertDialog.setView(input);
-        alertDialog.setIcon(R.mipmap.ic_launcher);
-        input.setFocusable(true);
-        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-
-        alertDialog.setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onClickListener.onClick(dialog, which);
-                        try {
-                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-        alertDialog.setNegativeButton(R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            if (onNegativeClick != null)
-                                onNegativeClick.onClick(dialog, which);
-                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        dialog.cancel();
-                    }
-                });
-
-        alertDialog.show();
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

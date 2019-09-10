@@ -2,6 +2,7 @@ package com.screenlocker.secure.settings.managepassword;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -80,7 +81,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     getSupportActionBar().setTitle(R.string.set_guest_code);
 //                etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
 //                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
-                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_guest_icon));
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_guest_icon));
 
                 pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_guest_pin));
                 re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
@@ -89,13 +90,13 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 // setting toolbar name for guest type
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.set_duress_code);
-                if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD)!=null){
+                if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
 
-                    btnDisableDuress.setVisibility(View.VISIBLE );
+                    btnDisableDuress.setVisibility(View.VISIBLE);
                 }
 //                etEnterPin.setHint(R.string.hint_please_enter_duress_pin);
 //                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
-                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_duress_icon));
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_duress_icon));
 
                 pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_duress_pin));
                 re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
@@ -112,7 +113,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     getSupportActionBar().setTitle(R.string.set_encrypted_code);
 //                etEnterPin.setHint(R.string.hint_please_enter_encrypted_pin);
 //                etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
-                img_picture.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_encrypted_third));
+                img_picture.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_encrypted_third));
                 pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_encrypted_pin));
                 re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
 
@@ -156,8 +157,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.disable_duress){
-            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD,null);
+        if (view.getId() == R.id.disable_duress) {
+            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, null);
             btnDisableDuress.setEnabled(false);
             btnDisableDuress.setText(getResources().getString(R.string.duress_pin_disabled));
         }
@@ -251,12 +252,10 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        if(!isBackPressed)
-        {
-            this.finish();
+    protected void onStop() {
+        super.onStop();
+        if (!isBackPressed) {
+//            this.finish();
         }
     }
 

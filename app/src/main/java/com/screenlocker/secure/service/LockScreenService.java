@@ -233,7 +233,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     @Override
     public void serviceConnected(boolean status) {
         isServiceConnected = status;
-        Timber.d("access service running %s ", isServiceConnected);
+//        Timber.d("access service running %s ", isServiceConnected);
     }
 
 
@@ -615,7 +615,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
                 String package_name = getCurrentApp();
 
-                Timber.d("current Package %s", package_name);
+//                Timber.d("current Package %s", package_name);
 
                 if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
 
@@ -652,7 +652,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     Thread.sleep(600);
                     if (isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
 
-                        Timber.d("access service condition %s", isServiceConnected);
+//                        Timber.d("access service condition %s", isServiceConnected);
 
                         if (!isServiceConnected) {
                             if (!PrefUtils.getBooleanPref(MyApplication.getAppContext(), EMERGENCY_FLAG)) {
@@ -664,9 +664,9 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                             }
 
                         } else {
-                            Timber.d("Service connected");
+//                            Timber.d("Service connected");
                             isServiceConnected = false;
-                            Timber.d("access service status in thread %s", isServiceConnected);
+//                            Timber.d("access service status in thread %s", isServiceConnected);
 //                            clearRecentApp(this, true);
                         }
                     } else {

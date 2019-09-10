@@ -37,7 +37,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean isBackPressed = false;
-    private boolean goToGuest,goToEncrypt,goToLockScreen;
+    private boolean goToGuest, goToEncrypt, goToLockScreen;
     private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTCODE = 102;
 
     @Override
@@ -112,10 +112,10 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         alertDialog.setPositiveButton(R.string.ok,
                 (dialog, which) -> {
                     String password = input.getText().toString().trim();
-                    if (password.equals("")){
-                        Snackbar.make(findViewById(R.id.rootLayout),getResources().getString(R.string.please_enter_password),Snackbar.LENGTH_LONG).show();
-                    }else
-                        handlePassword(password , type);
+                    if (password.equals("")) {
+                        Snackbar.make(findViewById(R.id.rootLayout), getResources().getString(R.string.please_enter_password), Snackbar.LENGTH_LONG).show();
+                    } else
+                        handlePassword(password, type);
                 });
 
         alertDialog.setNegativeButton(R.string.cancel,
@@ -132,37 +132,34 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             case KEY_GUEST:
                 if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_GUEST_PASSWORD))) {
                     //
-
                     goToGuest = true;
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_GUEST);
                     startActivity(intent);
-                }else
+                } else
                     showInvalidPasswordDialog(this);
                 break;
             case KEY_MAIN:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
 
                     goToEncrypt = true;
 
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_MAIN);
                     startActivity(intent);
-                }
-                else
+                } else
                     showInvalidPasswordDialog(this);
 
                 break;
             case KEY_CODE:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))) {
 
                     goToLockScreen = true;
 
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_CODE);
                     startActivity(intent);
-                }
-                else
+                } else
                     showInvalidPasswordDialog(this);
 
                 break;
@@ -174,7 +171,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         alertDialog.setTitle(getResources().getString(R.string.invalid_password_title));
         alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
         alertDialog.setMessage(getResources().getString(R.string.invalid_password_message));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,  getResources().getString(R.string.ok_text),
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_text),
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
@@ -187,14 +184,13 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         isBackPressed = false;
     }
 
+
     @Override
-    protected void onPause() {
-        super.onPause();
-        if(!isBackPressed)
-        {
-            if(!goToGuest && !goToEncrypt && !goToLockScreen)
-            {
-                //this.finish();
+    protected void onStop() {
+        super.onStop();
+        if (!isBackPressed) {
+            if (!goToGuest && !goToEncrypt && !goToLockScreen) {
+//                this.finish();
             }
         }
     }
@@ -204,6 +200,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         super.onBackPressed();
         isBackPressed = true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -239,11 +236,12 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
     public void handleSetGuestPassword() {
         String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
         if (passConfig == null) {
             if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
-                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
+                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title), KEY_GUEST);
             return;
 
         }
@@ -252,17 +250,18 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 verifyCurrentPattern(AppConstants.KEY_GUEST);
                 break;
             case AppConstants.PIN_PASSWORD:
-                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
+                showAlertDialog(getResources().getString(R.string.guest_password_dialog_title), KEY_GUEST);
                 break;
         }
 
 
     }
+
     public void handleSetMainPassword() {
         String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
             if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title), KEY_MAIN);
             return;
 
         }
@@ -271,16 +270,17 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 verifyCurrentPattern(AppConstants.KEY_MAIN);
                 break;
             case AppConstants.PIN_PASSWORD:
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title), KEY_MAIN);
                 break;
         }
 
     }
+
     public void handleSetMainPasswordForLS() {
         String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
             if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title), KEY_CODE);
             return;
 
         }
@@ -289,11 +289,12 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 verifyCurrentPattern(KEY_CODE);
                 break;
             case AppConstants.PIN_PASSWORD:
-                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+                showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title), KEY_CODE);
                 break;
         }
 
     }
+
     private void verifyCurrentPattern(String userType) {
         switch (userType) {
             case AppConstants.KEY_MAIN:

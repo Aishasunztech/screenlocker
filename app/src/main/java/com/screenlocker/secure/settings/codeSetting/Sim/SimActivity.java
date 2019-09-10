@@ -105,19 +105,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed) {
-
-            if (CodeSettingActivity.codeSettingsInstance != null) {
-                //  finish previous activity and this activity
-                CodeSettingActivity.codeSettingsInstance.finish();
-            }
-            this.finish();
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
 
@@ -441,7 +428,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
 
         }
 
-        this.finish();
         super.onStop();
     }
 

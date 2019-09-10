@@ -172,23 +172,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed) {
-            try {
-                containerLayout.setVisibility(View.INVISIBLE);
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-
-                }
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
@@ -209,6 +192,15 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
 
 
+        if (!isBackPressed) {
+            setResult(RESULT_CANCELED);
+            finish();
+        } else {
+            setResult(RESULT_OK);
+            finish();
+        }
+
+
         super.onStop();
     }
 
@@ -225,11 +217,10 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                 AppExecutor.getInstance().getMainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(guestStatus == 0)
-                        {
+                        if (guestStatus == 0) {
                             menu.findItem(R.id.extension_guest_all).setChecked(true);
 
-                        }else{
+                        } else {
                             menu.findItem(R.id.extension_guest_all).setChecked(false);
                         }
                     }
@@ -237,11 +228,10 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                 int encryptedStatus = myDao.checkEncryptedStatus(false);
                 AppExecutor.getInstance().getMainThread().execute(() -> {
-                    if(encryptedStatus == 0)
-                    {
+                    if (encryptedStatus == 0) {
                         menu.findItem(R.id.extension_encryption_all).setChecked(true);
 
-                    }else{
+                    } else {
                         menu.findItem(R.id.extension_encryption_all).setChecked(false);
 
                     }
@@ -356,7 +346,6 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override

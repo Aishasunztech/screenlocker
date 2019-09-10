@@ -1,44 +1,33 @@
 package com.screenlocker.secure.appSelection;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.WorkManager;
 
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
-import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
-import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
 public class AppSelectionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
@@ -63,23 +52,16 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
      * for package manager
      */
     private PackageManager mPackageManager;
-    /**
-     * hiding layout
-     */
-    private ConstraintLayout containerLayout;
 
 
     private AppListAdapter adapter;
     private SelectionPresenter selectionPresenter;
     private String packageName;
-    private boolean isBackPressed = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_selection);
-        isBackPressed = false;
         setToolbar();
         mProgress = findViewById(R.id.progress);
         selectionPresenter = new SelectionPresenter(this, new SelectionModel(this));
@@ -109,7 +91,6 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
      * set up recyclerview and its adapter
      */
     private void setRecyclerView() {
-        containerLayout = findViewById(R.id.container_layout);
         rvAppSelection = findViewById(R.id.appSelectionList);
         adapter = new AppListAdapter(getPackageName(), mAppsList);
         rvAppSelection.setAdapter(adapter);
@@ -273,46 +254,12 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 //
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed) {
-            containerLayout.setVisibility(View.INVISIBLE);
 
-            //ExitActivity.exitApplicationAndRemoveFromRecent(AppSelectionActivity.this);
-            this.finish();
-            try {
+//    @Override
+//    public void finish() {
+//        super.finishAndRemoveTask();
+//    }
 
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-
-                }
-            } catch (Exception ignored) {
-
-            }
-
-        }
-    }
-
-
-    @Override
-    public void finish() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            super.finishAndRemoveTask();
-        } else {
-            super.finish();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onResume() {
-        isBackPressed = false;
-        super.onResume();
-    }
 
     @Override
     protected void onStop() {
@@ -325,34 +272,19 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
                         selectionPresenter.updateAppInDB(model);
                     }
                     PrefUtils.saveBooleanPref(AppSelectionActivity.this, APPS_SETTING_CHANGE, true);
-
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
                     intent.putExtra(KEY_DATABASE_CHANGE, "apps");
                     LocalBroadcastManager.getInstance(AppSelectionActivity.this).sendBroadcast(intent);
 
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                // here we are checking that weather we have to send the user to the outer main screen or not
-                if (!isBackPressed) {
-                    Intent intent = new Intent(LIFECYCLE_ACTION);
-                    intent.putExtra(STATE, BACKGROUND);
-                    sendBroadcast(intent);
-                }
             }
         }.start();
+
 
         super.onStop();
 
     }
 
-
-
-    @Override
-    public void onBackPressed() {
-        isBackPressed = true;
-        super.onBackPressed();
-
-    }
 }
