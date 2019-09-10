@@ -446,7 +446,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }).run();
     }
 
-
 }
 
 

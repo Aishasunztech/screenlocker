@@ -36,7 +36,6 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 
 public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
 
-    private boolean isBackPressed = false;
     private boolean goToGuest,goToEncrypt,goToLockScreen;
     private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTCODE = 102;
 
@@ -182,26 +181,16 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
-        isBackPressed = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isBackPressed)
-        {
-            if(!goToGuest && !goToEncrypt && !goToLockScreen)
-            {
-                //this.finish();
-            }
-        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        isBackPressed = true;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

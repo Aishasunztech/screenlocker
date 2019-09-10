@@ -328,4 +328,5 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     public void onAppsRefresh() {
 
     }
+
 }

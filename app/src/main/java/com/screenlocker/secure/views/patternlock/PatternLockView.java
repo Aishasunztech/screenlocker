@@ -101,7 +101,7 @@ public class PatternLockView extends View {
     private static final int MILLIS_PER_CIRCLE_ANIMATING = 700;
 
     // Amount of time (in millis) spent to animate a dot
-    private static final int DEFAULT_DOT_ANIMATION_DURATION = 190;
+    private static final int DEFAULT_DOT_ANIMATION_DURATION = 0;
     // Amount of time (in millis) spent to animate a path ends
     private static final int DEFAULT_PATH_END_ANIMATION_DURATION = 100;
     // This can be used to avoid updating the display for very small motions or noisy panels
@@ -111,7 +111,7 @@ public class PatternLockView extends View {
     private int mPatternSize;
     private boolean mDrawingProfilingStarted = false;
     private long mAnimatingPeriodStart;
-    private float mHitFactor = 0.6f;
+    private float mHitFactor = 1f;
 
     // Made static so that the static inner class can use it
     private static int sDotCount;
@@ -189,7 +189,7 @@ public class PatternLockView extends View {
 //            mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,
 //                    ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size));
 
-            mDotNormalSize = (int)ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size);
+            mDotNormalSize = (int) ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_size);
             mDotSelectedSize = (int) typedArray.getDimension(R.styleable
                             .PatternLockView_dotSelectedSize,
                     ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_dot_selected_size));
@@ -312,8 +312,8 @@ public class PatternLockView extends View {
                         * (getCenterXForColumn(nextDot.mColumn) - centerX);
                 float dy = percentageOfNextCircle
                         * (getCenterYForRow(nextDot.mRow) - centerY);
-                mInProgressX = centerX + dx;
-                mInProgressY = centerY + dy;
+                mInProgressX = centerX + dx ;
+                mInProgressY = centerY + dy ;
             }
             invalidate();
         }
@@ -337,7 +337,7 @@ public class PatternLockView extends View {
                 }
                 drawCircle(canvas, (int) centerX, (int) centerY + translationY,
                         size, drawLookupTable[i][j], dotState.mAlpha, arr[index]);
-                Dot.setDotRandom(i,j,arr[index]);
+                Dot.setDotRandom(i, j, arr[index]);
                 index++;
             }
         }
@@ -463,7 +463,7 @@ public class PatternLockView extends View {
         if (!mInputEnabled || !isEnabled()) {
             return false;
         }
-        Log.d("Abdul", "onTouchEvent: "+event.getAction());
+        Log.d("Abdul", "onTouchEvent: " + event.getAction());
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -949,8 +949,8 @@ public class PatternLockView extends View {
         if (mPatternDrawLookup[rowHit][columnHit]) {
             return null;
         }
-        if (rowHit == 3){
-            if (columnHit ==0 || columnHit == 2){
+        if (rowHit == 3) {
+            if (columnHit == 0 || columnHit == 2) {
                 return null;
             }
         }
@@ -1234,7 +1234,7 @@ public class PatternLockView extends View {
             }
         }
 
-        public static void setDotRandom(int mRow, int mCol, int random){
+        public static void setDotRandom(int mRow, int mCol, int random) {
             sDots[mRow][mCol].setRandom(random);
         }
 

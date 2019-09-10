@@ -126,29 +126,34 @@ public class CheckUpdateService extends JobService {
                 jobFinished(parameters,true);
                 return;
             }
-            ApplicationInfo info = getPackageManager().getApplicationInfo(UEM_PKG, 0);
-            String uemCurrentVersion = String.valueOf(getPackageManager().getPackageInfo(UEM_PKG, 0).versionCode);
-            String uemName = getPackageManager().getApplicationLabel(info).toString();
-            Response<UpdateModel> uemResponse = MyApplication.oneCaller.getUpdate("getUpdate/" + uemCurrentVersion + "/" + UEM_PKG + "/" + uemName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                    .execute();
-            if (uemResponse.isSuccessful()) {
-                if (uemResponse.body() != null && uemResponse.body().isSuccess()) {
-                    if (uemResponse.body().isApkStatus()) {
-                        String url = uemResponse.body().getApkUrl();
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), UEM_PKG);
+            try {
+                ApplicationInfo info = getPackageManager().getApplicationInfo(UEM_PKG, 0);
+                String uemCurrentVersion = String.valueOf(getPackageManager().getPackageInfo(UEM_PKG, 0).versionCode);
+                String uemName = getPackageManager().getApplicationLabel(info).toString();
+                Response<UpdateModel> uemResponse = MyApplication.oneCaller.getUpdate("getUpdate/" + uemCurrentVersion + "/" + UEM_PKG + "/" + uemName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                        .execute();
+                if (uemResponse.isSuccessful()) {
+                    if (uemResponse.body() != null && uemResponse.body().isSuccess()) {
+                        if (uemResponse.body().isApkStatus()) {
+                            String url = uemResponse.body().getApkUrl();
+                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                            downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), UEM_PKG);
+                        }
                     }
-                }
-                else {
-                    if (saveTokens())
-                        tryForCheckUpdates(parameters);
+                    else {
+                        if (saveTokens())
+                            tryForCheckUpdates(parameters);
+                        return;
+                    }
+
+                } else {
+                    jobFinished(parameters,true);
                     return;
                 }
+            }catch (PackageManager.NameNotFoundException e){
 
-            } else {
-                jobFinished(parameters,true);
-                return;
             }
+
 
 
             List<ApplicationInfo> packages = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);

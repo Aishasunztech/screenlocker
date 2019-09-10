@@ -159,13 +159,10 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                     }
 
                 });
-
         alertDialog.setNegativeButton(R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        dialog.cancel();
-                    }
+                (dialog, which) -> {
+                    finish();
+                    dialog.cancel();
                 });
 
         adminPasswordDialog = alertDialog.create();
@@ -327,15 +324,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!goToAppSelection && !gotoSystemControl && !goToInstallApps && !goToPolicyMenu && !goToSettingsAppPermission && !goToIMEIMenu && !goToSimActivity) {
-            hideKeyboard(CodeSettingActivity.this);
-            finish();
-        }
-
-    }
 
     private boolean validatePassword(EditText etOldText, EditText etNewPassword, EditText etConfirmPassword) {
         if (TextUtils.isEmpty(etOldText.getText().toString())) {

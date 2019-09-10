@@ -172,22 +172,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed) {
-            try {
-                containerLayout.setVisibility(View.INVISIBLE);
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    this.finish();
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
 
-                }
-            } catch (Exception ignored) {
-            }
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override

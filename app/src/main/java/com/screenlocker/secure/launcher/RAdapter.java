@@ -78,16 +78,16 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         Intent i = new Intent(context, SecureSettingsMain.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
-                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                         break;
                     case AppConstants.SUPPORT_UNIQUE:
                         context.startActivity(new Intent(context, ChatActivity.class));
-                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
                         context.startActivity(launch);
-                        ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                         break;
                 }
 
@@ -106,30 +106,30 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         case AppConstants.SECURE_MARKET_UNIQUE:
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         case BuildConfig.APPLICATION_ID:
                             Intent intent1 = new Intent(context, SettingsActivity.class);
                             intent1.setAction(ACTION_VIEW);
                             context.startActivity(intent1);
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
@@ -138,7 +138,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
                             context.startActivity(launchIntent);
-                            ((Activity )context).overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             break;
                         }
                     }

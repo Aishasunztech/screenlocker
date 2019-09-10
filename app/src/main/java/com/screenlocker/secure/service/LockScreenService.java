@@ -74,6 +74,7 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
+import static android.os.UserManager.DISALLOW_UNINSTALL_APPS;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;

@@ -277,15 +277,16 @@ public class Utils {
 
 
 
-    public static void silentPullApp(Context context, String packageName) {
+    public static void silentPullApp(Context context, String packageName, String label) {
         PackageManager packageManger = context.getPackageManager();
         PackageInstaller packageInstaller = packageManger.getPackageInstaller();
-        Intent delIntent = new Intent();
-        delIntent.setComponent(new ComponentName("com.secure.launcher", "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
-        delIntent.setAction("com.secure.systemcontroll.PackageUninstall");
+        Intent delIntent = new Intent(context, AppsStatusReceiver.class);
+        delIntent.setComponent(new ComponentName(context.getPackageName(), "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
+        delIntent.setAction("com.secure.systemcontroll.PackageDeleted");
         delIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         //package name of deleted package
         delIntent.putExtra("package", packageName);
+        delIntent.putExtra("label",label );
         Random generator = new Random();
         PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
         packageInstaller.uninstall(packageName, i.getIntentSender());

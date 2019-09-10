@@ -66,7 +66,7 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
                 .into(holder.ivLogo);
 
         if (app.getType() == ServerAppInfo.PROG_TYPE.GONE) {
-            holder.progressBar.setVisibility(View.INVISIBLE);
+            holder.progressBar.setVisibility(View.GONE);
             holder.speedMsg.setVisibility(View.GONE);
             holder.btInstall.setEnabled(true);
         } else if (app.getType() == ServerAppInfo.PROG_TYPE.VISIBLE) {

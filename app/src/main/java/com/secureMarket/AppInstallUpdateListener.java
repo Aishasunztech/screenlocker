@@ -11,4 +11,5 @@ public interface AppInstallUpdateListener {
     void onInstallClick(ServerAppInfo app, int position, boolean isupdate);
 
     void onUnInstallClick(ServerAppInfo app, boolean status);
+    void onAppsRefreshRequest();
 }

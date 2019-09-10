@@ -103,8 +103,8 @@ public class AppConstants {
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-        public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-//    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
 //                public static final String SUPER_ADMIN = "http://192.168.18.149:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
 
@@ -117,8 +117,8 @@ public class AppConstants {
     public static final String LIVE_URL = "live_url";
     //End points
 
-        public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-        public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
+    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
 //    public static final String STAGING_BASE_URL = "http://192.168.18.28:3000/mobile/";//for localhost real device
     //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
@@ -318,7 +318,6 @@ public class AppConstants {
     public static final String REBOOT_STATUS = "rebootStatus";
 
 
-
     public static final String ACTION_PUSH_APPS = "action_push_apps";
     public static final String ACTION_PULL_APPS = "action_pull_apps";
     public static final String APPS_HASH_MAP = "apps_hash_map";
@@ -395,19 +394,19 @@ public class AppConstants {
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";
     public static final int UPDATE_JOB = 1234;
-    public static final String  UNSYNC_ICCIDS = "un_sync_iccid";
-    public static final String  DELETED_ICCIDS = "deleted_iccid";
+    public static final String UNSYNC_ICCIDS = "un_sync_iccid";
+    public static final String DELETED_ICCIDS = "deleted_iccid";
     public static final String OLD_DEVICE = "new_device_status";
     //Socket Actions
 
-    public static final String  ACTION_DEVICE_TYPE_VERSION = "type_version";
-    public static final String  SIM_UNREGISTER_FLAG = "unregisterflag";
-    public static final String  SIM_ACTION_DELETED = "sim_delete";
-    public static final String  SIM_ACTION_NEW_DEVICE = "sim_new_device";
-    public static final String  SIM_ACTION_UPDATE = "sim_update";
-    public static final String  SIM_ACTION_UNREGISTER = "sim_unregister";
-    public static final String  SIM_GET_INSERTD_SIMS = "sim_inserted";
-    public static final String  UEM_PKG = "com.rim.mobilefusion.client";
+    public static final String ACTION_DEVICE_TYPE_VERSION = "type_version";
+    public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
+    public static final String SIM_ACTION_DELETED = "sim_delete";
+    public static final String SIM_ACTION_NEW_DEVICE = "sim_new_device";
+    public static final String SIM_ACTION_UPDATE = "sim_update";
+    public static final String SIM_ACTION_UNREGISTER = "sim_unregister";
+    public static final String SIM_GET_INSERTD_SIMS = "sim_inserted";
+    public static final String UEM_PKG = "com.rim.mobilefusion.client";
 
     // installed and uninstalled apps for syncing with server
     public static final String INSTALLED_APPS = "installed_apps";
@@ -446,6 +445,6 @@ public class AppConstants {
     public static final String SET_CAM = "Camera";
     public static final String SET_MIC = "Microphone";
     public static final String SET_SPEAKER = "Speaker";
-    public static final int  SET_NUMBER = 9;
+    public static final int SET_NUMBER = 9;
 
 }

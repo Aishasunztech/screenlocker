@@ -77,7 +77,7 @@ import static com.secureSetting.UtilityFunctions.getVersionCode;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MarketFragment extends Fragment implements AppInstallUpdateListener, SecureMarketActivity.SearchQueryListener {
+public class MarketFragment extends Fragment implements AppInstallUpdateListener {
 
 
     private AppInstallUpdateListener mListener;
@@ -90,10 +90,6 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
 
     public SecureMarketAdapter getInstalledAdapter() {
         return installedAdapter;
-    }
-
-    private void refreshList() {
-
     }
 
 
@@ -120,7 +116,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         rc.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
         swipeRefreshLayout = view.findViewById(R.id.refresh_Market);
-        swipeRefreshLayout.setOnRefreshListener(this::refreshList);
+        swipeRefreshLayout.setOnRefreshListener(() -> mListener.onAppsRefreshRequest());
 
 
         // Inflate the layout for this fragment
@@ -135,6 +131,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             installedApps.clear();
             installedApps.addAll(serverAppInfos);
             installedAdapter.setItems(installedApps);
+            swipeRefreshLayout.setRefreshing(false);
             installedAdapter.notifyDataSetChanged();
         });
 
@@ -153,18 +150,15 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         mListener.onUnInstallClick(app, status);
     }
 
-
     @Override
-    public void searchOnSubmit(String query) {
-        searchUninstalledApps(query);
+    public void onAppsRefreshRequest() {
+        //not for this fragment
     }
 
-    @Override
-    public void searchOnQueryChange(String query) {
-        searchUninstalledApps(query);
-    }
 
-    /*private void searchInstalledApps(String query) {
+
+
+    public void searchApps(String query) {
         if (installedApps.size() > 0) {
             if (!query.equals("")) {
                 java.util.List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
@@ -174,56 +168,21 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                         searchedServerAppInfo.add(app);
                     }
                 }
-                rc.setAdapter(new SecureMarketAdapter(searchedServerAppInfo, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+
+                installedAdapter.setItems(searchedServerAppInfo);
+                installedAdapter.notifyDataSetChanged();
+
             } else {
-                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
+                installedAdapter.setItems(installedApps);
+                installedAdapter.notifyDataSetChanged();
             }
 
         }
     }
-
-    private void searchUpdateApps(String query) {
-        if (installedApps.size() > 0) {
-            if (!query.equals("")) {
-                java.util.List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
-                for (ServerAppInfo app : updateApps) {
-                    String apkName = app.getApkName().toLowerCase();
-                    if (apkName.contains(query)) {
-                        searchedServerAppInfo.add(app);
-                    }
-                }
-                rc.setAdapter(new SecureMarketAdapter(searchedServerAppInfo, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
-            } else {
-                rc.setAdapter(new SecureMarketAdapter(installedApps, activity, MarketFragment.this, fragmentType));
-                rc.setLayoutManager(new GridLayoutManager(activity, 1));
-            }
-
-        }
-    }*/
-
-    private void searchUninstalledApps(String query) {
-        if (installedApps.size() > 0) {
-            if (!query.equals("")) {
-                java.util.List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
-                for (ServerAppInfo app : installedApps) {
-                    String apkName = app.getApkName().toLowerCase();
-                    if (apkName.contains(query)) {
-                        searchedServerAppInfo.add(app);
-                    }
-                }
-//                rc.setAdapter(new SecureMarketAdapter(searchedServerAppInfo, getContext(), MarketFragment.this, fragmentType));
-//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
-            } else {
-//                rc.setAdapter(new SecureMarketAdapter(unInstalledApps, activity, MarketFragment.this, fragmentType));
-//                rc.setLayoutManager(new GridLayoutManager(activity, 1));
-            }
-
-        }
+    public void addPackageToList(ServerAppInfo info) {
+        installedApps.add(info);
+        installedAdapter.updateProgressOfItem(info, installedApps.indexOf(info));
     }
-
     public void onInstallationComplete(String pn) {
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))

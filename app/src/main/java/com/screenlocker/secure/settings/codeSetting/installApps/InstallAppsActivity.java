@@ -91,14 +91,14 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent!=null){
-                String pn =  intent.getStringExtra(AppConstants.EXTRA_PACKAGE_NAME);
+            if (intent != null) {
+                String pn = intent.getStringExtra(AppConstants.EXTRA_PACKAGE_NAME);
                 int index = IntStream.range(0, appModelServerAppInfo.size())
                         .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
                         .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
                         .findFirst()
                         .orElse(-1);
-                if (index!=-1){
+                if (index != -1) {
                     ServerAppInfo info = appModelServerAppInfo.get(index);
                     info.setProgres(0);
                     info.setInstalled(true);
@@ -123,19 +123,9 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         Intent intent = new Intent(this, LockScreenService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
-        IntentFilter filter =  new IntentFilter(AppConstants.PACKAGE_INSTALLED);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
+        IntentFilter filter = new IntentFilter(AppConstants.PACKAGE_INSTALLED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
 
-        ProgressDialog downloadProgressDialog = new ProgressDialog(this);
-        downloadProgressDialog.setTitle(getResources().getString(R.string.downloading_app_title));
-        downloadProgressDialog.setCancelable(false);
-        downloadProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        downloadProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text), (dialog, which) -> {
-            dialog.dismiss();
-            if (mService != null) {
-                mService.cancelDownload();
-            }
-        });
 
         if (MyApplication.oneCaller == null) {
             String[] urls = {URL_1, URL_2};
@@ -335,7 +325,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
-        if (index!=-1){
+        if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
             info.setProgres(progress);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
@@ -351,13 +341,10 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
-        if (index!=-1){
+        if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
             info.setType(ServerAppInfo.PROG_TYPE.INSTALLING);
             mAdapter.updateProgressOfItem(info, index);
-        }
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
         }
         if (!filePath.equals("") && !pn.equals("")) {
             showInstallDialog(new File(filePath), pn);
@@ -371,7 +358,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
-        if (index!=-1){
+        if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
             info.setProgres(0);
             info.setType(ServerAppInfo.PROG_TYPE.GONE);
@@ -386,7 +373,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
-        if (index!=-1){
+        if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
             info.setProgres(0);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
@@ -399,8 +386,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         try {
             Uri uri = Uri.fromFile(file);
             Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -523,16 +508,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     protected void onStop() {
         super.onStop();
 
-        if (!isBackPressed && !isInstallDialogOpen) {
-            Intent intent = new Intent(LIFECYCLE_ACTION);
-            intent.putExtra(STATE, BACKGROUND);
-            sendBroadcast(intent);
-        }
-        if (mService != null) {
-            mService.setInstallAppDownloadListener(null);
-        }
-        unbindService(connection);
-
     }
 
     @Override
@@ -562,8 +537,11 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-
         super.onDestroy();
+        if (mService != null) {
+            mService.setInstallAppDownloadListener(null);
+        }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        unbindService(connection);
     }
 }

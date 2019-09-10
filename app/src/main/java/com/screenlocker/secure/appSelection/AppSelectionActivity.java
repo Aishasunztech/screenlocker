@@ -273,40 +273,9 @@ public class AppSelectionActivity extends BaseActivity implements SelectionContr
 //
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed) {
-            containerLayout.setVisibility(View.INVISIBLE);
-
-            //ExitActivity.exitApplicationAndRemoveFromRecent(AppSelectionActivity.this);
-            this.finish();
-            try {
-
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-
-                }
-            } catch (Exception ignored) {
-
-            }
-
-        }
-    }
 
 
-    @Override
-    public void finish() {
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            super.finishAndRemoveTask();
-        } else {
-            super.finish();
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override

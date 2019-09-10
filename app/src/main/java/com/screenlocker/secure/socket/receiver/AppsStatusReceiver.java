@@ -276,6 +276,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             }
         }else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")){
 
+
         }
     }
 

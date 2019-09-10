@@ -410,10 +410,14 @@ public class utils {
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
                 PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
+                PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
+                PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
                 PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
+                PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
+                PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
             }
             if (checkString(admin_pass)) {
                 Timber.d("admin pass : %s", admin_pass);

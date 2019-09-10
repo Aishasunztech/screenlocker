@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -15,12 +17,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
@@ -29,6 +34,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
@@ -59,16 +65,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
 
-public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener {
+public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
 
     private LockScreenService mService = null;
     private AsyncCalls asyncCalls;
@@ -121,6 +129,50 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.sm, menu);
+        MenuItem search = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) search.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if (sectionsPagerAdapter != null) {
+                    MarketFragment fragment1 = sectionsPagerAdapter.getMarketFragment();
+                    InstalledAppsFragment fragment2 = sectionsPagerAdapter.getInstalledAppsFragment();
+                    UpdateAppsFragment fragment3 = sectionsPagerAdapter.getUpdateAppsFragment();
+                    if (fragment1 != null) {
+                        fragment1.searchApps(query);
+                    }
+                    if (fragment2 != null) {
+                        fragment2.searchApps(query);
+                    }
+                    if (fragment3 != null) {
+                        fragment3.searchApps(query);
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (sectionsPagerAdapter != null) {
+                    MarketFragment fragment1 = sectionsPagerAdapter.getMarketFragment();
+                    InstalledAppsFragment fragment2 = sectionsPagerAdapter.getInstalledAppsFragment();
+                    UpdateAppsFragment fragment3 = sectionsPagerAdapter.getUpdateAppsFragment();
+                    if (fragment1 != null) {
+                        fragment1.searchApps(newText);
+                    }
+                    if (fragment2 != null) {
+                        fragment2.searchApps(newText);
+                    }
+                    if (fragment3 != null) {
+                        fragment3.searchApps(newText);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -481,11 +533,37 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             String userSpace = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
 
             if (!packages.contains(app.getPackageName())) {
-                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, userSpace, this);
-                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
-//                      intent.setData(Uri.parse("package:" + getAppLabel(mPackageManager, fileApk.getAbsolutePath())));
-                intent.setData(Uri.parse("package:" + app.getPackageName()));
-                startActivity(intent);
+                try {
+                    ApplicationInfo info = getPackageManager().getApplicationInfo(app.getPackageName(), 0);
+                    String label = getPackageManager().getApplicationLabel(info).toString();
+                    Drawable drawable = getPackageManager().getApplicationIcon(info);
+                    new AlertDialog.Builder(this)
+                            .setTitle(label)
+                            .setIcon(drawable)
+                            .setMessage("Do you want to uninstall this app?")
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+
+                                Utils.silentPullApp(SMActivity.this, app.getPackageName(),label);
+
+                                if (sectionsPagerAdapter!=null){
+                                    InstalledAppsFragment fragment = sectionsPagerAdapter.getInstalledAppsFragment();
+                                    MarketFragment fragment1 = sectionsPagerAdapter.getMarketFragment();
+                                    if (fragment!=null){
+                                        fragment.onInstallationComplete(app.getPackageName());
+                                    }
+                                    if (fragment1!=null){
+                                        app.setInstalled(false);
+                                        fragment1.addPackageToList(app);
+                                    }
+                                }
+
+                            }).setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                dialog.dismiss();
+                            }).show();
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             } else {
                 Toast.makeText(this, getResources().getString(R.string.uninstall_permission_denied), Toast.LENGTH_LONG).show();
             }
@@ -493,6 +571,19 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
         }
 
+    }
+
+    @Override
+    public void onAppsRefreshRequest() {
+        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
+        //Log.d("ConnectedDealer",dealerId);
+        if (dealerId == null || dealerId.equals("")) {
+            //   getAdminApps();
+            getServerApps(null);
+        } else {
+            getServerApps(dealerId);
+            // getAllApps(dealerId);
+        }
     }
 
 
@@ -527,11 +618,13 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                         if (isUpdate) {
                             try {
                                 sectionsPagerAdapter.getUpdateAppsFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                            } catch (NullPointerException ignored) {}
+                            } catch (NullPointerException ignored) {
+                            }
                         } else {
                             try {
                                 sectionsPagerAdapter.getMarketFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                            } catch (NullPointerException ignored) {}
+                            } catch (NullPointerException ignored) {
+                            }
                         }
                         mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
 
@@ -549,11 +642,13 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                             if (isUpdate) {
                                 try {
                                     sectionsPagerAdapter.getUpdateAppsFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                                } catch (NullPointerException ignored) {}
+                                } catch (NullPointerException ignored) {
+                                }
                             } else {
                                 try {
                                     sectionsPagerAdapter.getMarketFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                                } catch (NullPointerException ignored) {}
+                                } catch (NullPointerException ignored) {
+                                }
                             }
                             mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
 
@@ -580,5 +675,18 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+        refreshApps(this);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
+    }
+
+    @Override
+    public void onAppsRefresh() {
+
     }
 }

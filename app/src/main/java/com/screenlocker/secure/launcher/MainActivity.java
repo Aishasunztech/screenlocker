@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_up,R.anim.slide_up);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -253,7 +253,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
         super.onResume();
 
 
