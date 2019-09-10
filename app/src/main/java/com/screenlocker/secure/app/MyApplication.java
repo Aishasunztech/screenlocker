@@ -156,7 +156,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         apiOneCaller = component.getApiOneCaller();
 
 
-//   startService(new Intent(this,LifecycleReceiverService.class));
+        //   startService(new Intent(this,LifecycleReceiverService.class));
 
         IntentFilter filter = new IntentFilter();
 

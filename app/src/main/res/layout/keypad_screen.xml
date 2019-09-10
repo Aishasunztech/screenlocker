@@ -57,7 +57,7 @@
         android:padding="@dimen/_18sdp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_capture"
-        android:elevation="@dimen/_8sdp"
+        android:contentDescription="TODO" android:elevation="@dimen/_8sdp"
         android:stateListAnimator="@null"
         app:layout_constraintBottom_toBottomOf="@+id/patternLock"
         app:layout_constraintEnd_toEndOf="@+id/patternLock" />
