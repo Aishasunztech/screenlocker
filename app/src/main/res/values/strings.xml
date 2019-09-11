@@ -250,7 +250,7 @@
     <string name="app_disabled">App is disabled</string>
     <string name="is_installed">is installed</string>
     <string name="is_uninstalled">is uninstalled</string>
-    <string name="list_is_empty">serverAppInfo is empty</string>
+    <string name="list_is_empty">List is empty</string>
     <string name="download_title">Download</string>
     <string name="install_message">Are you sure you want to install this app?</string>
     <string name="uninstall_permission_denied">Uninstall permission denied</string>
@@ -384,10 +384,10 @@
     <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
 
     <string name="ignore">Ignore this app</string>
-    <string name="ignore_hint">Apps in this serverAppInfo will be hidden</string>
+    <string name="ignore_hint">Apps in this List will be hidden</string>
 
-    <string name="ignore_list">Ignore serverAppInfo</string>
-    <string name="ignore_success">Move to ignore serverAppInfo successfully</string>
+    <string name="ignore_list">Ignore List</string>
+    <string name="ignore_success">Move to ignore List successfully</string>
     <string name="more">More detail</string>
     <string name="app_info">App info</string>
 

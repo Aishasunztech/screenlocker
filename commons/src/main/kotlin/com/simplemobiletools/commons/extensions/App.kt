@@ -1,7 +1,6 @@
 package com.simplemobiletools.commons.extensions
 
 import android.app.Application
-import java.util.*
 
 fun Application.checkUseEnglish() {
     if (baseConfig.useEnglish) {

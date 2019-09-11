@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
@@ -191,6 +192,7 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun initFileManager() {
+        Log.d("nadeem", "notallowed")
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val data = intent.data
             if (data.scheme == "file") {

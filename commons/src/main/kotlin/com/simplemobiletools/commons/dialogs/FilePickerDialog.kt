@@ -2,7 +2,6 @@ package com.simplemobiletools.commons.dialogs
 
 import android.os.Environment
 import android.os.Parcelable
-import android.util.Log
 import android.view.KeyEvent
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
