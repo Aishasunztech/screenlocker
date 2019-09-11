@@ -977,7 +977,7 @@ public class utils {
                 if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
                     mDPM.setBluetoothContactSharingDisabled(compName, !isChecked);
                 } else {
-                    Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
 
                 break;

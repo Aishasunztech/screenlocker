@@ -458,7 +458,7 @@ public class CommonUtils {
         } else {
             isfileSharing = true;
         }
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, true);
+        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, false);
 
 
 
@@ -467,7 +467,7 @@ public class CommonUtils {
         settings.add(new Settings(AppConstants.SET_BLUE_FILE_SHARING, isfileSharing));
         settings.add(new Settings(AppConstants.SET_HOTSPOT, isfileSharing));
         settings.add(new Settings(AppConstants.SET_SS, isfileSharing));
-        settings.add(new Settings(AppConstants.SET_CALLS, true));
+        settings.add(new Settings(AppConstants.SET_CALLS, false));
         settings.add(new Settings(AppConstants.SET_CAM, true));
         settings.add(new Settings(AppConstants.SET_MIC, true));
         settings.add(new Settings(AppConstants.SET_SPEAKER, true));

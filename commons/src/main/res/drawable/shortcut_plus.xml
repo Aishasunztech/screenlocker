@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-serverAppInfo xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/shortcut_plus_background">
         <shape android:shape="oval">
             <solid android:color="@color/color_primary"/>
@@ -13,4 +13,4 @@
         android:right="@dimen/medium_margin"
         android:top="@dimen/medium_margin"/>
 
-</layer-serverAppInfo>
+</layer-list>

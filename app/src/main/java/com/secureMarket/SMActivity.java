@@ -391,8 +391,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 if (isUpdateAvailable(appInfo.getPackageName(), Integer.parseInt(appInfo.getVersion_code()))) {
                     appInfo.setUpdate(true);
                     updatesInfo.add(appInfo);
-                }
-                installedInfo.add(appInfo);
+                } else
+                    installedInfo.add(appInfo);
             } else {
                 newApps.add(appInfo);
             }
@@ -543,23 +543,23 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                             .setMessage("Do you want to uninstall this app?")
                             .setPositiveButton(R.string.ok, (dialog, which) -> {
 
-                                Utils.silentPullApp(SMActivity.this, app.getPackageName(),label);
+                                Utils.silentPullApp(SMActivity.this, app.getPackageName(), label);
 
-                                if (sectionsPagerAdapter!=null){
+                                if (sectionsPagerAdapter != null) {
                                     InstalledAppsFragment fragment = sectionsPagerAdapter.getInstalledAppsFragment();
                                     MarketFragment fragment1 = sectionsPagerAdapter.getMarketFragment();
-                                    if (fragment!=null){
+                                    if (fragment != null) {
                                         fragment.onInstallationComplete(app.getPackageName());
                                     }
-                                    if (fragment1!=null){
+                                    if (fragment1 != null) {
                                         app.setInstalled(false);
                                         fragment1.addPackageToList(app);
                                     }
                                 }
 
                             }).setNegativeButton(R.string.cancel, (dialog, which) -> {
-                                dialog.dismiss();
-                            }).show();
+                        dialog.dismiss();
+                    }).show();
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }

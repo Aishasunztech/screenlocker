@@ -79,7 +79,7 @@
         android:layout_below="@+id/enable">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/serverAppInfo"
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
