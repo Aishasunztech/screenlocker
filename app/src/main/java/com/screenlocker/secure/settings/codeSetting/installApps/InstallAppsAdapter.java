@@ -65,6 +65,21 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
                 .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
                 .into(holder.ivLogo);
 
+        if (app.isInstalled()) {
+            //btUnInstall.setVisibility(View.VISIBLE);
+            holder.btInstall.setText(R.string.uninstall);
+            holder.btInstall.setEnabled(true);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.speedMsg.setVisibility(View.GONE);
+
+        } else {
+            //btUnInstall.setVisibility(View.INVISIBLE);
+            holder.btInstall.setText(R.string.install);
+            holder.btInstall.setEnabled(true);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.speedMsg.setVisibility(View.GONE);
+        }
+
         if (app.getType() == ServerAppInfo.PROG_TYPE.GONE) {
             holder.progressBar.setVisibility(View.GONE);
             holder.speedMsg.setVisibility(View.GONE);
@@ -87,17 +102,7 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
             holder.progressBar.setIndeterminate(true);
             holder.btInstall.setEnabled(false);
         }
-        if (app.isInstalled()) {
-            //btUnInstall.setVisibility(View.VISIBLE);
-            holder.btInstall.setText(R.string.uninstall);
-            holder.btInstall.setEnabled(true);
 
-        } else {
-            //btUnInstall.setVisibility(View.INVISIBLE);
-            holder.btInstall.setText(R.string.install);
-            holder.btInstall.setEnabled(true);
-
-        }
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -46,7 +45,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -71,7 +69,7 @@ import static com.secureMarket.MarketUtils.savePackages;
 
 
 public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener,
-        DownloadServiceCallBacks {
+        DownloadServiceCallBacks, OnAppsRefreshListener {
     private InstallAppsAdapter mAdapter;
     private List<ServerAppInfo> appModelServerAppInfo = new ArrayList<>();
     private AlertDialog progressDialog;
@@ -201,7 +199,18 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (serverAppInfo != null && serverAppInfo.size() > 0) {
             for (ServerAppInfo app :
                     serverAppInfo) {
-                app.setInstalled(appInstalledOrNot(app.getPackageName()));
+
+                boolean isAppInstalled = appInstalledOrNot(app.getPackageName());
+                app.setInstalled(isAppInstalled);
+
+                if (isAppInstalled) {
+                    app.setProgres(0);
+                    app.setType(ServerAppInfo.PROG_TYPE.GONE);
+                } else {
+                    app.setProgres(0);
+                    app.setType(ServerAppInfo.PROG_TYPE.GONE);
+                }
+
             }
         }
 
@@ -462,11 +471,13 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
+
+        refreshApps(this);
+
         isBackPressed = false;
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelServerAppInfo);
         mAdapter.notifyDataSetChanged();
-
 
         if (mService != null) {
             mService.setInstallAppDownloadListener(this);
@@ -520,5 +531,9 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         unbindService(connection);
     }
 
+    @Override
+    public void onAppsRefresh() {
+
+    }
 
 }

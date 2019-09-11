@@ -1,6 +1,7 @@
 package com.screenlocker.secure.socket.utils;
 
 import android.app.ActivityManager;
+import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -17,6 +18,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -29,6 +31,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
@@ -59,6 +62,10 @@ import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
+import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
+import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
+import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
+import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_LIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
@@ -145,6 +152,112 @@ public class utils {
 
             }
         }
+
+    }
+
+
+    public static void changeSettings(Context context, String settingList) {
+
+        Type listType = new TypeToken<ArrayList<Settings>>() {
+        }.getType();
+
+        List<Settings> settings = new Gson().fromJson(settingList, listType);
+        for (Settings setting : settings) {
+            applySettings(context, setting, setting.isSetting_status());
+        }
+    }
+
+
+    private static void applySettings(Context context, Settings setting, boolean isChecked) {
+        Timber.d("OnPermisionChangeListener: " + setting.getSetting_name() + " : " + isChecked);
+
+        DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
+        ComponentName compName = new ComponentName(context, MyAdmin.class);
+        switch (setting.getSetting_name()) {
+            case AppConstants.SET_WIFI:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                }
+
+                break;
+            case AppConstants.SET_BLUETOOTH:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                }
+                break;
+            case AppConstants.SET_BLUE_FILE_SHARING:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setBluetoothContactSharingDisabled(compName, !isChecked);
+                }
+
+                break;
+            case AppConstants.SET_CALLS:
+                PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, isChecked);
+                break;
+            case AppConstants.SET_CAM:
+                try {
+                    if (mDPM.hasGrantedPolicy(compName, DeviceAdminInfo.USES_POLICY_DISABLE_CAMERA)) {
+                        mDPM.setCameraDisabled(compName, !isChecked);
+                    } else {
+//                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+//                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+//                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "We need this permission to go in GOD mode.");
+//                        context.startActivityForResult(intent, RESULT_ENABLE);
+                    }
+
+                } catch (SecurityException e) {
+//                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+//                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
+//                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "We need this permission to go in GOD mode.");
+//                    startActivityForResult(intent, RESULT_ENABLE);
+                }
+                break;
+            case AppConstants.SET_HOTSPOT:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    } else {
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    }
+                }
+
+                break;
+            case AppConstants.SET_MIC:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                }
+                break;
+            case AppConstants.SET_SPEAKER:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setMasterVolumeMuted(compName, !isChecked);
+                } else {
+                    //Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case AppConstants.SET_SS:
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
+                    mDPM.setScreenCaptureDisabled(compName, !isChecked);
+                } else {
+                    //Toast.makeText(context, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                return;
+
+
+        }
+        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+            MyApplication.getAppDatabase(context).getDao().updateSetting(setting);
+        });
 
     }
 

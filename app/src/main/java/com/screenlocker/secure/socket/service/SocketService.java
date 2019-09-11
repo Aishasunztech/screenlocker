@@ -28,6 +28,7 @@ import com.screenlocker.secure.manual_load.DownloadCompleteListener;
 import com.screenlocker.secure.manual_load.DownloadPushedApps;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.TransparentActivity;
@@ -35,6 +36,7 @@ import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
@@ -55,6 +57,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
+import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
 import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
@@ -107,6 +110,7 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
@@ -536,15 +540,20 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
         String settings = obj.getString("settings");
-
-        if (!settings.equals("{}") && !isPolicy) {
-//            changeSettings(SocketService.this, new Gson().fromJson(settings, Settings.class));
-            Timber.d(" settings applied ");
+        try {
+            if (!settings.equals("[]")) {
+                changeSettings(SocketService.this, settings);
+                Timber.d(" settings applied ");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         if (isPolicy) {
             finishPolicySettings();
         }
+
     }
 
     private void updatePassword(JSONObject obj) throws JSONException {
@@ -678,17 +687,22 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void sendSettings() {
         Timber.d("<<< Sending settings >>>");
-
         try {
             if (socketManager.getSocket().connected()) {
-//                socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(getCurrentSettings(SocketService.this)));
-                PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
+                AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+                    List<Settings> settings = MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
+                    socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
+                    PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
+                });
+
+
             } else {
                 Timber.d("Socket not connected");
             }
         } catch (Exception e) {
             Timber.d(e);
         }
+
 
     }
 
@@ -948,150 +962,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     }
 
-
-    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
-
-        try {
-            packageManager.getPackageInfo(packageName, 0);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-
-            return false;
-        }
-
-    }
-
-
-//    private void downloadApps(List<InstallModel> apps, boolean isPolicy) {
-//
-//
-//        Timber.d("<<< DOWNLOAD APPS >>>");
-//
-//        Timber.i("Apps Size :%s", apps.size());
-//
-//        File apksPath = new File(getFilesDir(), "apk");
-//
-//        final int[] i = {0};
-//
-//
-//        for (InstallModel app : apps) {
-//
-//            File file = new File(apksPath, app.getApk());
-//
-//            if (!apksPath.exists()) {
-//                apksPath.mkdir();
-//            }
-//
-//            String url = PrefUtils.getStringPref(this, LIVE_URL) + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(app.getApk());
-//
-//            Uri downloadUri = Uri.parse(url);
-//
-//            Uri destinationUri = Uri.fromFile(file);
-//
-//            DownloadRequest downloadRequest = new DownloadRequest(downloadUri)
-//                    .addCustomHeader("authorization", PrefUtils.getStringPref(this, TOKEN))
-//                    .setRetryPolicy(new DefaultRetryPolicy(1000, 7, 1f))
-//                    .setDestinationURI(destinationUri).setPriority(DownloadRequest.Priority.HIGH)
-//                    .setDownloadContext(this)//Optional
-//                    ;
-//
-//
-//            ThinDownloadManager downloadManager = new ThinDownloadManager();
-//            downloadManager.add(downloadRequest);
-//
-//            downloadRequest.setStatusListener(new DownloadStatusListenerV1() {
-//                @Override
-//                public void onDownloadComplete(DownloadRequest downloadRequest) {
-//
-//                    Timber.d("<<< DOWNLOADING COMPLETE >>>");
-//
-//                    Uri uri = downloadRequest.getDestinationURI();
-//
-//                    Uri uri1 = FileProvider.getUriForFile(SocketService.this, getPackageName() + ".fileprovider", new File(uri.getPath()));
-//
-//
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        if (checkSelfPermission(Manifest.permission.INSTALL_PACKAGES) == PackageManager.PERMISSION_GRANTED) {
-//                            boolean isLast = false;
-//                            if (i[0]++ == apps.size() - 1) {
-//                                // Last iteration
-//                                isLast = true;
-//                            }
-//                            try {
-//                                installPackage(SocketService.this, uri1, app, isPolicy, isLast);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//
-//
-//                    Intent intent = new Intent(Intent.ACTION_VIEW);
-//                    intent.setDataAndType(uri1,
-//                            "application/vnd.android.package-archive").
-//                            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//                    startActivity(intent);
-//
-//
-//                }
-//
-//                @Override
-//                public void onDownloadFailed(DownloadRequest downloadRequest, int errorCode, String errorMessage) {
-//                    Timber.e("<<< DOWNLOAD FAILED >>>");
-//                    Timber.e(errorMessage);
-//                }
-//
-//                @Override
-//                public void onProgress(DownloadRequest downloadRequest, long totalBytes, long downloadedBytes, int progress) {
-//                    Timber.d("<<< DOWNLOADING PROGRESS >>>");
-//                    Timber.d(String.valueOf(progress));
-//                }
-//            });
-//
-//        }
-//
-//
-//    }
-
-//    public void installPackage(Context context, Uri uri, InstallModel app, boolean isPolicy, boolean islast)
-//            throws IOException {
-//
-//        InputStream inputStream = getContentResolver().openInputStream(uri);
-//
-//        PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
-//        PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
-//                PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-//        params.setAppPackageName(app.getPackage_name());
-//        // set params
-//        int sessionId = packageInstaller.createSession(params);
-//        PackageInstaller.Session session = packageInstaller.openSession(sessionId);
-//        OutputStream out = session.openWrite("COSU", 0, -1);
-//        byte[] buffer = new byte[65536];
-//        int c;
-//        if (inputStream != null) {
-//            while ((c = inputStream.read(buffer)) != -1) {
-//                out.write(buffer, 0, c);
-//            }
-//        }
-//        session.fsync(out);
-//        if (inputStream != null) {
-//            inputStream.close();
-//        }
-//        out.close();
-//
-//        Intent intent = new Intent(context, AppsStatusReceiver.class);  // for extra data if needed..
-//        intent.setAction("com.secure.systemcontrol.PACKAGE_ADDED");
-//        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//        intent.putExtra("pakageName", app.getPackage_name());
-//        intent.putExtra("isLast", islast);
-//        intent.putExtra("isPolicy", isPolicy);
-//        intent.putExtra("packageAdded", new Gson().toJson(app));
-//        Random generator = new Random();
-//        PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), intent, 0);
-//        session.commit(i.getIntentSender());
-//
-//    }
 
     @Override
     public void getPulledApps() {
@@ -1563,18 +1433,18 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void sendSystemEvents() {
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
-            Timber.d("<<< FINISH POLICY EXTENSIONS >>>");
+            Timber.d("<<< SEND SYSTEM EVENTS >>>");
 
             JSONObject jsonObject = new JSONObject();
             try {
                 if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                     JSONObject object = new JSONObject();
                     object.put("type", getResources().getString(R.string.apktype));
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                     jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
                     jsonObject.put("object", object);
                     socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
-                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                 }
 
             } catch (JSONException e) {
@@ -1583,6 +1453,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 e.printStackTrace();
             }
         }
+
     }
 
     private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {

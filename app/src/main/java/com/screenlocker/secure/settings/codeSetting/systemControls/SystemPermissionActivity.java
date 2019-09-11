@@ -71,7 +71,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
         compName = new ComponentName(this, MyAdmin.class);
 
 
-
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
             settings = MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().getSettings();
             adaptor.setSettings(settings);
@@ -113,10 +112,10 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
     @Override
     public void OnPermisionChangeListener(Settings setting, boolean isChecked) {
-        Log.d("doWork", "OnPermisionChangeListener: "+setting.getSetting_name()+" : "+isChecked);
+        Log.d("doWork", "OnPermisionChangeListener: " + setting.getSetting_name() + " : " + isChecked);
         switch (setting.getSetting_name()) {
             case AppConstants.SET_WIFI:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
                     } else
@@ -125,7 +124,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
                 break;
             case AppConstants.SET_BLUETOOTH:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                     } else
@@ -162,24 +161,32 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                 }
                 break;
             case AppConstants.SET_HOTSPOT:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
-                } else {
-                    mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    } else {
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    }
                 }
 
                 break;
             case AppConstants.SET_MIC:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
-                } else
-                    mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                }
                 break;
             case AppConstants.SET_SPEAKER:
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {
-                    mDPM.setMasterVolumeMuted(compName, !isChecked);
-                } else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                        mDPM.setMasterVolumeMuted(compName, !isChecked);
+                    } else {
+                        Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
                 break;
             case AppConstants.SET_SS:

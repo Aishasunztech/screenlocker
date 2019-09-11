@@ -122,12 +122,7 @@ public class MainActivity extends BaseActivity {
 
     private void initSort() {
         if (DataManager.getInstance().hasPermission(getApplicationContext())) {
-            mSort.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    triggerSort();
-                }
-            });
+            mSort.setOnClickListener(v -> triggerSort());
         }
     }
 

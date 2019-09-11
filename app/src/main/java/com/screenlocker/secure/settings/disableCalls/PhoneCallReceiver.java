@@ -10,13 +10,11 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-
-import androidx.core.content.ContextCompat;
-
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.android.internal.telephony.ITelephony;
 import com.screenlocker.secure.utils.AppConstants;
@@ -99,7 +97,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
             if (telecomManager != null && ContextCompat.checkSelfPermission(context, Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED) {
-                telecomManager.endCall();
+                if (isCallDisable)
+                    telecomManager.endCall();
                 return;
             }
             return;

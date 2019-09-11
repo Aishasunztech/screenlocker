@@ -111,7 +111,7 @@ public class PatternLockView extends View {
     private int mPatternSize;
     private boolean mDrawingProfilingStarted = false;
     private long mAnimatingPeriodStart;
-    private float mHitFactor = 1f;
+    private float mHitFactor = 0.8f;
 
     // Made static so that the static inner class can use it
     private static int sDotCount;
@@ -312,8 +312,8 @@ public class PatternLockView extends View {
                         * (getCenterXForColumn(nextDot.mColumn) - centerX);
                 float dy = percentageOfNextCircle
                         * (getCenterYForRow(nextDot.mRow) - centerY);
-                mInProgressX = centerX + dx ;
-                mInProgressY = centerY + dy ;
+                mInProgressX = centerX + dx;
+                mInProgressY = centerY + dy;
             }
             invalidate();
         }

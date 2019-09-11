@@ -162,6 +162,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         return false;
     }
 
+
+
     //return title for activity
     @Override
     public String name() {
@@ -388,8 +390,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
         }
     }
-
-    private Timer timer;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
