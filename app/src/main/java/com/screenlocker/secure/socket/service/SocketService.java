@@ -506,6 +506,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         if (!passwords.equals("{}")) {
             updatePasswords(SocketService.this, new JSONObject(passwords));
             Timber.d(" passwords updated ");
+            setScreenLock();
         }
     }
 

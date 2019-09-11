@@ -41,6 +41,7 @@ public class SubExtension  {
     private byte[] icon;
     private boolean guest;
     private boolean encrypted;
+    private boolean systemApp = true;
 
     public SubExtension(String label, @NonNull String uniqueName, byte[] icon, boolean guest, boolean encrypted) {
         this.label = label;
@@ -96,6 +97,11 @@ public class SubExtension  {
         return encrypted;
     }
 
+    public boolean isSystemApp() {
+        return systemApp;
+    }
 
-
+    public void setSystemApp(boolean systemApp) {
+        this.systemApp = systemApp;
+    }
 }

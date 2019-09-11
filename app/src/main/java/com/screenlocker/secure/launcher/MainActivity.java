@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
@@ -50,6 +52,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static android.app.admin.DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -103,6 +106,18 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             finish();
             return;
         }
+//        ComponentName compName = new ComponentName(MyApplication.getAppContext(), MyAdmin.class);
+//        DevicePolicyManager dpm = (DevicePolicyManager) MyApplication.getAppContext().getSystemService(DEVICE_POLICY_SERVICE);
+//        try {
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.CALL_PHONE, PERMISSION_GRANT_STATE_GRANTED);
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_PHONE_STATE, PERMISSION_GRANT_STATE_GRANTED);
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_GRANT_STATE_GRANTED);
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.WRITE_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
+//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.RECORD_AUDIO, PERMISSION_GRANT_STATE_GRANTED);
+//        } catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         allDbApps = new ArrayList<>();
