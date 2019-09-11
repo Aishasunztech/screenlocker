@@ -116,7 +116,7 @@ class ItemsFragment : Fragment(), ItemOperationsListener, Breadcrumbs.Breadcrumb
         if (!isAdded || (activity as? BaseSimpleActivity)?.isAskingPermissions == true) {
             return
         }
-
+        Log.d("mehran", path)
         var realPath = path.trimEnd('/')
         if (realPath.isEmpty()) {
             realPath = "/"
@@ -133,6 +133,7 @@ class ItemsFragment : Fragment(), ItemOperationsListener, Breadcrumbs.Breadcrumb
             FileDirItem.sorting = context!!.config.getFolderSorting(currentPath)
             listItems.sort()
             activity?.runOnUiThread {
+                Log.d("mehran", listItems.size.toString())
                 addItems(listItems, forceRefresh)
             }
         }

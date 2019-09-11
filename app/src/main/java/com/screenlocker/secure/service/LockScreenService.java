@@ -75,13 +75,11 @@ import com.tonyodev.fetch2core.Extras;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -473,10 +471,11 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
+
         if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
-            disableScreenShots();
-        } else {
             allowScreenShoots();
+        } else {
+            disableScreenShots();
         }
         //default brightness only once
         if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
@@ -515,35 +514,28 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("add")) {
                 //addView(android.R.color.transparent);
+            } else if (intent.hasExtra("screenCapture")) {
+                boolean screenCaptureStatus = intent.getBooleanExtra("screenCapture", false);
+                if (screenCaptureStatus) {
+                    PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_SCREENSHOT, true);
+                    allowScreenShoots();
+                } else {
+                    PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_SCREENSHOT, false);
+                    disableScreenShots();
+                }
             } else {
                 //removeView();
             }
+
+
         }
+
     };
 
     PowerManager powerManager;
 
     AppExecutor appExecutor;
 
-    //    private void sheduleScreenOffMonitor() {
-//        if (appExecutor.getExecutorForSedulingRecentAppKill().isShutdown()) {
-//            appExecutor.readyNewExecutor();
-//        }
-//        appExecutor.getExecutorForSedulingRecentAppKill().execute(() -> {
-//            while (!Thread.currentThread().isInterrupted()) {
-//                if (!powerManager.isInteractive()) {
-//                    appExecutor.getMainThread().execute(() -> startLockScreen(true));
-//                    return;
-//                } else {
-//                    if (myKM.inKeyguardRestrictedInputMode()) {
-//                        //it is locked
-//                        appExecutor.getMainThread().execute(() -> startLockScreen(true));
-//                        return;
-//                    }
-//                }
-//            }
-//        });
-//    }
     public void startDownload(String url, String filePath, String packageName, String type) {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
@@ -896,6 +888,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
     public void disableScreenShots() {
+
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;

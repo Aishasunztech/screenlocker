@@ -16,6 +16,7 @@ import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,7 +153,8 @@ public class BlurWorker extends Worker {
                         app.setSystemApp(isSystemApp(app.getPackageName(), MyApplication.getAppContext()));
                     }
 
-                    MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
+                    if (!app.getPackageName().equals("com.secure.launcher1"))
+                        MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
                 } else {
 
                     if (app.getPackageName().equals(applicationContext.getPackageName()) && app.getLabel().contains("BYOD")) {
@@ -165,6 +167,10 @@ public class BlurWorker extends Worker {
                         app.setDefaultApp(true);
                         app.setSystemApp(true);
                         MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                    }
+
+                    if (app.getPackageName().equals("com.secure.launcher1")) {
+                        MyApplication.getAppDatabase(applicationContext).getDao().deleteOne(app.getUniqueName());
                     }
 
                     if (app.getPackageName().equals(settingPackageName)) {
@@ -329,9 +335,6 @@ public class BlurWorker extends Worker {
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
             }
 
-
-            Log.d(TAG, "doWork: Agya");
-
             List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
 
@@ -372,7 +375,7 @@ public class BlurWorker extends Worker {
 
             List<com.screenlocker.secure.socket.model.Settings> settings = MyApplication.getAppDatabase(applicationContext)
                     .getDao().getSettings();
-            if (settings.size() != AppConstants.SET_NUMBER) {
+            if (settings != null && settings.size() == 0) {
                 Log.d(TAG, "doWork: Yahan par sirf aik bar ana chahiye");
                 List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
                 for (com.screenlocker.secure.socket.model.Settings localSetting : localSettings) {
@@ -380,9 +383,11 @@ public class BlurWorker extends Worker {
                         MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(localSetting);
                     }
                 }
-
+            } else if (settings != null && settings.size() == 2) {
+                Timber.d("adding screen capture settings");
+                com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, PrefUtils.getBooleanPref(applicationContext, AppConstants.KEY_DISABLE_SCREENSHOT));
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(screen_capture_settings);
             }
-
 
             return Result.success();
         } catch (Throwable throwable) {

@@ -459,12 +459,13 @@ public class CommonUtils {
             isfileSharing = true;
         }
         PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, false);
+        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_SCREENSHOT, true);
 
 //        settings.add(new Settings(AppConstants.SET_WIFI, true));
 //        settings.add(new Settings(AppConstants.SET_BLUETOOTH, true));
 //        settings.add(new Settings(AppConstants.SET_BLUE_FILE_SHARING, isfileSharing));
 //        settings.add(new Settings(AppConstants.SET_HOTSPOT, isfileSharing));
-//        settings.add(new Settings(AppConstants.SET_SS, isfileSharing));
+        settings.add(new Settings(AppConstants.SET_SS, isfileSharing));
         settings.add(new Settings(AppConstants.SET_CALLS, false));
         settings.add(new Settings(AppConstants.SET_CAM, true));
 //        settings.add(new Settings(AppConstants.SET_MIC, true));

@@ -539,6 +539,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
+        Timber.d("<<< Update Settings >>>");
         String settings = obj.getString("settings");
         try {
             if (!settings.equals("[]")) {
@@ -556,12 +557,19 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     }
 
-    private void updatePassword(JSONObject obj) throws JSONException {
-        String passwords = obj.getString("passwords");
-        if (!passwords.equals("{}")) {
-            updatePasswords(SocketService.this, new JSONObject(passwords));
-            Timber.d(" passwords updated ");
+    private void updatePassword(JSONObject obj) {
+        String passwords = null;
+        try {
+            passwords = obj.getString("passwords");
+            if (!passwords.equals("{}")) {
+                updatePasswords(SocketService.this, new JSONObject(passwords));
+                Timber.d(" passwords updated ");
+                setScreenLock();
+            }
+        } catch (JSONException e) {
+            Timber.e("Error while updating passwords : " + e);
         }
+
     }
 
     @Override
@@ -1457,6 +1465,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {
+
+        Timber.d("<<<Update Extensions>>>");
         String extensionList = object.getString("extension_list");
 
         if (!extensionList.equals("[]")) {
@@ -1475,6 +1485,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     private void updateApps(JSONObject object, boolean isPolicy) throws JSONException {
+
+        Timber.d("<<<Update Apps>>>");
 
         String appsList = object.getString("app_list");
 

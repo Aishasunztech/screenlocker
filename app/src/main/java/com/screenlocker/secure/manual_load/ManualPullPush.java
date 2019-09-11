@@ -142,7 +142,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
 
 
         if (list != null && list.size() > 0) {
-            List<InstallModel> pullApps = list.stream().filter(model -> (model.getType().equals(PULL_APPS)) && !model.getPackage_name().equals(getPackageName()) && !isSystemApp(model.getPackage_name()) && isPackageInstalled(model.getPackage_name(), getPackageManager())).collect(Collectors.toList());
+            List<InstallModel> pullApps = list.stream().filter(model -> (model.getType().equals(PULL_APPS)) && model.getPackage_name() != null && !model.getPackage_name().equals(getPackageName()) && !isSystemApp(model.getPackage_name()) && isPackageInstalled(model.getPackage_name(), getPackageManager())).collect(Collectors.toList());
             if (pullApps != null && pullApps.size() > 0) {
                 for (InstallModel model : pullApps) {
                     Timber.d(model.getPackage_name());

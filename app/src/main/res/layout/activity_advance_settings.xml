@@ -6,9 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.screenlocker.secure.settings.AdvanceSettings">
+
     <include
         android:id="@+id/appBar"
         layout="@layout/main_toolbar" />
+
     <TextView
         android:id="@+id/tvDataCunsumption"
         android:layout_width="match_parent"
@@ -26,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
+
     <TextView
         android:id="@+id/tvDataUSage"
         android:layout_width="match_parent"
@@ -37,7 +40,7 @@
         android:text="@string/data_usage"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
     <View
         android:id="@+id/dividerDataUSage"
@@ -56,10 +59,11 @@
         android:text="IMEI"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
-        android:visibility="visible"/>
+        android:visibility="gone" />
 
     <View
         android:id="@+id/dividerIMEI"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
@@ -82,7 +86,8 @@
         android:id="@+id/dividerColumn"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"/>
+        android:background="@color/colorLine" />
+
     <TextView
         android:id="@+id/tvTheme"
         android:layout_width="match_parent"
@@ -114,21 +119,21 @@
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/textSize"
         android:visibility="visible" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
+
     <Switch
-        android:visibility="gone"
         android:id="@+id/powerMode"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/_8sdp"
         android:drawableStart="@drawable/ic_secure"
-        android:text="Kill Recent"/>
-
-
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="Kill Recent"
+        android:visibility="gone" />
 
 
 </LinearLayout>

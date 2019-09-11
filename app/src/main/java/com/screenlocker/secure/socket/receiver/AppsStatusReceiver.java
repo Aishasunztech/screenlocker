@@ -165,7 +165,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 return;
             }
 
-            if (!aPackageName.equals(context.getPackageName())) {
+            if (aPackageName != null && !aPackageName.equals(context.getPackageName())) {
                 new Thread(() -> {
                     MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
                     AppInfo info = new AppInfo();
@@ -258,7 +258,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     if (i == 0) {
                         MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
                     }
-                    saveAppsList(context, true , appInfo,false);
+                    saveAppsList(context, true, appInfo, false);
 
                     sendMessage(context, packageName);
 
@@ -267,7 +267,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-        }else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")){
+        } else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")) {
 
 
         }
@@ -276,6 +276,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
     private void sendMessage(Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
     }
+
     private void sendMessage(Context context, String pn) {
         Intent intent = new Intent(PACKAGE_INSTALLED);
         intent.putExtra(AppConstants.EXTRA_PACKAGE_NAME, pn);

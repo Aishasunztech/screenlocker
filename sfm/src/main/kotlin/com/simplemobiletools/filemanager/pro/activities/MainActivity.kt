@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
@@ -28,6 +29,7 @@ import com.simplemobiletools.filemanager.pro.fragments.ItemsFragment
 import com.simplemobiletools.filemanager.pro.helpers.RootHelpers
 import com.stericson.RootTools.RootTools
 import kotlinx.android.synthetic.main.sfm_activity_main.*
+import kotlinx.android.synthetic.main.sfm_dialog_create_new.*
 import kotlinx.android.synthetic.main.sfm_items_fragment.view.*
 import java.io.File
 import java.util.*
@@ -237,6 +239,7 @@ class MainActivity : SimpleActivity() {
             return
         }
 
+        Log.d("ckmvkdsvav", "Pathis s :" + path)
         var newPath = path
         val file = File(path)
         if (config.OTGPath.isNotEmpty() && config.OTGPath == path.trimEnd('/')) {

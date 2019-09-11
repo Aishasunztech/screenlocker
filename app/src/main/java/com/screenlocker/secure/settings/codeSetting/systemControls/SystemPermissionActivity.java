@@ -22,6 +22,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.service.AppExecutor;
+import com.screenlocker.secure.settings.AdvanceSettings;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -35,6 +36,7 @@ import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_VIEW_ADD_REMOVE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
@@ -168,7 +170,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                     }
                 }
-
                 break;
             case AppConstants.SET_MIC:
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {
@@ -193,7 +194,9 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     mDPM.setScreenCaptureDisabled(compName, !isChecked);
                 } else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(BROADCAST_VIEW_ADD_REMOVE);
+                    intent.putExtra("screenCapture", isChecked);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }
                 break;
             default:
