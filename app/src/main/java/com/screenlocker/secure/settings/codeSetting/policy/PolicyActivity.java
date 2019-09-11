@@ -104,13 +104,12 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         cardView.setBackgroundResource(R.drawable.black_circle);
 
 
-
         containerLayout = findViewById(R.id.rootView);
         progressBar = findViewById(R.id.progress);
         etPolicyName.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submit();
-                return  true;
+                return true;
             }
             return false;
         });
@@ -142,7 +141,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             etPolicyName.setError(getResources().getString(R.string.enter_policy_name));
         } else {
 //            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
-            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device,policyName));
+            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device, policyName));
         }
     }
 
@@ -157,7 +156,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
             if (mService != null) {
                 mService.onLoadPolicy(policyName);
-                PrefUtils.saveStringPref(PolicyActivity.this,POLICY_NAME,policyName);
+                PrefUtils.saveStringPref(PolicyActivity.this, POLICY_NAME, policyName);
                 processingView();
             }
 
@@ -223,7 +222,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void doUnbindService() {
-        mService.setListener(null);
+        if (mService != null)
+            mService.setListener(null);
         unbindService(connection);
     }
 
@@ -272,18 +272,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isBackPressed && !isNetworkDialogOpen && !isLinkDialogOpen) {
-            try {
-                containerLayout.setVisibility(View.INVISIBLE);
-                finish();
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                }
-            } catch (Exception ignored) {
-            }
-        }
 
     }
 

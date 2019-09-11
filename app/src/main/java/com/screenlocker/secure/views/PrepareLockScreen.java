@@ -197,7 +197,9 @@ public class PrepareLockScreen {
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                         new Handler().postDelayed(() -> {
                             mPatternLockView.clearPattern();
-                            wipeDevice(context);
+                            if (!wipeDevice(context)){
+                                Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                            }
                         }, 150);
                     }
                     return;
@@ -423,7 +425,9 @@ public class PrepareLockScreen {
 
                 } else if (getUserType(enteredPin, context).equals("duress")) {
                     if (!clearance)
-                        wipeDevice(context);
+                        if (!wipeDevice(context)){
+                            Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                        }
                     else chatLogin(context);
 
                 } else if (device_status1 != null) {

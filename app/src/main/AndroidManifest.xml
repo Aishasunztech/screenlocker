@@ -67,7 +67,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".settings$Wallpaper$ChangeWallpaper"
+            android:name=".settings.Wallpaper.ChangeWallpaper"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -134,7 +134,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings$Wallpaper$WallpaperActivity"
+            android:name=".settings.Wallpaper.WallpaperActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -178,7 +178,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings$codeSetting$Sim$SimActivity"
+            android:name=".settings.codeSetting.Sim.SimActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
@@ -239,7 +239,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".settings$codeSetting$Sim$SimStateChangeListener">
+        <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
             </intent-filter>
@@ -256,7 +256,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".socket.receiver.AppsStatusReceiver" android:permission="" 
+            android:name=".socket.receiver.AppsStatusReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.secure.systemcontroll.PackageAdded" />
@@ -310,7 +310,7 @@
         </receiver>
 
         <receiver
-            android:name=".offline.MyAlarmBroadcastReceiver"
+            android:name=".offline.MyAlarmBroadcastReceiver" android:permission="" 
             android:exported="true">
             <intent-filter>
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
@@ -321,7 +321,7 @@
 
         <service android:name=".utils.LifecycleReceiverService" />
         <service
-            android:name=".service.LockScreenService"
+            android:name=".service.LockScreenService" android:permission="" 
             android:enabled="true"
             android:exported="true"  />
 

@@ -128,6 +128,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
     public void onNext() {
         super.onNext();
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -137,15 +138,18 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
         }
     }
+
     @Override
     public void onStepVisible() {
         super.onStepVisible();
         try {
             hideKeyboard(Objects.requireNonNull(getActivity()));
-        }catch (Exception ignored){}
-        if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null) {
 
-            builder.show();
+            if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null) {
+
+                builder.show();
+            }
+        } catch (Exception ignored) {
         }
     }
 }

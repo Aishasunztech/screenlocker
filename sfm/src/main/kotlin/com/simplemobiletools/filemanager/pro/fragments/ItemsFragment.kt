@@ -113,6 +113,7 @@ class ItemsFragment : Fragment(), ItemOperationsListener, Breadcrumbs.Breadcrumb
     }
 
     fun openPath(path: String, forceRefresh: Boolean = false) {
+
         if (!isAdded || (activity as? BaseSimpleActivity)?.isAskingPermissions == true) {
             return
         }

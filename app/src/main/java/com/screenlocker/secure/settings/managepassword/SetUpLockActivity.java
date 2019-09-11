@@ -253,11 +253,6 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onPause() {
         super.onPause();
-
-        if(!isBackPressed)
-        {
-            this.finish();
-        }
     }
 
 

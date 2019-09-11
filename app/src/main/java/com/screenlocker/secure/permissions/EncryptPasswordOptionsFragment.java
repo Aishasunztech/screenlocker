@@ -84,7 +84,6 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
             mListener.onPageUpdate(4);
 
 
-
         });
         layout_combination.setOnClickListener(v -> {
             Toast.makeText(MyApplication.getAppContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
@@ -115,6 +114,7 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
     public void onNext() {
         super.onNext();
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -124,9 +124,15 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
 
         }
     }
+
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        hideKeyboard(Objects.requireNonNull(getActivity()));
+        try {
+            if (getActivity() != null)
+                hideKeyboard(getActivity());
+        } catch (NullPointerException ignored) {
+            //
+        }
     }
 }

@@ -134,16 +134,27 @@ public class utils {
     }
 
 
-    public static void wipeDevice(Context context) {
+    public static boolean wipeDevice(Context context) {
         ComponentName compName = new ComponentName(context, MyAdmin.class);
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(DEVICE_POLICY_SERVICE);
 
         if (devicePolicyManager != null) {
             boolean adminActive = devicePolicyManager.isAdminActive(compName);
             if (adminActive) {
-                devicePolicyManager.wipeData(0);
+                try {
+                    devicePolicyManager.wipeData(0);
+                    return true;
+                }catch (SecurityException e){
+                    Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
+                    intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+                    context.sendBroadcast(intent);
+                    return false;
+                }
+
             }
         }
+        return false;
 
     }
 

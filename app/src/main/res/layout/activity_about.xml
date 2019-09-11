@@ -723,7 +723,8 @@
                     app:layout_constraintRight_toRightOf="@id/centerPoint"
                     app:layout_constraintTop_toTopOf="@id/centerPoint"
                     app:layout_constraintBottom_toBottomOf="@id/centerPoint"
-                    android:contentDescription="TODO" android:onClick="counter"
+                    android:contentDescription="sn"
+                    android:onClick="counter"
                     />
 
 

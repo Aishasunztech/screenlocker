@@ -54,7 +54,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNSYNC_ICCIDS;
 public class SimActivity extends BaseActivity implements AddSimDialog.OnRegisterSimListener, SimAdapter.OnSimPermissionChangeListener {
 
 
-    private boolean isBackPressed;
+
     private Switch allowGuest, allowEncrypted, allowRegisterAllGuest, allowRegisterAllEncrypted;
     private SimViewModel viewModel;
     private List<SimEntry> entries;
@@ -101,27 +101,16 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
     @Override
     protected void onResume() {
         super.onResume();
-        isBackPressed = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isBackPressed) {
-
-            if (CodeSettingActivity.codeSettingsInstance != null) {
-                //  finish previous activity and this activity
-                CodeSettingActivity.codeSettingsInstance.finish();
-            }
-            this.finish();
-        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        isBackPressed = true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
@@ -440,8 +429,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
         } catch (Exception ignored) {
 
         }
-
-        this.finish();
         super.onStop();
     }
 
