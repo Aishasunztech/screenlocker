@@ -160,11 +160,6 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <activity
             android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
@@ -256,7 +251,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".socket.receiver.AppsStatusReceiver"
+            android:name=".socket.receiver.AppsStatusReceiver" android:permission="" 
             android:exported="true">
             <intent-filter>
                 <action android:name="com.secure.systemcontroll.PackageAdded" />
@@ -310,7 +305,7 @@
         </receiver>
 
         <receiver
-            android:name=".offline.MyAlarmBroadcastReceiver" android:permission="" 
+            android:name=".offline.MyAlarmBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
@@ -321,7 +316,7 @@
 
         <service android:name=".utils.LifecycleReceiverService" />
         <service
-            android:name=".service.LockScreenService" android:permission="" 
+            android:name=".service.LockScreenService"
             android:enabled="true"
             android:exported="true"  />
 
