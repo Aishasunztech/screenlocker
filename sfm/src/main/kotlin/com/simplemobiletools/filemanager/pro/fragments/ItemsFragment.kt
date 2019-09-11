@@ -118,6 +118,8 @@ class ItemsFragment : Fragment(), ItemOperationsListener, Breadcrumbs.Breadcrumb
             return
         }
 
+
+
         var realPath = path.trimEnd('/')
         if (realPath.isEmpty()) {
             realPath = "/"
@@ -134,6 +136,7 @@ class ItemsFragment : Fragment(), ItemOperationsListener, Breadcrumbs.Breadcrumb
             FileDirItem.sorting = context!!.config.getFolderSorting(currentPath)
             listItems.sort()
             activity?.runOnUiThread {
+                Log.d("nadeem", listItems.size.toString())
                 addItems(listItems, forceRefresh)
             }
         }

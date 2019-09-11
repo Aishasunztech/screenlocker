@@ -40,6 +40,8 @@ import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
 import static android.app.admin.DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED;
+import static android.app.admin.DevicePolicyManager.PERMISSION_POLICY_AUTO_GRANT;
+import static android.app.admin.DevicePolicyManager.PERMISSION_POLICY_PROMPT;
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.view.View.GONE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_BATERY_OPTIMIZATION;
@@ -178,14 +180,19 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         compName = new ComponentName(MyApplication.getAppContext(), MyAdmin.class);
         devicePolicyManager = (DevicePolicyManager) MyApplication.getAppContext().getSystemService(DEVICE_POLICY_SERVICE);
 
+
+
         //check if user already granted the permission
         try {
+            devicePolicyManager.setPermissionPolicy(compName, PERMISSION_POLICY_AUTO_GRANT);
+            requestPermissions(new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_READ_PHONE_STATE);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.CALL_PHONE, PERMISSION_GRANT_STATE_GRANTED);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_PHONE_STATE, PERMISSION_GRANT_STATE_GRANTED);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_GRANT_STATE_GRANTED);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.WRITE_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
             devicePolicyManager.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.RECORD_AUDIO, PERMISSION_GRANT_STATE_GRANTED);
+            devicePolicyManager.setPermissionPolicy(compName, PERMISSION_POLICY_PROMPT);
         } catch (SecurityException e) {
             e.printStackTrace();
         }

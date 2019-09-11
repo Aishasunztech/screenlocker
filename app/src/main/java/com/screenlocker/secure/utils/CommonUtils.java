@@ -207,6 +207,7 @@ public class CommonUtils {
         wifi.setIcon(wifi_icon);
         wifi.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         wifi.setGuest(false);
+        wifi.setSystemApp(true);
         wifi.setEncrypted(true);
         wifi.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "wi-fi");
         subExtensions.add(wifi);
@@ -221,6 +222,7 @@ public class CommonUtils {
         bluetooth.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         bluetooth.setGuest(false);
         bluetooth.setEncrypted(false);
+        bluetooth.setSystemApp(true);
         bluetooth.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Bluetooth");
         subExtensions.add(bluetooth);
 
@@ -233,6 +235,7 @@ public class CommonUtils {
         sim_card.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sim_card.setGuest(false);
         sim_card.setEncrypted(true);
+        sim_card.setSystemApp(true);
         sim_card.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "SIM Cards");
         subExtensions.add(sim_card);
 
@@ -245,6 +248,7 @@ public class CommonUtils {
         dataRoaming.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         dataRoaming.setGuest(false);
         dataRoaming.setEncrypted(true);
+        dataRoaming.setSystemApp(true);
         dataRoaming.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Data Roaming");
         subExtensions.add(dataRoaming);
 
@@ -257,6 +261,7 @@ public class CommonUtils {
         mobileData.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         mobileData.setGuest(false);
         mobileData.setEncrypted(true);
+        mobileData.setSystemApp(true);
         mobileData.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Mobile Data");
         subExtensions.add(mobileData);
 
@@ -270,6 +275,7 @@ public class CommonUtils {
         hotspot.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         hotspot.setGuest(false);
         hotspot.setEncrypted(false);
+        hotspot.setSystemApp(true);
         hotspot.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Hotspot");
         subExtensions.add(hotspot);
 
@@ -282,6 +288,7 @@ public class CommonUtils {
         screenLock.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         screenLock.setGuest(false);
         screenLock.setEncrypted(true);
+        screenLock.setSystemApp(true);
         screenLock.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Finger Print + Lock");
         subExtensions.add(screenLock);
 
@@ -294,6 +301,7 @@ public class CommonUtils {
         brightness.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         brightness.setGuest(false);
         brightness.setEncrypted(true);
+        brightness.setSystemApp(true);
         brightness.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Brightness");
         subExtensions.add(brightness);
 
@@ -306,6 +314,7 @@ public class CommonUtils {
         sleep.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sleep.setGuest(false);
         sleep.setEncrypted(true);
+        sleep.setSystemApp(true);
         sleep.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sleep");
         subExtensions.add(sleep);
 
@@ -318,6 +327,7 @@ public class CommonUtils {
         battery.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         battery.setGuest(false);
         battery.setEncrypted(true);
+        battery.setSystemApp(true);
         battery.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Battery");
         subExtensions.add(battery);
 
@@ -330,6 +340,7 @@ public class CommonUtils {
         sound.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         sound.setGuest(false);
         sound.setEncrypted(true);
+        sound.setSystemApp(true);
         sound.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Sound");
         subExtensions.add(sound);
 
@@ -342,6 +353,7 @@ public class CommonUtils {
         dateTime.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         dateTime.setGuest(false);
         dateTime.setEncrypted(true);
+        dateTime.setSystemApp(true);
         dateTime.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Date & Time");
         subExtensions.add(dateTime);
 
@@ -356,6 +368,7 @@ public class CommonUtils {
         language.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         language.setGuest(false);
         language.setEncrypted(true);
+        language.setSystemApp(true);
         language.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Languages & Input");
         subExtensions.add(language);
 
@@ -370,6 +383,7 @@ public class CommonUtils {
         notificaitons.setUniqueName(AppConstants.SECURE_SETTINGS_UNIQUE);
         notificaitons.setGuest(false);
         notificaitons.setEncrypted(true);
+        notificaitons.setSystemApp(true);
         notificaitons.setUniqueExtension(AppConstants.SECURE_SETTINGS_UNIQUE + "Notifications");
         subExtensions.add(notificaitons);
 

@@ -1,4 +1,4 @@
-package com.screenlocker.secure.room;
+package com.screenlocker.secure.room.migrations;
 
 import androidx.annotation.NonNull;
 import androidx.room.migration.Migration;
@@ -6,21 +6,22 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * @author Muhammad Nadeem
- * @Date 8/11/2019.
+ * @Date 8/31/2019.
  */
-public class MyRoomMigration extends Migration {
+public class Migration_13_14 extends Migration {
+
     /**
      * Creates a new migration between {@code startVersion} and {@code endVersion}.
      *
      * @param startVersion The start version of the database.
      * @param endVersion   The end version of the database after this migration is applied.
      */
-    public MyRoomMigration(int startVersion, int endVersion) {
+    public Migration_13_14(int startVersion, int endVersion) {
         super(startVersion, endVersion);
     }
 
     @Override
     public void migrate(@NonNull SupportSQLiteDatabase database) {
-        database.execSQL("ALTER TABLE 'AppInfo' ADD COLUMN 'systemApp' INTEGER NOT NULL DEFAULT 0");
+        database.execSQL("CREATE TABLE 'Settings'  ( 'setting_name' TEXT  NOT NULL, 'setting_status' INTEGER NOT NULL DEFAULT 0, PRIMARY KEY('setting_name'))");
     }
 }
