@@ -187,17 +187,19 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-    <style name="AppTheme.AppBarOverlaySM" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+
+    <style name="AppTheme.AppBarOverlaySM" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@color/SettingsColorPrimary</item>
         <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
         <item name="colorAccent">@color/pomegranate</item>
     </style>
 
-    <style name="AppTheme.PopupOverlaySM" parent="ThemeOverlay.AppCompat.Light" >
+    <style name="AppTheme.PopupOverlaySM" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorPrimary">@color/SettingsColorPrimary</item>
         <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
         <item name="colorAccent">@color/pomegranate</item>
     </style>
+
     <style name="GalaxyZooThemeToolbarDarkOverflow" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorPrimary">@color/SettingsColorPrimary</item>
         <item name="android:background">@android:color/white</item>

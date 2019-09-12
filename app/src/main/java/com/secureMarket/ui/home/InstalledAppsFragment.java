@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +19,12 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
 import com.secureMarket.AppInstallUpdateListener;
 import com.secureMarket.SecureMarketActivity;
 import com.secureMarket.SecureMarketAdapter;
+import com.tonyodev.fetch2.provider.NetworkInfoProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
-public class InstalledAppsFragment extends Fragment implements AppInstallUpdateListener {
+public class InstalledAppsFragment extends Fragment implements AppInstallUpdateListener, NetworkChangeReceiver.NetworkChangeListener {
 
 
     private AppInstallUpdateListener mListener;
@@ -40,6 +43,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     private String url, fileName = "";
     private SecureMarketAdapter installedAdapter;
     private SharedViwModel viwModel;
+    private TextView tv_noData;
 
 
     public InstalledAppsFragment() {
@@ -60,6 +64,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_market, container, false);
         rc = view.findViewById(R.id.appList);
+        tv_noData = view.findViewById(R.id.tvNoDataFound);
 
         rc.setAdapter(installedAdapter);
         ((SimpleItemAnimator) rc.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -117,9 +122,24 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                         searchedServerAppInfo.add(app);
                     }
                 }
+//
+//                if(searchedServerAppInfo.size() != 0)
+//                {
+//                    tv_noData.setVisibility(View.GONE);
+//                    installedAdapter.setItems(searchedServerAppInfo);
+//                    installedAdapter.notifyDataSetChanged();
+//                }else{
+//                    if(!query.equals("")) {
+//
+//                        tv_noData.setText("No Data Found");
+//                        tv_noData.setVisibility(View.VISIBLE);
+//                    }
+//                    else{
+//                        tv_noData.setVisibility(View.GONE);
+//
+//                    }
+//                }
 
-                installedAdapter.setItems(searchedServerAppInfo);
-                installedAdapter.notifyDataSetChanged();
 
             } else {
                 installedAdapter.setItems(installedApps);
@@ -222,6 +242,17 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             mListener = (AppInstallUpdateListener) context;
         } catch (Exception ignored) {
 
+        }
+    }
+
+    @Override
+    public void isConnected(boolean state) {
+        if(state)
+        {
+            tv_noData.setVisibility(View.GONE);
+        }else{
+            tv_noData.setText(getActivity().getString(R.string.no_internet_connection));
+            tv_noData.setVisibility(View.VISIBLE);
         }
     }
 }
