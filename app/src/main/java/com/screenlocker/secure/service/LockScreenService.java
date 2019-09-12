@@ -13,12 +13,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,15 +42,19 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.secureSetting.t.AppConst;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -80,6 +86,7 @@ import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
@@ -105,7 +112,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service {
+public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener  {
 
 
     private SharedPreferences sharedPref;
@@ -123,6 +130,10 @@ public class LockScreenService extends Service {
     private int downloadId = 0;
     private boolean viewAdded = false;
     private View view;
+
+    private NetworkChangeReceiver networkChangeReceiver;
+
+    private SocketManager socketManager;
     /* Downloader used for SM app to download applications in background*/
     private FetchListener fetchListener = new FetchListener() {
         @Override
@@ -280,6 +291,32 @@ public class LockScreenService extends Service {
     };
     private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
 
+    @Override
+    public void isConnected(boolean state) {
+        if (!state) {
+            destroyClientChatSocket();
+        }
+
+    }
+
+    public void destroyClientChatSocket() {
+        socketManager.destroyClientChatSocket();
+    }
+
+    public void connectClientChatSocket() {
+        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
+
+        if (deviceId == null) {
+            String serialNumber = DeviceIdUtils.getSerialNumber();
+            Log.d("serialslkdj", serialNumber);
+            deviceId = DeviceIdUtils.getSerialNumber();
+        }
+        Log.d("lkashdf", deviceId);
+        socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
+    }
+
+
+
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -300,6 +337,9 @@ public class LockScreenService extends Service {
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         PackageManager packageManager = getPackageManager();
+
+        socketManager = SocketManager.getInstance();
+
 
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
                 .setDownloadConcurrentLimit(3)
@@ -358,6 +398,12 @@ public class LockScreenService extends Service {
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
         // Whitelist two apps.
+
+
+        networkChangeReceiver = new NetworkChangeReceiver();
+        networkChangeReceiver.setNetworkChangeListener(this);
+
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
 
 // ...

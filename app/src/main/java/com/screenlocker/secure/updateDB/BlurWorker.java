@@ -251,34 +251,34 @@ public class BlurWorker extends Worker {
                 secureCleanInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
             }
-            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
-
-            if (supportInfo == null) {
-                //Secure clear Extension
-                Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
-                byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
-                AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);
-                supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
-                supportExtension.setExtension(false);
-                supportExtension.setGuest(false);
-                supportExtension.setEncrypted(false);
-                supportExtension.setEnable(true);
-                supportExtension.setVisible(true);
-                supportExtension.setDefaultApp(false);
-                supportExtension.setSystemApp(true);
-
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
-            } else {
-                supportInfo.setExtension(false);
-                supportInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
-            }
+//            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
+//
+//            if (supportInfo == null) {
+//                //Secure Contact Support
+//                Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+//                byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
+//                AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);
+//                supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
+//                supportExtension.setExtension(false);
+//                supportExtension.setGuest(false);
+//                supportExtension.setEncrypted(false);
+//                supportExtension.setEnable(true);
+//                supportExtension.setVisible(true);
+//                supportExtension.setDefaultApp(false);
+//                supportExtension.setSystemApp(true);
+//
+//                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
+//            } else {
+//                supportInfo.setExtension(false);
+//                supportInfo.setSystemApp(true);
+//                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
+//            }
 
 
             AppInfo sfmInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SFM_UNIQUE);
 
             if (sfmInfo == null) {
-                //Secure clear Extension
+                //Secure File Manager
                 Drawable sfm_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_sheild_folder);
                 byte[] sfm_icon = CommonUtils.convertDrawableToByteArray(sfm_drawable);
                 AppInfo sfmExtension = new AppInfo("Secure File Manager", AppConstants.SFM_PACKAGE, sfm_icon);
@@ -321,6 +321,32 @@ public class BlurWorker extends Worker {
                 secureMarketInfo.setSystemApp(true);
                 MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
             }
+
+            AppInfo liveClientChatInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.LIVE_CLIENT_CHAT_UNIQUE);
+
+            if (liveClientChatInfo == null) {
+                //Live Client Chat Extension
+                Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+                byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
+                AppInfo clientChatExtension = new AppInfo("Live Chat Support", AppConstants.LIVE_CLIENT_CHAT_PACKAGE, live_chat_icon);
+                clientChatExtension.setUniqueName(clientChatExtension.getPackageName() + clientChatExtension.getLabel());
+                clientChatExtension.setExtension(false);
+                clientChatExtension.setGuest(false);
+                clientChatExtension.setEncrypted(true);
+                clientChatExtension.setEnable(true);
+                clientChatExtension.setVisible(true);
+                clientChatExtension.setDefaultApp(false);
+                clientChatExtension.setSystemApp(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clientChatExtension);
+            } else {
+                Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+                byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
+                liveClientChatInfo.setIcon(live_chat_icon);
+                liveClientChatInfo.setExtension(false);
+                liveClientChatInfo.setSystemApp(true);
+                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(liveClientChatInfo);
+            }
+
 
 
             Log.d(TAG, "doWork: Agya");
