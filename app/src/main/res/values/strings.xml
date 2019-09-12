@@ -477,6 +477,10 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="title_activity_live_client_chat">LiveClientChatActivity</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+
+    <string name="live_client_device_id">Live Customer Support(%1$s)</string>
     <string-array name="sort">
         <item>Total</item>
         <item>Date</item>

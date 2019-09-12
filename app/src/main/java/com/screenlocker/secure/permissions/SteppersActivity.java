@@ -36,7 +36,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         setTitle(getResources().getString(R.string.permission));
         broadCastIntent();
         setDefLauncher();
@@ -157,6 +158,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         f.addCategory("android.intent.category.HOME");
         f.addCategory("android.intent.category.DEFAULT");
         ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
-        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
+
+//        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
     }
 }
