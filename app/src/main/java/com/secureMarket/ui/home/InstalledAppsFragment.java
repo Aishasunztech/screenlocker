@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +41,11 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     private AppInstallUpdateListener mListener;
     private RecyclerView rc;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayout errorLayout;
+    private ImageView errorImage;
+    private TextView errorText;
+    private Button errorBtn;
+    private ProgressBar progressBar;
     private List<ServerAppInfo> installedApps = new ArrayList<>();
     private String url, fileName = "";
     private SecureMarketAdapter installedAdapter;
@@ -60,7 +70,15 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_market, container, false);
         rc = view.findViewById(R.id.appList);
-
+        errorLayout = view.findViewById(R.id.error_layout);
+        errorImage = view.findViewById(R.id.error_image);
+        errorText = view.findViewById(R.id.error_text);
+        errorBtn = view.findViewById(R.id.error_btn);
+        progressBar = view.findViewById(R.id.marketFragmentProgress);
+        errorBtn.setOnClickListener(v -> {
+            //
+            mListener.onAppsRefreshRequest();
+        });
         rc.setAdapter(installedAdapter);
         ((SimpleItemAnimator) rc.getItemAnimator()).setSupportsChangeAnimations(false);
         rc.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -79,10 +97,32 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         viwModel.getInstalled().observe(this, serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
             installedApps.clear();
+            if (serverAppInfos.size() == 0){
+                errorImage.setImageResource(R.drawable.ic_android);
+                errorText.setText("No Apps Installed");
+                errorBtn.setVisibility(View.GONE);
+                errorLayout.setVisibility(View.VISIBLE);
+            }
             installedApps.addAll(serverAppInfos);
             installedAdapter.setItems(installedApps);
             swipeRefreshLayout.setRefreshing(false);
             installedAdapter.notifyDataSetChanged();
+        });
+        viwModel.getMutableMsgs().observe(this, msg -> {
+            if (msg == Msgs.ERROR) {
+                swipeRefreshLayout.setRefreshing(false);
+                onNetworkError();
+            } else if (msg == Msgs.SUCCESS) {
+                rc.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
+                errorLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+            } else if (msg == Msgs.LOADING) {
+                rc.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(true);
+                errorLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
         });
 
     }
@@ -106,7 +146,6 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     }
 
 
-
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
             if (!query.equals("")) {
@@ -117,6 +156,12 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                         searchedServerAppInfo.add(app);
                     }
                 }
+                if (searchedServerAppInfo.size() == 0){
+                    errorImage.setImageResource(R.drawable.ic_android);
+                    errorText.setText("No App Available");
+                    errorBtn.setVisibility(View.GONE);
+                    errorLayout.setVisibility(View.VISIBLE);
+                }
 
                 installedAdapter.setItems(searchedServerAppInfo);
                 installedAdapter.notifyDataSetChanged();
@@ -124,12 +169,11 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             } else {
                 installedAdapter.setItems(installedApps);
                 installedAdapter.notifyDataSetChanged();
+                errorLayout.setVisibility(View.GONE);
             }
 
         }
     }
-
-
 
 
     public void onDownLoadProgress(String pn, int progress, long speed) {
@@ -165,6 +209,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
 
 
     }
+
     public void onInstallationComplete(String pn) {
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
@@ -174,11 +219,18 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         if (index != -1) {
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
+            if (installedAdapter.getItemCount() == 0){
+                errorImage.setImageResource(R.drawable.ic_android);
+                errorText.setText("No App Available");
+                errorBtn.setVisibility(View.GONE);
+                errorLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
 
     public void addPackageToList(ServerAppInfo info) {
+        errorLayout.setVisibility(View.GONE);
         installedApps.add(info);
         installedAdapter.updateProgressOfItem(info, installedApps.indexOf(info));
     }
@@ -214,6 +266,11 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         }
     }
 
+    public void onNetworkError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorText.setText("No Internet Connection");
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {

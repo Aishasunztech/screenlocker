@@ -99,7 +99,7 @@ public class AppConstants {
 //        public static String URL_1 = "https://api.lockmesh.com";//live SL
     public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.32:3000";//local
+//                public static String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -107,6 +107,7 @@ public class AppConstants {
         public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
 //                public static final String SUPER_ADMIN = "http://192.168.18.149:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
+    public static final String SM_END_POINT = "marketApplist/";
 
 
     //End points

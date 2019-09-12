@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -507,7 +508,7 @@ public class MainActivity extends BaseActivity {
         } else if (type == 2) {
 
             MyApplication.oneCaller
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP))
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP,getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
