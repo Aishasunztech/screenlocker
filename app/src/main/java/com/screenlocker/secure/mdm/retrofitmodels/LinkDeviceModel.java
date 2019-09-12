@@ -29,7 +29,15 @@ public class LinkDeviceModel {
     @Expose
     private String ipAddr;
 
-    public LinkDeviceModel(String dId, String connectedDid, List<String> imei, List<String> simNo, String serialNo, String macAddr, String ipAddr) {
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("version")
+    @Expose
+    private String version;
+
+
+    public LinkDeviceModel(String dId, String connectedDid, List<String> imei, List<String> simNo, String serialNo, String macAddr, String ipAddr, String type, String version) {
         this.dId = dId;
         this.imei = imei;
         this.simNo = simNo;
@@ -37,6 +45,8 @@ public class LinkDeviceModel {
         this.macAddr = macAddr;
         this.ipAddr = ipAddr;
         this.connectedDid = connectedDid;
+        this.type = type;
+        this.version = version;
     }
 
 

@@ -27,18 +27,27 @@ public class DeviceLoginModle {
     @Expose
     private String ipAddr;
 
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("version")
+    @Expose
+    private String version;
+
     public DeviceLoginModle(String linkCode) {
         this.linkCode = linkCode;
     }
 
 
-    public DeviceLoginModle(String linkCode, List<String> imei, List<String> simNo, String serialNo, String macAddr, String ipAddr) {
+    public DeviceLoginModle(String linkCode, List<String> imei, List<String> simNo, String serialNo, String macAddr, String ipAddr, String type, String version) {
         this.imei = imei;
         this.simNo = simNo;
         this.serialNo = serialNo;
         this.macAddr = macAddr;
         this.ipAddr = ipAddr;
         this.linkCode = linkCode;
+        this.type = type;
+        this.version = version;
     }
 
     public String getLinkCode() {

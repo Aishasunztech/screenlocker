@@ -16,6 +16,7 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -48,8 +49,12 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.secureMarket.ui.home.InstalledAppsFragment;
 import com.secureMarket.ui.home.MarketFragment;
+import com.secureMarket.ui.home.Msgs;
 import com.secureMarket.ui.home.SharedViwModel;
 import com.secureMarket.ui.home.UpdateAppsFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +75,7 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
+import static com.screenlocker.secure.utils.AppConstants.SM_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
@@ -217,8 +223,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     public void onDownLoadProgress(String pn, int progress, long speed) {
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
             if (fragment != null) {
                 fragment.onDownLoadProgress(pn, progress, speed);
+            } if (fragment1!=null){
+                fragment1.onDownLoadProgress(pn, progress, speed);
             }
         }
 
@@ -245,6 +254,10 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             if (fragment != null) {
                 fragment.downloadComplete(filePath, pn);
             }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.downloadComplete(filePath, pn);
+            }
         }
         if (!filePath.equals("") && !pn.equals("")) {
             showInstallDialog(new File(filePath), pn);
@@ -254,17 +267,16 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void downloadError(String pn) {
-//        int index = IntStream.range(0, unInstalledApps.size())
-//                .filter(i -> Objects.nonNull(unInstalledApps.get(i)))
-//                .filter(i -> pn.equals(unInstalledApps.get(i).getPackageName()))
-//                .findFirst()
-//                .orElse(-1);
-//        if (index != -1) {
-//            ServerAppInfo info = unInstalledApps.get(index);
-//            info.setProgres(0);
-//            info.setType(ServerAppInfo.PROG_TYPE.GONE);
-//            uninstalledAdapter.updateProgressOfItem(info, index);
-//        }
+        if (sectionsPagerAdapter != null) {
+            MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
+            if (fragment != null) {
+                fragment.downloadError(pn);
+            }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.downloadError(pn);
+            }
+        }
 
     }
 
@@ -274,6 +286,10 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             if (fragment != null) {
                 fragment.onDownloadStarted(pn);
+            }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.onDownloadStarted( pn);
             }
         }
 //        int index = IntStream.range(0, unInstalledApps.size())
@@ -308,7 +324,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 
     private void getServerApps(String dealerId) {
-
+        sharedViwModel.setMutableMsgs(Msgs.LOADING);
         if (MyApplication.oneCaller == null) {
             if (asyncCalls != null) {
                 asyncCalls.cancel(true);
@@ -345,7 +361,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 //        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
-                .getAllApps("marketApplist/" + dealerId)
+                .getAllApps(SM_END_POINT + dealerId)
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -361,6 +377,12 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
                         } else {
                             //TODO: server responded with other then 200 response code
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
                         //swipeRefreshLayout.setRefreshing(false);
 
@@ -368,8 +390,13 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
+                        Timber.d("onFailure: ");
                         //TODO when network failure or error while creating request or building response
+                        if (t instanceof IOException){
+                            sharedViwModel.setMutableMsgs(Msgs.ERROR);
+                        }else {
+                            //TODO: handle your internal mapping permission
+                        }
 
 
                     }
@@ -398,6 +425,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             }
 
         }
+        sharedViwModel.setMutableMsgs(Msgs.SUCCESS);
         sharedViwModel.setAllApps(newApps);
         sharedViwModel.setInstalledApps(installedInfo);
         sharedViwModel.setUpdates(updatesInfo);
@@ -420,6 +448,12 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
                         } else {
                             //TODO: server responded with other then 200 response code
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (JSONException | IOException e) {
+                                Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
 
 
@@ -427,7 +461,14 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                        //TODO when network failure or error while creating request or building response
+
+                        Timber.d("onFailure: ");
+
+                        if (t instanceof IOException){
+                           sharedViwModel.setMutableMsgs(Msgs.ERROR);
+                        }else {
+                            //TODO: internal error
+                        }
 
                     }
 
