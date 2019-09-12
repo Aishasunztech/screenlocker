@@ -16,7 +16,8 @@
         <activity
             android:name="com.liveClientChat.LiveClientChatActivity"
             android:label="@string/title_activity_live_client_chat"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.secureMarket.SMActivity"
             android:launchMode="standard"
