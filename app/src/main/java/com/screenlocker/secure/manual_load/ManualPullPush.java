@@ -219,7 +219,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
     @Override
     protected void onResume() {
         super.onResume();
-
+//
         Timber.d("<<< ONRESUME >>>");
 
         ArrayList<InstallModel> appsList = filterApps();

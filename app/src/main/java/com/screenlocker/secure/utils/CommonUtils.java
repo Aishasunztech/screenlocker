@@ -106,7 +106,7 @@ public class CommonUtils {
 
                 Timber.d("Response code :%s", urlc.getResponseCode());
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Timber.e(e);
             }
         }

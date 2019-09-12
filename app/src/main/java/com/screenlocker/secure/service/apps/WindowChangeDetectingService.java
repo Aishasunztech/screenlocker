@@ -223,6 +223,10 @@ public class WindowChangeDetectingService extends AccessibilityService {
         smPermissions.add("com.google.android.packageinstaller/.InstallSuccess");
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallSuccess");
 
+        smPermissions.add("com.android.packageinstaller/.InstallFailed");
+        smPermissions.add("com.google.android.packageinstaller/.InstallFailed");
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallFailed");
+
 
 //        wm.addView(mView, localLayoutParams);
 

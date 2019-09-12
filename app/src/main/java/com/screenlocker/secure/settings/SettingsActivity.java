@@ -49,6 +49,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.async.Ping;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -76,6 +77,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -88,6 +91,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
+import static com.screenlocker.secure.async.Ping.ping;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
@@ -196,6 +200,31 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Ping ping = ping(new URL("https://www.lockmesh.com:443/"), SettingsActivity.this);
+
+                    if (ping != null) {
+                        Log.d("sjnfjsngs", ping.host);
+                        Log.d("sjnfjsngs", ping.ip);
+                        Log.d("sjnfjsngs", ping.net);
+                        Log.d("sjnfjsngs", "" + ping.cnt);
+                        Log.d("sjnfjsngs", "" + ping.dns);
+                    } else {
+                        Log.d("sjnfjsngs", "server not responding");
+                    }
+
+
+                } catch (MalformedURLException e) {
+                    Log.d("sjnfjsngs", e.getMessage());
+                }
+            }
+        }).start();
+
 
 //        String crash[] = null;
 //        Toast.makeText(this, crash[0], Toast.LENGTH_SHORT).show();

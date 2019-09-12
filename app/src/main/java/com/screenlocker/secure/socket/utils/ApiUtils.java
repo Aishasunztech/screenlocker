@@ -2,6 +2,7 @@ package com.screenlocker.secure.socket.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -18,6 +19,11 @@ import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.PrefUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,6 +107,22 @@ public class ApiUtils implements ApiRequests {
                     @Override
                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
+                        Timber.d("onResponse Status" + response.isSuccessful());
+
+                        if (!response.isSuccessful()) {
+                            try {
+                                JSONObject jObjError = null;
+                                if (response.errorBody() != null) {
+                                    jObjError = new JSONObject(response.errorBody().string());
+                                }
+
+                                Timber.e("Custom Error :" + jObjError.getJSONObject("error").getString("message"));
+
+                            } catch (JSONException | IOException e) {
+                                Timber.e("Exception :" + e);
+                            }
+                        }
+
                         if (response.isSuccessful() && response.body() != null) {
                             DeviceStatusResponse deviceStatusResponse = response.body();
                             String msg = deviceStatusResponse.getMsg();
@@ -140,7 +162,13 @@ public class ApiUtils implements ApiRequests {
 
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
-                        Timber.d(t);
+                        Timber.d("onFailure : " + t);
+
+                        if (t instanceof IOException) {
+
+                        }
+
+
                         String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                         Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
                         Intent socketIntent = new Intent(context, SocketService.class);

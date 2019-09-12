@@ -342,13 +342,12 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             Timber.d("output : " + output);
 
             if (output != null) {
-                PrefUtils.saveStringPref(appContext, LIVE_URL, output);
+                PrefUtils.saveStringPref(appContext, LIVE_URL, "https://www.google.com");
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
                 Timber.d("LinkStatus :" + linkStatus);
-
                 if (linkStatus) {
 
                     Timber.d("LinkStatus :" + linkStatus);
