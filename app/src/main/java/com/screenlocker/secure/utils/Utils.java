@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
@@ -301,5 +302,8 @@ public class Utils {
         return pendingIntent.getIntentSender();
     }
 
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
 
 }

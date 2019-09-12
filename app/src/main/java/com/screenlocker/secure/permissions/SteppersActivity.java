@@ -36,7 +36,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         setTitle(getResources().getString(R.string.permission));
         broadCastIntent();
         setDefLauncher();
