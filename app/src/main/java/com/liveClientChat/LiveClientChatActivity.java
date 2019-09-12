@@ -85,9 +85,10 @@ public class LiveClientChatActivity extends AppCompatActivity {
         String title = "";
 
         if (deviceId != null ) {
-            title = "Live Customer Support (" + deviceId + ")";
+            title = getResources().getString(R.string.live_client_device_id,deviceId);
         } else {
-            title = "Live Customer Support N/A";
+            title = getResources().getString(R.string.live_client_device_id,"N/A");
+
             deviceId = DeviceIdUtils.getSerialNumber();
         }
         url = AppConstants.CLIENT_CHAT_URL + deviceId + "&pto=true";
