@@ -285,6 +285,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     case "start":
                         // connecting to socket
                         String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
+
                         socketManager.destroy();
                         socketManager.connectSocket(token, device_id, live_url);
 
@@ -674,6 +675,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     case "flagged":
                                         suspendedDevice(SocketService.this, "flagged");
                                         break;
+
                                 }
                             }
 

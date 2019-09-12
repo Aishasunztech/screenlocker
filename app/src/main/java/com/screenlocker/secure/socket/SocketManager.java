@@ -108,7 +108,7 @@ public class SocketManager {
                 opts.secure = true;
                 opts.query = "device_id=" + device_id + "&token=" + token;
 
-                socket = IO.socket(url, opts);
+                socket = IO.socket(url.replaceAll("/mobile/", ""), opts);
 
                 socket.on(Socket.EVENT_CONNECT, args -> {
                     fireSocketStatus(SocketManager.STATE_CONNECTED);
@@ -135,6 +135,7 @@ public class SocketManager {
                         final String error = (String) args[0];
                         Log.e(TAG + " error EVENT_ERROR ", error);
                         if (error.contains("Unauthorized") && !socket.connected()) {
+
                             if (onSocketConnectionListenerList != null) {
                                 for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
                                     new Handler(Looper.getMainLooper())

@@ -97,6 +97,19 @@ public class AppConstants {
     public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
 
 
+    //Server Links
+    //    public static final String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
+    public static final String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
+//    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
+
+    //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA
+    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Dev SA
+
+    public static final String FAIL_SAFE_URL_FOR_WHITE_LABEL = "https://securenet.guru/mobile/"; //fail safe url for white labels
+
+    public static final String FAIL_SAFE_URL_FOR_SUPPER_ADMIN = "https://securenet.guru/api/v1/mobile/"; //fail safe url for supper admin
+
+
     //servers links
 //    public static String URL_1 = "https://api.lockmesh.com";//live SL
     public static String URL_1 = "https://devapi.lockmesh.com";// Dev
@@ -213,6 +226,8 @@ public class AppConstants {
     public static final String DEVICE_PENDING = "0";
     public static final String DEVICE_LINKED = "1";
     public static final String DEVICE_LINKED_STATUS = "device_linked_status";
+
+    public static final String FIRST_TIME_USE = "first_time_use";
 
 
     //Stepps

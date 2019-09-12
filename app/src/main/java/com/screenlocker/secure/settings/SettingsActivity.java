@@ -3,12 +3,9 @@ package com.screenlocker.secure.settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -21,7 +18,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -36,23 +32,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
-import com.screenlocker.secure.async.Ping;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
@@ -77,8 +67,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -91,35 +79,21 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
-import static com.screenlocker.secure.async.Ping.ping;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
-import static com.screenlocker.secure.utils.AppConstants.SUPER_ADMIN;
-import static com.screenlocker.secure.utils.AppConstants.SUPER_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
-import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /***
  * this activity show the settings for the app
@@ -200,31 +174,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         ButterKnife.bind(this);
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Ping ping = ping(new URL("https://www.lockmesh.com:443/"), SettingsActivity.this);
-
-                    if (ping != null) {
-                        Log.d("sjnfjsngs", ping.host);
-                        Log.d("sjnfjsngs", ping.ip);
-                        Log.d("sjnfjsngs", ping.net);
-                        Log.d("sjnfjsngs", "" + ping.cnt);
-                        Log.d("sjnfjsngs", "" + ping.dns);
-                    } else {
-                        Log.d("sjnfjsngs", "server not responding");
-                    }
-
-
-                } catch (MalformedURLException e) {
-                    Log.d("sjnfjsngs", e.getMessage());
-                }
-            }
-        }).start();
-
 
 //        String crash[] = null;
 //        Toast.makeText(this, crash[0], Toast.LENGTH_SHORT).show();

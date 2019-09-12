@@ -62,6 +62,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.FIRST_TIME_USE;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
@@ -77,8 +79,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     public static boolean recent = false;
     private MyAppDatabase myAppDatabase;
     private ComponentName compName;
-    private DevicePolicyManager devicePolicyManager;
-    private LinearLayout screenShotView;
     ApiOneCaller apiOneCaller;
     PrefManager preferenceManager;
     AppsStatusReceiver appsStatusReceiver;
@@ -143,7 +143,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
 
         compName = new ComponentName(this, MyAdmin.class);
-        screenShotView = createScreenShotView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(
@@ -158,20 +157,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         }
 
-
-        // your oncreate code should be
-
-
-//        sendBroadcast(new Intent().setAction("com.mediatek.ppl.NOTIFY_LOCK"));
-
-//        OnEventsChangeListener onEventsChangeListener = (OnEventsChangeListener) this;
-//
-//        if (onEventsChangeListener != null) {
-//            Log.d(TAG, "listener not null");
-//            onEventsChangeListener.onAppSettings(true);
-//        }
-
-        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -191,13 +176,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 .build();
 
         apiOneCaller = component.getApiOneCaller();
-
-//             MQTTService.NAMESPACE = "com.secure.launcher"; //or BuildConfig.APPLICATION_ID;
-//        MQTTService.KEEP_ALIVE_INTERVAL = 60; //in seconds
-//        MQTTService.CONNECT_TIMEOUT = 30; //in seconds
-
-
-//   startService(new Intent(this,LifecycleReceiverService.class));
 
         IntentFilter filter = new IntentFilter();
 
@@ -279,26 +257,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         return ((MyApplication) context.getApplicationContext()).myAppDatabase;
     }
 
-    public static LinearLayout getScreenShotView(Context context) {
-        return ((MyApplication) context.getApplicationContext()).screenShotView;
-    }
-
     public static ComponentName getComponent(Context context) {
         return ((MyApplication) context.getApplicationContext()).compName;
     }
-
-    public static DevicePolicyManager getDevicePolicyManager(Context context) {
-        return ((MyApplication) context.getApplicationContext()).devicePolicyManager;
-    }
-
-    public ApiOneCaller getApiOneCaller() {
-        return apiOneCaller;
-    }
-
-    public PrefManager getPreferenceManager() {
-        return preferenceManager;
-    }
-
 
     @Override
     public void onTerminate() {
@@ -313,99 +274,44 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     @Override
     public void isConnected(boolean state) {
 
-        Timber.d("STATUS :" + state);
-
+        Timber.d("<<< Network Status Changed >>>");
 
         if (state) {
-            onlineConnection();
+
+            Timber.i("------------> Network Connected");
+
+            boolean firstTimeUse = PrefUtils.getBooleanPref(this, FIRST_TIME_USE);
+            boolean linkDeviceStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+
+            if (firstTimeUse || linkDeviceStatus) {
+
+                Timber.i(firstTimeUse ? "---------> Device is using first time. " : "----------> Device is already linked. ");
+
+                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+
+                String serialNo = DeviceIdUtils.getSerialNumber();
+
+                Timber.i("---------> mac address of device : " + macAddress);
+
+                Timber.i("---------> serial number of device : " + serialNo);
+
+                new ApiUtils(this, macAddress, serialNo);
+
+            }
         } else {
+            Timber.i("----------> Network Disconnected");
+
             if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+
+                Timber.i("-----------> Socket service is stopping. ");
                 Intent intent = new Intent(this, SocketService.class);
                 stopService(intent);
+
+            } else {
+                Timber.i("--------------> Socket Service is already stopped. ");
             }
         }
     }
-
-    private AsyncCalls asyncCalls;
-
-    private void onlineConnection() {
-
-
-        String[] urls = {URL_1, URL_2};
-
-        if (asyncCalls != null) {
-            asyncCalls.cancel(true);
-        }
-
-        asyncCalls = new AsyncCalls(output -> {
-
-            Timber.d("output : " + output);
-
-            if (output != null) {
-                PrefUtils.saveStringPref(appContext, LIVE_URL, "https://www.google.com");
-                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                Timber.d("live_url %s", live_url);
-                oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
-                Timber.d("LinkStatus :" + linkStatus);
-                if (linkStatus) {
-
-                    Timber.d("LinkStatus :" + linkStatus);
-                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                    String serialNo = DeviceIdUtils.getSerialNumber();
-
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
-
-                }
-            }
-        }, this, urls);// checking hosts
-        asyncCalls.execute();
-    }
-
-
-//    private void checkForDownload() {
-//
-//
-//        String currentVersion = "1";
-//        try {
-//            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            Timber.d(e);
-//        }
-//
-//        MyApplication.oneCaller
-//                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-//                .enqueue(new Callback<UpdateModel>() {
-//                    @Override
-//                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-//
-//                        if (response.body() != null) {
-//                            if (response.body().isSuccess()) {
-//                                if (response.body().isApkStatus()) {
-//                                    String url = response.body().getApkUrl();
-//                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-//                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null);
-//                                    obj.execute();
-//
-//                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-//
-//
-//                            } else {
-//                                saveToken();
-//                                checkForDownload();
-//                            }
-//
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-//
-//                    }
-//                });
-//
-//
-//    }
 
 
     public static void saveToken() {
@@ -466,19 +372,16 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
     private void addDefaultIgnoreAppsToDB() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> mDefaults = new ArrayList<>();
-                mDefaults.add("com.android.settings");
-                //mDefaults.add(BuildConfig.APPLICATION_ID);
+        new Thread(() -> {
+            List<String> mDefaults = new ArrayList<>();
+            mDefaults.add("com.android.settings");
+            //mDefaults.add(BuildConfig.APPLICATION_ID);
 //                mDefaults.add(BuildConfig.APPLICATION_ID);
-                for (String packageName : mDefaults) {
-                    AppItem item = new AppItem();
-                    item.mPackageName = packageName;
-                    item.mEventTime = System.currentTimeMillis();
-                    DbIgnoreExecutor.getInstance().insertItem(item);
-                }
+            for (String packageName : mDefaults) {
+                AppItem item = new AppItem();
+                item.mPackageName = packageName;
+                item.mEventTime = System.currentTimeMillis();
+                DbIgnoreExecutor.getInstance().insertItem(item);
             }
         }).run();
     }
