@@ -49,7 +49,7 @@ public interface MyDao {
     List<AppInfo> getAppsWithoutIcons();
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("select uniqueName ,label, uniqueExtension, guest ,encrypted from SubExtension ")
+    @Query("select uniqueName ,label, uniqueExtension, guest ,encrypted, systemApp from SubExtension ")
     List<SubExtension> getExtensionsWithoutIcons();
 
 
@@ -108,11 +108,11 @@ public interface MyDao {
     void setEncrypted(boolean encrypted, String uniqueExtension);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
+    @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
     List<SubExtension> getGuestExtensions(String uniqueName, boolean status);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT guest,encrypted,uniqueExtension FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
+    @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
     List<SubExtension> getEncryptedExtensions(String uniqueName, boolean status);
 
     @Query("UPDATE subextension set guest=:status WHERE uniqueName=:uniqueName ")

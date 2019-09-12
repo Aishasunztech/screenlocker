@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -22,10 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
-import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -37,9 +33,10 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.room.MigrationSettingsTable;
+import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.MyAppDatabase;
-import com.screenlocker.secure.room.MyRoomMigration;
+import com.screenlocker.secure.room.migrations.Migration_11_13;
+import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -48,18 +45,15 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.AppConst;
 import com.secureSetting.t.data.AppItem;
 import com.secureSetting.t.data.DataManager;
 import com.secureSetting.t.db.DbHistoryExecutor;
 import com.secureSetting.t.db.DbIgnoreExecutor;
 import com.secureSetting.t.service.AppService;
-import com.secureSetting.t.util.CrashHandler;
 import com.secureSetting.t.util.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -155,7 +149,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new MyRoomMigration(11,13), new MigrationSettingsTable(13,14))
+                        .addMigrations(new Migration_11_13(11,13),
+                                new Migration_13_14(13,14)
+                        , new Migration_14_15(14,15))
                         .build();
             }
         };
