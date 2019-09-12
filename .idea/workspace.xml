@@ -27,43 +27,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc60bacb-4900-4701-ab84-84705b125167" name="Default Changelist" comment="add live chat with market">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_live_client_chat.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_alexvasilkov_gesture_views_2_5_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_alexvasilkov_gesture_views_2_5_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_andrognito_patternlockview_patternlockview_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_andrognito_patternlockview_patternlockview_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_appsflyer_af_android_sdk_4_10_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_duolingo_open_rtl_viewpager_1_0_3_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_duolingo_open_rtl_viewpager_1_0_3_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_9_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_9_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_9_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_9_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SteppersActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SteppersActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/secureMarket/ui/home/InstalledAppsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/secureMarket/ui/home/InstalledAppsFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons/commons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/commons/commons.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfm/sfm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sfm/sfm.iml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +43,7 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_27" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="VSP1001901S00172" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -216,25 +185,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="45" selection-start-line="45" selection-end-line="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1037">
-              <caret line="92" column="66" selection-start-line="92" selection-start-column="66" selection-end-line="92" selection-end-column="66" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="54">
+              <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="89" column="80" selection-start-line="89" selection-start-column="80" selection-end-line="89" selection-end-column="80" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2786#2851#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="188">
+              <caret line="483" selection-start-line="483" selection-end-line="483" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="20">
@@ -249,24 +228,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2907">
+            <state relative-caret-position="38">
               <caret line="275" column="26" selection-start-line="275" selection-start-column="26" selection-end-line="275" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1258">
-              <caret line="148" column="9" selection-start-line="148" selection-start-column="9" selection-end-line="148" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#9362#9363#0" expanded="true" />
-                <element signature="e#9397#9398#0" expanded="true" />
-                <element signature="e#9446#9447#0" expanded="true" />
-                <element signature="e#9486#9487#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -413,7 +376,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/liveAgenChat/LiveAgentChatActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_sim.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/AddSimDialog.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/add_sim_fragment.xml" />
         <option value="$PROJECT_DIR$/org.eclipse.paho.android.sample/build.gradle" />
@@ -437,13 +399,14 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SteppersActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/secureMarket/ui/home/InstalledAppsFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" />
       </list>
     </option>
   </component>
@@ -461,7 +424,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -473,8 +435,41 @@
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+              <item name="strings" type="c431d0b8:AndroidResGroupNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -492,7 +487,7 @@
     <property name="device.picker.selection" value="52039b4c49385493" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PhotoMovie" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../AgentChat" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.32885903" />
@@ -1073,13 +1068,6 @@
       <option name="presentableId" value="Default" />
       <updated>1553177713409</updated>
     </task>
-    <task id="LOCAL-00049" summary="Bug fixed custom support space">
-      <created>1561205990391</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1561205990391</updated>
-    </task>
     <task id="LOCAL-00050" summary="Bug fixed custom support space">
       <created>1561206059553</created>
       <option name="number" value="00050" />
@@ -1416,7 +1404,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568186731966</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="add live chat with market">
+      <created>1568266103741</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1568266103741</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1435,8 +1430,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="697" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4973357" weight="0.16842106" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4973357" visible="true" weight="0.16842106" />
       <window_info id="Designer" order="1" />
       <window_info id="Build Variants" order="2" sideWeight="0.5006468" side_tool="true" weight="0.28249678" />
       <window_info id="Image Layers" order="3" />
@@ -1447,17 +1443,17 @@
       <window_info id="Resources Explorer" order="8" weight="0.32874495" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32389382" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.7069272" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.31327432" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39823008" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3250444" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.48970398" weight="0.23362832" />
-      <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" weight="0.66882277" />
-      <window_info active="true" anchor="bottom" id="Messages" order="9" visible="true" weight="0.8017699" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.48987854" visible="true" weight="0.23362832" />
+      <window_info anchor="bottom" id="Android Profiler" order="8" weight="0.66882277" />
+      <window_info anchor="bottom" id="Messages" order="9" weight="0.8017699" />
       <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49420848" weight="0.30088496" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.4993565" weight="0.64778763" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.509009" side_tool="true" weight="0.5717982" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.51012146" side_tool="true" weight="0.23362832" />
       <window_info anchor="bottom" id="Logcat" order="13" sideWeight="0.490991" weight="0.3681416" />
       <window_info anchor="bottom" id="Flutter Performance" order="14" side_tool="true" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -1650,19 +1646,19 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java</url>
-          <line>418</line>
+          <line>433</line>
           <properties />
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java</url>
-          <line>417</line>
+          <line>432</line>
           <properties />
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java</url>
-          <line>421</line>
+          <line>436</line>
           <properties />
           <option name="timeStamp" value="39" />
         </line-breakpoint>
@@ -1704,13 +1700,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java</url>
-          <line>102</line>
+          <line>103</line>
           <properties />
           <option name="timeStamp" value="70" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/sfm/src/main/kotlin/com/simplemobiletools/filemanager/pro/fragments/ItemsFragment.kt</url>
-          <line>251</line>
+          <line>254</line>
           <properties />
           <option name="timeStamp" value="22" />
         </line-breakpoint>
@@ -1718,13 +1714,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/MyService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="25" column="55" selection-start-line="25" selection-start-column="55" selection-end-line="25" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/systemControls/SystemPermissionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8075">
@@ -1975,34 +1964,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="45" selection-start-line="45" selection-end-line="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="92" column="66" selection-start-line="92" selection-start-column="66" selection-end-line="92" selection-end-column="66" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2907">
-          <caret line="275" column="26" selection-start-line="275" selection-start-column="26" selection-end-line="275" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1258">
-          <caret line="148" column="9" selection-start-line="148" selection-start-column="9" selection-end-line="148" selection-end-column="9" />
+        <state relative-caret-position="1190">
+          <caret line="142" column="9" selection-start-line="142" selection-start-column="9" selection-end-line="142" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#9362#9363#0" expanded="true" />
@@ -2056,6 +2021,38 @@
           <caret line="167" selection-start-line="167" selection-end-line="167" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="275" column="26" selection-start-line="275" selection-start-column="26" selection-end-line="275" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="483" selection-start-line="483" selection-end-line="483" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="89" column="80" selection-start-line="89" selection-start-column="80" selection-end-line="89" selection-end-column="80" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2786#2851#0" expanded="true" />
           </folding>
         </state>
       </provider>
