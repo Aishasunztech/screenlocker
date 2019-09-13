@@ -107,7 +107,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         super.onViewCreated(view, savedInstanceState);
         viwModel.getUpdates().observe(this, serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
-            if (serverAppInfos.size() == 0){
+            if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
                 errorBtn.setVisibility(View.GONE);
@@ -156,7 +156,6 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
     }
 
 
-
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
             if (!query.equals("")) {
@@ -167,7 +166,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
                         searchedServerAppInfo.add(app);
                     }
                 }
-                if (searchedServerAppInfo.size() == 0){
+                if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
                     errorBtn.setVisibility(View.GONE);
@@ -195,7 +194,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         if (index != -1) {
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
-            if (installedAdapter.getItemCount() == 0){
+            if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
                 errorBtn.setVisibility(View.GONE);
@@ -269,9 +268,12 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
             installedAdapter.updateProgressOfItem(info, index);
         }
     }
-    public void onNetworkError(){
+
+    public void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        rc.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         errorText.setText("No Internet Connection");
     }
 

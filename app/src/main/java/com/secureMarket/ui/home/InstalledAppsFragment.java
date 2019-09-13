@@ -99,7 +99,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             installedApps.clear();
             if (serverAppInfos.size() == 0){
                 errorImage.setImageResource(R.drawable.ic_android);
-                errorText.setText("No Apps Installed");
+                errorText.setText("No App Installed");
                 errorBtn.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
@@ -269,6 +269,8 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     public void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        rc.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         errorText.setText("No Internet Connection");
     }
 
