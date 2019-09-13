@@ -316,6 +316,8 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
     public void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_no_internet_connection);
+        rc.setVisibility(View.GONE);
         errorText.setText("No Internet Connection");
     }
 

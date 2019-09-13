@@ -1,18 +1,14 @@
 package com.screenlocker.secure.permissions;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -33,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.widget.NestedScrollView;
 
 import java.util.List;
 
@@ -48,7 +43,6 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
-import static com.screenlocker.secure.utils.Utils.dpToPx;
 
 public class SetEncryptedPasswordFragment extends AbstractStep {
     private String error = "";
@@ -89,9 +83,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
             case OPTION_PIN:
-//                viewSwitcher.setDisplayedChild(1);
-                pin_container.setVisibility(View.VISIBLE);
-                pattern_container.setVisibility(View.GONE);
+                viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
                     etEnterPin.setFocusable(true);
                     etEnterPin.setFocusableInTouchMode(true);
@@ -105,9 +97,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                 }
                 break;
             case OPTION_PATTERN:
-//                viewSwitcher.setDisplayedChild(0);
-                pin_container.setVisibility(View.GONE);
-                pattern_container.setVisibility(View.VISIBLE);
+                viewSwitcher.setDisplayedChild(0);
+
         }
     }
 
@@ -150,16 +141,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     @BindView(R.id.profile_name)
     TextView responsTitle;
 
-    //    @BindView(R.id.view_switcher)
-//    ViewSwitcher viewSwitcher;
-    @BindView(R.id.pattern_container)
-    LinearLayout pattern_container;
-    @BindView(R.id.pin_container)
-    NestedScrollView pin_container;
-    @BindView(R.id.password_container)
-    LinearLayout password_container;
-    @BindView(R.id.main_layout)
-    RelativeLayout main_layout;
+    @BindView(R.id.view_switcher)
+    ViewSwitcher viewSwitcher;
 
 
     @Nullable
@@ -174,24 +157,6 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
         error = getResources().getString(R.string.please_set_encrypted_password);
         img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_encrypted_third));
         img_picture2.setImageDrawable(getResources().getDrawable(R.drawable.ic_encrypted_third));
-
-        //Move when keyboard is shown
-        main_layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-
-                main_layout.getWindowVisibleDisplayFrame(r);
-
-                int heightDiff = main_layout.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > 100) {
-                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) password_container.getLayoutParams();
-                    params.bottomMargin = dpToPx(150);
-                    password_container.setLayoutParams(params);
-                }
-            }
-        });
-
         patternLock.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
