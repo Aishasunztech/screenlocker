@@ -111,7 +111,7 @@ public class MainModel implements MainContract.MainMvpModel {
 
                             break;
                         case AppConstants.KEY_SUPPORT_PASSWORD:
-                            if (model.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE)) {
+                            if (model.getUniqueName().equals(AppConstants.LIVE_CLIENT_CHAT_UNIQUE)) {
                                 adapter.appsList.add(model);
                             } else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
                                 adapter.appsList.add(model);

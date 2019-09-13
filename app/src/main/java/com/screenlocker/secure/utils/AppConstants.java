@@ -452,9 +452,10 @@ public class AppConstants {
     public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
     public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
     public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
-    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
-//    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
-    public static final String CLIENT_SOCKET_URL = "http://104.248.19.72:3004";
+    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
+//    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
+    public static final String CLIENT_SOCKET_URL = "https://devlivechatpn.lockmesh.com";
+    public static final String IS_LIVE_CLIENT_VISIBLE = "is_activity_visible";
 
 
 

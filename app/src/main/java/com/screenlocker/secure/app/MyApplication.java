@@ -118,7 +118,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         networkChangeReceiver.setNetworkChangeListener(this);
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
 
 

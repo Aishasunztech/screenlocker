@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,8 +31,10 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.IS_LIVE_CLIENT_VISIBLE;
 
 public class LiveClientChatActivity extends AppCompatActivity {
 
@@ -48,6 +51,8 @@ public class LiveClientChatActivity extends AppCompatActivity {
     String url = "";
     @BindView(R.id.webviewProgress)
     ProgressBar progressbar;
+    @BindView(R.id.no_internet_layout)
+    LinearLayout no_internet_layout;
 
     private LockScreenService mService;
     private boolean isSocketConnect;
@@ -99,10 +104,10 @@ public class LiveClientChatActivity extends AppCompatActivity {
 
         swipeRefresh.setOnRefreshListener(() -> {
             loadWebView();
-            if(isConnected() && mService == null)
-            {
-                bindToService();
-            }
+//            if(isConnected() && mService == null)
+//            {
+//                bindToService();
+//            }
             swipeRefresh.setRefreshing(false);
         });
 
@@ -116,9 +121,16 @@ public class LiveClientChatActivity extends AppCompatActivity {
         if (isConnected()) {
             progressbar.setVisibility(View.VISIBLE);
             webview.loadUrl(url);
+            no_internet_layout.setVisibility(View.GONE);
         } else {
-            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            no_internet_layout.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.btn_try_again)
+    public void onViewClicked(View vi)
+    {
+        loadWebView();
     }
 
     private boolean isConnected() {
@@ -130,44 +142,53 @@ public class LiveClientChatActivity extends AppCompatActivity {
             return true;
         }
     }
+//
+//    private ServiceConnection connection = new ServiceConnection() {
+//
+//        @Override
+//        public void onServiceConnected(ComponentName className,
+//                                       IBinder service) {
+//            // We've bound to LocalService, cast the IBinder and get LocalService instance
+//            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
+//            mService = binder.getService();
+//            mService.connectClientChatSocket();
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName arg0) {
+//        }
+//    };
 
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
-            mService = binder.getService();
-            mService.connectClientChatSocket();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+//        if(isConnected()) {
+//            bindToService();
+//        }
+//
+//    }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
-        if(isConnected()) {
-            bindToService();
-        }
-
+        PrefUtils.saveBooleanPref(this,IS_LIVE_CLIENT_VISIBLE,true);
     }
 
-    private void bindToService() {
-        Intent intent = new Intent(this, LockScreenService.class);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
-    }
+//    private void bindToService() {
+//        Intent intent = new Intent(this, LockScreenService.class);
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+//    }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if (mService != null)
-            unbindService(connection);
+        PrefUtils.saveBooleanPref(this,IS_LIVE_CLIENT_VISIBLE,false);
+
+//        if (mService != null)
+//            unbindService(connection);
     }
 
 }
