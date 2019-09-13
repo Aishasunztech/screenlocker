@@ -537,6 +537,9 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     AppExecutor appExecutor;
 
     public void startDownload(String url, String filePath, String packageName, String type) {
+
+        Timber.i("URL %s: ", url);
+
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
@@ -550,7 +553,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
         fetch.enqueue(request, updatedRequest -> {
-
             //Request was successfully enqueued for download.
         }, error -> {
             Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();

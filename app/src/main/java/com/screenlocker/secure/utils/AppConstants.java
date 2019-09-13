@@ -99,7 +99,7 @@ public class AppConstants {
 
     //Server Links
     //    public static final String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
-    public static final String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
+    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
 //    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
 
     //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA
@@ -126,7 +126,7 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/mobile/";
+
 
     //available live host
     public static final String LIVE_URL = "live_url";

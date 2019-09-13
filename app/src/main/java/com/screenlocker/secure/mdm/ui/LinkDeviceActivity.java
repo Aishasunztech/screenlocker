@@ -22,7 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
+
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -38,6 +38,8 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,6 +52,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
@@ -63,7 +66,6 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
@@ -313,38 +315,17 @@ public class LinkDeviceActivity extends BaseActivity {
             finish();
         } else {
             processingLinkViewState();
-
-
-            if (MyApplication.oneCaller == null) {
-                if (asyncCalls != null) {
-                    asyncCalls.cancel(true);
-                }
-
-                String[] urls = {URL_1, URL_2};
-                asyncCalls = new AsyncCalls(output -> {
-                    if (output == null) {
-                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    } else {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                        Timber.d("live_url %s", live_url);
-                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        linkDevice();
-                    }
-                }, this, urls);
-
-            } else {
-                linkDevice();
-            }
-
+            linkDevice(RetrofitClientInstance.getWhiteLabelInstance());
 
         }
 
     }
 
-    private void linkDevice() {
 
-        MyApplication.oneCaller
+    private boolean isFailSafe = false;
+
+    private void linkDevice(ApiOneCaller apiOneCaller) {
+        apiOneCaller
                 .linkDeviceToDealer(
                         new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME),
                         PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
@@ -357,6 +338,7 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             LinkDeviceResponse ldr = response.body();
                             if (ldr.isStatus()) {
+                                saveLiveUrl(isFailSafe);
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
                                 pendingLinkViewState();
@@ -369,15 +351,33 @@ public class LinkDeviceActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                linkDevice(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                            return;
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
+
+
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
 
-    private void stopLinking() {
+    private void stopLinking(ApiOneCaller apiOneCaller) {
 
-        MyApplication.oneCaller
+        apiOneCaller
                 .stopLinkingDevice(
                         MAC, SerialNo,
                         PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
@@ -391,7 +391,9 @@ public class LinkDeviceActivity extends BaseActivity {
 
                             DeleteDeviceResponse dDr = response.body();
 
+                            saveLiveUrl(isFailSafe);
                             if (dDr.isStatus()) {
+
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
                                 newLinkViewState();
@@ -404,6 +406,23 @@ public class LinkDeviceActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<DeleteDeviceResponse> call, @NonNull Throwable t) {
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                stopLinking(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                            return;
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
+
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -414,27 +433,7 @@ public class LinkDeviceActivity extends BaseActivity {
     public void onClickBtnUnlinkDevice() {
         processingUnlinkViewState();
 
-        if (MyApplication.oneCaller == null) {
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-
-            String[] urls = {URL_1, URL_2};
-            asyncCalls = new AsyncCalls(output -> {
-                if (output == null) {
-                    Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    stopLinking();
-                }
-            }, this, urls);
-
-        } else {
-            stopLinking();
-        }
+        stopLinking(RetrofitClientInstance.getWhiteLabelInstance());
 
 
     }
@@ -472,35 +471,13 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
-    private AsyncCalls asyncCalls;
-
     SwipeRefreshLayout.OnRefreshListener listener = () -> {
 
         Timber.i("<<<<<SwipedToRefresh>>>>>");
         freshViewState();
         String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
         if (device_id != null) {
-            if (MyApplication.oneCaller == null) {
-                if (asyncCalls != null) {
-                    asyncCalls.cancel(true);
-                }
-                String[] urls = {URL_1, URL_2};
-                asyncCalls = new AsyncCalls(output -> {
-                    if (output == null) {
-                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    } else {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                        Timber.d("live_url %s", live_url);
-                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        checkDeviceStatus();
-                    }
-                }, this, urls);
-
-            } else {
-                checkDeviceStatus();
-            }
-
+            checkDeviceStatus(RetrofitClientInstance.getWhiteLabelInstance());
         } else {
             finishedRefreshing();
             newLinkViewState();
@@ -510,10 +487,8 @@ public class LinkDeviceActivity extends BaseActivity {
     };
 
 
-    private void checkDeviceStatus() {
-
-        MyApplication.oneCaller
-                .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
+    private void checkDeviceStatus(ApiOneCaller apiOneCaller) {
+        apiOneCaller.checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
                 .enqueue(new Callback<DeviceStatusResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
@@ -522,6 +497,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
                             String msg = response.body().getMsg();
 
+                            saveLiveUrl(isFailSafe);
 
                             boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
@@ -596,6 +572,22 @@ public class LinkDeviceActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                checkDeviceStatus(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                            return;
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
+
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -615,10 +607,20 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void scheduleTimer() {
 
+
         if (t != null) {
             t.cancel();
             t = null;
         }
+
+
+        if (isFirstTime) {
+            isFirstTime = false;
+            lytSwipeReferesh.setRefreshing(true);
+            listener.onRefresh();
+            return;
+        }
+
 
         t = new Timer();
         t.schedule(new TimerTask() {
@@ -652,6 +654,8 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     private void pendingLinkViewState() {
+
+
         scheduleTimer();
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
@@ -719,9 +723,6 @@ public class LinkDeviceActivity extends BaseActivity {
             t = null;
         }
 
-        if (isFirstTime) {
-            isFirstTime = false;
-        }
         setProgressViews(false);
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);

@@ -163,7 +163,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     }
 
 
-
     //return title for activity
     @Override
     public String name() {
@@ -281,7 +280,8 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             return false;
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
             return false;
-        } else return Build.VERSION.SDK_INT < Build.VERSION_CODES.O || context.getPackageManager().canRequestPackageInstalls();
+        } else
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.O || context.getPackageManager().canRequestPackageInstalls();
     }
 
     private void showPermissionsMenus() {
@@ -548,7 +548,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                     setCheckedAndClickAble(accessibilityService, true, false);
 
                 }
-
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

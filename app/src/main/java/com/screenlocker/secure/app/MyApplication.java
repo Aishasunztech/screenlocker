@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import androidx.room.Room;
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.crash.CustomErrorActivity;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -33,9 +31,9 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.room.migrations.Migration_13_14;
-import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.room.migrations.Migration_11_13;
+import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -50,7 +48,10 @@ import com.secureSetting.t.db.DbIgnoreExecutor;
 import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,14 +62,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FIRST_TIME_USE;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
 /**
  * application class to get the database instance
@@ -93,15 +91,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
-    private LinearLayout createScreenShotView() {
-        LinearLayout linearLayout = new LinearLayout(this);
-        View btn = new View(this);
-        linearLayout.addView(btn);
-        return linearLayout;
-    }
-
-
-    public static ApiOneCaller oneCaller = null;
 
     public static Context getAppContext() {
         return appContext;
@@ -314,59 +303,68 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
-    public static void saveToken() {
+    public static boolean isFailSafe = false;
 
-        if (MyApplication.oneCaller == null) {
+    // Method to save token
+    public static void saveToken(ApiOneCaller apiOneCaller) {
 
-            String[] urls = {URL_1, URL_2};
+        Timber.d("<<< saving system login token >>>");
 
-            new AsyncCalls(output -> {
+        apiOneCaller
+                .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
 
-                if (output != null) {
-                    PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    MyApplication.oneCaller
-                            .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                            if (response.body() != null) {
-                                if (response.body().isStatus()) {
-                                    PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                boolean responseStatus = response.isSuccessful();
 
-                                }
-                            }
-                        }
+                Timber.i("-------------> login api response status : %s", responseStatus);
 
-                        @Override
-                        public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-            }, MyApplication.getAppContext(), urls).execute();
-
-
-        } else {
-            MyApplication.oneCaller
-                    .login(new LoginModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.generateUniqueDeviceId(getAppContext()), DeviceIdUtils.getIPAddress(true))).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                if (responseStatus) {
                     if (response.body() != null) {
-                        if (response.body().isStatus()) {
+
+                        LoginResponse loginResponse = response.body();
+
+                        boolean tokenStatus = loginResponse.isStatus();
+
+                        Timber.i("-----------> login token status :%s ", tokenStatus);
+
+                        saveLiveUrl(isFailSafe);
+
+                        if (tokenStatus) {
+                            Timber.i("---------------> Saving login token .");
                             PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
-
+                        } else {
+                            Timber.i("---------------> oops login token not provided by server . :(");
                         }
+                    } else {
+                        Timber.i("-------------> oops response body is null .");
                     }
+                } else {
+                    Timber.i("---------------> wrong response code :( .");
                 }
 
-                @Override
-                public void onFailure(@NonNull Call<LoginResponse> call, Throwable t) {
 
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoginResponse> call, @NotNull Throwable t) {
+                Timber.d("onFailure : %s", t.getMessage());
+
+                if (t instanceof UnknownHostException) {
+                    Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                    if (isFailSafe) {
+                        Timber.e("------------> FailSafe domain is also not working. ");
+                    } else {
+                        Timber.i("<<< New Api call with failsafe domain >>>");
+                        saveToken(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                        isFailSafe = true;
+                    }
+
+                } else if (t instanceof IOException) {
+                    Timber.e(" ----> IO Exception :%s", t.getMessage());
                 }
-            });
-        }
+            }
+        });
 
 
     }

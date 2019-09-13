@@ -17,8 +17,6 @@ import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
-    private static Retrofit retrofit1;
-    private static Retrofit retrofit2;
 
     public static Retrofit getRetrofitInstance(String url) {
         if (retrofit != null) {
@@ -29,28 +27,6 @@ public class RetrofitClientInstance {
                 .baseUrl(url)
                 .build();
         return retrofit;
-    }
-
-    public static Retrofit getRetrofitSecondInstance(String url) {
-        if (retrofit1 != null) {
-            retrofit1 = null;
-        }
-        retrofit1 = new retrofit2.Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
-                .build();
-        return retrofit1;
-    }
-
-    public static Retrofit getRetrofitThirdInstance(String url) {
-        if (retrofit2 != null) {
-            retrofit2 = null;
-        }
-        retrofit2 = new retrofit2.Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(url)
-                .build();
-        return retrofit2;
     }
 
     // instance for white labels e.g LM/TL etc
@@ -67,27 +43,27 @@ public class RetrofitClientInstance {
 
 
     // instance for SA panel
-    private static Retrofit superAdminPanelInstance;
+    private static ApiOneCaller superAdminPanelInstance;
 
-    public static Retrofit getSuperAdminPanelInstance() {
+    public static ApiOneCaller getSuperAdminPanelInstance() {
         if (superAdminPanelInstance == null)
             superAdminPanelInstance = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(SUPER_ADMIN_URL)
-                    .build();
+                    .build().create(ApiOneCaller.class);
         return superAdminPanelInstance;
     }
 
 
     //  failSafe instance for supper admin
-    private static Retrofit failSafeInstanceForSupperAdmin;
+    private static ApiOneCaller failSafeInstanceForSupperAdmin;
 
-    public static Retrofit getFailSafeInstanceForSupperAdmin() {
+    public static ApiOneCaller getFailSafeInstanceForSupperAdmin() {
         if (failSafeInstanceForSupperAdmin == null)
             failSafeInstanceForSupperAdmin = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(FAIL_SAFE_URL_FOR_SUPPER_ADMIN)
-                    .build();
+                    .build().create(ApiOneCaller.class);
         return failSafeInstanceForSupperAdmin;
     }
 

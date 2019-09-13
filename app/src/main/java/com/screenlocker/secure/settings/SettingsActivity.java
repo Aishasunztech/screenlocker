@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -39,12 +38,9 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -56,9 +52,6 @@ import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageMod
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
-import com.screenlocker.secure.socket.SocketManager;
-import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
@@ -67,6 +60,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,27 +75,25 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.FAIL_SAFE_URL_FOR_WHITE_LABEL;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 
 /***
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
-    private NetworkChangeReceiver networkChangeReceiver;
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener {
 
     private Toolbar mToolbar;
     /**
@@ -141,21 +134,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private Dialog aboutDialog = null, accountDialog = null;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        networkChangeReceiver.setNetworkChangeListener(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
-    }
-
 
     public static String splitName(String s) {
         return s.replace(".apk", "");
@@ -179,8 +157,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        Toast.makeText(this, crash[0], Toast.LENGTH_SHORT).show();
 
 //        runShellCommand("adb shell pm hide ")
-
-        networkChangeReceiver = new NetworkChangeReceiver();
 
 //        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
 
@@ -472,83 +448,117 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
     }
 
-
-    private AsyncCalls asyncCalls;
-
     private void requestCheckForUpdate(ProgressDialog dialog) {
+        Timber.d("<<< Checking for update >>>");
 
-        if (MyApplication.oneCaller == null) {
-
-
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-
-            String[] urls = {URL_1, URL_2};
-
-            asyncCalls = new AsyncCalls(output -> {
-
-                if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    update(dialog);
-
-                }
-            }, this, urls);
-            asyncCalls.execute();
-
-        } else {
-            update(dialog);
-        }
-
-
+        update(dialog, RetrofitClientInstance.getWhiteLabelInstance());
     }
 
-    private void update(ProgressDialog dialog) {
-        MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.apk_label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+
+    boolean isFailSafe = false;
+
+    private void update(ProgressDialog dialog, ApiOneCaller apiOneCaller) {
+
+
+        apiOneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.apk_label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+
+
+                        Timber.i("-------> Api Check for update on response .");
+
+                        boolean responseStatus = response.isSuccessful();
+
+                        Timber.i("--------> response status : %s", responseStatus);
+
+
                         if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
-
                         }
 
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
-                                            .setTitle(getResources().getString(R.string.update_available_title))
-                                            .setMessage(getResources().getString(R.string.update_available_message))
-                                            .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
-                                                String url = response.body().getApkUrl();
-                                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                        if (responseStatus) {
 
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null);
-                                                obj.execute();
-                                            }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
-                                                dialog1.dismiss();
-                                            });
-                                    dialog.show();
+                            if (response.body() != null) {
+                                UpdateModel updateModel = response.body();
+
+                                boolean validationStatus = updateModel.isSuccess();
+
+                                Timber.i("----------> token validation status :%s", validationStatus);
+
+                                if (validationStatus) {
+
+                                    boolean updateStatus = updateModel.isApkStatus();
+
+                                    Timber.i("------------> update available status : %s", updateStatus);
+
+                                    if (updateStatus) {
+
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
+                                                .setTitle(getResources().getString(R.string.update_available_title))
+                                                .setMessage(getResources().getString(R.string.update_available_message))
+                                                .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
+
+                                                    String apkUrl = updateModel.getApkUrl();
+
+                                                    Timber.i("------------> updated apk url : %s", apkUrl);
+
+                                                    saveLiveUrl(isFailSafe);
+
+                                                    String live_url = PrefUtils.getStringPref(SettingsActivity.this, LIVE_URL);
+                                                    Timber.i("------------> Live Server Url :%s ", live_url);
+
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + "getApk/" + CommonUtils.splitName(apkUrl), false, null);
+                                                    obj.execute();
+
+
+                                                }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
+                                                    dialog1.dismiss();
+                                                });
+                                        dialog.show();
+                                    } else {
+                                        Timber.i("-------------> Application is already up to date . :)");
+                                        Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                    }
+
                                 } else {
-                                    Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                    Timber.i("-----------> token validation failed . Request for new token. ");
+                                    saveToken(RetrofitClientInstance.getWhiteLabelInstance());
+                                    Timber.i("-------------> Again checking for update .");
+                                    update(dialog, apiOneCaller);
                                 }
 
                             } else {
-                                saveToken();
-                                requestCheckForUpdate(dialog);
+                                Timber.i("---------> oops response body is null. ");
                             }
 
+
+                        } else {
+                            Timber.i("-----------> invalid response code :(");
                         }
+
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-                        dialog.dismiss();
-                        Toast.makeText(SettingsActivity.this, getResources().getString(R.string.error_occured_toast), Toast.LENGTH_LONG).show();
+                        if (dialog != null && dialog.isShowing())
+                            dialog.dismiss();
+                        Timber.d("onFailure : %s", t.getMessage());
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                update(dialog, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                            Toast.makeText(SettingsActivity.this, getResources().getString(R.string.error_occured_toast), Toast.LENGTH_LONG).show();
+                        }
 
                     }
                 });
@@ -660,102 +670,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-   /* private void createAccountDialog() {
-//        account device dialog
-
-        accountDialog = new Dialog(this);
-        accountDialog.setContentView(R.layout.dialoge_account);
-        WindowManager.LayoutParams params = Objects.requireNonNull(accountDialog.getWindow()).getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        accountDialog.getWindow().setAttributes(params);
-        accountDialog.setCancelable(true);
-
-        // Device ID
-        TextView tvDeviceId = accountDialog.findViewById(R.id.tvDeviceId);
-        TextView textView17 = accountDialog.findViewById(R.id.textViewDeviceId);
-        String device_id = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_ID);
-        if (device_id != null) {
-            tvDeviceId.setVisibility(View.VISIBLE);
-            textView17.setVisibility(View.VISIBLE);
-            tvDeviceId.setText(device_id);
-        }
-
-        *//*Status*//*
-        TextView tvStatus = accountDialog.findViewById(R.id.tvDeviceStatus);
-        TextView textView18 = accountDialog.findViewById(R.id.textViewStatus);
-        String device_status = PrefUtils.getStringPref(SettingsActivity.this, DEVICE_STATUS);
-        boolean b = PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS);
-        if (b) {
-            tvStatus.setVisibility(View.VISIBLE);
-            textView18.setVisibility(View.VISIBLE);
-
-            if (device_status == null) {
-                tvStatus.setText("Active");
-            } else
-                tvStatus.setText(device_status);
-        }
-
-
-        // Expiry Date
-        TextView tvExpiresIn = accountDialog.findViewById(R.id.tvExpiresIn);
-        TextView textView16 = accountDialog.findViewById(R.id.textViewExpiry);
-
-        String remaining_days = getRemainingDays(SettingsActivity.this);
-
-        if (remaining_days != null) {
-            textView16.setVisibility(View.VISIBLE);
-            tvExpiresIn.setVisibility(View.VISIBLE);
-            tvExpiresIn.setText(remaining_days);
-//            else {
-//                suspendedDevice(SettingsActivity.this, this, device_id, "expired");
-//            }
-        }
-
-
-        List<String> imeis = DeviceIdUtils.getIMEI(SettingsActivity.this);
-
-
-        // IMEI 1
-        TextView tvImei1 = accountDialog.findViewById(R.id.tvImei1);
-        TextView textViewImei = accountDialog.findViewById(R.id.textViewImei);
-
-        tvImei1.setVisibility(View.VISIBLE);
-        textViewImei.setVisibility(View.VISIBLE);
-        tvImei1.setText("NULL");
-
-        if (imeis.size() > 0) {
-            String imei = imeis.get(0);
-            if (imei != null) {
-                tvImei1.setVisibility(View.VISIBLE);
-                textViewImei.setVisibility(View.VISIBLE);
-                tvImei1.setText(imei);
-            }
-        }
-
-        // IMEI 2
-        TextView tvImei2 = accountDialog.findViewById(R.id.tvImei2);
-        TextView textViewImei2 = accountDialog.findViewById(R.id.textViewImei2);
-
-        tvImei2.setVisibility(View.VISIBLE);
-        textViewImei2.setVisibility(View.VISIBLE);
-        tvImei2.setText("NULL");
-
-        if (imeis.size() > 1) {
-            String imei2 = imeis.get(1);
-            if (imei2 != null) {
-                tvImei2.setVisibility(View.VISIBLE);
-                textViewImei2.setVisibility(View.VISIBLE);
-                tvImei2.setText(imei2);
-            }
-        }
-
-
-        accountDialog.show();
-
-
-    }*/
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -772,7 +686,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             case REQUEST_CODE_PASSWORD:
                 if (resultCode == RESULT_OK) {
                     showAlertDialog(SettingsActivity.this, getResources().getString(R.string.password_changed_title), getResources().getString(R.string.password_changed_message), R.drawable.ic_checked);
-//                    Snackbar.make(rootLayout, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
                 }
                 break;
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
@@ -789,9 +702,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
                     }
                 }
-//                 else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                    //Exception error = result.getError();
-//                }
                 break;
 
             case 1445:
@@ -802,27 +712,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
         super.onActivityResult(requestCode, resultCode, data);
 
-    }
-
-
-    @Override
-    public void isConnected(boolean state) {
-
-        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-
-            Intent intent = new Intent(this, SocketService.class);
-            if (state) {
-                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                String serialNo = DeviceIdUtils.getSerialNumber();
-                if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
-                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
-                }
-            } else {
-                stopService(intent);
-
-            }
-
-        }
     }
 
 

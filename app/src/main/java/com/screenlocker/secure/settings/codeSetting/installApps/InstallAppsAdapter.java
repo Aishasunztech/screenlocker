@@ -61,7 +61,7 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.LIVE_URL);
 
         Glide.with(holder.itemView.getContext())
-                .load(live_url + LOGO_END_POINT + app.getLogo())
+                .load(live_url.replaceAll("/mobile/", "") + LOGO_END_POINT + app.getLogo())
                 .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
                 .into(holder.ivLogo);
 

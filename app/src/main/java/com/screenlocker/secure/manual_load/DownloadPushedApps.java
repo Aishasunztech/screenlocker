@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -30,7 +28,6 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 
 public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<InstallModel>> {
@@ -65,7 +62,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
             InstallModel model = InstallModels.get(i);
 
 
-            File file = downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(model.getApk()));
+            File file = downloadApp(live_url + "getApk/" + CommonUtils.splitName(model.getApk()));
 
             installModelList.add(model);
 

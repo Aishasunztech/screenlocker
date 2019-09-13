@@ -39,8 +39,6 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     private String fragmentType;
 
 
-
-
     public SecureMarketAdapter(List<ServerAppInfo> appModelServerAppInfo, Context context,
                                AppInstallUpdateListener listener, String fragmentType) {
         this.appModelServerAppInfo = appModelServerAppInfo;
@@ -66,11 +64,11 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         holder.apkSize.setText(app.getApk_size());
 
         if (app.isInstalled()) {
-            if (app.isUpdate()){
+            if (app.isUpdate()) {
                 holder.btnUpdate.setVisibility(View.VISIBLE);
                 holder.btnUninstall.setVisibility(View.GONE);
                 holder.btnInstall.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.btnUpdate.setVisibility(View.GONE);
                 holder.btnUninstall.setVisibility(View.VISIBLE);
                 holder.btnInstall.setVisibility(View.GONE);
@@ -88,7 +86,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
         Glide.with(context)
-                .load(live_url + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo())
+                .load(live_url.replaceAll("/mobile/", "") + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo())
                 .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
                 .into(holder.imageView);
 
@@ -103,7 +101,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             holder.progressBar.setProgress(app.getProgres());
             holder.progressBar.setIndeterminate(false);
             holder.status.setVisibility(View.VISIBLE);
-            holder.status.setText(app.getSpeed()/1000 +" Kb/s");
+            holder.status.setText(app.getSpeed() / 1000 + " Kb/s");
             holder.btnInstall.setEnabled(false);
         } else if (app.getType() == ServerAppInfo.PROG_TYPE.LOADING) {
             holder.status.setText("Pending Installation");
@@ -128,7 +126,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
     @Override
     public int getItemCount() {
-            return appModelServerAppInfo.size();
+        return appModelServerAppInfo.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -136,7 +134,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
         ImageView imageView;
 
-        TextView tv_name,  apkSize, status;
+        TextView tv_name, apkSize, status;
         Button btnInstall, btnUninstall, btnUpdate;
         ProgressBar progressBar;
 
@@ -162,17 +160,15 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             ServerAppInfo app = appModelServerAppInfo.get(getAdapterPosition());
 
 
-
             if (v.getId() == R.id.btnInstall) {
                 if (listener != null) {
-                    listener.onInstallClick(app,getAdapterPosition(), false);
+                    listener.onInstallClick(app, getAdapterPosition(), false);
                 }
-            }else if (v.getId() == R.id.btnUpdate){
+            } else if (v.getId() == R.id.btnUpdate) {
                 if (listener != null) {
                     listener.onInstallClick(app, getAdapterPosition(), true);
                 }
-            }
-            else if (v.getId() == R.id.btnUnInstall) {
+            } else if (v.getId() == R.id.btnUnInstall) {
 
                 switch (userSpace) {
 

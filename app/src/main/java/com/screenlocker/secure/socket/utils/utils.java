@@ -78,6 +78,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.FAIL_SAFE_URL_FOR_WHITE_LABEL;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
@@ -86,6 +87,7 @@ import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
@@ -101,6 +103,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
 
 public class utils {
@@ -369,6 +372,17 @@ public class utils {
 
         } else {
             Timber.d("device is not linked");
+        }
+    }
+
+
+    public static void saveLiveUrl(boolean isFailSafe) {
+        if (isFailSafe) {
+            Timber.d("-------> Saving Live FailSafe Url . %s", FAIL_SAFE_URL_FOR_WHITE_LABEL);
+            PrefUtils.saveStringPref(MyApplication.getAppContext(), LIVE_URL, FAIL_SAFE_URL_FOR_WHITE_LABEL);
+        } else {
+            Timber.d("-------> Saving Live Url . %s", WHITE_LABEL_URL);
+            PrefUtils.saveStringPref(MyApplication.getAppContext(), LIVE_URL, WHITE_LABEL_URL);
         }
     }
 

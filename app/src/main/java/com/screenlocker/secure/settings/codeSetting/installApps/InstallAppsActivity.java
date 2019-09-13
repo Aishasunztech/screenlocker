@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
@@ -32,7 +31,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
@@ -43,7 +41,11 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -56,15 +58,13 @@ import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
 
 
@@ -72,15 +72,11 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         DownloadServiceCallBacks, OnAppsRefreshListener {
     private InstallAppsAdapter mAdapter;
     private List<ServerAppInfo> appModelServerAppInfo = new ArrayList<>();
-    private AlertDialog progressDialog;
     public static final String TAG = InstallAppsActivity.class.getSimpleName();
     private PackageManager mPackageManager;
-    private boolean isBackPressed;
-    private boolean isInstallDialogOpen;
     private SwipeRefreshLayout refreshLayout;
     private ProgressBar progressBar;
 
-    private AsyncCalls asyncCalls;
     private LockScreenService mService = null;
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -105,6 +101,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         }
     };
 
+    boolean isFailSafe = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,34 +117,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         IntentFilter filter = new IntentFilter(AppConstants.PACKAGE_INSTALLED);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
-
-
-        if (MyApplication.oneCaller == null) {
-            String[] urls = {URL_1, URL_2};
-
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-
-            asyncCalls = new AsyncCalls(output -> {
-
-                if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    getAllApps();
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                }
-
-            }, this, urls);
-            asyncCalls.execute();
-
-        } else {
-            getAllApps();
-
-        }
+        getAllApps(RetrofitClientInstance.getWhiteLabelInstance());
 
     }
 
@@ -159,31 +130,88 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
 
-    private void getAllApps() {
-        if (CommonUtils.isNetworkAvailable(this)) {
+    private void getAllApps(ApiOneCaller apiOneCaller) {
+        Timber.d("<<< Getting all apps from server >>> ");
 
-            MyApplication.oneCaller
+        if (CommonUtils.isNetworkAvailable(this)) {
+            apiOneCaller
                     .getApps()
                     .enqueue(new Callback<InstallAppModel>() {
                         @Override
-                        public void onResponse(Call<InstallAppModel> call, Response<InstallAppModel> response) {
-
-                            if (response.body() != null && response.body().isSuccess()) {
+                        public void onResponse(@NotNull Call<InstallAppModel> call, @NotNull Response<InstallAppModel> response) {
 
 
-                                appModelServerAppInfo.addAll(response.body().getServerAppInfo());
-                                if (appModelServerAppInfo.size() == 0) {
-                                    //empty state should be here
+                            boolean responseStatus = response.isSuccessful();
+
+                            Timber.i("-------> get all apps response status %s", responseStatus);
+
+
+                            if (responseStatus) {
+                                if (response.body() != null) {
+                                    InstallAppModel installAppModel = response.body();
+
+                                    boolean tokenStatus = installAppModel.isSuccess();
+
+                                    Timber.i("------------> token verification status from server : %s", tokenStatus);
+
+                                    if (tokenStatus) {
+
+                                        saveLiveUrl(isFailSafe);
+
+                                        List<ServerAppInfo> appInfos = installAppModel.getServerAppInfo();
+
+
+                                        if (appModelServerAppInfo != null) {
+
+                                            Timber.i("----------> total apps from server : %s", appInfos.size());
+
+                                            appModelServerAppInfo.addAll(appInfos);
+                                            if (appModelServerAppInfo.size() == 0) {
+                                                //empty state should be here
+                                            }
+
+                                            checkAppInstalledOrNot(appModelServerAppInfo);
+                                            mAdapter.notifyDataSetChanged();
+                                        } else {
+                                            Timber.e("-----------> apps list from server is null :( ");
+                                        }
+
+
+                                    } else {
+                                        Timber.e("-----------> token is not verified from server .");
+                                    }
+
+                                } else {
+                                    Timber.e("------------> Response body is null . :(");
                                 }
-                                checkAppInstalledOrNot(appModelServerAppInfo);
-                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                Timber.i("-----------> oops wrong response code from server.");
                             }
+
 
                         }
 
                         @Override
-                        public void onFailure(Call<InstallAppModel> call, Throwable t) {
-                            Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        public void onFailure(@NotNull Call<InstallAppModel> call, @NotNull Throwable t) {
+
+                            Timber.d("onFailure : %s", t.getMessage());
+
+                            if (t instanceof UnknownHostException) {
+                                Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                                if (isFailSafe) {
+                                    Timber.e("------------> FailSafe domain is also not working. ");
+                                } else {
+                                    Timber.i("<<< New Api call with failsafe domain >>>");
+                                    getAllApps(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                    isFailSafe = true;
+                                }
+
+                            } else if (t instanceof IOException) {
+                                Timber.e(" ----> IO Exception :%s", t.getMessage());
+                                Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                            }
+
+
                         }
                     });
 
@@ -253,70 +281,98 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     public void onRefresh() {
 
+        Timber.d("<<< On Refresh >>>");
+
         if (CommonUtils.isNetworkAvailable(this)) {
-
-
-            if (MyApplication.oneCaller == null) {
-                String[] urls = {URL_1, URL_2};
-
-                if (asyncCalls != null) {
-                    asyncCalls.cancel(true);
-                }
-
-                asyncCalls = new AsyncCalls(output -> {
-
-                    if (output != null) {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        Timber.d("live_url %s", live_url);
-                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        refreshLocalApps();
-                    } else {
-                        refreshLayout.setRefreshing(false);
-                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    }
-
-                }, this, urls);
-                asyncCalls.execute();
-            } else {
-                refreshLocalApps();
-            }
-
-
+            refreshLocalApps(RetrofitClientInstance.getWhiteLabelInstance());
         } else {
             refreshLayout.setRefreshing(false);
             Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
         }
 
+
     }
 
-    private void refreshLocalApps() {
-        MyApplication.oneCaller
+    private void refreshLocalApps(ApiOneCaller apiOneCaller) {
+
+        Timber.d("<<< Refreshing local apps from server >>>");
+
+        apiOneCaller
                 .getApps()
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                refreshLayout.setRefreshing(false);
-                                appModelServerAppInfo.clear();
-                                appModelServerAppInfo.addAll(response.body().getServerAppInfo());
-                                mAdapter.notifyDataSetChanged();
-                                checkAppInstalledOrNot(appModelServerAppInfo);
-                            } else {
-                                if (response.body().getServerAppInfo() == null) {
+
+                        boolean responseStatus = response.isSuccessful();
+
+                        Timber.i("-----------> get apps response status from server %s", responseStatus);
+
+                        if (responseStatus) {
+                            if (response.body() != null) {
+                                InstallAppModel installAppModel = response.body();
+                                boolean tokenStatus = installAppModel.isSuccess();
+
+                                if (tokenStatus) {
+                                    saveLiveUrl(isFailSafe);
                                     refreshLayout.setRefreshing(false);
                                     appModelServerAppInfo.clear();
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            }
 
+                                    List<ServerAppInfo> appInfos = installAppModel.getServerAppInfo();
+
+                                    if (appInfos != null) {
+                                        Timber.i("------------> apps from server size : %s", appInfos.size());
+                                        appModelServerAppInfo.addAll(appInfos);
+                                        mAdapter.notifyDataSetChanged();
+                                        checkAppInstalledOrNot(appModelServerAppInfo);
+                                    } else {
+                                        Timber.i("-----------> apps list from server is null ");
+                                        if (installAppModel.getServerAppInfo() == null) {
+                                            refreshLayout.setRefreshing(false);
+                                            appModelServerAppInfo.clear();
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+
+                                } else {
+                                    Timber.e("-----------> token is not verified. ");
+                                    if (installAppModel.getServerAppInfo() == null) {
+                                        refreshLayout.setRefreshing(false);
+                                        appModelServerAppInfo.clear();
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                            } else {
+                                Timber.e("--------------> response body is null :( .");
+                            }
+                        } else {
+                            Timber.e("------------> oops wrong response code from server :( .");
                         }
+
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-                        Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+
+                        Timber.d("onFailure : %s", t.getMessage());
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                refreshLocalApps(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                            Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        }
+
+
                     }
                 });
     }
@@ -428,7 +484,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!apksPath.exists()) {
             apksPath.mkdir();
         }
-        String url = live_url + MOBILE_END_POINT + "getApk/" +
+        String url = live_url + "getApk/" +
                 CommonUtils.splitName(app.getApk());
         String fileName = file.getAbsolutePath();
         if (!file.exists()) {
@@ -474,8 +530,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         refreshApps(this);
 
-        isBackPressed = false;
-        isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelServerAppInfo);
         mAdapter.notifyDataSetChanged();
 
@@ -499,7 +553,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        isBackPressed = true;
     }
 
 

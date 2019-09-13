@@ -24,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
@@ -52,7 +53,7 @@ public class ApiUtils implements ApiRequests {
     private String ip;
     private String uniqueName;
 
-    private boolean failSafeStatus;
+    private boolean isFailSafe;
 
 
     public ApiUtils(Context context, String macAddress, String serialNo) {
@@ -61,7 +62,7 @@ public class ApiUtils implements ApiRequests {
         this.serialNo = serialNo;
         this.ip = DeviceIdUtils.getIPAddress(true);
         this.uniqueName = context.getPackageName() + context.getString(R.string.app_name);
-        this.failSafeStatus = true;
+        this.isFailSafe = false;
 
         Timber.d("<<< ApiUtils >>>");
 
@@ -93,7 +94,7 @@ public class ApiUtils implements ApiRequests {
 
                         boolean responseStatus = response.isSuccessful();
 
-                        Timber.i("-------> Response Status : " + responseStatus);
+                        Timber.i("-------> Response Status : %s", responseStatus);
 
                         if (responseStatus) {
 
@@ -108,11 +109,11 @@ public class ApiUtils implements ApiRequests {
 
                                 msg = msg == null ? "n/a" : msg;
 
-                                Timber.d("-----> msg from server :" + msg);
+                                Timber.d("-----> msg from server :%s", msg);
 
                                 boolean deviceStatus = deviceStatusResponse.isStatus();
 
-                                Timber.i("-----> Device Status :" + deviceStatus);
+                                Timber.i("-----> Device Status :%s", deviceStatus);
 
                                 if (deviceStatus) {
 
@@ -146,7 +147,7 @@ public class ApiUtils implements ApiRequests {
                                             suspendedDevice(context, "flagged");
                                             break;
                                         default:
-                                            Timber.e("-------> wrong msg from server :" + msg);
+                                            Timber.e("-------> wrong msg from server :%s", msg);
                                     }
                                 } else {
 
@@ -160,7 +161,7 @@ public class ApiUtils implements ApiRequests {
                                             utils.newDevice(context, true);
                                             break;
                                         default:
-                                            Timber.e("-------> wrong msg from server :" + msg);
+                                            Timber.e("-------> wrong msg from server :%s", msg);
                                     }
                                 }
 
@@ -175,22 +176,22 @@ public class ApiUtils implements ApiRequests {
 
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
-                        Timber.d("onFailure : " + t);
+                        Timber.d("onFailure : %s", t.getMessage());
 
                         if (t instanceof UnknownHostException) {
-                            Timber.e("-----------> something very dangerous happen with domain : " + t.getMessage());
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
 
-                            if (failSafeStatus) {
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
                                 Timber.i("<<< New Api call with failsafe domain >>>");
                                 checkDeviceStatus(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
-                                failSafeStatus = false;
-                            } else {
-                                Timber.e("------------> FailSafe domain is also not working. ");
+                                isFailSafe = true;
                             }
 
                             return;
                         } else if (t instanceof IOException) {
-                            Timber.e(" ----> IO Exception :" + t.getMessage());
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
                         }
 
 
@@ -229,14 +230,7 @@ public class ApiUtils implements ApiRequests {
 
         Timber.i("-----------> saving device info . ");
 
-        if (failSafeStatus) {
-            Timber.d("-------> Saving Live Url . " + WHITE_LABEL_URL);
-            PrefUtils.saveStringPref(context, LIVE_URL, WHITE_LABEL_URL);
-        } else {
-            Timber.d("-------> Saving Live FailSafe Url . " + FAIL_SAFE_URL_FOR_WHITE_LABEL);
-
-            PrefUtils.saveStringPref(context, LIVE_URL, FAIL_SAFE_URL_FOR_WHITE_LABEL);
-        }
+        saveLiveUrl(isFailSafe);
 
         PrefUtils.saveStringPref(context, TOKEN, token);
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);

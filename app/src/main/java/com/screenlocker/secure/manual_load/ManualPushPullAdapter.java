@@ -68,7 +68,7 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
 
         String live_url = PrefUtils.getStringPref(context, LIVE_URL);
 
-        Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + installModelArrayList.get(position).getApk());
+        Timber.d("skljdgvhsdgsgsj :%s", live_url.replaceAll("/mobile/", "") + LOGO_END_POINT + installModelArrayList.get(position).getApk());
 
 
     }

@@ -33,7 +33,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -51,6 +50,8 @@ import com.secureMarket.ui.home.SharedViwModel;
 import com.secureMarket.ui.home.UpdateAppsFragment;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,23 +66,20 @@ import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.secureMarket.MarketUtils.savePackages;
 
 public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
 
     private LockScreenService mService = null;
-    private AsyncCalls asyncCalls;
     private List<ServerAppInfo> appInfos = new ArrayList<>();
     private List<ServerAppInfo> newApps = new ArrayList<>();
     private List<ServerAppInfo> updatesInfo = new ArrayList<>();
@@ -118,9 +116,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         //Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
             //   getAdminApps();
-            getServerApps(null);
+            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
         } else {
-            getServerApps(dealerId);
+            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
             // getAllApps(dealerId);
         }
 
@@ -217,6 +215,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void onDownLoadProgress(String pn, int progress, long speed) {
+
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             if (fragment != null) {
@@ -309,70 +308,76 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     };
 
 
-    private void getServerApps(String dealerId) {
+    private void getServerApps(String dealerId, ApiOneCaller apiOneCaller) {
 
-        if (MyApplication.oneCaller == null) {
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-            String[] urls = {URL_1, URL_2};
-            asyncCalls = new AsyncCalls(output -> {
-                if (output == null) {
-                    Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+        Timber.d("<<< Getting Server Apps >>>");
 
-                    if (dealerId == null) {
-                        getAdminApps();
-                    } else {
-                        getAllApps(dealerId);
-                    }
-                }
-            }, this, urls);
-
+        if (dealerId == null) {
+            Timber.i("-----------> getting admin apps ");
+            getAdminApps(apiOneCaller);
         } else {
-
-            if (dealerId == null) {
-                getAdminApps();
-            } else {
-                getAllApps(dealerId);
-            }
+            Timber.i("---------> getting dealer apps and dealer id is :%s", dealerId);
+            getAllApps(dealerId, apiOneCaller);
         }
     }
 
-    private void getAllApps(String dealerId) {
+    private void getAllApps(String dealerId, ApiOneCaller apiOneCaller) {
 
 //        progressBar.setVisibility(View.GONE);
-        MyApplication.oneCaller
+        apiOneCaller
                 .getAllApps("marketApplist/" + dealerId)
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().isSuccess()) {
+                        boolean responseStatus = response.isSuccessful();
 
-                                setupApps(response);
+                        Timber.i("---------> get admin apps response status :%s", responseStatus);
 
+
+                        if (responseStatus) {
+
+                            if (response.body() != null) {
+
+                                boolean tokenStatus = response.body().isSuccess();
+                                if (tokenStatus) {
+                                    saveLiveUrl(isFailSafe);
+                                    setupApps(response);
+                                } else {
+                                    //TODO: handle token auth fail
+                                    Timber.e("--------------> token verification failed from server :( ");
+                                }
 
                             } else {
-                                ////TODO: handle token auth fail
+                                Timber.e("response body is null :(");
                             }
 
                         } else {
                             //TODO: server responded with other then 200 response code
+                            Timber.i("-----------> response code is not valid :( ");
                         }
-                        //swipeRefreshLayout.setRefreshing(false);
+
 
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
                         //TODO when network failure or error while creating request or building response
 
+                        Timber.d("onFailure : %s", t.getMessage());
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                getAllApps(dealerId, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
 
                     }
                 });
@@ -380,8 +385,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     }
 
     private void setupApps(@NonNull Response<InstallAppModel> response) {
+
         appInfos.clear();
-        appInfos.addAll(response.body().getServerAppInfo());
+        if (response.body() != null) {
+            appInfos.addAll(response.body().getServerAppInfo());
+        }
         refreshAppList();
 
     }
@@ -413,22 +421,42 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         sharedViwModel.setUpdates(updatesInfo);
     }
 
-    private void getAdminApps() {
-//        progressBar.setVisibility(View.VISIBLE);
-        MyApplication.oneCaller
+    private boolean isFailSafe = false;
+
+    private void getAdminApps(ApiOneCaller apiOneCaller) {
+
+        apiOneCaller
                 .getAdminApps()
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().isSuccess()) {
-                                setupApps(response);
+
+                        boolean responseStatus = response.isSuccessful();
+
+                        Timber.i("---------> get admin apps response status :%s", responseStatus);
+
+
+                        if (responseStatus) {
+
+                            if (response.body() != null) {
+
+
+                                boolean tokenStatus = response.body().isSuccess();
+                                if (tokenStatus) {
+                                    saveLiveUrl(isFailSafe);
+                                    setupApps(response);
+                                } else {
+                                    //TODO: handle token auth fail
+                                    Timber.e("--------------> token verification failed from server :( ");
+                                }
+
                             } else {
-                                //TODO: handle token auth fail
+                                Timber.e("response body is null :(");
                             }
 
                         } else {
                             //TODO: server responded with other then 200 response code
+                            Timber.i("-----------> response code is not valid :( ");
                         }
 
 
@@ -437,6 +465,22 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
                         //TODO when network failure or error while creating request or building response
+
+                        Timber.d("onFailure : %s", t.getMessage());
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                getAdminApps(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
 
                     }
 
@@ -450,7 +494,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+//           Timber.e(e);
         }
 
         return false;
@@ -464,7 +508,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             }
             return false;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+//            Timber.e(e);
         }
 
         return false;
@@ -561,9 +605,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         //Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
             //   getAdminApps();
-            getServerApps(null);
+            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
         } else {
-            getServerApps(dealerId);
+            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
             // getAllApps(dealerId);
         }
     }
@@ -581,6 +625,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+
                 AppConstants.INSTALLING_APP_NAME = app.getApkName();
                 AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
 
@@ -590,8 +635,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
-                String url = live_url + MOBILE_END_POINT + "getApk/" +
+                String url = live_url + "getApk/" +
                         CommonUtils.splitName(app.getApk());
+
+                Timber.i("LIVE URL :%s", url);
+
                 String fileName = file.getAbsolutePath();
                 if (!file.exists()) {
 

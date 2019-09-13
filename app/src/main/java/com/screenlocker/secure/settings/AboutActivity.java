@@ -20,11 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.retrofit.RetrofitClientInstance;
-import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -45,11 +41,8 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
@@ -281,7 +274,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private AsyncCalls asyncCalls;
 
     private void refresh() {
 
@@ -296,31 +288,15 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_online)));
             } else {
                 runOnUiThread(() -> onlineStatus.setText(getResources().getString(R.string.status_disconnected)));
-                String[] urls = {URL_1, URL_2};
-                if (asyncCalls != null) {
-                    asyncCalls.cancel(true);
+                boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+                Timber.d("LinkStatus :" + linkStatus);
+                if (linkStatus) {
+                    Timber.d("LinkStatus :" + linkStatus);
+                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                    String serialNo = DeviceIdUtils.getSerialNumber();
+                    runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
+                    new ApiUtils(this, macAddress, serialNo);
                 }
-                asyncCalls = new AsyncCalls(output -> {
-                    Timber.d("output : " + output);
-                    if (output != null) {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                        Timber.d("live_url %s", live_url);
-                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-                        Timber.d("LinkStatus :" + linkStatus);
-                        if (linkStatus) {
-                            Timber.d("LinkStatus :" + linkStatus);
-                            String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                            String serialNo = DeviceIdUtils.getSerialNumber();
-                            runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
-                            new ApiUtils(this, macAddress, serialNo);
-                        }
-                    } else {
-                        runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
-                    }
-                }, this, urls);// checking hosts
-                asyncCalls.execute();
             }
         } else {
             showNetworkDialog();
@@ -416,7 +392,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         }
 
 
-        URL_1 = url;
+        AppConstants.WHITE_LABEL_URL = url + "/mobile/";
 
         Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }

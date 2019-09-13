@@ -8,13 +8,15 @@ import androidx.annotation.NonNull;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,43 +25,16 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
 public class CheckUpdateService extends JobService {
 
-    private AsyncCalls asyncCalls;
+    boolean isFailSafe = false;
 
     @Override
     public boolean onStartJob(JobParameters params) {
 
-        if (MyApplication.oneCaller == null) {
-
-            String[] urls = {URL_1, URL_2};
-
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-
-            asyncCalls = new AsyncCalls(output -> {
-                Timber.d("output : " + output);
-                if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    checkForDownload(params);
-                }
-            }, this, urls);// checking hosts
-            asyncCalls.execute();
-
-        } else {
-            checkForDownload(params);
-
-        }
-
+        checkForDownload(params, RetrofitClientInstance.getWhiteLabelInstance());
 
         return true;
     }
@@ -76,7 +51,7 @@ public class CheckUpdateService extends JobService {
 
     private DownLoadAndInstallUpdate obj;
 
-    private void checkForDownload(JobParameters params) {
+    private void checkForDownload(JobParameters params, ApiOneCaller apiOneCaller) {
 
         String currentVersion = "1";
         try {
@@ -85,7 +60,7 @@ public class CheckUpdateService extends JobService {
             Timber.d(e);
         }
 
-        MyApplication.oneCaller
+        apiOneCaller
                 .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
@@ -96,15 +71,15 @@ public class CheckUpdateService extends JobService {
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, params);
+                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + "getApk/" + CommonUtils.splitName(url), true, params);
                                     obj.execute();
 
                                 }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
 
 
                             } else {
-                                saveToken();
-                                checkForDownload(params);
+                                saveToken(RetrofitClientInstance.getWhiteLabelInstance());
+                                checkForDownload(params, apiOneCaller);
                             }
 
                         }
@@ -112,7 +87,20 @@ public class CheckUpdateService extends JobService {
 
                     @Override
                     public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
 
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                checkForDownload(params, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
                     }
                 });
 

@@ -20,8 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -35,6 +33,8 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
@@ -57,8 +58,6 @@ import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_CONNECTED_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEALER_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
@@ -66,8 +65,6 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 
@@ -225,8 +222,6 @@ public class MainActivity extends BaseActivity {
     String SerialNo;
 
 
-    private AsyncCalls asyncCalls;
-
     private void initAutoLogin() {
 
         IMEI = DeviceIdUtils.getIMEI(MainActivity.this);
@@ -234,34 +229,14 @@ public class MainActivity extends BaseActivity {
 
         showLoading();
 
-        if (MyApplication.oneCaller == null) {
-
-            String[] urls = {URL_1, URL_2};
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-            asyncCalls = new AsyncCalls(output -> {
-                if (output == null) {
-                    showError(getResources().getString(R.string.server_error));
-                } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    checkDeviceStatus();
-                }
-            }, this, urls);
-
-        } else {
-            checkDeviceStatus();
-        }
+        checkDeviceStatus(RetrofitClientInstance.getWhiteLabelInstance());
 
 
     }
 
 
-    private void checkDeviceStatus() {
-        MyApplication.oneCaller
+    private void checkDeviceStatus(ApiOneCaller apiOneCaller) {
+        apiOneCaller
                 .checkDeviceStatus(new DeviceModel(DeviceIdUtils.getSerialNumber(), DeviceIdUtils.getIPAddress(true), getPackageName() + getString(R.string.app_name), DeviceIdUtils.generateUniqueDeviceId(this)))
                 .enqueue(new Callback<DeviceStatusResponse>() {
                     @Override
@@ -276,10 +251,11 @@ public class MainActivity extends BaseActivity {
 
                             if (response.body().isStatus()) {
 
+                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+
                                 switch (msg) {
 
                                     case ACTIVE:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -287,19 +263,16 @@ public class MainActivity extends BaseActivity {
                                         finish();
                                         break;
                                     case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(MainActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(MainActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -308,7 +281,6 @@ public class MainActivity extends BaseActivity {
                                         break;
                                     case PENDING:
 //                                        pending = true;
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
                                         startActivity(intent);
                                         finish();
@@ -354,7 +326,26 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
 
+
+                        if (t instanceof UnknownHostException) {
+                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                            if (isFailSafe) {
+                                Timber.e("------------> FailSafe domain is also not working. ");
+                            } else {
+                                Timber.i("<<< New Api call with failsafe domain >>>");
+                                checkDeviceStatus(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                isFailSafe = true;
+                            }
+
+                            return;
+                        } else if (t instanceof IOException) {
+                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+                        }
+
+
                         showError(AppConstants.SEVER_NOT_RESPONSIVE);
+
                         if (lytSwipeRefresh.isRefreshing()) {
                             lytSwipeRefresh.setRefreshing(false);
                         }
@@ -408,7 +399,10 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    private boolean isFailSafe = false;
+
     private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+        saveLiveUrl(isFailSafe);
         PrefUtils.saveStringPref(MainActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(MainActivity.this, VALUE_EXPIRED, expiry_date);
@@ -417,55 +411,27 @@ public class MainActivity extends BaseActivity {
 
     private void handleSubmit() {
 
-        final String dealerPin = etPin.getText().toString().trim();
+        String dealerPin = etPin.getText().toString().trim();
 
-        if (MyApplication.oneCaller == null) {
-            String[] urls = {URL_1, URL_2};
-
-            if (asyncCalls != null) {
-                asyncCalls.cancel(true);
-            }
-            asyncCalls = new AsyncCalls(output -> {
-                if (output == null) {
-                    showError(getResources().getString(R.string.server_error));
-                } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
-                    Timber.d("live_url %s", live_url);
-                    MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                    if (dealerPin.length() == 6) {
-                        request(1, dealerPin);
-
-                    } else if (dealerPin.length() == 7) {
-                        request(2, dealerPin);
-
-                    } else {
-                        etPin.setError(getResources().getString(R.string.invaild_dealer_code));
-                    }
-                }
-            }, this, urls);
+        if (dealerPin.length() == 6) {
+            request(1, dealerPin, RetrofitClientInstance.getWhiteLabelInstance());
+        } else if (dealerPin.length() == 7) {
+            request(2, dealerPin, RetrofitClientInstance.getWhiteLabelInstance());
 
         } else {
-            if (dealerPin.length() == 6) {
-                request(1, dealerPin);
-            } else if (dealerPin.length() == 7) {
-                request(2, dealerPin);
-
-            } else {
-                etPin.setError(getResources().getString(R.string.invaild_dealer_code));
-            }
+            etPin.setError(getResources().getString(R.string.invaild_dealer_code));
         }
 
 
     }
 
 
-    private void request(int type, String dealerPin) {
+    private void request(int type, String dealerPin, ApiOneCaller apiOneCaller) {
         disableViews();
 
         if (type == 1) {
 
-            MyApplication.oneCaller
+            apiOneCaller
                     .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
@@ -475,14 +441,14 @@ public class MainActivity extends BaseActivity {
                                 DeviceLoginResponse dlr = response.body();
 
                                 if (dlr.isStatus()) {
+                                    saveLiveUrl(isFailSafe);
                                     PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, "" + dlr.getdId());
                                     PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, "" + dlr.getDealer_pin());
                                     PrefUtils.saveStringPref(MainActivity.this, KEY_CONNECTED_ID, "" + dlr.getConnectedDid());
-
                                     PrefUtils.saveStringPref(MainActivity.this, TOKEN, dlr.getToken());
-
                                     link = true;
                                     startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
+                                    finish();
                                 } else {
                                     etPin.setError(getResources().getString(R.string.invalid_link_code));
 //                                            etPin.setError(dlr.getMsg());
@@ -493,6 +459,23 @@ public class MainActivity extends BaseActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
+
+                            if (t instanceof UnknownHostException) {
+                                Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                                if (isFailSafe) {
+                                    Timber.e("------------> FailSafe domain is also not working. ");
+                                } else {
+                                    Timber.i("<<< New Api call with failsafe domain >>>");
+                                    request(type, dealerPin, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                    isFailSafe = true;
+                                }
+
+                                return;
+                            } else if (t instanceof IOException) {
+                                Timber.e(" ----> IO Exception :%s", t.getMessage());
+                            }
+
                             enableViews();
                         }
                     });
@@ -500,7 +483,7 @@ public class MainActivity extends BaseActivity {
 
         } else if (type == 2) {
 
-            MyApplication.oneCaller
+            apiOneCaller
                     .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.type), BuildConfig.VERSION_NAME))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
@@ -510,6 +493,7 @@ public class MainActivity extends BaseActivity {
                                 DeviceLoginResponse dlr = response.body();
 
                                 if (dlr.isStatus()) {
+                                    saveLiveUrl(isFailSafe);
                                     PrefUtils.saveStringPref(MainActivity.this, KEY_DEALER_ID, dlr.getdId());
                                     PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, dlr.getDevice_id());
                                     PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dlr.getDealer_pin());
@@ -525,6 +509,24 @@ public class MainActivity extends BaseActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<DeviceLoginResponse> call, @NonNull Throwable t) {
+
+                            if (t instanceof UnknownHostException) {
+                                Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+
+                                if (isFailSafe) {
+                                    Timber.e("------------> FailSafe domain is also not working. ");
+                                } else {
+                                    Timber.i("<<< New Api call with failsafe domain >>>");
+                                    request(type, dealerPin, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                    isFailSafe = true;
+                                }
+
+                                return;
+                            } else if (t instanceof IOException) {
+                                Timber.e(" ----> IO Exception :%s", t.getMessage());
+                            }
+
+
                             enableViews();
                         }
                     });
