@@ -2,13 +2,9 @@ package com.screenlocker.secure.settings.codeSetting.systemControls;
 
 import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -28,7 +24,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
@@ -113,7 +108,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
     @Override
     public void OnPermisionChangeListener(Settings setting, boolean isChecked) {
-        Log.d("doWork", "OnPermisionChangeListener: "+setting.getSetting_name()+" : "+isChecked);
         switch (setting.getSetting_name()) {
             case AppConstants.SET_WIFI:
                 if (mDPM.isDeviceOwnerApp(getPackageName())){
@@ -121,6 +115,9 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                }
+                else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -130,6 +127,8 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                }else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case AppConstants.SET_BLUE_FILE_SHARING:
@@ -162,18 +161,26 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                 }
                 break;
             case AppConstants.SET_HOTSPOT:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
-                } else {
-                    mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    } else {
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    }
+                }else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
             case AppConstants.SET_MIC:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
-                } else
-                    mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                }else {
+                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case AppConstants.SET_SPEAKER:
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {

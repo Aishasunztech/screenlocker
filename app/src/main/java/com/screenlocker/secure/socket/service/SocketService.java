@@ -295,6 +295,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             forceUpdateCheck();
             getSimUpdates();
             sendSystemEvents();
+            getSystemEvents();
 
 
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
@@ -321,6 +322,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().off(GET_POLICY + device_id);
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
                 socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
+                socketManager.getSocket().off( SYSTEM_EVENT_BUS+ device_id);
             }
 
 
@@ -1435,10 +1437,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             JSONObject jsonObject = new JSONObject();
             try {
                 if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
-                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                     JSONObject object = new JSONObject();
                     object.put("type", getResources().getString(R.string.apktype));
-
+                    object.put("firmware_info", Build.DISPLAY);
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                     jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
                     jsonObject.put("object", object);
@@ -1450,6 +1451,40 @@ public class SocketService extends Service implements OnSocketConnectionListener
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void getSystemEvents() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(SYSTEM_EVENT_BUS + device_id, args -> {
+                    Timber.d("<<< GETTING SYSTEM_EVENTS UPDATES >>>");
+                    JSONObject obj = (JSONObject) args[0];
+
+
+                    try {
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+                            String action = obj.getString("action");
+                            if (ACTION_DEVICE_TYPE_VERSION.equals(action)) {
+                                Timber.d("Saved");
+                                PrefUtils.saveIntegerPref(this, PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                            }
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.d(e);
         }
     }
 

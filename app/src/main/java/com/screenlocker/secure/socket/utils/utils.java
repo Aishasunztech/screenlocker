@@ -1003,18 +1003,22 @@ public class utils {
                 }
                 break;
             case AppConstants.SET_HOTSPOT:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
-                } else {
-                    mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    } else {
+                        mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
+                    }
                 }
 
                 break;
             case AppConstants.SET_MIC:
-                if (isChecked) {
-                    mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
-                } else
-                    mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())){
+                    if (isChecked) {
+                        mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                    } else
+                        mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
+                }
                 break;
             case AppConstants.SET_SPEAKER:
                 if (mDPM.isDeviceOwnerApp(context.getPackageName())) {

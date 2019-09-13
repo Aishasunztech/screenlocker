@@ -490,6 +490,7 @@ public class MainActivity extends BaseActivity {
 
                                     link = true;
                                     startActivity(new Intent(MainActivity.this, LinkDeviceActivity.class));
+                                    finish();
                                 } else {
                                     etPin.setError(getResources().getString(R.string.invalid_link_code));
 //                                            etPin.setError(dlr.getMsg());
