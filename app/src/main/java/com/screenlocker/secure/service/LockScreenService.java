@@ -411,18 +411,6 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
         DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(this, MyAdmin.class);
-//        * {@link #addPersistentPreferredActivity(ComponentName, IntentFilter, ComponentName)}, and its
-//     * package needs to be whitelisted for LockTask with
-//     * {@link #setLockTaskPackages(ComponentName, String[])}.
-//     *
-//     * @see #setLockTaskFeatures(ComponentName, int)
-//
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(Intent.CATEGORY_HOME);
-//        filter.addAction(Intent.ACTION_DEFAULT);
-//        mDPM.addPersistentPreferredActivity(compName,filter, new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity"));
-//        mDPM.setLockTaskPackages(compName, APP_PACKAGES);
-//        mDPM.setLockTaskFeatures(compName, LOCK_TASK_FEATURE_NONE|LOCK_TASK_FEATURE_HOME);
         if (mDPM.isDeviceOwnerApp(getPackageName())) {
             try {
                 if (!mDPM.isUninstallBlocked(compName, getPackageName()))

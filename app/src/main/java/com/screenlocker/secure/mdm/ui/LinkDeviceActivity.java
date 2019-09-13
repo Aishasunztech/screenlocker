@@ -620,6 +620,13 @@ public class LinkDeviceActivity extends BaseActivity {
             t = null;
         }
 
+        if (isFirstTime) {
+            isFirstTime = false;
+            lytSwipeReferesh.setRefreshing(true);
+            listener.onRefresh();
+            return;
+        }
+
         t = new Timer();
         t.schedule(new TimerTask() {
             @Override
@@ -719,9 +726,7 @@ public class LinkDeviceActivity extends BaseActivity {
             t = null;
         }
 
-        if (isFirstTime) {
-            isFirstTime = false;
-        }
+
         setProgressViews(false);
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
