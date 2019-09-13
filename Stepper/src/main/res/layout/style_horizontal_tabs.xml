@@ -51,7 +51,7 @@
         <com.github.fcannizzaro.materialstepper.widget.LockedViewPager
             android:id="@+id/stepPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -86,9 +86,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/ms_continue"
-                android:textSize="@dimen/material_stepper_bottombar_font"/>
+                android:textSize="@dimen/material_stepper_bottombar_font" />
 
         </RelativeLayout>
 

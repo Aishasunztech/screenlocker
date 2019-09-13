@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<RelativeLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.liveClientChat.LiveClientChatActivity">
+    <RelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.liveClientChat.LiveClientChatActivity">
 
-    <include layout="@layout/main_toolbar" android:id="@+id/include"/>
+        <include layout="@layout/main_toolbar" android:id="@+id/include"/>
 
         <WebView
             android:id="@+id/webview"
@@ -19,13 +19,49 @@
             android:layout_height="match_parent"
             android:layout_below="@id/include"/>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/webviewProgress"
-        android:layout_centerInParent="true"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/webviewProgress"
+            android:layout_centerInParent="true"/>
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/no_internet_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_centerInParent="true">
+            <ImageView
+                android:id="@+id/error_image"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:contentDescription="sm"
+                android:padding="@dimen/_8sdp"
+                android:src="@drawable/ic_no_internet_connection" />
+
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/_8sdp"
+                android:text="No Internet Connection"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:visibility="visible" />
+            <Button
+                android:layout_margin="@dimen/_8sdp"
+                android:id="@+id/btn_try_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_stepper_bg"
+                android:text="Try Again" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

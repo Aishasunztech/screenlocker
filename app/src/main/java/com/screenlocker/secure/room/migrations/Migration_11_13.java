@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+/**
+ * @author Muhammad Nadeem
+ * @Date 8/11/2019.
+ */
 public class Migration_11_13 extends Migration {
     /**
      * Creates a new migration between {@code startVersion} and {@code endVersion}.

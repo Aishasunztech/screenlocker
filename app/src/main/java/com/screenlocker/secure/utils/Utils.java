@@ -17,6 +17,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
@@ -796,6 +797,10 @@ public class Utils {
         Random generator = new Random();
         PendingIntent i = PendingIntent.getBroadcast(context, generator.nextInt(), delIntent, 0);
         packageInstaller.uninstall(packageName, i.getIntentSender());
+    }
+
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
 

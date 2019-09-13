@@ -193,6 +193,7 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun initFileManager() {
+        Log.d("nadeem", "notallowed")
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val data = intent.data
             if (data.scheme == "file") {
@@ -201,6 +202,7 @@ class MainActivity : SimpleActivity() {
                 val path = getRealPathFromURI(data)
                 if (path != null) {
                     openPath(path)
+                    Log.d("nadeem", path.toString())
                 } else {
                     openPath(config.homeFolder)
                 }
@@ -210,6 +212,7 @@ class MainActivity : SimpleActivity() {
                 tryOpenPathIntent(data.path, false)
             }
         } else {
+            Log.d("nadeem", config.homeFolder)
             openPath(config.homeFolder)
         }
     }

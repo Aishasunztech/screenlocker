@@ -57,7 +57,7 @@
         android:padding="@dimen/_18sdp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_capture"
-        android:elevation="@dimen/_8sdp"
+        android:contentDescription="sm" android:elevation="@dimen/_8sdp"
         android:stateListAnimator="@null"
         app:layout_constraintBottom_toBottomOf="@+id/patternLock"
         app:layout_constraintEnd_toEndOf="@+id/patternLock" />
@@ -122,10 +122,11 @@
     <TextView
         android:id="@+id/t9_key_clear"
         style="@style/keyboard_button"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_60sdp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toTopOf="@+id/t9_unlock"
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
         android:shadowColor="#000000"
@@ -136,8 +137,7 @@
         android:text="@string/btn_backspace"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/patternLock"
+        android:textSize="@dimen/_13ssp"
         app:layout_constraintLeft_toLeftOf="@id/patternLock" />
 
     <com.screenlocker.secure.views.patternlock.PatternLockView

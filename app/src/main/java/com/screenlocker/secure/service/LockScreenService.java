@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -90,6 +91,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.CLIENT_SOCKET_URL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -143,6 +145,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private boolean viewAdded = false;
     private View view;
     private SocketManager socketManager;
+
+    private NetworkChangeReceiver networkChangeReceiver;
 
     private HashSet<String> tempAllowed = new HashSet<>();
     private HashSet<String> blacklist = new HashSet<>();
@@ -316,10 +320,30 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 //        Timber.d("access service running %s ", isServiceConnected);
     }
 
-
     @Override
     public void isConnected(boolean state) {
+        if (!state) {
+            destroyClientChatSocket();
+        } else {
+            connectClientChatSocket();
+        }
 
+    }
+
+    public void destroyClientChatSocket() {
+        socketManager.destroyClientChatSocket();
+    }
+
+    public void connectClientChatSocket() {
+        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
+
+        if (deviceId == null) {
+            String serialNumber = DeviceIdUtils.getSerialNumber();
+            Log.d("serialslkdj", serialNumber);
+            deviceId = DeviceIdUtils.getSerialNumber();
+        }
+        Log.d("lkashdf", deviceId);
+        socketManager.connectClientChatSocket(deviceId, CLIENT_SOCKET_URL);
     }
 
 
@@ -379,22 +403,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
      public static String APP_SIGNATURE = "AD46E51439B7C0B3DBD5FD6A39E4BB73427B4F49";
   */
-    public void connectClientChatSocket() {
-        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
-
-        if (deviceId == null) {
-            String serialNumber = DeviceIdUtils.getSerialNumber();
-            Log.d("serialslkdj", serialNumber);
-            deviceId = DeviceIdUtils.getSerialNumber();
-        }
-        Log.d("lkashdf", deviceId);
-        socketManager.connectClientChatSocket(deviceId, "http://104.248.19.72:3004");
-    }
-
-    public void destroyClientChatSocket() {
-        socketManager.destroyClientChatSocket();
-    }
-
 
     @Override
     public void onCreate() {
@@ -492,6 +500,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
+
+
+        networkChangeReceiver = new NetworkChangeReceiver();
+        networkChangeReceiver.setNetworkChangeListener(this);
+
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
 
         startForeground(R.string.app_name, notification);
@@ -894,11 +908,9 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else {
             windowType = WindowManager.LayoutParams.TYPE_TOAST |
                     WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        } else {
-            windowType = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
 
@@ -1108,27 +1120,17 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             params = null;
             params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
+        } else if (key.equals(DEVICE_ID)) {
+            destroyClientChatSocket();
+            connectClientChatSocket();
         }
     };
 
 
-    //    protected void addView(int colorId) {
-//        mView.setBackgroundColor(getResources().getColor(colorId));
-//        windowManager.addView(mView, localLayoutParams);
-//    }
-//
-//    protected void removeView() {
-//        Timber.d("removeView: ");
-//        if (mView != null && mView.getWindowToken() != null) {
-//            if (windowManager != null) {
-//                windowManager.removeViewImmediate(mView);
-//            }
-//        }
-//    }
     protected void addView(Context context, boolean reboot) {
         Timber.d("addView: ");
         try {
-//            mView.setBackground(drawable);
+
             if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -1138,38 +1140,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     view = inflater.inflate(R.layout.action_restricted_layout, null);
                 }
 
-//                Looper.prepare();
-//
-//                TextView textView = view.findViewById(R.id.text);
-//                textView.setText(text);
-
-//                mView.getWindow().getDecorView().setSystemUiVisibility(
-//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
                 mView.addView(view);
-
-
-//                imageView = new ImageView(this);
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
-//                imageView.setLayoutParams(params);
-//                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//
-//                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
-//
-//                textView = new TextView(this);
-//                textView.setGravity(Gravity.CENTER_HORIZONTAL);
-//                textView.setText("Action not allowed !");
-//                textView.setTextSize(18f);
-//                textView.setTextColor(getResources().getColor(R.color.white));
-//
-//
-//                mView.addView(imageView);
-//                mView.addView(textView);
 
                 windowManager.addView(mView, localLayoutParams);
                 viewAdded = true;
@@ -1193,8 +1164,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         try {
             if (mView != null && mView.getWindowToken() != null) {
                 if (windowManager != null) {
-//                    mView.removeView(imageView);
-//                    mView.removeView(textView);
                     mView.removeView(view);
                     windowManager.removeViewImmediate(mView);
                     viewAdded = false;

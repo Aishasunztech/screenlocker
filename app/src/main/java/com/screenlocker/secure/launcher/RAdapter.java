@@ -19,7 +19,6 @@ import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -108,8 +107,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
                         break;
-                    case AppConstants.SUPPORT_UNIQUE:
-                        context.startActivity(new Intent(context, ChatActivity.class));
+                    case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
+                        context.startActivity(new Intent(context, LiveClientChatActivity.class));
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
@@ -150,15 +149,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
                             break;
+                        case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
+                            context.startActivity(new Intent(context, LiveClientChatActivity.class));
+                            break;
                         case BuildConfig.APPLICATION_ID:
                             Intent launch = new Intent(context, SettingsActivity.class);
                             launch.setAction(ACTION_VIEW);
                             context.startActivity(launch);
                             break;
-                        case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
-                            Intent intent2 = new Intent(context, LiveClientChatActivity.class);
-                            context.startActivity(intent2);
-                            break;
+
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
 //                        launchIntent.setAction(Intent.ACTION_VIEW);
@@ -174,9 +173,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(context, "App not found", Toast.LENGTH_LONG).show();
-//                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
-//                        new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName())).start();
                 }
 
             } else {

@@ -11,8 +11,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,7 +89,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
-
     public static Context getAppContext() {
         return appContext;
     }
@@ -143,14 +140,14 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
-
         }
+
 
         Thread thread = new Thread() {
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11, 13), new Migration_13_14(13, 14))
+                        .addMigrations(new Migration_11_13(11, 13), new Migration_13_14(13, 14), new Migration_11_13(14, 15))
                         .build();
             }
         };

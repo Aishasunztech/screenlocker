@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.simplemobiletools.commons.R
-import com.simplemobiletools.commons.extensions.isFingerPrintSensorAvailable
 import com.simplemobiletools.commons.interfaces.HashListener
 import com.simplemobiletools.commons.interfaces.SecurityTab
 import com.simplemobiletools.commons.views.MyScrollView

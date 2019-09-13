@@ -79,14 +79,14 @@ public class PasswordOptionsStepFragment extends AbstractStep {
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(2);
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
+//            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
         });
         layout_pattern.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(2);
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
+//            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 2);
 
         });
         layout_combination.setOnClickListener(v -> {

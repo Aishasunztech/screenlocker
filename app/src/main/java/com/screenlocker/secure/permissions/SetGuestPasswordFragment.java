@@ -1,37 +1,37 @@
 package com.screenlocker.secure.permissions;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.settings.managepassword.PatternActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Validator;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
 
 import java.util.List;
 
@@ -42,11 +42,11 @@ import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
+import static com.screenlocker.secure.utils.Utils.dpToPx;
 
-public class SetGuestPasswordFragment extends AbstractStep {
+public class SetGuestPasswordFragment extends AbstractStep{
     private volatile String error = "";
     private Context mContext;
     private int mTry = 0;
@@ -63,8 +63,9 @@ public class SetGuestPasswordFragment extends AbstractStep {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION)) {
             case OPTION_PIN:
-                if (viewSwitcher != null)
-                    viewSwitcher.setDisplayedChild(1);
+//                viewSwitcher.setDisplayedChild(1);
+                pin_container.setVisibility(View.VISIBLE);
+                pattern_container.setVisibility(View.GONE);
                 if (etEnterPin != null) {
                     etEnterPin.setFocusable(true);
                     etEnterPin.setFocusableInTouchMode(true);
@@ -78,40 +79,12 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 }
                 break;
             case OPTION_PATTERN:
-                if (viewSwitcher != null)
-                    viewSwitcher.setDisplayedChild(0);
+//                viewSwitcher.setDisplayedChild(0);
+                pin_container.setVisibility(View.GONE);
+                pattern_container.setVisibility(View.VISIBLE);
 
         }
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
-//        if (getView() == null) {
-//            Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        getView().setFocusableInTouchMode(true);
-//        getView().requestFocus();
-//        getView().setOnKeyListener((v, keyCode, event) -> {
-//            Toast.makeText(mContext, "Hi ", Toast.LENGTH_SHORT).show();
-//            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//                int current_step = PrefUtils.getIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO);
-//                if (current_step == 2) {
-//                    // handle back button's click listener
-//                    if (mListener != null) {
-//                        mListener.onPageUpdate(1);
-//                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
-//                    }
-//                }
-//                return true;
-//            }
-//            return false;
-//        });
-//
-//    }
 
     @Override
     public boolean nextIf() {
@@ -124,13 +97,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
         }
         return false;
     }
-
-    @Override
-    public void onPrevious() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 1);
-        super.onPrevious();
-    }
-
 
     @Override
     public boolean isSkipable() {
@@ -173,8 +139,17 @@ public class SetGuestPasswordFragment extends AbstractStep {
     @BindView(R.id.profile_name)
     TextView responsTitle;
 
-    @BindView(R.id.view_switcher)
-    ViewSwitcher viewSwitcher;
+//    @BindView(R.id.view_switcher)
+//    ViewSwitcher viewSwitcher;
+
+    @BindView(R.id.pattern_container)
+    LinearLayout pattern_container;
+    @BindView(R.id.pin_container)
+    NestedScrollView pin_container;
+    @BindView(R.id.password_container)
+    LinearLayout password_container;
+    @BindView(R.id.main_layout)
+    RelativeLayout main_layout;
 
     /**
      * to confirm the user entered password
@@ -186,10 +161,29 @@ public class SetGuestPasswordFragment extends AbstractStep {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.guess_password_layout, container, false);
         ButterKnife.bind(this, v);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 //        etEnterPin.setHint(R.string.hint_please_enter_guest_pin);
 //        etEnterPin.setHint("Guest pin");
         pin_input_layout.setHint(getResources().getString(R.string.hint_please_enter_guest_pin));
         re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
+
+        main_layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                //r will be populated with the coordinates of your view that area still visible.
+                main_layout.getWindowVisibleDisplayFrame(r);
+
+                int heightDiff = main_layout.getRootView().getHeight() - (r.bottom - r.top);
+                if (heightDiff > 100) {
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) password_container.getLayoutParams();
+                    params.bottomMargin = dpToPx(150);
+                    password_container.setLayoutParams(params);
+                }
+            }
+        });
+
 //        etConfirmPin.setHint(R.string.hint_please_confirm_your_pin);
         img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_guest_icon));
         img_picture2.setImageDrawable(getResources().getDrawable(R.drawable.ic_guest_icon));
@@ -247,6 +241,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
                         responsTitle.setText("Please Draw Pattern");
+
                     }
                 }
             }
@@ -297,7 +292,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
         }
     }
 
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -308,5 +302,8 @@ public class SetGuestPasswordFragment extends AbstractStep {
 
         }
     }
+
+
+
 
 }

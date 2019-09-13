@@ -3,13 +3,9 @@ package com.screenlocker.secure.launcher;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -95,9 +91,7 @@ public class MainModel implements MainContract.MainMvpModel {
      * @param adapter adapter instance to populate the  list of apps we get from the package manager
      */
     @Override
-    public void addDataToList(List<AppInfo> allDbApps,  String message, RAdapter adapter) {
-
-
+    public void addDataToList(List<AppInfo> allDbApps, String message, RAdapter adapter) {
 
 
         if (message != null && !message.equals("")) {
@@ -111,11 +105,11 @@ public class MainModel implements MainContract.MainMvpModel {
 
                             break;
                         case AppConstants.KEY_SUPPORT_PASSWORD:
-                            if (model.getUniqueName().equals(AppConstants.SUPPORT_UNIQUE)) {
+                            if (model.getUniqueName().equals(AppConstants.LIVE_CLIENT_CHAT_UNIQUE)) {
                                 adapter.appsList.add(model);
                             } else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
                                 adapter.appsList.add(model);
-                            }else if (model.getPackageName().equals(context.getPackageName())){
+                            } else if (model.getPackageName().equals(context.getPackageName())) {
                                 adapter.appsList.add(model);
                             }
                             break;
@@ -129,7 +123,7 @@ public class MainModel implements MainContract.MainMvpModel {
                 }
             }
         }
-         ((MainActivity) context).removeOverlay();
+        ((MainActivity) context).removeOverlay();
     }
 
 }

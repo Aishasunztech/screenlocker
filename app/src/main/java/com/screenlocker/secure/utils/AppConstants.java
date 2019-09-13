@@ -94,7 +94,6 @@ public class AppConstants {
     public static final String ENCRYPT_DEFAULT_CONFIG = "encrypt_default_config";
     public static final String PENDING_ALARM_DIALOG = "pending_alarm_dialog";
     public static final String PENDING_DIALOG_MESSAGE = "pending_dialog_message";
-    public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
 
 
     //Server Links
@@ -108,21 +107,6 @@ public class AppConstants {
     public static final String FAIL_SAFE_URL_FOR_WHITE_LABEL = "https://securenet.guru/mobile/"; //fail safe url for white labels
 
     public static final String FAIL_SAFE_URL_FOR_SUPPER_ADMIN = "https://securenet.guru/api/v1/mobile/"; //fail safe url for supper admin
-
-
-    //servers links
-//    public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
-    //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//        public static final String URL_1 = "http://192.168.18.226:3000";//local
-    public static final String URL_2 = "https://securenet.guru";
-
-    //super admin domain
-//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-    //            public static final String SUPER_ADMIN = "http://192.168.18.240:3000";//local
-    public static final String SUPER_END_POINT = "/api/v1/mobile/";
-
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
@@ -212,7 +196,6 @@ public class AppConstants {
     public static final String PACKAGE_NAME = "package_name";
     public static final String DOWNLOADING_QUEUE = "downloading_list";
     public static final String PROGRESS = "progress";
-    public static final String CLIENT_CHAT_URL = "http://devlivechat.lockmesh.com/chat.php?ptn=";
 
     public static String AUTH_TOKEN = "com.secureportal.barryapp.utils.authorization_token";
 
@@ -295,10 +278,6 @@ public class AppConstants {
     //unique name for secure market
     public static final String SECURE_MARKET_UNIQUE = "com.secureMarket.SecureMarketActivitySecure Market";
     public static final String SECURE_MARKET_PACKAGE = "com.secureMarket.SecureMarketActivity";
-
-    //unique name for secure market
-    public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
-    public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
 
     // secure app
 
@@ -481,6 +460,15 @@ public class AppConstants {
     public static final String SET_MIC = "Microphone";
     public static final String SET_SPEAKER = "Speaker";
     public static final int SET_NUMBER = 9;
+
+
+    public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
+    public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
+    public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
+    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
+    //    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
+    public static final String CLIENT_SOCKET_URL = "https://devlivechatpn.lockmesh.com";
+    public static final String IS_LIVE_CLIENT_VISIBLE = "is_activity_visible";
 
 
 }

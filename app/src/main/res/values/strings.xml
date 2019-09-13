@@ -445,5 +445,7 @@
     <string name="tab_text_2">Updates</string>
     <string name="tab_text_3">Installed</string>
 
+    <string name="live_client_device_id">Live Customer Support(%1$s)</string>
+
 
 </resources>

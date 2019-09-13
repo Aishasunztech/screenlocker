@@ -21,8 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-
 import com.screenlocker.secure.mdm.base.BaseActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -65,7 +63,6 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIA
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
@@ -75,8 +72,6 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 

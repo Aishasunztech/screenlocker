@@ -2,16 +2,19 @@
 package com.screenlocker.secure.permissions;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -31,6 +34,7 @@ import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 
 import java.util.List;
 
@@ -44,6 +48,7 @@ import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
+import static com.screenlocker.secure.utils.Utils.dpToPx;
 
 public class SetDuressPasswordFragment extends AbstractStep {
     private String error = "";
@@ -52,7 +57,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
     private int mTry = 0;
     private String tryPattern;
     private OnPageUpdateListener mListener;
-
     @Override
     public String name() {
         return MyApplication.getAppContext().getResources().getString(R.string.duress_pin);
@@ -90,14 +94,14 @@ public class SetDuressPasswordFragment extends AbstractStep {
     public String error() {
         return error;
     }
-
     @Override
     public void onStepVisible() {
         super.onStepVisible();
         switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION)) {
             case OPTION_PIN:
-                if (viewSwitcher != null)
-                    viewSwitcher.setDisplayedChild(1);
+//                viewSwitcher.setDisplayedChild(1);
+                pin_container.setVisibility(View.VISIBLE);
+                pattern_container.setVisibility(View.GONE);
                 if (etEnterPin != null) {
                     etEnterPin.setFocusable(true);
                     etEnterPin.setFocusableInTouchMode(true);
@@ -111,11 +115,13 @@ public class SetDuressPasswordFragment extends AbstractStep {
                 }
                 break;
             case OPTION_PATTERN:
-                if (viewSwitcher != null)
-                    viewSwitcher.setDisplayedChild(0);
+//                viewSwitcher.setDisplayedChild(0);
+                pin_container.setVisibility(View.GONE);
+                pattern_container.setVisibility(View.VISIBLE);
 
         }
     }
+
 
 
     @Override
@@ -135,31 +141,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
         error = getResources().getString(R.string.set_skip_password);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (getView() == null) {
-            return;
-        }
-
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                int current_step = PrefUtils.getIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO);
-                if (current_step == 6) {
-                    // handle back button's click listener
-                    if (mListener != null)
-                        mListener.onPageUpdate(5);
-                }
-                return true;
-            }
-            return false;
-        });
-
-    }
 
     @BindView(R.id.pin_input_layout)
     TextInputLayout pin_input_layout;
@@ -181,9 +162,17 @@ public class SetDuressPasswordFragment extends AbstractStep {
     @BindView(R.id.profile_name)
     TextView responsTitle;
 
-    @BindView(R.id.view_switcher)
-    ViewSwitcher viewSwitcher;
+//    @BindView(R.id.view_switcher)
+//    ViewSwitcher viewSwitcher;
 
+    @BindView(R.id.pattern_container)
+    LinearLayout pattern_container;
+    @BindView(R.id.pin_container)
+    NestedScrollView pin_container;
+    @BindView(R.id.password_container)
+    LinearLayout password_container;
+    @BindView(R.id.main_layout)
+    RelativeLayout main_layout;
 
     @Nullable
     @Override
@@ -211,6 +200,23 @@ public class SetDuressPasswordFragment extends AbstractStep {
         re_pin_input_layout.setHint(getResources().getString(R.string.hint_please_confirm_your_pin));
         img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_duress_icon));
         img_picture2.setImageDrawable(getResources().getDrawable(R.drawable.ic_duress_icon));
+
+
+        //Move when keyboard is shown
+        main_layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                main_layout.getWindowVisibleDisplayFrame(r);
+
+                int heightDiff = main_layout.getRootView().getHeight() - (r.bottom - r.top);
+                if (heightDiff > 100) {
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) password_container.getLayoutParams();
+                    params.bottomMargin = dpToPx(150);
+                    password_container.setLayoutParams(params);
+                }
+            }
+        });
         patternLock.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
@@ -257,7 +263,10 @@ public class SetDuressPasswordFragment extends AbstractStep {
                         PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 7);
                         mListener.onPageUpdate(7);
 
-                    } //wrong pattern
+                    }
+
+
+                    //wrong pattern
                     else {
                         mTry = 0;
                         Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
@@ -266,8 +275,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
                         responsTitle.setText("Please Draw Pattern");
 
                     }
-
-
                 }
             }
 

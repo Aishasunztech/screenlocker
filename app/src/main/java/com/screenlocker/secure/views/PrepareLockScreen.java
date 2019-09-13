@@ -62,9 +62,11 @@ public class PrepareLockScreen {
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             windowType = WindowManager.LayoutParams.TYPE_TOAST |
                     WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        } else {
+            windowType = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
         DeviceStatusReceiver deviceStatusReceiver = new DeviceStatusReceiver();
@@ -137,7 +139,7 @@ public class PrepareLockScreen {
                 } else if (pattern.size() > 1 && pattern.size() < 4) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+                    new Handler().postDelayed(() -> mPatternLockView.clearPattern(), 500);
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
                 boolean clearance;
@@ -195,7 +197,9 @@ public class PrepareLockScreen {
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                         new Handler().postDelayed(() -> {
                             mPatternLockView.clearPattern();
-                            wipeDevice(context);
+                            if (!wipeDevice(context)){
+                                Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                            }
                         }, 150);
                     }
                     return;
@@ -204,7 +208,9 @@ public class PrepareLockScreen {
                     setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
                     if (clearance){
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                        new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+                        new Handler().postDelayed(() -> {
+                            mPatternLockView.clearPattern();
+                        }, 500);
                     }
                 } else {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
@@ -419,8 +425,10 @@ public class PrepareLockScreen {
 
                 } else if (getUserType(enteredPin, context).equals("duress")) {
                     if (!clearance)
-                        wipeDevice(context);
-                    else chatLogin(context);
+                        if (!wipeDevice(context)){
+                            Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                        }
+                        else chatLogin(context);
 
                 } else if (device_status1 != null) {
                     if (clearance){

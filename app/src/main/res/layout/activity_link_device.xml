@@ -30,7 +30,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/ic_warning"
+                android:contentDescription="sm" android:src="@drawable/ic_warning"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -79,7 +79,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/ic_checked_linked"
+                android:contentDescription="sm"  android:src="@drawable/ic_checked_linked"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -110,6 +110,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:contentDescription="sm"
                 android:src="@drawable/ic_hourglass"
                 android:layout_gravity="center"/>
 

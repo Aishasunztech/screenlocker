@@ -13,11 +13,21 @@ public class SharedViwModel extends ViewModel {
     private MutableLiveData<List<ServerAppInfo>> allApps;
     private MutableLiveData<List<ServerAppInfo>> installedApps;
     private MutableLiveData<List<ServerAppInfo>> updates;
+    private MutableLiveData<Msgs> mutableMsgs;
 
     public SharedViwModel() {
         allApps = new MutableLiveData<>();
         installedApps = new MutableLiveData<>();
         updates = new MutableLiveData<>();
+        mutableMsgs = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Msgs> getMutableMsgs() {
+        return mutableMsgs;
+    }
+
+    public void setMutableMsgs(Msgs mutableMsgs) {
+        this.mutableMsgs.setValue(mutableMsgs);
     }
 
     public LiveData<List<ServerAppInfo>> getAllApps() {

@@ -103,6 +103,7 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
+import static com.screenlocker.secure.utils.AppConstants.PERVIOUS_VERSION;
 import static com.screenlocker.secure.utils.AppConstants.PULL_APPS;
 import static com.screenlocker.secure.utils.AppConstants.PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
@@ -331,6 +332,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
             forceUpdateCheck();
             getSimUpdates();
             sendSystemEvents();
+            getSystemEvents();
+
 
             String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
             String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
@@ -1448,9 +1451,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             JSONObject jsonObject = new JSONObject();
             try {
                 if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
-                    PrefUtils.saveIntegerPref(this, AppConstants.PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                     JSONObject object = new JSONObject();
                     object.put("type", getResources().getString(R.string.apktype));
+                    object.put("firmware_info", Build.DISPLAY);
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                     jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
                     jsonObject.put("object", object);
@@ -1462,6 +1465,42 @@ public class SocketService extends Service implements OnSocketConnectionListener
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+
+        }
+
+    }
+
+    @Override
+    public void getSystemEvents() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(SYSTEM_EVENT_BUS + device_id, args -> {
+                    Timber.d("<<< GETTING SYSTEM_EVENTS UPDATES >>>");
+                    JSONObject obj = (JSONObject) args[0];
+
+
+                    try {
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+                            String action = obj.getString("action");
+                            if (ACTION_DEVICE_TYPE_VERSION.equals(action)) {
+                                Timber.d("Saved");
+                                PrefUtils.saveIntegerPref(this, PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                            }
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.d(e);
         }
 
     }

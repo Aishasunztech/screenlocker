@@ -42,7 +42,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
+import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
@@ -98,7 +98,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         ButterKnife.bind(this);
 
         url_1 = findViewById(R.id.url_1);
-        url_1.setText(URL_1);
+        url_1.setText(WHITE_LABEL_URL);
 
 
         socketManager = SocketManager.getInstance();
