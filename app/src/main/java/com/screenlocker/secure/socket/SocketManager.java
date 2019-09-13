@@ -7,6 +7,8 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -32,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import timber.log.Timber;
 
@@ -39,9 +43,11 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.IS_LIVE_CLIENT_VISIBLE;
 
 
 public class SocketManager {
+
 
     /**
      * The constant STATE_CONNECTING.
@@ -60,6 +66,9 @@ public class SocketManager {
 
 
     private static SocketManager instance;
+
+    private NotificationManager notificationManager = (NotificationManager) MyApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
 
     private SocketManager() {
     }
@@ -183,18 +192,34 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    JSONObject data = (JSONObject) args1[1];
-                                    notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
-                                            .setContentText("")
-                                            .setContentTitle(data.getString("msg"))
-                                            .setSmallIcon(R.drawable.ic_screen_lock)
-                                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                                            .build();
+                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(MyApplication.getAppContext(),IS_LIVE_CLIENT_VISIBLE);
+                                    if(!isLiveActivityVisible) {
+                                        JSONObject data = (JSONObject) args1[1];
+                                        notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
+                                                .setContentText("")
+                                                .setContentTitle(data.getString("msg"))
+                                                .setSmallIcon(R.drawable.ic_chat)
+                                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                                .build();
 
 
-                                    NotificationManager notificationManager = (NotificationManager) MyApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                                    notificationManager.notify((int) (System.currentTimeMillis() - 10000000), notification);
+                                        notificationManager.notify((int) System.currentTimeMillis(), notification);
+                                    }
+                                    else{
+                                        Handler handler = new Handler();
+
+                                       handler.postDelayed(new Runnable() {
+                                           @Override
+                                           public void run() {
+                                               Log.d("lskjdf","notify!");
+                                               ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                                               toneGen1.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT,150);
+                                           }
+                                       },2000);
+
+
+                                    }
                                 }
                                 catch (JSONException e)
                                 {
@@ -217,7 +242,11 @@ public class SocketManager {
                         clientChatSocket.disconnect();
                 }).on(Socket.EVENT_DISCONNECT, args -> {
                     Log.e(TAG, "clientChatSocket disconnect event");
-                    socket.off(notify);
+                    if(clientChatSocket != null)
+                    {
+                        clientChatSocket.off(notify);
+                    }
+
                     PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
@@ -276,11 +305,12 @@ public class SocketManager {
 
     public void destroyClientChatSocket()
     {
-
-        clientChatSocket.off(notify);
-        clientChatSocket.disconnect();
-        clientChatSocket.close();
-        clientChatSocket = null;
+        if(clientChatSocket != null) {
+            clientChatSocket.off(notify);
+            clientChatSocket.disconnect();
+            clientChatSocket.close();
+            clientChatSocket = null;
+        }
     }
 
     /**

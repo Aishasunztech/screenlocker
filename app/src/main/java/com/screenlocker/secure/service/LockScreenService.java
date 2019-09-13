@@ -112,7 +112,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener  {
+public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener {
 
 
     private SharedPreferences sharedPref;
@@ -295,6 +295,8 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     public void isConnected(boolean state) {
         if (!state) {
             destroyClientChatSocket();
+        } else {
+            connectClientChatSocket();
         }
 
     }
@@ -314,8 +316,6 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         Log.d("lkashdf", deviceId);
         socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
     }
-
-
 
 
     public class LocalBinder extends Binder {
@@ -758,6 +758,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             params = null;
             params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
             //windowManager.removeViewImmediate(mLayout);
+        } else if (key.equals(DEVICE_ID)) {
+            destroyClientChatSocket();
+            connectClientChatSocket();
         }
     };
 

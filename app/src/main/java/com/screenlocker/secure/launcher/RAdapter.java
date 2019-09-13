@@ -81,8 +81,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         context.startActivity(i);
                         ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                         break;
-                    case AppConstants.SUPPORT_UNIQUE:
-                        context.startActivity(new Intent(context, ChatActivity.class));
+                    case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
+                        context.startActivity(new Intent(context, LiveClientChatActivity.class));
                         ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                         break;
                     case BuildConfig.APPLICATION_ID:
