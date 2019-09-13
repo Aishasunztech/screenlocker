@@ -112,7 +112,7 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/mobile/";
+    public static final String MOBILE_END_POINT = "/api/v1/mobile/";
 
     //available live host
     public static final String LIVE_URL = "live_url";
@@ -235,6 +235,7 @@ public class AppConstants {
     public static final int RESULT_ENABLE = 11;
     public static final int PERMISSION_REQUEST_READ_PHONE_STATE = 100;
     public static final int REQUEST_READ_PHONE_STATE = 2020;
+    public static final int R_RT_P = 2121;
 
     // expiry date
     public static final String VALUE_EXPIRED = "expired";
