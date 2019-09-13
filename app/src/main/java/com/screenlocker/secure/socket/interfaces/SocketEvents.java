@@ -62,4 +62,6 @@ public interface SocketEvents {
 
     void sendSystemEvents();
 
+    void getSystemEvents();
+
 }

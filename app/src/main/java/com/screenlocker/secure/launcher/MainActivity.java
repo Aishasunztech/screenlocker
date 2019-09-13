@@ -1,16 +1,10 @@
 package com.screenlocker.secure.launcher;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Instrumentation;
-import android.app.admin.DevicePolicyManager;
-import android.app.usage.UsageStats;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -32,7 +26,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
@@ -42,7 +35,6 @@ import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.ArrayList;
@@ -52,7 +44,6 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
-import static android.app.admin.DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -106,18 +97,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             finish();
             return;
         }
-//        ComponentName compName = new ComponentName(MyApplication.getAppContext(), MyAdmin.class);
-//        DevicePolicyManager dpm = (DevicePolicyManager) MyApplication.getAppContext().getSystemService(DEVICE_POLICY_SERVICE);
-//        try {
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.CALL_PHONE, PERMISSION_GRANT_STATE_GRANTED);
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_PHONE_STATE, PERMISSION_GRANT_STATE_GRANTED);
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_GRANT_STATE_GRANTED);
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.WRITE_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_GRANT_STATE_GRANTED);
-//            dpm.setPermissionGrantState(compName, MyApplication.getAppContext().getPackageName(), Manifest.permission.RECORD_AUDIO, PERMISSION_GRANT_STATE_GRANTED);
-//        } catch (SecurityException e) {
-//            e.printStackTrace();
-//        }
+
+//
+//    ((TextView) findViewById(R.id.textView1)).setText(mString);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         allDbApps = new ArrayList<>();
@@ -141,8 +123,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
-
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         mainPresenter = new MainPresenter(this, new MainModel(this));
         background = findViewById(R.id.background);
 
@@ -173,17 +153,17 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
         }
         //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
-        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
-            startActivityForResult(intent, RESULT_ENABLE);
-
-        } else {
-            if (devicePolicyManager != null) {
-                devicePolicyManager.lockNow();
-            }
-        }
+//        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
+//            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+//            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
+//            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
+//            startActivityForResult(intent, RESULT_ENABLE);
+//
+//        } else {
+//            if (devicePolicyManager != null) {
+//                devicePolicyManager.lockNow();
+//            }
+//        }
     }
 
 
@@ -270,6 +250,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
         super.onResume();
+
+//        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
 
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
