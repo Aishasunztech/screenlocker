@@ -26,11 +26,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
-import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.Set;
@@ -60,6 +58,7 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.R_RT_P;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -181,7 +180,6 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         devicePolicyManager = (DevicePolicyManager) MyApplication.getAppContext().getSystemService(DEVICE_POLICY_SERVICE);
 
 
-
         //check if user already granted the permission
         try {
             devicePolicyManager.setPermissionPolicy(compName, PERMISSION_POLICY_AUTO_GRANT);
@@ -212,7 +210,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         if (devicePolicyManager == null) {
             devicePolicyManager = (DevicePolicyManager) MyApplication.getAppContext().getSystemService(DEVICE_POLICY_SERVICE);
         }
-        if (compName == null){
+        if (compName == null) {
             compName = new ComponentName(MyApplication.getAppContext(), MyAdmin.class);
         }
         if (!devicePolicyManager.isAdminActive(compName)) {
@@ -232,8 +230,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
             return false;
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().getPackageName())) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -508,27 +505,30 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_PHONE_STATE) {
             //runtime permission result
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[2] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[3] == PackageManager.PERMISSION_GRANTED) {
-                setCheckedAndClickAble(runtimePermissions, false, true);
-                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
-            } else {
-                setCheckedAndClickAble(runtimePermissions, true, false);
-                PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
-
-
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_PHONE_STATE) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-                    // now, user has denied permission (but not permanently!)
-
+            if (grantResults.length >= 4) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[2] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[3] == PackageManager.PERMISSION_GRANTED) {
+                    setCheckedAndClickAble(runtimePermissions, false, true);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, true);
                 } else {
+                    setCheckedAndClickAble(runtimePermissions, true, false);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PER_RUNTIME, false);
 
-                    // now, user has denied permission permanently!
 
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)), 1245);
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_PHONE_STATE) && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                        // now, user has denied permission (but not permanently!)
+
+                    } else {
+
+                        // now, user has denied permission permanently!
+
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + MyApplication.getAppContext().getPackageName())), 1245);
+                    }
                 }
             }
+
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

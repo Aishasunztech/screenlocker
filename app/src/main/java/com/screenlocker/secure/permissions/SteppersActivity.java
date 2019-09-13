@@ -159,6 +159,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         f.addCategory("android.intent.category.DEFAULT");
         ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
 
-//        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
+        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
     }
 }
