@@ -68,13 +68,13 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private TextView bluetoothName, brightnessLevel, sleepTime,
             wifiName, battery_status;
 
+
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container,no_settings_layout;
 
     private ConstraintLayout settingsLayout;
-    private LinearLayout no_settings_layout;
 
     WeakHashMap<String, LinearLayout> extensions;
 
@@ -240,6 +240,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         settingsLayout = findViewById(R.id.settings_layout);
         switch_mobile_data = findViewById(R.id.switch_mobile_data);
         notifications_container = findViewById(R.id.notification_container);
+        no_settings_layout = findViewById(R.id.no_settings_layout);
         switch_mobile_data.setOnCheckedChangeListener(this);
         mView = new FrameLayout(this);
 //        switch_airplane = findViewById(R.id.switch_air);

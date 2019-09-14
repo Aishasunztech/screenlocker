@@ -16,6 +16,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -43,8 +45,8 @@ public class LiveClientChatActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.webview)
     WebView webview;
-    @BindView(R.id.swipe_refresh)
-    SwipeRefreshLayout swipeRefresh;
+//    @BindView(R.id.swipe_refresh)
+//    SwipeRefreshLayout swipeRefresh;
 
 
     //    String url = "http://devlivechat.lockmesh.com/livezilla/chat.php?ptn="; //Live Url
@@ -83,7 +85,6 @@ public class LiveClientChatActivity extends AppCompatActivity {
             }
 
         });
-        setSupportActionBar(toolbar);
         progressbar.setVisibility(View.GONE);
 
         String deviceId = PrefUtils.getStringPref(LiveClientChatActivity.this, DEVICE_ID);
@@ -97,19 +98,18 @@ public class LiveClientChatActivity extends AppCompatActivity {
             deviceId = DeviceIdUtils.getSerialNumber();
         }
         url = AppConstants.CLIENT_CHAT_URL + deviceId + "&pto=true";
-
-
+        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(title);
 
 
-        swipeRefresh.setOnRefreshListener(() -> {
-            loadWebView();
-//            if(isConnected() && mService == null)
-//            {
-//                bindToService();
-//            }
-            swipeRefresh.setRefreshing(false);
-        });
+//        swipeRefresh.setOnRefreshListener(() -> {
+//            loadWebView();
+////            if(isConnected() && mService == null)
+////            {
+////                bindToService();
+////            }
+//            swipeRefresh.setRefreshing(false);
+//        });
 
         loadWebView();
 
@@ -191,4 +191,21 @@ public class LiveClientChatActivity extends AppCompatActivity {
 //            unbindService(connection);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.refresh_chat_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id)
+        {
+            case R.id.action_refresh:
+                loadWebView();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
