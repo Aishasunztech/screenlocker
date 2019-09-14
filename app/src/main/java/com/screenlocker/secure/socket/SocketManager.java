@@ -63,6 +63,7 @@ public class SocketManager {
     public static final int STATE_DISCONNECTED = 3;
 
     private String notify = "";
+    private ToneGenerator toneGen1;
 
 
     private static SocketManager instance;
@@ -193,32 +194,36 @@ public class SocketManager {
                                 try {
 
                                     boolean isLiveActivityVisible = PrefUtils.getBooleanPref(MyApplication.getAppContext(),IS_LIVE_CLIENT_VISIBLE);
-                                    if(!isLiveActivityVisible) {
-                                        JSONObject data = (JSONObject) args1[1];
-                                        notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
-                                                .setContentText("")
-                                                .setContentTitle(data.getString("msg"))
-                                                .setSmallIcon(R.drawable.ic_chat)
-                                                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                                                .build();
+                                    JSONObject data = (JSONObject) args1[1];
+                                    if(!data.getString("msg").equals("")) {
+                                        if (!isLiveActivityVisible) {
+                                            notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
+                                                    .setContentText("")
+                                                    .setContentTitle(data.getString("msg"))
+                                                    .setSmallIcon(R.drawable.ic_chat)
+                                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                                    .build();
 
 
-                                        notificationManager.notify((int) System.currentTimeMillis(), notification);
-                                    }
-                                    else{
-                                        Handler handler = new Handler();
-
-                                       handler.postDelayed(new Runnable() {
-                                           @Override
-                                           public void run() {
-                                               Log.d("lskjdf","notify!");
-                                               ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                                               toneGen1.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT,150);
-                                           }
-                                       },2000);
+                                            notificationManager.notify((int) System.currentTimeMillis(), notification);
+                                        } else {
 
 
+                                            Handler handler = new Handler();
+
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                                                    toneGen1.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 200);
+                                                    new Handler().postDelayed(() -> {
+                                                        toneGen1.release();
+                                                        toneGen1 = null;
+                                                    },500);
+                                                }
+                                            }, 2000);
+                                        }
                                     }
                                 }
                                 catch (JSONException e)
