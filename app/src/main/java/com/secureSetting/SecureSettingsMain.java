@@ -74,6 +74,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container;
 
     private ConstraintLayout settingsLayout;
+    private LinearLayout no_settings_layout;
 
     WeakHashMap<String, LinearLayout> extensions;
 
@@ -113,8 +114,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                     new Thread(() -> {
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() ->{
+                                settingsLayout.setVisibility(View.GONE);
+                                no_settings_layout.setVisibility(View.VISIBLE);
+                            });
                         } else {
+                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {
@@ -217,6 +222,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         brightnessLevel = findViewById(R.id.brightness_lavel);
         sleepTime = findViewById(R.id.sleep_time);
         wifiName = findViewById(R.id.wifi_name);
+        no_settings_layout = findViewById(R.id.no_settings_layout);
         battery_status = findViewById(R.id.battery_status);
         wifiContainer = findViewById(R.id.wif_container_layout);
         bluetoothContainer = findViewById(R.id.bluetooth_container_layout);

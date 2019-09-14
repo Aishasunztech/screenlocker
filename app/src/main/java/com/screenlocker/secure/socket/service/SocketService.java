@@ -612,6 +612,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
+                                        JSONObject json = new JSONObject();
+                                        json.put("action", ACTION_WIPE);
+                                        socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, json);
                                         wipeDevice(SocketService.this);
                                         break;
                                     case "flagged":
