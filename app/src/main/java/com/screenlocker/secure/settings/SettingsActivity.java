@@ -776,6 +776,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         CommonUtils.setAppLocale(code, SettingsActivity.this);
         PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
+        OneTimeWorkRequest insertionWork =
+                new OneTimeWorkRequest.Builder(BlurWorker.class)
+                        .build();
+        WorkManager.getInstance().enqueue(insertionWork);
         recreate();
 
 
