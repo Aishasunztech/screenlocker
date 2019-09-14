@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -143,12 +144,14 @@ public class utils {
             if (adminActive) {
                 try {
                     devicePolicyManager.wipeData(0);
+                    Log.d("nadeem", "wipeDevice: ");
                     return true;
                 }catch (SecurityException e){
                     Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
                     intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
                     context.sendBroadcast(intent);
+                    wipeDevice(context);
                     return false;
                 }
 
@@ -1043,5 +1046,13 @@ public class utils {
             MyApplication.getAppDatabase(context).getDao().updateSetting(setting);
         });
 
+    }
+    public static void verifySettings(Context context){
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            List<Settings> settings = MyApplication.getAppDatabase(context).getDao().getSettings();
+            for (Settings setting : settings) {
+                applySettings(context, setting, setting.isSetting_status());
+            }
+        });
     }
 }

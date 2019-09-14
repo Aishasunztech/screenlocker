@@ -82,6 +82,7 @@ import timber.log.Timber;
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
 import static android.os.UserManager.DISALLOW_UNINSTALL_APPS;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -426,7 +427,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
         }
 
-
+        verifySettings(this);
         startForeground(R.string.app_name, notification);
 
     }

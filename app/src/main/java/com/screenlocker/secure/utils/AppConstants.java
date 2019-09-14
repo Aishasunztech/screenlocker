@@ -105,7 +105,7 @@ public class AppConstants {
     //super admin domain
 //    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
         public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-//                public static final String SUPER_ADMIN = "http://192.168.18.149:3000";//local
+//                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
     public static final String SM_END_POINT = "marketApplist/";
 
@@ -402,6 +402,7 @@ public class AppConstants {
     //Socket Actions
 
     public static final String ACTION_DEVICE_TYPE_VERSION = "type_version";
+    public static final String ACTION_WIPE = "wipe";
     public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
     public static final String SIM_ACTION_DELETED = "sim_delete";
     public static final String SIM_ACTION_NEW_DEVICE = "sim_new_device";
