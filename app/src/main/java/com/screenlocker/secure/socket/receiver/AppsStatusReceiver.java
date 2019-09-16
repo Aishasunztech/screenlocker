@@ -13,15 +13,18 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.DownloadStatusCls;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -31,6 +34,7 @@ import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.DELETE_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PACKAGE_INSTALLED;
@@ -229,10 +233,16 @@ public class AppsStatusReceiver extends BroadcastReceiver {
             String userSpace = intent.getStringExtra("userSpace");
 
             PackageManager pm = context.getPackageManager();
+            if (PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
+                map1.remove(packageName);
+                PrefUtils.saveStringPref(context, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }
 
             try {
                 ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
-
                 Drawable ic = pm.getApplicationIcon(applicationInfo);
                 byte[] icon = CommonUtils.convertDrawableToByteArray(ic);
                 String label = pm.getApplicationLabel(applicationInfo).toString();

@@ -142,8 +142,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() ->{
+                                no_settings_layout.setVisibility(View.VISIBLE);
+                                settingsLayout.setVisibility(View.GONE);
+                            } );
                         } else {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {
@@ -464,6 +468,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 mobile_container.setVisibility(View.VISIBLE);
                 dataRoamingContainer.setVisibility(View.VISIBLE);
                 language_container.setVisibility(View.VISIBLE);
+                no_settings_layout.setVisibility(View.GONE);
             } else {
                 showMenus();
             }
