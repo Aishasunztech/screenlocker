@@ -142,15 +142,14 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
 
 
-
-            devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         Thread thread = new Thread() {
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11,13),
-                                new Migration_13_14(13,14)
-                        , new Migration_14_15(14,15))
+                        .addMigrations(new Migration_11_13(11, 13),
+                                new Migration_13_14(13, 14)
+                                , new Migration_14_15(14, 15))
                         .build();
             }
         };
@@ -187,12 +186,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
-                    try{
-                        ((AppCompatActivity)activity).getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    }catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
                 }
 
             }
@@ -325,7 +318,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     Timber.d("LinkStatus :" + linkStatus);
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
-                    
+
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
@@ -358,7 +351,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null,getPackageName());
+                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null, getPackageName());
                                     obj.execute();
 
                                 }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
