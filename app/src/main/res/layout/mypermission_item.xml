@@ -14,7 +14,6 @@
         android:padding="16dp"/>
 
     <View
-        android:id="@+id/divider17"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine"/>

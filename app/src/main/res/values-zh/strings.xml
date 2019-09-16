@@ -92,7 +92,6 @@
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">目前是最新的。</string>
-    <string name="install_app_message">应用程序安装</string>
     <string name="permissions">应用程序权限</string>
     <string name="link_heading">要生成有效的IMEI，请转到</string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
@@ -178,15 +177,8 @@
     <string name="app_names">应用程序名称</string>
     <string name="app_name_heading">启用</string>
     <string name="enable">启用</string>
-    <string name="android_settings">安卓系统设置</string>
     <string name="wifi">无线网络</string>
     <string name="hotspot">热点</string>
-    <string name="location_services">位置服务</string>
-    <string name="screen_capture">屏幕截图</string>
-    <string name="block_calls">块调用</string>
-    <string name="nfc">NFC</string>
-    <string name="off">关闭</string>
-    <string name="on">接通</string>
     <string name="installed_apps_title">安装应用程序</string>
     <string name="downloading_update">下载更新，请稍候</string>
     <string name="install">安装</string>
@@ -228,9 +220,6 @@
     <string name="clear_cache_message">继续清除缓存?</string>
     <string name="ok_capital">好的</string>
     <string name="app_disabled">应用程序是禁用的</string>
-    <string name="is_installed">安装</string>
-    <string name="is_uninstalled">卸载</string>
-    <string name="list_is_empty">列表为空</string>
     <string name="download_title">下载</string>
     <string name="install_message">您确定要安装这个应用程序吗?</string>
     <string name="uninstall_permission_denied">卸载没有权限</string>
@@ -313,12 +302,6 @@
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">下一个尝试</string>
     <string name="contact_support_chat">联络支持</string>
-    <string name="optional_message_warn">这是一条可选消息，
- 警告用户禁用。</string>
-    <string name="device_admin_disabled">示例设备管理：禁用</string>
-    <string name="device_admin_changed">示例设备管理：密码更改</string>
-    <string name="device_admin_failed">示例设备管理：密码失败</string>
-    <string name="device_admin_succeeded">示例设备管理：密码成功</string>
     <string name="please_wait_">请稍等……</string>
     <string name="account_disabled">帐户禁用。
  联系您的经销商寻求帮助。</string>

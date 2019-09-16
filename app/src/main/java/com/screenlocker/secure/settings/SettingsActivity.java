@@ -79,14 +79,12 @@ import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.FAIL_SAFE_URL_FOR_WHITE_LABEL;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
-import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 
 /***
@@ -778,6 +776,24 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             changeLanguage(adapter.getSelectedText());
+
+            constraintLayout.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            OneTimeWorkRequest insertionWork =
+                    new OneTimeWorkRequest.Builder(BlurWorker.class)
+                            .build();
+            WorkManager.getInstance().enqueue(insertionWork);
+
+            WorkManager.getInstance().getWorkInfoByIdLiveData(insertionWork.getId())
+                    .observe(this, workInfo -> {
+                        // Do something with the status
+                        if (workInfo != null && workInfo.getState().isFinished()) {
+                            PrefUtils.saveBooleanPref(SettingsActivity.this, DB_STATUS, true);
+                            constraintLayout.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
 
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {

@@ -24,7 +24,6 @@
         android:textSize="@dimen/textSize" />
 
     <View
-        android:id="@+id/dividerDataCunsumption"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
@@ -43,7 +42,6 @@
         android:visibility="visible" />
 
     <View
-        android:id="@+id/dividerDataUSage"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
@@ -62,7 +60,6 @@
         android:visibility="gone" />
 
     <View
-        android:id="@+id/dividerIMEI"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -83,7 +80,6 @@
         android:visibility="visible" />
 
     <View
-        android:id="@+id/dividerColumn"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />
@@ -102,7 +98,6 @@
         android:visibility="visible" />
 
     <View
-        android:id="@+id/tvthemeDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorLine" />

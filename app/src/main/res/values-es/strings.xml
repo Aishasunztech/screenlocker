@@ -82,7 +82,6 @@
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">Usted está al día.</string>
-    <string name="install_app_message">La aplicación se está instalando</string>
     <string name="permissions">Permiso de aplicación</string>
     <string name="link_heading">Para generar un IMEI válido, por favor vaya a</string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
@@ -168,15 +167,8 @@
     <string name="app_names">Nombres de aplicaciones</string>
     <string name="app_name_heading">Nombres de aplicacione</string>
     <string name="enable">Habilitar</string>
-    <string name="android_settings">Configuración de Android</string>
     <string name="wifi">Wifi</string>
     <string name="hotspot">Hotspot</string>
-    <string name="location_services">Servicios de localización</string>
-    <string name="screen_capture">Captura de pantalla</string>
-    <string name="block_calls">Bloquear llamadas</string>
-    <string name="nfc">NFC</string>
-    <string name="off">APAGADO</string>
-    <string name="on">ENCENDIDO</string>
     <string name="installed_apps_title">Aplicaciones instaladas</string>
     <string name="downloading_update">Descargando la actualización, por favor espere</string>
     <string name="install">instalar</string>
@@ -218,9 +210,6 @@
     <string name="clear_cache_message">¿Proceder con la limpieza de la caché?</string>
     <string name="ok_capital">OK</string>
     <string name="app_disabled">La aplicación está deshabilitada</string>
-    <string name="is_installed">está instalada</string>
-    <string name="is_uninstalled"> está desinstalada</string>
-    <string name="list_is_empty">La lista está vacía</string>
     <string name="download_title">Descargar</string>
     <string name="install_message">¿Está seguro de que quiere instalar esta aplicación?</string>
     <string name="uninstall_permission_denied">Permiso de desinstalación denegado</string>
@@ -302,11 +291,6 @@
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">Próximo intento en</string>
     <string name="contact_support_chat">Contacte con soporte</string>
-    <string name="optional_message_warn">Este es un mensaje opcional para advertir al usuario sobre la desactivación.</string>
-    <string name="device_admin_disabled">Administrador de dispositivos de muestra: desactivado</string>
-    <string name="device_admin_changed">Administrador de dispositivos de muestra: contraseña cambiada</string>
-    <string name="device_admin_failed">Administrador de dispositivos de muestra: contraseña incorrecta</string>
-    <string name="device_admin_succeeded">Administrador de dispositivos de muestra: contraseña exitosa</string>
     <string name="please_wait_">Por favor, espere...</string>
     <string name="account_disabled">Cuenta desactivada. Póngase en contacto con su distribuidor para obtener ayuda.</string>
     <string name="server_error">El servidor no responde. ¡Inténtelo de nuevo!</string>

@@ -92,7 +92,6 @@
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">Bạn hiện đã được cập nhật.</string>
-    <string name="install_app_message">Đang cài đặt ứng dụng</string>
     <string name="permissions">Quyền Ứng dụng</string>
     <string name="link_heading">Để tạo IMEI hợp lệ, vui lòng vào</string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
@@ -174,15 +173,8 @@
     <string name="apps_title">Ứng dụng</string>
     <string name="app_names">Tên Ứng dụng</string>
     <string name="enable">Kích hoạt</string>
-    <string name="android_settings">Thiết lập Android</string>
     <string name="wifi">Wifi</string>
     <string name="hotspot">Điểm phát sóng</string>
-    <string name="location_services">Dịch vụ Địa điểm</string>
-    <string name="screen_capture">Chụp Màn hình</string>
-    <string name="block_calls">Chặn Cuộc gọi</string>
-    <string name="nfc">NFC</string>
-    <string name="off">TẮT</string>
-    <string name="on">MỞ</string>
     <string name="installed_apps_title">Ứng dụng Đã cài đặt</string>
     <string name="downloading_update">Đang tải Cập nhật, Vui lòng Đợi</string>
     <string name="install">cài đặt</string>
@@ -224,9 +216,6 @@
     <string name="clear_cache_message">Tiến hành xóa bộ nhớ cache?</string>
     <string name="ok_capital">Đồng ý</string>
     <string name="app_disabled">Ứng dụng bị vô hiệu hóa</string>
-    <string name="is_installed"> được cài đặt</string>
-    <string name="is_uninstalled"> được gỡ cài đặt</string>
-    <string name="list_is_empty">danh sách trống</string>
     <string name="download_title">Tải về</string>
     <string name="install_message">Bạn có chắc chắn muốn cài đặt ứng dụng này?</string>
     <string name="uninstall_permission_denied">Quyền gỡ cài đặt bị từ chối</string>
@@ -312,12 +301,6 @@
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">Nỗ lực tiếp theo trong</string>
     <string name="contact_support_chat">Liên hệ Hỗ trợ</string>
-    <string name="optional_message_warn">Đây là một tin nhắn tùy chọn để cảnh báo
- người dùng về việc vô hiệu hóa.</string>
-    <string name="device_admin_disabled">Quản trị Thiết bị mẫu: bị vô hiệu hóa</string>
-    <string name="device_admin_changed">Quản trị Thiết bị mẫu: mật khẩu đã thay đổi</string>
-    <string name="device_admin_failed">Quản trị Thiết bị mẫu: mật khẩu thất bại</string>
-    <string name="device_admin_succeeded">Quản trị Thiết bị mẫu: mật khẩu đã thành công</string>
     <string name="please_wait_">Vui lòng chờ ...</string>
     <string name="account_disabled">Tài khoản bị vô hiệu hóa.
  Liên hệ với đại lý của bạn để được hỗ trợ.</string>

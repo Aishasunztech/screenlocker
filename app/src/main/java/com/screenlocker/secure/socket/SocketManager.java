@@ -53,6 +53,7 @@ public class SocketManager {
     public static final int STATE_DISCONNECTED = 3;
 
     private String notify = "";
+    private ToneGenerator toneGen1;
 
 
     private static SocketManager instance;
@@ -157,23 +158,23 @@ public class SocketManager {
         try {
             if (clientChatSocket == null) {
                 IO.Options opts = new IO.Options();
-                opts.reconnectionDelay = 60 * 60 * 1000L;
+                opts.reconnectionDelay =  60 * 60 * 1000L;
 //                opts.reconnectionDelay = 5000;
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
                 opts.secure = true;
-                opts.query = "device_id=" + device_id;
+                opts.query = "device_id=" + device_id ;
 
 
                 clientChatSocket = IO.socket(url, opts);
 
                 clientChatSocket.on(Socket.EVENT_CONNECT, args -> {
                     Timber.i("clientChatSocket connected");
-                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,true);
 
-                    notify = device_id;
-                    clientChatSocket.on(notify, args1 -> {
+                    notify = device_id ;
+                    clientChatSocket.on(notify,args1 -> {
                         AppExecutor.getInstance().getMainThread().execute(new Runnable() {
                             @Override
                             public void run() {
@@ -182,34 +183,41 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(MyApplication.getAppContext(), IS_LIVE_CLIENT_VISIBLE);
-                                    if (!isLiveActivityVisible) {
-                                        JSONObject data = (JSONObject) args1[1];
-                                        notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
-                                                .setContentTitle("Live Client Chat")
-                                                .setContentText(data.getString("msg"))
-                                                .setSmallIcon(R.drawable.ic_chat)
-                                                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                                                .build();
+                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(MyApplication.getAppContext(),IS_LIVE_CLIENT_VISIBLE);
+                                    JSONObject data = (JSONObject) args1[1];
+                                    if(!data.getString("msg").equals("")) {
+                                        if (!isLiveActivityVisible) {
+                                            notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
+                                                    .setContentText("")
+                                                    .setContentTitle(data.getString("msg"))
+                                                    .setSmallIcon(R.drawable.ic_chat)
+                                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                                    .build();
 
 
-                                        notificationManager.notify((int) System.currentTimeMillis(), notification);
-                                    } else {
-                                        Handler handler = new Handler();
-
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Log.d("lskjdf", "notify!");
-                                                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                                                toneGen1.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 150);
-                                            }
-                                        }, 2000);
+                                            notificationManager.notify((int) System.currentTimeMillis(), notification);
+                                        } else {
 
 
+                                            Handler handler = new Handler();
+
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                                                    toneGen1.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 200);
+                                                    new Handler().postDelayed(() -> {
+                                                        toneGen1.release();
+                                                        toneGen1 = null;
+                                                    },500);
+                                                }
+                                            }, 2000);
+                                        }
                                     }
-                                } catch (JSONException e) {
+                                }
+                                catch (JSONException e)
+                                {
                                     e.printStackTrace();
                                 }
                             }
@@ -229,11 +237,12 @@ public class SocketManager {
                         clientChatSocket.disconnect();
                 }).on(Socket.EVENT_DISCONNECT, args -> {
                     Log.e(TAG, "clientChatSocket disconnect event");
-                    if (clientChatSocket != null) {
+                    if(clientChatSocket != null)
+                    {
                         clientChatSocket.off(notify);
                     }
 
-                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
+                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
@@ -289,8 +298,9 @@ public class SocketManager {
         });
     }
 
-    public void destroyClientChatSocket() {
-        if (clientChatSocket != null) {
+    public void destroyClientChatSocket()
+    {
+        if(clientChatSocket != null) {
             clientChatSocket.off(notify);
             clientChatSocket.disconnect();
             clientChatSocket.close();
@@ -409,6 +419,8 @@ public class SocketManager {
             }
         }
     }
+
+
 
 
 }

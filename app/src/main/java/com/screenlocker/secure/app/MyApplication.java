@@ -32,6 +32,7 @@ import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
+import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -147,7 +148,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             @Override
             public void run() {
                 myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11, 13), new Migration_13_14(13, 14), new Migration_11_13(14, 15))
+                        .addMigrations(new Migration_11_13(11, 13), new Migration_13_14(13, 14), new Migration_14_15(14, 15))
                         .build();
             }
         };

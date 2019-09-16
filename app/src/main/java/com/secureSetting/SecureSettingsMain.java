@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.PixelFormat;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -72,7 +69,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container, no_settings_layout;
 
     private ConstraintLayout settingsLayout;
 
@@ -106,14 +103,18 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
         if (userType != null) {
             switch (userType) {
-                // encrypted user
+// encrypted user
                 case KEY_MAIN_PASSWORD:
 
                     new Thread(() -> {
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() -> {
+                                settingsLayout.setVisibility(View.GONE);
+                                no_settings_layout.setVisibility(View.VISIBLE);
+                            });
                         } else {
+                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {
@@ -129,15 +130,19 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
                     break;
 
-                //guest user
+//guest user
                 case KEY_GUEST_PASSWORD:
                     new Thread(() -> {
 
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() -> {
+                                no_settings_layout.setVisibility(View.VISIBLE);
+                                settingsLayout.setVisibility(View.GONE);
+                            });
                         } else {
+                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {
@@ -234,6 +239,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         switch_mobile_data = findViewById(R.id.switch_mobile_data);
         switch_mobile_data.setOnCheckedChangeListener(this);
         notifications_container = findViewById(R.id.notification_container);
+        no_settings_layout = findViewById(R.id.no_settings_layout);
 //        switch_airplane = findViewById(R.id.switch_air);
 //        switch_airplane.setOnCheckedChangeListener(this);
     }
@@ -467,6 +473,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 mobile_container.setVisibility(View.VISIBLE);
                 dataRoamingContainer.setVisibility(View.VISIBLE);
                 language_container.setVisibility(View.VISIBLE);
+                no_settings_layout.setVisibility(View.GONE);
             } else {
                 showMenus();
             }

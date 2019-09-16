@@ -94,7 +94,6 @@
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">Vous êtes actuellement à jour</string>
-    <string name="install_app_message">L\'application est en cours d\'installation</string>
     <string name="permissions">Permission d\'application</string>
     <string name="link_heading">Pour générer un IMEI valide, veuillez vous rendre sur</string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
@@ -178,15 +177,8 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="apps_title">Apps</string>
     <string name="app_names">Noms Apps</string>
     <string name="enable">Activer</string>
-    <string name="android_settings">Paramètres Android</string>
     <string name="wifi">Wifi</string>
     <string name="hotspot">Hotspot</string>
-    <string name="location_services">Services de localisation</string>
-    <string name="screen_capture">Capture d\'écran</string>
-    <string name="block_calls">Bloquer les appels</string>
-    <string name="nfc">NFC</string>
-    <string name="off">OFF</string>
-    <string name="on">ON</string>
     <string name="installed_apps_title">Applications installées</string>
     <string name="downloading_update">Téléchargement de la mise à jour, veuillez patienter</string>
     <string name="install">installer</string>
@@ -228,9 +220,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
     <string name="clear_cache_message">Procéder à vider le cache?</string>
     <string name="ok_capital">OK</string>
     <string name="app_disabled">L\'application est désactivée</string>
-    <string name="is_installed"> est installé</string>
-    <string name="is_uninstalled"> est désinstallé</string>
-    <string name="list_is_empty">la liste est vide</string>
     <string name="download_title">Télécharger</string>
     <string name="install_message">Êtes-vous sûr de vouloir installer cette application?</string>
     <string name="uninstall_permission_denied">Autorisation de désinstallation refusée</string>
@@ -317,13 +306,6 @@ Il n\'y a pas moyen d\'inverser cette action.</string>
  est expiré.Veuillez contacter le support</string>
 
     <string name="not_linked_yet">pas encore lié</string>
-
-    <string name="optional_message_warn">Ceci est un message facultatif pour avertir
- l\'utilisateur sur la désactivation.</string>
-    <string name="device_admin_disabled">Exemple d\'administrateur de périphérique: désactivé</string>
-    <string name="device_admin_changed">Exemple d’administrateur de périphérique: mot de passe modifié</string>
-    <string name="device_admin_failed">Exemple d’administrateur de périphérique: mot de passe a échoué</string>
-    <string name="device_admin_succeeded">Exemple d’administrateur de périphérique: mot de passe réussi</string>
 
 
     <string name="please_wait_">Veuillez patienter...</string>

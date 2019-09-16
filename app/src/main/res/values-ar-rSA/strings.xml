@@ -81,7 +81,6 @@
     <string name="install_app_activity">installAppActivity</string>
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">جهازك مجهز بأخر التحديثات</string>
-    <string name="install_app_message">التطبيق يتم تثبيته</string>
     <string name="permissions">إذن التطبيق</string>
     <string name="link_heading">لعمل IMEI صالح برجاء التوجه إلي</string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
@@ -167,15 +166,8 @@
     <string name="app_names">أسماء التطبيقات</string>
     <string name="app_name_heading">أسماء التطبيقات</string>
     <string name="enable">تمكين</string>
-    <string name="android_settings">إعدادات أندرويد</string>
     <string name="wifi">Wifi</string>
     <string name="hotspot">نقطة إتصال</string>
-    <string name="location_services">خدمات المواقع</string>
-    <string name="screen_capture">أخذ لقطة للشاشة</string>
-    <string name="block_calls">حجب المكالمات</string>
-    <string name="nfc">NFC</string>
-    <string name="off">متوقف عن العمل</string>
-    <string name="on">يعمل</string>
     <string name="installed_apps_title">التطبيقات المُثبتة</string>
     <string name="downloading_update">جاري تحميل التحديث، برجاء الإنتظار</string>
     <string name="install">تثبيت</string>
@@ -217,9 +209,6 @@
     <string name="clear_cache_message">هل تريد المضي قدما بمسح الذاكرة الإنتقالية ؟</string>
     <string name="ok_capital">حسنا</string>
     <string name="app_disabled">التطبيق غير مُفعّل</string>
-    <string name="is_installed"> تم تثبيت</string>
-    <string name="is_uninstalled">تم إلغاء تثبيت</string>
-    <string name="list_is_empty">القائمة فارغة</string>
     <string name="download_title">تحميل</string>
     <string name="install_message">هل أنت واثق أنك تريد تثبيت هذا التطبيق ؟</string>
     <string name="uninstall_permission_denied">إذن "إلغاء التثبيت" مرفوض</string>
@@ -301,11 +290,6 @@
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">المحاولة التالية في</string>
     <string name="contact_support_chat">الإتصال بالدعم</string>
-    <string name="optional_message_warn">هذه رسالة إختيارية لتحذير المستخدم حول الإيقاف.</string>
-    <string name="device_admin_disabled">نموذج مسؤول الجهاز: معطل</string>
-    <string name="device_admin_changed">نموذج مسؤول الجهاز: تم تغيير pw</string>
-    <string name="device_admin_failed">نموذج مسؤول الجهاز: فشل pw</string>
-    <string name="device_admin_succeeded">نموذج مسؤول الجهاز: نجح pw</string>
     <string name="please_wait_">برجاء الإنتظار…</string>
     <string name="account_disabled">"حسابك مُعطّل.
 

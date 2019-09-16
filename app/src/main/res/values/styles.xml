@@ -10,8 +10,6 @@
 
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="AppTheme.AppBarOverlaySM" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@color/SettingsColorPrimary</item>
         <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
@@ -157,7 +155,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="addSimHeadingStyle">
         <item name="android:textSize">@dimen/_12ssp</item>
         <item name="android:textColor">@color/black</item>
@@ -180,6 +177,11 @@
         <!-- android:textColorSecondary is the color of the menu
              overflow icon (three vertical dots) -->
         <item name="android:textColorSecondary">@color/SettingsColorPrimary</item>
+    </style>
+
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
     </style>
 
 

@@ -56,6 +56,9 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  * @Date 8/3/2019.
  */
 public class PrepareLockScreen {
+
+    private static boolean isClockTicking = false;
+
     @SuppressLint("ResourceType")
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
 
@@ -197,7 +200,7 @@ public class PrepareLockScreen {
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                         new Handler().postDelayed(() -> {
                             mPatternLockView.clearPattern();
-                            if (!wipeDevice(context)){
+                            if (!wipeDevice(context)) {
                                 Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
                             }
                         }, 150);
@@ -206,7 +209,7 @@ public class PrepareLockScreen {
                 } else if (device_status != null) {
                     String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
                     setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
-                    if (clearance){
+                    if (clearance) {
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> {
                             mPatternLockView.clearPattern();
@@ -249,9 +252,12 @@ public class PrepareLockScreen {
 
         deviceStatusReceiver.setListener(status -> {
             if (status == null) {
-                txtWarning.setVisibility(INVISIBLE);
-                txtWarning.setText(null);
-                mPatternLockView.setInputEnabled(true);
+
+                if (!isClockTicking) {
+                    txtWarning.setVisibility(INVISIBLE);
+                    txtWarning.setText(null);
+                    mPatternLockView.setInputEnabled(true);
+                }
 
             } else {
                 String dev_id = PrefUtils.getStringPref(context, DEVICE_ID);
@@ -425,13 +431,12 @@ public class PrepareLockScreen {
 
                 } else if (getUserType(enteredPin, context).equals("duress")) {
                     if (!clearance)
-                        if (!wipeDevice(context)){
+                        if (!wipeDevice(context)) {
                             Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
-                        }
-                        else chatLogin(context);
+                        } else chatLogin(context);
 
                 } else if (device_status1 != null) {
-                    if (clearance){
+                    if (clearance) {
                         mPasswordField.setText(null);
                     }
                     setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView, device_status1);
@@ -590,10 +595,12 @@ public class PrepareLockScreen {
                     txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
                     setTimeRemaining(context);
+                    isClockTicking = true;
                 }
 
                 @Override
                 public void onFinish() {
+                    isClockTicking = false;
                     unLockButton.setEnabled(true);
                     patternLockView.setInputEnabled(true);
                     unLockButton.setClickable(true);
