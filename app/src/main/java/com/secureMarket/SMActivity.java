@@ -16,22 +16,23 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -58,9 +59,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -71,16 +77,15 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
+import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.SM_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
-import static com.secureMarket.MarketUtils.savePackages;
 
 public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
 
@@ -93,6 +98,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private SharedViwModel sharedViwModel;
     private MainMarketPagerAdapter sectionsPagerAdapter;
 
+    //
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,7 +234,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
             if (fragment != null) {
                 fragment.onDownLoadProgress(pn, progress, speed);
-            } if (fragment1!=null){
+            }
+            if (fragment1 != null) {
                 fragment1.onDownLoadProgress(pn, progress, speed);
             }
         }
@@ -289,20 +298,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             }
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
             if (fragment1 != null) {
-                fragment1.onDownloadStarted( pn);
+                fragment1.onDownloadStarted(pn);
             }
         }
-//        int index = IntStream.range(0, unInstalledApps.size())
-//                .filter(i -> Objects.nonNull(unInstalledApps.get(i)))
-//                .filter(i -> pn.equals(unInstalledApps.get(i).getPackageName()))
-//                .findFirst()
-//                .orElse(-1);
-//        if (index != -1) {
-//            ServerAppInfo info = unInstalledApps.get(index);
-//            info.setProgres(0);
-//            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
-//            uninstalledAdapter.updateProgressOfItem(info, index);
-//        }
     }
 
     //connection to download service
@@ -392,9 +390,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
                         Timber.d("onFailure: ");
                         //TODO when network failure or error while creating request or building response
-                        if (t instanceof IOException){
+                        if (t instanceof IOException) {
                             sharedViwModel.setMutableMsgs(Msgs.ERROR);
-                        }else {
+                        } else {
                             //TODO: handle your internal mapping permission
                         }
 
@@ -405,6 +403,14 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     }
 
     private void setupApps(@NonNull Response<InstallAppModel> response) {
+        Map<String, DownloadStatusCls> map = null;
+        if (PrefUtils.getStringPref(SMActivity.this, DOWNLAOD_HASH_MAP) != null) {
+            Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+            }.getType();
+            String hashmap = PrefUtils.getStringPref(SMActivity.this, DOWNLAOD_HASH_MAP);
+            map = new Gson().fromJson(hashmap, typetoken);
+
+        }
         appInfos.clear();
         appInfos.addAll(response.body().getServerAppInfo());
         newApps.clear();
@@ -413,6 +419,22 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
         for (int i = 0; i < appInfos.size(); i++) {
             ServerAppInfo appInfo = appInfos.get(i);
+            if (map != null) {
+                DownloadStatusCls status = map.get(appInfo.getPackageName());
+                if (status != null) {
+                    switch (status.getStatus()) {
+                        case PENDING:
+                            appInfo.setType(ServerAppInfo.PROG_TYPE.LOADING);
+                            break;
+                        case LOADING:
+                            appInfo.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
+                            break;
+                        case INSTALLING:
+                            appInfo.setType(ServerAppInfo.PROG_TYPE.INSTALLING);
+                            break;
+                    }
+                }
+            }
             if (appInstalledOrNot(appInfo.getPackageName())) {
                 appInfo.setInstalled(true);
                 if (isUpdateAvailable(appInfo.getPackageName(), Integer.parseInt(appInfo.getVersion_code()))) {
@@ -464,9 +486,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
                         Timber.d("onFailure: ");
 
-                        if (t instanceof IOException){
-                           sharedViwModel.setMutableMsgs(Msgs.ERROR);
-                        }else {
+                        if (t instanceof IOException) {
+                            sharedViwModel.setMutableMsgs(Msgs.ERROR);
+                        } else {
                             //TODO: internal error
                         }
 
@@ -730,4 +752,14 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     public void onAppsRefresh() {
 
     }
+
+
+
+
+    @Retention(RetentionPolicy.CLASS)
+    @IntDef(value = {LOADING, INSTALLING, PENDING})
+    public @interface DownlaodState{ }
+    public static final int LOADING = 1;
+    public static final int INSTALLING = 2;
+    public static final int PENDING  = 3;
 }

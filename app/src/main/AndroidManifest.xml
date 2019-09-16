@@ -133,7 +133,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.Wallpaper.WallpaperActivity"
+            android:name="com.screenlocker.secure.settings.Wallpaper.WallpaperActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

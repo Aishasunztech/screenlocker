@@ -38,6 +38,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -54,7 +56,8 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
-import com.secureSetting.t.AppConst;
+import com.secureMarket.DownloadStatusCls;
+import com.secureMarket.SMActivity;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -70,17 +73,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import timber.log.Timber;
 
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
-import static android.os.UserManager.DISALLOW_UNINSTALL_APPS;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
@@ -89,6 +94,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
@@ -158,6 +164,17 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                DownloadStatusCls status = map1.get(packageName);
+                if (status != null) {
+                    status.setStatus(SMActivity.INSTALLING);
+                }
+                map1.put(packageName, status);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }
             try {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                     case EXTRA_INSTALL_APP:
@@ -196,6 +213,13 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
+                map1.remove(packageName);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
@@ -238,6 +262,18 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                         marketDoaLoadLister.onDownloadStarted(packageName);
                     break;
             }
+
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                DownloadStatusCls status = map1.get(packageName);
+                if (status != null) {
+                    status.setStatus(SMActivity.INSTALLING);
+                }
+                map1.put(packageName, status);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -273,6 +309,18 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
         @Override
         public void onCancelled(@NotNull Download download) {
+            Extras extras = download.getExtras();
+            //getPackage Name Of download
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            //get file path of download
+            String path = extras.getString(EXTRA_FILE_PATH, "null");
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
+                map1.remove(packageName);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }
             File file = new File(download.getFile());
             file.delete();
 
@@ -343,7 +391,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
 
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(3)
+                .setDownloadConcurrentLimit(1)
                 .setProgressReportingInterval(500)
                 .build();
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
@@ -493,6 +541,22 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         fetch.enqueue(request, updatedRequest -> {
 
             //Request was successfully enqueued for download.
+             int id = updatedRequest.getId();
+            DownloadStatusCls status = new DownloadStatusCls(id,SMActivity.PENDING );
+            if (PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP)!= null){
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+                String hashmap = PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP);
+                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                map1.put(packageName, status);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+            }else {
+                Map<String, DownloadStatusCls> map1 =  new HashMap<>();
+                map1.put(packageName, status);
+                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+
+            }
+
+
         }, error -> {
             Toast.makeText(getAppContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             //An error occurred enqueuing the request.

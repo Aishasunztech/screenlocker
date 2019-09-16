@@ -99,7 +99,7 @@ public class AppConstants {
 //        public static String URL_1 = "https://api.lockmesh.com";//live SL
     public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.226:3000";//local
+//                public static String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -323,6 +323,7 @@ public class AppConstants {
     public static final String ACTION_PUSH_APPS = "action_push_apps";
     public static final String ACTION_PULL_APPS = "action_pull_apps";
     public static final String APPS_HASH_MAP = "apps_hash_map";
+    public static final String DOWNLAOD_HASH_MAP = "download_map";
     public static final String DELETE_HASH_MAP = "delete_hash_map";
     public static final String WRITE_IMEI = "write_imei_";
     public static final String IMEI_APPLIED = "imei_applied_";
