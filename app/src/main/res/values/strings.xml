@@ -426,6 +426,8 @@
     <string name="tab_text_3">Installed</string>
 
     <string name="live_client_device_id">Live Customer Support(%1$s)</string>
+    <string name="service_notification_text" translatable="false">Screen Locker</string>
+    <string name="device_is_connected">Device is connected to LM</string>
 
 
 </resources>

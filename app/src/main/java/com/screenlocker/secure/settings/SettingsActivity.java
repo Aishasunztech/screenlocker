@@ -806,7 +806,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         CommonUtils.setAppLocale(code, SettingsActivity.this);
         PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
-        recreate();
+//        recreate();
+        this.finish();
+        Intent intent = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
 
 
     }

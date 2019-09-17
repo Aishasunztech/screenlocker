@@ -120,10 +120,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.secureClear.SecureClearActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SecureSettingsTheme" />
-        <activity
             android:name=".settings.codeSetting.IMEIActivity"
             android:screenOrientation="portrait" />
         <activity
