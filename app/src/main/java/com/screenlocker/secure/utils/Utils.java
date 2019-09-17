@@ -1,7 +1,5 @@
 package com.screenlocker.secure.utils;
 
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
@@ -13,12 +11,9 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
-import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -27,19 +22,12 @@ import android.service.notification.StatusBarNotification;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -48,8 +36,6 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.service.CheckUpdateService;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.views.KeyboardView;
 
@@ -60,23 +46,11 @@ import java.util.Random;
 import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
-import static android.view.View.INVISIBLE;
 import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.screenlocker.secure.service.DeviceNotificationListener.TAG;
-import static com.screenlocker.secure.socket.utils.utils.chatLogin;
-import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
-import static com.screenlocker.secure.socket.utils.utils.getUserType;
-import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
-import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
-import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
-import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
-import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
-import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 
 public class Utils {
@@ -91,7 +65,7 @@ public class Utils {
     /**
      * Get a notification for the running service.
      */
-    public static Notification getNotification(Context context, int icon) {
+    public static Notification getNotification(Context context, int icon,String notification_text) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNM = (NotificationManager) context.getSystemService(
@@ -102,7 +76,7 @@ public class Utils {
                 if (channel == null) {
                     channel = new NotificationChannel(
                             context.getString(R.string.app_name),
-                            context.getString(R.string.app_name),
+                            notification_text,
                             NotificationManager.IMPORTANCE_DEFAULT
                     );
                     channel.setSound(null, null);
@@ -114,8 +88,8 @@ public class Utils {
         }
         return new NotificationCompat.Builder(context, context.getString(R.string.app_name))
                 .setOngoing(false)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.app_name))
+                .setContentTitle(context.getString(R.string.service_notification_text))
+                .setContentText(notification_text)
                 .setTicker(context.getString(R.string.app_name))
                 .setSound(null)
                 .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)

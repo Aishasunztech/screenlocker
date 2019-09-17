@@ -13,7 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.Gravity;
-import android.provider.Settings;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -49,8 +50,6 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -58,6 +57,7 @@ import java.util.TimerTask;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -101,6 +101,8 @@ public class MainActivity extends
     private RecyclerView rvApps;
     private MainPresenter mainPresenter;
     private ImageView background;
+    private ConstraintLayout main_layout;
+    private GridLayoutManager layoutManager;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
 
@@ -139,6 +141,7 @@ public class MainActivity extends
         setContentView(R.layout.activity_main);
 
         SocketService.downloadCompleteListener = this;
+        main_layout = findViewById(R.id.main_root);
 
         Timber.d("skldnfdnnneeare %s", "onCreate");
 
@@ -235,7 +238,8 @@ public class MainActivity extends
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
 
-        rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
+        layoutManager = new GridLayoutManager(this, column_span);
+        rvApps.setLayoutManager(layoutManager);
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
 
@@ -250,8 +254,6 @@ public class MainActivity extends
      */
 
     public void clearRecentApp() {
-
-
         try {
 
             Intent i = new Intent(MainActivity.this, MainActivity.class);
@@ -288,9 +290,9 @@ public class MainActivity extends
 
     };
 
-    public WindowManager windowManager = (WindowManager) MyApplication.getAppContext().getSystemService(WINDOW_SERVICE);
+    public WindowManager windowManager = (WindowManager) getAppContext().getSystemService(WINDOW_SERVICE);
 
-    public RelativeLayout layout = new RelativeLayout(MyApplication.getAppContext());
+    public RelativeLayout layout = new RelativeLayout(getAppContext());
 
 
     public void removeOverlay() {
@@ -327,6 +329,18 @@ public class MainActivity extends
     @Override
     protected void onResume() {
         super.onResume();
+
+        String languageKey = PrefUtils.getStringPref(this,AppConstants.LANGUAGE_PREF);
+        if(languageKey.equals("ar"))
+        {
+//            layoutManager.setReverseLayout(true);
+            rvApps.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        }
+        else{
+            rvApps.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
+        }
 
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);

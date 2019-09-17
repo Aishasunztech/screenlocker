@@ -481,9 +481,9 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
 
         if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_SCREENSHOT)) {
-            allowScreenShoots();
-        } else {
             disableScreenShots();
+        } else {
+            allowScreenShoots();
         }
         //default brightness only once
         if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
@@ -499,7 +499,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
-        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
+        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp,getString(R.string.service_notification_text));
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -917,18 +917,20 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                windowType,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                windowType,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                |
+                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                         | WindowManager.LayoutParams.FLAG_SECURE
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+
 
                 PixelFormat.TRANSLUCENT);
+
+//        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
 
         if (frameLayout != null && frameLayout.getWindowToken() == null) {
 

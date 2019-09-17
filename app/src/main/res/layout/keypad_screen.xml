@@ -138,7 +138,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
-        app:layout_constraintLeft_toLeftOf="@id/patternLock" />
+        app:layout_constraintStart_toStartOf="@id/patternLock" />
 
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"
