@@ -470,5 +470,13 @@ public class AppConstants {
     public static final String CLIENT_SOCKET_URL = "https://devlivechatpn.lockmesh.com";
     public static final String IS_LIVE_CLIENT_VISIBLE = "is_activity_visible";
 
+    public static final String COPIED_DEALER_PIN = "COPIED_DEALER_PIN";
+    public static final String COPIED_SIM_NO_1 = "COPIED_SIM_NO_1";
+    public static final String COPIED_SIM_NO_2 = "COPIED_SIM_NO_2";
+    public static final String COPIED_SERIAL_NUMBER = "COPIED_SERIAL_NUMBER";
+    public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
+    public static final String COPIED_IP = "COPIED_IP";
+    public static final String COPIED_PGP = "COPIED_PGP";
+
 
 }

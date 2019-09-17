@@ -134,6 +134,16 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             refresh();
         });
 
+        tvLinkedDealerPin.setOnClickListener(this);
+        tvSimNo.setOnClickListener(this);
+        tvSimNo2.setOnClickListener(this);
+        tvSerialNo.setOnClickListener(this);
+        tvMAC.setOnClickListener(this);
+        tvIP.setOnClickListener(this);
+        tvPgpEmail.setOnClickListener(this);
+
+
+
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
             tvDeviceId.setText(getResources().getString(R.string.n_a));
@@ -313,21 +323,39 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.tvLinkedStatus:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_LINKED_STATUS, onlineStatus.getText().toString(), "LinkedStatus copied to clipboard");
-
                 break;
             case R.id.tvDeviceStatus:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_DEVICE_STATUS, tvStatus.getText().toString(), "DeviceStatus copied to clipboard");
-
                 break;
             case R.id.tvImei1:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_1, tvImei1.getText().toString(), "IMEI copied to clipboard");
-
                 break;
             case R.id.tvImei2:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_IMEI_2, tvImei2.getText().toString(), "IMEI copied to clipboard");
-
+                break;
+            case R.id.tvLinkedDealerPin:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_DEALER_PIN, tvLinkedDealerPin.getText().toString(), "Dealer pin copied to clipboard");
+                break;
+            case R.id.tvSimNo:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_SIM_NO_1, tvSimNo.getText().toString(), "Sim number copied to clipboard");
+                break;
+            case R.id.tvSimNo2:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_SIM_NO_2, tvSimNo2.getText().toString(), "Sim number copied to clipboard");
+                break;
+            case R.id.tvSerialNo:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_SERIAL_NUMBER, tvSerialNo.getText().toString(), "Serial number copied to clipboard");
+                break;
+            case R.id.tvMAC:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_MAC_ADDRESS, tvMAC.getText().toString(), "Mac address copied to clipboard");
+                break;
+            case R.id.tvIP:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_IP, tvIP.getText().toString(), "IP address copied to clipboard");
+                break;
+            case R.id.tvPgpEmail:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "Pgp email copied to clipboard");
                 break;
         }
+
     }
 
     @Override
