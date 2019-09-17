@@ -9,9 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -33,6 +35,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import timber.log.Timber;
@@ -297,6 +300,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
+
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
 
             if (event.getAction() == 1452) {
@@ -315,6 +319,15 @@ public class WindowChangeDetectingService extends AccessibilityService {
             if (event.getPackageName() != null && event.getClassName() != null) {
                 ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());
                 ActivityInfo activityInfo = tryGetActivity(componentName);
+
+                AccessibilityNodeInfo info = event.getSource();
+                if (info != null) {
+                    Bundle bundle = info.getExtras();
+                    if (bundle != null) {
+                        Timber.d(bundle.toString());
+                    }
+                }
+
                 boolean isActivity = activityInfo != null;
                 Timber.d("Activity: %s", componentName.flattenToShortString());
 

@@ -19,6 +19,7 @@ import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -172,7 +173,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
 
                 } catch (Exception e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
+                        new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName())).start();
+
                 }
 
             } else {
