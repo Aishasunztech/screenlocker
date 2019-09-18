@@ -89,6 +89,7 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CLIENT_SOCKET_URL;
@@ -118,6 +119,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
 import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
+import static com.screenlocker.secure.views.PrepareLockScreen.setDeviceId;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 /**
@@ -1094,10 +1096,14 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 pl.setUpRandomizedArray();
                 pl.invalidate();
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
+                TextView support = mLayout.findViewById(R.id.supporttext);
+                TextView warningText = mLayout.findViewById(R.id.txtWarning);
                 clear.setText(getResources().getString(R.string.btn_backspace));
+                support.setText(getResources().getString(R.string.support));
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.enter_pin_or_draw_pattern_to_unlock));
+                setDeviceId(this, warningText, PrefUtils.getStringPref(this, DEVICE_ID), null, getDeviceStatus(this));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
                 windowManager.updateViewLayout(mLayout, params);
             }

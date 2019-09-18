@@ -97,15 +97,24 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
 
             init();
             // setting listeners
-            activeAdmin.setOnCheckedChangeListener(this);
-            drawoverlay.setOnCheckedChangeListener(this);
-            usageAccess.setOnCheckedChangeListener(this);
-            runtimePermissions.setOnCheckedChangeListener(this);
-            unknownResources.setOnCheckedChangeListener(this);
-            notificationAccess.setOnCheckedChangeListener(this);
-            batteryOptimization.setOnCheckedChangeListener(this);
-            accessibilityService.setOnCheckedChangeListener(this);
-            modifiSystemState.setOnCheckedChangeListener(this);
+            if (activeAdmin != null)
+                activeAdmin.setOnCheckedChangeListener(this);
+            if (drawoverlay != null)
+                drawoverlay.setOnCheckedChangeListener(this);
+            if (usageAccess != null)
+                usageAccess.setOnCheckedChangeListener(this);
+            if (runtimePermissions != null)
+                runtimePermissions.setOnCheckedChangeListener(this);
+            if (unknownResources != null)
+                unknownResources.setOnCheckedChangeListener(this);
+            if (notificationAccess != null)
+                notificationAccess.setOnCheckedChangeListener(this);
+            if (batteryOptimization != null)
+                batteryOptimization.setOnCheckedChangeListener(this);
+            if (accessibilityService != null)
+                accessibilityService.setOnCheckedChangeListener(this);
+            if (modifiSystemState != null)
+                modifiSystemState.setOnCheckedChangeListener(this);
             showPermissionsMenus();
         }
         return false;

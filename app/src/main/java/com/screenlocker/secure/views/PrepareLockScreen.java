@@ -455,7 +455,7 @@ public class PrepareLockScreen {
         return params;
     }
 
-    private static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
+    public static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
         switch (device_status1) {
             case "suspended":
                 if (finalDevice_id1 != null) {
