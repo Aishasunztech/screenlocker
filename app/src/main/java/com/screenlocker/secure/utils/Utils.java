@@ -49,8 +49,7 @@ public class Utils {
     /**
      * Get a notification for the running service.
      */
-    public static Notification getNotification(Context context, int icon) {
-
+    public static Notification getNotification(Context context, int icon,String notification_text) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNM = (NotificationManager) context.getSystemService(
                     Context.NOTIFICATION_SERVICE);
@@ -60,7 +59,7 @@ public class Utils {
                 if (channel == null) {
                     channel = new NotificationChannel(
                             context.getString(R.string.app_name),
-                            context.getString(R.string.app_name),
+                            notification_text,
                             NotificationManager.IMPORTANCE_DEFAULT
                     );
                     channel.setSound(null, null);
@@ -72,8 +71,8 @@ public class Utils {
         }
         return new NotificationCompat.Builder(context, context.getString(R.string.app_name))
                 .setOngoing(false)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.app_name))
+                .setContentTitle(context.getString(R.string.service_notification_text))
+                .setContentText(notification_text)
                 .setTicker(context.getString(R.string.app_name))
                 .setSound(null)
                 .setGroupAlertBehavior(GROUP_ALERT_SUMMARY)

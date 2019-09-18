@@ -481,6 +481,9 @@
     <string name="no_internet_connection">No Internet Connection</string>
 
     <string name="live_client_device_id">Live Customer Support(%1$s)</string>
+    <string name="service_notification_text" translatable="false">@string/app_name</string>
+    <string name="device_is_connected">Device is connected to LM</string>
+
     <string-array name="sort">
         <item>Total</item>
         <item>Date</item>
@@ -493,6 +496,7 @@
         <item>Last Week</item>
         <item>Last Month</item>
     </string-array>
+
 
 
 </resources>

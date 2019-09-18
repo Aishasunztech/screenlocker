@@ -12,13 +12,15 @@ public class AppInfo {
     @NonNull
     @PrimaryKey
     private String uniqueName;
-
     private String label;
     private String packageName;
-
-    public boolean isExtension() {
-        return extension;
-    }
+    private boolean guest;
+    private boolean enable;
+    private boolean encrypted;
+    private boolean systemApp;
+    private boolean extension;
+    private boolean visible;
+    private boolean defaultApp;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
@@ -27,30 +29,23 @@ public class AppInfo {
         return systemApp;
     }
 
+    public boolean isExtension() {
+        return extension;
+    }
+
     public void setSystemApp(boolean systemApp) {
         this.systemApp = systemApp;
     }
 
-    private boolean guest;
-    private boolean enable;
-    private boolean encrypted;
-
-
-    private boolean systemApp;
 
     public void setExtension(boolean extension) {
         this.extension = extension;
     }
 
-    private boolean extension;
-
-    private boolean visible;
 
     public boolean isDefaultApp() {
         return defaultApp;
     }
-
-    private boolean defaultApp;
 
     public void setDefaultApp(boolean defaultApp) {
         this.defaultApp = defaultApp;

@@ -37,6 +37,7 @@ import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
@@ -142,20 +143,15 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
 
 
-        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11, 13),
-                                new Migration_13_14(13, 14)
-                                , new Migration_14_15(14, 15))
-                        .build();
-            }
-        };
 
-
-        thread.start();
+            devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+            myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
+                    .addMigrations(new Migration_11_13(11,13),
+                            new Migration_13_14(13,14)
+                            , new Migration_14_15(14,15))
+                    .build();
+        });
         Timber.plant(new Timber.DebugTree());
 
         BarryAppComponent component = DaggerBarryAppComponent
@@ -186,6 +182,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
+
                 }
 
             }
@@ -318,7 +315,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                     Timber.d("LinkStatus :" + linkStatus);
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
-
+                    
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
 
                 }
@@ -329,50 +326,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         asyncCalls.execute();
     }
 
-
-    private void checkForDownload() {
-
-
-        String currentVersion = "1";
-        try {
-            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            Timber.d(e);
-        }
-
-        MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                .enqueue(new Callback<UpdateModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
-
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    String url = response.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null, getPackageName());
-                                    obj.execute();
-
-                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-
-
-                            } else {
-                                saveToken();
-                                checkForDownload();
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-
-                    }
-                });
-
-
-    }
 
 
     public static void saveToken() {
