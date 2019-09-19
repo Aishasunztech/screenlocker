@@ -26,6 +26,7 @@ import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.simplemobiletools.filemanager.pro.App;
 
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -235,6 +236,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             case AppConstants.PIN_PASSWORD:
                 showGuestPin(activity, settingsPresenter);
                 break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_GUEST);
+                break;
         }
 
 
@@ -290,6 +294,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 break;
             case AppConstants.PIN_PASSWORD:
                 showEncryptedPin(activity, settingsPresenter);
+                break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_MAIN);
                 break;
         }
 
@@ -356,6 +363,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             case AppConstants.PIN_PASSWORD:
                 showDuressPin(activity, settingsPresenter);
                 break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_DURESS);
+                break;
 
 
         }
@@ -415,6 +425,28 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
+
+
+    private void verifyCurrentCombo(String userType) {
+        switch (userType) {
+            case AppConstants.KEY_MAIN:
+                Intent intent = new Intent(this, VerifyComboPassword.class);
+                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                startActivityForResult(intent, RESULTENCRYPTED);
+                break;
+            case AppConstants.KEY_GUEST:
+                Intent intent2 = new Intent(this, VerifyComboPassword.class);
+                intent2.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+                startActivityForResult(intent2, RESULTGUEST);
+                break;
+            case AppConstants.KEY_DURESS:
+                Intent intent3 = new Intent(this, VerifyComboPassword.class);
+                intent3.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                startActivityForResult(intent3, RESULTDURES);
+                break;
+        }
+    }
+
 
 
 }

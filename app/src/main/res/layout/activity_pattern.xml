@@ -16,7 +16,8 @@
         android:layout_height="84dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_80sdp"
-        android:contentDescription="ic_launcher" android:src="@mipmap/ic_launcher"/>
+        android:contentDescription="ic_launcher"
+        android:src="@mipmap/ic_launcher"/>
 
     <TextView
         android:id="@+id/profile_name"

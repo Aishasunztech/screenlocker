@@ -447,7 +447,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
-        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
+        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
         // Whitelist two apps.
 
 

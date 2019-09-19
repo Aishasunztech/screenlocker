@@ -42,11 +42,24 @@ public class AppConstants {
     public static final String GUEST_DEFAULT_CONFIG = "_guest_def_config";
     public static final String ENCRYPT_DEFAULT_CONFIG = "_encrypt_def_config";
     public static final String DUERESS_DEFAULT_CONFIG = "_duress_def_config";
+    //patterns
     public static final String GUEST_PATTERN = "_guest_pattern";
     public static final String ENCRYPT_PATTERN = "_encrypt_pattern";
     public static final String DURESS_PATTERN = "_duress_pattern";
+    //password configuration options
     public static final String PIN_PASSWORD = "_pin_password";
     public static final String PATTERN_PASSWORD = "_pattern_password";
+    public static final String COMBO_PASSWORD = "_combo_password";
+    //guest combo passwords
+    public static final String GUEST_COMBO_PIN = "guest_combo_pin";
+    public static final String GUEST_COMBO_PATTERN = "guest_combo_pattern";
+    //encrypt combo passwords
+    public static final String ENCRYPT_COMBO_PIN = "encrypt_combo_pin";
+    public static final String ENCRYPT_COMBO_PATTERN = "encrypt_combo_pattern";
+    //duress combo passwords
+    public static final String DURESS_COMBO_PIN = "duress_combo_pin";
+    public static final String DURESS_COMBO_PATTERN = "duress_combo_pattern";
+
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
@@ -98,9 +111,9 @@ public class AppConstants {
 
     //servers links
 //        public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.32:3000";//local
+                public static String URL_1 = "http://192.168.18.149:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
