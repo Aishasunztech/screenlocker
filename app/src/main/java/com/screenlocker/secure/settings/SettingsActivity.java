@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -170,8 +171,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
-
 
 
         ButterKnife.bind(this);
@@ -769,6 +768,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         builder.show();
     }
 
+
     private void changeLanguage(String code) {
 
         Intent intent = new Intent(BROADCAST_APPS_ACTION);
@@ -776,15 +776,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         CommonUtils.setAppLocale(code, SettingsActivity.this);
         PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
+        restartActivity();
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)
                         .build();
         WorkManager.getInstance().enqueue(insertionWork);
-        recreate();
 
 
     }
 
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 
 
 }

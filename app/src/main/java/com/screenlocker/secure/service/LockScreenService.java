@@ -166,10 +166,11 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
-                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+                }.getType();
                 String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
-                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 DownloadStatusCls status = map1.get(packageName);
                 if (status != null) {
                     status.setStatus(SMActivity.INSTALLING);
@@ -215,8 +216,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
-                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+                }.getType();
                 String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.remove(packageName);
@@ -265,10 +267,11 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     break;
             }
 
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
-                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+                }.getType();
                 String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
-                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 DownloadStatusCls status = map1.get(packageName);
                 if (status != null) {
                     status.setStatus(SMActivity.INSTALLING);
@@ -316,8 +319,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP)!= null){
-                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+                }.getType();
                 String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.remove(packageName);
@@ -447,7 +451,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
-        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp);
+        Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
         // Whitelist two apps.
 
 
@@ -543,16 +547,17 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         fetch.enqueue(request, updatedRequest -> {
 
             //Request was successfully enqueued for download.
-             int id = updatedRequest.getId();
-            DownloadStatusCls status = new DownloadStatusCls(id,SMActivity.PENDING );
-            if (PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP)!= null){
-                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {}.getType();
+            int id = updatedRequest.getId();
+            DownloadStatusCls status = new DownloadStatusCls(id, SMActivity.PENDING);
+            if (PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP) != null) {
+                Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+                }.getType();
                 String hashmap = PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP);
-                Map<String,DownloadStatusCls > map1 = new Gson().fromJson(hashmap, typetoken);
+                Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.put(packageName, status);
                 PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
-            }else {
-                Map<String, DownloadStatusCls> map1 =  new HashMap<>();
+            } else {
+                Map<String, DownloadStatusCls> map1 = new HashMap<>();
                 map1.put(packageName, status);
                 PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
 
@@ -835,57 +840,16 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         }
     };
 
-
-    //    protected void addView(int colorId) {
-//        mView.setBackgroundColor(getResources().getColor(colorId));
-//        windowManager.addView(mView, localLayoutParams);
-//    }
-//
-//    protected void removeView() {
-//        Timber.d("removeView: ");
-//        if (mView != null && mView.getWindowToken() != null) {
-//            if (windowManager != null) {
-//                windowManager.removeViewImmediate(mView);
-//            }
-//        }
-//    }
     protected void addView(Context context) {
         Timber.d("addView: ");
         try {
-//            mView.setBackground(drawable);
             if (!isLocked && mView.getWindowToken() == null && !viewAdded) {
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.action_restricted_layout, null);
 
-//                mView.getWindow().getDecorView().setSystemUiVisibility(
-//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-
                 mView.addView(view);
 
-
-//                imageView = new ImageView(this);
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
-//                imageView.setLayoutParams(params);
-//                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//
-//                Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
-//
-//                textView = new TextView(this);
-//                textView.setGravity(Gravity.CENTER_HORIZONTAL);
-//                textView.setText("Action not allowed !");
-//                textView.setTextSize(18f);
-//                textView.setTextColor(getResources().getColor(R.color.white));
-//
-//
-//                mView.addView(imageView);
-//                mView.addView(textView);
 
                 windowManager.addView(mView, localLayoutParams);
                 viewAdded = true;
