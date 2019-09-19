@@ -10,6 +10,7 @@ public class AppConstants {
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
     public static final String KEY_THEME = "is_dark";
+    public static boolean IS_LOCALE_CHANGED = false;
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";
     public static final String SOME_ERROR = "Some Error Occurred";
@@ -99,13 +100,13 @@ public class AppConstants {
 //        public static String URL_1 = "https://api.lockmesh.com";//live SL
     public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.149:3000";//local
+//                public static String URL_1 = "http://192.168.18.32:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
 //    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-        public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
-//                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
     public static final String SM_END_POINT = "marketApplist/";
 
@@ -307,7 +308,7 @@ public class AppConstants {
 
     /*
      *Titan Locker
-     * */
+     */
 
     //    public static int attempt_5 = 1000 * 60;
     //    public static int attempt_6 = 1000 * 60;
@@ -404,6 +405,7 @@ public class AppConstants {
 
     public static final String ACTION_DEVICE_TYPE_VERSION = "type_version";
     public static final String ACTION_WIPE = "wipe";
+    public static final String ACTION_PASSWORD_ALREADY_EXIST = "password_already_exist";
     public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
     public static final String SIM_ACTION_DELETED = "sim_delete";
     public static final String SIM_ACTION_NEW_DEVICE = "sim_new_device";
@@ -455,10 +457,18 @@ public class AppConstants {
     public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
     public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
     public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
-//    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
+    //    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
     public static final String CLIENT_SOCKET_URL = "https://devlivechatpn.lockmesh.com";
     public static final String IS_LIVE_CLIENT_VISIBLE = "is_activity_visible";
 
+
+    public static final String COPIED_DEALER_PIN = "COPIED_DEALER_PIN";
+    public static final String COPIED_SIM_NO_1 = "COPIED_SIM_NO_1";
+    public static final String COPIED_SIM_NO_2 = "COPIED_SIM_NO_2";
+    public static final String COPIED_SERIAL_NUMBER = "COPIED_SERIAL_NUMBER";
+    public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
+    public static final String COPIED_IP = "COPIED_IP";
+    public static final String COPIED_PGP = "COPIED_PGP";
 
 
 }

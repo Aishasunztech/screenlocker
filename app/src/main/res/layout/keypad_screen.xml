@@ -57,10 +57,11 @@
         android:padding="@dimen/_18sdp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_capture"
-        android:contentDescription="sm" android:elevation="@dimen/_8sdp"
+        android:contentDescription="sm"
+        android:elevation="@dimen/_8sdp"
         android:stateListAnimator="@null"
         app:layout_constraintBottom_toBottomOf="@+id/patternLock"
-        app:layout_constraintEnd_toEndOf="@+id/patternLock" />
+        app:layout_constraintRight_toRightOf="@+id/patternLock" />
 
 
     <LinearLayout
@@ -82,6 +83,7 @@
             android:tint="@android:color/white" />
 
         <TextView
+            android:id="@+id/supporttext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

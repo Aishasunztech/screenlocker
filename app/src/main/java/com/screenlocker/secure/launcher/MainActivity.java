@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -252,7 +253,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         super.onResume();
 
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
+        String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
 
+        if (languageKey != null && languageKey.equals("ar")) {
+//            layoutManager.setReverseLayout(true);
+            rvApps.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        } else {
+            rvApps.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
+        }
 
         if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);

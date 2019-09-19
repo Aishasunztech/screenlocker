@@ -7,8 +7,8 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chatkit/chatkit.iml" filepath="$PROJECT_DIR$/chatkit/chatkit.iml" />
       <module fileurl="file://$PROJECT_DIR$/commons/commons.iml" filepath="$PROJECT_DIR$/commons/commons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/screenlocker.iml" filepath="$PROJECT_DIR$/screenlocker.iml" />
       <module fileurl="file://$PROJECT_DIR$/screenlockerv4.iml" filepath="$PROJECT_DIR$/screenlockerv4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stepper/screenlockerv4-Stepper.iml" filepath="$PROJECT_DIR$/Stepper/screenlockerv4-Stepper.iml" />
       <module fileurl="file://$PROJECT_DIR$/sfm/sfm.iml" filepath="$PROJECT_DIR$/sfm/sfm.iml" />
     </modules>
   </component>

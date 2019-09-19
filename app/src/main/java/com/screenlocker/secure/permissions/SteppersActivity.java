@@ -1,5 +1,6 @@
 package com.screenlocker.secure.permissions;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 
 import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
 import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
@@ -51,8 +53,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
 
 
-        if (getIntent().hasExtra("emergency" )) {
-            isEmergency = getIntent().getBooleanExtra("emergency",true);
+        if (getIntent().hasExtra("emergency")) {
+            isEmergency = getIntent().getBooleanExtra("emergency", true);
             addStep(new PermissionStepFragment());//0
         } else if (tour_status) {
             Intent intent = new Intent(SteppersActivity.this, SettingsActivity.class);
@@ -115,9 +117,9 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         super.onComplete(data);
         //save the tour complete status in database
         Intent intent;
-        if (isEmergency){
+        if (isEmergency) {
             intent = new Intent(SteppersActivity.this, MainActivity.class);
-        }else{
+        } else {
             intent = new Intent(SteppersActivity.this, WelcomeScreenActivity.class);
         }
 
@@ -146,19 +148,25 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
     public void onBackPressed() {
 //        super.onBackPressed();
     }
+
     void broadCastIntent() {
         Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
         sendBroadcast(intent);
     }
-    void setDefLauncher(){
-        PackageManager pm = getPackageManager();
-        IntentFilter f = new IntentFilter("android.intent.action.MAIN");
-        f.addCategory("android.intent.category.HOME");
-        f.addCategory("android.intent.category.DEFAULT");
-        ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
 
-        pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
+    void setDefLauncher() {
+
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.SET_PREFERRED_APPLICATIONS") == PackageManager.PERMISSION_GRANTED) {
+            PackageManager pm = getPackageManager();
+            IntentFilter f = new IntentFilter("android.intent.action.MAIN");
+            f.addCategory("android.intent.category.HOME");
+            f.addCategory("android.intent.category.DEFAULT");
+            ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
+
+            pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
+        }
+
     }
 }
