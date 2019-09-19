@@ -11,7 +11,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class SubExtension  {
+public class SubExtension {
 
     private String label;
 
@@ -42,11 +42,12 @@ public class SubExtension  {
     private boolean guest;
     private boolean encrypted;
 
-    public SubExtension(String label, @NonNull String uniqueName, byte[] icon, boolean guest, boolean encrypted) {
+    public SubExtension(String label, @NonNull String uniqueName, @NonNull String uniqueExtension, byte[] icon, boolean guest, boolean encrypted) {
         this.label = label;
         this.uniqueName = uniqueName;
         this.icon = icon;
         this.guest = guest;
+        this.uniqueExtension = uniqueExtension;
         this.encrypted = encrypted;
     }
 
@@ -95,7 +96,6 @@ public class SubExtension  {
     public boolean isEncrypted() {
         return encrypted;
     }
-
 
 
 }
