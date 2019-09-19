@@ -10,15 +10,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -62,6 +58,7 @@ import timber.log.Timber;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
+import static android.content.Context.WIFI_SERVICE;
 import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
@@ -70,8 +67,6 @@ import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.APPS_LIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_VIEW_ADD_REMOVE;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -84,9 +79,9 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
@@ -194,6 +189,15 @@ public class utils {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
+                } else {
+                    if (isChecked) {
+                        PrefUtils.saveBooleanPref(context, AppConstants.KEY_WIFI_ENABLE,true);
+                    } else {
+                        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+                        wifiManager.setWifiEnabled(false);
+                        PrefUtils.saveBooleanPref(context, AppConstants.KEY_WIFI_ENABLE,false);
+
+                    }
                 }
 
                 break;
@@ -203,6 +207,15 @@ public class utils {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
+                }else {
+                    if (isChecked) {
+                        PrefUtils.saveBooleanPref(context,KEY_BLUETOOTH_ENABLE,true);
+                    } else {
+                        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        bluetoothAdapter.disable();
+                        PrefUtils.saveBooleanPref(context,KEY_BLUETOOTH_ENABLE,false);
+
+                    }
                 }
                 break;
             case AppConstants.SET_BLUE_FILE_SHARING:

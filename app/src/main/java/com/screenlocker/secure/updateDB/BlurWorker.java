@@ -9,22 +9,18 @@ import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PrefUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import timber.log.Timber;
 
@@ -385,8 +381,16 @@ public class BlurWorker extends Worker {
                 }
             } else if (settings != null && settings.size() == 2) {
                 Timber.d("adding screen capture settings");
-                com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, PrefUtils.getBooleanPref(applicationContext, AppConstants.KEY_DISABLE_SCREENSHOT));
+                com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, false);
                 MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(screen_capture_settings);
+            }else if(settings != null && settings.size() == 3)
+            {
+                com.screenlocker.secure.socket.model.Settings wifi_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_WIFI, true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(wifi_settings);
+            }else if(settings != null && settings.size() == 4)
+            {
+                com.screenlocker.secure.socket.model.Settings bluetooth_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_BLUETOOTH, true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(bluetooth_settings);
             }
 
             return Result.success();
