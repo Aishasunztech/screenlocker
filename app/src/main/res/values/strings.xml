@@ -5,6 +5,7 @@
         <item>2</item>
         <item>3</item>
     </integer-array>
+    <string name="my_apk_name" translatable="false">Test Locker</string>
     <string name="app_name" translatable="false">Test Locker</string>
     <string name="toolbar_title" translatable="false">Test Locker</string>
     <string name="apktype" translatable="false">Dev</string>
@@ -496,7 +497,6 @@
         <item>Last Week</item>
         <item>Last Month</item>
     </string-array>
-
 
 
 </resources>
