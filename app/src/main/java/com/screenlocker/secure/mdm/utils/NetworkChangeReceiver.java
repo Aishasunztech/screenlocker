@@ -42,24 +42,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             }
         }
 
-
-//        if (listener!=null)
-//            try
-//            {
-//                new InternetCheck(internet -> {
-//                    if (internet) {
-//                        if(listener!=null)
-//                        listener.isConnected(true);
-//                        Log.e(TAG, "You are Online !");
-//                    } else {
-//                        if(listener!=null)
-//                        listener.isConnected(false);
-//                        Log.e(TAG, "You are Offline ! ");
-//                    }
-//                });
-//            } catch (NullPointerException e) {
-//                e.printStackTrace();
-//            }
     }
 
     public interface NetworkChangeListener {
