@@ -22,6 +22,7 @@ ext.isSnapshot = false
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
+
 private Integer generateVersionCode() {
     return ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
 }
@@ -44,8 +45,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode generateVersionCode()
-        versionName generateVersionName()
+        versionCode 60201
+        versionName "6.2.1"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
