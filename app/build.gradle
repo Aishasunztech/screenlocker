@@ -12,27 +12,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-ext.versionMajor = 6
-ext.versionMinor = 2
-ext.versionPatch = 0
-ext.versionClassifier = null
-ext.isSnapshot = false
-
-private Integer generateVersionCode() {
-    return ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
-}
-
-private String generateVersionName() {
-    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
-    if (ext.versionClassifier == null && ext.isSnapshot) {
-        ext.versionClassifier = "SNAPSHOT"
-    }
-
-    if (ext.versionClassifier != null) {
-        versionName += "-" + ext.versionClassifier
-    }
-    return versionName
-}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
