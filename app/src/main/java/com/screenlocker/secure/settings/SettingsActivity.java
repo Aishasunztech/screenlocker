@@ -347,6 +347,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onClick(View v) {
         if (isOverLayAllowed()) {
@@ -475,6 +476,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         dialog.show();
         try {
             currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+            Timber.d("current version :" + currentVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -524,7 +526,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void update(ProgressDialog dialog) {
         MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {

@@ -86,7 +86,7 @@ public class CheckUpdateService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        if (!AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown()){
+        if (!AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown()) {
             AppExecutor.getInstance().getExecutorForUpdatingList().shutdownNow();
         }
         return true;
@@ -95,7 +95,7 @@ public class CheckUpdateService extends JobService {
 
     //TODO:
     private void checkUpdatesIfAvailAble(JobParameters parameters) {
-        if (AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown() ){
+        if (AppExecutor.getInstance().getExecutorForUpdatingList().isShutdown()) {
             AppExecutor.getInstance().prepareExecutorForUpdatingList();
         }
         AppExecutor.getInstance().getExecutorForUpdatingList().execute(() -> {
@@ -106,7 +106,7 @@ public class CheckUpdateService extends JobService {
     private void tryForCheckUpdates(JobParameters parameters) {
         try {
             String currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-            Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+            Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                     .execute();
             if (response.isSuccessful()) {
                 if (response.body() != null && response.body().isSuccess()) {
@@ -123,7 +123,7 @@ public class CheckUpdateService extends JobService {
                 }
 
             } else {
-                jobFinished(parameters,true);
+                jobFinished(parameters, true);
                 return;
             }
             ApplicationInfo info = getPackageManager().getApplicationInfo(UEM_PKG, 0);
@@ -138,15 +138,14 @@ public class CheckUpdateService extends JobService {
                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
                         downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), UEM_PKG);
                     }
-                }
-                else {
+                } else {
                     if (saveTokens())
                         tryForCheckUpdates(parameters);
                     return;
                 }
 
             } else {
-                jobFinished(parameters,true);
+                jobFinished(parameters, true);
                 return;
             }
 
@@ -154,10 +153,10 @@ public class CheckUpdateService extends JobService {
             List<ApplicationInfo> packages = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
 
             for (ApplicationInfo appInfo : packages) {
-                if (Thread.currentThread().isInterrupted()){
+                if (Thread.currentThread().isInterrupted()) {
                     return;
                 }
-               String currAppName = getPackageManager().getApplicationLabel(appInfo).toString();
+                String currAppName = getPackageManager().getApplicationLabel(appInfo).toString();
                 try {
                     String version = String.valueOf(getPackageManager().getPackageInfo(appInfo.packageName, 0).versionCode);
 
@@ -175,16 +174,15 @@ public class CheckUpdateService extends JobService {
                                     downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), appInfo.packageName);
                                 }
 
-                            }
-                            else {
+                            } else {
                                 if (saveTokens())
                                     tryForCheckUpdates(parameters);
                                 return;
                             }
 
                         } else {
-                           jobFinished(parameters, true);
-                           return;
+                            jobFinished(parameters, true);
+                            return;
                         }
                     }
                 } catch (PackageManager.NameNotFoundException e) {
@@ -195,7 +193,8 @@ public class CheckUpdateService extends JobService {
         } catch (PackageManager.NameNotFoundException e) {
             Timber.d(e);
         } catch (IOException e) {
-            Timber.tag("").wtf(e, "tryForCheckUpdates: ");;
+            Timber.tag("").wtf(e, "tryForCheckUpdates: ");
+            ;
             jobFinished(parameters, false);
         }
     }
