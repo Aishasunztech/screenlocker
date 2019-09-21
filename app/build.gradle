@@ -13,7 +13,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 ext.versionMajor = 6
-ext.versionMinor = 1
+ext.versionMinor = 2
 ext.versionPatch = 1
 ext.versionClassifier = null
 ext.isSnapshot = false
