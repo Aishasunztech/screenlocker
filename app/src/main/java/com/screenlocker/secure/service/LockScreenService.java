@@ -761,34 +761,27 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     private void spaceWiseEnableDisable(String space, SimEntry entry1, int slot) {
         switch (space) {
             case KEY_GUEST_PASSWORD:
-                if (entry1.isEnable()) {
-                    if (entry1.isGuest()) {
-                        //enable sim slot 1 for this user
-                        broadCastIntent(true, slot);
-                    } else {
-                        broadCastIntent(false, slot);
-                        //disable sim slote for this user
-                    }
+
+                if (entry1.isGuest()) {
+                    //enable sim slot 1 for this user
+                    broadCastIntent(true, slot);
                 } else {
-                    //disable in any case
                     broadCastIntent(false, slot);
+                    //disable sim slote for this user
+
                 }
                 break;
             case KEY_MAIN_PASSWORD:
-                if (entry1.isEnable()) {
-                    if (entry1.isEncrypted()) {
-                        //enable sim slot 1 for this user
-                        broadCastIntent(true, slot);
-                    } else {
-                        //disable sim slote for this user
-                        broadCastIntent(false, slot);
 
-                    }
+                if (entry1.isEncrypted()) {
+                    //enable sim slot 1 for this user
+                    broadCastIntent(true, slot);
                 } else {
-                    //disable in any case
+                    //disable sim slote for this user
                     broadCastIntent(false, slot);
 
                 }
+                
                 break;
 
         }

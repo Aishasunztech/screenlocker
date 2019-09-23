@@ -97,6 +97,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     int clickCount = 0;
 
+    private List<String> simNos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +108,8 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         url_1 = findViewById(R.id.url_1);
         url_1.setText(URL_1);
 
+
+        simNos = DeviceIdUtils.getSimNumber(this);
 
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
@@ -143,7 +146,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         tvLinkedDealerPin.setOnClickListener(this);
         tvSimNo.setOnClickListener(this);
+        tvSimNo.setText(simNos != null && simNos.size() > 0 ? simNos.get(0) : "N/A");
+
+
         tvSimNo2.setOnClickListener(this);
+
+        tvSimNo2.setText(simNos != null && simNos.size() > 1 ? simNos.get(1) : "N/A");
+
         tvSerialNo.setOnClickListener(this);
         tvMAC.setOnClickListener(this);
         tvIP.setOnClickListener(this);

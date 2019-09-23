@@ -124,9 +124,9 @@
     <string name="status_disabled">Disabled</string>
     <string name="status_not_inserted">Not Inserted</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">New Apps</string>
+    <string name="tab_text_1">Apps</string>
     <string name="tab_text_2">Updates</string>
-    <string name="tab_text_3">Installed</string>
+    <string name="tab_text_3">Uninstall</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
