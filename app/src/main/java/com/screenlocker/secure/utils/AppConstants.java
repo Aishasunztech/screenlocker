@@ -472,4 +472,7 @@ public class AppConstants {
     public static final String COPIED_PGP = "COPIED_PGP";
 
 
+    public static final String OLD_DEVICE_STATUS = "old_device_status";
+
+
 }

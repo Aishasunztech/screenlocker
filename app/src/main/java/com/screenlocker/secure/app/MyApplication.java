@@ -9,7 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,15 +16,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
@@ -39,7 +34,6 @@ import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -317,7 +311,11 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+
+                boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+
                 Timber.d("LinkStatus :" + linkStatus);
                 boolean pendingActivation = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ACTIVATION);
                 Timber.d("pendingActivation " + pendingActivation);
@@ -325,6 +323,11 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 Timber.d("LinkStatus :" + linkStatus);
                 String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                 String serialNo = DeviceIdUtils.getSerialNumber();
+
+                if (!old_device_status) {
+                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                }
 
                 if (linkStatus) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
