@@ -72,7 +72,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private LinearLayout wifiContainer, bluetoothContainer, simCardContainer,
             hotspotContainer, screenLockContainer, brightnessContainer,
             sleepContainer, battery_container, sound_container,
-            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container,no_settings_layout;
+            language_container, dateTimeContainer, mobile_container, dataRoamingContainer, notifications_container, no_settings_layout;
 
     private ConstraintLayout settingsLayout;
 
@@ -114,7 +114,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                     new Thread(() -> {
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() ->{
+                            runOnUiThread(() -> {
                                 settingsLayout.setVisibility(View.GONE);
                                 no_settings_layout.setVisibility(View.VISIBLE);
                             });
@@ -142,12 +142,12 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                         List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
                         if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() ->{
-                                no_settings_layout.setVisibility(View.VISIBLE);
+                            runOnUiThread(() -> {
                                 settingsLayout.setVisibility(View.GONE);
-                            } );
+                                no_settings_layout.setVisibility(View.VISIBLE);
+                            });
                         } else {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {
