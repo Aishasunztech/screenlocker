@@ -14,13 +14,9 @@
   <component name="ChangeListManager">
     <list default="true" id="4bb928c4-a3e2-4b37-b9d2-879c1de62f07" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons/commons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/commons/commons.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfm/sfm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sfm/sfm.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -52,11 +48,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
+            <state relative-caret-position="584">
+              <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="552">
+              <caret line="537" lean-forward="true" selection-start-line="537" selection-end-line="537" />
+              <folding>
+                <element signature="e#6709#7887#0" expanded="true" />
+                <element signature="e#7886#7887#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -115,14 +124,14 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/.gitlab-ci.yml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
       </list>
     </option>
   </component>
@@ -385,7 +394,21 @@
       <option name="project" value="LOCAL" />
       <updated>1569082615609</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="TL-version 6.3.0 (live)">
+      <created>1569231303861</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1569231303861</updated>
+    </task>
+    <task id="LOCAL-00005" summary="bug fixed &#10;1) SS in guest space &#10;2) First time devcie status check">
+      <created>1569233131840</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1569233131840</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -402,14 +425,14 @@
       <window_info id="Resources Explorer" order="7" />
       <window_info id="Capture Tool" order="8" />
       <window_info anchor="bottom" id="Run" order="0" weight="0.32932165" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49839914" weight="0.78118163" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49839914" weight="0.37417942" />
       <window_info anchor="bottom" id="TODO" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994664" weight="0.32932165" />
       <window_info anchor="bottom" id="Terminal" order="4" sideWeight="0.4994664" weight="0.32932165" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50160086" side_tool="true" weight="0.64442015" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50160086" side_tool="true" weight="0.43326038" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.32932165" />
       <window_info anchor="bottom" id="Build" order="7" sideWeight="0.49733192" weight="0.39606127" />
-      <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="bottom" id="Find" order="9" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
@@ -461,7 +484,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="TL-version 6.0 (live)" />
     <MESSAGE value="TL-version 6.2.0 (live)" />
-    <option name="LAST_COMMIT_MESSAGE" value="TL-version 6.2.0 (live)" />
+    <MESSAGE value="TL-version 6.3.0 (live)" />
+    <MESSAGE value="bug fixed &#10;1) SS in guest space &#10;2) First time devcie status check" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixed &#10;1) SS in guest space &#10;2) First time devcie status check" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -616,13 +641,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="147" column="42" selection-start-line="147" selection-start-column="42" selection-end-line="147" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -651,23 +669,6 @@
           <folding>
             <element signature="e#671#672#0" expanded="true" />
             <element signature="e#707#708#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="356" column="45" selection-start-line="356" selection-start-column="26" selection-end-line="356" selection-end-column="45" />
-          <folding>
-            <element signature="e#4258#4259#0" expanded="true" />
-            <element signature="e#4291#4292#0" expanded="true" />
-            <element signature="e#9123#9124#0" expanded="true" />
-            <element signature="e#9158#9159#0" expanded="true" />
-            <element signature="e#9207#9208#0" expanded="true" />
-            <element signature="e#9247#9248#0" expanded="true" />
-            <element signature="e#11758#11974#0" expanded="true" />
-            <element signature="e#11973#11974#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -725,13 +726,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="1356" column="19" lean-forward="true" selection-start-line="1356" selection-start-column="19" selection-end-line="1356" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="246">
@@ -743,13 +737,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="608">
           <caret line="191" column="134" selection-start-line="191" selection-start-column="123" selection-end-line="191" selection-end-column="134" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="284" column="41" selection-start-line="284" selection-start-column="41" selection-end-line="284" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -782,8 +769,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
+        <state relative-caret-position="584">
+          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="709">
+          <caret line="474" column="48" selection-start-line="474" selection-start-column="31" selection-end-line="474" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1521">
+          <caret line="330" lean-forward="true" selection-start-line="330" selection-end-line="330" />
+          <folding>
+            <element signature="e#11885#12391#0" expanded="true" />
+            <element signature="e#12390#12391#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="537" lean-forward="true" selection-start-line="537" selection-end-line="537" />
+          <folding>
+            <element signature="e#6709#7887#0" expanded="true" />
+            <element signature="e#7886#7887#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
