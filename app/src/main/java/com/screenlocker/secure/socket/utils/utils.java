@@ -84,6 +84,7 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
@@ -698,7 +699,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
-
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
 
 
         /*String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);

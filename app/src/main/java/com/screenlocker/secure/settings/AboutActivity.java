@@ -90,6 +90,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     int clickCount = 0;
 
+    private List<String> simNos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         url_1 = findViewById(R.id.url_1);
         url_1.setText(WHITE_LABEL_URL);
 
+        simNos = DeviceIdUtils.getSimNumber(this);
 
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
@@ -136,12 +138,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         tvLinkedDealerPin.setOnClickListener(this);
         tvSimNo.setOnClickListener(this);
+        tvSimNo.setText(simNos != null && simNos.size() > 0 ? simNos.get(0) : "N/A");
         tvSimNo2.setOnClickListener(this);
+        tvSimNo2.setText(simNos != null && simNos.size() > 1 ? simNos.get(1) : "N/A");
         tvSerialNo.setOnClickListener(this);
         tvMAC.setOnClickListener(this);
         tvIP.setOnClickListener(this);
         tvPgpEmail.setOnClickListener(this);
-
 
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
@@ -412,34 +415,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-        String url = url_1.getText().toString();
-
-        if (TextUtils.isEmpty(url)) {
-            url_1.setError("Please enter valid url !");
-            return;
-        }
-
-
-        AppConstants.WHITE_LABEL_URL = url + "/mobile/";
-
-        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+//        String url = url_1.getText().toString();
+//
+//        if (TextUtils.isEmpty(url)) {
+//            url_1.setError("Please enter valid url !");
+//            return;
+//        }
+//
+//
+//        AppConstants.WHITE_LABEL_URL = url + "/mobile/";
+//
+//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-        clickCount++;
-        int total = 6;
-
-        if (clickCount == 6) {
-            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-            button.setVisibility(View.VISIBLE);
-            button2.setVisibility(View.VISIBLE);
-            url_1.setVisibility(View.VISIBLE);
-        } else {
-            if (clickCount >= 2 && clickCount <= 6) {
-                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        clickCount++;
+//        int total = 6;
+//
+//        if (clickCount == 6) {
+//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+//            button.setVisibility(View.VISIBLE);
+//            button2.setVisibility(View.VISIBLE);
+//            url_1.setVisibility(View.VISIBLE);
+//        } else {
+//            if (clickCount >= 2 && clickCount <= 6) {
+//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
     }
 }

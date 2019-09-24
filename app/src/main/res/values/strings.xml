@@ -421,9 +421,9 @@
 
     <string name="restore">Restore</string>
 
-    <string name="tab_text_1">New Apps</string>
+    <string name="tab_text_1">Apps</string>
     <string name="tab_text_2">Updates</string>
-    <string name="tab_text_3">Installed</string>
+    <string name="tab_text_3">Uninstall</string>
 
     <string name="live_client_device_id">Live Customer Support(%1$s)</string>
     <string name="service_notification_text" translatable="false">Screen Locker</string>

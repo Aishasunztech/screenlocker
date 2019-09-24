@@ -142,7 +142,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                                 settingsLayout.setVisibility(View.GONE);
                             });
                         } else {
-                            runOnUiThread(() -> settingsLayout.setVisibility(View.GONE));
+                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
                             for (SubExtension subExtension : subExtensions) {
                                 String extensionName = subExtension.getUniqueExtension();
                                 if (extensions.containsKey(extensionName)) {

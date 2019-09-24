@@ -98,8 +98,8 @@ public class AppConstants {
 
 
     //Server Links
-    //    public static final String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
-    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
+    public static final String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
+//    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
 //    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
 
     //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA
@@ -211,7 +211,7 @@ public class AppConstants {
     public static final String DEVICE_LINKED = "1";
     public static final String DEVICE_LINKED_STATUS = "device_linked_status";
 
-    public static final String FIRST_TIME_USE = "first_time_use";
+    public static final String NEW_DEVICE_STATUS_CHECK = "new_device_status_check";
 
 
     //Stepps
@@ -478,6 +478,8 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+
+    public static final String PENDING_ACTIVATION = "pending_activity";
 
 
 }

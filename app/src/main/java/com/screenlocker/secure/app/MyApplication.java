@@ -20,6 +20,7 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.crash.CustomErrorActivity;
 import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -51,6 +52,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 import io.fabric.sdk.android.Fabric;
@@ -62,13 +65,14 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.FIRST_TIME_USE;
+import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener {
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, LinkDeviceActivity.OnScheduleTimerListener {
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
@@ -97,7 +101,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         super.onCreate();
 
         appContext = getApplicationContext();
-
+        LinkDeviceActivity.mListener = this;
 
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
@@ -260,23 +264,21 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
             Timber.i("------------> Network Connected");
 
-            boolean firstTimeUse = PrefUtils.getBooleanPref(this, FIRST_TIME_USE);
+            boolean newDeviceSatatusCheck = PrefUtils.getBooleanPref(this, NEW_DEVICE_STATUS_CHECK);
             boolean linkDeviceStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+            boolean isPendingActivation = PrefUtils.getBooleanPref(this, PENDING_ACTIVATION);
+            if (!newDeviceSatatusCheck || linkDeviceStatus || isPendingActivation) {
 
-            if (firstTimeUse || linkDeviceStatus) {
+                if (!isPendingActivation)
+                    Timber.i(newDeviceSatatusCheck ? "---------> Device is using first time. " : "----------> Device is already linked. ");
+                else
+                    Timber.i("-------------------> Device is in pending Activation state.");
 
-                Timber.i(firstTimeUse ? "---------> Device is using first time. " : "----------> Device is already linked. ");
+                if (!newDeviceSatatusCheck) {
+                    PrefUtils.saveBooleanPref(this, NEW_DEVICE_STATUS_CHECK, true);
+                }
 
-                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-
-                String serialNo = DeviceIdUtils.getSerialNumber();
-
-                Timber.i("---------> mac address of device : " + macAddress);
-
-                Timber.i("---------> serial number of device : " + serialNo);
-
-                new ApiUtils(this, macAddress, serialNo);
-
+                checkDeviceStatus();
             }
         } else {
             Timber.i("----------> Network Disconnected");
@@ -291,6 +293,18 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 Timber.i("--------------> Socket Service is already stopped. ");
             }
         }
+    }
+
+    private void checkDeviceStatus() {
+        String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+
+        String serialNo = DeviceIdUtils.getSerialNumber();
+
+        Timber.i("---------> mac address of device : " + macAddress);
+
+        Timber.i("---------> serial number of device : " + serialNo);
+
+        new ApiUtils(this, macAddress, serialNo);
     }
 
 
@@ -375,7 +389,55 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }).run();
     }
 
+    private Timer t;
 
+    private void scheduleTimer() {
+
+        if (t != null) {
+            t.cancel();
+            t = null;
+        }
+
+        t = new Timer();
+
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Timber.d("zklvnsdfvnsdklfsdfg : " + "checking device status ");
+                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
+                    checkDeviceStatus();
+                } else {
+                    if (t != null) {
+                        t.cancel();
+                        t = null;
+                    }
+                }
+
+
+            }
+
+        }, 5000, 10 * 60 * 1000);
+    }
+
+    private void stopTimer() {
+        if (t != null) {
+            t.cancel();
+            t = null;
+        }
+        Timber.d("zklvnsdfvnsdklfsdfg : " + "stop Timer");
+    }
+
+
+    @Override
+    public void onScheduleTimer(boolean state) {
+        Timber.d("zklvnsdfvnsdklfsdfg : " + "state :" + state);
+        if (state) {
+            scheduleTimer();
+        } else {
+            stopTimer();
+        }
+
+    }
 }
 
 

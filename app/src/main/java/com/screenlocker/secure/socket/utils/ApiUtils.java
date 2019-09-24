@@ -14,6 +14,7 @@ import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
@@ -37,6 +39,8 @@ import static com.screenlocker.secure.utils.AppConstants.FLAGGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.PENDING;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
@@ -127,42 +131,46 @@ public class ApiUtils implements ApiRequests {
 
                                     switch (msg) {
                                         case ACTIVE:
-                                            Timber.i("---------> device is active. ");
+                                        case TRIAL:
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
+                                            PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                             utils.unSuspendDevice(context);
                                             break;
                                         case EXPIRED:
-                                            Timber.i("---------> device is expired. ");
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
+                                            PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                             utils.suspendedDevice(context, "expired");
                                             break;
                                         case SUSPENDED:
-                                            Timber.i("---------> device is suspended. ");
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
+                                            PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                             utils.suspendedDevice(context, "suspended");
                                             break;
-                                        case TRIAL:
-                                            Timber.i("---------> device is on trial. ");
-                                            utils.unSuspendDevice(context);
-                                            break;
                                         case FLAGGED:
-                                            Timber.i("---------> device is flagged. ");
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
+                                            PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                             suspendedDevice(context, "flagged");
                                             break;
-                                        default:
-                                            Timber.e("-------> wrong msg from server :%s", msg);
+                                        case PENDING:
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, true);
+                                            break;
                                     }
+
                                 } else {
 
+                                    PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
                                     switch (msg) {
                                         case UNLINKED_DEVICE:
-                                            Timber.i("-----> device is unlinked. ");
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, true);
                                             utils.unlinkDevice(context, true);
                                             break;
                                         case NEW_DEVICE:
-                                            Timber.i("-----> new device");
+                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, true);
                                             utils.newDevice(context, true);
                                             break;
-                                        default:
-                                            Timber.e("-------> wrong msg from server :%s", msg);
+
                                     }
+
                                 }
 
                             } else {

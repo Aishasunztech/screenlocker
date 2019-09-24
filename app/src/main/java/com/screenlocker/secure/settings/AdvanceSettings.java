@@ -243,7 +243,8 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
 
         //bluetooth disable
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.disable();
+        if (mBluetoothAdapter != null)
+            mBluetoothAdapter.disable();
 
         //Reset System Setting
         DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -282,6 +283,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
         //change Grid Size to default
         PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, AppConstants.LAUNCHER_GRID_SPAN);
 
+
         //Application permissions
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<AppInfo> allapps = MyApplication.getAppDatabase(this).getDao().getApps();
@@ -300,17 +302,30 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                     app.setEncrypted(true);
                     app.setGuest(false);
                     app.setEnable(true);
-                } else if (app.isSystemApp()) {
+                } else if (app.getPackageName().equals("com.armorSec.android")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("ca.unlimitedwireless.mailpgp")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("com.secure.vpn")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else {
                     app.setEnable(false);
                     app.setGuest(true);
                     app.setEncrypted(false);
-                } else {
-                    app.setEncrypted(true);
-                    app.setGuest(false);
-                    app.setEnable(true);
                 }
                 MyApplication.getAppDatabase(this).getDao().updateApps(app);
             }
+
             AppExecutor.getInstance().getMainThread().execute(() -> {
 
                 Intent intent = new Intent(BROADCAST_APPS_ACTION);

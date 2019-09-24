@@ -153,6 +153,13 @@ public class LinkDeviceActivity extends BaseActivity {
     TextView tvSimId;
 
 
+    public interface OnScheduleTimerListener {
+        void onScheduleTimer(boolean state);   //method, which can have parameters
+    }
+
+    public static OnScheduleTimerListener mListener; //listener field
+
+
     @Override
     protected int getContentView() {
         return R.layout.activity_link_device;
@@ -434,6 +441,7 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void newLinkViewState() {
+        isPendingActivation = false;
         setDealerPin(getResources().getString(R.string.not_linked_yet));
         btnLinkDevice.setText(R.string.link_device);
         btnLinkDevice.setVisibility(View.VISIBLE);
@@ -588,6 +596,7 @@ public class LinkDeviceActivity extends BaseActivity {
                 });
     }
 
+    boolean isPendingActivation = false;
 
     @Override
     protected void onStop() {
@@ -596,6 +605,18 @@ public class LinkDeviceActivity extends BaseActivity {
             t.cancel();
             t = null;
         }
+
+        PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
+
+        if (isPendingActivation) {
+            if (mListener != null)
+                mListener.onScheduleTimer(true);
+        } else {
+            if (mListener != null) {
+                mListener.onScheduleTimer(false);
+            }
+        }
+
     }
 
     private Timer t;
@@ -650,6 +671,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void pendingLinkViewState() {
 
+        isPendingActivation = true;
 
         scheduleTimer();
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
@@ -711,7 +733,7 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void approvedLinkViewState() {
-
+        isPendingActivation = false;
 
         if (t != null) {
             t.cancel();
