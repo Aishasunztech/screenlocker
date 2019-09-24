@@ -215,4 +215,15 @@
     </style>
 
 
+
+    <style name="NCheckBox">
+        <item name="android:checkboxStyle">@style/NLockScreenCodeStyle</item>
+        <item name="checkboxStyle">@style/NLockScreenCodeStyle</item>
+    </style>
+
+    <style name="NLockScreenCodeStyle">
+        <item name="android:button">@drawable/code_selector_n</item>
+    </style>
+
+
 </resources>

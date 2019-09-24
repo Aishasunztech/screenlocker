@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="pf_code_view" format="reference|integer"/>
     <declare-styleable name="PatternLockView">
         <attr name="dotCount" format="integer"/>
         <attr name="dotNormalSize" format="dimension"/>

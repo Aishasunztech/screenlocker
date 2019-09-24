@@ -13,11 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".settings.managepassword.CombinationLockActivity"></activity>
         <activity
             android:name="com.liveClientChat.LiveClientChatActivity"
             android:label="@string/title_activity_live_client_chat"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.secureMarket.SMActivity"
             android:launchMode="standard"
@@ -133,7 +134,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.screenlocker.secure.settings.Wallpaper.WallpaperActivity"
+            android:name=".settings.Wallpaper.WallpaperActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -343,6 +344,7 @@
             android:name=".mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
+
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
@@ -354,8 +356,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- bluetooth permission -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- bluetooth permission -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
@@ -363,13 +365,13 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- permisions for overlay windows -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- permisions for overlay windows -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- critical permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- critical permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
     <uses-permission

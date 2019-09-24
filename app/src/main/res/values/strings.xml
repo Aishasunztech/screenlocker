@@ -5,9 +5,10 @@
         <item>2</item>
         <item>3</item>
     </integer-array>
-    <string name="app_name" translatable="false">Test Locker</string>
-    <string name="toolbar_title" translatable="false">Test Locker</string>
-    <string name="apktype" translatable="false">Dev</string>
+    <string name="my_apk_name" translatable="false">Screen Locker</string>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
+    <string name="apktype" translatable="false">SW</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
     <string name="number_two" translatable="false">2</string>
@@ -123,9 +124,9 @@
     <string name="status_disabled">Disabled</string>
     <string name="status_not_inserted">Not Inserted</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">New Apps</string>
+    <string name="tab_text_1">Apps</string>
     <string name="tab_text_2">Updates</string>
-    <string name="tab_text_3">Installed</string>
+    <string name="tab_text_3">Uninstall</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
@@ -481,6 +482,9 @@
     <string name="no_internet_connection">No Internet Connection</string>
 
     <string name="live_client_device_id">Live Customer Support(%1$s)</string>
+    <string name="service_notification_text" translatable="false">@string/app_name</string>
+    <string name="device_is_connected">Device is connected to LM</string>
+
     <string-array name="sort">
         <item>Total</item>
         <item>Date</item>

@@ -12,11 +12,13 @@ import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import retrofit2.Call;
@@ -28,6 +30,7 @@ import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
@@ -36,6 +39,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
@@ -106,30 +110,44 @@ public class ApiUtils implements ApiRequests {
                             String msg = deviceStatusResponse.getMsg();
                             Timber.d("response :" + msg);
                             if (deviceStatusResponse.isStatus()) {
+
                                 saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+
                                 switch (msg) {
                                     case ACTIVE:
+                                    case TRIAL:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
+                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                         utils.unSuspendDevice(context);
                                         break;
                                     case EXPIRED:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
+                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                         utils.suspendedDevice(context, "expired");
                                         break;
                                     case SUSPENDED:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
+                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                         utils.suspendedDevice(context, "suspended");
                                         break;
-                                    case TRIAL:
-                                        utils.unSuspendDevice(context);
-                                        break;
                                     case FLAGGED:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
+                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
                                         suspendedDevice(context, "flagged");
+                                        break;
+                                    case PENDING:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
                                         utils.unlinkDevice(context, true);
                                         break;
                                     case NEW_DEVICE:
+                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
                                         utils.newDevice(context, true);
                                         break;
 

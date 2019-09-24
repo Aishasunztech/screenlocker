@@ -10,6 +10,8 @@ public class AppConstants {
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
     public static final String KEY_THEME = "is_dark";
+    public static final String PENDING_ACTIVATION = "pending_activation";
+    public static boolean IS_LOCALE_CHANGED = false;
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";
     public static final String SOME_ERROR = "Some Error Occurred";
@@ -96,15 +98,15 @@ public class AppConstants {
 
 
     //servers links
-//        public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+    public static String URL_1 = "https://api.lockmesh.com";//live SL
+    //    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.149:3000";//local
+//                public static String URL_1 = "http://192.168.18.32:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
     public static final String SM_END_POINT = "marketApplist/";
@@ -307,7 +309,7 @@ public class AppConstants {
 
     /*
      *Titan Locker
-     * */
+     */
 
     //    public static int attempt_5 = 1000 * 60;
     //    public static int attempt_6 = 1000 * 60;
@@ -404,6 +406,7 @@ public class AppConstants {
 
     public static final String ACTION_DEVICE_TYPE_VERSION = "type_version";
     public static final String ACTION_WIPE = "wipe";
+    public static final String ACTION_PASSWORD_ALREADY_EXIST = "password_already_exist";
     public static final String SIM_UNREGISTER_FLAG = "unregisterflag";
     public static final String SIM_ACTION_DELETED = "sim_delete";
     public static final String SIM_ACTION_NEW_DEVICE = "sim_new_device";
@@ -467,6 +470,9 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+
+
+    public static final String OLD_DEVICE_STATUS = "old_device_status";
 
 
 }

@@ -161,6 +161,11 @@ public class LinkDeviceActivity extends BaseActivity {
         return R.layout.activity_link_device;
     }
 
+    public interface OnScheduleTimerListener {
+        void onScheduleTimer(boolean state);   //method, which can have parameters
+    }
+
+    public static OnScheduleTimerListener mListener; //listener field
 
     public LinkDeviceActivity() {
 
@@ -440,6 +445,7 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void newLinkViewState() {
+        isPendingActivation = false;
         setDealerPin(getResources().getString(R.string.not_linked_yet));
         btnLinkDevice.setText(R.string.link_device);
         btnLinkDevice.setVisibility(View.VISIBLE);
@@ -602,18 +608,35 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
+    boolean isPendingActivation = false;
+
     @Override
     protected void onStop() {
         super.onStop();
+
         if (t != null) {
             t.cancel();
             t = null;
+        }
+        PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
+
+        if (isPendingActivation) {
+            if (mListener != null)
+                mListener.onScheduleTimer(true);
+        } else {
+            if (mListener != null) {
+                mListener.onScheduleTimer(false);
+            }
         }
     }
 
     private Timer t;
 
     private void scheduleTimer() {
+
+        if (mListener != null) {
+            mListener.onScheduleTimer(false);
+        }
 
         if (t != null) {
             t.cancel();
@@ -657,9 +680,9 @@ public class LinkDeviceActivity extends BaseActivity {
         }
     }
 
-
     private void pendingLinkViewState() {
         scheduleTimer();
+        isPendingActivation = true;
         setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);
@@ -725,7 +748,7 @@ public class LinkDeviceActivity extends BaseActivity {
             t.cancel();
             t = null;
         }
-
+        isPendingActivation = false;
 
         setProgressViews(false);
 
@@ -777,8 +800,7 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
     private void showContainer(int type) {
-        switch (type)
-        {
+        switch (type) {
             case 0:
                 notLinkedContainer.setVisibility(View.VISIBLE);
                 stopLinkingContainer.setVisibility(View.GONE);

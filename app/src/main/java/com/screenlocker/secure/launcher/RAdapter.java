@@ -9,29 +9,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureMarket.SMActivity;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
-
 import java.util.List;
-
 import static android.content.Intent.ACTION_VIEW;
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
@@ -47,7 +43,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView textView;
         final ImageView img;
-
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -150,6 +145,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
+                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName()));
+
                 }
 
             } else {
@@ -172,11 +170,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
         alertDialog.setMessage(context.getResources().getString(R.string.clear_cache_message));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.ok_capital), (dialog, which) -> {
-            listener.clearCache(context);
-
-
-        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.ok_capital), (dialog, which) -> listener.clearCache(context));
 
 
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel_capital),

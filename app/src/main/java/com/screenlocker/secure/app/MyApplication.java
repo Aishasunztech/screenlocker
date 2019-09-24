@@ -9,7 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,15 +16,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -37,7 +33,7 @@ import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
-import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -54,6 +50,8 @@ import com.secureSetting.t.util.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -71,7 +69,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_2;
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener {
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, LinkDeviceActivity.OnScheduleTimerListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -117,6 +115,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         networkChangeReceiver = new NetworkChangeReceiver();
         networkChangeReceiver.setNetworkChangeListener(this);
 
+        LinkDeviceActivity.mListener = this;
+
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
 
@@ -143,19 +143,13 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                        .addMigrations(new Migration_11_13(11, 13),
-                                new Migration_13_14(13, 14)
-                                , new Migration_14_15(14, 15))
-                        .build();
-            }
-        };
-
-
-        thread.start();
+        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+            myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
+                    .addMigrations(new Migration_11_13(11, 13),
+                            new Migration_13_14(13, 14)
+                            , new Migration_14_15(14, 15))
+                    .build();
+        });
         Timber.plant(new Timber.DebugTree());
 
         BarryAppComponent component = DaggerBarryAppComponent
@@ -175,7 +169,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
 
         registerReceiver(appsStatusReceiver, filter);
+
         String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, getAppContext());
         }
@@ -183,6 +179,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
                 String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
@@ -287,6 +284,10 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 Intent intent = new Intent(this, SocketService.class);
                 stopService(intent);
             }
+            if (t != null) {
+                t.cancel();
+                t = null;
+            }
         }
     }
 
@@ -310,68 +311,74 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String live_url = PrefUtils.getStringPref(this, LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+
                 boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+
+                boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+
                 Timber.d("LinkStatus :" + linkStatus);
+                boolean pendingActivation = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ACTIVATION);
+                Timber.d("pendingActivation " + pendingActivation);
+
+                Timber.d("LinkStatus :" + linkStatus);
+                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                String serialNo = DeviceIdUtils.getSerialNumber();
+
+                if (!old_device_status) {
+                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                }
 
                 if (linkStatus) {
-
-                    Timber.d("LinkStatus :" + linkStatus);
-                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                    String serialNo = DeviceIdUtils.getSerialNumber();
-
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
-
+                } else if (pendingActivation) {
+                    scheduleTimer();
+                    new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
 //                checkForDownload();
 
             }
         }, this, urls);// checking hosts
+
         asyncCalls.execute();
     }
 
+    private Timer t;
 
-    private void checkForDownload() {
+    private void scheduleTimer() {
 
-
-        String currentVersion = "1";
-        try {
-            currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            Timber.d(e);
+        if (t != null) {
+            t.cancel();
+            t = null;
         }
 
-        MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.app_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
-                .enqueue(new Callback<UpdateModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+        t = new Timer();
 
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    String url = response.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(appContext, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), true, null, getPackageName());
-                                    obj.execute();
-
-                                }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
-
-
-                            } else {
-                                saveToken();
-                                checkForDownload();
-                            }
-
-                        }
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Timber.d("zklvnsdfvnsdklfsdfg : " + "checking online connection ");
+                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
+                    onlineConnection();
+                } else {
+                    if (t != null) {
+                        t.cancel();
+                        t = null;
                     }
-
-                    @Override
-                    public void onFailure(@NonNull Call<UpdateModel> call, @NonNull Throwable t) {
-
-                    }
-                });
+                }
 
 
+            }
+
+        }, 5000, 10 * 60 * 1000);
+    }
+
+    private void stopTimer() {
+        if (t != null) {
+            t.cancel();
+            t = null;
+        }
+        Timber.d("zklvnsdfvnsdklfsdfg : " + "stop TImer");
     }
 
 
@@ -450,6 +457,15 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }).run();
     }
 
+    @Override
+    public void onScheduleTimer(boolean state) {
+        Timber.d("zklvnsdfvnsdklfsdfg" + state);
+        if (state) {
+            scheduleTimer();
+        } else {
+            stopTimer();
+        }
+    }
 }
 
 

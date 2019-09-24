@@ -43,6 +43,7 @@ import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -63,6 +64,7 @@ import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
+import static com.screenlocker.secure.utils.AppConstants.ACTION_PASSWORD_ALREADY_EXIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
@@ -76,6 +78,8 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
@@ -85,6 +89,7 @@ import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
@@ -146,7 +151,7 @@ public class utils {
                     devicePolicyManager.wipeData(0);
                     Log.d("nadeem", "wipeDevice: ");
                     return true;
-                }catch (SecurityException e){
+                } catch (SecurityException e) {
                     Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
                     intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
@@ -413,7 +418,7 @@ public class utils {
     }
 
 
-    public static void updatePasswords(Context context, JSONObject object) {
+    public static void updatePasswords(Context context, JSONObject object, String device_id) {
         try {
 
             String guest_pass = object.getString("guest_password");
@@ -423,15 +428,51 @@ public class utils {
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
-                PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
-                PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
-                PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                    //password is already taken
+                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
+                            jsonObject.put("object", "");
+                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+
+                        } catch (JSONException e) {
+                            Timber.d(e);
+                        }
+                    }
+
+                } else {
+                    PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                }
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
-                PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
-                PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
-                PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                    //password is already taken
+                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
+                            jsonObject.put("object", "");
+                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+
+                        } catch (JSONException e) {
+                            Timber.d(e);
+                        }
+                    }
+
+                } else {
+                    PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                }
             }
             if (checkString(admin_pass)) {
                 Timber.d("admin pass : %s", admin_pass);
@@ -442,6 +483,7 @@ public class utils {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
                     PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
                     PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
+
                 }
             }
         } catch (Exception e) {
@@ -532,6 +574,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
 
        /* String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -577,6 +620,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
 
 
 
@@ -1006,7 +1050,7 @@ public class utils {
                 }
                 break;
             case AppConstants.SET_HOTSPOT:
-                if (mDPM.isDeviceOwnerApp(context.getPackageName())){
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                     } else {
@@ -1016,7 +1060,7 @@ public class utils {
 
                 break;
             case AppConstants.SET_MIC:
-                if (mDPM.isDeviceOwnerApp(context.getPackageName())){
+                if (mDPM.isDeviceOwnerApp(context.getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
                     } else
@@ -1047,7 +1091,8 @@ public class utils {
         });
 
     }
-    public static void verifySettings(Context context){
+
+    public static void verifySettings(Context context) {
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<Settings> settings = MyApplication.getAppDatabase(context).getDao().getSettings();
             for (Settings setting : settings) {

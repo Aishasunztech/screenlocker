@@ -51,15 +51,18 @@ public class PasswordOptionsAcitivity extends AppCompatActivity implements View.
         switch (v.getId()) {
             case R.id.tvPinOption:
                 Intent intent = new Intent(this, SetUpLockActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT,EXTRA);
+                intent.putExtra(Intent.EXTRA_TEXT, EXTRA);
                 startActivity(intent);
                 break;
             case R.id.tvPatternOption:
                 Intent intent1 = new Intent(this, PatternActivity.class);
-                intent1.putExtra(Intent.EXTRA_TEXT,EXTRA);
+                intent1.putExtra(Intent.EXTRA_TEXT, EXTRA);
                 startActivity(intent1);
                 break;
             case R.id.tvFingerPrint:
+//                Intent intent2 = new Intent(this, CombinationLockActivity.class);
+//                intent2.putExtra(Intent.EXTRA_TEXT,EXTRA);
+//                startActivity(intent2);
                 Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
                 break;
         }

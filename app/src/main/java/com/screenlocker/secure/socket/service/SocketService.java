@@ -126,9 +126,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     private void startService() {
-        final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        final NotificationManager mNM = (
+                NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (mNM != null) {
-            Notification notification = getNotification(this, R.drawable.sync);
+            Notification notification = getNotification(this, R.drawable.sync, getAppContext().getString(R.string.device_is_connected));
             startForeground(4577, notification);
         }
     }
@@ -136,9 +137,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     BroadcastReceiver pushPullBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            if (intent != null) {
-
+            if (intent != null)
                 if (intent.getAction() != null && intent.getAction().equals(ACTION_PUSH_APPS)) {
                     boolean finishStatus = intent.getBooleanExtra("finish_status", false);
                     String packageName = intent.getStringExtra("PackageName");
@@ -146,117 +145,67 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     boolean isPolicy = intent.getBooleanExtra("isPolicy", false);
                     Map<String, Boolean> map = new HashMap<>();
                     map.put(packageName, status);
-
-                    if (isPolicy && finishStatus) {
+                    if (isPolicy && finishStatus)
                         finishPolicyPushApps();
-                    }
-
-                    if (!isPolicy && finishStatus) {
-                        finishPushedApps();
-                    }
-
-                    if (!isPolicy) {
+                    if (!isPolicy && finishStatus) finishPushedApps();
+                    if (!isPolicy)
                         sendPushedAppsStatus(map);
-                    }
-
                 } else if (intent.getAction() != null && intent.getAction().equals(ACTION_PULL_APPS)) {
-
                     boolean finishStatus = intent.getBooleanExtra("finish_status", false);
                     String packageName = intent.getStringExtra("PackageName");
                     boolean status = intent.getBooleanExtra("Status", false);
                     Map<String, Boolean> map = new HashMap<>();
                     map.put(packageName, status);
                     sendPulledAPpsStatus(map);
-
-                    if (finishStatus) {
+                    if (finishStatus)
                         finishPulledApps();
-                    }
-
                 }
-
-
-            }
-
         }
     };
-
-
     private String device_id;
-
-
     private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() != null)
-                if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
-
-                    String action = intent.getStringExtra(KEY_DATABASE_CHANGE);
-                    Timber.d("djgdsgsggjiodig");
-
-                    if (action != null) {
-                        if (PrefUtils.getBooleanPref(context, IS_SYNCED)) {
-
-                            if (action.equals("apps")) {
-                                sendAppsWithoutIcons();
-                            }
-                            if (action.equals("extensions")) {
-                                sendExtensionsWithoutIcons();
-                            }
-                            if (action.equals("settings")) {
-                                sendSettings();
-                            }
-                            if (action.equals("simSettings")) {
-                                sendSimSettings();
-                            }
-
-                            try {
-
-                                if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
-                                    socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
-                                }
-
-                            } catch (Exception e) {
-                                Timber.d(e);
-                            }
-
-
-                        }
+            if (intent.getAction() != null && intent.getAction().equals(BROADCAST_APPS_ACTION)) {
+                String action = intent.getStringExtra(KEY_DATABASE_CHANGE);
+                Timber.d("djgdsgsggjiodig");
+                if (action != null && PrefUtils.getBooleanPref(context, IS_SYNCED)) {
+                    if (action.equals("apps"))
+                        sendAppsWithoutIcons();
+                    if (action.equals("extensions")) sendExtensionsWithoutIcons();
+                    if (action.equals("settings"))
+                        sendSettings();
+                    if (action.equals("simSettings")) sendSimSettings();
+                    try {
+                        if (socketManager.getSocket() != null && socketManager.getSocket().connected())
+                            socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
+                    } catch (Exception e) {
+                        Timber.d(e);
                     }
-
-
                 }
+            }
         }
     };
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             String action = intent.getAction();
-
             String token = PrefUtils.getStringPref(SocketService.this, TOKEN);
             device_id = PrefUtils.getStringPref(SocketService.this, DEVICE_ID);
-
-            if (token != null && device_id != null && action != null) {
+            if (token != null && device_id != null && action != null)
                 switch (action) {
-                    case "start":
-                        // connecting to socket
+                    case "start":/* connecting to socket*/
                         String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
                         socketManager.destroy();
                         socketManager.connectSocket(token, device_id, live_url);
-
                         break;
                 }
-            } else {
+            else
                 stopSelf();
-            }
-
-
         }
-
         return START_STICKY;
     }
-
 
     @Override
     public void onSocketEventFailed() {
@@ -266,24 +215,15 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void onSocketConnectionStateChange(int socketState) {
-
-
-        if (socketState == 1) {
+        if (socketState == 1)
             Timber.d("Socket is connecting");
-
-        } else if (socketState == 2) {
+        else if (socketState == 2) {
             Timber.d("Socket is connected");
-
             String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
             String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
-
-            if (installedApps != null) {
+            if (installedApps != null)
                 saveAppsList(this, true, null, true);
-            }
-            if (uninstalledApps != null) {
-                saveAppsList(this, false, null, true);
-            }
-
+            if (uninstalledApps != null) saveAppsList(this, false, null, true);
             getSyncStatus();
             getPolicy();
             getDeviceStatus();
@@ -296,10 +236,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             getSimUpdates();
             sendSystemEvents();
             getSystemEvents();
-
-
-            if (PrefUtils.getStringPref(this, APPS_HASH_MAP)
-                    != null) {
+            if (PrefUtils.getStringPref(this, APPS_HASH_MAP) != null) {
                 Type type = new TypeToken<HashMap<String, Boolean>>() {
                 }.getType();
                 String hashmap = PrefUtils.getStringPref(this, APPS_HASH_MAP);
@@ -307,10 +244,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 sendPushedAppsStatus(map);
                 PrefUtils.saveStringPref(this, APPS_HASH_MAP, null);
             }
-
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
-
             if (socketManager.getSocket() != null) {
                 socketManager.getSocket().off(GET_SYNC_STATUS + device_id);
                 socketManager.getSocket().off(GET_APPLIED_SETTINGS + device_id);
@@ -322,12 +257,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 socketManager.getSocket().off(GET_POLICY + device_id);
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
                 socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
-                socketManager.getSocket().off( SYSTEM_EVENT_BUS+ device_id);
+                socketManager.getSocket().off(SYSTEM_EVENT_BUS + device_id);
             }
-
-
         }
-
     }
 
     @Override
@@ -336,9 +268,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             case 1:
                 Timber.d("Socket is connecting");
                 break;
-            case 2:
-//                Timber.d("Socket is connected");
-
+            case 2:/*                Timber.d("Socket is connected");*/
                 break;
             case 3:
                 Timber.d("Socket is disconnected");
@@ -346,55 +276,37 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }
     }
 
-
     @Override
     public void getSyncStatus() {
-
         try {
-
-            if (socketManager.getSocket().connected()) {
-
+            if (socketManager.getSocket().connected())
                 socketManager.getSocket().on(GET_SYNC_STATUS + device_id, args -> {
                     Timber.d("<<< GETTING SYNC STATUS >>>");
                     JSONObject obj = (JSONObject) args[0];
                     try {
                         if (validateRequest(device_id, obj.getString("device_id"))) {
                             Timber.e(" valid request ");
-
                             Timber.d(obj.toString());
-
                             boolean is_synced = obj.getBoolean("is_sync");
                             boolean apps = obj.getBoolean("apps_status");
                             boolean extensions = obj.getBoolean("extensions_status");
                             boolean settings = obj.getBoolean("settings_status");
-
                             syncDevice(SocketService.this, is_synced, apps, extensions, settings);
-
-                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED)) {
-
-                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS)) {
+                            if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.IS_SYNCED))
+                                if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.APPS_SENT_STATUS))
                                     sendApps();
-                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS)) {
+                                else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.EXTENSIONS_SENT_STATUS))
                                     sendExtensions();
-                                } else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS)) {
+                                else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS))
                                     sendSettings();
-                                }
-
-
-                            }
                             sendSimSettings();
-
-                        } else {
-                            Timber.e(" invalid request ");
-                        }
+                        } else Timber.e(" invalid request ");
                     } catch (Exception error) {
                         Timber.e(" JSON error : %s", error.getMessage());
                     }
                 });
-            } else {
+            else
                 Timber.d("Socket not connected");
-            }
-
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -402,91 +314,54 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void getAppliedSettings() {
-
-        if (socketManager.getSocket().connected()) {
+        if (socketManager.getSocket().connected())
             socketManager.getSocket().on(GET_APPLIED_SETTINGS + device_id, args -> {
                 Timber.d("<<< GETTING APPLIED SETTINGS >>>");
-
-
                 JSONObject obj = (JSONObject) args[0];
-
                 try {
                     if (validateRequest(device_id, obj.getString("device_id"))) {
-
                         Timber.d(" valid request ");
                         boolean status = obj.getBoolean("status");
                         Timber.d(" applied settings status : %S", status);
-
                         if (status) {
-
                             Timber.d(obj.toString());
-
                             updatePassword(obj);
-
                             updateSettings(obj, false);
-
                             updateExtensions(obj, false);
-
                             updateApps(obj, false);
-
                             sendAppliedStatus();
-
                             setScreenLock();
-
                             Timber.d(" settings applied status sent ");
-
                         } else {
                             Timber.d(" no settings available in history ");
-
                             boolean appsSettingStatus = PrefUtils.getBooleanPref(SocketService.this, APPS_SETTING_CHANGE);
                             Timber.d(" apps settings status in local : %S", appsSettingStatus);
-
-                            if (appsSettingStatus) {
+                            if (appsSettingStatus)
                                 sendAppsWithoutIcons();
-                            }
-
                             boolean settingsStatus = PrefUtils.getBooleanPref(SocketService.this, SETTINGS_CHANGE);
                             Timber.d(" settings status in local : %S", settingsStatus);
-                            if (settingsStatus) {
+                            if (settingsStatus)
                                 sendSettings();
-                            }
-
                             boolean extensionsStatus = PrefUtils.getBooleanPref(SocketService.this, SECURE_SETTINGS_CHANGE);
                             Timber.d(" extensions status in local : %S", extensionsStatus);
-                            if (extensionsStatus) {
+                            if (extensionsStatus)
                                 sendExtensionsWithoutIcons();
-                            }
-
-
                         }
-
-                    } else {
-                        Timber.e(" invalid request ");
-                    }
-
+                    } else Timber.e(" invalid request ");
                 } catch (Exception error) {
                     Timber.e(" error : %s", error.getMessage());
                 }
-
             });
-        }
     }
 
-
     private void setScreenLock() {
-        Intent intent = new Intent(SocketService.this, LockScreenService.class);
-
-        intent.setAction("locked");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        Intent intent = new Intent(SocketService.this, LockScreenService.class).setAction("locked");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForegroundService(intent);
-        } else {
-            startService(intent);
-        }
+        else startService(intent);
     }
 
     private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
-
         String settings = obj.getString("settings");
         try {
             if (!settings.equals("[]")) {
@@ -496,17 +371,14 @@ public class SocketService extends Service implements OnSocketConnectionListener
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        if (isPolicy) {
+        if (isPolicy)
             finishPolicySettings();
-        }
     }
 
     private void updatePassword(JSONObject obj) throws JSONException {
         String passwords = obj.getString("passwords");
         if (!passwords.equals("{}")) {
-            updatePasswords(SocketService.this, new JSONObject(passwords));
+            updatePasswords(SocketService.this, new JSONObject(passwords), device_id);
             Timber.d(" passwords updated ");
             setScreenLock();
         }
@@ -523,10 +395,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         List<AppInfo> apps = MyApplication.getAppDatabase(SocketService.this).getDao().getApps();
                         socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
                         Timber.d(" apps sent %s", apps.size());
-                    } else {
+                    } else
                         Timber.d("Socket not connected");
-                    }
-
                 } catch (Exception e) {
                     Timber.d(e);
                 }
@@ -534,42 +404,28 @@ public class SocketService extends Service implements OnSocketConnectionListener
         }).start();
     }
 
-
     @Override
     public void onDestroy() {
-
-
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
-
         Log.d("SocketService", "service destroy");
-
         socketManager.destroy();
-
         socketManager.removeSocketConnectionListener(this);
         socketManager.removeAllSocketConnectionListener();
-
         super.onDestroy();
-
     }
-
 
     @Override
     public void sendExtensions() {
         Timber.d("<<< Sending Extensions >>>");
-
         new Thread(() -> {
             try {
                 if (socketManager.getSocket().connected()) {
-
                     List<SubExtension> extensions = MyApplication.getAppDatabase(SocketService.this).getDao().getAllSubExtensions();
-
                     socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
-
                     Timber.d("extensions sent%s", extensions.size());
-                } else {
+                } else
                     Timber.d("Socket not connected");
-                }
             } catch (Exception e) {
                 Timber.d(e);
             }
@@ -578,13 +434,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void getDeviceStatus() {
-
         try {
-            if (socketManager.getSocket().connected()) {
-
+            if (socketManager.getSocket().connected())
                 socketManager.getSocket().on(DEVICE_STATUS + device_id, args -> {
                     Timber.d("<<< GETTING DEVICE STATUS >>>");
-
                     JSONObject object = (JSONObject) args[0];
                     try {
                         if (validateRequest(device_id, object.getString("device_id"))) {
@@ -612,8 +465,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
-                                        JSONObject json = new JSONObject();
-                                        json.put("action", ACTION_WIPE);
+                                        JSONObject json = new JSONObject().put("action", ACTION_WIPE);
                                         socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, json);
                                         wipeDevice(SocketService.this);
                                         break;
@@ -622,17 +474,14 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                 }
                             }
-
-                        } else {
+                        } else
                             Timber.d("<<< invalid request >>>");
-                        }
                     } catch (Exception error) {
                         Timber.e("<<< JSON error >>>%s", error.getMessage());
                     }
                 });
-            } else {
+            else
                 Timber.d("Socket connected");
-            }
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -641,38 +490,31 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void sendSettings() {
         Timber.d("<<< Sending settings >>>");
-
         try {
-            if (socketManager.getSocket().connected()) {
+            if (socketManager.getSocket().connected())
                 AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
                     List<Settings> settings = MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
                     socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
                     PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
                 });
-
-
-            } else {
+            else
                 Timber.d("Socket not connected");
-            }
         } catch (Exception e) {
             Timber.d(e);
         }
-
     }
 
     @Override
     public void sendSimSettings() {
         Timber.d("<<< Sending  Sim Settings >>>");
-
         try {
             if (socketManager.getSocket().connected()) {
                 Set<String> set = PrefUtils.getStringSet(this, DELETED_ICCIDS);
-                if (set != null && set.size() > 0) {
+                if (set != null && set.size() > 0)
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                         JSONObject json = new JSONObject();
                         try {
-                            json.put("action", SIM_ACTION_DELETED);
-                            json.put("entries", new Gson().toJson(set));
+                            json.put("action", SIM_ACTION_DELETED).put("entries", new Gson().toJson(set));
                             socketManager.getSocket().emit(SEND_SIM + device_id, json);
                             PrefUtils.saveStringSetPref(this, DELETED_ICCIDS, null);
                         } catch (JSONException e) {
@@ -680,8 +522,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                         }
 
                     });
-
-                }
 
                 if (!PrefUtils.getBooleanPref(this, OLD_DEVICE)) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {

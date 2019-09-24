@@ -66,8 +66,7 @@ public class UtilityFunctions {
         return true;
     }
 
-    public static boolean permissionModify(Activity activity)
-    {
+    public static boolean permissionModify(Activity activity) {
         boolean permission;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permission = Settings.System.canWrite(activity);
@@ -86,17 +85,15 @@ public class UtilityFunctions {
         return permission;
     }
 
-    public static boolean checkLocationStatus(Context context)
-    {
+    public static boolean checkLocationStatus(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             return false;
         }
         return true;
     }
 
-    public static void turnOnLocation(final Activity activity)
-    {
+    public static void turnOnLocation(final Activity activity) {
         new AlertDialog.Builder(activity)
                 .setTitle(R.string.gps_not_found_title)  // GPS not found
                 .setMessage(R.string.gps_not_found_message) // Want to enable?
@@ -109,7 +106,7 @@ public class UtilityFunctions {
                 .setNegativeButton(R.string.no, null).show();
     }
 
-    public static int getScreenBrightness(Context context){
+    public static int getScreenBrightness(Context context) {
         int brightnessValue = Settings.System.getInt(
                 context.getContentResolver(),
                 Settings.System.SCREEN_BRIGHTNESS,
@@ -118,9 +115,9 @@ public class UtilityFunctions {
         return brightnessValue;
     }
 
-    public static void setScreenBrightness(Context context,int brightnessValue){
+    public static void setScreenBrightness(Context context, int brightnessValue) {
 
-        if(brightnessValue >= 0 && brightnessValue <= 255){
+        if (brightnessValue >= 0 && brightnessValue <= 255) {
             Settings.System.putInt(
                     context.getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS,
@@ -133,12 +130,11 @@ public class UtilityFunctions {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    public static int getSleepTime(Context context)
-    {
+    public static int getSleepTime(Context context) {
         try {
             int time = Settings.System.getInt(context.getContentResolver(),
                     Settings.System.SCREEN_OFF_TIMEOUT);
-                time = (int) TimeUnit.MILLISECONDS.toSeconds(time);
+            time = (int) TimeUnit.MILLISECONDS.toSeconds(time);
 
             return time;
         } catch (Settings.SettingNotFoundException e) {
@@ -147,11 +143,9 @@ public class UtilityFunctions {
         return -1;
     }
 
-    public static String secondsToMintues(int seconds,Context context)
-    {
-        int minutes = seconds/60;
-        if(minutes!= 0)
-        {
+    public static String secondsToMintues(int seconds, Context context) {
+        int minutes = seconds / 60;
+        if (minutes != 0) {
             return minutes + " " + context.getResources().getString(R.string.minutes);
         }
         return seconds + " " + context.getResources().getString(R.string.seconds);
@@ -184,26 +178,29 @@ public class UtilityFunctions {
 
     }
 
-    public static String getBlueToothStatus(Context context)
-    {
+    public static String getBlueToothStatus(Context context) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(bluetoothAdapter.isEnabled())
-        {
-            return context.getResources().getString(R.string.enabled);
-        }else{
-            return context.getResources().getString(R.string.disabled);
+        if (bluetoothAdapter != null) {
+            if (bluetoothAdapter.isEnabled()) {
+                return context.getResources().getString(R.string.enabled);
+            } else {
+                return context.getResources().getString(R.string.disabled);
 
+            }
+        } else {
+            return "N/A";
         }
+
     }
 
     public static void checkPermissions(Activity activity) {
         String[] prems = {Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                };
-        if (EasyPermissions.hasPermissions(activity,prems)){
+        };
+        if (EasyPermissions.hasPermissions(activity, prems)) {
 
-        }else{
-            EasyPermissions.requestPermissions(activity,activity.getString(R.string.fine_location_and_cross_location),
+        } else {
+            EasyPermissions.requestPermissions(activity, activity.getString(R.string.fine_location_and_cross_location),
                     RC_PERMISSION, prems);
         }
     }
@@ -214,8 +211,7 @@ public class UtilityFunctions {
     }
 
 
-    public static int getVersionCode(Context context,String packageName)
-    {
+    public static int getVersionCode(Context context, String packageName) {
 
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(packageName, 0);
@@ -253,13 +249,13 @@ public class UtilityFunctions {
         return context;
     }
 
-    private static int getTheme(Context context){
-        if (PrefUtils.getBooleanPref(context, AppConstants.KEY_THEME)){
+    private static int getTheme(Context context) {
+        if (PrefUtils.getBooleanPref(context, AppConstants.KEY_THEME)) {
             return 1;
-        }return 0;
+        }
+        return 0;
 
     }
-
 
 
 }
