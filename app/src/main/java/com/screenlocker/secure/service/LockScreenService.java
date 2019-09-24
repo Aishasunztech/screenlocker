@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -50,6 +51,7 @@ import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -387,6 +389,23 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
         broadCastIntentForActivatingAdmin();
+
+        boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+
+        if (!old_device_status) {
+            if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                final NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnected()) {
+                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                    String serialNo = DeviceIdUtils.getSerialNumber();
+                    new ApiUtils(this, macAddress, serialNo);
+                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                }
+
+            }
+        }
+
 
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -781,7 +800,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     broadCastIntent(false, slot);
 
                 }
-                
+
                 break;
 
         }

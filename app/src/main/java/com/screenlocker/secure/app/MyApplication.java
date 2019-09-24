@@ -63,6 +63,7 @@ import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
@@ -114,7 +115,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         networkChangeReceiver = new NetworkChangeReceiver();
         networkChangeReceiver.setNetworkChangeListener(this);
-
         LinkDeviceActivity.mListener = this;
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -325,8 +325,10 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
                 if (!old_device_status) {
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
-                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                        new ApiUtils(MyApplication.this, macAddress, serialNo);
+                        PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                    }
                 }
 
                 if (linkStatus) {
