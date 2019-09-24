@@ -147,7 +147,8 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                     if (isChecked) {
                         PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, true);
                     } else {
-                        mBluetoothAdapter.disable();
+                        if (mBluetoothAdapter != null)
+                            mBluetoothAdapter.disable();
                         PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, false);
 
                     }

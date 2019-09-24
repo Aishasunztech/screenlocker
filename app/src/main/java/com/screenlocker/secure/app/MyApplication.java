@@ -70,12 +70,11 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
-import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
-import static com.screenlocker.secure.utils.AppConstants.FIRST_TIME_USE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
+import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 
 /**
