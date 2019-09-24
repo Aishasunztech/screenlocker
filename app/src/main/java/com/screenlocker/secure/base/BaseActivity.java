@@ -497,9 +497,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 //
 //        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
 //        if (info != null) {
-//            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+//            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isBlueToothEnable() && info.isEncrypted())) {
 //                status = true;
-//            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
+//            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isBlueToothEnable() && info.isGuest())) {
 //                status = true;
 //            } else if (currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()))) {
 //                status = true;
