@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -80,7 +81,7 @@ import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener ,LinkDeviceActivity.OnScheduleTimerListener{
+public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener, LinkDeviceActivity.OnScheduleTimerListener {
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
@@ -119,10 +120,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
-
-
-
-
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
                 .enabled(true) //default: true
@@ -148,7 +145,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         intentFilter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-        registerReceiver(bluetoothChangeReceiver,intentFilter);
+        registerReceiver(bluetoothChangeReceiver, intentFilter);
 
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
 
@@ -294,6 +291,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             boolean isWifiEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_WIFI_ENABLE);
             if (!isWifiEnable) {
                 wifimanager.setWifiEnabled(false);
+                Toast.makeText(appContext, "Wifi is disabled by admin. ", Toast.LENGTH_SHORT).show();
             }
             Timber.i("------------> Network Connected");
 
@@ -471,26 +469,27 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         }
 
     }
+
     @Override
     public void isBlueToothEnable(boolean enable) {
         if (enable) {
             boolean isBluetoothEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_BLUETOOTH_ENABLE);
             if (isBluetoothEnable)
                 bluetoothAdapter.enable();
-            else
+            else {
                 bluetoothAdapter.disable();
+                Toast.makeText(appContext, "Bluetooth is disabled by admin. ", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }
 
     @Override
     public void isHotspotEnable(boolean enable) {
-        Log.d("laskjdf","checkTest" + enable);
-        if(enable)
-        {
-            boolean isHotSpotEnable = PrefUtils.getBooleanPref(this,KEY_HOTSPOT_ENABLE);
-            if(isHotSpotEnable)
-            {
+        Log.d("laskjdf", "checkTest" + enable);
+        if (enable) {
+            boolean isHotSpotEnable = PrefUtils.getBooleanPref(this, KEY_HOTSPOT_ENABLE);
+            if (isHotSpotEnable) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     wifimanager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
 
@@ -511,10 +510,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                         }
                     }, new Handler());
                 }
-            }
-            else{
-                if(mReservation != null)
-                {
+            } else {
+                if (mReservation != null) {
                     mReservation.close();
                 }
             }

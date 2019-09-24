@@ -416,6 +416,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
     private void clearRecentApp(Context context, String packageName) {
 
+        Timber.d("clear recent app is calling ");
+
         ActivityManager am = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
         am.killBackgroundProcesses(packageName);
 
