@@ -13,10 +13,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingContract;
@@ -25,8 +25,6 @@ import com.screenlocker.secure.settings.SettingsModel;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
-import com.simplemobiletools.filemanager.pro.App;
 
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -82,6 +80,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+                }else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case RESULTGUEST:
@@ -90,12 +90,18 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
                 }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                }
                 break;
             case RESULTDURES:
                 if (resultCode == RESULT_OK) {
                     Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+                }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }

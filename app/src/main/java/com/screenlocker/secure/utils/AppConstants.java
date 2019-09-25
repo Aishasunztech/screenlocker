@@ -194,6 +194,7 @@ public class AppConstants {
     public static final String DURESS_PASSORD_OPTION = "_d_p";
     public static final int OPTION_PIN = 1;
     public static final int OPTION_PATTERN = 2;
+    public static final int OPTION_COMBO = 3;
     public static final String PERVIOUS_VERSION = "previous_version_";
 
 

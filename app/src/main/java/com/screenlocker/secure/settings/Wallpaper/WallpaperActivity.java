@@ -19,6 +19,7 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.PasswordOptionsAcitivity;
+import com.screenlocker.secure.settings.managepassword.VerifyComboPassword;
 import com.screenlocker.secure.settings.managepassword.VerifyPatternActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -58,10 +59,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,9 +117,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 });
 
         alertDialog.setNegativeButton(R.string.cancel,
-                (dialog, which) -> {
-                    dialog.cancel();
-                });
+                (dialog, which) -> dialog.cancel());
 
         alertDialog.show();
 
@@ -204,6 +202,8 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_MAIN);
                     startActivity(intent);
+                }else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case RESULTGUEST:
@@ -213,6 +213,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                     intent.putExtra("TYPE", KEY_GUEST);
                     startActivity(intent);
                 }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                }
                 break;
             case RESULTCODE:
                 if (resultCode == RESULT_OK) {
@@ -221,6 +224,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                     Intent intent = new Intent(this, ChangeWallpaper.class);
                     intent.putExtra("TYPE", KEY_CODE);
                     startActivity(intent);
+                }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -242,6 +248,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             case AppConstants.PIN_PASSWORD:
                 showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
                 break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_GUEST);
+                break;
         }
 
 
@@ -261,6 +270,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             case AppConstants.PIN_PASSWORD:
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
                 break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_MAIN);
+                break;
         }
 
     }
@@ -278,6 +290,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 break;
             case AppConstants.PIN_PASSWORD:
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
+                break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_CODE);
                 break;
         }
 
@@ -297,6 +312,25 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             case KEY_CODE:
                 Intent intent3 = new Intent(this, VerifyPatternActivity.class);
                 intent3.putExtra(Intent.EXTRA_TEXT, KEY_MAIN);
+                startActivityForResult(intent3, RESULTCODE);
+                break;
+        }
+    }
+    private void verifyCurrentCombo(String userType) {
+        switch (userType) {
+            case AppConstants.KEY_MAIN:
+                Intent intent = new Intent(this, VerifyComboPassword.class);
+                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                startActivityForResult(intent, RESULTENCRYPTED);
+                break;
+            case AppConstants.KEY_GUEST:
+                Intent intent2 = new Intent(this, VerifyComboPassword.class);
+                intent2.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+                startActivityForResult(intent2, RESULTGUEST);
+                break;
+            case AppConstants.KEY_DURESS:
+                Intent intent3 = new Intent(this, VerifyComboPassword.class);
+                intent3.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
                 startActivityForResult(intent3, RESULTCODE);
                 break;
         }

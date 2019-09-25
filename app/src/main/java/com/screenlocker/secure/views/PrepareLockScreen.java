@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -32,8 +33,10 @@ import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.screenlocker.secure.socket.utils.utils.chatLogin;
@@ -44,6 +47,9 @@ import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -57,7 +63,8 @@ import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
  */
 public class PrepareLockScreen {
 
-    public static boolean isClockTicking = false;
+    private static boolean isClockTicking = false;
+    public static String incomingComboRequest = null;
 
     @SuppressLint("ResourceType")
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
@@ -102,6 +109,7 @@ public class PrepareLockScreen {
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
 
         TextView txtWarning = keypadView.findViewById(R.id.txtWarning);
+        NCodeView codeView = keypadView.findViewById(R.id.codeView);
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
         String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
         if (bg == null || bg.equals("")) {
@@ -119,7 +127,31 @@ public class PrepareLockScreen {
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
         final PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
+        codeView.setListener(new NCodeView.OnPFCodeListener() {
+            @Override
+            public void onCodeCompleted(ArrayList<Integer> code) {
 
+                if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_COMBO_PIN))) {
+
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_MAIN;
+                } else if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.GUEST_COMBO_PIN))) {
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_GUEST;
+                } else if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.DURESS_COMBO_PIN))) {
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_DURESS;
+                }
+            }
+
+            @Override
+            public void onCodeNotCompleted(ArrayList<Integer> code) {
+
+            }
+        });
         mPatternLockView.addPatternLockListener(new PatternLockViewListener() {
             @Override
             public void onStarted() {
@@ -131,18 +163,8 @@ public class PrepareLockScreen {
 
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
-                String device_status = getDeviceStatus(context);
-                if (pattern.size() == 1) {
-                    mPasswordField.append(String.valueOf(pattern.get(0).getRandom()));
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                    mPatternLockView.clearPattern();
-                    return;
-                } else if (pattern.size() > 1 && pattern.size() < 4) {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                    Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(mPatternLockView::clearPattern, 500);
-                }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
+                String device_status = getDeviceStatus(context);
                 boolean clearance;
                 if (device_status == null) {
                     clearance = false;
@@ -150,60 +172,63 @@ public class PrepareLockScreen {
                     clearance = device_status.equals("suspended") || device_status.equals("expired");
 
                 }
+                if (pattern.size() == 1) {
+                    mPasswordField.append(String.valueOf(pattern.get(0).getRandom()));
+                    codeView.input(pattern.get(0).getRandom());
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    mPatternLockView.clearPattern();
+                } else if (!mPatternLockView.isNumberInputAllow()) {
+                    switch (incomingComboRequest) {
+                        case KEY_MAIN:
+                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN))) {
+                                //correct
 
-                if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN))) {
-                    if (clearance) {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            chatLogin(context);
-                            mPasswordField.setText(null);
-                        }, 150);
-                    } else {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            loginAsGuest(context);
-                            mPasswordField.setText(null);
-                        }, 150);
+                                encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+
+                            }
+                            break;
+                        case KEY_GUEST:
+                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_COMBO_PATTERN))) {
+                                //correct
+                                guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                            }
+                            break;
+                        case KEY_DURESS:
+                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_COMBO_PATTERN))) {
+                                //correct
+                                duressLogin(clearance, mPatternLockView, codeView, context);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                            }
+                            break;
                     }
+                    new Handler().postDelayed(() -> {
+                        incomingComboRequest = null;
+                        codeView.clearCode();
+                        mPatternLockView.setNumberInputAllow(true);
+                        mPatternLockView.invalidate();
+                    }, 800);
 
-                    return;
+                } else if (pattern.size() > 1 && pattern.size() < 4) {
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN))) {
+                    guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+
+
                 } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_PATTERN))) {
 
-                    if (clearance) {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            chatLogin(context);
-                            mPasswordField.setText(null);
-                        }, 150);
-                    } else {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            loginAsEncrypted(context);
-                            mPasswordField.setText(null);
-                        }, 150);
-                    }
-                    return;
+                    encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
                 } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_PATTERN))) {
-                    if (clearance) {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            chatLogin(context);
-                        }, 150);
-                    } else {
-                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
-                        new Handler().postDelayed(() -> {
-                            mPatternLockView.clearPattern();
-                            if (!wipeDevice(context)) {
-                                Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
-                            }
-                        }, 150);
-                    }
-                    return;
+                    duressLogin(clearance, mPatternLockView, codeView, context);
                 } else if (device_status != null) {
                     String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
                     setDeviceId(context, txtWarning, device_id, mPatternLockView, device_status);
@@ -212,11 +237,7 @@ public class PrepareLockScreen {
                         new Handler().postDelayed(mPatternLockView::clearPattern, 500);
                     }
                 } else {
-                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                    new Handler().postDelayed(() -> {
-                        mPatternLockView.clearPattern();
-                        wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField);
-                    }, 500);
+                    patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
                 }
             }
 
@@ -246,7 +267,9 @@ public class PrepareLockScreen {
         }
 
 
-        deviceStatusReceiver.setListener(status -> {
+        deviceStatusReceiver.setListener(status ->
+
+        {
             if (status == null) {
                 if (!isClockTicking) {
                     txtWarning.setVisibility(INVISIBLE);
@@ -311,44 +334,61 @@ public class PrepareLockScreen {
         });
 
         ImageView backPress = keypadView.findViewById(R.id.t9_key_backspace);
-        backPress.setOnClickListener(v -> {
+        backPress.setOnClickListener(v ->
+
+        {
             Editable editable = mPasswordField.getText();
             int charCount = editable.length();
             if (charCount > 0) {
                 editable.delete(charCount - 1, charCount);
+                codeView.delete();
             }
         });
         LinearLayout supportButton = keypadView.findViewById(R.id.t9_key_support);
         TextView clearAll = keypadView.findViewById(R.id.t9_key_clear);
-        clearAll.setOnClickListener(v -> mPasswordField.setText(null));
+        clearAll.setOnClickListener(v ->
 
-        mPasswordField.setTransformationMethod(new HiddenPassTransformationMethod());
-        mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        mPasswordField.setTextColor(context.getResources().getColor(R.color.textColorPrimary));
-        mPasswordField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String device_status = getDeviceStatus(context);
-                if (device_status == null) {
-                    txtWarning.setVisibility(INVISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+        {
+            mPasswordField.setText(null);
+            codeView.clearCode();
         });
 
-        supportButton.setOnClickListener(v -> {
+        mPasswordField.setTransformationMethod(new
+
+                HiddenPassTransformationMethod());
+        mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        mPasswordField.setTextColor(context.getResources().
+
+                getColor(R.color.textColorPrimary, null));
+        mPasswordField.addTextChangedListener(new
+
+                                                      TextWatcher() {
+                                                          @Override
+                                                          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                              String device_status = getDeviceStatus(context);
+                                                              if (device_status == null) {
+                                                                  txtWarning.setVisibility(INVISIBLE);
+                                                              }
+                                                          }
+
+                                                          @Override
+                                                          public void afterTextChanged(Editable s) {
+
+                                                          }
+                                                      });
+
+        supportButton.setOnClickListener(v ->
+
+        {
             chatLogin(context);
 
             mPasswordField.setText(null);
+            codeView.clearCode();
         });
 
         long time_remaining = getTimeRemaining(context);
@@ -412,19 +452,23 @@ public class PrepareLockScreen {
                     if (clearance) {
                         chatLogin(context);
                         mPasswordField.setText(null);
+                        codeView.clearCode();
                     } else {
                         loginAsGuest(context);
                         mPasswordField.setText(null);
+                        codeView.clearCode();
                     }
                 }
-                //if input is for eyncrypted
+                //if input is for encrypted
                 else if (getUserType(enteredPin, context).equals("encrypted")) {
                     if (!clearance) {
                         loginAsEncrypted(context);
                         mPasswordField.setText(null);
+                        codeView.clearCode();
                     } else {
                         chatLogin(context);
                         mPasswordField.setText(null);
+                        codeView.clearCode();
                     }
 
                 } else if (getUserType(enteredPin, context).equals("duress")) {
@@ -436,21 +480,95 @@ public class PrepareLockScreen {
                 } else if (device_status1 != null) {
                     if (clearance) {
                         mPasswordField.setText(null);
+                        codeView.clearCode();
                     }
                     setDeviceId(context, txtWarning, finalDevice_id1, mPatternLockView, device_status1);
                 } else {
 //                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
 
-                    wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField);
+                    wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField, codeView);
 
                 }
 
             }
+            if (!mPatternLockView.isNumberInputAllow()){
+                mPatternLockView.setNumberInputAllow(true);
+                mPatternLockView.invalidate();
+            }
+            codeView.clearCode();
 
         });
 
 
         return params;
+    }
+
+    private static void patternWromgAttempt(PatternLockView mPatternLockView, Context context, TextView txtWarning, ImageView unLockButton, EditText mPasswordField, NCodeView codeview) {
+        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+        new Handler().postDelayed(() -> {
+            mPatternLockView.clearPattern();
+            wrongAttempt(context, txtWarning, unLockButton, mPatternLockView, mPasswordField, codeview);
+        }, 500);
+    }
+
+    private static void guestLogin(boolean clearance, PatternLockView mPatternLockView, Context context, EditText mPasswordField, NCodeView codeView) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                chatLogin(context);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                loginAsGuest(context);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        }
+    }
+
+    private static void duressLogin(boolean clearance, PatternLockView mPatternLockView, NCodeView codeView, Context context) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                codeView.clearCode();
+                chatLogin(context);
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                codeView.clearCode();
+                if (!wipeDevice(context)) {
+                    Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                }
+            }, 150);
+        }
+    }
+
+    private static void encryptLogin(boolean clearance, PatternLockView mPatternLockView, Context context, EditText mPasswordField, NCodeView codeView) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                chatLogin(context);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                loginAsEncrypted(context);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        }
     }
 
     public static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
@@ -510,7 +628,7 @@ public class PrepareLockScreen {
         }
     }
 
-    private static void wrongAttempt(Context context, TextView txtWarning, ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField) {
+    private static void wrongAttempt(Context context, TextView txtWarning, ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField, NCodeView codeView) {
         int attempts1 = 10;
         int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
@@ -556,10 +674,11 @@ public class PrepareLockScreen {
                 unLockButton.setEnabled(true);
                 unLockButton.setClickable(true);
                 mPasswordField.setText(null);
+                codeView.clearCode();
 //                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
                 String text_view_str = context.getResources().getString(R.string.incorrect_pin) + " <br><br> " + context.getResources().getString(R.string.number_of_attempts_remaining, x1 + "");
                 txtWarning.setVisibility(VISIBLE);
-                txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str)));
+                txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
         }
     }
 
@@ -593,7 +712,7 @@ public class PrepareLockScreen {
                     String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
                     mPasswordField.setText(null);
                     txtWarning.setVisibility(VISIBLE);
-                    txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str)));
+                    txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
                     PrefUtils.saveLongPref(context, TIME_REMAINING, l);
                     isClockTicking = true;
                     setTimeRemaining(context);
@@ -605,6 +724,8 @@ public class PrepareLockScreen {
                     patternLockView.setInputEnabled(true);
                     unLockButton.setClickable(true);
                     mPasswordField.setText(null);
+
+                    //codeView.clearCode();
                     txtWarning.setVisibility(INVISIBLE);
                     txtWarning.setText(null);
                     isClockTicking = false;

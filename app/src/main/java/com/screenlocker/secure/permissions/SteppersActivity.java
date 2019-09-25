@@ -1,36 +1,25 @@
 package com.screenlocker.secure.permissions;
 
-import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.github.fcannizzaro.materialstepper.style.DotStepper;
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.launcher.MainActivity;
-import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.utils.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
-import static android.app.admin.DevicePolicyManager.ACTION_PROVISION_MANAGED_DEVICE;
-import static android.app.admin.DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME;
+import com.github.fcannizzaro.materialstepper.style.DotStepper;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
+
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
-import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
@@ -61,19 +50,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             startActivity(intent);
             finish();
         } else {
-           /* if (!PrefUtils.getBooleanPref(this,"cmd2")){
-                Intent intent = new Intent(ACTION_PROVISION_MANAGED_DEVICE);
-                ComponentName cn = new ComponentName(getPackageName(),"com.screenlocker.secure.MyAdmin");
-                intent.putExtra(EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME,
-                        cn);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, 1);
-                    PrefUtils.saveBooleanPref(this,"cmd2",true);
-                    //activity.finish();
-                } else {
-                    Toast.makeText(this, "Stopping.",Toast.LENGTH_SHORT).show();
-                }
-            }*/
             addStep(new PermissionStepFragment());//0
             addStep(new PasswordOptionsStepFragment());//1
             addStep(new SetGuestPasswordFragment());//2
@@ -82,8 +58,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             addStep(new DuressPasswordOptionFragment());//5
             addStep(new SetDuressPasswordFragment());//6
             addStep(new LinkDeviceFragment());//7
-            addStep(new SetDefaultLauncherFragment());//8
-            addStep(new FinishFragment());//9
+            addStep(new FinishFragment());//8
         }
 
         super.onCreate(savedInstanceState);

@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.utils.AppConstants.DURESS_PASSORD_OPTION;
+import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
@@ -100,7 +101,9 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
         });
         layout_combination.setOnClickListener(v -> {
-            Toast.makeText(MyApplication.getAppContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_COMBO);
+            isSelected = true;
+            mListener.onPageUpdate(6);
         });
     }
 

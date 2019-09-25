@@ -49,6 +49,7 @@ import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
+import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
@@ -76,12 +77,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import timber.log.Timber;
 
@@ -794,8 +793,11 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         try {
             if (mLayout != null) {
                 PatternLockView pl = mLayout.findViewById(R.id.patternLock);
+                pl.setNumberInputAllow(true);
                 pl.setUpRandomizedArray();
                 pl.invalidate();
+                NCodeView codeView = mLayout.findViewById(R.id.codeView);
+                codeView.clearCode();
                 TextView clear = mLayout.findViewById(R.id.t9_key_clear);
                 TextView support = mLayout.findViewById(R.id.supporttext);
                 TextView warningText = mLayout.findViewById(R.id.txtWarning);

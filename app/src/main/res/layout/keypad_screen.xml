@@ -142,6 +142,16 @@
         android:textSize="@dimen/_13ssp"
         app:layout_constraintLeft_toLeftOf="@id/patternLock" />
 
+    <com.screenlocker.secure.settings.managepassword.NCodeView
+        android:id="@+id/codeView"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/patternLock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtWarning" />
+
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"
         android:layout_width="@dimen/_230sdp"
