@@ -949,31 +949,28 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     private void startLockScreen(boolean refresh) {
 
-
-        try {
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            try {
 //            setTimeRemaining(getAppContext());
-            if (refresh)
-                refreshKeyboard();
-            notificationItems.clear();
-
-            if (!isLocked) {
-                isLocked = true;
-                removeView();
-                windowManager.addView(mLayout, params);
-                //clear home with our app to front
-                Intent i = new Intent(LockScreenService.this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(i);
-                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, KEY_SUPPORT_PASSWORD);
+                if (refresh)
+                    refreshKeyboard();
+                notificationItems.clear();
+                if (!isLocked) {
+                    isLocked = true;
+                    removeView();
+                    windowManager.addView(mLayout, params);
+                    //clear home with our app to front
+                    Intent i = new Intent(LockScreenService.this, MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(i);
+                    PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, KEY_SUPPORT_PASSWORD);
+                }
+            } catch (Exception e) {
+                Timber.e(e);
             }
-
-
-        } catch (Exception e) {
-            Timber.e(e);
         }
-
     }
 
     @Override
