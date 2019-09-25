@@ -27,7 +27,7 @@ public class PasswordOptionsAcitivity extends AppCompatActivity implements View.
     @BindView(R.id.tvPatternOption)
     TextView tvPatternOption;
     @BindView(R.id.tvFingerPrint)
-    FrameLayout tvFingerPrint;
+    TextView tvFingerPrint;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,10 +60,10 @@ public class PasswordOptionsAcitivity extends AppCompatActivity implements View.
                 startActivity(intent1);
                 break;
             case R.id.tvFingerPrint:
-//                Intent intent2 = new Intent(this, CombinationLockActivity.class);
-//                intent2.putExtra(Intent.EXTRA_TEXT,EXTRA);
-//                startActivity(intent2);
-                Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(this, CombinationLockActivity.class);
+                intent2.putExtra(Intent.EXTRA_TEXT,EXTRA);
+                startActivity(intent2);
+//                Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

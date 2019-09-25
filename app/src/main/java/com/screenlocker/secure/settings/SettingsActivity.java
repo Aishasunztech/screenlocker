@@ -2,7 +2,6 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Instrumentation;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,14 +17,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +46,6 @@ import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
@@ -71,9 +65,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -90,7 +81,7 @@ import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -295,6 +286,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.toolbar_title);
+            String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
+            if (deviceid != null) {
+                getSupportActionBar().setSubtitle(deviceid);
+            }
             getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }
     }

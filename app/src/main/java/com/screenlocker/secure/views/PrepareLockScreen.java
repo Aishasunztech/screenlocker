@@ -127,6 +127,7 @@ public class PrepareLockScreen {
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
         String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
         final PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
+        mPatternLockView.setEnableHapticFeedback(false);
         codeView.setListener(new NCodeView.OnPFCodeListener() {
             @Override
             public void onCodeCompleted(ArrayList<Integer> code) {
