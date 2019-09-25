@@ -284,9 +284,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 Intent intent = new Intent(this, SocketService.class);
                 stopService(intent);
             }
-            if (t != null) {
-                t.cancel();
-                t = null;
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
             }
         }
     }
@@ -345,27 +345,28 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         asyncCalls.execute();
     }
 
-    private Timer t;
+    private Timer timer;
 
     private void scheduleTimer() {
 
-        if (t != null) {
-            t.cancel();
-            t = null;
+        if (timer != null) {
+            timer.cancel();
         }
+        timer = null;
 
-        t = new Timer();
 
-        t.scheduleAtFixedRate(new TimerTask() {
+        timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Timber.d("zklvnsdfvnsdklfsdfg : " + "checking online connection ");
                 if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
                     onlineConnection();
                 } else {
-                    if (t != null) {
-                        t.cancel();
-                        t = null;
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
                     }
                 }
 
@@ -376,9 +377,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
     private void stopTimer() {
-        if (t != null) {
-            t.cancel();
-            t = null;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
         Timber.d("zklvnsdfvnsdklfsdfg : " + "stop TImer");
     }
