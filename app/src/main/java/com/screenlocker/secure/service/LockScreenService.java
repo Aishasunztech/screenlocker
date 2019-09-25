@@ -684,31 +684,33 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
     private void startLockScreen(boolean refresh) {
 
+        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            try {
+                if (refresh)
+                    refreshKeyboard();
+                notificationItems.clear();
 
-        try {
-            if (refresh)
-                refreshKeyboard();
-            notificationItems.clear();
+                if (mLayout.getWindowToken() == null) {
+                    removeView();
+                    if (params == null) {
+                        params = PrepareLockScreen.getParams(this, mLayout);
+                    }
+                    windowManager.addView(mLayout, params);
+                    //clear home with our app to front
+                    Instrumentation m_Instrumentation = new Instrumentation();
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-            if (mLayout.getWindowToken() == null) {
-                removeView();
-                if (params == null) {
-                    params = PrepareLockScreen.getParams(this, mLayout);
+                    });
+                    PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
                 }
-                windowManager.addView(mLayout, params);
-                //clear home with our app to front
-                Instrumentation m_Instrumentation = new Instrumentation();
-                AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                    m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-                });
-                PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+
+            } catch (Exception e) {
+                Timber.e(e);
             }
-
-
-        } catch (Exception e) {
-            Timber.e(e);
         }
+
 
     }
 
