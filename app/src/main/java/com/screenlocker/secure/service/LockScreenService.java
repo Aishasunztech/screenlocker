@@ -726,8 +726,10 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                         }
 
                     } else {
+
                         if (blacklist.contains(package_name)) {
-                            clearRecentApp(this, false);
+//                            clearRecentApp(this, false);
+                            return;
                         }
                         checkAppStatus(package_name);
                     }
@@ -845,6 +847,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         } else {
             ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
             handler.postDelayed(() -> ActivityCompat.startForegroundService(LockScreenService.this, new Intent(LockScreenService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
+
         }
 
         Intent i = new Intent(context, MainActivity.class);

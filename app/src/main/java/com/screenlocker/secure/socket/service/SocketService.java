@@ -175,7 +175,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     private void startService() {
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (mNM != null) {
-            Notification notification = getNotification(this, R.drawable.sync,getAppContext().getString(R.string.device_is_connected));
+            Notification notification = getNotification(this, R.drawable.sync, getAppContext().getString(R.string.device_is_connected));
             startForeground(4577, notification);
         }
     }
@@ -1294,6 +1294,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         }
     }
+
 
     @Override
     public void forceUpdateCheck() {
