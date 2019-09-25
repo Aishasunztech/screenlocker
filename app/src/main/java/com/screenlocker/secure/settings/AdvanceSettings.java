@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
@@ -30,6 +31,7 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
@@ -37,6 +39,7 @@ import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.t.ui.MainActivity;
 
@@ -50,10 +53,11 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.isProgress;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
-public class AdvanceSettings extends AppCompatActivity implements View.OnClickListener {
+public class AdvanceSettings extends BaseActivity implements View.OnClickListener {
     private SharedPreferences sharedPref;
 
     @Override
@@ -177,6 +181,7 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
+
         if (key.equals(AppConstants.KEY_THEME)) {
             if (PrefUtils.getBooleanPref(AdvanceSettings.this, AppConstants.KEY_THEME)) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -186,9 +191,17 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
             getDelegate().applyDayNight();
-            recreate();
+            restartActivity();
+
         }
     };
+
+
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 
     @Override
     protected void onDestroy() {
@@ -243,7 +256,8 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
 
         //bluetooth disable
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.disable();
+        if (mBluetoothAdapter != null)
+            mBluetoothAdapter.disable();
 
         //Reset System Setting
         DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -300,14 +314,26 @@ public class AdvanceSettings extends AppCompatActivity implements View.OnClickLi
                     app.setEncrypted(true);
                     app.setGuest(false);
                     app.setEnable(true);
-                } else if (app.isSystemApp()) {
+                } else if (app.getPackageName().equals("com.armorSec.android")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("ca.unlimitedwireless.mailpgp")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("com.rim.mobilefusion.client")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else if (app.getPackageName().equals("com.secure.vpn")) {
+                    app.setEnable(true);
+                    app.setGuest(false);
+                    app.setEncrypted(true);
+                } else {
                     app.setEnable(false);
                     app.setGuest(true);
                     app.setEncrypted(false);
-                } else {
-                    app.setEncrypted(true);
-                    app.setGuest(false);
-                    app.setEnable(true);
                 }
                 MyApplication.getAppDatabase(this).getDao().updateApps(app);
             }

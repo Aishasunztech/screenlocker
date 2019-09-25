@@ -10,6 +10,7 @@ public class AppConstants {
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
     public static final String KEY_THEME = "is_dark";
+    public static final String PENDING_ACTIVATION = "pending_activation";
     public static boolean IS_LOCALE_CHANGED = false;
 
     public static final String ALLOW_GUEST_ALL = "allow_guest_all";
@@ -483,6 +484,9 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+
+
+    public static final String OLD_DEVICE_STATUS = "old_device_status";
 
 
 }

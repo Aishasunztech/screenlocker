@@ -96,21 +96,20 @@ public class CommonUtils {
                 urlc.setRequestProperty("User-Agent", "Android Application");
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(10 * 1000);
+
                 try {
                     urlc.connect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                }catch (SSLHandshakeException e){
-                    Timber.d(e);
-                }
-                catch (Exception e) {
-                    Timber.d(e);
-                }
+
                 isReachable = (urlc.getResponseCode() == 200);
 
                 Timber.d("Response code :%s", urlc.getResponseCode());
 
             } catch (IOException e) {
-                Timber.e(e);
+                e.printStackTrace();
             }
         }
 
@@ -444,18 +443,18 @@ public class CommonUtils {
         resources.updateConfiguration(configuration, displayMetrics);
     }
 
-    public static void setAlarmManager(Context context,long timeInMillis) {
+    public static void setAlarmManager(Context context, long timeInMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intentAlarm, 0);
 
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,timeInMillis , pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
     }
 
 
-    public static  List<Settings> getDefaultSetting (Context context){
-        List<Settings> settings =  new ArrayList<>();
+    public static List<Settings> getDefaultSetting(Context context) {
+        List<Settings> settings = new ArrayList<>();
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName compName = new ComponentName(context, MyAdmin.class);
         boolean isfileSharing = false;
@@ -475,7 +474,6 @@ public class CommonUtils {
         PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, false);
 
 
-
         settings.add(new Settings(AppConstants.SET_WIFI, true));
         settings.add(new Settings(AppConstants.SET_BLUETOOTH, true));
         settings.add(new Settings(AppConstants.SET_BLUE_FILE_SHARING, isfileSharing));
@@ -488,7 +486,6 @@ public class CommonUtils {
 
         return settings;
     }
-
 
 
 }

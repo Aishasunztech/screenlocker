@@ -12,6 +12,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
@@ -21,8 +22,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 6030
-        versionName "6.03"
+        versionCode 60002
+        versionName "6.0.2"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -138,7 +139,7 @@ dependencies {
 
 //fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true;
+        transitive = true
     }
 
 //sdp

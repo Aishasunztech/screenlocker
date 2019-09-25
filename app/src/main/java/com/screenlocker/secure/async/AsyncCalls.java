@@ -6,13 +6,9 @@ import android.os.AsyncTask;
 import com.screenlocker.secure.interfaces.AsyncResponse;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
-import static com.screenlocker.secure.utils.AppConstants.URL_1;
-import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.IsReachable;
 
 public class AsyncCalls extends AsyncTask<Void, Void, String> {
@@ -33,18 +29,34 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
 
     }
 
+
+    private boolean urlFound = false;
+
     @Override
     protected String doInBackground(Void... voids) {
 
         Context context = contextRef.get();
-        for (String url : urls) {
-            if ((IsReachable(context, url))) {
-                return url;
+
+        while (!urlFound) {
+            Timber.d("finding urls ");
+            for (String url : urls) {
+                if ((IsReachable(context, url))) {
+                    urlFound = true;
+                    return url;
+                }
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
+
         return null;
     }
+
 
     @Override
     protected void onPostExecute(String result) {

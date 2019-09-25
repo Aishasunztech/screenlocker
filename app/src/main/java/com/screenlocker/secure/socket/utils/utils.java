@@ -78,6 +78,7 @@ import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
@@ -434,9 +435,9 @@ public class utils {
 
                         JSONObject jsonObject = new JSONObject();
                         try {
-                                jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
-                                jsonObject.put("object", "");
-                                SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
+                            jsonObject.put("object", "");
+                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
 
                         } catch (JSONException e) {
                             Timber.d(e);
@@ -573,6 +574,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
 
        /* String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -618,6 +620,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
+        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
 
 
 
