@@ -517,13 +517,14 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
@@ -541,9 +542,11 @@ public class LinkDeviceActivity extends BaseActivity {
                             } else {
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case NEW_DEVICE:
+                                        isPendingActivation = false;
                                         if (isLinked) {
                                             utils.unlinkDevice(LinkDeviceActivity.this, false);
                                             finish();
@@ -552,15 +555,19 @@ public class LinkDeviceActivity extends BaseActivity {
                                         }
                                         break;
                                     case DUPLICATE_MAC:
+                                        isPendingActivation = false;
 //                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DEALER_NOT_FOUND:
+                                        isPendingActivation = false;
 //                                            showMainContent();
                                         break;
                                 }

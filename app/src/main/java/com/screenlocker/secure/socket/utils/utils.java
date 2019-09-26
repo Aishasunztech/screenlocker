@@ -553,6 +553,7 @@ public class utils {
 //                    MyApplication.getAppDatabase(context).getDao().updateAllExtensions(false,false);
                 }
 
+
                 for (int i = 0; i < extensions.length(); i++) {
 
                     try {
@@ -562,8 +563,6 @@ public class utils {
                         int guest = (int) app.get("guest");
 
                         String uniqueExtension = app.getString("uniqueExtension");
-
-                        Timber.d(uniqueExtension);
 
 
                         int encrypted = (int) app.get("encrypted");
