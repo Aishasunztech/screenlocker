@@ -544,13 +544,14 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
@@ -568,9 +569,11 @@ public class LinkDeviceActivity extends BaseActivity {
                             } else {
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case NEW_DEVICE:
+                                        isPendingActivation = false;
                                         if (isLinked) {
                                             utils.unlinkDevice(LinkDeviceActivity.this, false);
                                             finish();
@@ -579,15 +582,19 @@ public class LinkDeviceActivity extends BaseActivity {
                                         }
                                         break;
                                     case DUPLICATE_MAC:
+                                        isPendingActivation = false;
 //                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DEALER_NOT_FOUND:
+                                        isPendingActivation = false;
 //                                            showMainContent();
                                         break;
                                 }
@@ -603,6 +610,7 @@ public class LinkDeviceActivity extends BaseActivity {
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        isPendingActivation = false;
                     }
                 });
     }
@@ -610,24 +618,30 @@ public class LinkDeviceActivity extends BaseActivity {
 
     boolean isPendingActivation = false;
 
-    @Override
-    protected void onStop() {
-        super.onStop();
 
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        closeTimer();
+//    }
+
+    private void closeTimer() {
         if (t != null) {
             t.cancel();
             t = null;
         }
         PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
 
-        if (isPendingActivation) {
-            if (mListener != null)
-                mListener.onScheduleTimer(true);
-        } else {
-            if (mListener != null) {
-                mListener.onScheduleTimer(false);
-            }
-        }
+        if (mListener != null)
+            mListener.onScheduleTimer(isPendingActivation);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        closeTimer();
     }
 
     private Timer t;
