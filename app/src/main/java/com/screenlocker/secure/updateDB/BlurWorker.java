@@ -260,28 +260,28 @@ public class BlurWorker extends Worker {
             }
 
 
-            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
-
-            if (supportInfo == null) {
-                //Contact Support Extension
-                Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
-                byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
-                AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);
-                supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
-                supportExtension.setExtension(false);
-                supportExtension.setGuest(false);
-                supportExtension.setEncrypted(false);
-                supportExtension.setEnable(true);
-                supportExtension.setVisible(true);
-                supportExtension.setDefaultApp(false);
-                supportExtension.setSystemApp(true);
-
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
-            } else {
-                supportInfo.setExtension(false);
-                supportInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
-            }
+//            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
+//
+//            if (supportInfo == null) {
+//                //Contact Support Extension
+//                Drawable support_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
+//                byte[] support_icon = CommonUtils.convertDrawableToByteArray(support_drawable);
+//                AppInfo supportExtension = new AppInfo("Contact Support", AppConstants.SUPPORT_PACKAGE, support_icon);
+//                supportExtension.setUniqueName(supportExtension.getPackageName() + supportExtension.getLabel());
+//                supportExtension.setExtension(false);
+//                supportExtension.setGuest(false);
+//                supportExtension.setEncrypted(false);
+//                supportExtension.setEnable(true);
+//                supportExtension.setVisible(true);
+//                supportExtension.setDefaultApp(false);
+//                supportExtension.setSystemApp(true);
+//
+//                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
+//            } else {
+//                supportInfo.setExtension(false);
+//                supportInfo.setSystemApp(true);
+//                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
+//            }
 
 
             AppInfo sfmInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SFM_UNIQUE);
@@ -362,8 +362,6 @@ public class BlurWorker extends Worker {
                         } else {
                             isPresent = false;
                         }
-
-
                     }
                 }
 

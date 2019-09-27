@@ -17,6 +17,7 @@
         android:background="@color/SettingsColorPrimary"
         android:id="@+id/toolbar"
         app:titleTextColor="@color/colorPureWhite"
+        app:subtitleTextColor="@color/colorPureWhite"
         app:titleTextAppearance="@style/Toolbar.TitleText"/>
 
 

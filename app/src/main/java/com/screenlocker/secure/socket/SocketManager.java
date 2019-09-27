@@ -33,7 +33,9 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.utils.AppConstants.IS_LIVE_CLIENT_VISIBLE;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 
 
 public class SocketManager {
@@ -58,7 +60,7 @@ public class SocketManager {
 
     private static SocketManager instance;
 
-    private NotificationManager notificationManager = (NotificationManager) MyApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+    private NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 
     private SocketManager() {
@@ -171,7 +173,7 @@ public class SocketManager {
 
                 clientChatSocket.on(Socket.EVENT_CONNECT, args -> {
                     Timber.i("clientChatSocket connected");
-                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
+                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
 
                     notify = device_id;
                     clientChatSocket.on(notify, args1 -> {
@@ -183,11 +185,11 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(MyApplication.getAppContext(), IS_LIVE_CLIENT_VISIBLE);
+                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(getAppContext(), IS_LIVE_CLIENT_VISIBLE);
                                     JSONObject data = (JSONObject) args1[1];
                                     if (!data.getString("msg").equals("")) {
                                         if (!isLiveActivityVisible) {
-                                            notification = new NotificationCompat.Builder(MyApplication.getAppContext(), MyApplication.CHANNEL_1_ID)
+                                            notification = new NotificationCompat.Builder(getAppContext(), MyApplication.CHANNEL_1_ID)
                                                     .setContentText("")
                                                     .setContentTitle(data.getString("msg"))
                                                     .setSmallIcon(R.drawable.ic_chat)
@@ -197,11 +199,10 @@ public class SocketManager {
 
 
                                             notificationManager.notify((int) System.currentTimeMillis(), notification);
+                                            int numberOfNotifications = PrefUtils.getIntegerPref(getAppContext(),NUMBER_OF_NOTIFICATIONS);
+                                            PrefUtils.saveIntegerPref(getAppContext(), AppConstants.NUMBER_OF_NOTIFICATIONS,++numberOfNotifications);
                                         } else {
-
-
                                             Handler handler = new Handler();
-
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -239,7 +240,7 @@ public class SocketManager {
                         clientChatSocket.off(notify);
                     }
 
-                    PrefUtils.saveBooleanPref(MyApplication.getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
+                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {

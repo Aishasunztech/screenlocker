@@ -482,6 +482,7 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+    public static final String NUMBER_OF_NOTIFICATIONS = "number_of_notifications";
 
     public static final String PENDING_ACTIVATION = "pending_activity";
 

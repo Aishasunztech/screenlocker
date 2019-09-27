@@ -304,7 +304,7 @@
     <string name="link_status">Link Status</string>
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">Next attempt in</string>
-    <string name="contact_support_chat">Contact Support</string>
+    <string name="contact_support_chat">Live Chat Support</string>
     <string name="please_wait_">Please wait...</string>
     <string name="account_disabled">Account disabled. Contact your dealer for assistance.</string>
     <string name="server_error">Server not responsive. Try again !</string>
@@ -425,7 +425,7 @@
     <string name="tab_text_2">Updates</string>
     <string name="tab_text_3">Uninstall</string>
 
-    <string name="live_client_device_id">Live Customer Support(%1$s)</string>
+    <string name="live_client_device_id">Live Customer Support</string>
     <string name="service_notification_text" translatable="false">Screen Locker</string>
     <string name="device_is_connected">Device is connected to LM</string>
 

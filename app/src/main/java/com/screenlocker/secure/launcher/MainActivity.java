@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
@@ -67,6 +69,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
@@ -221,7 +224,6 @@ public class MainActivity extends
             }
         }
 
-
         closeBar();
     }
 
@@ -229,6 +231,8 @@ public class MainActivity extends
     private void setRecyclerView() {
 
         rvApps = findViewById(R.id.rvApps);
+        ((SimpleItemAnimator) rvApps.getItemAnimator()).setSupportsChangeAnimations(false);
+
         int resId = R.anim.layout_animation;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
@@ -322,6 +326,21 @@ public class MainActivity extends
                 column_span = AppConstants.LAUNCHER_GRID_SPAN;
             }
             rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
+        }else if(key.equals(NUMBER_OF_NOTIFICATIONS))
+        {
+            String name = "Live Chat Support";
+            int index = IntStream.range(0,adapter.appsList.size())
+                    .filter(i -> name.equals(adapter.appsList.get(i).getLabel()))
+                    .findFirst()
+                    .orElse(-1);
+            if(index != -1)
+            {
+                AppInfo app = adapter.appsList.get(index);
+                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this,NUMBER_OF_NOTIFICATIONS));
+                adapter.appsList.set(index,app);
+                adapter.notifyItemChanged(index);
+
+            }
         }
     };
 

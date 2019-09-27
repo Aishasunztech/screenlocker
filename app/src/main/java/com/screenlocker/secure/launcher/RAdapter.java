@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import java.util.List;
 import static android.content.Intent.ACTION_VIEW;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 
 public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
@@ -44,8 +46,9 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView textView;
+        final TextView textView,numberOfNotifications;
         final ImageView img;
+        final FrameLayout badge;
 
 
         ViewHolder(View itemView) {
@@ -54,6 +57,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             //Finds the views from our row.xml
             textView = itemView.findViewById(R.id.text);
             img = itemView.findViewById(R.id.img);
+            badge = itemView.findViewById(R.id.badge_container);
+            numberOfNotifications = itemView.findViewById(R.id.number_of_notifications);
 
             itemView.setOnClickListener(this);
 
@@ -221,6 +226,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RAdapter.ViewHolder viewHolder, int i) {
 
+
+        viewHolder.badge.setVisibility(View.GONE);
         //Here we use the information in the list we created to define the views
 
         String appLabel = appsList.get(i).getLabel();
@@ -242,8 +249,18 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 textView.setText(context.getResources().getString(R.string.secure_settings_activity_title));
 
                 break;
-            case "Contact Support":
+            case "Live Chat Support":
                 textView.setText(context.getResources().getString(R.string.contact_support_chat));
+//
+                int number = PrefUtils.getIntegerPref(context,NUMBER_OF_NOTIFICATIONS);
+                if(number > 0 )
+                {
+                    viewHolder.badge.setVisibility(View.VISIBLE);
+                    viewHolder.numberOfNotifications.setText(number + "");
+                }
+                else{
+                    viewHolder.badge.setVisibility(View.GONE);
+                }
                 break;
             default:
                 textView.setText(appLabel);
