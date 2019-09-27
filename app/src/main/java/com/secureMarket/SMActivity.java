@@ -78,6 +78,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_IS_PACKAGE_INSTALLED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
@@ -197,6 +198,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String pn = intent.getStringExtra(AppConstants.EXTRA_PACKAGE_NAME);
+                boolean isInstalled = intent.getBooleanExtra(EXTRA_IS_PACKAGE_INSTALLED,false);
                 int index = IntStream.range(0, newApps.size())
                         .filter(i -> Objects.nonNull(newApps.get(i)))
                         .filter(i -> pn.equals(newApps.get(i).getPackageName()))
@@ -207,14 +209,15 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     if (sectionsPagerAdapter != null) {
                         MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
                         UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+
                         InstalledAppsFragment fragment2 = sectionsPagerAdapter.getInstalledAppsFragment();
                         if (fragment != null) {
-                            fragment.onInstallationComplete(info.getPackageName());
+                            fragment.onInstallationComplete(info.getPackageName(),isInstalled);
                         }
                         if (fragment1 != null) {
-                            fragment1.onInstallationComplete(info.getPackageName());
+                            fragment1.onInstallationComplete(info.getPackageName(),isInstalled);
                         }
-                        if (fragment2 != null) {
+                        if (fragment2 != null && isInstalled) {
                             info.setInstalled(true);
                             info.setUpdate(false);
                             info.setType(ServerAppInfo.PROG_TYPE.GONE);
@@ -733,8 +736,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         try {
             Uri uri = Uri.fromFile(file);
             Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

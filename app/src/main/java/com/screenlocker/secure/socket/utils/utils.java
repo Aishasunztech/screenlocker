@@ -82,13 +82,25 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_CLIENT_CHAT_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_CLIENT_CHAT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_CLEAR_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_CLEAR_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_MARKET_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_MARKET_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SFM_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SFM_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SUPPORT_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SUPPORT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
@@ -189,7 +201,30 @@ public class utils {
                         boolean enable = (boolean) app.get("enable");
                         boolean encrypted = (boolean) app.get("encrypted");
 
-                        MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+
+                        switch (packageName) {
+                            case SECURE_CLEAR_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
+                                break;
+                            case SECURE_MARKET_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
+                                break;
+                            case LIVE_CLIENT_CHAT_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
+                                break;
+                            case SECURE_SETTINGS_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
+                                break;
+                            case SFM_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
+                                break;
+                            case SUPPORT_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
+                                break;
+                            default:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+                        }
+
 
                         if (i == apps.length() - 1) {
                             listener.onAppsReady();

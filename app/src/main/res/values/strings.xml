@@ -8,7 +8,7 @@
     <string name="my_apk_name" translatable="false">Test Locker</string>
     <string name="app_name" translatable="false">Test Locker</string>
     <string name="toolbar_title" translatable="false">Test Locker</string>
-    <string name="apktype" translatable="false">SW</string>
+    <string name="apktype" translatable="false">Dev</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
     <string name="number_two" translatable="false">2</string>
@@ -124,9 +124,9 @@
     <string name="status_disabled">Disabled</string>
     <string name="status_not_inserted">Not Inserted</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">Apps</string>
-    <string name="tab_text_2">Updates</string>
-    <string name="tab_text_3">Uninstall</string>
+    <string name="tab_text_1">@string/apps_title</string>
+    <string name="tab_text_2">@string/updates</string>
+    <string name="tab_text_3">@string/uninstall</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>

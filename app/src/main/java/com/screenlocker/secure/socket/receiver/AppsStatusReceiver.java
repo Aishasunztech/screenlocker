@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
@@ -277,12 +276,13 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                     }
                     saveAppsList(context, true , appInfo,false);
 
-                    sendMessage(context, packageName);
+                    sendMessage(context, packageName, true);
 
                 }).start();
 
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
+                sendMessage(context, packageName, false);
             }
         }else if (intent.getAction().equals("com.secure.systemcontrol.PACKAGE_DELETED_SECURE_MARKET")){
 
@@ -293,9 +293,18 @@ public class AppsStatusReceiver extends BroadcastReceiver {
     private void sendMessage(Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(BROADCAST_APPS_ACTION));
     }
-    private void sendMessage(Context context, String pn) {
+
+    /**
+     * This function is used to notify {@link com.secureMarket.SMActivity} about the success of
+     * package installation
+     *
+     * @param pn package name of installing package
+     * @param value is success of installing package
+     * */
+    private void sendMessage(Context context, String pn, boolean value) {
         Intent intent = new Intent(PACKAGE_INSTALLED);
         intent.putExtra(AppConstants.EXTRA_PACKAGE_NAME, pn);
+        intent.putExtra(AppConstants.EXTRA_IS_PACKAGE_INSTALLED, value);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 

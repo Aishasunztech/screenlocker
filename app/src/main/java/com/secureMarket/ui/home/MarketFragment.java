@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -186,13 +187,20 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         installedAdapter.updateProgressOfItem(info, installedApps.indexOf(info));
     }
 
-    public void onInstallationComplete(String pn) {
+
+    public void onInstallationComplete(String pn, boolean isInstalled) {
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
                 .filter(i -> pn.equals(installedApps.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
         if (index != -1) {
+            if (!isInstalled){
+                Toast.makeText(getContext(), String.format("Error while installing %s Application", installedApps.get(index).getApkName()), Toast.LENGTH_SHORT).show();
+                installedApps.get(index).setType(ServerAppInfo.PROG_TYPE.GONE);
+                installedAdapter.notifyItemChanged(index);
+                return;
+            }
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
             if (installedAdapter.getItemCount() == 0){
