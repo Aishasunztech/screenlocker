@@ -408,7 +408,7 @@ public class AppConstants {
     public static final String TEXT1 = "Your account with Device ID = ";
     public static final String LANGUAGE_PREF = "language_pref";
     public static final String UPDATEWIFI = "updatewifi";
-    public static final String UPDATESIM = "updateSim";
+    public static final String UPDATESIM = "updateSim_";
     public static final String LINKSIM = "linkSim";
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";

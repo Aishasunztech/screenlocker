@@ -398,7 +398,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         try {
             NetworkCapabilities nc = manager.getNetworkCapabilities(n);
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
+                if (!PrefUtils.getBooleanPref(this, UPDATESIM)) {
                     new AlertDialog.Builder(this)
                             .setTitle("Warning!")
                             .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
@@ -408,6 +408,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             .setNegativeButton(R.string.cancel, (dialog, which) -> {
                                 dialog.dismiss();
                             }).show();
+                }else {
+                    proccedToDownload();
                 }
             } else {
                 proccedToDownload();

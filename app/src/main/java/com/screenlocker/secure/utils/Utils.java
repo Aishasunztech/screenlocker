@@ -194,27 +194,6 @@ public class Utils {
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
-    public static void scheduleUpdateCheck(Context context) {
-
-        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-        JobInfo info = new JobInfo.Builder(123, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(24 * 60 * 60 * 1000L)
-                .build();
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-        if (utils.isJobServiceOn(context, 123)) {
-            scheduler.cancel(123);
-        }
-        int resultCode = scheduler.schedule(info);
-
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            //Log.d(TAG, "Job scheduled");
-        } else {
-            //Log.d(TAG, "Job scheduling failed");
-        }
-
-    }
-
     public static void scheduleExpiryCheck(Context context) {
 
         ComponentName componentName = new ComponentName(context, CheckExpiryFromSuperAdmin.class);

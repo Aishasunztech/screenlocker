@@ -107,7 +107,6 @@ import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
@@ -1008,22 +1007,15 @@ public class utils {
 
     public static void scheduleUpdateJob(Context context) {
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-        JobInfo jobInfo;
-        if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-        } else {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-        }
-
+        JobInfo jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(ONE_DAY_INTERVAL)
+                .build();
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-
+        if (utils.isJobServiceOn(context, UPDATE_JOB)) {
+            scheduler.cancel(UPDATE_JOB);
+        }
         int resultCode = scheduler.schedule(jobInfo);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             Timber.d("Job Scheduled");

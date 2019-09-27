@@ -89,6 +89,7 @@ import timber.log.Timber;
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
+import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
@@ -112,7 +113,6 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
-import static com.screenlocker.secure.utils.Utils.scheduleUpdateCheck;
 import static com.screenlocker.secure.views.PrepareLockScreen.setDeviceId;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
@@ -436,7 +436,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         }
 
         if (!getResources().getString(R.string.apktype).equals("BYOD")) {
-            scheduleUpdateCheck(this);
+            scheduleUpdateJob(this);
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
