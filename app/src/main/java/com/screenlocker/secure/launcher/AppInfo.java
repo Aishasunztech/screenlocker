@@ -22,6 +22,18 @@ public class AppInfo {
     private boolean visible;
     private boolean defaultApp;
 
+    public int getNumberOfnotifications() {
+        return numberOfnotifications;
+    }
+
+    public void setNumberOfnotifications(int numberOfnotifications) {
+        this.numberOfnotifications = numberOfnotifications;
+    }
+
+    @Ignore
+    private int numberOfnotifications = 0;
+
+
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
 
