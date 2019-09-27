@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
@@ -53,6 +54,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
@@ -394,6 +396,23 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
             rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         }
+        else if(key.equals(NUMBER_OF_NOTIFICATIONS))
+        {
+            String name = "Live Chat Support";
+            int index = IntStream.range(0,adapter.appsList.size())
+                    .filter(i -> name.equals(adapter.appsList.get(i).getLabel()))
+                    .findFirst()
+                    .orElse(-1);
+            if(index != -1)
+            {
+                AppInfo app = adapter.appsList.get(index);
+                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this,NUMBER_OF_NOTIFICATIONS));
+                adapter.appsList.set(index,app);
+                adapter.notifyItemChanged(index);
+
+            }
+        }
+
     };
 
     @Override

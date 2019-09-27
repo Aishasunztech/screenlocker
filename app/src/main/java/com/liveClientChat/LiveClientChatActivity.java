@@ -1,21 +1,10 @@
 package com.liveClientChat;
 
-import android.content.ComponentName;
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +12,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -37,6 +28,7 @@ import butterknife.OnClick;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.IS_LIVE_CLIENT_VISIBLE;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 
 public class LiveClientChatActivity extends AppCompatActivity {
 
@@ -59,20 +51,40 @@ public class LiveClientChatActivity extends AppCompatActivity {
     private LockScreenService mService;
     private boolean isSocketConnect;
 
+    private NotificationManager notificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_client_chat);
         ButterKnife.bind(this);
         isSocketConnect = PrefUtils.getBooleanPref(this, AppConstants.CLIENT_CHAT_SOCKET);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        webview.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-            }
-        });
+
+//        webview.setWebViewClient(new WebViewClient() {
+//            @Override
+//            public void onPageFinished(WebView view, String url) {
+//                progressbar.setVisibility(View.GONE);
+//                Log.d("lksjhdf","notification cleared");
+//                PrefUtils.saveIntegerPref(LiveClientChatActivity.this,NUMBER_OF_NOTIFICATIONS,0);
+//                notificationManager.cancelAll();
+//
+//                super.onPageFinished(view, url);
+//            }
+//
+//            @Override
+//            public void onLoadResource(WebView view, String url) {
+//                super.onLoadResource(view, url);
+//
+//                PrefUtils.saveIntegerPref(LiveClientChatActivity.this,NUMBER_OF_NOTIFICATIONS,0);
+//                notificationManager.cancelAll();
+//
+//            }
+//        });
+        progressbar.setVisibility(View.GONE);
+
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setDomStorageEnabled(true);
         webview.setWebViewClient(new WebViewClient() {
@@ -80,6 +92,8 @@ public class LiveClientChatActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
 
                 progressbar.setVisibility(View.GONE);
+                PrefUtils.saveIntegerPref(LiveClientChatActivity.this,NUMBER_OF_NOTIFICATIONS,0);
+                notificationManager.cancelAll();
 
                 super.onPageFinished(view, url);
             }
@@ -89,17 +103,21 @@ public class LiveClientChatActivity extends AppCompatActivity {
 
         String deviceId = PrefUtils.getStringPref(LiveClientChatActivity.this, DEVICE_ID);
         String title = "";
+        String subTitle = "";
 
         if (deviceId != null ) {
-            title = getResources().getString(R.string.live_client_device_id,deviceId);
+            title = getResources().getString(R.string.live_client_device_id);
+            subTitle = deviceId;
         } else {
-            title = getResources().getString(R.string.live_client_device_id,"N/A");
+            title = getResources().getString(R.string.live_client_device_id);
+            subTitle = "N/A";
 
             deviceId = DeviceIdUtils.getSerialNumber();
         }
-        url = AppConstants.CLIENT_CHAT_URL + deviceId + "&pto=true";
+        url = AppConstants.CLIENT_CHAT_URL + deviceId + "&pto=true&ptq=";
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(title);
+        getSupportActionBar().setSubtitle(subTitle);
 
 
 //        swipeRefresh.setOnRefreshListener(() -> {
