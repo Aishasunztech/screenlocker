@@ -1,5 +1,6 @@
 package com.liveClientChat;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -50,12 +51,15 @@ public class LiveClientChatActivity extends AppCompatActivity {
     private LockScreenService mService;
     private boolean isSocketConnect;
 
+    private NotificationManager notificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_client_chat);
         ButterKnife.bind(this);
         isSocketConnect = PrefUtils.getBooleanPref(this, AppConstants.CLIENT_CHAT_SOCKET);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
         webview.setWebViewClient(new WebViewClient() {
@@ -72,6 +76,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
 
                 progressbar.setVisibility(View.GONE);
                 PrefUtils.saveIntegerPref(LiveClientChatActivity.this,NUMBER_OF_NOTIFICATIONS,0);
+                notificationManager.cancelAll();
 
                 super.onPageFinished(view, url);
             }
