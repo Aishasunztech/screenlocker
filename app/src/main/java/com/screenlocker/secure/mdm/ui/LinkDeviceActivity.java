@@ -201,6 +201,9 @@ public class LinkDeviceActivity extends BaseActivity {
 
         String status = intent.getStringExtra(DEVICE_STATUS_KEY);
 
+        if (mListener != null) {
+            mListener.onScheduleTimer(false);
+        }
 
         setToolbar(toolbar);
 

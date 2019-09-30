@@ -75,8 +75,10 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
+import static com.screenlocker.secure.utils.AppConstants.OLD_DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 /**
  * application class to get the database instance
@@ -295,22 +297,25 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             }
             Timber.i("------------> Network Connected");
 
-            boolean newDeviceSatatusCheck = PrefUtils.getBooleanPref(this, NEW_DEVICE_STATUS_CHECK);
+            boolean old_device_status = PrefUtils.getBooleanPref(this, OLD_DEVICE_STATUS);
             boolean linkDeviceStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
             boolean isPendingActivation = PrefUtils.getBooleanPref(this, PENDING_ACTIVATION);
-            if (!newDeviceSatatusCheck || linkDeviceStatus || isPendingActivation) {
 
-                if (!isPendingActivation)
-                    Timber.i(newDeviceSatatusCheck ? "---------> Device is using first time. " : "----------> Device is already linked. ");
-                else
-                    Timber.i("-------------------> Device is in pending Activation state.");
 
-                if (!newDeviceSatatusCheck) {
-                    PrefUtils.saveBooleanPref(this, NEW_DEVICE_STATUS_CHECK, true);
+            Timber.i("--------------> is pending activation " + isPendingActivation);
+
+            if (!old_device_status) {
+                if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                    checkDeviceStatus();
+                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
                 }
-
+            } else if (isPendingActivation) {
+                scheduleTimer();
+            } else if (linkDeviceStatus) {
                 checkDeviceStatus();
             }
+
+
         } else {
             Timber.i("----------> Network Disconnected");
 
@@ -323,6 +328,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             } else {
                 Timber.i("--------------> Socket Service is already stopped. ");
             }
+            stopTimer();
         }
     }
 

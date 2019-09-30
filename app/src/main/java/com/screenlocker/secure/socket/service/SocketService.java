@@ -1446,6 +1446,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     @Override
     public void sendSystemEvents() {
+
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
             Timber.d("<<< SEND SYSTEM EVENTS >>>");
 
@@ -1458,6 +1459,8 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                     jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
                     jsonObject.put("object", object);
+
+                    Timber.i("OBJECT:%s", jsonObject.toString());
                     socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
                 }
 
