@@ -480,13 +480,13 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                             updatePassword(obj);
 
-                            updateSettings(obj, false);
-
                             updateExtensions(obj, false);
 
                             updateApps(obj, false);
 
                             sendAppliedStatus();
+
+                            updateSettings(obj, false);
 
                             setScreenLock();
 
@@ -1271,14 +1271,13 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                 policyResponse.onResponse(true);
                             }
 
-                            updateSettings(object, true);
-
                             updateExtensions(object, true);
 
                             updateApps(object, true);
 
                             pushPullPolicyApps(object, PUSH_APPS, "com.secure.systemcontrol.INSTALL_PACKAGES", "com.secure.systemcontrol.receivers.PackagesInstallReceiver", true);
 
+                            updateSettings(object, true);
 
                         } else {
                             if (policyResponse != null) {
