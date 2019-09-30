@@ -175,7 +175,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
     private void startService() {
         final NotificationManager mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (mNM != null) {
-            Notification notification = getNotification(this, R.drawable.sync, getAppContext().getString(R.string.device_is_connected));
+            // checking device panel
+            String panel = getResources().getString(R.string.apk_label).contains("Screen Locker") ? "LM" : "TL";
+            Notification notification = getNotification(this, R.drawable.sync, getAppContext().getString(R.string.device_is_connected) + " " + panel);
             startForeground(4577, notification);
         }
     }

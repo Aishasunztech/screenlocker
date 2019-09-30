@@ -103,9 +103,9 @@ public class AppConstants {
 
 
     //Server Links
-    public static String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
+//    public static String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
 //    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
-//    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
+    public static String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
 
     //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA
     public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Dev SA
@@ -305,23 +305,23 @@ public class AppConstants {
      * Screen Locker
      * */
 
-    public static int attempt_5 = 1000 * 60;
-    public static int attempt_6 = 1000 * 60 * 5;
-    public static int attempt_7 = 1000 * 60 * 10;
-    public static int attempt_8 = 1000 * 60 * 15;
-    public static int attempt_9 = 1000 * 60 * 30;
-    public static int attempt_10 = 1000 * 60 * 30;
+//    public static int attempt_5 = 1000 * 60;
+//    public static int attempt_6 = 1000 * 60 * 5;
+//    public static int attempt_7 = 1000 * 60 * 10;
+//    public static int attempt_8 = 1000 * 60 * 15;
+//    public static int attempt_9 = 1000 * 60 * 30;
+//    public static int attempt_10 = 1000 * 60 * 30;
 
     /*
      *Titan Locker
      * */
 
-//    public static int attempt_5 = 1000 * 60;
-//    public static int attempt_6 = 1000 * 60;
-//    public static int attempt_7 = 1000 * 60 * 3;
-//    public static int attempt_8 = 1000 * 60 * 5;
-//    public static int attempt_9 = 1000 * 60 * 5;
-//    public static int attempt_10 = 1000 * 60 * 5;
+    public static int attempt_5 = 1000 * 60;
+    public static int attempt_6 = 1000 * 60;
+    public static int attempt_7 = 1000 * 60 * 3;
+    public static int attempt_8 = 1000 * 60 * 5;
+    public static int attempt_9 = 1000 * 60 * 5;
+    public static int attempt_10 = 1000 * 60 * 5;
 
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";
