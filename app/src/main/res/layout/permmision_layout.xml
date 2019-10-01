@@ -411,7 +411,7 @@
                     <ImageView
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
-                        android:src="@drawable/ic_charging" />
+                        android:src="@drawable/ic_accessibility_permission" />
 
                     <TextView
                         style="@style/permissions_title_theme"
