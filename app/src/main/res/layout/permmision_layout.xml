@@ -49,7 +49,8 @@
                     <Switch
                         android:id="@+id/active_admin"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -95,7 +96,8 @@
                     <Switch
                         android:id="@+id/active_drawoverlay"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -143,7 +145,8 @@
                     <Switch
                         android:id="@+id/active_modify"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -191,7 +194,8 @@
                     <Switch
                         android:id="@+id/active_usage"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -238,7 +242,8 @@
                     <Switch
                         android:id="@+id/active_runtime"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -286,7 +291,8 @@
                     <Switch
                         android:id="@+id/active_unknown"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -332,7 +338,8 @@
                     <Switch
                         android:id="@+id/active_notification"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -378,7 +385,8 @@
                     <Switch
                         android:id="@+id/active_battery_optimization"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"/>
                 </LinearLayout>
 
                 <TextView
@@ -425,7 +433,8 @@
                     <Switch
                         android:id="@+id/active_accessibility"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false" />
                 </LinearLayout>
 
                 <TextView
@@ -442,6 +451,8 @@
                     android:background="@color/colorLine" />
 
             </LinearLayout>
+
+
         </LinearLayout>
         <!--Allow Usage Access-->
 
