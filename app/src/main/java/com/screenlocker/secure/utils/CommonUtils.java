@@ -462,4 +462,24 @@ public class CommonUtils {
     }
 
 
+    public static String getTimeString(long l)
+    {
+        int seconds = (int) (l / 1000);
+        int minutes = (int) Math.floor(seconds /60);
+        seconds = (int) Math.floor(seconds%60);
+        String minuteString = "" + minutes;
+        String secondString = "" + seconds;
+
+        if(minutes < 10)
+        {
+            minuteString = "0" + minuteString;
+        }
+        if(seconds<10)
+        {
+            secondString = "0" + secondString;
+        }
+
+        return minuteString + ":" + secondString;
+    }
+
 }
