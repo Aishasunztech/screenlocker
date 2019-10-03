@@ -1,6 +1,8 @@
 package com.github.fcannizzaro.materialstepper.style;
 
 
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.R;
@@ -10,9 +12,6 @@ import com.github.fcannizzaro.materialstepper.adapter.PageStateAdapter;
 import com.github.fcannizzaro.materialstepper.interfaces.Pageable;
 
 import java.util.List;
-
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 /**
  * @author Francesco Cannizzaro (fcannizzaro).

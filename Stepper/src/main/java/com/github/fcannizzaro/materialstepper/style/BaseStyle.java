@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.TypedValue;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.R;
 import com.github.fcannizzaro.materialstepper.interfaces.Stepable;
@@ -14,10 +18,6 @@ import com.github.fcannizzaro.materialstepper.util.StepUtils;
 
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 /**
  * Created by Francesco Cannizzaro on 24/12/2015.

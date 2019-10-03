@@ -2,10 +2,10 @@ package com.github.fcannizzaro.materialstepper;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+
 import com.github.fcannizzaro.materialstepper.interfaces.Nextable;
 import com.github.fcannizzaro.materialstepper.style.BaseStyle;
-
-import androidx.fragment.app.Fragment;
 
 /**
  * Created by Francesco Cannizzaro on 23/12/2015.

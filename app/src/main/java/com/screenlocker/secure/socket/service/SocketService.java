@@ -299,7 +299,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     sendExtensions();
                                 else if (!PrefUtils.getBooleanPref(SocketService.this, AppConstants.SETTINGS_SENT_STATUS))
                                     sendSettings();
-                            sendSimSettings();
                         } else Timber.e(" invalid request ");
                     } catch (Exception error) {
                         Timber.e(" JSON error : %s", error.getMessage());
@@ -1172,6 +1171,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                                     ArrayList<SimEntry> simEntries = gson.fromJson(obj.getString("entries"), new TypeToken<ArrayList<SimEntry>>() {
                                     }.getType());
+
+
+                                    try {
+                                        UnRegisterModel sims = gson.fromJson(obj.getString("unregSettings"), UnRegisterModel.class);
+                                        PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sims.isUnrGuest());
+                                        PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sims.isUnrEncrypt());
+                                        socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
+                                    } catch (JSONException e) {
+                                        Timber.e(" JSON error : %s", e.getMessage());
+                                    }
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
                                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
@@ -1186,6 +1195,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                             Timber.e(" JSON error : %s", e.getMessage());
                                         }
                                     });
+                                    sendSimSettings();
                                     break;
                                 case SIM_ACTION_UNREGISTER:
 
