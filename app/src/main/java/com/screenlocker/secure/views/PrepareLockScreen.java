@@ -55,6 +55,7 @@ import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
+import static com.screenlocker.secure.utils.CommonUtils.getTimeString;
 import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 
 /**
@@ -709,8 +710,11 @@ public class PrepareLockScreen {
             countDownTimer = new CountDownTimer(timeRemaining, 1000) {
                 @Override
                 public void onTick(long l) {
+//                    String.format("%1$tM:%1$tS", l)
 //                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
-                    String text_view_str = context.getResources().getString(R.string.incorrect_pin) + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "") + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = context.getResources().getString(R.string.incorrect_pin)
+                            + "<br><br>" + context.getResources().getString(R.string.number_of_attempts_remaining, x + "")
+                            + "<br><br>" + context.getResources().getString(R.string.next_attempt_in) + " " + "<b>" + getTimeString(l) + "</b>";
                     mPasswordField.setText(null);
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
@@ -734,6 +738,8 @@ public class PrepareLockScreen {
                     PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
                     PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
                 }
+
+
             };
         } catch (Exception ignored) {
 

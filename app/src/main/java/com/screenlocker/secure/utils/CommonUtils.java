@@ -5,13 +5,9 @@ import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,40 +16,30 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
-
-import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.service.AlarmReceiver;
-import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.model.Settings;
-import com.secureSetting.t.AppConst;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.NetworkInterface;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import javax.net.ssl.SSLHandshakeException;
+import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.AlarmReceiver;
+import com.screenlocker.secure.socket.model.Settings;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -485,6 +471,26 @@ public class CommonUtils {
         settings.add(new Settings(AppConstants.SET_SPEAKER, true));
 
         return settings;
+    }
+
+    public static String getTimeString(long l)
+    {
+        int seconds = (int) (l / 1000);
+        int minutes = (int) Math.floor(seconds /60);
+        seconds = (int) Math.floor(seconds%60);
+        String minuteString = "" + minutes;
+        String secondString = "" + seconds;
+
+        if(minutes < 10)
+        {
+            minuteString = "0" + minuteString;
+        }
+        if(seconds<10)
+        {
+            secondString = "0" + secondString;
+        }
+
+        return minuteString + ":" + secondString;
     }
 
 
