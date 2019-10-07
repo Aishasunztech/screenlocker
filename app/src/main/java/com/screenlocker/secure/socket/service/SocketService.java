@@ -175,7 +175,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     if (action.equals("extensions")) sendExtensionsWithoutIcons();
                     if (action.equals("settings"))
                         sendSettings();
-                    if (action.equals("simSettings")) sendSimSettings();
+                    if (action.equals("simSettings")) sendSimSettings(null);
                     try {
                         if (socketManager.getSocket() != null && socketManager.getSocket().connected())
                             socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
@@ -504,11 +504,16 @@ public class SocketService extends Service implements OnSocketConnectionListener
     }
 
     @Override
-    public void sendSimSettings() {
+    public void sendSimSettings(ArrayList<SimEntry> simEntries) {
         Timber.d("<<< Sending  Sim Settings >>>");
         try {
             if (socketManager.getSocket().connected()) {
                 Set<String> set = PrefUtils.getStringSet(this, DELETED_ICCIDS);
+                if (simEntries!=null){
+                    for (SimEntry simEntry : simEntries) {
+                        set.remove(simEntry.getIccid());
+                    }
+                }
                 if (set != null && set.size() > 0)
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                         JSONObject json = new JSONObject();
@@ -1195,7 +1200,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                             Timber.e(" JSON error : %s", e.getMessage());
                                         }
                                     });
-                                    sendSimSettings();
+                                    sendSimSettings(simEntries);
                                     break;
                                 case SIM_ACTION_UNREGISTER:
 

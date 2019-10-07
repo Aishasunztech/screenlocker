@@ -50,12 +50,17 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
     @BindView(R.id.tvSystemId)
     TextView tvSystemId;
+
+    @BindView(R.id.tvUserId)
+    TextView tvUserId;
+
     @BindView(R.id.tvLinkedStatus)
     TextView tvLinkedStatus;
     @BindView(R.id.tvDeviceStatus)
@@ -143,6 +148,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             swipeRefreshLayout.setRefreshing(false);
             refresh();
         });
+        tvUserId.setText(PrefUtils.getStringPref(this, USER_ID) == null ? "N/A" : PrefUtils.getStringPref(this, USER_ID));
 
         tvLinkedDealerPin.setOnClickListener(this);
         tvSimNo.setOnClickListener(this);

@@ -347,13 +347,6 @@ public class SimActivity extends BaseActivity implements AddSimDialog.OnRegister
                 }
                 break;
             case KEY_ENABLE:
-                entry.setEncrypted(isChecked);
-                entry.setGuest(isChecked);
-                entry.setEnable(isChecked);
-                if (entry.getStatus().equals(getResources().getString(R.string.status_active)) ||
-                        entry.getStatus().equals(getResources().getString(R.string.status_disabled)))
-                    if (entry.getSlotNo() == 0 || entry.getSlotNo() == 1)
-                        broadCastIntent(isChecked, entry.getSlotNo());
                 break;
         }
         viewModel.updateSimEntry(entry);

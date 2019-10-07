@@ -114,13 +114,13 @@ public class PrepareLockScreen {
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
         String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
         if (bg == null || bg.equals("")) {
-            rootView.setBackgroundResource(R.raw._1232);
+            rootView.setBackgroundResource(R.raw.s6);
 
         } else {
             try {
                 rootView.setBackgroundResource(Integer.parseInt(bg));
             } catch (RuntimeException e) {
-                rootView.setBackgroundResource(R.raw._1232);
+                rootView.setBackgroundResource(R.raw.s6);
             }
         }
 
@@ -175,6 +175,10 @@ public class PrepareLockScreen {
 
                 }
                 if (pattern.size() == 1) {
+                    if (!mPatternLockView.isNumberInputAllow()){
+                        mPatternLockView.clearPattern();
+                        return;
+                    }
                     mPasswordField.append(String.valueOf(pattern.get(0).getRandom()));
                     codeView.input(pattern.get(0).getRandom());
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
@@ -348,11 +352,11 @@ public class PrepareLockScreen {
         });
         LinearLayout supportButton = keypadView.findViewById(R.id.t9_key_support);
         TextView clearAll = keypadView.findViewById(R.id.t9_key_clear);
-        clearAll.setOnClickListener(v ->
-
-        {
+        clearAll.setOnClickListener(v -> {
             mPasswordField.setText(null);
             codeView.clearCode();
+            mPatternLockView.setNumberInputAllow(true);
+            mPatternLockView.invalidate();
         });
 
         mPasswordField.setTransformationMethod(new

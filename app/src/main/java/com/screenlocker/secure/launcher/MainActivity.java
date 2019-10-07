@@ -315,7 +315,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        background.setImageResource(R.raw._12321);
+                        background.setImageResource(R.raw._1239);
 
                     } else {
                         background.setImageResource(Integer.parseInt(bg));

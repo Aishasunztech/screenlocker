@@ -9,10 +9,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
-import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -46,6 +44,7 @@ import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class ApiUtils implements ApiRequests {
@@ -111,7 +110,7 @@ public class ApiUtils implements ApiRequests {
                             Timber.d("response :" + msg);
                             if (deviceStatusResponse.isStatus()) {
 
-                                saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin(), deviceStatusResponse.getUser_id());
 
                                 switch (msg) {
                                     case ACTIVE:
@@ -187,11 +186,13 @@ public class ApiUtils implements ApiRequests {
                 });
     }
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
         PrefUtils.saveStringPref(context, TOKEN, token);
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
+        PrefUtils.saveStringPref(context, USER_ID, userId);
         PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
+
     }
 
 }

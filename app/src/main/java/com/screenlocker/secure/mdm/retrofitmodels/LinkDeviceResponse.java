@@ -23,6 +23,8 @@ public class LinkDeviceResponse {
     @SerializedName("success")
     @Expose
     boolean success;
+    @SerializedName("user_id")
+    private String user_id;
 
     public boolean isSuccess() {
         return success;
@@ -44,5 +46,9 @@ public class LinkDeviceResponse {
 
     public String getDealer_pin() {
         return dealer_pin;
+    }
+
+    public String getUser_id() {
+        return user_id;
     }
 }

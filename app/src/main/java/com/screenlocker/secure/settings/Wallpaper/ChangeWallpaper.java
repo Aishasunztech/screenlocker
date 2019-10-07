@@ -44,6 +44,11 @@ public class ChangeWallpaper extends AppCompatActivity
         getSupportActionBar().setTitle(getResources().getString(R.string.wallpapers_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ids.add(R.raw.s1);
+        ids.add(R.raw.s2);
+        ids.add(R.raw.s3);
+        ids.add(R.raw.s5);
+        ids.add(R.raw.s7);
         ids.add(R.raw._1231);
         ids.add(R.raw._1232);
         ids.add(R.raw._1234);
@@ -96,7 +101,6 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.parrot);
         ids.add(R.drawable.default_background);
         ids.add(R.drawable.guest_space);
-        ids.add(R.raw.roses);
         ids.add(R.drawable.backgroud_test);
         ids.add(R.raw.royal_enfield);
         ids.add(R.drawable.background_icon);
@@ -108,7 +112,6 @@ public class ChangeWallpaper extends AppCompatActivity
         ids.add(R.raw.colorsexposion);
         ids.add(R.raw.greengrass);
         ids.add(R.raw.universe2);
-        ids.add(R.raw.secure_scan_screen);
         ids.add(R.raw.audiblack);
         ids.add(R.raw.blackwallpaper);
         ids.add(R.raw.bookandbloon);
