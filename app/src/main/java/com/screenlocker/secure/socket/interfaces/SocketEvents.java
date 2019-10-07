@@ -1,5 +1,8 @@
 package com.screenlocker.secure.socket.interfaces;
 
+import com.screenlocker.secure.room.SimEntry;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface SocketEvents {
@@ -16,7 +19,7 @@ public interface SocketEvents {
 
     void sendSettings();
 
-    void sendSimSettings();
+    void sendSimSettings(ArrayList<SimEntry> simEntries);
 
     void sendAppliedStatus();
 

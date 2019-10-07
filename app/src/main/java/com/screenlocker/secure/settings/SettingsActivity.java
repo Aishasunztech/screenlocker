@@ -288,9 +288,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             getSupportActionBar().setTitle(R.string.toolbar_title);
             String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
             if (deviceid != null) {
-                getSupportActionBar().setSubtitle(deviceid);
+                getSupportActionBar().setSubtitle("Device ID: "+deviceid);
             }
-            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+            //getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }
     }
 

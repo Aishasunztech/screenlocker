@@ -484,6 +484,7 @@
     <string name="live_client_device_id">Live Customer Support</string>
     <string name="service_notification_text" translatable="false">@string/app_name</string>
     <string name="device_is_connected">Device is connected to LM</string>
+    <string name="user_id">User Id:</string>
 
     <string-array name="sort">
         <item>Total</item>

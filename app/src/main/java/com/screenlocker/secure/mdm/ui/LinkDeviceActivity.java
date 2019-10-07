@@ -2,6 +2,7 @@ package com.screenlocker.secure.mdm.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -9,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.BuildConfig;
@@ -33,6 +36,7 @@ import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.Utils;
 
 import java.util.List;
 import java.util.Timer;
@@ -48,6 +52,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
+import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -62,73 +67,115 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
+import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 
 public class LinkDeviceActivity extends BaseActivity {
 
-
     private static final String TAG = LinkDeviceActivity.class.getSimpleName();
     private static final String DEALER_ID_DEFAULT = "not linked yet";
-
-    @BindView(R.id.lytSwipeReferesh)
-    SwipeRefreshLayout lytSwipeReferesh;
     @BindView(R.id.not_linked_container)
     LinearLayout notLinkedContainer;
     @BindView(R.id.linked_container)
     LinearLayout linkedContainer;
     @BindView(R.id.stop_linking_container)
     LinearLayout stopLinkingContainer;
+
+    private boolean isFirstTime = true;
+
+    @BindView(R.id.lytSwipeReferesh)
+    SwipeRefreshLayout lytSwipeReferesh;
+
+    @BindView(R.id.tvLinkedStatus)
+    TextView tvLinkedStatus;
+
+    @BindView(R.id.tvLinkedDealerPin)
+    TextView tvLinkedDealerPin;
+    String linkedDealerPin;
+    @BindView(R.id.tvCurrentDealerID)
+    TextView tvCurrentDealerID;
+    @BindView(R.id.tvDeviceId)
+    TextView tvDeviceId;
+    String currentDealerID;
+    @BindView(R.id.tvIMEI)
+    TextView tvIMEI;
+    List<String> IMEI;
+    @BindView(R.id.tvSimNo)
+    TextView tvSimNo;
+    List<String> SimNo;
+    @BindView(R.id.tvSerialNo)
+    TextView tvSerialNo;
+    String SerialNo;
+    @BindView(R.id.tvMAC)
+    TextView tvMAC;
+    String MAC;
+    @BindView(R.id.tvIP)
+    TextView tvIP;
+    String IP;
     @BindView(R.id.btnLinkDevice)
     Button btnLinkDevice;
+    @BindView(R.id.btnStopLink)
+    Button btnStopLink;
+    String connectedDid;
+    @BindView(R.id.imei2)
+    TableRow imei2;
+    @BindView(R.id.simno2)
+    TableRow simno2;
+    @BindView(R.id.tvSimNo2)
+    TextView tvSimNo2;
+    @BindView(R.id.tvIMEI2)
+    TextView tvIMEI2;
+    String defaultImei;
+
+    // Pgp Email view
+    @BindView(R.id.pgpEmail)
+    TableRow pgpEmail;
+    @BindView(R.id.tvPgpEmail)
+    TextView tvPgpEmail;
+
+    // Chat ID view
+    @BindView(R.id.chatId)
+    TableRow chatId;
+    @BindView(R.id.tvChatId)
+    TextView tvChatId;
     @BindView(R.id.tv_linked_dealerPin)
     TextView tv_label_dealer_pin;
     @BindView(R.id.tv_linked_deviceId)
     TextView tv_linked_deviceId;
-    @BindView(R.id.btnStopLink)
-    Button btnStopLink;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-
-    private boolean isFirstTime = true;
-
-    String linkedDealerPin;
-    String currentDealerID;
-    List<String> IMEI;
-    List<String> SimNo;
-
-    String SerialNo;
-
-    String MAC;
-    String IP;
-    String connectedDid;
-
+    // Sim ID view
+    @BindView(R.id.simId)
+    TableRow simId;
+    @BindView(R.id.tvSimId)
+    TextView tvSimId;
 
 
     @Override
     protected int getContentView() {
         return R.layout.activity_link_device;
     }
+
     public interface OnScheduleTimerListener {
         void onScheduleTimer(boolean state);   //method, which can have parameters
-
     }
-    public static OnScheduleTimerListener mListener; //listener field
 
+    public static OnScheduleTimerListener mListener; //listener field
 
     public LinkDeviceActivity() {
 
     }
 
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
@@ -189,6 +236,7 @@ public class LinkDeviceActivity extends BaseActivity {
         // get mac address
         MAC = DeviceIdUtils.generateUniqueDeviceId(this);
 
+        defaultImei = (IMEI.size() >= 1) ? IMEI.get(0) : "";
 
         Log.e(TAG, "init: \n" +
                 IMEI + "\n" +
@@ -206,17 +254,64 @@ public class LinkDeviceActivity extends BaseActivity {
         MAC = (MAC == null) ? "" : MAC;
         IP = (IP == null) ? "" : IP;
 
+
+        int size = (SimNo.size() >= 2) ? 2 : SimNo.size();
+
+        switch (size) {
+            case 0:
+                tvSimNo.setText("");
+                simno2.setVisibility(View.GONE);
+                break;
+            case 1:
+                tvSimNo.setText(SimNo.get(0));
+                simno2.setVisibility(View.GONE);
+                break;
+            case 2:
+                tvSimNo.setText(SimNo.get(0));
+                tvSimNo2.setText(SimNo.get(1));
+                break;
+        }
+
+        int imeiSize = (IMEI.size() >= 2) ? 2 : IMEI.size();
+
+        switch (imeiSize) {
+            case 0:
+                tvIMEI.setText("");
+                imei2.setVisibility(View.GONE);
+                break;
+            case 1:
+                tvIMEI.setText(IMEI.get(0));
+                imei2.setVisibility(View.GONE);
+                break;
+            case 2:
+                tvIMEI.setText(IMEI.get(0));
+                tvIMEI2.setText(IMEI.get(1));
+                break;
+        }
+
+
+        tvCurrentDealerID.setText(currentDealerID);
+
+
+        tvSerialNo.setText(SerialNo);
+        tvMAC.setText(MAC);
+        tvIP.setText(IP);
         lytSwipeReferesh.setOnRefreshListener(listener);
 
 
     }
 
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
         PrefUtils.saveStringPref(LinkDeviceActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, USER_ID, userId);
+    }
+
+    private void setDealerPin(String id_or_msg) {
+        tvLinkedDealerPin.setText(id_or_msg);
     }
 
     @OnClick(R.id.btnLinkDevice)
@@ -273,6 +368,7 @@ public class LinkDeviceActivity extends BaseActivity {
                             if (ldr.isStatus()) {
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
                                 PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, USER_ID, ldr.getUser_id());
                                 pendingLinkViewState();
                             } else {
                                 Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
@@ -355,19 +451,26 @@ public class LinkDeviceActivity extends BaseActivity {
 
     private void newLinkViewState() {
         isPendingActivation = false;
+        setDealerPin(getResources().getString(R.string.not_linked_yet));
         btnLinkDevice.setText(R.string.link_device);
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnLinkDevice.setEnabled(true);
         btnStopLink.setVisibility(View.GONE);
+        tvLinkedStatus.setText(R.string.device_not_linked);
+        tvLinkedStatus.setTextColor(Color.RED);
+        tvLinkedStatus.setVisibility(View.VISIBLE);
+        tvDeviceId.setText("");
 
         if (t != null) {
             t.cancel();
             t = null;
         }
+
+        setProgressViews(false);
     }
 
-    boolean linked = false;
 
+    boolean linked = false;
 
     @Override
     public void onBackPressed() {
@@ -378,6 +481,7 @@ public class LinkDeviceActivity extends BaseActivity {
         }
 
     }
+
 
     private AsyncCalls asyncCalls;
 
@@ -417,7 +521,6 @@ public class LinkDeviceActivity extends BaseActivity {
     };
 
 
-
     private void checkDeviceStatus() {
 
         MyApplication.oneCaller
@@ -437,32 +540,33 @@ public class LinkDeviceActivity extends BaseActivity {
                                 switch (msg) {
                                     case ACTIVE:
                                         DeviceStatusResponse deviceStatusResponse = response.body();
-                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin(), deviceStatusResponse.getUser_id());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case PENDING:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         finishedRefreshing();
                                         pendingLinkViewState();
                                         break;
@@ -470,9 +574,11 @@ public class LinkDeviceActivity extends BaseActivity {
                             } else {
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case NEW_DEVICE:
+                                        isPendingActivation = false;
                                         if (isLinked) {
                                             utils.unlinkDevice(LinkDeviceActivity.this, false);
                                             finish();
@@ -481,15 +587,19 @@ public class LinkDeviceActivity extends BaseActivity {
                                         }
                                         break;
                                     case DUPLICATE_MAC:
+                                        isPendingActivation = false;
 //                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
+                                        isPendingActivation = false;
 //                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
                                         break;
                                     case DEALER_NOT_FOUND:
+                                        isPendingActivation = false;
 //                                            showMainContent();
                                         break;
                                 }
@@ -505,34 +615,41 @@ public class LinkDeviceActivity extends BaseActivity {
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        isPendingActivation = false;
                     }
                 });
     }
 
+
     boolean isPendingActivation = false;
 
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        closeTimer();
+//    }
 
+    private void closeTimer() {
         if (t != null) {
             t.cancel();
             t = null;
         }
         PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
 
-        if (isPendingActivation) {
-            if (mListener != null)
-                mListener.onScheduleTimer(true);
-        } else {
-            if (mListener != null) {
-                mListener.onScheduleTimer(false);
-            }
-        }
-    }
-    private Timer t;
+        if (mListener != null)
+            mListener.onScheduleTimer(isPendingActivation);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        closeTimer();
+    }
+
+    private Timer t;
 
     private void scheduleTimer() {
 
@@ -566,17 +683,38 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.textView)
+    TextView progressTextView;
+
+    private void setProgressViews(boolean status) {
+
+        if (status) {
+            progressBar.setVisibility(View.INVISIBLE);
+            progressTextView.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+            progressTextView.setVisibility(View.INVISIBLE);
+        }
+    }
 
     private void pendingLinkViewState() {
         scheduleTimer();
         isPendingActivation = true;
+        setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);
         btnStopLink.setVisibility(View.VISIBLE);
         btnStopLink.setEnabled(true);
+        tvLinkedStatus.setText(R.string.link_request_pending);
+        tvLinkedStatus.setTextColor(Color.BLUE);
+        tvLinkedStatus.setVisibility(View.VISIBLE);
+        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 
         showContainer(1);
 
+        setProgressViews(true);
     }
 
     /**
@@ -588,10 +726,14 @@ public class LinkDeviceActivity extends BaseActivity {
             t.cancel();
             t = null;
         }
+        setProgressViews(false);
 
         btnLinkDevice.setEnabled(false);
         btnLinkDevice.setVisibility(View.VISIBLE);
         btnStopLink.setVisibility(View.GONE);
+        tvLinkedStatus.setText(R.string.link_request_pending);
+        tvLinkedStatus.setTextColor(Color.BLUE);
+        tvLinkedStatus.setVisibility(View.INVISIBLE);
     }
 
     private void processingUnlinkViewState() {
@@ -604,6 +746,9 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setEnabled(false);
         btnStopLink.setVisibility(View.VISIBLE);
+        tvLinkedStatus.setText(R.string.link_request_pending);
+        tvLinkedStatus.setTextColor(Color.BLUE);
+        tvLinkedStatus.setVisibility(View.INVISIBLE);
 
         showContainer(0);
     }
@@ -611,6 +756,7 @@ public class LinkDeviceActivity extends BaseActivity {
     private void freshViewState() {
         btnLinkDevice.setVisibility(View.INVISIBLE);
         btnStopLink.setVisibility(View.INVISIBLE);
+        tvLinkedStatus.setVisibility(View.INVISIBLE);
 
     }
 
@@ -623,6 +769,7 @@ public class LinkDeviceActivity extends BaseActivity {
         }
         isPendingActivation = false;
 
+        setProgressViews(false);
 
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
         String serialNo = DeviceIdUtils.getSerialNumber();
@@ -637,13 +784,38 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setText(getResources().getString(R.string.next));
         btnLinkDevice.setEnabled(false);
         linked = true;
+        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
 
         String dealerPin = PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED);
         if (dealerPin != null) {
-            tv_label_dealer_pin.setText(String.format("%s: %s", getResources().getString(R.string.dealer_pin), dealerPin));
-            tv_linked_deviceId.setText(String.format("%s: %s", getResources().getString(R.string.device_id), PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
+
+            tvLinkedDealerPin.setText(dealerPin);
+            tv_label_dealer_pin.setText(getResources().getString(R.string.dealer_pin) + ": " + dealerPin);
+            tv_linked_deviceId.setText("Device ID: "+PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
         }
 
+
+        tvLinkedStatus.setText(R.string.device_already_linked);
+        tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
+        tvLinkedStatus.setVisibility(View.VISIBLE);
+        // pgp Email
+        String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
+        if (pgp_Email != null) {
+            pgpEmail.setVisibility(View.VISIBLE);
+            tvPgpEmail.setText(pgp_Email);
+        }
+        // chat ID
+        String chat_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, CHAT_ID);
+        if (chat_Id != null) {
+            chatId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chat_Id);
+        }
+        // sim ID
+        String sim_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, SIM_ID);
+        if (sim_Id != null) {
+            simId.setVisibility(View.VISIBLE);
+            tvChatId.setText(chat_Id);
+        }
         showContainer(2);
     }
 
@@ -675,6 +847,90 @@ public class LinkDeviceActivity extends BaseActivity {
         if (!(LinkDeviceActivity.this.isDestroyed() || LinkDeviceActivity.this.isFinishing()) && lytSwipeReferesh.isRefreshing()) {
             lytSwipeReferesh.setRefreshing(false);
         }
+    }
+
+    @OnClick(R.id.tvDeviceId)
+    public void copyDeviceId() {
+        String copied = tvDeviceId.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvDeviceId.getText().toString().substring(1, tvDeviceId.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "DeviceId copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvLinkedDealerPin)
+    public void copyDealerPin() {
+        String copied = tvLinkedDealerPin.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvLinkedDealerPin.getText().toString().substring(1, tvLinkedDealerPin.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "DealerPin copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvIMEI)
+    public void copyIMEI1() {
+        String copied = tvIMEI.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvIMEI.getText().toString().substring(1, tvIMEI.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "IMEI copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvSimNo)
+    public void copytvSimNo() {
+        String copied = tvSimNo.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvSimNo.getText().toString().substring(1, tvSimNo.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "Sim No copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvIMEI2)
+    public void copytvIMEI2() {
+        String copied = tvIMEI2.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvIMEI2.getText().toString().substring(1, tvIMEI2.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "IMEI copied to clipboard");
+        }
+    }
+
+
+    @OnClick(R.id.tvSerialNo)
+    public void copytvSerialNo() {
+        String copied = tvSerialNo.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvSerialNo.getText().toString().substring(1, tvSerialNo.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "Serial copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvSimNo2)
+    public void copytvSimNo2() {
+        String copied = tvSimNo2.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvSimNo2.getText().toString().substring(1, tvSimNo2.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "Sim No copied to clipboard");
+        }
+    }
+
+    @OnClick(R.id.tvMAC)
+    public void copytvMAC() {
+        String copied = tvMAC.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvMAC.getText().toString().substring(1, tvMAC.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "MAC copied to clipboard");
+        }
+
+    }
+
+    @OnClick(R.id.tvIP)
+    public void copytvIP() {
+        String copied = tvIP.getText().toString();
+        if (copied.length() > 0) {
+            String linkText = tvIP.getText().toString().substring(1, tvIP.getText().toString().length() - 1);
+            Utils.copyToClipBoard(this, AppConstants.COPIED_URL, linkText, "IP address copied to clipboard");
+        }
+
     }
 
 
