@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Projects-screenlocker.iml" filepath="$PROJECT_DIR$/Projects-screenlocker.iml" />
       <module fileurl="file://$PROJECT_DIR$/Stepper/Stepper.iml" filepath="$PROJECT_DIR$/Stepper/Stepper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chatkit/chatkit.iml" filepath="$PROJECT_DIR$/chatkit/chatkit.iml" />
       <module fileurl="file://$PROJECT_DIR$/commons/commons.iml" filepath="$PROJECT_DIR$/commons/commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/screenlocker.iml" filepath="$PROJECT_DIR$/screenlocker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stepper/screenlocker-Stepper.iml" filepath="$PROJECT_DIR$/Stepper/screenlocker-Stepper.iml" />
       <module fileurl="file://$PROJECT_DIR$/sfm/sfm.iml" filepath="$PROJECT_DIR$/sfm/sfm.iml" />
     </modules>
   </component>
