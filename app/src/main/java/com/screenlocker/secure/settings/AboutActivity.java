@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,11 +86,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.tvSimId)
     TextView tvSimId;
     @BindView(R.id.chatId)
-    TableRow chatId;
+    LinearLayout chatId;
     @BindView(R.id.dividerChatId)
     View dividerChatId;
     @BindView(R.id.simId)
-    TableRow simId;
+    LinearLayout simId;
     @BindView(R.id.dividerSimId)
     View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
