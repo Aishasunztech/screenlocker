@@ -46,6 +46,7 @@ public class ChangeWallpaper extends AppCompatActivity
 
         ids.add(R.raw.s1);
         ids.add(R.raw.s2);
+        ids.add(R.raw.j6);
         ids.add(R.raw.s3);
         ids.add(R.raw.s5);
         ids.add(R.raw.s7);

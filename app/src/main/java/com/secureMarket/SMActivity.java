@@ -242,20 +242,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 fragment1.onDownLoadProgress(pn, progress, speed);
             }
         }
-
-//        int index = IntStream.range(0, unInstalledApps.size())
-//                .filter(i -> Objects.nonNull(unInstalledApps.get(i)))
-//                .filter(i -> pn.equals(unInstalledApps.get(i).getPackageName()))
-//                .findFirst()
-//                .orElse(-1);
-//        if (index != -1) {
-//            ServerAppInfo info = unInstalledApps.get(index);
-//            info.setProgres(progress);
-//            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
-//            info.setSpeed(speed);
-//            uninstalledAdapter.updateProgressOfItem(info, index);
-//        }
-
     }
 
     @Override
@@ -593,8 +579,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
             Set<String> packages = new HashSet<>();
             packages.add(MyApplication.getAppContext().getPackageName());
-            packages.add("com.vortexlocker.app");
-            packages.add("com.rim.mobilefusion.client");
             packages.add("com.secure.systemcontrol");
             String userSpace = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
 
