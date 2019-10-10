@@ -115,7 +115,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
         networkChangeReceiver = new NetworkChangeReceiver();
         networkChangeReceiver.setNetworkChangeListener(this);
-        LinkDeviceActivity.mListener = this;
+
+        if (LinkDeviceActivity.mListener == null)
+            LinkDeviceActivity.mListener = this;
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
@@ -334,7 +336,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 if (linkStatus) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 } else if (pendingActivation) {
-                    scheduleTimer();
+                    if (!isFirst)
+                        scheduleTimer();
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
 //                checkForDownload();
@@ -347,7 +350,11 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     private Timer timer;
 
+    private boolean isFirst = false;
+
     private void scheduleTimer() {
+
+        isFirst = true;
 
         if (timer != null) {
             timer.cancel();

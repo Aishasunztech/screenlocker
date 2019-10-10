@@ -28,7 +28,6 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
-import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.utils;
 
@@ -234,7 +233,7 @@ public class Utils {
         packageInstaller.uninstall(packageName, i.getIntentSender());
     }
 
-    public static boolean installSielentInstall(Context context, InputStream in, String packageName)
+    public static void installSielentInstall(Context context, InputStream in, String packageName)
             throws IOException {
 
         PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
@@ -257,7 +256,6 @@ public class Utils {
         out.close();
 
         session.commit(createIntentSender(context, sessionId, packageName));
-        return true;
 
     }
 
