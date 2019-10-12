@@ -679,6 +679,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         suspendedDevice(SocketService.this, "flagged");
                                         break;
 
+                                    case "transfered":
+                                        suspendedDevice(SocketService.this, "transfered");
+                                        break;
+
+
                                 }
                             }
 

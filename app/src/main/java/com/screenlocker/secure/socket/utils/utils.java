@@ -654,6 +654,11 @@ public class utils {
             case "flagged":
                 PrefUtils.saveStringPref(context, DEVICE_STATUS, "flagged");
                 break;
+
+            case "transfered":
+                PrefUtils.saveStringPref(context, DEVICE_STATUS, "transfered");
+                break;
+
         }
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);

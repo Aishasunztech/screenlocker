@@ -667,6 +667,10 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     case "flagged":
                         startLockScreen(true);
                         break;
+                    case "transfered":
+                        startLockScreen(true);
+                        break;
+
                     case "lockedFromsim":
                         startLockScreen(false);
                     case "add":

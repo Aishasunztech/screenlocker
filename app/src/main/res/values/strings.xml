@@ -299,6 +299,7 @@
     <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
     <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
     <string name="account_device_id_unlinked">Your device ID = %1$s is unlinked, please contact support below.</string>
+    <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
     <string name="account_device_id_flagged">This Device is Flagged, contact support.</string>
     <string name="not_linked_yet">not linked yet</string>
     <string name="link_status">Link Status</string>

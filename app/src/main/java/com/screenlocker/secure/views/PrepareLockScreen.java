@@ -304,6 +304,18 @@ public class PrepareLockScreen {
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
                     mPatternLockView.setInputEnabled(false);
+                }else if(status.equals("transfered"))
+                {
+                    if (dev_id != null) {
+                        txtWarning.setVisibility(VISIBLE);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, dev_id));
+                        mPatternLockView.setInputEnabled(false);
+                    } else {
+                        txtWarning.setVisibility(VISIBLE);
+                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, "N/A"));
+                        mPatternLockView.setInputEnabled(false);
+                    }
+
                 }
 
 
