@@ -654,6 +654,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     case "flagged":
                         startLockScreen(true);
                         break;
+                    case "transfered":
+                        startLockScreen(true);
+                        break;
                     case "reboot":
                         startLockScreen(false);
                         break;
