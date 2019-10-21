@@ -102,8 +102,8 @@ public class AppConstants {
 
 
     //Server Links
-    public static String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
-//    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
+//    public static String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
+    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/api/v2/mobile/";// Dev SL
 //    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
 
     //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA

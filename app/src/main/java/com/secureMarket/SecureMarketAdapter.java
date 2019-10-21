@@ -86,7 +86,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
 
         Glide.with(context)
-                .load(live_url.replaceAll("/mobile/", "") + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo())
+                .load(live_url.replaceAll("/api/v2/mobile/", "") + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo())
                 .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
                 .into(holder.imageView);
 

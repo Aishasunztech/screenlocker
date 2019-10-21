@@ -75,6 +75,8 @@ import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
@@ -340,7 +342,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 //        progressBar.setVisibility(View.GONE);
         apiOneCaller
-                .getAllApps("marketApplist/" + dealerId)
+                .getAllApps("marketApplist/" + dealerId + "/" +currentSpace())
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -451,10 +453,20 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     private boolean isFailSafe = false;
 
+
+    private String currentSpace()
+    {
+        String space = PrefUtils.getStringPref(this,CURRENT_KEY);
+        if (KEY_MAIN_PASSWORD.equals(space)) {
+            return "encrypted";
+        }
+        return "guest";
+    }
+
     private void getAdminApps(ApiOneCaller apiOneCaller) {
 
         apiOneCaller
-                .getAdminApps()
+                .getAdminApps(currentSpace())
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
