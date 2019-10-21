@@ -3,6 +3,7 @@ package com.screenlocker.secure.settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -135,6 +136,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView tvlinkDevice;
 
     private Dialog aboutDialog = null, accountDialog = null;
+
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            finish();
+        }
+
+    };
 
     @Override
     protected void onStart() {

@@ -128,7 +128,7 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/api/v1/mobile/";
+    public static final String MOBILE_END_POINT = "/api/v2/mobile/";
 
     //available live host
     public static final String LIVE_URL = "live_url";

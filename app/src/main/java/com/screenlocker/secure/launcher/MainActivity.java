@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +23,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -199,7 +202,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             Instrumentation m_Instrumentation = new Instrumentation();
-            m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+            try{
+                m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+
+            }catch (Exception e)
+            {
+                Timber.e(e.toString());
+            }
 
         });
 

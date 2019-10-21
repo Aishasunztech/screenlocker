@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
@@ -36,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -77,8 +79,10 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_IS_PACKAGE_INSTALLED;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
@@ -88,7 +92,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 
-public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
+public class SMActivity extends BaseActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
 
     private LockScreenService mService = null;
     private AsyncCalls asyncCalls;
@@ -98,6 +102,14 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private List<ServerAppInfo> installedInfo = new ArrayList<>();
     private SharedViwModel sharedViwModel;
     private MainMarketPagerAdapter sectionsPagerAdapter;
+
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            finish();
+        }
+
+    };
 
     //
 
@@ -117,6 +129,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // setup view model
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
+
+
 
         sectionsPagerAdapter = new MainMarketPagerAdapter(this, getSupportFragmentManager());
 
@@ -348,7 +365,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 //        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
-                .getAllApps(SM_END_POINT + dealerId)
+                .getAllApps(SM_END_POINT + dealerId +"/" +currentSpace())
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -390,6 +407,16 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 });
 
     }
+
+    private String currentSpace()
+    {
+        String space = PrefUtils.getStringPref(this,CURRENT_KEY);
+        if (KEY_MAIN_PASSWORD.equals(space)) {
+            return "encrypted";
+        }
+        return "guest";
+    }
+
 
     private void setupApps(@NonNull Response<InstallAppModel> response) {
         Map<String, DownloadStatusCls> map = null;
@@ -446,7 +473,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private void getAdminApps() {
 //        progressBar.setVisibility(View.VISIBLE);
         MyApplication.oneCaller
-                .getAdminApps()
+                .getAdminApps(currentSpace())
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -580,7 +607,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             Set<String> packages = new HashSet<>();
             packages.add(MyApplication.getAppContext().getPackageName());
             packages.add("com.secure.systemcontrol");
-            String userSpace = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
+            String userSpace = PrefUtils.getStringPref(this, CURRENT_KEY);
 
             if (!packages.contains(app.getPackageName())) {
                 try {
