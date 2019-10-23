@@ -62,6 +62,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.secureMarket.SMActivity;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -72,6 +73,7 @@ import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
 import com.tonyodev.fetch2core.Extras;
+import com.tonyodev.fetch2core.Func;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -103,6 +105,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
@@ -177,12 +180,13 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
             try {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null) {
 
-                            installAppListener.downloadComplete(path, packageName);
+                            installAppListener.downloadComplete(path, packageName,space);
                         } else {
                             Uri uri = Uri.fromFile(new File(path));
 //                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
@@ -190,7 +194,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                         break;
                     case EXTRA_MARKET_FRAGMENT:
                         if (marketDoaLoadLister != null)
-                            marketDoaLoadLister.downloadComplete(path, packageName);
+                            marketDoaLoadLister.downloadComplete(path, packageName,space);
                         else {
                             Uri uri = Uri.fromFile(new File(path));
 //                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
@@ -266,15 +270,16 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
             }
         }
@@ -552,7 +557,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     AppExecutor appExecutor;
 
-    public void startDownload(String url, String filePath, String packageName, String type) {
+    public void startDownload(String url, String filePath, String packageName, String type,String space) {
 
         Timber.i("URL %s: ", url);
 
@@ -564,6 +569,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
+        map.put(EXTRA_SPACE,space);
         Extras extras = new Extras(map);
         request.setExtras(extras);
 
@@ -575,6 +581,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             //An error occurred enqueuing the request.
         });
     }
+
 
 
     public void cancelDownload() {

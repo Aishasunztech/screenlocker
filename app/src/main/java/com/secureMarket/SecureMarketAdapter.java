@@ -176,6 +176,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
 
                         new Thread(() -> {
                             boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
+
                             AppExecutor.getInstance().getMainThread().execute(() -> {
                                 if (isGuest) {
                                     if (app.getIs_restrict_uninstall() == 0) {

@@ -60,11 +60,13 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
+import static com.screenlocker.secure.utils.CommonUtils.currentSpace;
 import static com.secureMarket.MarketUtils.savePackages;
 
 
@@ -378,25 +380,25 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
 
-
-        int index = IntStream.range(0, appModelServerAppInfo.size())
-                .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
-                .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
-                .findFirst()
-                .orElse(-1);
-        if (index != -1) {
-            ServerAppInfo info = appModelServerAppInfo.get(index);
-            info.setProgres(progress);
-            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
-            info.setSpeed(speed);
-            mAdapter.updateProgressOfItem(info, index);
+            int index = IntStream.range(0, appModelServerAppInfo.size())
+                    .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
+                    .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
+                    .findFirst()
+                    .orElse(-1);
+            if (index != -1) {
+                ServerAppInfo info = appModelServerAppInfo.get(index);
+                info.setProgres(progress);
+                info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
+                info.setSpeed(speed);
+                mAdapter.updateProgressOfItem(info, index);
+            }
         }
-    }
+
 
     @Override
-    public void downloadComplete(String filePath, String pn) {
+    public void downloadComplete(String filePath, String pn,String space) {
         int index = IntStream.range(0, appModelServerAppInfo.size())
                 .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
@@ -408,7 +410,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             mAdapter.updateProgressOfItem(info, index);
         }
         if (!filePath.equals("") && !pn.equals("")) {
-            showInstallDialog(new File(filePath), pn);
+            showInstallDialog(new File(filePath), pn,space);
         }
     }
 
@@ -443,13 +445,13 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     }
 
-    private void showInstallDialog(File file, String packageName) {
+    private void showInstallDialog(File file, String packageName,String space) {
 
         try {
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
 //            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
             String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-            savePackages(packageName, INSTALLED_PACKAGES, userType, this);
+            savePackages(packageName, INSTALLED_PACKAGES, space, this);
 
             Intent intent = ShareCompat.IntentBuilder.from(this)
                     .setStream(uri) // uri from FileProvider
@@ -490,19 +492,19 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP);
+                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
 
             }
 
         } else {
             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
             if (file_size >= (101 * 1024)) {
-                showInstallDialog(new File(fileName), app.getPackageName());
+                showInstallDialog(new File(fileName), app.getPackageName(),currentSpace(InstallAppsActivity.this));
             } else {
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP);
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
 
                 }
             }
