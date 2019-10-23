@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -21,17 +22,18 @@ import androidx.room.Room;
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
+import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
@@ -70,7 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_2;
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, LinkDeviceActivity.OnScheduleTimerListener {
+public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener, InternetConnectivityListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -86,7 +88,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     private static Context appContext;
 
-    private NetworkChangeReceiver networkChangeReceiver;
     private MyAlarmBroadcastReceiver myAlarmBroadcastReceiver;
 
     public MyApplication() {
@@ -107,19 +108,22 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         appContext = getApplicationContext();
 
-        networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
+        InternetAvailabilityChecker.init(this);
+
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
 
         if (LinkDeviceActivity.mListener == null)
             LinkDeviceActivity.mListener = this;
 
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
 
 
@@ -266,31 +270,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     @Override
     public void onTerminate() {
         unregisterReceiver(appsStatusReceiver);
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
         unregisterReceiver(myAlarmBroadcastReceiver);
+        mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
         super.onTerminate();
-    }
-
-
-    @Override
-    public void isConnected(boolean state) {
-
-        Timber.d("STATUS :" + state);
-
-
-        if (state) {
-            onlineConnection();
-        } else {
-            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
-                Intent intent = new Intent(this, SocketService.class);
-                stopService(intent);
-            }
-            if (timer != null) {
-                timer.cancel();
-                timer = null;
-            }
-        }
     }
 
     private AsyncCalls asyncCalls;
@@ -469,11 +451,30 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     @Override
     public void onScheduleTimer(boolean state) {
-        Timber.d("zklvnsdfvnsdklfsdfg" + state);
         if (state) {
             scheduleTimer();
         } else {
             stopTimer();
+        }
+    }
+
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+
+        Timber.d("STATUS :" + isConnected);
+
+
+        if (isConnected) {
+            onlineConnection();
+        } else {
+            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+                Intent intent = new Intent(this, SocketService.class);
+                stopService(intent);
+            }
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
         }
     }
 }

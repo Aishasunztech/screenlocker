@@ -115,7 +115,7 @@ public class AppConstants {
 //        public static String URL_1 = "https://api.lockmesh.com";//live SL
     public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.18.69:3000";//local
+//    public static String URL_1 = "http://192.168.0.169:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain

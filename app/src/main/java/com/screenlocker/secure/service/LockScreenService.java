@@ -44,9 +44,10 @@ import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -98,6 +99,9 @@ import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
@@ -122,7 +126,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener {
+public class LockScreenService extends Service implements InternetConnectivityListener {
 
 
     private SharedPreferences sharedPref;
@@ -141,7 +145,6 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     private boolean viewAdded = false;
     private View view;
 
-    private NetworkChangeReceiver networkChangeReceiver;
 
     private SocketManager socketManager;
     /* Downloader used for SM app to download applications in background*/
@@ -242,6 +245,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
 
         }
+
 
         @Override
         public void onDownloadBlockUpdated(@NotNull Download download, @NotNull DownloadBlock downloadBlock, int i) {
@@ -347,18 +351,10 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     };
     private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
 
-    @Override
-    public void isConnected(boolean state) {
-        if (!state) {
-            destroyClientChatSocket();
-        } else {
-            connectClientChatSocket();
-        }
-
-    }
 
     public void destroyClientChatSocket() {
-        socketManager.destroyClientChatSocket();
+        if (socketManager != null)
+            socketManager.destroyClientChatSocket();
     }
 
     public void connectClientChatSocket() {
@@ -370,7 +366,17 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             deviceId = DeviceIdUtils.getSerialNumber();
         }
         Log.d("lkashdf", deviceId);
-        socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
+        if (socketManager != null)
+            socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
+    }
+
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        if (!isConnected) {
+            destroyClientChatSocket();
+        } else {
+            connectClientChatSocket();
+        }
     }
 
 
@@ -382,9 +388,16 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     }
 
 
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
+
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
+
+
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
         broadCastIntentForActivatingAdmin();
@@ -471,12 +484,6 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
         // Whitelist two apps.
-
-
-        networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
-
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
 
 // ...
@@ -615,6 +622,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
+            mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
@@ -651,6 +659,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     case "expired":
                     case "unlinked":
                     case "locked":
+                    case DUPLICATE_MAC:
+                    case DUPLICATE_SERIAL:
+                    case DUPLICATE_MAC_AND_SERIAL:
                     case "flagged":
                         startLockScreen(true);
                         break;
@@ -698,12 +709,17 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                         params = PrepareLockScreen.getParams(this, mLayout);
                     }
                     windowManager.addView(mLayout, params);
-                    //clear home with our app to front
-                    Instrumentation m_Instrumentation = new Instrumentation();
-                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-                    });
+                    try {
+                        //clear home with our app to front
+                        Instrumentation m_Instrumentation = new Instrumentation();
+                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                            m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
+
+                        });
+                    } catch (Exception ignored) {
+                    }
+
                     PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
                 }
 

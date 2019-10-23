@@ -20,8 +20,10 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
+import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -107,7 +109,7 @@ public class SocketManager {
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
                 opts.secure = true;
-                opts.query = "device_id=" + device_id + "&token=" + token;
+                opts.query = "device_id=" + device_id + "&token=" + token ;
 
                 socket = IO.socket(url, opts);
 
@@ -160,23 +162,23 @@ public class SocketManager {
         try {
             if (clientChatSocket == null) {
                 IO.Options opts = new IO.Options();
-                opts.reconnectionDelay =  60 * 60 * 1000L;
+                opts.reconnectionDelay = 60 * 60 * 1000L;
 //                opts.reconnectionDelay = 5000;
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
                 opts.secure = true;
-                opts.query = "device_id=" + device_id ;
+                opts.query = "device_id=" + device_id;
 
 
                 clientChatSocket = IO.socket(url, opts);
 
                 clientChatSocket.on(Socket.EVENT_CONNECT, args -> {
                     Timber.i("clientChatSocket connected");
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,true);
+                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
 
-                    notify = device_id ;
-                    clientChatSocket.on(notify,args1 -> {
+                    notify = device_id;
+                    clientChatSocket.on(notify, args1 -> {
                         AppExecutor.getInstance().getMainThread().execute(new Runnable() {
                             @Override
                             public void run() {
@@ -185,9 +187,9 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(getAppContext(),IS_LIVE_CLIENT_VISIBLE);
+                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(getAppContext(), IS_LIVE_CLIENT_VISIBLE);
                                     JSONObject data = (JSONObject) args1[1];
-                                    if(!data.getString("msg").equals("")) {
+                                    if (!data.getString("msg").equals("")) {
                                         if (!isLiveActivityVisible) {
                                             notification = new NotificationCompat.Builder(getAppContext(), MyApplication.CHANNEL_1_ID)
                                                     .setContentText("")
@@ -199,8 +201,8 @@ public class SocketManager {
 
 
                                             notificationManager.notify((int) System.currentTimeMillis(), notification);
-                                            int numberOfNotifications = PrefUtils.getIntegerPref(getAppContext(),NUMBER_OF_NOTIFICATIONS);
-                                            PrefUtils.saveIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS,++numberOfNotifications);
+                                            int numberOfNotifications = PrefUtils.getIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS);
+                                            PrefUtils.saveIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS, ++numberOfNotifications);
 
                                         } else {
 
@@ -215,14 +217,12 @@ public class SocketManager {
                                                     new Handler().postDelayed(() -> {
                                                         toneGen1.release();
                                                         toneGen1 = null;
-                                                    },500);
+                                                    }, 500);
                                                 }
                                             }, 2000);
                                         }
                                     }
-                                }
-                                catch (JSONException e)
-                                {
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -242,19 +242,17 @@ public class SocketManager {
                         clientChatSocket.disconnect();
                 }).on(Socket.EVENT_DISCONNECT, args -> {
                     Log.e(TAG, "clientChatSocket disconnect event");
-                    if(clientChatSocket != null)
-                    {
+                    if (clientChatSocket != null) {
                         clientChatSocket.off(notify);
                     }
 
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET,false);
+                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
                         final String error = (String) args[0];
                         Log.e(TAG + " error EVENT_ERROR ", error);
                         if (error.contains("Unauthorized") && !clientChatSocket.connected()) {
-
                         }
                     } catch (Exception e) {
                         Timber.e(e.getMessage() != null ? e.getMessage() : "");
@@ -303,9 +301,8 @@ public class SocketManager {
         });
     }
 
-    public void destroyClientChatSocket()
-    {
-        if(clientChatSocket != null) {
+    public void destroyClientChatSocket() {
+        if (clientChatSocket != null) {
             clientChatSocket.off(notify);
             clientChatSocket.disconnect();
             clientChatSocket.close();
@@ -424,8 +421,6 @@ public class SocketManager {
             }
         }
     }
-
-
 
 
 }

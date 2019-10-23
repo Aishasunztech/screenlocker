@@ -275,7 +275,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Timber.d("status from MDM :%s",msg);
+                            Timber.d("status from MDM :%s", msg);
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
 
@@ -323,7 +323,9 @@ public class MainActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, response.body().getDevice_id());
                                 switch (msg) {
+
                                     case UNLINKED_DEVICE:
                                         showMainContent();
                                         //stop sevice
@@ -511,7 +513,7 @@ public class MainActivity extends BaseActivity {
         } else if (type == 2) {
 
             MyApplication.oneCaller
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP,getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME))
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {

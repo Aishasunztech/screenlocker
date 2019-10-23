@@ -42,8 +42,9 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -100,8 +101,9 @@ import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
-    private NetworkChangeReceiver networkChangeReceiver;
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, InternetConnectivityListener {
+
+    private InternetAvailabilityChecker internetAvailabilityChecker;
 
     private Toolbar mToolbar;
     /**
@@ -148,16 +150,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
-
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        networkChangeReceiver.setNetworkChangeListener(this);
+        internetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        internetAvailabilityChecker.addInternetConnectivityListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
+        internetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
     }
 
 
@@ -166,19 +166,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
-
         ButterKnife.bind(this);
-        networkChangeReceiver = new NetworkChangeReceiver();
-
-//        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
-
-
         init();
         tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
@@ -297,7 +289,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             getSupportActionBar().setTitle(R.string.toolbar_title);
             String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
             if (deviceid != null) {
-                getSupportActionBar().setSubtitle("Device ID: "+deviceid);
+                getSupportActionBar().setSubtitle("Device ID: " + deviceid);
             }
             //getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }
@@ -417,7 +409,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             .setNegativeButton(R.string.cancel, (dialog, which) -> {
                                 dialog.dismiss();
                             }).show();
-                }else {
+                } else {
                     proccedToDownload();
                 }
             } else {
@@ -682,31 +674,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-
-    @Override
-    public void isConnected(boolean state) {
-
-        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-
-            Intent intent = new Intent(this, SocketService.class);
-            if (state) {
-                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                String serialNo = DeviceIdUtils.getSerialNumber();
-                if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
-                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
-                }
-            } else {
-                stopService(intent);
-
-            }
-
-        }
-    }
-
-
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 
@@ -798,4 +767,23 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+
+        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
+
+            Intent intent = new Intent(this, SocketService.class);
+            if (isConnected) {
+                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                String serialNo = DeviceIdUtils.getSerialNumber();
+                if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
+                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                }
+            } else {
+                stopService(intent);
+
+            }
+
+        }
+    }
 }

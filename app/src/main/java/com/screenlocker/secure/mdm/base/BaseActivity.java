@@ -4,12 +4,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.ViewGroup;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
+import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
+
 
 import butterknife.ButterKnife;
 
@@ -21,20 +26,20 @@ import static com.screenlocker.secure.mdm.utils.LifecycleReceiver.STATE;
 
 public abstract class BaseActivity
         extends AppCompatActivity
-        implements NetworkChangeReceiver.NetworkChangeListener {
+        implements InternetConnectivityListener {
 
-    private NetworkChangeReceiver networkChangeReceiver;
+
     private Snackbar snackbar;
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
 
-
         ButterKnife.bind(this);
 //        Timber.plant(new Timber.DebugTree());
-        networkChangeReceiver = new NetworkChangeReceiver();
+
         init();
 
 
@@ -43,20 +48,19 @@ public abstract class BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        networkChangeReceiver.setNetworkChangeListener(this);
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
+        mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
     }
 
 
     @Override
-    public void isConnected(boolean connected) {
+    public void onInternetConnectivityChanged(boolean connected) {
 
         if (connected) {
             if (snackbar != null) {

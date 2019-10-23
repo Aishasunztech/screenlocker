@@ -5,7 +5,6 @@ import com.screenlocker.secure.R;
 import butterknife.BindView;
 
 import android.annotation.SuppressLint;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -47,7 +45,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -574,6 +571,8 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, response.body().getDevice_id());
+
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
                                         isPendingActivation = false;
@@ -582,7 +581,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                     case NEW_DEVICE:
                                         isPendingActivation = false;
                                         if (isLinked) {
-                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, "unlinked");
                                             finish();
                                         } else {
                                             finish();
@@ -590,19 +589,23 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                     case DUPLICATE_MAC:
                                         isPendingActivation = false;
-//                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC);
+                                        finish();
                                         break;
                                     case DUPLICATE_SERIAL:
                                         isPendingActivation = false;
-//                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_SERIAL);
+                                        finish();
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
                                         isPendingActivation = false;
-//                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC_AND_SERIAL);
+                                        finish();
                                         break;
                                     case DEALER_NOT_FOUND:
                                         isPendingActivation = false;
-//                                            showMainContent();
+                                        Toast.makeText(LinkDeviceActivity.this, "Dealer not found", Toast.LENGTH_SHORT).show();
+                                        finish();
                                         break;
                                 }
                             }

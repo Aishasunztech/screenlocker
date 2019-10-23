@@ -48,6 +48,9 @@ import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
@@ -68,7 +71,7 @@ public class PrepareLockScreen {
     private static boolean isClockTicking = false;
     public static String incomingComboRequest = null;
 
-    @SuppressLint("ResourceType")
+    @SuppressLint({"ResourceType", "SetTextI18n"})
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
 
         int windowType;
@@ -176,7 +179,7 @@ public class PrepareLockScreen {
 
                 }
                 if (pattern.size() == 1) {
-                    if (!mPatternLockView.isNumberInputAllow()){
+                    if (!mPatternLockView.isNumberInputAllow()) {
                         mPatternLockView.clearPattern();
                         return;
                     }
@@ -344,7 +347,43 @@ public class PrepareLockScreen {
                             txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, "N/A"));
                             mPatternLockView.setInputEnabled(false);
                         }
+                        break;
 
+                    case DUPLICATE_MAC:
+
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error_321) + dev_id + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error_321) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+
+
+                        break;
+                    case DUPLICATE_SERIAL:
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error_322) + dev_id + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error_322) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+                        break;
+                    case DUPLICATE_MAC_AND_SERIAL:
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error323) + dev_id + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.error323) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
                         break;
                 }
             }
@@ -509,7 +548,7 @@ public class PrepareLockScreen {
                 }
 
             }
-            if (!mPatternLockView.isNumberInputAllow()){
+            if (!mPatternLockView.isNumberInputAllow()) {
                 mPatternLockView.setNumberInputAllow(true);
                 mPatternLockView.invalidate();
             }
@@ -589,6 +628,7 @@ public class PrepareLockScreen {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public static void setDeviceId(Context context, TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
         switch (device_status1) {
             case "suspended":
@@ -641,6 +681,42 @@ public class PrepareLockScreen {
                 txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
                 if (patternLockView != null)
                     patternLockView.setInputEnabled(false);
+                break;
+            case DUPLICATE_MAC:
+
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_321) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_321) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+
+
+                break;
+            case DUPLICATE_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_322) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_322) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+                break;
+            case DUPLICATE_MAC_AND_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error323) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error323) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
                 break;
 
         }
