@@ -454,6 +454,7 @@ public class AppConstants {
     public static final String EXTRA_IS_PACKAGE_INSTALLED = "extra_is_package";
     public static final String EXTRA_FILE_PATH = "extra_filePath";
     public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_SPACE = "extra_space";
     public static final String EXTRA_INSTALL_APP = "_inst";
     public static final String EXTRA_MARKET_FRAGMENT = "_mark";
 

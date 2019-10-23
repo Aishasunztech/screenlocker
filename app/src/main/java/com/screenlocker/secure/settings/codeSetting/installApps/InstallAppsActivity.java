@@ -109,6 +109,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         }
     };
+    private String current_space;
 
 
     @Override
@@ -317,7 +318,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
 
 
         int index = IntStream.range(0, appModelServerAppInfo.size())
@@ -335,7 +336,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void downloadComplete(String filePath, String pn) {
+    public void downloadComplete(String filePath, String pn,String space) {
         int index = IntStream.range(0, appModelServerAppInfo.size())
                 .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
                 .filter(i -> pn.equals(appModelServerAppInfo.get(i).getPackageName()))
@@ -347,7 +348,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             mAdapter.updateProgressOfItem(info, index);
         }
         if (!filePath.equals("") && !pn.equals("")) {
-            showInstallDialog(new File(filePath), pn);
+            showInstallDialog(new File(filePath), pn,space);
         }
     }
 
@@ -382,10 +383,10 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     }
 
-    private void showInstallDialog(File file, String packageName) {
+    private void showInstallDialog(File file, String packageName,String space) {
         try {
             Uri uri = Uri.fromFile(file);
-            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -434,19 +435,19 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP);
+                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
 
             }
 
         } else {
             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
             if (file_size >= (101 * 1024)) {
-                showInstallDialog(new File(fileName), app.getPackageName());
+                showInstallDialog(new File(fileName), app.getPackageName(),current_space);
             } else {
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP);
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
 
                 }
             }
@@ -477,6 +478,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (mService != null) {
             mService.setInstallAppDownloadListener(this);
         }
+
+        current_space = PrefUtils.getStringPref(this,CURRENT_KEY);
     }
 
     @Override

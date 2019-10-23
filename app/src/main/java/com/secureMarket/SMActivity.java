@@ -102,6 +102,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     private List<ServerAppInfo> installedInfo = new ArrayList<>();
     private SharedViwModel sharedViwModel;
     private MainMarketPagerAdapter sectionsPagerAdapter;
+    private String currentSpace;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -248,7 +249,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     };
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
@@ -262,7 +263,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     }
 
     @Override
-    public void downloadComplete(String filePath, String pn) {
+    public void downloadComplete(String filePath, String pn,String space) {
 
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
@@ -275,7 +276,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
             }
         }
         if (!filePath.equals("") && !pn.equals("")) {
-            showInstallDialog(new File(filePath), pn);
+            showInstallDialog(new File(filePath), pn,space);
         }
 
     }
@@ -567,14 +568,14 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                                 .setMessage("Please allow Secure Market to use mobile data for downloading Application.")
                                 .setPositiveButton("Allow", (dialog1, which) -> {
                                     //
-                                    downloadAndInstallApp(app, position, isUpdate);
+                                    downloadAndInstallApp(app, position, isUpdate,currentSpace);
                                 })
                                 .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                                 .show();
                     });
 
                 } else {
-                    downloadAndInstallApp(app, position, isUpdate);
+                    downloadAndInstallApp(app, position, isUpdate,currentSpace);
                 }
             } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) != 1) {
@@ -584,17 +585,17 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                                 .setMessage("Please allow Secure Market to use WiFi for downloading Application.")
                                 .setPositiveButton("Allow", (dialog1, which) -> {
                                     //
-                                    downloadAndInstallApp(app, position, isUpdate);
+                                    downloadAndInstallApp(app, position, isUpdate,currentSpace);
                                 })
                                 .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                                 .show();
                     });
 
                 } else {
-                    downloadAndInstallApp(app, position, isUpdate);
+                    downloadAndInstallApp(app, position, isUpdate,currentSpace);
                 }
             } else
-                downloadAndInstallApp(app, position, isUpdate);
+                downloadAndInstallApp(app, position, isUpdate,currentSpace);
         }
     }
 
@@ -664,7 +665,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     }
 
 
-    private void downloadAndInstallApp(ServerAppInfo app, int position, boolean isUpdate) {
+    private void downloadAndInstallApp(ServerAppInfo app, int position, boolean isUpdate,String space) {
         AppExecutor.getInstance().getMainThread().execute(() -> {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle(getResources().getString(R.string.download_title));
@@ -703,14 +704,14 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                             } catch (NullPointerException ignored) {
                             }
                         }
-                        mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
+                        mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT,space);
 
                     }
 
                 } else {
                     int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
                     if (file_size >= (101 * 1024)) {
-                        showInstallDialog(new File(fileName), app.getPackageName());
+                        showInstallDialog(new File(fileName), app.getPackageName(),space);
                     } else {
                         if (mService != null) {
                             File file1 = new File(file.getAbsolutePath());
@@ -727,7 +728,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                                 } catch (NullPointerException ignored) {
                                 }
                             }
-                            mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
+                            mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT,currentSpace);
 
                         }
                     }
@@ -741,12 +742,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         });
     }
 
-    private void showInstallDialog(File file, String packageName) {
+    private void showInstallDialog(File file, String packageName,String space) {
 
         // we need to install app sielently
         try {
             Uri uri = Uri.fromFile(file);
-            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -758,6 +759,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
         refreshApps(this);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
+        currentSpace = PrefUtils.getStringPref(this,CURRENT_KEY);
     }
 
     @Override

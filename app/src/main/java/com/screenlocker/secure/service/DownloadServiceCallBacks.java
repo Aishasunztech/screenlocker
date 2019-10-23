@@ -6,9 +6,9 @@ package com.screenlocker.secure.service;
  */
 public interface DownloadServiceCallBacks {
     /*FeedActivity about progress*/
-    void onDownLoadProgress(String packageName , int progress, long speed);
+    void onDownLoadProgress(String packageName , int progress, long speed,String space);
 
-    void downloadComplete(String filePath, String packageName);
+    void downloadComplete(String filePath, String packageName,String space);
 
     void downloadError(String packageNAme);
 
