@@ -28,7 +28,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.service.AlarmReceiver;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
+import com.screenlocker.secure.service.OfflineExpiryAlarm;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.io.ByteArrayOutputStream;
@@ -47,23 +49,15 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class CommonUtils {
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager manager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Network is present and connected
-            isAvailable = true;
-        }
-        return isAvailable;
-    }
-
 
     public static boolean IsReachable(Context context, String host) {
         Timber.d("isReachAble");
@@ -421,6 +415,16 @@ public class CommonUtils {
         }
     }
 
+
+    public static boolean isSocketConnected() {
+        return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
+    }
+
+    public static boolean isNetworkConneted(Context context) {
+        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+        return state != null && state.equals(CONNECTED);
+    }
+
     public static void setAppLocale(String locale, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
@@ -429,11 +433,20 @@ public class CommonUtils {
         resources.updateConfiguration(configuration, displayMetrics);
     }
 
-    public static void setAlarmManager(Context context, long timeInMillis) {
+    /**
+     * @param alarmType 0 for offline expiry 1 for socket and network connection checker
+     */
+    public static void setAlarmManager(Context context, long timeInMillis, int alarmType) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intentAlarm = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intentAlarm, 0);
+        Intent intent = null;
 
+        if (alarmType == 0) {
+            intent = new Intent(context, OfflineExpiryAlarm.class);
+        } else if (alarmType == 1) {
+            intent = new Intent(context, NetworkSocketAlarm.class);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
     }
@@ -491,6 +504,15 @@ public class CommonUtils {
         }
 
         return minuteString + ":" + secondString;
+    }
+
+    public static String currentSpace(Context context)
+    {
+        String space = PrefUtils.getStringPref(context,CURRENT_KEY);
+        if (KEY_MAIN_PASSWORD.equals(space)) {
+            return "encrypted";
+        }
+        return "guest";
     }
 
 

@@ -3,7 +3,6 @@ package com.screenlocker.secure.mdm;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -74,6 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 
 
 public class MainActivity extends BaseActivity {
@@ -275,7 +274,7 @@ public class MainActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             String msg = response.body().getMsg();
-                            Timber.d("status from MDM :%s",msg);
+                            Timber.d("status from MDM :%s", msg);
                             boolean isLinked = PrefUtils.getBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS);
                             Intent intent = new Intent(MainActivity.this, LinkDeviceActivity.class);
 
@@ -323,7 +322,9 @@ public class MainActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, response.body().getDevice_id());
                                 switch (msg) {
+
                                     case UNLINKED_DEVICE:
                                         showMainContent();
                                         //stop sevice
@@ -511,7 +512,7 @@ public class MainActivity extends BaseActivity {
         } else if (type == 2) {
 
             MyApplication.oneCaller
-                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP,getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME))
+                    .deviceLogin(new DeviceLoginModle(/*"856424"*/ dealerPin, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME))
                     .enqueue(new Callback<DeviceLoginResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<DeviceLoginResponse> call, @NonNull Response<DeviceLoginResponse> response) {
@@ -631,7 +632,11 @@ public class MainActivity extends BaseActivity {
         contactDealer.setVisibility(View.GONE);
         loading.setVisibility(View.GONE);
         error.setVisibility(View.VISIBLE);
-        error_text.setText(message);
+        String msg = message;
+        if (!isNetworkConneted(this)) {
+            msg = getResources().getString(R.string.please_check_network_connection);
+        }
+        error_text.setText(msg);
     }
 
     /**

@@ -591,6 +591,8 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, response.body().getDevice_id());
+
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
                                         isPendingActivation = false;
@@ -599,7 +601,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                     case NEW_DEVICE:
                                         isPendingActivation = false;
                                         if (isLinked) {
-                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, "unlinked");
                                             finish();
                                         } else {
                                             finish();
@@ -607,19 +609,23 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                     case DUPLICATE_MAC:
                                         isPendingActivation = false;
-//                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC);
+                                        finish();
                                         break;
                                     case DUPLICATE_SERIAL:
                                         isPendingActivation = false;
-//                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_SERIAL);
+                                        finish();
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
                                         isPendingActivation = false;
-//                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC_AND_SERIAL);
+                                        finish();
                                         break;
                                     case DEALER_NOT_FOUND:
                                         isPendingActivation = false;
-//                                            showMainContent();
+                                        Toast.makeText(LinkDeviceActivity.this, "Dealer not found", Toast.LENGTH_SHORT).show();
+                                        finish();
                                         break;
                                 }
                             }

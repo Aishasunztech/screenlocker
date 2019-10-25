@@ -66,7 +66,7 @@ import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDeviceWithMsg;
 import static com.screenlocker.secure.socket.utils.utils.updateAppsList;
 import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
@@ -469,7 +469,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                     case "unlinked":
                                         Timber.d("<<< device unlinked >>>");
-                                        unlinkDevice(SocketService.this, true);
+                                        unlinkDeviceWithMsg(SocketService.this, true, "unlinked");
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
@@ -598,7 +598,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public void sendAppliedStatus(String setting_id) {
         try {
             if (socketManager.getSocket().connected()) {
-                socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id).put("setting_id",setting_id));
+                socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id).put("setting_id", setting_id));
             } else {
                 Timber.d("Socket not connected");
             }

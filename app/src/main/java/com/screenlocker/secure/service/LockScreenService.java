@@ -46,7 +46,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
+import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -93,20 +93,27 @@ import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -122,7 +129,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements NetworkChangeReceiver.NetworkChangeListener {
+public class LockScreenService extends Service {
 
 
     private SharedPreferences sharedPref;
@@ -141,7 +148,38 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     private boolean viewAdded = false;
     private View view;
 
+
+    private NetworkSocketAlarm networkSocketAlarm;
+
     private NetworkChangeReceiver networkChangeReceiver;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+            boolean isConnected = networkStatus.equals(CONNECTED);
+            if (!isConnected) {
+                destroyClientChatSocket();
+            } else {
+                connectClientChatSocket();
+            }
+        }
+    };
+
 
     private SocketManager socketManager;
     /* Downloader used for SM app to download applications in background*/
@@ -167,6 +205,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
             if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
@@ -184,18 +223,18 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null) {
 
-                            installAppListener.downloadComplete(path, packageName);
+                            installAppListener.downloadComplete(path, packageName,space);
                         } else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
                         }
                         break;
                     case EXTRA_MARKET_FRAGMENT:
                         if (marketDoaLoadLister != null)
-                            marketDoaLoadLister.downloadComplete(path, packageName);
+                            marketDoaLoadLister.downloadComplete(path, packageName,space);
                         else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
 
                         }
                         break;
@@ -242,6 +281,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
 
         }
+
 
         @Override
         public void onDownloadBlockUpdated(@NotNull Download download, @NotNull DownloadBlock downloadBlock, int i) {
@@ -291,15 +331,15 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-
+            String space = extras.getString(EXTRA_SPACE,"null");
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
             }
         }
@@ -347,18 +387,10 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
     };
     private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
 
-    @Override
-    public void isConnected(boolean state) {
-        if (!state) {
-            destroyClientChatSocket();
-        } else {
-            connectClientChatSocket();
-        }
-
-    }
 
     public void destroyClientChatSocket() {
-        socketManager.destroyClientChatSocket();
+        if (socketManager != null)
+            socketManager.destroyClientChatSocket();
     }
 
     public void connectClientChatSocket() {
@@ -370,7 +402,8 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             deviceId = DeviceIdUtils.getSerialNumber();
         }
         Log.d("lkashdf", deviceId);
-        socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
+        if (socketManager != null)
+            socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
     }
 
 
@@ -381,12 +414,19 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         }
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
 
-        setAlarmManager(this, System.currentTimeMillis() + 15000);
+
+        registerNetworkPref();
+
+        // alarm manager for offline expiry
+        setAlarmManager(this, System.currentTimeMillis() + 15000, 0);
+
+//        // alarm manager for network / socket connection
+//        setAlarmManager(this, System.currentTimeMillis() + 1, 1);
+
         broadCastIntentForActivatingAdmin();
 
         boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
@@ -473,12 +513,6 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         // Whitelist two apps.
 
 
-        networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
-
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
-
 // ...
 
 
@@ -549,7 +583,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         });
     }
 
-    public void startDownload(String url, String filePath, String packageName, String type) {
+    public void startDownload(String url, String filePath, String packageName, String type,String space)  {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
@@ -558,6 +592,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
+        map.put(EXTRA_SPACE,space);
         Extras extras = new Extras(map);
         request.setExtras(extras);
 
@@ -615,7 +650,8 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
-
+            unRegisterNetworkPref();
+            PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
             } else {
@@ -629,6 +665,7 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
 
         super.onDestroy();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -651,6 +688,9 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                     case "expired":
                     case "unlinked":
                     case "locked":
+                    case DUPLICATE_MAC:
+                    case DUPLICATE_SERIAL:
+                    case DUPLICATE_MAC_AND_SERIAL:
                     case "flagged":
                         startLockScreen(true);
                         break;
@@ -698,12 +738,17 @@ public class LockScreenService extends Service implements NetworkChangeReceiver.
                         params = PrepareLockScreen.getParams(this, mLayout);
                     }
                     windowManager.addView(mLayout, params);
-                    //clear home with our app to front
-                    Instrumentation m_Instrumentation = new Instrumentation();
-                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-                    });
+                    try {
+                        //clear home with our app to front
+                        Instrumentation m_Instrumentation = new Instrumentation();
+                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                            m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
+
+                        });
+                    } catch (Exception ignored) {
+                    }
+
                     PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
                 }
 

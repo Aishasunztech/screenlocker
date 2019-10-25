@@ -21,6 +21,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -28,30 +34,19 @@ import com.screenlocker.secure.appSelection.AppSelectionActivity;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
-import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.LifecycleReceiver;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.t.ui.MainActivity;
+import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import timber.log.Timber;
-
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
-import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
@@ -238,10 +233,39 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         startActivity(new Intent(CodeSettingActivity.this, InstallAppsActivity.class));
     }
 
+
+    private void showNetworkDialog() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
+        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+
+        alertDialog.setCancelable(false);
+        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
+            Intent intent = new Intent(this, SecureSettingsMain.class);
+            intent.putExtra("show_default", "show_default");
+            startActivity(intent);
+
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                });
+        alertDialog.show();
+
+    }
+
     // method to handle policy menu
     private void handlePolicyMenu() {
         goToPolicyMenu = true;
-        startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
+        if (CommonUtils.isNetworkConneted(this)) {
+            startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
+        } else {
+            showNetworkDialog();
+        }
     }
 
 

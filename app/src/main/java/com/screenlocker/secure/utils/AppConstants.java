@@ -112,10 +112,10 @@ public class AppConstants {
 
 
     //servers links
-//        public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static String URL_1 = "https://api.lockmesh.com";//live SL
+        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.18.69:3000";//local
+//    public static String URL_1 = "http://192.168.0.169:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -128,7 +128,8 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/api/v1/mobile/";
+        public static final String MOBILE_END_POINT = "/api/v2/mobile/"; // dev
+//    public static final String MOBILE_END_POINT = "/mobile/"; live
 
     //available live host
     public static final String LIVE_URL = "live_url";
@@ -454,6 +455,7 @@ public class AppConstants {
     public static final String EXTRA_IS_PACKAGE_INSTALLED = "extra_is_package";
     public static final String EXTRA_FILE_PATH = "extra_filePath";
     public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_SPACE = "extra_space";
     public static final String EXTRA_INSTALL_APP = "_inst";
     public static final String EXTRA_MARKET_FRAGMENT = "_mark";
 
@@ -490,6 +492,11 @@ public class AppConstants {
 
 
     public static final String OLD_DEVICE_STATUS = "old_device_status";
+
+    public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CONNECTED = "connected";
+    public static final String DISCONNECTED = "disconnected";
+    public static final String LIMITED = "limited";
 
 
 }

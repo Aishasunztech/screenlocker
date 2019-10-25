@@ -3,7 +3,6 @@ package com.screenlocker.secure.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.utils.AppConstants;
@@ -12,9 +11,10 @@ import com.screenlocker.secure.utils.PrefUtils;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 
-public class AlarmReceiver extends BroadcastReceiver {
+public class OfflineExpiryAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+
         String remainingDays = getRemainingDays(context);
         if (remainingDays != null) {
 
@@ -28,6 +28,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         }
 
-        setAlarmManager(context, System.currentTimeMillis() + 86400000L);
+        setAlarmManager(context, System.currentTimeMillis() + 86400000L, 0);
+
     }
 }

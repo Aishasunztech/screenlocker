@@ -29,6 +29,7 @@ import butterknife.OnClick;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.IS_LIVE_CLIENT_VISIBLE;
 import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 
 public class LiveClientChatActivity extends AppCompatActivity {
 
@@ -62,7 +63,6 @@ public class LiveClientChatActivity extends AppCompatActivity {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-
 //        webview.setWebViewClient(new WebViewClient() {
 //            @Override
 //            public void onPageFinished(WebView view, String url) {
@@ -92,7 +92,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
 
                 progressbar.setVisibility(View.GONE);
-                PrefUtils.saveIntegerPref(LiveClientChatActivity.this,NUMBER_OF_NOTIFICATIONS,0);
+                PrefUtils.saveIntegerPref(LiveClientChatActivity.this, NUMBER_OF_NOTIFICATIONS, 0);
                 notificationManager.cancelAll();
 
                 super.onPageFinished(view, url);
@@ -105,12 +105,19 @@ public class LiveClientChatActivity extends AppCompatActivity {
         String title = "";
         String subTitle = "";
 
-        if (deviceId != null ) {
+        if (deviceId != null) {
             title = getResources().getString(R.string.live_client_device_id);
             subTitle = deviceId;
         } else {
             title = getResources().getString(R.string.live_client_device_id);
-            subTitle = "N/A";
+
+            String offline_device = PrefUtils.getStringPref(LiveClientChatActivity.this, OFFLINE_DEVICE_ID);
+
+            if (offline_device == null) {
+                subTitle = "N/A";
+            } else {
+                subTitle = offline_device;
+            }
 
             deviceId = DeviceIdUtils.getSerialNumber();
         }
@@ -146,8 +153,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.btn_try_again)
-    public void onViewClicked(View vi)
-    {
+    public void onViewClicked(View vi) {
         loadWebView();
     }
 
@@ -191,7 +197,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        PrefUtils.saveBooleanPref(this,IS_LIVE_CLIENT_VISIBLE,true);
+        PrefUtils.saveBooleanPref(this, IS_LIVE_CLIENT_VISIBLE, true);
     }
 
 //    private void bindToService() {
@@ -203,7 +209,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        PrefUtils.saveBooleanPref(this,IS_LIVE_CLIENT_VISIBLE,false);
+        PrefUtils.saveBooleanPref(this, IS_LIVE_CLIENT_VISIBLE, false);
 
 //        if (mService != null)
 //            unbindService(connection);
@@ -211,15 +217,14 @@ public class LiveClientChatActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh_chat_menu,menu);
+        getMenuInflater().inflate(R.menu.refresh_chat_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id)
-        {
+        switch (id) {
             case R.id.action_refresh:
                 loadWebView();
                 break;

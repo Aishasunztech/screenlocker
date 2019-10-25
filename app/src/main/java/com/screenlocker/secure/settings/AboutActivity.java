@@ -47,6 +47,7 @@ import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -167,7 +168,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
-            tvDeviceId.setText(getResources().getString(R.string.n_a));
+            String offline_device = PrefUtils.getStringPref(this, OFFLINE_DEVICE_ID);
+            if (offline_device == null) {
+                tvDeviceId.setText(getResources().getString(R.string.n_a));
+            } else {
+                tvDeviceId.setText(offline_device);
+            }
         } else {
             tvDeviceId.setText(device_id);
         }
