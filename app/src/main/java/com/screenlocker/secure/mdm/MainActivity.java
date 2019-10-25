@@ -3,7 +3,6 @@ package com.screenlocker.secure.mdm;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -74,6 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 
 
 public class MainActivity extends BaseActivity {
@@ -633,7 +632,11 @@ public class MainActivity extends BaseActivity {
         contactDealer.setVisibility(View.GONE);
         loading.setVisibility(View.GONE);
         error.setVisibility(View.VISIBLE);
-        error_text.setText(message);
+        String msg = message;
+        if (!isNetworkConneted(this)) {
+            msg = getResources().getString(R.string.please_check_network_connection);
+        }
+        error_text.setText(msg);
     }
 
     /**

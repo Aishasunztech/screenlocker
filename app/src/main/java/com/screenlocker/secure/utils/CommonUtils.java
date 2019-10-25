@@ -30,6 +30,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.NetworkSocketAlarm;
 import com.screenlocker.secure.service.OfflineExpiryAlarm;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.io.ByteArrayOutputStream;
@@ -48,23 +49,13 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class CommonUtils {
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager manager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Network is present and connected
-            isAvailable = true;
-        }
-        return isAvailable;
-    }
-
 
     public static boolean IsReachable(Context context, String host) {
         Timber.d("isReachAble");
@@ -420,6 +411,16 @@ public class CommonUtils {
 
             return null;
         }
+    }
+
+
+    public static boolean isSocketConnected() {
+        return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
+    }
+
+    public static boolean isNetworkConneted(Context context) {
+        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+        return state != null && state.equals(CONNECTED);
     }
 
     public static void setAppLocale(String locale, Context context) {

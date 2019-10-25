@@ -314,11 +314,6 @@
         </receiver>
         <receiver android:name=".service.OfflineExpiryAlarm" />
         <receiver android:name=".service.NetworkSocketAlarm" />
-        <receiver android:name=".network.NetworkChangeReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
         <service android:name=".utils.LifecycleReceiverService" />
         <service
             android:name=".service.LockScreenService"

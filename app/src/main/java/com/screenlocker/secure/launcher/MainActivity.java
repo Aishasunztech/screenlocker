@@ -167,18 +167,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 mainPresenter.startLockService(lockScreenIntent);
             }
         }
-        //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
-//        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
-//            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-//            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
-//            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
-//            startActivityForResult(intent, RESULT_ENABLE);
-//
-//        } else {
-//            if (devicePolicyManager != null) {
-//                devicePolicyManager.lockNow();
-//            }
-//        }
     }
 
 

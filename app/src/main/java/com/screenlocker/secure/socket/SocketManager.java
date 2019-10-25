@@ -2,16 +2,11 @@ package com.screenlocker.secure.socket;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -20,10 +15,8 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
-import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -333,8 +326,6 @@ public class SocketManager {
      * Destroy.
      */
     public void destroy() {
-
-        Log.d("SocketManager", "destroy");
         if (socket != null) {
             socket.disconnect();
             socket.close();
@@ -380,48 +371,48 @@ public class SocketManager {
     /**
      * The type Net receiver.
      */
-    public static class NetReceiver extends BroadcastReceiver {
-
-        /**
-         * The Tag.
-         */
-        public final String TAG = NetReceiver.class.getSimpleName();
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-
-            SocketManager.getInstance().fireInternetStatusIntent(
-                    isConnected ? SocketManager.STATE_CONNECTED : SocketManager.STATE_DISCONNECTED);
-            if (isConnected) {
-                if (SocketManager.getInstance().getSocket() != null
-                        && !SocketManager.getInstance().getSocket().connected()) {
-                    SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_CONNECTING);
-                }
-                PowerManager powerManager =
-                        (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                boolean isScreenOn;
-                isScreenOn = powerManager.isInteractive();
-
-                if (isScreenOn && SocketManager.getInstance().getSocket() != null) {
-                    Log.d(TAG, "NetReceiver: Connecting Socket");
-                    if (!SocketManager.getInstance().getSocket().connected()) {
-                        SocketManager.getInstance().getSocket().connect();
-                    }
-                }
-            } else {
-                SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                if (SocketManager.getInstance().getSocket() != null) {
-                    Log.d(TAG, "NetReceiver: disconnecting socket");
-                    SocketManager.getInstance().getSocket().disconnect();
-                }
-            }
-        }
-    }
+//    public static class NetReceiver extends BroadcastReceiver {
+//
+//        /**
+//         * The Tag.
+//         */
+//        public final String TAG = NetReceiver.class.getSimpleName();
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            ConnectivityManager cm =
+//                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//            boolean isConnected = activeNetwork != null &&
+//                    activeNetwork.isConnectedOrConnecting();
+//
+//            SocketManager.getInstance().fireInternetStatusIntent(
+//                    isConnected ? SocketManager.STATE_CONNECTED : SocketManager.STATE_DISCONNECTED);
+//            if (isConnected) {
+//                if (SocketManager.getInstance().getSocket() != null
+//                        && !SocketManager.getInstance().getSocket().connected()) {
+//                    SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_CONNECTING);
+//                }
+//                PowerManager powerManager =
+//                        (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//                boolean isScreenOn;
+//                isScreenOn = powerManager.isInteractive();
+//
+//                if (isScreenOn && SocketManager.getInstance().getSocket() != null) {
+//                    Log.d(TAG, "NetReceiver: Connecting Socket");
+//                    if (!SocketManager.getInstance().getSocket().connected()) {
+//                        SocketManager.getInstance().getSocket().connect();
+//                    }
+//                }
+//            } else {
+//                SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+//                if (SocketManager.getInstance().getSocket() != null) {
+//                    Log.d(TAG, "NetReceiver: disconnecting socket");
+//                    SocketManager.getInstance().getSocket().disconnect();
+//                }
+//            }
+//        }
+//    }
 
 
 }

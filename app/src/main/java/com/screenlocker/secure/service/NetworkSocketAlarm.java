@@ -7,50 +7,33 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.screenlocker.secure.network.CheckInternetTask;
-import com.screenlocker.secure.network.InternetConnectivityListener;
-import com.screenlocker.secure.network.TaskFinished;
-import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DISCONNECTED;
+import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 
 public class NetworkSocketAlarm extends BroadcastReceiver {
-
-
-    private InternetConnectivityListener listener;
-
-    public void setListener(InternetConnectivityListener listener) {
-        this.listener = listener;
-    }
-
-    public void unsetListener() {
-        this.listener = null;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         if (isNetworkConnected(context)) {
-
-            if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                if (listener != null) {
-                    listener.onInternetStateChanged(true);
-                }
+            if (isSocketConnected()) {
+                PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, CONNECTED);
             } else {
-                new CheckInternetTask(new TaskFinished<Boolean>() {
-                    @Override
-                    public void onTaskFinished(Boolean data) {
-                        if (listener != null) {
-                            listener.onInternetStateChanged(data);
-                        }
-                    }
-                }).execute();
+                new CheckInternetTask(data -> PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED)).execute();
             }
-            setAlarmManager(context, System.currentTimeMillis() + 500L, 1);
+
+            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+                setAlarmManager(context, System.currentTimeMillis() + 1500L, 1);
+            }
 
         } else {
-            if (listener != null) {
-                listener.onInternetStateChanged(false);
-            }
+            PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, DISCONNECTED);
         }
 
 

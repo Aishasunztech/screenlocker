@@ -1,10 +1,8 @@
 package com.screenlocker.secure.settings.codeSetting.installApps;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -14,11 +12,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +43,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,9 +62,6 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
-import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
-import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
-import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 import static com.secureMarket.MarketUtils.savePackages;
 
 
@@ -166,7 +158,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
 
     private void getAllApps() {
-        if (CommonUtils.isNetworkAvailable(this)) {
+        if (CommonUtils.isNetworkConneted(this)) {
 
             MyApplication.oneCaller
                     .getApps()
@@ -248,7 +240,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     public void onRefresh() {
 
-        if (CommonUtils.isNetworkAvailable(this)) {
+        if (CommonUtils.isNetworkConneted(this)) {
 
 
             if (MyApplication.oneCaller == null) {

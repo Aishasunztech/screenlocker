@@ -22,8 +22,6 @@ package com.screenlocker.secure.network;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import timber.log.Timber;
 
@@ -34,22 +32,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-
         Timber.d("on Receiver ");
-
-        if (isNetworkConnected(context)) {
-            // alarm manager for network / socket connection
-            setAlarmManager(context, System.currentTimeMillis() + 1, 1);
-        } else {
-            setAlarmManager(context, System.currentTimeMillis() + 1, 1);
-        }
-    }
-
-    boolean isNetworkConnected(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-        //should check null because in airplane mode it will be null
-        return netInfo != null && netInfo.isAvailable() && netInfo.isConnected();
+        // alarm manager for network / socket connection
+        setAlarmManager(context, System.currentTimeMillis() + 1, 1);
     }
 }

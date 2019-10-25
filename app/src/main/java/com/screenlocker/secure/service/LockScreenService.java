@@ -46,7 +46,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.network.InternetConnectivityListener;
+import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -93,7 +93,9 @@ import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -110,6 +112,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
@@ -125,7 +128,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements InternetConnectivityListener {
+public class LockScreenService extends Service {
 
 
     private SharedPreferences sharedPref;
@@ -147,15 +150,35 @@ public class LockScreenService extends Service implements InternetConnectivityLi
 
     private NetworkSocketAlarm networkSocketAlarm;
 
-    private void setNetworkLister() {
-        networkSocketAlarm = new NetworkSocketAlarm();
-        networkSocketAlarm.setListener(this);
+    private NetworkChangeReceiver networkChangeReceiver;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
-    private void unSetNetworkLister() {
-        if (networkSocketAlarm != null)
-            networkSocketAlarm.unsetListener();
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
     }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+            boolean isConnected = networkStatus.equals(CONNECTED);
+            if (!isConnected) {
+                destroyClientChatSocket();
+            } else {
+                connectClientChatSocket();
+            }
+        }
+    };
+
 
     private SocketManager socketManager;
     /* Downloader used for SM app to download applications in background*/
@@ -381,15 +404,6 @@ public class LockScreenService extends Service implements InternetConnectivityLi
             socketManager.connectClientChatSocket(deviceId, AppConstants.CLIENT_SOCKET_URL);
     }
 
-    @Override
-    public void onInternetStateChanged(boolean isConnected) {
-        if (!isConnected) {
-            destroyClientChatSocket();
-        } else {
-            connectClientChatSocket();
-        }
-    }
-
 
     public class LocalBinder extends Binder {
         public LockScreenService getService() {
@@ -403,7 +417,7 @@ public class LockScreenService extends Service implements InternetConnectivityLi
     public void onCreate() {
 
 
-        setNetworkLister();
+        registerNetworkPref();
 
         // alarm manager for offline expiry
         setAlarmManager(this, System.currentTimeMillis() + 15000, 0);
@@ -633,8 +647,8 @@ public class LockScreenService extends Service implements InternetConnectivityLi
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
-            unSetNetworkLister();
-
+            unRegisterNetworkPref();
+            PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
             } else {

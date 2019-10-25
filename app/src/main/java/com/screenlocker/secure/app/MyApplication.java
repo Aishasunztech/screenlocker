@@ -9,6 +9,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -20,9 +22,9 @@ import androidx.room.Room;
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.network.InternetConnectivityListener;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
@@ -33,8 +35,6 @@ import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.service.NetworkSocketAlarm;
-import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -61,17 +61,22 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener, InternetConnectivityListener {
+public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -106,17 +111,50 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         return appContext;
     }
 
-    private NetworkSocketAlarm networkSocketAlarm;
 
-    private void setNetworkLister() {
-        networkSocketAlarm = new NetworkSocketAlarm();
-        networkSocketAlarm.setListener(this);
+    private NetworkChangeReceiver networkChangeReceiver;
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
-    private void unSetNetworkLister() {
-        if (networkSocketAlarm != null)
-            networkSocketAlarm.unsetListener();
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
     }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            Timber.d("ksdklfgsmksls : " + isConnected);
+
+            if (isConnected) {
+                if (!isSocketConnected()) {
+                    onlineConnection();
+                }
+            } else {
+                if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+                    Intent intent = new Intent(this, SocketService.class);
+                    stopService(intent);
+                }
+                if (this.timer != null) {
+                    this.timer.cancel();
+                    this.timer = null;
+                }
+            }
+        }
+    };
 
 
     @Override
@@ -125,10 +163,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
         appContext = getApplicationContext();
 
-
-        // setting network listener
-        setNetworkLister();
-
+        registerNetworkPref();
 
         if (LinkDeviceActivity.mListener == null)
             LinkDeviceActivity.mListener = this;
@@ -280,7 +315,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     public void onTerminate() {
         unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(myAlarmBroadcastReceiver);
-        unSetNetworkLister();
+        unRegisterNetworkPref();
         super.onTerminate();
     }
 
@@ -467,25 +502,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         }
     }
 
-    @Override
-    public void onInternetStateChanged(boolean isConnected) {
-        Timber.d("STATUS :" + isConnected);
 
-        if (isConnected) {
-            if (!(SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected())) {
-                onlineConnection();
-            }
-        } else {
-            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
-                Intent intent = new Intent(this, SocketService.class);
-                stopService(intent);
-            }
-            if (timer != null) {
-                timer.cancel();
-                timer = null;
-            }
-        }
-    }
 }
 
 
