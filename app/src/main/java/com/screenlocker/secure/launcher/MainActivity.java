@@ -1,6 +1,5 @@
 package com.screenlocker.secure.launcher;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -12,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,7 +21,6 @@ import android.widget.RelativeLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -105,6 +102,18 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 //
+//        NetWatch.builder(this)
+//                /* setIcon(R.drawable) : Sets notification icon drawable */
+//                .setIcon(R.drawable.ic_no_internet_connection)
+//                /* .setNotificationCancelable(boolean yes) : Sets if appbar notification can be closed via swipe */
+//                .setNotificationCancelable(false)
+//                /* setCallBack(): Network interaction events will be notified using this callback */
+//                .setCallBack(this)
+////                .setLogsEnabled(true)
+////                .setBannerTypeDialog(true)
+////                .setSensitivity(4)
+//                .build();
+
 //    ((TextView) findViewById(R.id.textView1)).setText(mString);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -263,6 +272,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
         super.onResume();
 
+
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
         String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
 
@@ -385,6 +395,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             unregisterReceiver(mShutDownReceiver);
             sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
 
+
         } catch (Exception ignored) {
             //
         }
@@ -486,8 +497,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         alertDialog.show();
     }
-
-
 }
 
 

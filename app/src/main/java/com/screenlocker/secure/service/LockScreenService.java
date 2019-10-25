@@ -44,10 +44,9 @@ import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.network.InternetConnectivityListener;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.settings.SettingsActivity;
@@ -145,6 +144,18 @@ public class LockScreenService extends Service implements InternetConnectivityLi
     private boolean viewAdded = false;
     private View view;
 
+
+    private NetworkSocketAlarm networkSocketAlarm;
+
+    private void setNetworkLister() {
+        networkSocketAlarm = new NetworkSocketAlarm();
+        networkSocketAlarm.setListener(this);
+    }
+
+    private void unSetNetworkLister() {
+        if (networkSocketAlarm != null)
+            networkSocketAlarm.unsetListener();
+    }
 
     private SocketManager socketManager;
     /* Downloader used for SM app to download applications in background*/
@@ -371,7 +382,7 @@ public class LockScreenService extends Service implements InternetConnectivityLi
     }
 
     @Override
-    public void onInternetConnectivityChanged(boolean isConnected) {
+    public void onInternetStateChanged(boolean isConnected) {
         if (!isConnected) {
             destroyClientChatSocket();
         } else {
@@ -387,19 +398,19 @@ public class LockScreenService extends Service implements InternetConnectivityLi
         }
     }
 
-
-    private InternetAvailabilityChecker mInternetAvailabilityChecker;
-
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
 
 
-        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+        setNetworkLister();
 
+        // alarm manager for offline expiry
+        setAlarmManager(this, System.currentTimeMillis() + 15000, 0);
 
-        setAlarmManager(this, System.currentTimeMillis() + 15000);
+//        // alarm manager for network / socket connection
+//        setAlarmManager(this, System.currentTimeMillis() + 1, 1);
+
         broadCastIntentForActivatingAdmin();
 
         boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
@@ -622,7 +633,7 @@ public class LockScreenService extends Service implements InternetConnectivityLi
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
-            mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
+            unSetNetworkLister();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
@@ -637,6 +648,7 @@ public class LockScreenService extends Service implements InternetConnectivityLi
 
         super.onDestroy();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

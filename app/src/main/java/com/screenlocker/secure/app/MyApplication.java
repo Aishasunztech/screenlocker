@@ -9,10 +9,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -22,8 +20,7 @@ import androidx.room.Room;
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
+import com.screenlocker.secure.network.InternetConnectivityListener;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -36,6 +33,8 @@ import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -107,8 +106,18 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         return appContext;
     }
 
+    private NetworkSocketAlarm networkSocketAlarm;
 
-    private InternetAvailabilityChecker mInternetAvailabilityChecker;
+    private void setNetworkLister() {
+        networkSocketAlarm = new NetworkSocketAlarm();
+        networkSocketAlarm.setListener(this);
+    }
+
+    private void unSetNetworkLister() {
+        if (networkSocketAlarm != null)
+            networkSocketAlarm.unsetListener();
+    }
+
 
     @Override
     public void onCreate() {
@@ -116,10 +125,10 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
         appContext = getApplicationContext();
 
-        InternetAvailabilityChecker.init(this);
 
-        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+        // setting network listener
+        setNetworkLister();
+
 
         if (LinkDeviceActivity.mListener == null)
             LinkDeviceActivity.mListener = this;
@@ -271,7 +280,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     public void onTerminate() {
         unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(myAlarmBroadcastReceiver);
-        mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
+        unSetNetworkLister();
         super.onTerminate();
     }
 
@@ -459,13 +468,13 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     }
 
     @Override
-    public void onInternetConnectivityChanged(boolean isConnected) {
-
+    public void onInternetStateChanged(boolean isConnected) {
         Timber.d("STATUS :" + isConnected);
 
-
         if (isConnected) {
-            onlineConnection();
+            if (!(SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected())) {
+                onlineConnection();
+            }
         } else {
             if (utils.isMyServiceRunning(SocketService.class, appContext)) {
                 Intent intent = new Intent(this, SocketService.class);

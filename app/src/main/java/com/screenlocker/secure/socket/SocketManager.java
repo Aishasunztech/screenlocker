@@ -107,6 +107,7 @@ public class SocketManager {
 //                opts.reconnectionDelay = 5000;
                 opts.forceNew = true;
                 opts.reconnection = true;
+                opts.timeout = 1500;
                 opts.reconnectionAttempts = 1000;
                 opts.secure = true;
                 opts.query = "device_id=" + device_id + "&token=" + token ;

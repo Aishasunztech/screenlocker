@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -42,13 +41,13 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.network.InternetConnectivityListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
@@ -103,7 +102,6 @@ import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
  */
 public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, InternetConnectivityListener {
 
-    private InternetAvailabilityChecker internetAvailabilityChecker;
 
     private Toolbar mToolbar;
     /**
@@ -147,17 +145,28 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     };
 
+    private NetworkSocketAlarm networkSocketAlarm;
+
+    private void setNetworkLister() {
+        networkSocketAlarm = new NetworkSocketAlarm();
+        networkSocketAlarm.setListener(this);
+    }
+
+    private void unSetNetworkLister() {
+        if (networkSocketAlarm != null)
+            networkSocketAlarm.unsetListener();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        internetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-        internetAvailabilityChecker.addInternetConnectivityListener(this);
+        setNetworkLister();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        internetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
+        unSetNetworkLister();
     }
 
 
@@ -768,7 +777,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     @Override
-    public void onInternetConnectivityChanged(boolean isConnected) {
+    public void onInternetStateChanged(boolean isConnected) {
 
         if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
 

@@ -28,7 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.service.AlarmReceiver;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
+import com.screenlocker.secure.service.OfflineExpiryAlarm;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.io.ByteArrayOutputStream;
@@ -429,11 +430,20 @@ public class CommonUtils {
         resources.updateConfiguration(configuration, displayMetrics);
     }
 
-    public static void setAlarmManager(Context context, long timeInMillis) {
+    /**
+     * @param alarmType 0 for offline expiry 1 for socket and network connection checker
+     */
+    public static void setAlarmManager(Context context, long timeInMillis, int alarmType) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intentAlarm = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intentAlarm, 0);
+        Intent intent = null;
 
+        if (alarmType == 0) {
+            intent = new Intent(context, OfflineExpiryAlarm.class);
+        } else if (alarmType == 1) {
+            intent = new Intent(context, NetworkSocketAlarm.class);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
     }
@@ -473,20 +483,17 @@ public class CommonUtils {
         return settings;
     }
 
-    public static String getTimeString(long l)
-    {
+    public static String getTimeString(long l) {
         int seconds = (int) (l / 1000);
-        int minutes = (int) Math.floor(seconds /60);
-        seconds = (int) Math.floor(seconds%60);
+        int minutes = (int) Math.floor(seconds / 60);
+        seconds = (int) Math.floor(seconds % 60);
         String minuteString = "" + minutes;
         String secondString = "" + seconds;
 
-        if(minutes < 10)
-        {
+        if (minutes < 10) {
             minuteString = "0" + minuteString;
         }
-        if(seconds<10)
-        {
+        if (seconds < 10) {
             secondString = "0" + secondString;
         }
 

@@ -1,20 +1,15 @@
 package com.screenlocker.secure.mdm.base;
 
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.ViewGroup;
-
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.screenlocker.secure.internetavailabilitychecker.InternetConnectivityListener;
-
+import com.screenlocker.secure.network.InternetConnectivityListener;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
 
 import butterknife.ButterKnife;
 
@@ -30,7 +25,19 @@ public abstract class BaseActivity
 
 
     private Snackbar snackbar;
-    private InternetAvailabilityChecker mInternetAvailabilityChecker;
+
+    private NetworkSocketAlarm networkSocketAlarm;
+
+    private void setNetworkLister() {
+        networkSocketAlarm = new NetworkSocketAlarm();
+        networkSocketAlarm.setListener(this);
+    }
+
+    private void unSetNetworkLister() {
+        if (networkSocketAlarm != null)
+            networkSocketAlarm.unsetListener();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +55,18 @@ public abstract class BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+        setNetworkLister();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mInternetAvailabilityChecker.removeInternetConnectivityChangeListener(this);
+        unSetNetworkLister();
     }
 
 
     @Override
-    public void onInternetConnectivityChanged(boolean connected) {
+    public void onInternetStateChanged(boolean connected) {
 
         if (connected) {
             if (snackbar != null) {
