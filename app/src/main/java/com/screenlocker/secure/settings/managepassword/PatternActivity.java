@@ -38,13 +38,13 @@ public class PatternActivity extends AppCompatActivity {
             extra = getIntent().getStringExtra(Intent.EXTRA_TEXT);
             if (extra.equalsIgnoreCase(AppConstants.KEY_GUEST)) {
                 getSupportActionBar().setTitle("Guest Pattern");
-                message.setText("Please Draw Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
-                getSupportActionBar().setTitle("Duress Pattern");
-                message.setText("Please Draw Pattern");
+                getSupportActionBar().setTitle("Wipe Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_MAIN)) {
                 getSupportActionBar().setTitle("Encrypted Pattern");
-                message.setText("Please Draw Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
 
             } else {
                 //

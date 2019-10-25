@@ -489,7 +489,7 @@ public class PrepareLockScreen {
                         codeView.clearCode();
                     }
 
-                } else if (getUserType(enteredPin, context).equals("duress")) {
+                } else if (getUserType(enteredPin, context).equals("Fduress")) {
                     if (!clearance)
                         if (!wipeDevice(context)) {
                             Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();

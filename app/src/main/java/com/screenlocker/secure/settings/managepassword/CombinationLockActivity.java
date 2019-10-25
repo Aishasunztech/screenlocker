@@ -47,7 +47,7 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
                 getSupportActionBar().setTitle("Guest Combo");
                 profile.setImageResource(R.drawable.ic_guest_icon);
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
-                getSupportActionBar().setTitle("Duress Combo");
+                getSupportActionBar().setTitle("Wipe Combo");
                 profile.setImageResource(R.drawable.ic_duress_icon);
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_MAIN)) {
                 getSupportActionBar().setTitle("Encrypted Combo");

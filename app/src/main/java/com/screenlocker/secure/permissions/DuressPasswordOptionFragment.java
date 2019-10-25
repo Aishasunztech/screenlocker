@@ -83,7 +83,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
                 }).create();
         builder.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         tittleIcon.setImageResource(R.drawable.ic_duress_icon);
-        titleText.setText("DURESS LOCK");
+        titleText.setText("WIPE LOCK");
 
 
         layout_pin.setOnClickListener(v -> {

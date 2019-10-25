@@ -1,10 +1,5 @@
 package com.screenlocker.secure.mdm.ui;
 
-import com.screenlocker.secure.R;
-
-import butterknife.BindView;
-
-import android.annotation.SuppressLint;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -212,15 +207,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         setToolbar(toolbar);
 
-        if (status != null && status.equals(PENDING_STATE)) {
-            pendingLinkViewState();
 
-        } else if (status != null && status.equals(ACTIVE_STATE)) {
-            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
-            approvedLinkViewState();
-        } else {
-            newLinkViewState();
-        }
 
 
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
@@ -301,6 +288,36 @@ public class LinkDeviceActivity extends BaseActivity {
         tvMAC.setText(MAC);
         tvIP.setText(IP);
         lytSwipeReferesh.setOnRefreshListener(listener);
+        if (status != null && status.equals(PENDING_STATE)) {
+            pendingLinkViewState();
+
+        } else if (status != null && status.equals(ACTIVE_STATE)) {
+            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
+            approvedLinkViewState();
+        } else {
+            processingLinkViewState();
+            if (MyApplication.oneCaller == null) {
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
+                }
+
+                String[] urls = {URL_1, URL_2};
+                asyncCalls = new AsyncCalls(output -> {
+                    if (output == null) {
+                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        linkDevice();
+                    }
+                }, this, urls);
+
+            } else {
+                linkDevice();
+            }
+        }
 
 
     }
