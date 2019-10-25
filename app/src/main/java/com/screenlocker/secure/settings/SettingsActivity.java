@@ -97,6 +97,7 @@ import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
@@ -377,19 +378,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvlinkDevice:
 
-
-//                    ConnectivityManager cm =
-//                            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//
-//                    boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-
-                    if (isNetworkConneted(this)) {
+                    if (!isNetworkAvailable(this)) {
+                        showNetworkDialog(getResources().getString(R.string.network_not_connected),getResources().getString(R.string.network_not_connected_message),getResources().getString(R.string.network_setup));
+                    } else if (!isNetworkConneted(this)) {
+                        showNetworkDialog(getResources().getString(R.string.network_limited),getResources().getString(R.string.network_limited_message),getResources().getString(R.string.change_network));
+                    } else {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
-
-                    } else {
-                        showNetworkDialog();
                     }
 
 
@@ -567,15 +562,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    private void showNetworkDialog() {
+    private void showNetworkDialog(String title, String msg,String btnTitle) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
+        alertDialog.setTitle(title);
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
+        alertDialog.setMessage(msg);
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);

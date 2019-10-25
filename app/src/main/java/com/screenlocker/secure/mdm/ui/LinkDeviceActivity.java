@@ -649,11 +649,11 @@ public class LinkDeviceActivity extends BaseActivity {
     boolean isPendingActivation = false;
 
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        closeTimer();
-//    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeTimer();
+    }
 
     private void closeTimer() {
         if (t != null) {

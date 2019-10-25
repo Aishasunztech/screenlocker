@@ -488,6 +488,9 @@
     <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
     <string name="reset_wipe_password">Reset WIPE Password</string>
     <string name="draw_pattern">Please Draw Pattern</string>
+    <string name="network_limited">Limited network !</string>
+    <string name="network_limited_message">Internet may not be available.</string>
+    <string name="change_network">Change Network</string>
 
     <string-array name="sort">
         <item>Total</item>

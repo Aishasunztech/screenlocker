@@ -420,6 +420,15 @@ public class CommonUtils {
         return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
     }
 
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+       return activeNetwork != null && activeNetwork.isConnected();
+
+    }
+
     public static boolean isNetworkConneted(Context context) {
         String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
         return state != null && state.equals(CONNECTED);

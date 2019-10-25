@@ -40,13 +40,14 @@ import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
@@ -234,15 +235,15 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    private void showNetworkDialog() {
+    private void showNetworkDialog(String title, String msg,String btnTitle) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
+        alertDialog.setTitle(title);
         alertDialog.setIcon(android.R.drawable.ic_dialog_info);
 
         alertDialog.setCancelable(false);
-        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
+        alertDialog.setMessage(msg);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
             Intent intent = new Intent(this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -261,10 +262,12 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     // method to handle policy menu
     private void handlePolicyMenu() {
         goToPolicyMenu = true;
-        if (CommonUtils.isNetworkConneted(this)) {
-            startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
+        if (!isNetworkAvailable(this)) {
+            showNetworkDialog(getResources().getString(R.string.network_not_connected), getResources().getString(R.string.network_not_connected_message), getResources().getString(R.string.network_setup));
+        } else if (!isNetworkConneted(this)) {
+            showNetworkDialog(getResources().getString(R.string.network_limited), getResources().getString(R.string.network_limited_message), getResources().getString(R.string.change_network));
         } else {
-            showNetworkDialog();
+            startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
         }
     }
 
