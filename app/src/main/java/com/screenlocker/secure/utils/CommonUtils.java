@@ -49,6 +49,8 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -484,21 +486,33 @@ public class CommonUtils {
         return settings;
     }
 
-    public static String getTimeString(long l) {
+    public static String getTimeString(long l)
+    {
         int seconds = (int) (l / 1000);
-        int minutes = (int) Math.floor(seconds / 60);
-        seconds = (int) Math.floor(seconds % 60);
+        int minutes = (int) Math.floor(seconds /60);
+        seconds = (int) Math.floor(seconds%60);
         String minuteString = "" + minutes;
         String secondString = "" + seconds;
 
-        if (minutes < 10) {
+        if(minutes < 10)
+        {
             minuteString = "0" + minuteString;
         }
-        if (seconds < 10) {
+        if(seconds<10)
+        {
             secondString = "0" + secondString;
         }
 
         return minuteString + ":" + secondString;
+    }
+
+    public static String currentSpace(Context context)
+    {
+        String space = PrefUtils.getStringPref(context,CURRENT_KEY);
+        if (KEY_MAIN_PASSWORD.equals(space)) {
+            return "encrypted";
+        }
+        return "guest";
     }
 
 

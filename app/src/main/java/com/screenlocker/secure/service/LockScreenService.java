@@ -108,6 +108,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
@@ -204,6 +205,7 @@ public class LockScreenService extends Service {
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
             if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
@@ -221,18 +223,18 @@ public class LockScreenService extends Service {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null) {
 
-                            installAppListener.downloadComplete(path, packageName);
+                            installAppListener.downloadComplete(path, packageName,space);
                         } else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
                         }
                         break;
                     case EXTRA_MARKET_FRAGMENT:
                         if (marketDoaLoadLister != null)
-                            marketDoaLoadLister.downloadComplete(path, packageName);
+                            marketDoaLoadLister.downloadComplete(path, packageName,space);
                         else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
 
                         }
                         break;
@@ -329,15 +331,15 @@ public class LockScreenService extends Service {
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-
+            String space = extras.getString(EXTRA_SPACE,"null");
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,space);
                     break;
             }
         }
@@ -581,7 +583,7 @@ public class LockScreenService extends Service {
         });
     }
 
-    public void startDownload(String url, String filePath, String packageName, String type) {
+    public void startDownload(String url, String filePath, String packageName, String type,String space)  {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
@@ -590,6 +592,7 @@ public class LockScreenService extends Service {
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
+        map.put(EXTRA_SPACE,space);
         Extras extras = new Extras(map);
         request.setExtras(extras);
 

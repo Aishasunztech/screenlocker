@@ -233,7 +233,7 @@ public class Utils {
         packageInstaller.uninstall(packageName, i.getIntentSender());
     }
 
-    public static void installSielentInstall(Context context, InputStream in, String packageName)
+    public static void installSielentInstall(Context context, InputStream in, String packageName,String space)
             throws IOException {
 
         PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
@@ -255,11 +255,11 @@ public class Utils {
         in.close();
         out.close();
 
-        session.commit(createIntentSender(context, sessionId, packageName));
+        session.commit(createIntentSender(context, sessionId, packageName,space));
 
     }
 
-    private static IntentSender createIntentSender(Context context, int sessionId, String packageName) {
+    private static IntentSender createIntentSender(Context context, int sessionId, String packageName,String space) {
 
 
         Intent intent = new Intent(context, AppsStatusReceiver.class);
@@ -267,7 +267,7 @@ public class Utils {
         intent.setAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra("packageName", packageName);
-        intent.putExtra("userSpace", PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY));
+        intent.putExtra("userSpace", space);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
