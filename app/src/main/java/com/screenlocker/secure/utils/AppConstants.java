@@ -112,8 +112,8 @@ public class AppConstants {
 
 
     //servers links
-    public static String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static String URL_1 = "https://api.lockmesh.com";//live SL
+        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //    public static String URL_1 = "http://192.168.0.169:3000";//local
     public static final String URL_2 = "https://securenet.guru";
@@ -128,8 +128,8 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    //    public static final String MOBILE_END_POINT = "/api/v2/mobile/";
-    public static final String MOBILE_END_POINT = "/mobile/";
+        public static final String MOBILE_END_POINT = "/api/v2/mobile/"; // dev
+//    public static final String MOBILE_END_POINT = "/mobile/"; live
 
     //available live host
     public static final String LIVE_URL = "live_url";
