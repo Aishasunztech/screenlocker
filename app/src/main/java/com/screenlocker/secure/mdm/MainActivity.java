@@ -291,6 +291,7 @@ public class MainActivity extends BaseActivity {
                                         finish();
                                         break;
                                     case EXPIRED:
+
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.suspendedDevice(MainActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
