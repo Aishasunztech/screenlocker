@@ -127,10 +127,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         sharedViwModel = ViewModelProviders.of(this).get(SharedViwModel.class);
 
         registerNetworkPref();
-        if (isNetworkConneted(SMActivity.this)) {
-            loadApps();
-        }
-
+        loadApps();
 
     }
 
@@ -656,8 +653,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void onAppsRefreshRequest() {
-        if (isNetworkConneted(SMActivity.this))
+        if (isNetworkConneted(SMActivity.this)) {
             loadApps();
+        } else{
+            sharedViwModel.setMutableMsgs(Msgs.ERROR);
+        }
     }
 
 

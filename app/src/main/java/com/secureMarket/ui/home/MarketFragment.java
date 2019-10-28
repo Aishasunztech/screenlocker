@@ -108,7 +108,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-                errorBtn.setVisibility(View.GONE);
+//                errorBtn.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.addAll(serverAppInfos);
@@ -166,7 +166,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                 if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-                    errorBtn.setVisibility(View.GONE);
+//                    errorBtn.setVisibility(View.GONE);
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -199,7 +199,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-                errorBtn.setVisibility(View.GONE);
+//                errorBtn.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }

@@ -110,7 +110,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
             if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
-                errorBtn.setVisibility(View.GONE);
+//                errorBtn.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.clear();
@@ -169,7 +169,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
                 if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-                    errorBtn.setVisibility(View.GONE);
+//                    errorBtn.setVisibility(View.GONE);
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -197,7 +197,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
             if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
-                errorBtn.setVisibility(View.GONE);
+//                errorBtn.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }
