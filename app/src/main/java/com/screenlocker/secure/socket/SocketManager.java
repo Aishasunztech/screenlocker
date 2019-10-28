@@ -371,51 +371,6 @@ public class SocketManager {
         }
     }
 
-    /**
-     * The type Net receiver.
-     */
-    public static class NetReceiver extends BroadcastReceiver {
-
-        /**
-         * The Tag.
-         */
-        public final String TAG = NetReceiver.class.getSimpleName();
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-
-            SocketManager.getInstance().fireInternetStatusIntent(
-                    isConnected ? SocketManager.STATE_CONNECTED : SocketManager.STATE_DISCONNECTED);
-            if (isConnected) {
-                if (SocketManager.getInstance().getSocket() != null
-                        && !SocketManager.getInstance().getSocket().connected()) {
-                    SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_CONNECTING);
-                }
-                PowerManager powerManager =
-                        (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                boolean isScreenOn;
-                isScreenOn = powerManager.isInteractive();
-
-                if (isScreenOn && SocketManager.getInstance().getSocket() != null) {
-                    Log.d(TAG, "NetReceiver: Connecting Socket");
-                    if (!SocketManager.getInstance().getSocket().connected()) {
-                        SocketManager.getInstance().getSocket().connect();
-                    }
-                }
-            } else {
-                SocketManager.getInstance().fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                if (SocketManager.getInstance().getSocket() != null) {
-                    Log.d(TAG, "NetReceiver: disconnecting socket");
-                    SocketManager.getInstance().getSocket().disconnect();
-                }
-            }
-        }
-    }
 
 
 }

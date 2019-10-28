@@ -14,7 +14,6 @@ import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
 import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.IOException;
@@ -27,27 +26,26 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDeviceWithMsg;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
-import static com.screenlocker.secure.utils.AppConstants.FAIL_SAFE_URL_FOR_WHITE_LABEL;
 import static com.screenlocker.secure.utils.AppConstants.FLAGGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
-import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
-import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 
 public class ApiUtils implements ApiRequests {
 
@@ -161,12 +159,19 @@ public class ApiUtils implements ApiRequests {
                                     PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, false);
                                     switch (msg) {
                                         case UNLINKED_DEVICE:
-                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, true);
-                                            utils.unlinkDevice(context, true);
+                                            utils.unlinkDeviceWithMsg(context, true, "unlinked");
                                             break;
                                         case NEW_DEVICE:
-                                            PrefUtils.saveBooleanPref(context, PENDING_ACTIVATION, true);
                                             utils.newDevice(context, true);
+                                            break;
+                                        case DUPLICATE_MAC:
+                                            utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC);
+                                            break;
+                                        case DUPLICATE_SERIAL:
+                                            utils.unlinkDeviceWithMsg(context, true, DUPLICATE_SERIAL);
+                                            break;
+                                        case DUPLICATE_MAC_AND_SERIAL:
+                                            utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC_AND_SERIAL);
                                             break;
 
                                     }
@@ -223,8 +228,8 @@ public class ApiUtils implements ApiRequests {
                                 intent.putExtra("device_status", "suspended");
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                                 break;
-                            case "unliked":
-                                unlinkDevice(context, true);
+                            case "unlinked":
+                                unlinkDeviceWithMsg(context, true,"unlinked");
                                 break;
                         }
 

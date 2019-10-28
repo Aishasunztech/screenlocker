@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -70,18 +71,22 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener, LinkDeviceActivity.OnScheduleTimerListener {
+public class MyApplication extends Application implements BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener, LinkDeviceActivity.OnScheduleTimerListener {
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
@@ -110,6 +115,78 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         return appContext;
     }
 
+
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            Timber.d("ksdklfgsmksls : " + isConnected);
+
+            Timber.d("<<< Network Status Changed >>>");
+
+            if (isConnected) {
+
+                boolean isWifiEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_WIFI_ENABLE);
+                if (!isWifiEnable) {
+                    wifimanager.setWifiEnabled(false);
+                    Toast.makeText(appContext, "Wifi is disabled by admin. ", Toast.LENGTH_SHORT).show();
+                }
+                Timber.i("------------> Network Connected");
+
+                boolean newDeviceSatatusCheck = PrefUtils.getBooleanPref(this, NEW_DEVICE_STATUS_CHECK);
+                boolean linkDeviceStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+                boolean isPendingActivation = PrefUtils.getBooleanPref(this, PENDING_ACTIVATION);
+                if (!newDeviceSatatusCheck || linkDeviceStatus || isPendingActivation) {
+
+                    if (!isPendingActivation)
+                        Timber.i(newDeviceSatatusCheck ? "---------> Device is using first time. " : "----------> Device is already linked. ");
+                    else
+                        Timber.i("-------------------> Device is in pending Activation state.");
+
+                    if (!newDeviceSatatusCheck) {
+                        PrefUtils.saveBooleanPref(this, NEW_DEVICE_STATUS_CHECK, true);
+                    }
+
+                    checkDeviceStatus();
+                }
+            } else {
+                Timber.i("----------> Network Disconnected");
+
+                if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+
+                    Timber.i("-----------> Socket service is stopping. ");
+                    Intent intent = new Intent(this, SocketService.class);
+                    stopService(intent);
+
+                } else {
+                    Timber.i("--------------> Socket Service is already stopped. ");
+                }
+            }
+        }
+    };
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -119,6 +196,8 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+
+        registerNetworkPref();
 
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
@@ -135,7 +214,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 .apply();
 
         networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
+//        networkChangeReceiver.setNetworkChangeListener(this);
 
         bluetoothChangeReceiver = new BluetoothHotSpotChangeReceiver();
         bluetoothChangeReceiver.setBluetoothListener(this);
@@ -274,57 +353,15 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     public void onTerminate() {
         unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
+//        networkChangeReceiver.unsetNetworkChangeListener();
+        unRegisterNetworkPref();
         unregisterReceiver(myAlarmBroadcastReceiver);
         unregisterReceiver(bluetoothChangeReceiver);
         super.onTerminate();
     }
 
 
-    @Override
-    public void isConnected(boolean state) {
 
-        Timber.d("<<< Network Status Changed >>>");
-
-        if (state) {
-
-            boolean isWifiEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_WIFI_ENABLE);
-            if (!isWifiEnable) {
-                wifimanager.setWifiEnabled(false);
-                Toast.makeText(appContext, "Wifi is disabled by admin. ", Toast.LENGTH_SHORT).show();
-            }
-            Timber.i("------------> Network Connected");
-
-            boolean newDeviceSatatusCheck = PrefUtils.getBooleanPref(this, NEW_DEVICE_STATUS_CHECK);
-            boolean linkDeviceStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
-            boolean isPendingActivation = PrefUtils.getBooleanPref(this, PENDING_ACTIVATION);
-            if (!newDeviceSatatusCheck || linkDeviceStatus || isPendingActivation) {
-
-                if (!isPendingActivation)
-                    Timber.i(newDeviceSatatusCheck ? "---------> Device is using first time. " : "----------> Device is already linked. ");
-                else
-                    Timber.i("-------------------> Device is in pending Activation state.");
-
-                if (!newDeviceSatatusCheck) {
-                    PrefUtils.saveBooleanPref(this, NEW_DEVICE_STATUS_CHECK, true);
-                }
-
-                checkDeviceStatus();
-            }
-        } else {
-            Timber.i("----------> Network Disconnected");
-
-            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
-
-                Timber.i("-----------> Socket service is stopping. ");
-                Intent intent = new Intent(this, SocketService.class);
-                stopService(intent);
-
-            } else {
-                Timber.i("--------------> Socket Service is already stopped. ");
-            }
-        }
-    }
 
     private void checkDeviceStatus() {
         String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
@@ -517,6 +554,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
             }
         }
     }
+
 }
 
 

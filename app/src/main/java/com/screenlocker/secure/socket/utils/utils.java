@@ -737,9 +737,9 @@ public class utils {
     }
 
 
-    public static void unlinkDevice(Context context, boolean status) {
+    public static void unlinkDeviceWithMsg(Context context, boolean status, String device_status) {
 
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, "unlinked");
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, device_status);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
         PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
@@ -751,6 +751,7 @@ public class utils {
         PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
         PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
+
 
 
         /*String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
@@ -768,7 +769,7 @@ public class utils {
         context.stopService(socketService);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
-        lockScreen.setAction("unlinked");
+        lockScreen.setAction(device_status);
 
         if (status) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -777,7 +778,7 @@ public class utils {
                 context.startService(lockScreen);
             }
         }
-        sendBroadcast(context, "unlinked");
+        sendBroadcast(context, device_status);
 
 
     }

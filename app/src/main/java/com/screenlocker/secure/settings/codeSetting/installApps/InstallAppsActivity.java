@@ -135,7 +135,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     private void getAllApps(ApiOneCaller apiOneCaller) {
         Timber.d("<<< Getting all apps from server >>> ");
 
-        if (CommonUtils.isNetworkAvailable(this)) {
+        if (CommonUtils.isNetworkConneted(this)) {
             apiOneCaller
                     .getApps()
                     .enqueue(new Callback<InstallAppModel>() {
@@ -285,7 +285,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         Timber.d("<<< On Refresh >>>");
 
-        if (CommonUtils.isNetworkAvailable(this)) {
+        if (CommonUtils.isNetworkConneted(this)) {
             refreshLocalApps(RetrofitClientInstance.getWhiteLabelInstance());
         } else {
             refreshLayout.setRefreshing(false);

@@ -294,6 +294,25 @@ public class LinkDeviceActivity extends BaseActivity {
         tvIP.setText(IP);
         lytSwipeReferesh.setOnRefreshListener(listener);
 
+        if (status != null && status.equals(PENDING_STATE)) {
+            pendingLinkViewState();
+
+        } else if (status != null && status.equals(ACTIVE_STATE)) {
+            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
+            approvedLinkViewState();
+        } else {
+            processingLinkViewState();
+            if (btnLinkDevice.getText().equals(getResources().getString(R.string.next))) {
+                setResult(RESULT_OK);
+                finish();
+            } else {
+                processingLinkViewState();
+                linkDevice(RetrofitClientInstance.getWhiteLabelInstance());
+
+            }
+        }
+
+
 
     }
 
@@ -548,7 +567,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                     case NEW_DEVICE:
                                         isPendingActivation = false;
                                         if (isLinked) {
-                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false);
                                             finish();
                                         } else {
                                             finish();

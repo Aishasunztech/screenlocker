@@ -65,7 +65,9 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 
 
 public class MainActivity extends BaseActivity {
@@ -251,11 +253,11 @@ public class MainActivity extends BaseActivity {
 
                             if (response.body().isStatus()) {
 
-                                saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
 
                                 switch (msg) {
 
                                     case ACTIVE:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -263,16 +265,19 @@ public class MainActivity extends BaseActivity {
                                         finish();
                                         break;
                                     case EXPIRED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.suspendedDevice(MainActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case SUSPENDED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.suspendedDevice(MainActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case TRIAL:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -280,6 +285,8 @@ public class MainActivity extends BaseActivity {
                                         finish();
                                         break;
                                     case PENDING:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+
 //                                        pending = true;
                                         intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
                                         startActivity(intent);
@@ -401,13 +408,14 @@ public class MainActivity extends BaseActivity {
 
     private boolean isFailSafe = false;
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
-        saveLiveUrl(isFailSafe);
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
         PrefUtils.saveStringPref(MainActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(MainActivity.this, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+        PrefUtils.saveStringPref(MainActivity.this, USER_ID, userId);
     }
+
 
     private void handleSubmit() {
 
@@ -623,6 +631,13 @@ public class MainActivity extends BaseActivity {
         loading.setVisibility(View.GONE);
         error.setVisibility(View.VISIBLE);
         error_text.setText(message);
+
+        String msg = message;
+        if (!isNetworkConneted(this)) {
+            msg = getResources().getString(R.string.please_check_network_connection);
+        }
+        error_text.setText(msg);
+
     }
 
     /**

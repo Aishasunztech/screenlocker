@@ -85,6 +85,7 @@ public class AppConstants {
 
     public static final String KEY_DISABLE_CALLS = "disable_calls";
     public static final String DEVICE_ID = "device_id";
+    public static final String USER_ID = "user_id";
     public static final String TOKEN = "token";
     public static final String DFAULT_MAC = "default_mac";
     public static final String GUEST_PATTERN = "guest_pattern";
@@ -486,6 +487,15 @@ public class AppConstants {
     public static final String NUMBER_OF_NOTIFICATIONS = "number_of_notifications";
 
     public static final String PENDING_ACTIVATION = "pending_activity";
+
+
+    public static final String OLD_DEVICE_STATUS = "old_device_status";
+
+    public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CONNECTED = "connected";
+    public static final String DISCONNECTED = "disconnected";
+    public static final String LIMITED = "limited";
+
 
 
 }

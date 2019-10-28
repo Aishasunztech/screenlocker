@@ -62,7 +62,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
-import com.secureMarket.SMActivity;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
 import com.tonyodev.fetch2.Fetch;
@@ -73,7 +72,6 @@ import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
 import com.tonyodev.fetch2core.Extras;
-import com.tonyodev.fetch2core.Func;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -95,7 +93,9 @@ import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CLIENT_SOCKET_URL;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -111,6 +111,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.REBOOT_RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
@@ -131,7 +132,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements ServiceConnectedListener, NetworkChangeReceiver.NetworkChangeListener {
+public class LockScreenService extends Service implements ServiceConnectedListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -151,7 +152,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private View view;
     private SocketManager socketManager;
 
-    private NetworkChangeReceiver networkChangeReceiver;
 
     private HashSet<String> tempAllowed = new HashSet<>();
     private HashSet<String> blacklist = new HashSet<>();
@@ -321,21 +321,50 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     private static boolean isServiceConnected = false;
 
+    private NetworkChangeReceiver networkChangeReceiver;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+            boolean isConnected = networkStatus.equals(CONNECTED);
+            if (!isConnected) {
+                destroyClientChatSocket();
+            } else {
+                connectClientChatSocket();
+            }
+        }
+    };
+
     @Override
     public void serviceConnected(boolean status) {
         isServiceConnected = status;
 //        Timber.d("access service running %s ", isServiceConnected);
     }
 
-    @Override
-    public void isConnected(boolean state) {
-        if (!state) {
-            destroyClientChatSocket();
-        } else {
-            connectClientChatSocket();
-        }
-
-    }
+//    @Override
+//    public void isConnected(boolean state) {
+//        if (!state) {
+//            destroyClientChatSocket();
+//        } else {
+//            connectClientChatSocket();
+//        }
+//
+//    }
 
     public void destroyClientChatSocket() {
         socketManager.destroyClientChatSocket();
@@ -413,6 +442,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     @Override
     public void onCreate() {
+
+        registerNetworkPref();
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
 
@@ -510,7 +541,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
+//        networkChangeReceiver.setNetworkChangeListener(this);
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -617,6 +648,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
+            unRegisterNetworkPref();
+            PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);

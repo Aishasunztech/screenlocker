@@ -27,6 +27,9 @@ import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AlarmReceiver;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
+import com.screenlocker.secure.service.OfflineExpiryAlarm;
+import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.io.ByteArrayOutputStream;
@@ -44,7 +47,9 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IS_LOCALE_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -429,6 +434,26 @@ public class CommonUtils {
     }
 
 
+    /**
+     * @param alarmType 0 for offline expiry 1 for socket and network connection checker
+     */
+    public static void setAlarmManager(Context context, long timeInMillis, int alarmType) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = null;
+
+        if (alarmType == 0) {
+            intent = new Intent(context, OfflineExpiryAlarm.class);
+        } else if (alarmType == 1) {
+            intent = new Intent(context, NetworkSocketAlarm.class);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+    }
+
+
+
     public static List<Settings> getDefaultSetting(Context context) {
         List<Settings> settings = new ArrayList<>();
         DevicePolicyManager mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -492,5 +517,15 @@ public class CommonUtils {
         }
         return "guest";
     }
+
+    public static boolean isSocketConnected() {
+        return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
+    }
+
+    public static boolean isNetworkConneted(Context context) {
+        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+        return state != null && state.equals(CONNECTED);
+    }
+
 
 }

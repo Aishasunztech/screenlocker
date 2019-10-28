@@ -401,6 +401,9 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".service.OfflineExpiryAlarm" />
+        <receiver android:name=".service.NetworkSocketAlarm" />
+
         <service
             android:name=".service.apps.WindowChangeDetectingService"
             android:label="@string/app_name"

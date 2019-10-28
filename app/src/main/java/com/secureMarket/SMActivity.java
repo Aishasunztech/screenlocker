@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -35,6 +36,7 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
@@ -72,15 +74,20 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.CommonUtils.currentSpace;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.secureMarket.MarketUtils.savePackages;
 
 public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
@@ -119,14 +126,9 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         tabs.setupWithViewPager(viewPager);
         sharedViwModel = ViewModelProviders.of(this).get(SharedViwModel.class);
 
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
-        //Log.d("ConnectedDealer",dealerId);
-        if (dealerId == null || dealerId.equals("")) {
-            //   getAdminApps();
-            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
-        } else {
-            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
-            // getAllApps(dealerId);
+        registerNetworkPref();
+        if (isNetworkConneted(SMActivity.this)) {
+            loadApps();
         }
 
 
@@ -574,6 +576,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
+        unRegisterNetworkPref();
     }
 
     @Override
@@ -653,15 +656,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void onAppsRefreshRequest() {
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
-        //Log.d("ConnectedDealer",dealerId);
-        if (dealerId == null || dealerId.equals("")) {
-            //   getAdminApps();
-            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
-        } else {
-            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
-            // getAllApps(dealerId);
-        }
+        if (isNetworkConneted(SMActivity.this))
+            loadApps();
     }
 
 
@@ -785,4 +781,55 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     public void onAppsRefresh() {
 
     }
+
+
+    private void loadApps() {
+        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
+        //Log.d("ConnectedDealer",dealerId);
+        if (dealerId == null || dealerId.equals("")) {
+            //   getAdminApps();
+            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
+        } else {
+            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
+            // getAllApps(dealerId);
+        }
+    }
+
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            Timber.d("ksdklfgsmksls : " + isConnected);
+
+            if (isConnected) {
+                loadApps();
+            } else {
+                sharedViwModel.setMutableMsgs(Msgs.ERROR);
+            }
+        }
+    };
+
+
 }

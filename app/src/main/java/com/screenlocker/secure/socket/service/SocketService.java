@@ -63,7 +63,7 @@ import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.syncDevice;
 import static com.screenlocker.secure.socket.utils.utils.unSuspendDevice;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDeviceWithMsg;
 import static com.screenlocker.secure.socket.utils.utils.updateAppsList;
 import static com.screenlocker.secure.socket.utils.utils.updateExtensionsList;
 import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
@@ -669,7 +669,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                     case "unlinked":
                                         Timber.d("<<< device unlinked >>>");
-                                        unlinkDevice(SocketService.this, true);
+                                        unlinkDeviceWithMsg(SocketService.this, true);
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
