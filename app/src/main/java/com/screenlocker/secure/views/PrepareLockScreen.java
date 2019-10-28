@@ -44,6 +44,9 @@ import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
 import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -262,64 +265,105 @@ public class PrepareLockScreen {
 
             } else {
                 String dev_id = PrefUtils.getStringPref(context, DEVICE_ID);
-                if (status.equals("suspended")) {
-                    if (dev_id != null) {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, dev_id));
-                        // mPatternLockView.setInputEnabled(false);
+
+                    switch (status) {
+                        case "suspended":
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, dev_id));
+                                // mPatternLockView.setInputEnabled(false);
 //                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
 
 
-                    } else {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
-                        //mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                                //mPatternLockView.setInputEnabled(false);
 
-                    }
-                } else if (status.equals("expired")) {
-                    if (dev_id != null) {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, dev_id));
-                        //mPatternLockView.setInputEnabled(false);
+                            }
+                            break;
+                        case "expired":
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, dev_id));
+                                //mPatternLockView.setInputEnabled(false);
 
-                    } else {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
-                        //mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+                                //mPatternLockView.setInputEnabled(false);
 
 
-                    }
-                } else if (status.equals("unlinked")) {
-                    if (dev_id != null) {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, dev_id));
-                        mPatternLockView.setInputEnabled(false);
-                    } else {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, "N/A"));
-                        mPatternLockView.setInputEnabled(false);
-                    }
+                            }
+                            break;
+                        case "unlinked":
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, dev_id));
+                                mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                                mPatternLockView.setInputEnabled(false);
+                            }
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
-                } else if (status.equals("flagged")) {
-                    txtWarning.setVisibility(VISIBLE);
-                    txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
-                    mPatternLockView.setInputEnabled(false);
-                }else if(status.equals("transfered"))
-                {
-                    if (dev_id != null) {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, dev_id));
-                        mPatternLockView.setInputEnabled(false);
-                    } else {
-                        txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, "N/A"));
-                        mPatternLockView.setInputEnabled(false);
+                            break;
+                        case "flagged":
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
+                            mPatternLockView.setInputEnabled(false);
+                            break;
+                        case "transfered":
+
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, dev_id));
+                                mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, "N/A"));
+                                mPatternLockView.setInputEnabled(false);
+                            }
+                            break;
+
+                        case DUPLICATE_MAC:
+
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error_321) + dev_id + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error_321) + "N/A" + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            }
+
+
+                            break;
+                        case DUPLICATE_SERIAL:
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error_322) + dev_id + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error_322) + "N/A" + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            }
+                            break;
+                        case DUPLICATE_MAC_AND_SERIAL:
+                            if (dev_id != null) {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error323) + dev_id + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            } else {
+                                txtWarning.setVisibility(VISIBLE);
+                                txtWarning.setText(context.getResources().getString(R.string.error323) + "N/A" + context.getResources().getString(R.string.contact_support));
+                                mPatternLockView.setInputEnabled(false);
+                            }
+                            break;
                     }
-
                 }
-
-
-            }
 
         });
 
@@ -517,6 +561,42 @@ public class PrepareLockScreen {
                 txtWarning.setVisibility(VISIBLE);
                 txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
                 patternLockView.setInputEnabled(false);
+                break;
+            case DUPLICATE_MAC:
+
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_321) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_321) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+
+
+                break;
+            case DUPLICATE_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_322) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error_322) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+                break;
+            case DUPLICATE_MAC_AND_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error323) + finalDevice_id1 + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(context.getResources().getString(R.string.error323) + "N/A" + context.getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
                 break;
 
         }

@@ -567,7 +567,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                     case NEW_DEVICE:
                                         isPendingActivation = false;
                                         if (isLinked) {
-                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false);
+                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, "unlinked");
                                             finish();
                                         } else {
                                             finish();

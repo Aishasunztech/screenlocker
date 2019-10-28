@@ -669,7 +669,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                         break;
                                     case "unlinked":
                                         Timber.d("<<< device unlinked >>>");
-                                        unlinkDeviceWithMsg(SocketService.this, true);
+                                        unlinkDeviceWithMsg(SocketService.this, true, "unlinked");
                                         break;
                                     case "wiped":
                                         Timber.d("<<< device wiped >>>");
