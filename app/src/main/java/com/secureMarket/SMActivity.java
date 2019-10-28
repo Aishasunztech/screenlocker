@@ -19,18 +19,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Switch;
 import android.widget.Toast;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -48,8 +37,6 @@ import com.screenlocker.secure.service.DownloadServiceCallBacks;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
-import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -77,6 +64,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -99,7 +94,6 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
-import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 public class SMActivity extends BaseActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
@@ -156,9 +150,8 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
 
         registerNetworkPref();
-        if (isNetworkConneted(SMActivity.this)) {
             loadApps();
-        }
+
 
 
     }
@@ -669,8 +662,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
     @Override
     public void onAppsRefreshRequest() {
-        if (isNetworkConneted(SMActivity.this))
+        if (isNetworkConneted(SMActivity.this)) {
             loadApps();
+        }
+        else{
+            sharedViwModel.setMutableMsgs(Msgs.ERROR);
+        }
     }
 
 
