@@ -11,7 +11,6 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DISCONNECTED;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
@@ -28,9 +27,9 @@ public class NetworkSocketAlarm extends BroadcastReceiver {
                 new CheckInternetTask(data -> PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED)).execute();
             }
 
-            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+//            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
                 setAlarmManager(context, System.currentTimeMillis() + 1500L, 1);
-            }
+//            }
 
         } else {
             PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, DISCONNECTED);

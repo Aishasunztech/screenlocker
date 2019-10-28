@@ -34,11 +34,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
@@ -84,6 +79,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import timber.log.Timber;
 
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
@@ -692,8 +691,6 @@ public class LockScreenService extends Service {
                     case DUPLICATE_SERIAL:
                     case DUPLICATE_MAC_AND_SERIAL:
                     case "flagged":
-                        startLockScreen(true);
-                        break;
                     case "transfered":
                         startLockScreen(true);
                         break;

@@ -26,7 +26,7 @@
       </configuration>
     </facet>
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\debug\kotlin;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\debug\java;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\release\kotlin;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\release\java;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\debugAndroidTest\kotlin;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\debugUnitTest\kotlin;C:\Users\Abdul Razzaq\Downloads\Projects\screenlocker\sfm\src\releaseUnitTest\kotlin">
+      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\debug\kotlin;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\debug\java;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\release\kotlin;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\release\java;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\debugAndroidTest\kotlin;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\debugUnitTest\kotlin;C:\Users\Abdul Razzaq\Desktop\screenlocker\sfm\src\releaseUnitTest\kotlin">
         <compilerSettings>
           <option name="additionalArguments" value="-Xallow-no-source-files" />
         </compilerSettings>
