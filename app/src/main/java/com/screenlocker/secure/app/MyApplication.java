@@ -196,7 +196,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
         wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
         registerNetworkPref();
 
         CaocConfig.Builder.create()

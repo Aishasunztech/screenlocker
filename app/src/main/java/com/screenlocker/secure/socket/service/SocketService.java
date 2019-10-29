@@ -8,8 +8,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -27,6 +29,7 @@ import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.manual_load.DownloadCompleteListener;
 import com.screenlocker.secure.manual_load.DownloadPushedApps;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
@@ -75,6 +78,8 @@ import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
 import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
@@ -99,6 +104,7 @@ import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
@@ -119,10 +125,12 @@ import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.getNotification;
 
 public class SocketService extends Service implements OnSocketConnectionListener, SocketEvents {
 
+    private SharedPreferences sharedPref;
     private SocketManager socketManager;
     private static final String TAG = "SocketServiceII";
 
@@ -132,6 +140,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
         return localBinder;
     }
+
 
 
     public interface PolicyResponse {
@@ -277,7 +286,6 @@ public class SocketService extends Service implements OnSocketConnectionListener
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             String action = intent.getAction();
-
             String token = PrefUtils.getStringPref(SocketService.this, TOKEN);
             device_id = PrefUtils.getStringPref(SocketService.this, DEVICE_ID);
 

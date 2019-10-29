@@ -109,7 +109,8 @@ public class SocketManager {
                 opts.secure = true;
                 opts.query = "device_id=" + device_id + "&token=" + token;
 
-                socket = IO.socket(url.replaceAll("/mobile/", ""), opts);
+                Timber.i(url.replaceAll("/api/v2/mobile/", ""));
+                socket = IO.socket(url.replaceAll("/api/v2/mobile/", ""), opts);
 
                 socket.on(Socket.EVENT_CONNECT, args -> {
                     fireSocketStatus(SocketManager.STATE_CONNECTED);

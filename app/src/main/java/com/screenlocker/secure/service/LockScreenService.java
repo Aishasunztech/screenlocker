@@ -375,10 +375,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         if (deviceId == null) {
             String serialNumber = DeviceIdUtils.getSerialNumber();
-            Log.d("serialslkdj", serialNumber);
             deviceId = DeviceIdUtils.getSerialNumber();
         }
-        Log.d("lkashdf", deviceId);
         socketManager.connectClientChatSocket(deviceId, CLIENT_SOCKET_URL);
     }
 

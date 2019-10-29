@@ -86,6 +86,7 @@ import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -144,6 +145,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private ProgressBar progressBar;
 
     private Dialog aboutDialog = null, accountDialog = null;
+    private AlertDialog limitedDialog;
 
 
     public static String splitName(String s) {
@@ -182,9 +184,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     if (!isSocketConnected()) {
                         new ApiUtils(SettingsActivity.this, macAddress, serialNo);
                     }
+
+                    if(limitedDialog != null && limitedDialog.isShowing())
+                    {
+                        limitedDialog.dismiss();
+                        Intent linkedIntent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
+                        startActivity(linkedIntent);
+                    }
                 } else {
                     stopService(intent);
-
                 }
 
             }
@@ -351,6 +359,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.toolbar_title);
+        String deviceId = PrefUtils.getStringPref(this,DEVICE_ID);
+        if(deviceId != null && !deviceId.equals(""))
+        {
+            getSupportActionBar().setSubtitle(getResources().getString(R.string.device_id) + ":" + deviceId);
+        }
+
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
     }
 
@@ -390,11 +404,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvlinkDevice:
 
-                    if (!isNetworkAvailable(this)) {
+                    if (!isNetworkConneted(this)) {
                         showNetworkDialog(getResources().getString(R.string.network_not_connected),getResources().getString(R.string.network_not_connected_message),getResources().getString(R.string.network_setup));
-                    } else if (!isNetworkConneted(this)) {
-                        showNetworkDialog(getResources().getString(R.string.network_limited),getResources().getString(R.string.network_limited_message),getResources().getString(R.string.change_network));
-                    } else {
+                    }
+//                    else if (!isNetworkConneted(this)) {
+//                        showNetworkDialog(getResources().getString(R.string.network_limited),getResources().getString(R.string.network_limited_message),getResources().getString(R.string.change_network));
+//                    }
+                    else {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
                     }
@@ -625,13 +641,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void showNetworkDialog(String title, String msg,String btnTitle) {
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(title);
-        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+        limitedDialog = new AlertDialog.Builder(this).create();
+        limitedDialog.setTitle(title);
+        limitedDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage(msg);
+        limitedDialog.setMessage(msg);
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
+        limitedDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -640,9 +656,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
+        limitedDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
                 (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
+        limitedDialog.show();
 
     }
 
