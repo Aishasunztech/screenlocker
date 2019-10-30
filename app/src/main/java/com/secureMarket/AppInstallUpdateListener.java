@@ -12,4 +12,6 @@ public interface AppInstallUpdateListener {
 
     void onUnInstallClick(ServerAppInfo app, boolean status);
     void onAppsRefreshRequest();
+
+    void onCancelClick(String request_id);
 }

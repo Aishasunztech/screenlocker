@@ -12,21 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -48,6 +38,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -310,7 +310,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
 
 
         int index = IntStream.range(0, appModelServerAppInfo.size())
@@ -320,6 +320,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .orElse(-1);
         if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
+            info.setRequest_id(requestId);
             info.setProgres(progress);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
@@ -373,6 +374,21 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             mAdapter.updateProgressOfItem(info, index);
         }
 
+    }
+
+    @Override
+    public void onDownloadCancelled(String packageName) {
+        int index = IntStream.range(0, appModelServerAppInfo.size())
+                .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
+                .filter(i -> packageName.equals(appModelServerAppInfo.get(i).getPackageName()))
+                .findFirst()
+                .orElse(-1);
+        if (index != -1) {
+            ServerAppInfo info = appModelServerAppInfo.get(index);
+            info.setProgres(0);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
+            mAdapter.updateProgressOfItem(info, index);
+        }
     }
 
     private void showInstallDialog(File file, String packageName,String space) {
@@ -454,6 +470,12 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app.getPackageName()));
         startActivity(intent);
+    }
+
+    @Override
+    public void onCancelClick(String requestId) {
+        Log.d("lkadfh","activiycancel" + requestId);
+        mService.cancelDownload(requestId);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
