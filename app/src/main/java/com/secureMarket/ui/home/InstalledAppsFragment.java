@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,6 +152,13 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     @Override
     public void onAppsRefreshRequest() {
         //not for this app
+    }
+
+    @Override
+    public void onCancelClick(String requestId) {
+        Log.d("lkdfh","FragmentClicked");
+
+        mListener.onCancelClick(requestId);
     }
 
 

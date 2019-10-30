@@ -380,7 +380,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
+    public void onDownLoadProgress(String pn, int progress,long speed, String requestId,String space) {
 
             int index = IntStream.range(0, appModelServerAppInfo.size())
                     .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
@@ -390,6 +390,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             if (index != -1) {
                 ServerAppInfo info = appModelServerAppInfo.get(index);
                 info.setProgres(progress);
+                info.setRequest_id(requestId);
                 info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
                 info.setSpeed(speed);
                 mAdapter.updateProgressOfItem(info, index);
@@ -443,6 +444,21 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             mAdapter.updateProgressOfItem(info, index);
         }
 
+    }
+
+    @Override
+    public void onDownloadCancelled(String packageName) {
+        int index = IntStream.range(0, appModelServerAppInfo.size())
+                .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
+                .filter(i -> packageName.equals(appModelServerAppInfo.get(i).getPackageName()))
+                .findFirst()
+                .orElse(-1);
+        if (index != -1) {
+            ServerAppInfo info = appModelServerAppInfo.get(index);
+            info.setProgres(0);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
+            mAdapter.updateProgressOfItem(info, index);
+        }
     }
 
     private void showInstallDialog(File file, String packageName,String space) {
@@ -519,6 +535,11 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app.getPackageName()));
         startActivity(intent);
+    }
+
+    @Override
+    public void onCancelClick(String requestId) {
+        mService.cancelDownload(requestId);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

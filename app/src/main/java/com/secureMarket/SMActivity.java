@@ -220,17 +220,17 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     };
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed,String space) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
 
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
 
                 if (fragment != null) {
-                    fragment.onDownLoadProgress(pn, progress, speed);
+                    fragment.onDownLoadProgress(pn, progress,requestId, speed);
                 }
                 if (fragment1 != null) {
-                    fragment1.onDownLoadProgress(pn, progress, speed);
+                    fragment1.onDownLoadProgress(pn, progress,requestId, speed);
                 }
 
         }
@@ -307,6 +307,20 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 //            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
 //            uninstalledAdapter.updateProgressOfItem(info, index);
 //        }
+    }
+
+    @Override
+    public void onDownloadCancelled(String packageName) {
+        if (sectionsPagerAdapter != null) {
+            MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
+            if (fragment != null) {
+                fragment.onDownloadCancelled(packageName);
+            }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.onDownloadCancelled(packageName);
+            }
+        }
     }
 
     //connection to download service
@@ -658,6 +672,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         } else{
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
+    }
+
+    @Override
+    public void onCancelClick(String requestId) {
+        mService.cancelDownload(requestId);
     }
 
 

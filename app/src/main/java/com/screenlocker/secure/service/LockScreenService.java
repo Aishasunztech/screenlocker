@@ -72,6 +72,7 @@ import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
 import com.tonyodev.fetch2core.Extras;
+import com.tonyodev.fetch2core.Func;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -105,6 +106,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST_ID_SAVED;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -271,15 +273,16 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
             String space = extras.getString(EXTRA_SPACE,"null");
+            String request_id = extras.getString(EXTRA_REQUEST_ID_SAVED,"null");
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,space);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,space);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
                     break;
             }
         }
@@ -298,7 +301,24 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             File file = new File(download.getFile());
             file.delete();
 
-            Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+            Extras extras = download.getExtras();
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME,"null");
+            if(packageName != null && !packageName.equals("null")) {
+                switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                    case EXTRA_INSTALL_APP:
+                        if (installAppListener != null)
+                            installAppListener.onDownloadCancelled(packageName);
+
+                        break;
+                    case EXTRA_MARKET_FRAGMENT:
+                        if (marketDoaLoadLister != null)
+                            marketDoaLoadLister.onDownloadCancelled(packageName);
+
+                        break;
+                }
+                Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+
+            }
         }
 
         @Override
@@ -599,6 +619,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
         map.put(EXTRA_SPACE,space);
+        map.put(EXTRA_REQUEST_ID_SAVED,String.valueOf(request.getId()));
         Extras extras = new Extras(map);
         request.setExtras(extras);
 
@@ -613,9 +634,11 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
 
-    public void cancelDownload() {
-        if (downloadId != 0)
-            fetch.cancel(downloadId);
+    public void cancelDownload(String request_id) {
+        if(request_id != null && !request_id.equals("null"))
+        {
+            fetch.cancel(Integer.parseInt(request_id));
+        }
     }
 
     private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;

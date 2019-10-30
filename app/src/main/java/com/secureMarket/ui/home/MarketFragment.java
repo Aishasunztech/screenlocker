@@ -157,6 +157,11 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         //not for this fragment
     }
 
+    @Override
+    public void onCancelClick(String requestId) {
+        mListener.onCancelClick(requestId);
+    }
+
 
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
@@ -217,7 +222,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
     }
 
 
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, String requestId,long speed) {
         Timber.d("onDownLoadProgress: " + pn);
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
@@ -226,9 +231,25 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                 .orElse(-1);
         if (index != -1) {
             ServerAppInfo info = installedApps.get(index);
+            info.setRequest_id(requestId);
             info.setProgres(progress);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
+            installedAdapter.updateProgressOfItem(info, index);
+        }
+
+    }
+
+    public void onDownloadCancelled(String packageName)
+    {int index = IntStream.range(0, installedApps.size())
+            .filter(i -> Objects.nonNull(installedApps.get(i)))
+            .filter(i -> packageName.equals(installedApps.get(i).getPackageName()))
+            .findFirst()
+            .orElse(-1);
+
+        if (index != -1) {
+            ServerAppInfo info = installedApps.get(index);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
             installedAdapter.updateProgressOfItem(info, index);
         }
 

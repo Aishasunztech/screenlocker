@@ -1,11 +1,13 @@
 package com.secureMarket;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -93,11 +95,13 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         holder.tv_name.setText(appModelServerAppInfo.get(position).getApkName());
 
         if (app.getType() == ServerAppInfo.PROG_TYPE.GONE) {
-            holder.progressBar.setVisibility(View.GONE);
+//            holder.progressBar.setVisibility(View.GONE);
+            holder.progress_container.setVisibility(View.GONE);
             holder.status.setVisibility(View.GONE);
             holder.btnInstall.setEnabled(true);
         } else if (app.getType() == ServerAppInfo.PROG_TYPE.VISIBLE) {
-            holder.progressBar.setVisibility(View.VISIBLE);
+//            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progress_container.setVisibility(View.VISIBLE);
             holder.progressBar.setProgress(app.getProgres());
             holder.progressBar.setIndeterminate(false);
             holder.status.setVisibility(View.VISIBLE);
@@ -106,13 +110,16 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         } else if (app.getType() == ServerAppInfo.PROG_TYPE.LOADING) {
             holder.status.setText("Pending Installation");
             holder.status.setVisibility(View.VISIBLE);
-            holder.progressBar.setVisibility(View.VISIBLE);
+//            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progress_container.setVisibility(View.VISIBLE);
+
             holder.progressBar.setIndeterminate(true);
             holder.btnInstall.setEnabled(false);
         } else {
             holder.status.setText("Installation...");
             holder.status.setVisibility(View.VISIBLE);
-            holder.progressBar.setVisibility(View.VISIBLE);
+//            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progress_container.setVisibility(View.VISIBLE);
             holder.progressBar.setIndeterminate(true);
             holder.btnInstall.setEnabled(false);
         }
@@ -132,11 +139,12 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        ImageView imageView;
+        ImageView imageView,cancel_download;
 
         TextView tv_name, apkSize, status;
         Button btnInstall, btnUninstall, btnUpdate;
         ProgressBar progressBar;
+        LinearLayout progress_container;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -149,9 +157,12 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             apkSize = itemView.findViewById(R.id.apkSize);
             progressBar = itemView.findViewById(R.id.progress);
             status = itemView.findViewById(R.id.status);
+            progress_container = itemView.findViewById(R.id.progress_container);
+            cancel_download = itemView.findViewById(R.id.cancel_download);
             btnInstall.setOnClickListener(this);
             btnUninstall.setOnClickListener(this);
             btnUpdate.setOnClickListener(this);
+            cancel_download.setOnClickListener(this);
         }
 
         @Override
@@ -213,6 +224,10 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                         break;
                 }
 
+            }else if(v.getId() == R.id.cancel_download)
+            {
+                Log.d("lkdfh","ButtonLCicked" + app.getRequest_id());
+               listener.onCancelClick(app.getRequest_id());
             }
 
         }
