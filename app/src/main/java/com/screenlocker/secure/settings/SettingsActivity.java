@@ -362,10 +362,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         String deviceId = PrefUtils.getStringPref(this,DEVICE_ID);
         if(deviceId != null && !deviceId.equals(""))
         {
-            getSupportActionBar().setSubtitle(getResources().getString(R.string.device_id) + ":" + deviceId);
+            getSupportActionBar().setSubtitle("Device ID: " + deviceId);
         }
 
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -404,7 +404,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvlinkDevice:
 
-                    if (!isNetworkConneted(this)) {
+                    if (!isNetworkAvailable(this)) {
                         showNetworkDialog(getResources().getString(R.string.network_not_connected),getResources().getString(R.string.network_not_connected_message),getResources().getString(R.string.network_setup));
                     }
 //                    else if (!isNetworkConneted(this)) {

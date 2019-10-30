@@ -15,8 +15,6 @@ public interface Nextable {
 
     void onSkip();
 
-    void onPrevious();
-
     String optional();
 
     String error();
@@ -24,6 +22,5 @@ public interface Nextable {
     boolean isSkipable();
 
     boolean isPreviousAllow();
-
 
 }

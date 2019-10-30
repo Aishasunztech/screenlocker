@@ -54,11 +54,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
-        android:contentDescription="sm"
-        android:elevation="@dimen/_8sdp"
         android:padding="@dimen/_18sdp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_capture"
+        android:contentDescription="sm"
+        android:elevation="@dimen/_8sdp"
         android:stateListAnimator="@null"
         app:layout_constraintBottom_toBottomOf="@+id/patternLock"
         app:layout_constraintRight_toRightOf="@+id/patternLock" />
@@ -97,7 +97,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/patternLock" />
+            app:layout_constraintTop_toBottomOf="@id/patternLock"
+
+            />
     </LinearLayout>
 
 
@@ -126,19 +128,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
-        android:elevation="@dimen/_2sdp"
+        app:layout_constraintTop_toTopOf="@+id/t9_unlock"
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
         android:shadowColor="#000000"
         android:shadowDx="5"
         android:shadowDy="5"
+        android:elevation="@dimen/_2sdp"
         android:shadowRadius="5"
         android:text="@string/btn_backspace"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
-        app:layout_constraintLeft_toLeftOf="@id/patternLock"
-        app:layout_constraintTop_toTopOf="@+id/t9_unlock" />
+        app:layout_constraintLeft_toLeftOf="@id/patternLock" />
+
+    <com.screenlocker.secure.settings.managepassword.NCodeView
+        android:id="@+id/codeView"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/patternLock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtWarning" />
 
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"

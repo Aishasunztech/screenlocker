@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -427,6 +428,7 @@ public class MainActivity extends
         rvApps.scheduleLayoutAnimation();
     }
 
+    @SuppressLint("ResourceType")
     private void setBackground(String message) {
 
         try {
@@ -436,35 +438,28 @@ public class MainActivity extends
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw._12321).apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(background);
-//                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
-//                        background.setImageResource(R.raw.audiblack);
+                        background.setImageResource(R.raw._1239);
 
                     } else {
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
-//                        background.setImageResource(Integer.parseInt(bg));
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
-//                        background.setImageResource(R.raw.texture);
-                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.texture);
 
                     } else {
-//                        background.setImageResource(Integer.parseInt(bg));
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
 
                 } else {
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_GUEST_IMAGE);
+                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-//                        background.setImageResource(R.raw.tower);
-                        Glide.with(MainActivity.this).load(R.raw._12318).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw._12318);
 
                     } else {
-//                        background.setImageResource(Integer.parseInt(bg));
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 }
             }
@@ -473,6 +468,7 @@ public class MainActivity extends
 
 
     }
+
 
 
     /**

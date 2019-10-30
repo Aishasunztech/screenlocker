@@ -40,7 +40,7 @@ public class PatternActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Guest Pattern");
                 message.setText("Please Draw Pattern");
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
-                getSupportActionBar().setTitle("Duress Pattern");
+                getSupportActionBar().setTitle("Wipe Pattern");
                 message.setText("Please Draw Pattern");
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_MAIN)) {
                 getSupportActionBar().setTitle("Encrypted Pattern");

@@ -36,6 +36,8 @@ import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+
 public class InstalledAppsFragment extends Fragment implements AppInstallUpdateListener {
 
 
@@ -103,7 +105,10 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Apps Installed");
-//                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.addAll(serverAppInfos);
@@ -162,7 +167,10 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                 if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-//                    errorBtn.setVisibility(View.GONE);
+                    if(isNetworkAvailable(getActivity()))
+                    {
+                        errorBtn.setVisibility(View.GONE);
+                    }
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -225,7 +233,10 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-//                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }

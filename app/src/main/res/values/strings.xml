@@ -38,13 +38,13 @@
     <string name="password_changed">password changed</string>
     <string name="password_not_changed">password not changed</string>
     <string name="hint_please_enter_guest_pin">Please enter guest pin</string>
-    <string name="hint_please_enter_duress_pin">Please enter duress pin</string>
+    <string name="hint_please_enter_duress_pin">Please enter wipe pin</string>
     <string name="hint_please_confirm_your_pin">Please confirm your pin</string>
     <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
     <string name="empty">Password field is empty.</string>
     <string name="password_dont_match">Password don\'t match.</string>
     <string name="set_guest_code">Guest Pin Code</string>
-    <string name="set_duress_code">Duress Pin Code</string>
+    <string name="set_duress_code">Wipe Pin Code</string>
     <string name="set_encrypted_code">Encrypted Pin Code</string>
     <string name="set_background_for">Set Background for</string>
     <string name="guest_all">Turn ON Guest ALL</string>
@@ -52,7 +52,7 @@
     <string name="enable_all">Enable All</string>
     <string name="please_enter_current_guest_password">Please enter current Guest password.</string>
     <string name="please_enter_current_encrypted_password">Please enter current Encrypted password.</string>
-    <string name="please_enter_current_duress_password">Please enter current Duress password.</string>
+    <string name="please_enter_current_duress_password">Please enter current Wipe password.</string>
     <string name="check_for_updates"><u>Check for updates</u></string>
     <string name="set_code_pin">Set code pin</string>
     <string name="hint_please_enter_code_pin">Please enter code pin</string>
@@ -68,7 +68,7 @@
 
     // MDM strings
 
-    <string name="set_duress_pass">Set Duress Password</string>
+    <string name="set_duress_pass">Set Wipe Password</string>
     <string name="no_internet">Internet not available</string>
     <string name="processing">Activating device please wait.</string>
     <string name="submit">Submit</string>
@@ -150,7 +150,7 @@
     <string name="invalid_password_title">Invalid Password</string>
     <string name="invalid_password_message">The password you entered is incorrect.</string>
     <string name="duress_password_warning">Warning!</string>
-    <string name="duress_password_message">Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
+    <string name="duress_password_message">Entering Wipe Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
     <string name="ok_text">Ok</string>
     <string name="cancel_text">Cancel</string>
     <string name="password_changed_title">Password Changed!</string>
@@ -182,7 +182,7 @@
     <string name="guest_wallpaper">Guest Wallpaper</string>
     <string name="encrypted_wallpaper">Encrypted Wallpaper</string>
     <string name="lock_screen_image">Lock Screen Image</string>
-    <string name="duress_pin_disabled">Duress PIN Disabled</string>
+    <string name="duress_pin_disabled">Wipe PIN Disabled</string>
     <string name="password_taken">This password is taken please try again</string>
     <string name="wallpapers_title">Wallpapers</string>
     <string name="bg_set_encrypted">Background set for encrypted</string>
@@ -304,9 +304,9 @@
     <string name="please_set_encrypted_password">Please Set Encrypted Password</string>
     <string name="encrypted_password">Encrypted Password</string>
     <string name="set_skip_password">Please Set or Skip Password</string>
-    <string name="duress_pin">Duress Pin</string>
+    <string name="duress_pin">Wipe Pin</string>
     <string name="warning">Warning!</string>
-    <string name="duress_pin_message">Entering Duress Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
+    <string name="duress_pin_message">Entering Wipe Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
     <string name="please_link_skip">Please Link Device or Skip</string>
     <string name="set_as_default_launcher">Please Set as Default Launcher</string>
     <string name="default_launcher_set">Default Launcher set</string>
@@ -492,6 +492,9 @@
     <string name="network_limited">Limited network !</string>
     <string name="network_limited_message">Internet may not be available.</string>
     <string name="change_network">Change Network</string>
+
+    <string name="reset_wipe_password">Reset WIPE Password</string>
+
 
 
     <string name="reboot_your_device">Please restart your device.</string>

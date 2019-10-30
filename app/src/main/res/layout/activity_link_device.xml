@@ -55,6 +55,7 @@
                 android:text="@string/link_device" />
         </LinearLayout>
 
+
         <LinearLayout
             android:id="@+id/linked_container"
             android:layout_width="match_parent"
@@ -85,6 +86,14 @@
 
             <TextView
                 android:id="@+id/tv_linked_dealerPin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:layout_marginTop="30dp"/>
+            <TextView
+                android:id="@+id/tv_linked_deviceId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"

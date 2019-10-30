@@ -36,6 +36,8 @@ import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -108,7 +110,10 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-//                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.addAll(serverAppInfos);
@@ -166,7 +171,10 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                 if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-//                    errorBtn.setVisibility(View.GONE);
+                    if(isNetworkAvailable(getActivity()))
+                    {
+                        errorBtn.setVisibility(View.GONE);
+                    }
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -199,7 +207,10 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-//                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }

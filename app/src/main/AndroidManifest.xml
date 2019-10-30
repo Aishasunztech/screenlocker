@@ -160,6 +160,9 @@
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".settings.managepassword.VerifyComboPassword"></activity>
+        <activity android:name=".settings.managepassword.CombinationLockActivity" />
         <activity
             android:name="com.liveClientChat.LiveClientChatActivity"
             android:screenOrientation="portrait" />
@@ -185,7 +188,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" /> <!-- <activity-alias -->
+            android:windowSoftInputMode="adjustPan"
+            /> <!-- <activity-alias -->
         <activity
             android:name=".settings.managepassword.SetUpLockActivity"
             android:screenOrientation="portrait"

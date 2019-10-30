@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.screenlocker.secure.utils.AppConstants.ENCRYPT_PASSORD_OPTION;
+import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 import static com.screenlocker.secure.utils.Utils.hideKeyboard;
@@ -68,7 +69,7 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         tittleIcon.setImageResource(R.drawable.ic_encrypted_third);
-        titleText.setText("Encrypt SPACE LOCK");
+        titleText.setText("ENCRYPT SPACE LOCK");
 
 
         layout_pin.setOnClickListener(v -> {
@@ -86,7 +87,9 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
 
         });
         layout_combination.setOnClickListener(v -> {
-            Toast.makeText(MyApplication.getAppContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_COMBO);
+            isSelected = true;
+            mListener.onPageUpdate(4);
         });
     }
 
@@ -97,11 +100,6 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
 
     @Override
     public boolean isSkipable() {
-        return false;
-    }
-
-    @Override
-    public boolean isPreviousAllow() {
         return false;
     }
 
@@ -133,7 +131,11 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        if (getActivity() != null)
-            hideKeyboard(getActivity());
+        try {
+            if (getActivity() != null)
+                hideKeyboard(getActivity());
+        } catch (NullPointerException ignored) {
+            //
+        }
     }
 }

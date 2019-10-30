@@ -72,6 +72,7 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 
@@ -151,6 +152,8 @@ public class LinkDeviceActivity extends BaseActivity {
     TableRow simId;
     @BindView(R.id.tvSimId)
     TextView tvSimId;
+    @BindView(R.id.tv_linked_deviceId)
+    TextView tv_linked_deviceId;
 
 
     public interface OnScheduleTimerListener {
@@ -317,11 +320,12 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin,String userId) {
         PrefUtils.saveStringPref(LinkDeviceActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, USER_ID, userId);
     }
 
     private void setDealerPin(String id_or_msg) {
@@ -527,33 +531,33 @@ public class LinkDeviceActivity extends BaseActivity {
                                 switch (msg) {
                                     case ACTIVE:
                                         DeviceStatusResponse deviceStatusResponse = response.body();
-                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin(),deviceStatusResponse.getUser_id());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(),response.body().getUser_id());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(),response.body().getUser_id());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(),response.body().getUser_id());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case PENDING:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(),response.body().getUser_id());
                                         finishedRefreshing();
                                         pendingLinkViewState();
                                         break;
@@ -788,6 +792,8 @@ public class LinkDeviceActivity extends BaseActivity {
 
             tvLinkedDealerPin.setText(dealerPin);
             tv_label_dealer_pin.setText(getResources().getString(R.string.dealer_pin) + ": " + dealerPin);
+            tv_linked_deviceId.setText(String.format("Device ID: %s", PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
+
         }
 
 

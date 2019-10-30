@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
+import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -45,6 +46,7 @@ import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class ApiUtils implements ApiRequests {
@@ -125,7 +127,7 @@ public class ApiUtils implements ApiRequests {
 
                                     Timber.i("----> device info : (1) device_id : " + device_id + " (2) expiry_date : " + expiry_date + " (3) dealer_pin : " + dealer_pin);
 
-                                    saveInfo(deviceStatusResponse.getToken(), device_id, expiry_date, dealer_pin);
+                                    saveInfo(deviceStatusResponse.getToken(), device_id, expiry_date, dealer_pin,deviceStatusResponse.getUser_id());
 
                                     switch (msg) {
                                         case ACTIVE:
@@ -239,7 +241,7 @@ public class ApiUtils implements ApiRequests {
 
     }
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin,String userId) {
 
         Timber.i("-----------> saving device info . ");
 
@@ -249,6 +251,7 @@ public class ApiUtils implements ApiRequests {
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
+        PrefUtils.saveStringPref(context, USER_ID, userId);
 
 
     }

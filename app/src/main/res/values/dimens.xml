@@ -13,6 +13,8 @@
     <!-- Margin for restart button -->
     <dimen name="restart_button_margin">16dp</dimen>
     <dimen name="headings">20sp</dimen>
+    <dimen name="code_margin">5dp</dimen>
+    <dimen name="code_size">10dp</dimen>
 
 
 </resources>

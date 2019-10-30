@@ -96,10 +96,22 @@ public class AppConstants {
     public static final String GUEST_DEFAULT_CONFIG = "guest_default_config";
     public static final String PATTERN_PASSWORD = "pattern_password";
     public static final String PIN_PASSWORD = "pin_password";
+    public static final String COMBO_PASSWORD = "_combo_password";
     public static final String ENCRYPT_DEFAULT_CONFIG = "encrypt_default_config";
     public static final String PENDING_ALARM_DIALOG = "pending_alarm_dialog";
     public static final String PENDING_DIALOG_MESSAGE = "pending_dialog_message";
     public static boolean IS_LOCALE_CHANGED = false;
+
+
+    //guest combo passwords
+    public static final String GUEST_COMBO_PIN = "guest_combo_pin";
+    public static final String GUEST_COMBO_PATTERN = "guest_combo_pattern";
+    //encrypt combo passwords
+    public static final String ENCRYPT_COMBO_PIN = "encrypt_combo_pin";
+    public static final String ENCRYPT_COMBO_PATTERN = "encrypt_combo_pattern";
+    //duress combo passwords
+    public static final String DURESS_COMBO_PIN = "duress_combo_pin";
+    public static final String DURESS_COMBO_PATTERN = "duress_combo_pattern";
 
 
     //Server Links
@@ -183,6 +195,7 @@ public class AppConstants {
     public static final String DURESS_PASSORD_OPTION = "_d_p";
     public static final int OPTION_PIN = 1;
     public static final int OPTION_PATTERN = 2;
+    public static final int OPTION_COMBO = 3;
     public static final String PERVIOUS_VERSION = "previous_version";
 
 
