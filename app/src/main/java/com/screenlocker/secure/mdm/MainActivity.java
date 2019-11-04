@@ -1,8 +1,12 @@
 package com.screenlocker.secure.mdm;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +30,14 @@ import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureMarket.ui.home.Msgs;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -47,6 +53,8 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -58,6 +66,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_CONNECTED_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEALER_ID;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
@@ -68,6 +77,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 
 public class MainActivity extends BaseActivity {
@@ -173,6 +183,8 @@ public class MainActivity extends BaseActivity {
             Timber.i("<<<<<SwipedToRefresh>>>>>");
             initAutoLogin();
         });
+
+//        registerNetworkPref();
 
 
     }
@@ -339,6 +351,7 @@ public class MainActivity extends BaseActivity {
 
                             if (isFailSafe) {
                                 Timber.e("------------> FailSafe domain is also not working. ");
+                                showError(getResources().getString(R.string.please_check_network_connection));
                             } else {
                                 Timber.i("<<< New Api call with failsafe domain >>>");
                                 checkDeviceStatus(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
@@ -419,6 +432,7 @@ public class MainActivity extends BaseActivity {
 
     private void handleSubmit() {
 
+
         String dealerPin = etPin.getText().toString().trim();
 
         if (dealerPin.length() == 6) {
@@ -429,8 +443,6 @@ public class MainActivity extends BaseActivity {
         } else {
             etPin.setError(getResources().getString(R.string.invaild_dealer_code));
         }
-
-
     }
 
 
@@ -473,6 +485,7 @@ public class MainActivity extends BaseActivity {
 
                                 if (isFailSafe) {
                                     Timber.e("------------> FailSafe domain is also not working. ");
+                                    showError(getResources().getString(R.string.please_check_network_connection));
                                 } else {
                                     Timber.i("<<< New Api call with failsafe domain >>>");
                                     request(type, dealerPin, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
@@ -523,6 +536,8 @@ public class MainActivity extends BaseActivity {
 
                                 if (isFailSafe) {
                                     Timber.e("------------> FailSafe domain is also not working. ");
+                                    showError(getResources().getString(R.string.please_check_network_connection));
+
                                 } else {
                                     Timber.i("<<< New Api call with failsafe domain >>>");
                                     request(type, dealerPin, RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
@@ -702,6 +717,8 @@ public class MainActivity extends BaseActivity {
         if (!isBackPressed) {
 //            this.finish();
         }
+
+//        unRegisterNetworkPref();
     }
 
     @Override
@@ -709,4 +726,37 @@ public class MainActivity extends BaseActivity {
         super.onBackPressed();
         isBackPressed = true;
     }
+
+//    private NetworkChangeReceiver networkChangeReceiver;
+//    private SharedPreferences sharedPref;
+//
+//    private void registerNetworkPref() {
+//        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+//        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+//        networkChangeReceiver = new NetworkChangeReceiver();
+//        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//    }
+//
+//    private void unRegisterNetworkPref() {
+//        if (sharedPref != null)
+//            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+//        if (networkChangeReceiver != null)
+//            unregisterReceiver(networkChangeReceiver);
+//    }
+//
+//    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+//
+//        if (key.equals(CURRENT_NETWORK_STATUS)) {
+//
+//            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+//
+//            boolean isConnected = networkStatus.equals(CONNECTED);
+//
+//            Timber.d("ksdklfgsmksls : " + isConnected);
+//
+//            if (!isConnected) {
+//                showError(getResources().getString(R.string.please_check_network_connection));
+//            }
+//        }
+//    };
 }

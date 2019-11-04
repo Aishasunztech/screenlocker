@@ -59,7 +59,8 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             addStep(new DuressPasswordOptionFragment());//5
             addStep(new SetDuressPasswordFragment());//6
             addStep(new LinkDeviceFragment());//7
-            addStep(new FinishFragment());//8
+            addStep(new SetDefaultLauncherFragment());//8
+            addStep(new FinishFragment());//9
         }
 
         super.onCreate(savedInstanceState);

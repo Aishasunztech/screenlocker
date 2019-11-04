@@ -74,6 +74,7 @@ import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 
 
 public class LinkDeviceActivity extends BaseActivity {
@@ -86,6 +87,8 @@ public class LinkDeviceActivity extends BaseActivity {
     LinearLayout linkedContainer;
     @BindView(R.id.stop_linking_container)
     LinearLayout stopLinkingContainer;
+    @BindView(R.id.error_layout)
+    LinearLayout error_layout;
 
     private boolean isFirstTime = true;
 
@@ -350,53 +353,59 @@ public class LinkDeviceActivity extends BaseActivity {
     private boolean isFailSafe = false;
 
     private void linkDevice(ApiOneCaller apiOneCaller) {
-        apiOneCaller
-                .linkDeviceToDealer(
-                        new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME),
-                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+
+        if(isNetworkConneted(this)) {
+
+            apiOneCaller
+                    .linkDeviceToDealer(
+                            new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME),
+                            PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
 //                                +"INVALID_TOKEN"
-                )
-                .enqueue(new Callback<LinkDeviceResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
+                    )
+                    .enqueue(new Callback<LinkDeviceResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<LinkDeviceResponse> call, @NonNull Response<LinkDeviceResponse> response) {
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            LinkDeviceResponse ldr = response.body();
-                            if (ldr.isStatus()) {
-                                saveLiveUrl(isFailSafe);
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
-                                pendingLinkViewState();
-                            } else {
-                                Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
-                                finish();
+                            if (response.isSuccessful() && response.body() != null) {
+                                LinkDeviceResponse ldr = response.body();
+                                if (ldr.isStatus()) {
+                                    saveLiveUrl(isFailSafe);
+                                    PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
+                                    PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
+                                    pendingLinkViewState();
+                                } else {
+                                    Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
+                        @Override
+                        public void onFailure(@NonNull Call<LinkDeviceResponse> call, @NonNull Throwable t) {
 
-                        if (t instanceof UnknownHostException) {
-                            Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
+                            if (t instanceof UnknownHostException) {
+                                Timber.e("-----------> something very dangerous happen with domain : %s", t.getMessage());
 
-                            if (isFailSafe) {
-                                Timber.e("------------> FailSafe domain is also not working. ");
-                            } else {
-                                Timber.i("<<< New Api call with failsafe domain >>>");
-                                linkDevice(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
-                                isFailSafe = true;
+                                if (isFailSafe) {
+                                    Timber.e("------------> FailSafe domain is also not working. ");
+                                } else {
+                                    Timber.i("<<< New Api call with failsafe domain >>>");
+                                    linkDevice(RetrofitClientInstance.getFailSafeInstanceForWhiteLabel());
+                                    isFailSafe = true;
+                                }
+
+                                return;
+                            } else if (t instanceof IOException) {
+                                Timber.e(" ----> IO Exception :%s", t.getMessage());
                             }
 
-                            return;
-                        } else if (t instanceof IOException) {
-                            Timber.e(" ----> IO Exception :%s", t.getMessage());
+
+                            Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                         }
-
-
-                        Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+        }else{
+            showContainer(3);
+        }
     }
 
 
@@ -827,17 +836,27 @@ public class LinkDeviceActivity extends BaseActivity {
                 notLinkedContainer.setVisibility(View.VISIBLE);
                 stopLinkingContainer.setVisibility(View.GONE);
                 linkedContainer.setVisibility(View.GONE);
+                error_layout.setVisibility(View.GONE);
                 break;
             case 1:
                 stopLinkingContainer.setVisibility(View.VISIBLE);
                 linkedContainer.setVisibility(View.GONE);
                 notLinkedContainer.setVisibility(View.GONE);
+                error_layout.setVisibility(View.GONE);
                 break;
             case 2:
                 linkedContainer.setVisibility(View.VISIBLE);
                 stopLinkingContainer.setVisibility(View.GONE);
                 notLinkedContainer.setVisibility(View.GONE);
+                error_layout.setVisibility(View.GONE);
                 break;
+            case 3:
+                linkedContainer.setVisibility(View.GONE);
+                stopLinkingContainer.setVisibility(View.GONE);
+                notLinkedContainer.setVisibility(View.GONE);
+                error_layout.setVisibility(View.VISIBLE);
+                break;
+
         }
     }
 
