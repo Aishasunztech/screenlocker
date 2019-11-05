@@ -35,6 +35,8 @@ import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+
 /**
  * @author Muhammad Nadeem
  * @Date 9/6/2019.
@@ -110,7 +112,10 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
             if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
-                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.clear();
@@ -155,6 +160,11 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         //not for this fragment
     }
 
+    @Override
+    public void onCancelClick(String requestId) {
+        mListener.onCancelClick(requestId);
+    }
+
 
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
@@ -169,7 +179,10 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
                 if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-                    errorBtn.setVisibility(View.GONE);
+                    if(isNetworkAvailable(getActivity()))
+                    {
+                        errorBtn.setVisibility(View.GONE);
+                    }
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -197,14 +210,17 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
             if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No Update Available");
-                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }
     }
 
 
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress,String requestId, long speed) {
         Timber.d("onDownLoadProgress: " + pn);
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
@@ -214,11 +230,27 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         if (index != -1) {
             ServerAppInfo info = installedApps.get(index);
             info.setProgres(progress);
+            info.setRequest_id(requestId);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
             installedAdapter.updateProgressOfItem(info, index);
         }
 
+    }
+
+    public void onDownloadCancelled(String packageName)
+    {
+        int index = IntStream.range(0, installedApps.size())
+                .filter(i -> Objects.nonNull(installedApps.get(i)))
+                .filter(i -> packageName.equals(installedApps.get(i).getPackageName()))
+                .findFirst()
+                .orElse(-1);
+
+        if (index != -1) {
+            ServerAppInfo info = installedApps.get(index);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
+            installedAdapter.updateProgressOfItem(info, index);
+        }
     }
 
 

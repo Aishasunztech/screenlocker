@@ -22,6 +22,7 @@ public class ShutDownReceiver extends BroadcastReceiver {
             if (PrefUtils.getBooleanPref(context, AppConstants.TOUR_STATUS)) {
                 PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
+            PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
 
             Timber.e("onReceive: shutdown" + PrefUtils.getStringPref(context, AppConstants.KEY_SHUT_DOWN));
 

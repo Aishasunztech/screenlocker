@@ -13,6 +13,17 @@ public class AppInfo {
     @PrimaryKey
     private String uniqueName;
 
+    public int getNumberOfnotifications() {
+        return numberOfnotifications;
+    }
+
+    public void setNumberOfnotifications(int numberOfnotifications) {
+        this.numberOfnotifications = numberOfnotifications;
+    }
+
+    @Ignore
+    private int numberOfnotifications = 0;
+
     private String label;
     private String packageName;
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -35,6 +36,7 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.service.AppExecutor;
@@ -72,14 +74,20 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.socket.utils.utils.saveLiveUrl;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
+import static com.screenlocker.secure.utils.CommonUtils.currentSpace;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.secureMarket.MarketUtils.savePackages;
 
 public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
@@ -91,6 +99,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private List<ServerAppInfo> installedInfo = new ArrayList<>();
     private SharedViwModel sharedViwModel;
     private MainMarketPagerAdapter sectionsPagerAdapter;
+    private String current_space;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,16 +126,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         tabs.setupWithViewPager(viewPager);
         sharedViwModel = ViewModelProviders.of(this).get(SharedViwModel.class);
 
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
-        //Log.d("ConnectedDealer",dealerId);
-        if (dealerId == null || dealerId.equals("")) {
-            //   getAdminApps();
-            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
-        } else {
-            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
-            // getAllApps(dealerId);
-        }
-
+        registerNetworkPref();
+        loadApps();
 
     }
 
@@ -219,16 +220,19 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     };
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
 
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
-            if (fragment != null) {
-                fragment.onDownLoadProgress(pn, progress, speed);
-            } if (fragment1!=null){
-                fragment1.onDownLoadProgress(pn, progress, speed);
-            }
+
+                if (fragment != null) {
+                    fragment.onDownLoadProgress(pn, progress,requestId, speed);
+                }
+                if (fragment1 != null) {
+                    fragment1.onDownLoadProgress(pn, progress,requestId, speed);
+                }
+
         }
 
 //        int index = IntStream.range(0, unInstalledApps.size())
@@ -247,7 +251,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     }
 
     @Override
-    public void downloadComplete(String filePath, String pn) {
+    public void downloadComplete(String filePath, String pn,String space) {
 
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
@@ -260,7 +264,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             }
         }
         if (!filePath.equals("") && !pn.equals("")) {
-            showInstallDialog(new File(filePath), pn);
+            showInstallDialog(new File(filePath), pn,space);
         }
 
     }
@@ -305,6 +309,20 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 //        }
     }
 
+    @Override
+    public void onDownloadCancelled(String packageName) {
+        if (sectionsPagerAdapter != null) {
+            MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
+            if (fragment != null) {
+                fragment.onDownloadCancelled(packageName);
+            }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.onDownloadCancelled(packageName);
+            }
+        }
+    }
+
     //connection to download service
     private ServiceConnection connection = new ServiceConnection() {
 
@@ -340,7 +358,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 //        progressBar.setVisibility(View.GONE);
         apiOneCaller
-                .getAllApps("marketApplist/" + dealerId)
+                .getAllApps("marketApplist/" + dealerId + "/" +currentSpace(this))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -369,9 +387,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                         } else {
                             //TODO: server responded with other then 200 response code
                             try {
+                                Log.d("lksjdf",response.code() + "");
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
+                                Log.d("lksjdf",response.code() + "");
                                 Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                             Timber.i("-----------> response code is not valid :( ");
@@ -454,7 +474,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private void getAdminApps(ApiOneCaller apiOneCaller) {
 
         apiOneCaller
-                .getAdminApps()
+                .getAdminApps(currentSpace(this))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -486,9 +506,12 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                             //TODO: server responded with other then 200 response code
                             Timber.i("-----------> response code is not valid :( ");
                             try {
+                                Log.d("klasjdf",response.code() + "");
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
                             } catch (JSONException | IOException e) {
+                                Log.d("klasjdf",response.code() + "");
+
                                 Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
@@ -564,6 +587,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
+        unRegisterNetworkPref();
     }
 
     @Override
@@ -591,7 +615,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 } else {
                     downloadAndInstallApp(app, position, isUpdate);
                 }
-            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+            }
+            else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) != 1) {
                     AppExecutor.getInstance().getMainThread().execute(() -> {
                         new AlertDialog.Builder(this)
@@ -642,15 +667,16 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void onAppsRefreshRequest() {
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
-        //Log.d("ConnectedDealer",dealerId);
-        if (dealerId == null || dealerId.equals("")) {
-            //   getAdminApps();
-            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
-        } else {
-            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
-            // getAllApps(dealerId);
+        if (isNetworkConneted(SMActivity.this)) {
+            loadApps();
+        } else{
+            sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
+    }
+
+    @Override
+    public void onCancelClick(String requestId) {
+        mService.cancelDownload(requestId);
     }
 
 
@@ -685,30 +711,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 if (!file.exists()) {
 
                     if (mService != null) {
-                        app.setType(ServerAppInfo.PROG_TYPE.LOADING);
-                        if (isUpdate) {
-                            try {
-                                sectionsPagerAdapter.getUpdateAppsFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                            } catch (NullPointerException ignored) {
-                            }
-                        } else {
-                            try {
-                                sectionsPagerAdapter.getMarketFragment().getInstalledAdapter().updateProgressOfItem(app, position);
-                            } catch (NullPointerException ignored) {
-                            }
-                        }
-                        mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
-
-                    }
-
-                } else {
-                    int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-                    if (file_size >= (101 * 1024)) {
-                        showInstallDialog(new File(fileName), app.getPackageName());
-                    } else {
-                        if (mService != null) {
-                            File file1 = new File(file.getAbsolutePath());
-                            file.delete();
                             app.setType(ServerAppInfo.PROG_TYPE.LOADING);
                             if (isUpdate) {
                                 try {
@@ -721,7 +723,31 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                                 } catch (NullPointerException ignored) {
                                 }
                             }
-                            mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT);
+                            mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT, current_space);
+                        }
+
+                } else {
+                    int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+                    if (file_size >= (101 * 1024)) {
+                        showInstallDialog(new File(fileName), app.getPackageName(),current_space);
+                    } else {
+                        if (mService != null) {
+
+                                File file1 = new File(file.getAbsolutePath());
+                                file.delete();
+                                app.setType(ServerAppInfo.PROG_TYPE.LOADING);
+                                if (isUpdate) {
+                                    try {
+                                        sectionsPagerAdapter.getUpdateAppsFragment().getInstalledAdapter().updateProgressOfItem(app, position);
+                                    } catch (NullPointerException ignored) {
+                                    }
+                                } else {
+                                    try {
+                                        sectionsPagerAdapter.getMarketFragment().getInstalledAdapter().updateProgressOfItem(app, position);
+                                    } catch (NullPointerException ignored) {
+                                    }
+                                }
+                                mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_MARKET_FRAGMENT, current_space);
 
                         }
                     }
@@ -734,14 +760,13 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             alertDialog.show();
         });
     }
-
-    private void showInstallDialog(File file, String packageName) {
+    private void showInstallDialog(File file, String packageName,String space) {
 
         try {
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
 //            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
             String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-            savePackages(packageName, INSTALLED_PACKAGES, userType, this);
+            savePackages(packageName, INSTALLED_PACKAGES, space, this);
 
             Intent intent = ShareCompat.IntentBuilder.from(this)
                     .setStream(uri) // uri from FileProvider
@@ -766,6 +791,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         refreshApps(this);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
+        current_space = PrefUtils.getStringPref(this,CURRENT_KEY);
         refreshAppList();
     }
 
@@ -774,4 +800,55 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     public void onAppsRefresh() {
 
     }
+
+
+    private void loadApps() {
+        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
+        //Log.d("ConnectedDealer",dealerId);
+        if (dealerId == null || dealerId.equals("")) {
+            //   getAdminApps();
+            getServerApps(null, RetrofitClientInstance.getWhiteLabelInstance());
+        } else {
+            getServerApps(dealerId, RetrofitClientInstance.getWhiteLabelInstance());
+            // getAllApps(dealerId);
+        }
+    }
+
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            Timber.d("ksdklfgsmksls : " + isConnected);
+
+            if (isConnected) {
+                loadApps();
+            } else {
+                sharedViwModel.setMutableMsgs(Msgs.ERROR);
+            }
+        }
+    };
+
+
 }

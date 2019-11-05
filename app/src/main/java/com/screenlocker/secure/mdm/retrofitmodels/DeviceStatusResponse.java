@@ -16,6 +16,9 @@ public class DeviceStatusResponse {
     private String expiry_date;
     @SerializedName("dealer_pin")
     private String dealer_pin;
+    @SerializedName("user_id")
+    private String user_id;
+
 
     public String getDealer_pin() {
         return dealer_pin;
@@ -35,6 +38,10 @@ public class DeviceStatusResponse {
 
     public String getDevice_id() {
         return device_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
     }
 
     public String getExpiry_date() {

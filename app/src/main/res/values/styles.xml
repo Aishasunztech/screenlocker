@@ -26,6 +26,18 @@
     </style>
 
 
+    <style name="NCheckBox">
+        <item name="android:checkboxStyle">@style/NLockScreenCodeStyle</item>
+        <item name="checkboxStyle">@style/NLockScreenCodeStyle</item>
+    </style>
+
+    <style name="NLockScreenCodeStyle">
+        <item name="android:button">@drawable/code_selector_n</item>
+    </style>
+    <style name="NLockScreenErrorCodeStyle">
+        <item name="android:button">@drawable/code_selector_wrong</item>
+    </style>
+
     <style name="keyboard_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

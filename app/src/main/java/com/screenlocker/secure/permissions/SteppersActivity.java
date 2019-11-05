@@ -1,26 +1,25 @@
 package com.screenlocker.secure.permissions;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 
-import timber.log.Timber;
-
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
-import static com.screenlocker.secure.utils.AppConstants.IS_EMERGANCY;
-import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
@@ -28,10 +27,13 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+
         setTitle(getResources().getString(R.string.permission));
+        broadCastIntent();
+        setDefLauncher();
+
 
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
@@ -39,7 +41,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
          * if user has completed setup wizard move to Home Activity
          */
         boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
-        boolean isEmer = PrefUtils.getBooleanPref(SteppersActivity.this, IS_EMERGANCY);
 
 
         if (getIntent().hasExtra("emergency")) {
@@ -50,19 +51,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             startActivity(intent);
             finish();
         } else {
-           /* if (!PrefUtils.getBooleanPref(this,"cmd2")){
-                Intent intent = new Intent(ACTION_PROVISION_MANAGED_DEVICE);
-                ComponentName cn = new ComponentName(getPackageName(),"com.screenlocker.secure.MyAdmin");
-                intent.putExtra(EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME,
-                        cn);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, 1);
-                    PrefUtils.saveBooleanPref(this,"cmd2",true);
-                    //activity.finish();
-                } else {
-                    Toast.makeText(this, "Stopping.",Toast.LENGTH_SHORT).show();
-                }
-            }*/
             addStep(new PermissionStepFragment());//0
             addStep(new PasswordOptionsStepFragment());//1
             addStep(new SetGuestPasswordFragment());//2
@@ -81,16 +69,14 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         //move user to position were he/she left
         int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
 
-        Timber.d("CURRENT STEP : %s", position);
-
         if (!getIntent().hasExtra("emergency")) {
             mSteps.current(position);
             onUpdate();
+
         }
 
 
     }
-
 
     @Override
     protected void onResume() {
@@ -112,9 +98,6 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             intent = new Intent(SteppersActivity.this, MainActivity.class);
         } else {
             intent = new Intent(SteppersActivity.this, WelcomeScreenActivity.class);
-            PrefUtils.saveBooleanPref(this, TOUR_STATUS, true);
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
-            PrefUtils.saveIntegerPref(this, DEF_PAGE_NO, 9);
         }
 
         startActivity(intent);
@@ -143,4 +126,24 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 //        super.onBackPressed();
     }
 
+    void broadCastIntent() {
+        Intent intent = new Intent("com.secure.systemcontrol.AADMIN");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
+        sendBroadcast(intent);
+    }
+
+    void setDefLauncher() {
+
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.SET_PREFERRED_APPLICATIONS") == PackageManager.PERMISSION_GRANTED) {
+            PackageManager pm = getPackageManager();
+            IntentFilter f = new IntentFilter("android.intent.action.MAIN");
+            f.addCategory("android.intent.category.HOME");
+            f.addCategory("android.intent.category.DEFAULT");
+            ComponentName cn = new ComponentName(getPackageName(), "com.screenlocker.secure.launcher.MainActivity");
+
+            pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
+        }
+
+    }
 }

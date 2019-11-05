@@ -3,69 +3,17 @@ package com.screenlocker.secure.mdm.utils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
-import com.screenlocker.secure.utils.CommonUtils;
 
 import timber.log.Timber;
 
-/**
- * to check the network state
- */
+import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
+
 public class NetworkChangeReceiver extends BroadcastReceiver {
-
-    public static final String TAG = "NetworkChangeReceiver";
-
-    private NetworkChangeListener listener;
-
-    public void setNetworkChangeListener(NetworkChangeListener listener) {
-        this.listener = listener;
-    }
-
-    public void unsetNetworkChangeListener() {
-        this.listener = null;
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
+        Timber.d("on Receiver ");
+        // alarm manager for network / socket connection
+        setAlarmManager(context, System.currentTimeMillis() + 1, 1);
 
-        if (CommonUtils.isNetworkAvailable(context)) {
-            if (listener != null) {
-                listener.isConnected(true);
-                Timber.d("You are Online !");
-            }
-        } else {
-            if (listener != null) {
-                listener.isConnected(false);
-                Timber.d("You are Offline ! ");
-            }
-        }
-
-
-//        if (listener!=null)
-//            try
-//            {
-//                new InternetCheck(internet -> {
-//                    if (internet) {
-//                        if(listener!=null)
-//                        listener.isConnected(true);
-//                        Log.e(TAG, "You are Online !");
-//                    } else {
-//                        if(listener!=null)
-//                        listener.isConnected(false);
-//                        Log.e(TAG, "You are Offline ! ");
-//                    }
-//                });
-//            } catch (NullPointerException e) {
-//                e.printStackTrace();
-//            }
     }
-
-    public interface NetworkChangeListener {
-
-        void isConnected(boolean state);
-    }
-
-
 }

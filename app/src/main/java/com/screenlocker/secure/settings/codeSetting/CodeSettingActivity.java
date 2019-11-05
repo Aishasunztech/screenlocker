@@ -38,12 +38,16 @@ import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
 import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
 
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.LifecycleReceiver.FOREGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
@@ -214,7 +218,14 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     // method to handle policy menu
     private void handlePolicyMenu() {
-        startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
+        if (!isNetworkAvailable(this)) {
+            showNetworkDialog(getResources().getString(R.string.network_not_connected), getResources().getString(R.string.network_not_connected_message), getResources().getString(R.string.network_setup));
+        } else if (!isNetworkConneted(this)) {
+            showNetworkDialog(getResources().getString(R.string.network_limited), getResources().getString(R.string.network_limited_message), getResources().getString(R.string.change_network));
+        } else {
+            startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));
+        }
+
     }
 
 
@@ -337,5 +348,29 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showNetworkDialog(String title, String msg,String btnTitle) {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+
+        alertDialog.setCancelable(false);
+        alertDialog.setMessage(msg);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
+            Intent intent = new Intent(this, SecureSettingsMain.class);
+            intent.putExtra("show_default", "show_default");
+            startActivity(intent);
+
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_capital),
+                (dialog, which) -> {
+                    dialog.dismiss();
+                });
+        alertDialog.show();
+
     }
 }

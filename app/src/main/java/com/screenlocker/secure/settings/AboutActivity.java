@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +42,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.WHITE_LABEL_URL;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
@@ -74,14 +75,15 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.tvSimId)
     TextView tvSimId;
     @BindView(R.id.chatId)
-    TableRow chatId;
+    LinearLayout chatId;
     @BindView(R.id.dividerChatId)
     View dividerChatId;
     @BindView(R.id.simId)
-    TableRow simId;
+    LinearLayout simId;
     @BindView(R.id.dividerSimId)
     View dividerSimId;
-    private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
+    private TextView tvImei1, tvImei2, tvExpiresIn,
+            tvStatus, tvDeviceId, onlineStatus,tvUserId;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private SocketManager socketManager;
@@ -116,6 +118,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         onlineStatus = findViewById(R.id.tvLinkedStatus);
         tvDeviceId = findViewById(R.id.tvDeviceId);
+        tvUserId = findViewById(R.id.tvUserId);
         tvStatus = findViewById(R.id.tvDeviceStatus);
         tvExpiresIn = findViewById(R.id.tvExpiresIn);
         tvImei1 = findViewById(R.id.tvImei1);
@@ -128,6 +131,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         onlineStatus.setOnClickListener(this);
         tvDeviceId.setOnClickListener(this);
+        tvUserId.setOnClickListener(this);
         tvStatus.setOnClickListener(this);
         tvImei1.setOnClickListener(this);
         tvImei2.setOnClickListener(this);
@@ -152,6 +156,14 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             tvDeviceId.setText(getResources().getString(R.string.n_a));
         } else {
             tvDeviceId.setText(device_id);
+        }
+
+        String user_id = PrefUtils.getStringPref(this,USER_ID);
+        if(user_id == null)
+        {
+            tvUserId.setText(getResources().getString(R.string.n_a));
+        }else{
+            tvUserId.setText(user_id);
         }
 
         /*Status*/
@@ -356,6 +368,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.tvPgpEmail:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "Pgp email copied to clipboard");
+                break;
+            case R.id.tvUserId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "User id copied to clipboard");
+
                 break;
         }
 

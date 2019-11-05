@@ -2,10 +2,10 @@ package com.github.fcannizzaro.materialstepper;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+
 import com.github.fcannizzaro.materialstepper.interfaces.Nextable;
 import com.github.fcannizzaro.materialstepper.style.BaseStyle;
-
-import androidx.fragment.app.Fragment;
 
 /**
  * Created by Francesco Cannizzaro on 23/12/2015.
@@ -27,8 +27,8 @@ public abstract class AbstractStep extends Fragment implements Nextable {
         return mStepper.getStepDataFor(step);
     }
 
-    protected Bundle getLastStepData() {
-        return mStepper.getStepDataFor(mStepper.steps() - 1);
+    protected Bundle getLastStepData(){
+        return mStepper.getStepDataFor(mStepper.steps()-1);
     }
 
     @Override
@@ -69,17 +69,17 @@ public abstract class AbstractStep extends Fragment implements Nextable {
     }
 
     @Override
-    public void onPrevious() {
-
-    }
-
-    @Override
     public String error() {
         return "No error";
     }
 
     @Override
     public boolean isSkipable() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreviousAllow() {
         return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.screenlocker.secure.launcher;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
@@ -27,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -54,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
@@ -67,6 +70,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
@@ -221,7 +225,6 @@ public class MainActivity extends
             }
         }
 
-
         closeBar();
     }
 
@@ -229,6 +232,8 @@ public class MainActivity extends
     private void setRecyclerView() {
 
         rvApps = findViewById(R.id.rvApps);
+        ((SimpleItemAnimator) rvApps.getItemAnimator()).setSupportsChangeAnimations(false);
+
         int resId = R.anim.layout_animation;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
@@ -322,6 +327,21 @@ public class MainActivity extends
                 column_span = AppConstants.LAUNCHER_GRID_SPAN;
             }
             rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
+        }else if(key.equals(NUMBER_OF_NOTIFICATIONS))
+        {
+            String name = "Live Chat Support";
+            int index = IntStream.range(0,adapter.appsList.size())
+                    .filter(i -> name.equals(adapter.appsList.get(i).getLabel()))
+                    .findFirst()
+                    .orElse(-1);
+            if(index != -1)
+            {
+                AppInfo app = adapter.appsList.get(index);
+                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this,NUMBER_OF_NOTIFICATIONS));
+                adapter.appsList.set(index,app);
+                adapter.notifyItemChanged(index);
+
+            }
         }
     };
 
@@ -408,6 +428,7 @@ public class MainActivity extends
         rvApps.scheduleLayoutAnimation();
     }
 
+    @SuppressLint("ResourceType")
     private void setBackground(String message) {
 
         try {
@@ -417,35 +438,28 @@ public class MainActivity extends
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        Glide.with(MainActivity.this).load(R.raw._12321).apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(background);
-//                    background.setBackgroundColor(ContextCompat.getColor(this, R.color.encrypted_default_background_color));
-//                        background.setImageResource(R.raw.audiblack);
+                        background.setImageResource(R.raw._1239);
 
                     } else {
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
-//                        background.setImageResource(Integer.parseInt(bg));
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
-//                        background.setImageResource(R.raw.texture);
-                        Glide.with(MainActivity.this).load(R.raw.texture).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw.texture);
 
                     } else {
-//                        background.setImageResource(Integer.parseInt(bg));
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
 
                 } else {
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_GUEST_IMAGE);
+                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
-//                        background.setImageResource(R.raw.tower);
-                        Glide.with(MainActivity.this).load(R.raw._12318).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(R.raw._12318);
 
                     } else {
-//                        background.setImageResource(Integer.parseInt(bg));
-                        Glide.with(MainActivity.this).load(Integer.parseInt(bg)).apply(new RequestOptions().centerCrop()).into(background);
+                        background.setImageResource(Integer.parseInt(bg));
                     }
                 }
             }
@@ -454,6 +468,7 @@ public class MainActivity extends
 
 
     }
+
 
 
     /**

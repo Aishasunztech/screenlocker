@@ -13,10 +13,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingContract;
@@ -25,7 +25,6 @@ import com.screenlocker.secure.settings.SettingsModel;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.views.patternlock.PatternLockView;
 
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
@@ -56,7 +55,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         } else {
             if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
-            } else {
+            }else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
             }
         }
@@ -81,6 +80,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+                }else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case RESULTGUEST:
@@ -89,12 +90,18 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
                 }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                }
                 break;
             case RESULTDURES:
                 if (resultCode == RESULT_OK) {
                     Intent intent = new Intent(this, PasswordOptionsAcitivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
+                }
+                else if (resultCode == RESULT_CANCELED){
+                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -196,7 +203,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         } else {
             if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
-            } else {
+            }else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
             }
         }
@@ -204,16 +211,15 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         if (!isBackPressed) {
             if (!goToGuest && !goToEncrypt && !goToDuress) {
-//                this.finish();
+                // this.finish();
             }
 
         }
     }
-
 
     @Override
     public void onBackPressed() {
@@ -235,6 +241,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 break;
             case AppConstants.PIN_PASSWORD:
                 showGuestPin(activity, settingsPresenter);
+                break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_GUEST);
                 break;
         }
 
@@ -291,6 +300,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 break;
             case AppConstants.PIN_PASSWORD:
                 showEncryptedPin(activity, settingsPresenter);
+                break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_MAIN);
                 break;
         }
 
@@ -357,6 +369,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             case AppConstants.PIN_PASSWORD:
                 showDuressPin(activity, settingsPresenter);
                 break;
+            case AppConstants.COMBO_PASSWORD:
+                verifyCurrentCombo(AppConstants.KEY_DURESS);
+                break;
 
 
         }
@@ -416,6 +431,28 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
+
+
+    private void verifyCurrentCombo(String userType) {
+        switch (userType) {
+            case AppConstants.KEY_MAIN:
+                Intent intent = new Intent(this, VerifyComboPassword.class);
+                intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
+                startActivityForResult(intent, RESULTENCRYPTED);
+                break;
+            case AppConstants.KEY_GUEST:
+                Intent intent2 = new Intent(this, VerifyComboPassword.class);
+                intent2.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_GUEST);
+                startActivityForResult(intent2, RESULTGUEST);
+                break;
+            case AppConstants.KEY_DURESS:
+                Intent intent3 = new Intent(this, VerifyComboPassword.class);
+                intent3.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_DURESS);
+                startActivityForResult(intent3, RESULTDURES);
+                break;
+        }
+    }
+
 
 
 }

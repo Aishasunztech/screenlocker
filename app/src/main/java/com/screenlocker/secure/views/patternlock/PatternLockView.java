@@ -109,6 +109,7 @@ public class PatternLockView extends View {
 
     private DotState[][] mDotStates;
     private int mPatternSize;
+    private boolean isNumberInputAllow = true;
     private boolean mDrawingProfilingStarted = false;
     private long mAnimatingPeriodStart;
     private float mHitFactor = 0.8f;
@@ -312,8 +313,8 @@ public class PatternLockView extends View {
                         * (getCenterXForColumn(nextDot.mColumn) - centerX);
                 float dy = percentageOfNextCircle
                         * (getCenterYForRow(nextDot.mRow) - centerY);
-                mInProgressX = centerX + dx;
-                mInProgressY = centerY + dy;
+                mInProgressX = centerX + dx ;
+                mInProgressY = centerY + dy ;
             }
             invalidate();
         }
@@ -713,6 +714,14 @@ public class PatternLockView extends View {
 
     public void clearPattern() {
         resetPattern();
+    }
+
+    public boolean isNumberInputAllow() {
+        return isNumberInputAllow;
+    }
+
+    public void setNumberInputAllow(boolean numberInputAllow) {
+        isNumberInputAllow = numberInputAllow;
     }
 
     private int resolveMeasured(int measureSpec, int desired) {
@@ -1172,35 +1181,41 @@ public class PatternLockView extends View {
     private void drawCircle(Canvas canvas, float centerX, float centerY,
                             float size, boolean partOfPattern, float alpha, int value) {
 
-        mDotPaint.setAntiAlias(true);
-        mDotPaint.setFilterBitmap(true);
-        mDotPaint.setDither(true);
-        mDotPaint.setColor(getCurrentColor(partOfPattern));
-        mDotPaint.setAlpha((int) (alpha * 255));
-        mDotPaint.setStyle(Paint.Style.STROKE);
-        mDotPaint.setStrokeWidth(5);
-        canvas.drawCircle(centerX, centerY, size, mDotPaint);
+        if (isNumberInputAllow) {
+            mDotPaint.setAntiAlias(true);
+            mDotPaint.setFilterBitmap(true);
+            mDotPaint.setDither(true);
+            mDotPaint.setColor(getCurrentColor(partOfPattern));
+            mDotPaint.setAlpha((int) (alpha * 255));
+            mDotPaint.setStyle(Paint.Style.STROKE);
+            mDotPaint.setStrokeWidth(5);
+            canvas.drawCircle(centerX, centerY, size, mDotPaint);
 
-        Paint bgPaint = new Paint();
-        bgPaint.setAntiAlias(true);
-        bgPaint.setFilterBitmap(true);
-        bgPaint.setDither(true);
-        bgPaint.setColor(getResources().getColor(android.R.color.black));
-        bgPaint.setAlpha(80);
-        canvas.drawCircle(centerX, centerY, size, bgPaint);
-//        fillCircleStrokeBorder(canvas,centerX,centerY,size,android.R.color.black,20,android.R.color.white,mDotPaint);
-//        mDotPaint.setTextSize(20 * getResources().getDisplayMetrics().density);
-//        mDotPaint.setColor(Color.BLACK);
-//        mDotPaint.setTextAlign(Paint.Align.CENTER);
-//        canvas.drawText(String.valueOf(value), centerX, centerY + 12, mDotPaint);
+            Paint bgPaint = new Paint();
+            bgPaint.setAntiAlias(true);
+            bgPaint.setFilterBitmap(true);
+            bgPaint.setDither(true);
+            bgPaint.setColor(getResources().getColor(android.R.color.black));
+            bgPaint.setAlpha(80);
+            canvas.drawCircle(centerX, centerY, size, bgPaint);
 
 
-        Paint textPaint = new Paint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        textPaint.setTextSize(26 * getResources().getDisplayMetrics().density);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextAlign(Paint.Align.CENTER);
+            Paint textPaint = new Paint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+            textPaint.setTextSize(26 * getResources().getDisplayMetrics().density);
+            textPaint.setColor(Color.WHITE);
+            textPaint.setTextAlign(Paint.Align.CENTER);
 
-        canvas.drawText(String.valueOf(value), centerX, centerY + 20, textPaint);
+            canvas.drawText(String.valueOf(value), centerX, centerY + 20, textPaint);
+        } else {
+            Paint bgPaint = new Paint();
+            bgPaint.setAntiAlias(true);
+            bgPaint.setFilterBitmap(true);
+            bgPaint.setDither(true);
+            bgPaint.setColor(getCurrentColor(partOfPattern));
+            bgPaint.setAlpha((int) (alpha * 255));
+            canvas.drawCircle(centerX, centerY, size / 2, bgPaint);
+        }
+
 
     }
 

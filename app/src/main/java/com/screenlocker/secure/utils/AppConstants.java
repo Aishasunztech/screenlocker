@@ -85,6 +85,7 @@ public class AppConstants {
 
     public static final String KEY_DISABLE_CALLS = "disable_calls";
     public static final String DEVICE_ID = "device_id";
+    public static final String USER_ID = "user_id";
     public static final String TOKEN = "token";
     public static final String DFAULT_MAC = "default_mac";
     public static final String GUEST_PATTERN = "guest_pattern";
@@ -95,17 +96,28 @@ public class AppConstants {
     public static final String GUEST_DEFAULT_CONFIG = "guest_default_config";
     public static final String PATTERN_PASSWORD = "pattern_password";
     public static final String PIN_PASSWORD = "pin_password";
+    public static final String COMBO_PASSWORD = "_combo_password";
     public static final String ENCRYPT_DEFAULT_CONFIG = "encrypt_default_config";
     public static final String PENDING_ALARM_DIALOG = "pending_alarm_dialog";
     public static final String PENDING_DIALOG_MESSAGE = "pending_dialog_message";
-    public static final String OLD_DEVICE_STATUS = "old_device_status";
     public static boolean IS_LOCALE_CHANGED = false;
+
+
+    //guest combo passwords
+    public static final String GUEST_COMBO_PIN = "guest_combo_pin";
+    public static final String GUEST_COMBO_PATTERN = "guest_combo_pattern";
+    //encrypt combo passwords
+    public static final String ENCRYPT_COMBO_PIN = "encrypt_combo_pin";
+    public static final String ENCRYPT_COMBO_PATTERN = "encrypt_combo_pattern";
+    //duress combo passwords
+    public static final String DURESS_COMBO_PIN = "duress_combo_pin";
+    public static final String DURESS_COMBO_PATTERN = "duress_combo_pattern";
 
 
     //Server Links
 //    public static String WHITE_LABEL_URL = "https://api.lockmesh.com/mobile/";// Live SL
-//    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/mobile/";// Dev SL
-    public static String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
+    public static String WHITE_LABEL_URL = "https://devapi.lockmesh.com/api/v2/mobile/";// Dev SL
+//    public static final String WHITE_LABEL_URL = "https://api.titansecureserver.com/mobile/";// Live TL
 
     //    public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Live SA
     public static final String SUPER_ADMIN_URL = "https://api.meshguard.co/api/v1/mobile/"; // Dev SA
@@ -183,6 +195,7 @@ public class AppConstants {
     public static final String DURESS_PASSORD_OPTION = "_d_p";
     public static final int OPTION_PIN = 1;
     public static final int OPTION_PATTERN = 2;
+    public static final int OPTION_COMBO = 3;
     public static final String PERVIOUS_VERSION = "previous_version";
 
 
@@ -305,23 +318,23 @@ public class AppConstants {
      * Screen Locker
      * */
 
-//    public static int attempt_5 = 1000 * 60;
-//    public static int attempt_6 = 1000 * 60 * 5;
-//    public static int attempt_7 = 1000 * 60 * 10;
-//    public static int attempt_8 = 1000 * 60 * 15;
-//    public static int attempt_9 = 1000 * 60 * 30;
-//    public static int attempt_10 = 1000 * 60 * 30;
+    public static int attempt_5 = 1000 * 60;
+    public static int attempt_6 = 1000 * 60 * 5;
+    public static int attempt_7 = 1000 * 60 * 10;
+    public static int attempt_8 = 1000 * 60 * 15;
+    public static int attempt_9 = 1000 * 60 * 30;
+    public static int attempt_10 = 1000 * 60 * 30;
 
     /*
      *Titan Locker
      * */
 
-    public static int attempt_5 = 1000 * 60;
-    public static int attempt_6 = 1000 * 60;
-    public static int attempt_7 = 1000 * 60 * 3;
-    public static int attempt_8 = 1000 * 60 * 5;
-    public static int attempt_9 = 1000 * 60 * 5;
-    public static int attempt_10 = 1000 * 60 * 5;
+//    public static int attempt_5 = 1000 * 60;
+//    public static int attempt_6 = 1000 * 60;
+//    public static int attempt_7 = 1000 * 60 * 3;
+//    public static int attempt_8 = 1000 * 60 * 5;
+//    public static int attempt_9 = 1000 * 60 * 5;
+//    public static int attempt_10 = 1000 * 60 * 5;
 
     public static final String IMEI_CHANGED = "imeiChanged";
     public static final String REBOOT_STATUS = "rebootStatus";
@@ -451,6 +464,8 @@ public class AppConstants {
     public static final String EXTRA_PACKAGE_NAME = "extra_package";
     public static final String EXTRA_FILE_PATH = "extra_filePath";
     public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_SPACE = "extra_space";
+    public static final String EXTRA_REQUEST_ID_SAVED = "extra_request_id";
     public static final String EXTRA_INSTALL_APP = "_inst";
     public static final String EXTRA_MARKET_FRAGMENT = "_mark";
 
@@ -483,8 +498,18 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+    public static final String NUMBER_OF_NOTIFICATIONS = "number_of_notifications";
 
     public static final String PENDING_ACTIVATION = "pending_activity";
+
+
+    public static final String OLD_DEVICE_STATUS = "old_device_status";
+
+    public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CONNECTED = "connected";
+    public static final String DISCONNECTED = "disconnected";
+    public static final String LIMITED = "limited";
+
 
 
 }

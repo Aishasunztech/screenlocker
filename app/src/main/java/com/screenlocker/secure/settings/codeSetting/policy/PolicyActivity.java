@@ -26,6 +26,7 @@ import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
 import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
@@ -77,7 +78,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnected();
-        if (!isConnected) {
+        if (!CommonUtils.isNetworkConneted(this)) {
             showNetworkDialog();
 
         } else {

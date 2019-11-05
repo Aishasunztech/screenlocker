@@ -74,6 +74,7 @@ import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
 import com.tonyodev.fetch2core.Extras;
+import com.tonyodev.fetch2core.Func;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -95,7 +96,9 @@ import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
 import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
 import static com.screenlocker.secure.utils.AppConstants.CLIENT_SOCKET_URL;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -105,11 +108,14 @@ import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST_ID_SAVED;
+import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.REBOOT_RESTRICTION_DELAY;
 import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
@@ -130,7 +136,7 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
  */
 
 
-public class LockScreenService extends Service implements ServiceConnectedListener, NetworkChangeReceiver.NetworkChangeListener {
+public class LockScreenService extends Service implements ServiceConnectedListener {
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
@@ -150,7 +156,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private View view;
     private SocketManager socketManager;
 
-    private NetworkChangeReceiver networkChangeReceiver;
 
     private HashSet<String> tempAllowed = new HashSet<>();
     private HashSet<String> blacklist = new HashSet<>();
@@ -179,12 +184,13 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
             try {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null) {
 
-                            installAppListener.downloadComplete(path, packageName);
+                            installAppListener.downloadComplete(path, packageName,space);
                         } else {
                             Uri uri = Uri.fromFile(new File(path));
 //                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
@@ -192,7 +198,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                         break;
                     case EXTRA_MARKET_FRAGMENT:
                         if (marketDoaLoadLister != null)
-                            marketDoaLoadLister.downloadComplete(path, packageName);
+                            marketDoaLoadLister.downloadComplete(path, packageName,space);
                         else {
                             Uri uri = Uri.fromFile(new File(path));
 //                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
@@ -268,15 +274,17 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
+            String space = extras.getString(EXTRA_SPACE,"null");
+            String request_id = extras.getString(EXTRA_REQUEST_ID_SAVED,"null");
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
                     break;
             }
         }
@@ -295,7 +303,24 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             File file = new File(download.getFile());
             file.delete();
 
-            Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+            Extras extras = download.getExtras();
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME,"null");
+            if(packageName != null && !packageName.equals("null")) {
+                switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
+                    case EXTRA_INSTALL_APP:
+                        if (installAppListener != null)
+                            installAppListener.onDownloadCancelled(packageName);
+
+                        break;
+                    case EXTRA_MARKET_FRAGMENT:
+                        if (marketDoaLoadLister != null)
+                            marketDoaLoadLister.onDownloadCancelled(packageName);
+
+                        break;
+                }
+                Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
+
+            }
         }
 
         @Override
@@ -318,21 +343,50 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     private static boolean isServiceConnected = false;
 
+    private NetworkChangeReceiver networkChangeReceiver;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+            boolean isConnected = networkStatus.equals(CONNECTED);
+            if (!isConnected) {
+                destroyClientChatSocket();
+            } else {
+                connectClientChatSocket();
+            }
+        }
+    };
+
     @Override
     public void serviceConnected(boolean status) {
         isServiceConnected = status;
 //        Timber.d("access service running %s ", isServiceConnected);
     }
 
-    @Override
-    public void isConnected(boolean state) {
-        if (!state) {
-            destroyClientChatSocket();
-        } else {
-            connectClientChatSocket();
-        }
-
-    }
+//    @Override
+//    public void isConnected(boolean state) {
+//        if (!state) {
+//            destroyClientChatSocket();
+//        } else {
+//            connectClientChatSocket();
+//        }
+//
+//    }
 
     public void destroyClientChatSocket() {
         socketManager.destroyClientChatSocket();
@@ -343,10 +397,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         if (deviceId == null) {
             String serialNumber = DeviceIdUtils.getSerialNumber();
-            Log.d("serialslkdj", serialNumber);
             deviceId = DeviceIdUtils.getSerialNumber();
         }
-        Log.d("lkashdf", deviceId);
         socketManager.connectClientChatSocket(deviceId, CLIENT_SOCKET_URL);
     }
 
@@ -410,6 +462,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     @Override
     public void onCreate() {
+
+        registerNetworkPref();
 
         setAlarmManager(this, System.currentTimeMillis() + 15000);
 
@@ -524,7 +578,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
+//        networkChangeReceiver.setNetworkChangeListener(this);
 
         registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -571,7 +625,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     AppExecutor appExecutor;
 
-    public void startDownload(String url, String filePath, String packageName, String type) {
+    public void startDownload(String url, String filePath, String packageName, String type,String space) {
 
         Timber.i("URL %s: ", url);
 
@@ -583,6 +637,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
+        map.put(EXTRA_SPACE,space);
+        map.put(EXTRA_REQUEST_ID_SAVED,String.valueOf(request.getId()));
         Extras extras = new Extras(map);
         request.setExtras(extras);
 
@@ -596,9 +652,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     }
 
 
-    public void cancelDownload() {
-        if (downloadId != 0)
-            fetch.cancel(downloadId);
+
+    public void cancelDownload(String request_id) {
+        if(request_id != null && !request_id.equals("null"))
+        {
+            fetch.cancel(Integer.parseInt(request_id));
+        }
     }
 
     private DownloadServiceCallBacks installAppListener, marketDoaLoadLister;
@@ -629,6 +688,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
+            unRegisterNetworkPref();
+            PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
             Intent intent = new Intent(LockScreenService.this, LockScreenService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent);
@@ -686,6 +747,10 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     case "flagged":
                         startLockScreen(true);
                         break;
+                    case "transfered":
+                        startLockScreen(true);
+                        break;
+
                     case "lockedFromsim":
                         startLockScreen(false);
                     case "add":
