@@ -26,17 +26,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -69,6 +58,16 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -141,6 +140,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView tvlinkDevice;
 
     private Dialog aboutDialog = null, accountDialog = null;
+    private AlertDialog limitedDialog;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -180,6 +180,12 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     String serialNo = DeviceIdUtils.getSerialNumber();
                     if (!isSocketConnected()) {
                         new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                    }
+                    if(limitedDialog != null && limitedDialog.isShowing())
+                    {
+                        limitedDialog.dismiss();
+                        Intent limitedIntent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
+                        startActivity(limitedIntent);
                     }
                 } else {
                     stopService(intent);
@@ -567,13 +573,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void showNetworkDialog(String title, String msg, String btnTitle) {
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(title);
-        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+        limitedDialog = new AlertDialog.Builder(this).create();
+        limitedDialog.setTitle(title);
+        limitedDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage(msg);
+        limitedDialog.setMessage(msg);
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
+        limitedDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -582,9 +588,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
+        limitedDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
                 (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
+        limitedDialog.show();
 
     }
 

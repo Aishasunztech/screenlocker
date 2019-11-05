@@ -259,17 +259,34 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     };
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed, String space) {
+    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
+
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+
             if (fragment != null) {
-                fragment.onDownLoadProgress(pn, progress, speed);
+                fragment.onDownLoadProgress(pn, progress,requestId, speed);
             }
             if (fragment1 != null) {
-                fragment1.onDownLoadProgress(pn, progress, speed);
+                fragment1.onDownLoadProgress(pn, progress,requestId, speed);
             }
+
         }
+
+//        int index = IntStream.range(0, unInstalledApps.size())
+//                .filter(i -> Objects.nonNull(unInstalledApps.get(i)))
+//                .filter(i -> pn.equals(unInstalledApps.get(i).getPackageName()))
+//                .findFirst()
+//                .orElse(-1);
+//        if (index != -1) {
+//            ServerAppInfo info = unInstalledApps.get(index);
+//            info.setProgres(progress);
+//            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
+//            info.setSpeed(speed);
+//            uninstalledAdapter.updateProgressOfItem(info, index);
+//        }
+
     }
 
     @Override
@@ -316,6 +333,20 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
             if (fragment1 != null) {
                 fragment1.onDownloadStarted(pn);
+            }
+        }
+    }
+
+    @Override
+    public void onDownloadCancelled(String packageName) {
+        if (sectionsPagerAdapter != null) {
+            MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
+            if (fragment != null) {
+                fragment.onDownloadCancelled(packageName);
+            }
+            UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
+            if (fragment1 != null) {
+                fragment1.onDownloadCancelled(packageName);
             }
         }
     }
@@ -668,6 +699,11 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         else{
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
+    }
+
+    @Override
+    public void onCancelClick(String request_id) {
+        mService.cancelDownload(request_id);
     }
 
 

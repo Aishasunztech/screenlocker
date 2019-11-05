@@ -57,6 +57,16 @@ public class ServerAppInfo {
         INSTALLING
     }
 
+    private String request_id;
+
+    public String getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(String request_id) {
+        this.request_id = request_id;
+    }
+
     private PROG_TYPE type = PROG_TYPE.GONE;
 
     public PROG_TYPE getType() {

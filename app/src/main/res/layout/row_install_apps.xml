@@ -55,15 +55,32 @@
         android:layout_marginEnd="@dimen/_8sdp"
         tools:text="Nadeem"/>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:visibility="visible"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_8sdp"
-        android:layout_marginBottom="@dimen/_8sdp"/>
+        android:id="@+id/progress_container_install"
+        android:visibility="visible"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            />
+
+        <ImageView
+            android:id="@+id/cancel_download_install"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cancel_download"
+            android:padding="5dp"/>
+
+    </LinearLayout>
 
 
 

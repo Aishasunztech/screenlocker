@@ -16,9 +16,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.room.Room;
-
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -54,6 +51,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -162,6 +161,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         super.onCreate();
 
         appContext = getApplicationContext();
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
 
         registerNetworkPref();
 
