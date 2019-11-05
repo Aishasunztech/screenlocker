@@ -2,33 +2,61 @@ package com.screenlocker.secure.settings;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Instrumentation;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.network.NetworkChangeReceiver;
+import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
+import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
+import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
+import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
+import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.screenlocker.secure.settings.managepassword.ManagePasswords;
+import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
+import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.socket.utils.ApiUtils;
+import com.screenlocker.secure.socket.utils.utils;
+import com.screenlocker.secure.updateDB.BlurWorker;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -40,44 +68,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
-import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
-import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.retrofit.RetrofitClientInstance;
-import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
-import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
-import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
-import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
-import com.screenlocker.secure.settings.managepassword.ManagePasswords;
-import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
-import com.screenlocker.secure.socket.SocketManager;
-import com.screenlocker.secure.socket.service.SocketService;
-import com.screenlocker.secure.socket.utils.ApiUtils;
-import com.screenlocker.secure.socket.utils.utils;
-import com.screenlocker.secure.updateDB.BlurWorker;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PrefUtils;
-import com.secureSetting.SecureSettingsMain;
-import com.theartofdev.edmodo.cropper.CropImage;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -89,10 +79,13 @@ import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.DB_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
@@ -103,13 +96,17 @@ import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
+import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /***
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener, NetworkChangeReceiver.NetworkChangeListener {
-    private NetworkChangeReceiver networkChangeReceiver;
+public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener {
+
 
     private Toolbar mToolbar;
     /**
@@ -144,20 +141,73 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView tvlinkDevice;
 
     private Dialog aboutDialog = null, accountDialog = null;
+    private AlertDialog limitedDialog;
+
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            finish();
+        }
+
+    };
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
+                Intent intent = new Intent(this, SocketService.class);
+                if (isConnected) {
+                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
+                    String serialNo = DeviceIdUtils.getSerialNumber();
+                    if (!isSocketConnected()) {
+                        new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                    }
+                    if(limitedDialog != null && limitedDialog.isShowing())
+                    {
+                        limitedDialog.dismiss();
+                        Intent limitedIntent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
+                        startActivity(limitedIntent);
+                    }
+                } else {
+                    stopService(intent);
+
+                }
+
+            }
+        }
+    };
+
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        networkChangeReceiver.setNetworkChangeListener(this);
+        registerNetworkPref();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
+        unRegisterNetworkPref();
     }
 
 
@@ -166,19 +216,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-
-
         ButterKnife.bind(this);
-        networkChangeReceiver = new NetworkChangeReceiver();
-
-//        Toast.makeText(this, "Current version : " + android.os.Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
-
-
         init();
         tvAbout.setPaintFlags(tvAbout.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
@@ -295,7 +337,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.toolbar_title);
-            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+            String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
+            if (deviceid != null) {
+                getSupportActionBar().setSubtitle("Device ID: " + deviceid);
+            }
+            //getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }
     }
 
@@ -338,18 +384,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvlinkDevice:
 
-                    ConnectivityManager cm =
-                            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                    boolean isConnected = activeNetwork != null &&
-                            activeNetwork.isConnected();
-
-                    if (isConnected) {
+                    if (!isNetworkAvailable(this)) {
+                        showNetworkDialog(getResources().getString(R.string.network_not_connected),getResources().getString(R.string.network_not_connected_message),getResources().getString(R.string.network_setup));
+                    } else if (!isNetworkConneted(this)) {
+                        showNetworkDialog(getResources().getString(R.string.network_limited),getResources().getString(R.string.network_limited_message),getResources().getString(R.string.change_network));
+                    } else {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
-
-                    } else {
-                        showNetworkDialog();
                     }
 
 
@@ -403,7 +444,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         try {
             NetworkCapabilities nc = manager.getNetworkCapabilities(n);
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (PrefUtils.getIntegerPref(this, UPDATESIM) != 1) {
+                if (!PrefUtils.getBooleanPref(this, UPDATESIM)) {
                     new AlertDialog.Builder(this)
                             .setTitle("Warning!")
                             .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
@@ -413,6 +454,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                             .setNegativeButton(R.string.cancel, (dialog, which) -> {
                                 dialog.dismiss();
                             }).show();
+                } else {
+                    proccedToDownload();
                 }
             } else {
                 proccedToDownload();
@@ -434,8 +477,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
         if (currentVersion != null)
-            if (CommonUtils.isNetworkAvailable(this)) {
-
+            if (CommonUtils.isNetworkConneted(this)) {
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();
@@ -526,15 +568,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    private void showNetworkDialog() {
+    private void showNetworkDialog(String title, String msg,String btnTitle) {
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getResources().getString(R.string.network_not_connected));
-        alertDialog.setIcon(android.R.drawable.ic_dialog_info);
+        limitedDialog = new AlertDialog.Builder(this).create();
+        limitedDialog.setTitle(title);
+        limitedDialog.setIcon(android.R.drawable.ic_dialog_info);
 
-        alertDialog.setMessage(getResources().getString(R.string.network_not_connected_message));
+        limitedDialog.setMessage(msg);
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.network_setup), (dialog, which) -> {
+        limitedDialog.setButton(AlertDialog.BUTTON_POSITIVE, btnTitle, (dialog, which) -> {
             Intent intent = new Intent(SettingsActivity.this, SecureSettingsMain.class);
             intent.putExtra("show_default", "show_default");
             startActivity(intent);
@@ -543,9 +585,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         });
 
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
+        limitedDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.cancel_text),
                 (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
+        limitedDialog.show();
 
     }
 
@@ -676,31 +718,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     }
 
-
-    @Override
-    public void isConnected(boolean state) {
-
-        if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-
-            Intent intent = new Intent(this, SocketService.class);
-            if (state) {
-                String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                String serialNo = DeviceIdUtils.getSerialNumber();
-                if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
-                    new ApiUtils(SettingsActivity.this, macAddress, serialNo);
-                }
-            } else {
-                stopService(intent);
-
-            }
-
-        }
-    }
-
-
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 

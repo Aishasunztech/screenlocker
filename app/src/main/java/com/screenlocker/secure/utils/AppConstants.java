@@ -43,11 +43,24 @@ public class AppConstants {
     public static final String GUEST_DEFAULT_CONFIG = "_guest_def_config";
     public static final String ENCRYPT_DEFAULT_CONFIG = "_encrypt_def_config";
     public static final String DUERESS_DEFAULT_CONFIG = "_duress_def_config";
+    //patterns
     public static final String GUEST_PATTERN = "_guest_pattern";
     public static final String ENCRYPT_PATTERN = "_encrypt_pattern";
     public static final String DURESS_PATTERN = "_duress_pattern";
+    //password configuration options
     public static final String PIN_PASSWORD = "_pin_password";
     public static final String PATTERN_PASSWORD = "_pattern_password";
+    public static final String COMBO_PASSWORD = "_combo_password";
+    //guest combo passwords
+    public static final String GUEST_COMBO_PIN = "guest_combo_pin";
+    public static final String GUEST_COMBO_PATTERN = "guest_combo_pattern";
+    //encrypt combo passwords
+    public static final String ENCRYPT_COMBO_PIN = "encrypt_combo_pin";
+    public static final String ENCRYPT_COMBO_PATTERN = "encrypt_combo_pattern";
+    //duress combo passwords
+    public static final String DURESS_COMBO_PIN = "duress_combo_pin";
+    public static final String DURESS_COMBO_PATTERN = "duress_combo_pattern";
+
 
     public static final String BROADCAST_APPS_ACTION = "appInfoKey";
     public static final String BROADCAST_DATABASE = "broadcast_database";
@@ -93,20 +106,21 @@ public class AppConstants {
 
     public static final String KEY_DISABLE_CALLS = "disable_calls";
     public static final String DEVICE_ID = "device_id";
+    public static final String USER_ID = "user_id";
     public static final String TOKEN = "token";
     public static final String DFAULT_MAC = "default_mac";
 
 
     //servers links
-    public static String URL_1 = "https://api.lockmesh.com";//live SL
-    //    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static String URL_1 = "https://api.lockmesh.com";//live SL
+        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
     //        public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//                public static String URL_1 = "http://192.168.18.32:3000";//local
+//    public static String URL_1 = "http://192.168.0.169:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
     public static final String SM_END_POINT = "marketApplist/";
@@ -114,7 +128,8 @@ public class AppConstants {
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/api/v1/mobile/";
+        public static final String MOBILE_END_POINT = "/api/v2/mobile/"; // dev
+//    public static final String MOBILE_END_POINT = "/mobile/"; live
 
     //available live host
     public static final String LIVE_URL = "live_url";
@@ -182,6 +197,7 @@ public class AppConstants {
     public static final String DURESS_PASSORD_OPTION = "_d_p";
     public static final int OPTION_PIN = 1;
     public static final int OPTION_PATTERN = 2;
+    public static final int OPTION_COMBO = 3;
     public static final String PERVIOUS_VERSION = "previous_version_";
 
 
@@ -394,7 +410,7 @@ public class AppConstants {
     public static final String TEXT1 = "Your account with Device ID = ";
     public static final String LANGUAGE_PREF = "language_pref";
     public static final String UPDATEWIFI = "updatewifi";
-    public static final String UPDATESIM = "updateSim";
+    public static final String UPDATESIM = "updateSim_";
     public static final String LINKSIM = "linkSim";
     public static final String SECUREMARKETWIFI = "secureMarketWifi";
     public static final String SECUREMARKETSIM = "secureMarketSim";
@@ -436,8 +452,11 @@ public class AppConstants {
     //Fetch
 
     public static final String EXTRA_PACKAGE_NAME = "extra_package";
+    public static final String EXTRA_IS_PACKAGE_INSTALLED = "extra_is_package";
     public static final String EXTRA_FILE_PATH = "extra_filePath";
     public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_SPACE = "extra_space";
+    public static final String EXTRA_REQUEST_ID_SAVED = "extra_request_ID";
     public static final String EXTRA_INSTALL_APP = "_inst";
     public static final String EXTRA_MARKET_FRAGMENT = "_mark";
 
@@ -470,9 +489,15 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+    public static final String NUMBER_OF_NOTIFICATIONS = "number_of_notifications";
 
 
     public static final String OLD_DEVICE_STATUS = "old_device_status";
+
+    public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CONNECTED = "connected";
+    public static final String DISCONNECTED = "disconnected";
+    public static final String LIMITED = "limited";
 
 
 }

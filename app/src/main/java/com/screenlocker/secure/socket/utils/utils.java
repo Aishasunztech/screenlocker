@@ -82,20 +82,31 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_CLIENT_CHAT_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.LIVE_CLIENT_CHAT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.LOCK_SCREEN_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_CLEAR_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_CLEAR_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_MARKET_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_MARKET_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_INSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.SFM_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SFM_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SUPPORT_PACKAGE;
+import static com.screenlocker.secure.utils.AppConstants.SUPPORT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.Utils.sendMessageToActivity;
@@ -189,7 +200,30 @@ public class utils {
                         boolean enable = (boolean) app.get("enable");
                         boolean encrypted = (boolean) app.get("encrypted");
 
-                        MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+
+                        switch (packageName) {
+                            case SECURE_CLEAR_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
+                                break;
+                            case SECURE_MARKET_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
+                                break;
+                            case LIVE_CLIENT_CHAT_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
+                                break;
+                            case SECURE_SETTINGS_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
+                                break;
+                            case SFM_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
+                                break;
+                            case SUPPORT_PACKAGE:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
+                                break;
+                            default:
+                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+                        }
+
 
                         if (i == apps.length() - 1) {
                             listener.onAppsReady();
@@ -528,6 +562,10 @@ public class utils {
             case "flagged":
                 PrefUtils.saveStringPref(context, DEVICE_STATUS, "flagged");
                 break;
+            case "transfered":
+                PrefUtils.saveStringPref(context, DEVICE_STATUS, "transfered");
+
+                break;
         }
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -607,9 +645,9 @@ public class utils {
     }
 
 
-    public static void unlinkDevice(Context context, boolean status) {
+    public static void unlinkDeviceWithMsg(Context context, boolean status, String device_status) {
 
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, "unlinked");
+        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, device_status);
         PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
         PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
         PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
@@ -639,7 +677,7 @@ public class utils {
         context.stopService(socketService);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
-        lockScreen.setAction("unlinked");
+        lockScreen.setAction(device_status);
 
         if (status) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -648,7 +686,7 @@ public class utils {
                 context.startService(lockScreen);
             }
         }
-        sendBroadcast(context, "unlinked");
+        sendBroadcast(context, device_status);
 
 
     }
@@ -973,22 +1011,15 @@ public class utils {
 
     public static void scheduleUpdateJob(Context context) {
         ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-        JobInfo jobInfo;
-        if (PrefUtils.getIntegerPref(context, UPDATESIM) != 1) {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-        } else {
-            jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                    .setPeriodic(ONE_DAY_INTERVAL)
-                    .build();
-        }
-
+        JobInfo jobInfo = new JobInfo.Builder(UPDATE_JOB, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(ONE_DAY_INTERVAL)
+                .build();
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-
+        if (utils.isJobServiceOn(context, UPDATE_JOB)) {
+            scheduler.cancel(UPDATE_JOB);
+        }
         int resultCode = scheduler.schedule(jobInfo);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
             Timber.d("Job Scheduled");

@@ -11,6 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
+import com.secureMarket.AppInstallUpdateListener;
+import com.secureMarket.SecureMarketAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,18 +32,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
-import com.secureMarket.AppInstallUpdateListener;
-import com.secureMarket.SecureMarketActivity;
-import com.secureMarket.SecureMarketAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
-
 import timber.log.Timber;
 
 /**
@@ -155,6 +154,12 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         //not for this fragment
     }
 
+    @Override
+    public void onCancelClick(String request_id) {
+        mListener.onCancelClick(request_id);
+
+    }
+
 
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
@@ -185,13 +190,19 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         }
     }
 
-    public void onInstallationComplete(String pn) {
+    public void onInstallationComplete(String pn, boolean isInstalled) {
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
                 .filter(i -> pn.equals(installedApps.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
         if (index != -1) {
+            if (!isInstalled){
+                Toast.makeText(getContext(), String.format("Error while installing %s Application", installedApps.get(index).getApkName()), Toast.LENGTH_SHORT).show();
+                installedApps.get(index).setType(ServerAppInfo.PROG_TYPE.GONE);
+                installedAdapter.notifyItemChanged(index);
+                return;
+            }
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
             if (installedAdapter.getItemCount() == 0) {
@@ -203,8 +214,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         }
     }
 
-
-    public void onDownLoadProgress(String pn, int progress, long speed) {
+    public void onDownLoadProgress(String pn, int progress, String requestId,long speed) {
         Timber.d("onDownLoadProgress: " + pn);
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
@@ -213,6 +223,7 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
                 .orElse(-1);
         if (index != -1) {
             ServerAppInfo info = installedApps.get(index);
+            info.setRequest_id(requestId);
             info.setProgres(progress);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
@@ -237,6 +248,23 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
 
 
     }
+
+
+    public void onDownloadCancelled(String packageName)
+    {int index = IntStream.range(0, installedApps.size())
+            .filter(i -> Objects.nonNull(installedApps.get(i)))
+            .filter(i -> packageName.equals(installedApps.get(i).getPackageName()))
+            .findFirst()
+            .orElse(-1);
+
+        if (index != -1) {
+            ServerAppInfo info = installedApps.get(index);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
+            installedAdapter.updateProgressOfItem(info, index);
+        }
+
+    }
+
 
 
     public void downloadError(String pn) {

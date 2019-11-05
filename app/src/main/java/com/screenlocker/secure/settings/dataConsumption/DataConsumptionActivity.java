@@ -44,10 +44,9 @@ public class DataConsumptionActivity extends AppCompatActivity {
         }else
             updateWifi.setChecked(false);*/
         //update sim toggle
-        if (PrefUtils.getIntegerPref(this, UPDATESIM) == 1) {
-            updateSim.setChecked(true);
-        } else
-            updateSim.setChecked(false);
+
+            updateSim.setChecked(PrefUtils.getBooleanPref(this, UPDATESIM));
+
 
         //sm wifi
         if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) == 1) {
@@ -67,19 +66,7 @@ public class DataConsumptionActivity extends AppCompatActivity {
 //                PrefUtils.saveIntegerPref(this,UPDATEWIFI,2);
 //        });
         updateSim.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                PrefUtils.saveIntegerPref(this, UPDATESIM, 1);
-                if (utils.isJobServiceOn(this, UPDATE_JOB)) {
-                    cancelJob(this, UPDATE_JOB);
-                }
-                scheduleUpdateJob(this);
-            } else {
-                PrefUtils.saveIntegerPref(this, UPDATESIM, 2);
-                if (utils.isJobServiceOn(this, UPDATE_JOB)) {
-                    cancelJob(this, UPDATE_JOB);
-                }
-                scheduleUpdateJob(this);
-            }
+                PrefUtils.saveBooleanPref(this, UPDATESIM, isChecked);
         });
 
         secureMarketWifi.setOnCheckedChangeListener((buttonView, isChecked) -> {

@@ -5,13 +5,9 @@ import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,40 +16,32 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
-
-import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.service.AlarmReceiver;
-import com.screenlocker.secure.settings.SettingsActivity;
-import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.model.Settings;
-import com.secureSetting.t.AppConst;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.NetworkInterface;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import javax.net.ssl.SSLHandshakeException;
+import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.service.NetworkSocketAlarm;
+import com.screenlocker.secure.service.OfflineExpiryAlarm;
+import com.screenlocker.secure.socket.SocketManager;
+import com.screenlocker.secure.socket.model.Settings;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -61,23 +49,15 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class CommonUtils {
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager manager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Network is present and connected
-            isAvailable = true;
-        }
-        return isAvailable;
-    }
-
 
     public static boolean IsReachable(Context context, String host) {
         Timber.d("isReachAble");
@@ -435,6 +415,25 @@ public class CommonUtils {
         }
     }
 
+
+    public static boolean isSocketConnected() {
+        return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
+    }
+
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+       return activeNetwork != null && activeNetwork.isConnected();
+
+    }
+
+    public static boolean isNetworkConneted(Context context) {
+        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+        return state != null && state.equals(CONNECTED);
+    }
+
     public static void setAppLocale(String locale, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
@@ -443,11 +442,20 @@ public class CommonUtils {
         resources.updateConfiguration(configuration, displayMetrics);
     }
 
-    public static void setAlarmManager(Context context, long timeInMillis) {
+    /**
+     * @param alarmType 0 for offline expiry 1 for socket and network connection checker
+     */
+    public static void setAlarmManager(Context context, long timeInMillis, int alarmType) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intentAlarm = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intentAlarm, 0);
+        Intent intent = null;
 
+        if (alarmType == 0) {
+            intent = new Intent(context, OfflineExpiryAlarm.class);
+        } else if (alarmType == 1) {
+            intent = new Intent(context, NetworkSocketAlarm.class);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
     }
@@ -485,6 +493,35 @@ public class CommonUtils {
         settings.add(new Settings(AppConstants.SET_SPEAKER, true));
 
         return settings;
+    }
+
+    public static String getTimeString(long l)
+    {
+        int seconds = (int) (l / 1000);
+        int minutes = (int) Math.floor(seconds /60);
+        seconds = (int) Math.floor(seconds%60);
+        String minuteString = "" + minutes;
+        String secondString = "" + seconds;
+
+        if(minutes < 10)
+        {
+            minuteString = "0" + minuteString;
+        }
+        if(seconds<10)
+        {
+            secondString = "0" + secondString;
+        }
+
+        return minuteString + ":" + secondString;
+    }
+
+    public static String currentSpace(Context context)
+    {
+        String space = PrefUtils.getStringPref(context,CURRENT_KEY);
+        if (KEY_MAIN_PASSWORD.equals(space)) {
+            return "encrypted";
+        }
+        return "guest";
     }
 
 

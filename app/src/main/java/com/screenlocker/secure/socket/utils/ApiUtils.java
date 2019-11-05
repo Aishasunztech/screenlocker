@@ -9,10 +9,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
-import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -27,12 +25,15 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
-import static com.screenlocker.secure.socket.utils.utils.unlinkDevice;
+import static com.screenlocker.secure.socket.utils.utils.unlinkDeviceWithMsg;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS_CHANGE_RECEIVER;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.FLAGGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
@@ -46,6 +47,7 @@ import static com.screenlocker.secure.utils.AppConstants.TRIAL;
 import static com.screenlocker.secure.utils.AppConstants.UNLINKED_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 
 public class ApiUtils implements ApiRequests {
@@ -111,7 +113,7 @@ public class ApiUtils implements ApiRequests {
                             Timber.d("response :" + msg);
                             if (deviceStatusResponse.isStatus()) {
 
-                                saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin(), deviceStatusResponse.getUser_id());
 
                                 switch (msg) {
                                     case ACTIVE:
@@ -140,15 +142,25 @@ public class ApiUtils implements ApiRequests {
                                         break;
                                 }
                             } else {
+
+                                PrefUtils.saveStringPref(context, DEVICE_ID, response.body().getDevice_id());
+
                                 PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
-                                        utils.unlinkDevice(context, true);
+                                        utils.unlinkDeviceWithMsg(context, true, "unlinked");
                                         break;
                                     case NEW_DEVICE:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
                                         utils.newDevice(context, true);
+                                        break;
+                                    case DUPLICATE_MAC:
+                                        utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC);
+                                        break;
+                                    case DUPLICATE_SERIAL:
+                                        utils.unlinkDeviceWithMsg(context, true, DUPLICATE_SERIAL);
+                                        break;
+                                    case DUPLICATE_MAC_AND_SERIAL:
+                                        utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC_AND_SERIAL);
                                         break;
 
                                 }
@@ -168,6 +180,7 @@ public class ApiUtils implements ApiRequests {
                             context.stopService(socketIntent);
                             return;
                         }
+
                         switch (device_status) {
                             case "expired":
                                 intent.putExtra("device_status", "expired");
@@ -178,7 +191,16 @@ public class ApiUtils implements ApiRequests {
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                                 break;
                             case "unliked":
-                                unlinkDevice(context, true);
+                                unlinkDeviceWithMsg(context, true, "unlinked");
+                                break;
+                            case DUPLICATE_MAC:
+                                utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC);
+                                break;
+                            case DUPLICATE_SERIAL:
+                                utils.unlinkDeviceWithMsg(context, true, DUPLICATE_SERIAL);
+                                break;
+                            case DUPLICATE_MAC_AND_SERIAL:
+                                utils.unlinkDeviceWithMsg(context, true, DUPLICATE_MAC_AND_SERIAL);
                                 break;
                         }
 
@@ -187,11 +209,13 @@ public class ApiUtils implements ApiRequests {
                 });
     }
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
         PrefUtils.saveStringPref(context, TOKEN, token);
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
+        PrefUtils.saveStringPref(context, USER_ID, userId);
         PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
+
     }
 
 }

@@ -148,6 +148,8 @@ public class LinkDeviceActivity extends BaseActivity {
     TextView tvChatId;
     @BindView(R.id.tv_linked_dealerPin)
     TextView tv_label_dealer_pin;
+    @BindView(R.id.tv_linked_deviceId)
+    TextView tv_linked_deviceId;
 
     // Sim ID view
     @BindView(R.id.simId)
@@ -205,15 +207,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         setToolbar(toolbar);
 
-        if (status != null && status.equals(PENDING_STATE)) {
-            pendingLinkViewState();
 
-        } else if (status != null && status.equals(ACTIVE_STATE)) {
-            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
-            approvedLinkViewState();
-        } else {
-            newLinkViewState();
-        }
 
 
         currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
@@ -294,6 +288,36 @@ public class LinkDeviceActivity extends BaseActivity {
         tvMAC.setText(MAC);
         tvIP.setText(IP);
         lytSwipeReferesh.setOnRefreshListener(listener);
+        if (status != null && status.equals(PENDING_STATE)) {
+            pendingLinkViewState();
+
+        } else if (status != null && status.equals(ACTIVE_STATE)) {
+            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
+            approvedLinkViewState();
+        } else {
+            processingLinkViewState();
+            if (MyApplication.oneCaller == null) {
+                if (asyncCalls != null) {
+                    asyncCalls.cancel(true);
+                }
+
+                String[] urls = {URL_1, URL_2};
+                asyncCalls = new AsyncCalls(output -> {
+                    if (output == null) {
+                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        PrefUtils.saveStringPref(this, LIVE_URL, output);
+                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        Timber.d("live_url %s", live_url);
+                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
+                        linkDevice();
+                    }
+                }, this, urls);
+
+            } else {
+                linkDevice();
+            }
+        }
 
 
     }
@@ -544,13 +568,14 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
-
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
@@ -566,29 +591,41 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
+                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, response.body().getDevice_id());
+
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
+                                        isPendingActivation = false;
                                         finish();
                                         break;
                                     case NEW_DEVICE:
+                                        isPendingActivation = false;
                                         if (isLinked) {
-                                            utils.unlinkDevice(LinkDeviceActivity.this, false);
+                                            utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, "unlinked");
                                             finish();
                                         } else {
                                             finish();
                                         }
                                         break;
                                     case DUPLICATE_MAC:
-//                                            showError("Error 321 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        isPendingActivation = false;
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC);
+                                        finish();
                                         break;
                                     case DUPLICATE_SERIAL:
-//                                            showError("Error 322 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        isPendingActivation = false;
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_SERIAL);
+                                        finish();
                                         break;
                                     case DUPLICATE_MAC_AND_SERIAL:
-//                                            showError("Error 323 Device ID (" + response.body().getDevice_id() + ") please contact support");
+                                        isPendingActivation = false;
+                                        utils.unlinkDeviceWithMsg(LinkDeviceActivity.this, false, DUPLICATE_MAC_AND_SERIAL);
+                                        finish();
                                         break;
                                     case DEALER_NOT_FOUND:
-//                                            showMainContent();
+                                        isPendingActivation = false;
+                                        Toast.makeText(LinkDeviceActivity.this, "Dealer not found", Toast.LENGTH_SHORT).show();
+                                        finish();
                                         break;
                                 }
                             }
@@ -603,6 +640,7 @@ public class LinkDeviceActivity extends BaseActivity {
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
                         Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                        isPendingActivation = false;
                     }
                 });
     }
@@ -610,24 +648,30 @@ public class LinkDeviceActivity extends BaseActivity {
 
     boolean isPendingActivation = false;
 
-    @Override
-    protected void onStop() {
-        super.onStop();
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeTimer();
+    }
+
+    private void closeTimer() {
         if (t != null) {
             t.cancel();
             t = null;
         }
         PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
 
-        if (isPendingActivation) {
-            if (mListener != null)
-                mListener.onScheduleTimer(true);
-        } else {
-            if (mListener != null) {
-                mListener.onScheduleTimer(false);
-            }
-        }
+        if (mListener != null)
+            mListener.onScheduleTimer(isPendingActivation);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        closeTimer();
     }
 
     private Timer t;
@@ -771,7 +815,8 @@ public class LinkDeviceActivity extends BaseActivity {
         if (dealerPin != null) {
 
             tvLinkedDealerPin.setText(dealerPin);
-            tv_label_dealer_pin.setText(getResources().getString(R.string.dealer_pin) + ": " + dealerPin);
+            tv_label_dealer_pin.setText(String.format("%s: %s", getResources().getString(R.string.dealer_pin), dealerPin));
+            tv_linked_deviceId.setText(String.format("Device ID: %s", PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
         }
 
 

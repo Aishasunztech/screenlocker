@@ -9,7 +9,6 @@ import android.content.Intent;
  */
 public class LifecycleReceiver extends BroadcastReceiver {
 
-    public static final String TAG = "NetworkChangeReceiver";
     public static final int FOREGROUND = 1;
     public static final int BACKGROUND = 2;
     public static final String STATE = "STATE";

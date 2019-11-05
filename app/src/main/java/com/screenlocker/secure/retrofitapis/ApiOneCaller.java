@@ -75,8 +75,9 @@ public interface ApiOneCaller {
             @Body DeviceModel deviceModel
     );
 
-    @GET("admin/marketApplist")
-    Call<InstallAppModel> getAdminApps();
+    @GET("marketApplist/admin/{space}")
+    Call<InstallAppModel> getAdminApps(@Path("space") String space);
+
 
     @GET
     Call<InstallAppModel> getAllApps(@Url String url);

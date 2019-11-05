@@ -41,7 +41,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 
-public class AppSelectionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
+public class  AppSelectionActivity extends BaseActivity implements SelectionContract.SelectionMvpView {
 
 
     public AppSelectionActivity() {

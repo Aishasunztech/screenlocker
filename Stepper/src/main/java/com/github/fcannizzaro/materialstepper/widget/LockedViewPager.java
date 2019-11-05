@@ -2,9 +2,7 @@ package com.github.fcannizzaro.materialstepper.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.viewpager.widget.ViewPager;
 

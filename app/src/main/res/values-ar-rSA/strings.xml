@@ -106,8 +106,9 @@
     <string name="status_disabled">غير نشط</string>
     <string name="status_not_inserted">غير مُدخَل</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">@string/apps_title</string>
+    <string name="tab_text_2">@string/updates</string>
+    <string name="tab_text_3">@string/uninstall</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">إضافة +</string>

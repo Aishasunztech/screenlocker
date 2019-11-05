@@ -2,6 +2,9 @@ package com.screenlocker.secure.settings.managepassword;
 
 import android.content.Context;
 import androidx.annotation.Nullable;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -27,11 +30,21 @@ public class NCodeView extends LinearLayout {
 
     private static final int DEFAULT_CODE_LENGTH = 4;
     List<CheckBox> mCodeViews = new ArrayList<>();
-    private String mCode = "";
-//    private Integ<int>
+    private ArrayList<Integer> mCode = new ArrayList<>(DEFAULT_CODE_LENGTH);
     private int mCodeLength = DEFAULT_CODE_LENGTH;
     private OnPFCodeListener mListener;
 
+
+    public void setColor(){
+        for (CheckBox mCodeView : mCodeViews) {
+            mCodeView.setButtonDrawable(R.drawable.code_selector_wrong);
+        }
+    }
+    public void clearColor(){
+        for (CheckBox mCodeView : mCodeViews) {
+            mCodeView.setButtonDrawable(R.drawable.code_selector_n);
+        }
+    }
 
     public NCodeView(Context context) {
         super(context);
@@ -61,7 +74,7 @@ public class NCodeView extends LinearLayout {
     private void setUpCodeViews() {
         removeAllViews();
         mCodeViews.clear();
-        mCode = "";
+        mCode.clear();
         for (int i = 0; i < mCodeLength; i++) {
             LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -77,49 +90,49 @@ public class NCodeView extends LinearLayout {
             mCodeViews.add(view);
         }
         if (mListener != null) {
-            mListener.onCodeNotCompleted("");
+            mListener.onCodeNotCompleted(null);
         }
     }
 
-    public int input(String number) {
-        if (mCode.length() == mCodeLength) {
-            return mCode.length();
+    public int input(int number) {
+        if (mCode.size() == mCodeLength) {
+            return mCode.size();
         }
-        mCodeViews.get(mCode.length()).toggle(); //.setChecked(true);
-        mCode += number;
-        if (mCode.length() == mCodeLength && mListener != null) {
+        mCodeViews.get(mCode.size()).toggle(); //.setChecked(true);
+        mCode.add(number);
+        if (mCode.size() == mCodeLength && mListener != null) {
             mListener.onCodeCompleted(mCode);
         }
-        return mCode.length();
+        return mCode.size();
     }
 
     public int delete() {
         if (mListener != null) {
             mListener.onCodeNotCompleted(mCode);
         }
-        if (mCode.length() == 0) {
-            return mCode.length();
+        if (mCode.size() == 0) {
+            return mCode.size();
         }
-        mCode = mCode.substring(0, mCode.length() - 1);
-        mCodeViews.get(mCode.length()).toggle();  //.setChecked(false);
-        return mCode.length();
+        mCode.remove(mCode.size()-1);
+        mCodeViews.get(mCode.size()).toggle();  //.setChecked(false);
+        return mCode.size();
     }
 
     public void clearCode() {
         if (mListener != null) {
             mListener.onCodeNotCompleted(mCode);
         }
-        mCode = "";
+        mCode.clear();
         for (CheckBox codeView : mCodeViews) {
             codeView.setChecked(false);
         }
     }
 
     public int getInputCodeLength() {
-        return mCode.length();
+        return mCode.size();
     }
 
-    public String getCode() {
+    public ArrayList<Integer> getCode() {
         return mCode;
     }
 
@@ -129,9 +142,9 @@ public class NCodeView extends LinearLayout {
 
     public interface OnPFCodeListener {
 
-        void onCodeCompleted(String code);
+        void onCodeCompleted(ArrayList<Integer> code);
 
-        void onCodeNotCompleted(String code);
+        void onCodeNotCompleted(ArrayList<Integer> code);
 
     }
 }

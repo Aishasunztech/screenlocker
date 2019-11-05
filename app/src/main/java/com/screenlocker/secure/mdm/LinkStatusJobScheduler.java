@@ -76,7 +76,7 @@ public class LinkStatusJobScheduler extends JobService {
                                                     break;
                                                 case NEW_DEVICE:
                                                     if (isLinked) {
-                                                        utils.unlinkDevice(LinkStatusJobScheduler.this, false);
+                                                        utils.unlinkDeviceWithMsg(LinkStatusJobScheduler.this, false);
                                                         finish();
                                                     } else {
                                                         finish();

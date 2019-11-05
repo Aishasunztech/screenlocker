@@ -116,8 +116,9 @@
     <string name="status_disabled">禁用</string>
     <string name="status_not_inserted">未插入</string>
     <string name="title_activity_secure_simsettings">安全的SIM卡设置</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">@string/apps_title</string>
+    <string name="tab_text_2">@string/updates</string>
+    <string name="tab_text_3">@string/uninstall</string>
     <string name="sim_1">SIM卡 1</string>
     <string name="sim_2">SIM卡 2</string>
     <string name="add">添加 +</string>

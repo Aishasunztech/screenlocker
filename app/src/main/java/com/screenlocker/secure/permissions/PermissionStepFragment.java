@@ -35,6 +35,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static android.app.admin.DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED;
@@ -58,7 +59,6 @@ import static com.screenlocker.secure.utils.AppConstants.PER_UNKNOWN;
 import static com.screenlocker.secure.utils.AppConstants.PER_USAGE;
 import static com.screenlocker.secure.utils.AppConstants.REQUEST_READ_PHONE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.R_RT_P;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
 import static com.screenlocker.secure.utils.PermissionUtils.isPermissionGranted1;
@@ -561,5 +561,66 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
         }
 
     }
+
+    @OnClick({R.id.layout_allow_admin,R.id.layout_allow_overlay,R.id.layout_allow_modify_sytem
+            ,R.id.layout_allow_usage,R.id.layout_allow_runtime,R.id.layout_allow_installPackages,R.id.layout_allow_notification_acces
+            ,R.id.layout_allow_ignorebattery})
+    public void layoutClicked(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.layout_allow_admin:
+                boolean isAdmin = PrefUtils.getBooleanPref(getActivity(), PER_ADMIN);
+                if (!isAdmin) {
+                    activeAdmin.setChecked(true);
+                }
+
+                break;
+            case R.id.layout_allow_overlay:
+                boolean isOverlay = PrefUtils.getBooleanPref(getActivity(), PER_OVERLAY);
+                if (!isOverlay) {
+                    drawoverlay.setChecked(true);
+                }
+
+                break;
+            case R.id.layout_allow_modify_sytem:
+                boolean isAllowModify = PrefUtils.getBooleanPref(getActivity(), PER_MODIFIY);
+                if (!isAllowModify) {
+                    modifiSystemState.setChecked(true);
+                }
+                break;
+            case R.id.layout_allow_usage:
+                boolean isUsage = PrefUtils.getBooleanPref(getActivity(), PER_USAGE);
+                if (!isUsage) {
+                    usageAccess.setChecked(true);
+                }
+                break;
+            case R.id.layout_allow_runtime:
+                boolean isRunTime = PrefUtils.getBooleanPref(getContext(), PER_RUNTIME);
+                if (!isRunTime) {
+                    runtimePermissions.setChecked(true);
+                }
+                break;
+            case R.id.layout_allow_installPackages:
+                boolean isUnknown = PrefUtils.getBooleanPref(getActivity(), PER_UNKNOWN);
+                if (!isUnknown) {
+                    unknownResources.setChecked(true);
+                }
+                break;
+            case R.id.layout_allow_notification_acces:
+                boolean isNotificationAccess = PrefUtils.getBooleanPref(getActivity(), PER_NOTIFICATION);
+                if (!isNotificationAccess) {
+                    notificationAccess.setChecked(true);
+                }
+                break;
+            case R.id.layout_allow_ignorebattery:
+                boolean isBattery = PrefUtils.getBooleanPref(getActivity(), PER_BATTERY);
+                if (!isBattery) {
+                    batteryOptimization.setChecked(true);
+                }
+                break;
+
+        }
+    }
+
 
 }

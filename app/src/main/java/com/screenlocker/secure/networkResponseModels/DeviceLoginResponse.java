@@ -23,6 +23,12 @@ public class DeviceLoginResponse {
     @SerializedName("dId")
     @Expose
     private String dId;
+    @SerializedName("user_id")
+    private String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
 
     public String getDevice_id() {
         return device_id;

@@ -3,11 +3,16 @@ package com.screenlocker.secure.service;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -32,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +52,7 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.UEM_PKG;
+import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.isProgress;
@@ -99,6 +106,18 @@ public class CheckUpdateService extends JobService {
             AppExecutor.getInstance().prepareExecutorForUpdatingList();
         }
         AppExecutor.getInstance().getExecutorForUpdatingList().execute(() -> {
+            ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            Network n = manager.getActiveNetwork();
+            try {
+                NetworkCapabilities nc = manager.getNetworkCapabilities(n);
+                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) && !PrefUtils.getBooleanPref(this, UPDATESIM)) {
+                    //check only featured apps
+                    checkUpdateOfFeaturedApps(parameters);
+                    return;
+                }
+            } catch (Exception e) {
+                Timber.d("Error while checking internet");
+            }
             tryForCheckUpdates(parameters);
         });
     }
@@ -198,7 +217,6 @@ public class CheckUpdateService extends JobService {
             Timber.d(e);
         } catch (IOException e) {
             Timber.tag("").wtf(e, "tryForCheckUpdates: ");
-            ;
             jobFinished(parameters, false);
         }
     }
@@ -290,6 +308,47 @@ public class CheckUpdateService extends JobService {
         }
         return false;
 
+    }
+
+    void checkUpdateOfFeaturedApps(JobParameters parameters) {
+        List<String> packages = new ArrayList<>();
+        packages.add("com.armorSec.android");
+        packages.add("ca.unlimitedwireless.mailpgp");
+        packages.add("com.rim.mobilefusion.client");
+        packages.add("com.secure.vpn");
+        for (String aPackage : packages) {
+            try {
+                ApplicationInfo info = getPackageManager().getApplicationInfo(aPackage, 0);
+                String label = getPackageManager().getApplicationLabel(info).toString();
+                String currentVersion = String.valueOf(getPackageManager().getPackageInfo(aPackage, 0).versionCode);
+                Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + aPackage + "/" + label, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                        .execute();
+                if (response.isSuccessful()) {
+                    if (response.body() != null && response.body().isSuccess()) {
+                        Timber.d("tryForCheckUpdates: %s", response.body());
+                        if (response.body().isApkStatus()) {
+                            String url = response.body().getApkUrl();
+                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                            downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), getPackageName());
+                        }
+                    } else {
+                        if (saveTokens())
+                            tryForCheckUpdates(parameters);
+                        return;
+                    }
+
+                } else {
+                    jobFinished(parameters, true);
+                    return;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Timber.d(e);
+            } catch (IOException e) {
+                Timber.tag("").wtf(e, "tryForCheckUpdates: ");
+                jobFinished(parameters, false);
+            }
+        }
+        jobFinished(parameters, false);
     }
 
 }

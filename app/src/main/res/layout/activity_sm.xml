@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
@@ -36,4 +38,41 @@
             app:tabSelectedTextColor="@color/SettingsColorPrimary"
             android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/error_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_gravity="center"
+       >
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:contentDescription="sm"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_no_internet_connection" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/_8sdp"
+            android:text="No Internet Connection"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:visibility="visible" />
+        <Button
+            android:layout_margin="@dimen/_8sdp"
+            android:id="@+id/error_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_stepper_bg"
+            android:text="Try Again" />
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

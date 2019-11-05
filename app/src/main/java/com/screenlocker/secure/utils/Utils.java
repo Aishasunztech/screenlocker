@@ -28,7 +28,6 @@ import com.screenlocker.secure.BuildConfig;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
-import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.utils;
 
@@ -194,27 +193,6 @@ public class Utils {
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
-    public static void scheduleUpdateCheck(Context context) {
-
-        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
-        JobInfo info = new JobInfo.Builder(123, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(24 * 60 * 60 * 1000L)
-                .build();
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
-        if (utils.isJobServiceOn(context, 123)) {
-            scheduler.cancel(123);
-        }
-        int resultCode = scheduler.schedule(info);
-
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            //Log.d(TAG, "Job scheduled");
-        } else {
-            //Log.d(TAG, "Job scheduling failed");
-        }
-
-    }
-
     public static void scheduleExpiryCheck(Context context) {
 
         ComponentName componentName = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
@@ -255,7 +233,7 @@ public class Utils {
         packageInstaller.uninstall(packageName, i.getIntentSender());
     }
 
-    public static boolean installSielentInstall(Context context, InputStream in, String packageName)
+    public static void installSielentInstall(Context context, InputStream in, String packageName,String space)
             throws IOException {
 
         PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
@@ -277,12 +255,11 @@ public class Utils {
         in.close();
         out.close();
 
-        session.commit(createIntentSender(context, sessionId, packageName));
-        return true;
+        session.commit(createIntentSender(context, sessionId, packageName,space));
 
     }
 
-    private static IntentSender createIntentSender(Context context, int sessionId, String packageName) {
+    private static IntentSender createIntentSender(Context context, int sessionId, String packageName,String space) {
 
 
         Intent intent = new Intent(context, AppsStatusReceiver.class);
@@ -290,7 +267,7 @@ public class Utils {
         intent.setAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra("packageName", packageName);
-        intent.putExtra("userSpace", PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY));
+        intent.putExtra("userSpace", space);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,

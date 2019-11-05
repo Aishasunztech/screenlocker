@@ -2,7 +2,6 @@ package com.github.fcannizzaro.materialstepper.util;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-
 import android.widget.TextView;
 
 import androidx.core.graphics.drawable.DrawableCompat;

@@ -1,6 +1,5 @@
 /local.properties
-/screenlockerv4.iml
-/screenlockoem_v1.14.iml
+*.iml
 # Common
 *~*
 tmp/
@@ -19,7 +18,7 @@ gradlew.bat
 .idea/
 # if you remove the above rule, at least ignore the following:
 ## User-specific stuff:
-# .idea/workspace.xml
+.idea/workspace.xml
 # .idea/tasks.xml
 # .idea/dictionaries
 ## Sensitive or high-churn files:

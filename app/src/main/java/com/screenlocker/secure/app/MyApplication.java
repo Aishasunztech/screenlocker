@@ -9,29 +9,27 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.room.Room;
-
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.mdm.utils.NetworkChangeReceiver;
+import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.offline.MyAlarmBroadcastReceiver;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
+import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
@@ -53,6 +51,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,16 +60,22 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
+import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements NetworkChangeReceiver.NetworkChangeListener, LinkDeviceActivity.OnScheduleTimerListener {
+public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -85,7 +91,6 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     private static Context appContext;
 
-    private NetworkChangeReceiver networkChangeReceiver;
     private MyAlarmBroadcastReceiver myAlarmBroadcastReceiver;
 
     public MyApplication() {
@@ -106,18 +111,63 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
 
+    private NetworkChangeReceiver networkChangeReceiver;
+    private SharedPreferences sharedPref;
+
+    private void registerNetworkPref() {
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unRegisterNetworkPref() {
+        if (sharedPref != null)
+            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
+        if (networkChangeReceiver != null)
+            unregisterReceiver(networkChangeReceiver);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
+
+        if (key.equals(CURRENT_NETWORK_STATUS)) {
+
+            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+
+            boolean isConnected = networkStatus.equals(CONNECTED);
+
+            Timber.d("ksdklfgsmksls : " + isConnected);
+
+            if (isConnected) {
+                if (!isSocketConnected()) {
+                    onlineConnection();
+                }
+            } else {
+                if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+                    Intent intent = new Intent(this, SocketService.class);
+                    stopService(intent);
+                }
+                if (this.timer != null) {
+                    this.timer.cancel();
+                    this.timer = null;
+                }
+            }
+        }
+    };
+
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         appContext = getApplicationContext();
+        PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
 
-        networkChangeReceiver = new NetworkChangeReceiver();
-        networkChangeReceiver.setNetworkChangeListener(this);
+        registerNetworkPref();
 
-        LinkDeviceActivity.mListener = this;
+        if (LinkDeviceActivity.mListener == null)
+            LinkDeviceActivity.mListener = this;
 
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(myAlarmBroadcastReceiver, new IntentFilter(ALARM_TIME_COMPLETED));
 
 
@@ -264,31 +314,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     @Override
     public void onTerminate() {
         unregisterReceiver(appsStatusReceiver);
-        unregisterReceiver(networkChangeReceiver);
-        networkChangeReceiver.unsetNetworkChangeListener();
         unregisterReceiver(myAlarmBroadcastReceiver);
+        unRegisterNetworkPref();
         super.onTerminate();
-    }
-
-
-    @Override
-    public void isConnected(boolean state) {
-
-        Timber.d("STATUS :" + state);
-
-
-        if (state) {
-            onlineConnection();
-        } else {
-            if (utils.isMyServiceRunning(SocketService.class, appContext)) {
-                Intent intent = new Intent(this, SocketService.class);
-                stopService(intent);
-            }
-            if (t != null) {
-                t.cancel();
-                t = null;
-            }
-        }
     }
 
     private AsyncCalls asyncCalls;
@@ -325,14 +353,17 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
                 if (!old_device_status) {
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
-                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                        new ApiUtils(MyApplication.this, macAddress, serialNo);
+                        PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                    }
                 }
 
                 if (linkStatus) {
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 } else if (pendingActivation) {
-                    scheduleTimer();
+                    if (!isFirst)
+                        scheduleTimer();
                     new ApiUtils(MyApplication.this, macAddress, serialNo);
                 }
 //                checkForDownload();
@@ -343,27 +374,32 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
         asyncCalls.execute();
     }
 
-    private Timer t;
+    private Timer timer;
+
+    private boolean isFirst = false;
 
     private void scheduleTimer() {
 
-        if (t != null) {
-            t.cancel();
-            t = null;
+        isFirst = true;
+
+        if (timer != null) {
+            timer.cancel();
         }
+        timer = null;
 
-        t = new Timer();
 
-        t.scheduleAtFixedRate(new TimerTask() {
+        timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Timber.d("zklvnsdfvnsdklfsdfg : " + "checking online connection ");
                 if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
                     onlineConnection();
                 } else {
-                    if (t != null) {
-                        t.cancel();
-                        t = null;
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
                     }
                 }
 
@@ -374,9 +410,9 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     }
 
     private void stopTimer() {
-        if (t != null) {
-            t.cancel();
-            t = null;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
         Timber.d("zklvnsdfvnsdklfsdfg : " + "stop TImer");
     }
@@ -459,13 +495,14 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
     @Override
     public void onScheduleTimer(boolean state) {
-        Timber.d("zklvnsdfvnsdklfsdfg" + state);
         if (state) {
             scheduleTimer();
         } else {
             stopTimer();
         }
     }
+
+
 }
 
 
