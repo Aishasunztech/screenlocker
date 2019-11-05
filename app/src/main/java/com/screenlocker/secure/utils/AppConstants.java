@@ -170,6 +170,7 @@ public class AppConstants {
     public static final String GET_APPLIED_SETTINGS = "get_applied_settings_";
     public static final String ICON_BASE_URL = "http://46.101.243.120:3000/users/getFile/";
     public static final String APPS_SETTING_CHANGE = "APPS_SETTING_CHANGE";
+    public static final String SUSPENDED_PACKAGES = "change_suspended";
     public static final String SETTINGS_CHANGE = "SETTINGS_CHANGE";
     public static final String DEVICE_STATUS = "device_status_";
     public static final String LOCK_SCREEN_STATUS = "lock_screen_status";

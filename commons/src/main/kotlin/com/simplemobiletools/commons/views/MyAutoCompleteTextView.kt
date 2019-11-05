@@ -2,11 +2,11 @@ package com.simplemobiletools.commons.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.AutoCompleteTextView
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.simplemobiletools.commons.extensions.adjustAlpha
 import com.simplemobiletools.commons.extensions.applyColorFilter
 
-class MyAutoCompleteTextView : AutoCompleteTextView {
+class MyAutoCompleteTextView : AppCompatAutoCompleteTextView {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

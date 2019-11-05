@@ -97,7 +97,6 @@ import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
-import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
@@ -384,11 +383,15 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case R.id.tvlinkDevice:
 
-                    if (!isNetworkAvailable(this)) {
-                        showNetworkDialog(getResources().getString(R.string.network_not_connected),getResources().getString(R.string.network_not_connected_message),getResources().getString(R.string.network_setup));
-                    } else if (!isNetworkConneted(this)) {
-                        showNetworkDialog(getResources().getString(R.string.network_limited),getResources().getString(R.string.network_limited_message),getResources().getString(R.string.change_network));
-                    } else {
+
+//                    if (!isNetworkConneted(this)) {
+//                        showNetworkDialog(getResources().getString(R.string.network_limited), getResources().getString(R.string.network_limited_message), getResources().getString(R.string.change_network));
+//                    }
+//                    else
+                        if (!isNetworkAvailable(this)) {
+                        showNetworkDialog(getResources().getString(R.string.network_not_connected), getResources().getString(R.string.network_not_connected_message), getResources().getString(R.string.network_setup));
+                    }
+                    else {
                         Intent intent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
                         startActivity(intent);
                     }
@@ -568,7 +571,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    private void showNetworkDialog(String title, String msg,String btnTitle) {
+    private void showNetworkDialog(String title, String msg, String btnTitle) {
 
         limitedDialog = new AlertDialog.Builder(this).create();
         limitedDialog.setTitle(title);

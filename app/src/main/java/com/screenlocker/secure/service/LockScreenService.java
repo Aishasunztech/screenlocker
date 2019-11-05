@@ -34,11 +34,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
@@ -79,10 +85,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import androidx.annotation.RequiresApi;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import timber.log.Timber;
 
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
@@ -116,6 +118,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
@@ -147,6 +150,8 @@ public class LockScreenService extends Service {
     private int downloadId = 0;
     private boolean viewAdded = false;
     private View view;
+    private ComponentName compName;
+    private DevicePolicyManager mDPM;
 
 
     private NetworkSocketAlarm networkSocketAlarm;
@@ -205,7 +210,7 @@ public class LockScreenService extends Service {
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            String space = extras.getString(EXTRA_SPACE,"null");
+            String space = extras.getString(EXTRA_SPACE, "null");
             if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
@@ -223,18 +228,18 @@ public class LockScreenService extends Service {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null) {
 
-                            installAppListener.downloadComplete(path, packageName,space);
+                            installAppListener.downloadComplete(path, packageName, space);
                         } else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName, space);
                         }
                         break;
                     case EXTRA_MARKET_FRAGMENT:
                         if (marketDoaLoadLister != null)
-                            marketDoaLoadLister.downloadComplete(path, packageName,space);
+                            marketDoaLoadLister.downloadComplete(path, packageName, space);
                         else {
                             Uri uri = Uri.fromFile(new File(path));
-                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
+                            Utils.installSielentInstall(LockScreenService.this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName, space);
 
                         }
                         break;
@@ -533,8 +538,8 @@ public class LockScreenService extends Service {
 // ...
 
 
-        DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        ComponentName compName = new ComponentName(this, MyAdmin.class);
+        mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        compName = new ComponentName(this, MyAdmin.class);
         if (mDPM.isDeviceOwnerApp(getPackageName())) {
             try {
                 if (!mDPM.isUninstallBlocked(compName, getPackageName()))
@@ -600,7 +605,7 @@ public class LockScreenService extends Service {
         });
     }
 
-    public void startDownload(String url, String filePath, String packageName, String type,String space)  {
+    public void startDownload(String url, String filePath, String packageName, String type, String space) {
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
@@ -609,6 +614,7 @@ public class LockScreenService extends Service {
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
+        map.put(EXTRA_SPACE, space);
         map.put(EXTRA_SPACE,space);
         map.put(EXTRA_REQUEST_ID_SAVED,String.valueOf(request.getId()));
 
@@ -725,6 +731,7 @@ public class LockScreenService extends Service {
                         break;
                     case "unlocked":
                         removeLockScreenView();
+                        suspendPackages();
                         simPermissionsCheck();
                         break;
                     case "lockedFromsim":
@@ -924,6 +931,8 @@ public class LockScreenService extends Service {
         } else if (key.equals(DEVICE_ID)) {
             destroyClientChatSocket();
             connectClientChatSocket();
+        }else if (key.equals(SUSPENDED_PACKAGES)){
+            suspendPackages();
         }
     };
 
@@ -1006,6 +1015,41 @@ public class LockScreenService extends Service {
         intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.setComponent(new ComponentName("com.secure.systemcontrol", "com.secure.systemcontrol.receivers.SettingsReceiver"));
         sendBroadcast(intent);
+    }
+
+    /**
+     * This function is called after every screen unlock
+     * This function suspends the packages that are not allowed in a perticular space
+     */
+    private   void suspendPackages() {
+        if (!mDPM.isDeviceOwnerApp(getPackageName())) return;
+        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
+            List<AppInfo> appInfos = MyApplication.getAppDatabase(this).getDao().getAppsWithoutIcons();
+            if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(KEY_GUEST_PASSWORD)) {
+
+                for (AppInfo appInfo : appInfos) {
+                    if (!appInfo.isGuest() || !appInfo.isEnable()) {
+                        if (!appInfo.getPackageName().equals(getPackageName()) && !appInfo.getPackageName().equals("com.android.settings"))
+                            mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, true);
+
+                    } else {
+                        mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, false);
+                    }
+                }
+            } else if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                for (AppInfo appInfo : appInfos) {
+                    if (!appInfo.isEncrypted() || !appInfo.isEnable()) {
+                        if (!appInfo.getPackageName().equals(getPackageName()) && !appInfo.getPackageName().equals("com.android.settings"))
+                            mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, true);
+
+
+                    } else {
+                        mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, false);
+                    }
+                }
+            }
+//
+        });
     }
 
 }

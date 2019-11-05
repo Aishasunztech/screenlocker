@@ -1116,7 +1116,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             try {
                 jsonObject.put("device_id", device_id);
                 jsonObject.put("status", true);
-                jsonObject.put("setting_id", true);
+                jsonObject.put("setting_id", hId);
                 socketManager.getSocket().emit(FINISH_POLICY_SETTINGS + device_id, jsonObject);
             } catch (JSONException e) {
                 Timber.d(e);

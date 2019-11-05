@@ -3,7 +3,9 @@ package com.simplemobiletools.commons.activities
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.simplemobiletools.commons.R
-import com.simplemobiletools.commons.extensions.*
+import com.simplemobiletools.commons.extensions.baseConfig
+import com.simplemobiletools.commons.extensions.getAdjustedPrimaryColor
+import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.commons.helpers.*
 import com.simplemobiletools.commons.models.License
 import kotlinx.android.synthetic.main.activity_license.*
@@ -30,17 +32,10 @@ class LicenseActivity : BaseSimpleActivity() {
             val license = it
             inflater.inflate(R.layout.license_faq_item, null).apply {
                 license_faq_title.apply {
-                    text = getString(license.titleId)
-                    underlineText()
-                    setTextColor(linkColor)
-                    setOnClickListener {
-                        launchViewIntent(license.urlId)
-                    }
+
                 }
 
-                license_faq_text.text = getString(license.textId)
-                license_faq_text.setTextColor(textColor)
-                licenses_holder.addView(this)
+
             }
         }
     }

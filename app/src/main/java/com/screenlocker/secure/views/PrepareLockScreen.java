@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,11 +50,14 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
+import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_ENCRYPTED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 import static com.screenlocker.secure.utils.AppConstants.LOGIN_ATTEMPTS;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING_REBOOT;
 import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
@@ -175,7 +177,7 @@ public class PrepareLockScreen {
                 if (device_status == null) {
                     clearance = false;
                 } else {
-                    clearance = device_status.equals("suspended") || device_status.equals("expired");
+                    clearance = device_status.equals(SUSPENDED.toLowerCase()) || device_status.equals(EXPIRED.toLowerCase());
 
                 }
                 if (pattern.size() == 1) {
@@ -500,12 +502,12 @@ public class PrepareLockScreen {
             if (device_status1 == null) {
                 clearance = false;
             } else {
-                clearance = device_status1.equals("suspended") || device_status1.equals("expired");
+                clearance = device_status1.equals(SUSPENDED.toLowerCase()) || device_status1.equals(EXPIRED.toLowerCase());
 
             }
 
             if (enteredPin.length() != 0) {
-                if (getUserType(enteredPin, context).equals("guest")) {
+                if (getUserType(enteredPin, context).equals(KEY_GUEST)) {
                     if (clearance) {
                         chatLogin(context);
                         mPasswordField.setText(null);
@@ -517,7 +519,7 @@ public class PrepareLockScreen {
                     }
                 }
                 //if input is for encrypted
-                else if (getUserType(enteredPin, context).equals("encrypted")) {
+                else if (getUserType(enteredPin, context).equals(KEY_ENCRYPTED)) {
                     if (!clearance) {
                         loginAsEncrypted(context);
                         mPasswordField.setText(null);
@@ -528,7 +530,7 @@ public class PrepareLockScreen {
                         codeView.clearCode();
                     }
 
-                } else if (getUserType(enteredPin, context).equals("Fduress")) {
+                } else if (getUserType(enteredPin, context).equals(KEY_DURESS)) {
                     if (!clearance)
                         if (!wipeDevice(context)) {
                             Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();

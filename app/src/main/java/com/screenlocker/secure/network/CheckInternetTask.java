@@ -44,7 +44,7 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
             //parse url. if url is not parsed properly then return
             URL url;
             try {
-                url = new URL("https://clients3.google.com/generate_204");
+                url = new URL("https://api.meshguard.co/");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 return false;
@@ -64,7 +64,7 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
             urlConnection.setConnectTimeout(1500);
             urlConnection.setReadTimeout(1500);
             urlConnection.connect();
-            return urlConnection.getResponseCode() == 204 && urlConnection.getContentLength() == 0;
+            return urlConnection.getResponseCode() == 200 && urlConnection.getContentLength() == 0;
         } catch (IOException e) {
             return false;
         }
