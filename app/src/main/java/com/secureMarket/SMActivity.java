@@ -345,20 +345,20 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
         Timber.d("<<< Getting Server Apps >>>");
 
-        if (dealerId == null) {
-            Timber.i("-----------> getting admin apps ");
-            getAdminApps(apiOneCaller);
-        } else {
+//        if (dealerId == null) {
+//            Timber.i("-----------> getting admin apps ");
+//            getAdminApps(apiOneCaller);
+//        } else {
             Timber.i("---------> getting dealer apps and dealer id is :%s", dealerId);
             getAllApps(dealerId, apiOneCaller);
-        }
+//        }
     }
 
     private void getAllApps(String dealerId, ApiOneCaller apiOneCaller) {
 
 //        progressBar.setVisibility(View.GONE);
         apiOneCaller
-                .getAllApps("marketApplist/" + dealerId + "/" +currentSpace(this))
+                .getAllApps(new DeviceAndSpace(dealerId,currentSpace(this)))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
