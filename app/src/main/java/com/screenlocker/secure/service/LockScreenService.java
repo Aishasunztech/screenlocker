@@ -1048,15 +1048,7 @@ public class LockScreenService extends Service {
                     }
                 }
             }
-//            for (AppInfo appInfo : appInfos) {
-//                if ( !appInfo.isEnable()) {
-//                    if (!appInfo.getPackageName().equals(getPackageName()) && !appInfo.getPackageName().equals("com.android.settings"))
-//                        mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, true);
-//                } else {
-//                    mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, false);
-////
-//                }
-//            }
+//
         });
     }
 
