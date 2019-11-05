@@ -17,6 +17,7 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -150,7 +151,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
 
         registerNetworkPref();
+        if(isNetworkConneted(this))
+        {
             loadApps();
+        }else{
+            sharedViwModel.setMutableMsgs(Msgs.ERROR);
+        }
 
 
 
@@ -385,21 +391,21 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                    if (dealerId == null) {
-                        getAdminApps();
-                    } else {
+//                    if (dealerId == null) {
+//                        getAdminApps();
+//                    } else {
                         getAllApps(dealerId);
-                    }
+//                    }
                 }
             }, this, urls);
 
         } else {
 
-            if (dealerId == null) {
-                getAdminApps();
-            } else {
+//            if (dealerId == null) {
+//                getAdminApps();
+//            } else {
                 getAllApps(dealerId);
-            }
+//            }
         }
     }
 
@@ -407,13 +413,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
 //        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
-                .getAllApps(SM_END_POINT + dealerId + "/" + currentSpace())
+                .getAllApps(new DeviceAndSpace(dealerId,currentSpace()))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
                         if (response.isSuccessful()) {
                             if (response.body().isSuccess()) {
-
                                 setupApps(response);
 
 
@@ -590,6 +595,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
+        unRegisterNetworkPref();
     }
 
     @Override
@@ -694,9 +700,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     @Override
     public void onAppsRefreshRequest() {
         if (isNetworkConneted(SMActivity.this)) {
+            Log.d("lsakjdf","connected");
             loadApps();
         }
         else{
+            Log.d("lsakjdf","not connected");
+
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
     }

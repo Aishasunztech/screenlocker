@@ -14,6 +14,7 @@ import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
+import com.secureMarket.DeviceAndSpace;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -79,8 +80,8 @@ public interface ApiOneCaller {
     Call<InstallAppModel> getAdminApps(@Path("space") String space);
 
 
-    @GET
-    Call<InstallAppModel> getAllApps(@Url String url);
+    @POST("market-app-list")
+    Call<InstallAppModel> getAllApps(@Body DeviceAndSpace deviceAndSpace);
 
     @Headers("Content-Type: application/json")
     @POST("systemlogin")

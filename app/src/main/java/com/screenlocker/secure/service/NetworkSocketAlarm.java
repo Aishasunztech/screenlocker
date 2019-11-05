@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.screenlocker.secure.network.CheckInternetTask;
+import com.screenlocker.secure.network.TaskFinished;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -20,11 +22,19 @@ public class NetworkSocketAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        Log.d("lklshdrf","laskjdfh");
         if (isNetworkConnected(context)) {
             if (isSocketConnected()) {
                 PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, CONNECTED);
             } else {
-                new CheckInternetTask(data -> PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED)).execute();
+                new CheckInternetTask(new TaskFinished<Boolean>() {
+                    @Override
+                    public void onTaskFinished(Boolean data) {
+                        PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
+                    }
+                }).execute();
+
+
             }
 
 //            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
