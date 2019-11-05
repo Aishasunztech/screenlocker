@@ -1,14 +1,14 @@
 package com.github.fcannizzaro.materialstepper.adapter;
 
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.interfaces.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 
 /**
  * @author Francesco Cannizzaro (fcannizzaro).

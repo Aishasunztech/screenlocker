@@ -224,6 +224,15 @@
     <style name="NLockScreenCodeStyle">
         <item name="android:button">@drawable/code_selector_n</item>
     </style>
+    <style name="NLockScreenErrorCodeStyle">
+        <item name="android:button">@drawable/code_selector_wrong</item>
+    </style>
+
+    <style name="NCheckBox.Error">
+        <item name="android:checkboxStyle">@style/NLockScreenErrorCodeStyle</item>
+        <item name="checkboxStyle">@style/NLockScreenErrorCodeStyle</item>
+    </style>
+
 
 
 </resources>

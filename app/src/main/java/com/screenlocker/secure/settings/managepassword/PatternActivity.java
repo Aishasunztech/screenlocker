@@ -38,13 +38,13 @@ public class PatternActivity extends AppCompatActivity {
             extra = getIntent().getStringExtra(Intent.EXTRA_TEXT);
             if (extra.equalsIgnoreCase(AppConstants.KEY_GUEST)) {
                 getSupportActionBar().setTitle("Guest Pattern");
-                message.setText("Please Draw Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_DURESS)) {
-                getSupportActionBar().setTitle("Duress Pattern");
-                message.setText("Please Draw Pattern");
+                getSupportActionBar().setTitle("Wipe Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
             } else if (extra.equalsIgnoreCase(AppConstants.KEY_MAIN)) {
                 getSupportActionBar().setTitle("Encrypted Pattern");
-                message.setText("Please Draw Pattern");
+                message.setText(getResources().getString(R.string.draw_pattern));
 
             } else {
                 //
@@ -117,6 +117,8 @@ public class PatternActivity extends AppCompatActivity {
                                 case AppConstants.KEY_MAIN:
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN, tryPattern);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_COMBO_PIN, null);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_MAIN_PASSWORD, null);
                                     Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
                                     finish();
@@ -124,6 +126,8 @@ public class PatternActivity extends AppCompatActivity {
                                 case AppConstants.KEY_GUEST:
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN, tryPattern);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_COMBO_PIN, null);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_GUEST_PASSWORD, null);
                                     Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
                                     finish();
@@ -131,6 +135,8 @@ public class PatternActivity extends AppCompatActivity {
                                 case AppConstants.KEY_DURESS:
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN, tryPattern);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_COMBO_PATTERN, null);
+                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_COMBO_PIN, null);
                                     PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_DURESS_PASSWORD, null);
                                     Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
                                     finish();

@@ -75,7 +75,7 @@ public class DeviceIdUtils {
                 }
                 return res1.toString();
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return "02:00:00:00:00:00";
     }
@@ -271,7 +271,13 @@ public class DeviceIdUtils {
 
 
     public static boolean isValidImei(String s) {
-        long n = Long.parseLong(s);
+        long n = 0;
+        try {
+            n = Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
         int l = s.length();
 
         if (l != 15) // If length is not 15 then IMEI is Invalid

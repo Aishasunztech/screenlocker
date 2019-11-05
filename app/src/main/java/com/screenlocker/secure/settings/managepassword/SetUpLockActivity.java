@@ -183,6 +183,9 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_PATTERN, null);
                             PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
+                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_COMBO_PIN, null);
+
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();
@@ -207,6 +210,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_PATTERN, null);
                             PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
+                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PIN, null);
                             setResult(RESULT_OK);
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             finish();
@@ -221,6 +226,8 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                             PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                             PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
                             PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
+                            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PATTERN, null);
+                            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PIN, null);
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();

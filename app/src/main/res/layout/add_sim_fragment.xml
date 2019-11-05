@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-                    android:inputType="numberPassword"
+                    android:inputType="text"
 
                     android:maxLength="10"
                     android:paddingLeft="@dimen/_10sdp"
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-                    android:inputType="numberPassword"
+                    android:inputType="text"
 
                     android:maxLength="10"
                     android:paddingLeft="@dimen/_10sdp"

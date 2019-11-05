@@ -6,11 +6,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.appcompat.widget.Toolbar;
+
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.R;
 import com.github.fcannizzaro.materialstepper.util.TintUtils;
-
-import androidx.appcompat.widget.Toolbar;
 
 /**
  * @author Francesco Cannizzaro (fcannizzaro).

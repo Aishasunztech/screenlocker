@@ -244,10 +244,10 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
 
         //default wallpapers
 
-        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._12318));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._1239));
         PrefUtils.saveStringPref(this, AppConstants.KEY_SUPPORT_IMAGE, String.valueOf(R.raw.texture));
         PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._12321));
-        PrefUtils.saveStringPref(this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._1232));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._12316));
 
         //enable wifi by default
 
@@ -339,13 +339,15 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
             }
             AppExecutor.getInstance().getMainThread().execute(() -> {
 
+                PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+
+                PrefUtils.saveBooleanPref(this, APPS_SETTING_CHANGE, true);
+
                 Intent intent = new Intent(BROADCAST_APPS_ACTION);
                 intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
                 LocalBroadcastManager.getInstance(AdvanceSettings.this).sendBroadcast(intent);
 
-                PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
                 PrefUtils.saveBooleanPref(AdvanceSettings.this, AppConstants.KEY_THEME, false);
-                PrefUtils.saveBooleanPref(AdvanceSettings.this, APPS_SETTING_CHANGE, true);
 
                 Intent intent1 = new Intent(BROADCAST_APPS_ACTION);
                 intent1.putExtra(KEY_DATABASE_CHANGE, "apps");

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
@@ -53,6 +54,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
+import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
@@ -100,6 +102,18 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 //
+//        NetWatch.builder(this)
+//                /* setIcon(R.drawable) : Sets notification icon drawable */
+//                .setIcon(R.drawable.ic_no_internet_connection)
+//                /* .setNotificationCancelable(boolean yes) : Sets if appbar notification can be closed via swipe */
+//                .setNotificationCancelable(false)
+//                /* setCallBack(): Network interaction events will be notified using this callback */
+//                .setCallBack(this)
+////                .setLogsEnabled(true)
+////                .setBannerTypeDialog(true)
+////                .setSensitivity(4)
+//                .build();
+
 //    ((TextView) findViewById(R.id.textView1)).setText(mString);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
@@ -153,18 +167,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 mainPresenter.startLockService(lockScreenIntent);
             }
         }
-        //  boolean isActive = MyApplication.getDevicePolicyManager(this).isAdminActive(MyApplication.getComponent(this));
-//        if (!PrefUtils.getBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED)) {
-//            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-//            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, MyApplication.getComponent(this));
-//            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Additional text explaining why we need this permission");
-//            startActivityForResult(intent, RESULT_ENABLE);
-//
-//        } else {
-//            if (devicePolicyManager != null) {
-//                devicePolicyManager.lockNow();
-//            }
-//        }
     }
 
 
@@ -197,7 +199,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             Instrumentation m_Instrumentation = new Instrumentation();
-            m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+            try{
+                m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+
+            }catch (Exception e)
+            {
+                Timber.e(e.toString());
+            }
 
         });
 
@@ -251,6 +259,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
         super.onResume();
+
 
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
         String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
@@ -313,7 +322,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     // for the encrypted user type
                     bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
-                        background.setImageResource(R.raw._12321);
+                        background.setImageResource(R.raw._1239);
 
                     } else {
                         background.setImageResource(Integer.parseInt(bg));
@@ -374,6 +383,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             unregisterReceiver(mShutDownReceiver);
             sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
 
+
         } catch (Exception ignored) {
             //
         }
@@ -394,6 +404,23 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             }
             rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         }
+        else if(key.equals(NUMBER_OF_NOTIFICATIONS))
+        {
+            String name = "Live Chat Support";
+            int index = IntStream.range(0,adapter.appsList.size())
+                    .filter(i -> name.equals(adapter.appsList.get(i).getLabel()))
+                    .findFirst()
+                    .orElse(-1);
+            if(index != -1)
+            {
+                AppInfo app = adapter.appsList.get(index);
+                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this,NUMBER_OF_NOTIFICATIONS));
+                adapter.appsList.set(index,app);
+                adapter.notifyItemChanged(index);
+
+            }
+        }
+
     };
 
     @Override
@@ -458,8 +485,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         alertDialog.show();
     }
-
-
 }
 
 

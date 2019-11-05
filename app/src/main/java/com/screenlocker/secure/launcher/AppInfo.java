@@ -14,6 +14,8 @@ public class AppInfo {
     private String uniqueName;
     private String label;
     private String packageName;
+    @Ignore
+    private String setting_id;
     private boolean guest;
     private boolean enable;
     private boolean encrypted;
@@ -21,6 +23,18 @@ public class AppInfo {
     private boolean extension;
     private boolean visible;
     private boolean defaultApp;
+
+    public int getNumberOfnotifications() {
+        return numberOfnotifications;
+    }
+
+    public void setNumberOfnotifications(int numberOfnotifications) {
+        this.numberOfnotifications = numberOfnotifications;
+    }
+
+    @Ignore
+    private int numberOfnotifications = 0;
+
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] icon;
@@ -150,5 +164,13 @@ public class AppInfo {
 
         // Custom equality check here.
         return this.uniqueName.equals(that.uniqueName);
+    }
+
+    public String getSetting_id() {
+        return setting_id;
+    }
+
+    public void setSetting_id(String setting_id) {
+        this.setting_id = setting_id;
     }
 }

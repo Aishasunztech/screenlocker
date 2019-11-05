@@ -12,6 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.screenlocker.secure.R;
+import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
+import com.secureMarket.AppInstallUpdateListener;
+import com.secureMarket.SecureMarketAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -21,18 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.screenlocker.secure.R;
-import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
-import com.secureMarket.AppInstallUpdateListener;
-import com.secureMarket.SecureMarketActivity;
-import com.secureMarket.SecureMarketAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
-
 import timber.log.Timber;
 
 public class InstalledAppsFragment extends Fragment implements AppInstallUpdateListener {
@@ -143,6 +141,11 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     @Override
     public void onAppsRefreshRequest() {
         //not for this app
+    }
+
+    @Override
+    public void onCancelClick(String request_id) {
+
     }
 
 

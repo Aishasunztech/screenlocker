@@ -1,5 +1,8 @@
 package com.screenlocker.secure.socket.interfaces;
 
+import com.screenlocker.secure.room.SimEntry;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface SocketEvents {
@@ -16,9 +19,9 @@ public interface SocketEvents {
 
     void sendSettings();
 
-    void sendSimSettings();
+    void sendSimSettings(ArrayList<SimEntry> simEntries);
 
-    void sendAppliedStatus();
+    void sendAppliedStatus(String setting_id);
 
     void sendAppsWithoutIcons();
 
@@ -32,9 +35,9 @@ public interface SocketEvents {
 
     void sendPulledAPpsStatus(Map<String, Boolean> hashMap);
 
-    void finishPushedApps();
+    void finishPushedApps(String setting_id);
 
-    void finishPulledApps();
+    void finishPulledApps(String setting_id);
 
     void writeImei();
 
@@ -48,15 +51,15 @@ public interface SocketEvents {
 
     void forceUpdateCheck();
 
-    void finishPolicyPushApps();
+    void finishPolicyPushApps(String setting_id);
 
-    void finishPolicyApps();
+    void finishPolicyApps(String hId);
 
-    void finishPolicySettings();
+    void finishPolicySettings(String hId);
 
-    void finishPolicyExtensions();
+    void finishPolicyExtensions(String hId);
 
-    void finishPolicy();
+    void finishPolicy(String setting_id);
 
     void getSimUpdates();
 

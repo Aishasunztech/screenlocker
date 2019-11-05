@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,15 +47,21 @@ import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
+import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
     @BindView(R.id.tvSystemId)
     TextView tvSystemId;
+
+    @BindView(R.id.tvUserId)
+    TextView tvUserId;
+
     @BindView(R.id.tvLinkedStatus)
     TextView tvLinkedStatus;
     @BindView(R.id.tvDeviceStatus)
@@ -81,11 +87,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.tvSimId)
     TextView tvSimId;
     @BindView(R.id.chatId)
-    TableRow chatId;
+    LinearLayout chatId;
     @BindView(R.id.dividerChatId)
     View dividerChatId;
     @BindView(R.id.simId)
-    TableRow simId;
+    LinearLayout simId;
     @BindView(R.id.dividerSimId)
     View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
@@ -143,6 +149,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             swipeRefreshLayout.setRefreshing(false);
             refresh();
         });
+        tvUserId.setText(PrefUtils.getStringPref(this, USER_ID) == null ? "N/A" : PrefUtils.getStringPref(this, USER_ID));
 
         tvLinkedDealerPin.setOnClickListener(this);
         tvSimNo.setOnClickListener(this);
@@ -161,7 +168,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         if (device_id == null) {
-            tvDeviceId.setText(getResources().getString(R.string.n_a));
+            String offline_device = PrefUtils.getStringPref(this, OFFLINE_DEVICE_ID);
+            if (offline_device == null) {
+                tvDeviceId.setText(getResources().getString(R.string.n_a));
+            } else {
+                tvDeviceId.setText(offline_device);
+            }
         } else {
             tvDeviceId.setText(device_id);
         }
@@ -443,34 +455,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-//        String url = url_1.getText().toString();
-//
-//        if (TextUtils.isEmpty(url)) {
-//            url_1.setError("Please enter valid url !");
-//            return;
-//        }
-//
-//
-//        URL_1 = url;
-//
-//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-//        clickCount++;
-//        int total = 6;
-//
-//        if (clickCount == 6) {
-//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-//            button.setVisibility(View.VISIBLE);
-//            button2.setVisibility(View.VISIBLE);
-//            url_1.setVisibility(View.VISIBLE);
-//        } else {
-//            if (clickCount >= 2 && clickCount <= 6) {
-//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-//            }
-//        }
+        clickCount++;
+        int total = 6;
+
+        if (clickCount == 6) {
+            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+            button.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            url_1.setVisibility(View.VISIBLE);
+        } else {
+            if (clickCount >= 2 && clickCount <= 6) {
+                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }

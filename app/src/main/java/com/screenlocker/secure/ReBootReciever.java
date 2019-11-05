@@ -25,6 +25,7 @@ import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;

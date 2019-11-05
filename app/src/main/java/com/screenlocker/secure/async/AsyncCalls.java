@@ -30,27 +30,28 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
     }
 
 
-    private boolean urlFound = false;
+//    private boolean urlFound = false;
 
     @Override
     protected String doInBackground(Void... voids) {
 
         Context context = contextRef.get();
 
-        while (!urlFound) {
-            Timber.d("finding urls ");
-            for (String url : urls) {
-                if ((IsReachable(context, url))) {
-                    urlFound = true;
-                    return url;
-                }
-            }
+//        while (!urlFound) {
+        Timber.d("finding urls ");
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        for (String url : urls) {
+            if ((IsReachable(context, url))) {
+//                    urlFound = true;
+                return url;
             }
+//            }
+
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
 
 
@@ -60,6 +61,8 @@ public class AsyncCalls extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+
+        Timber.d("result " + result);
         response.processFinish(result);
     }
 }

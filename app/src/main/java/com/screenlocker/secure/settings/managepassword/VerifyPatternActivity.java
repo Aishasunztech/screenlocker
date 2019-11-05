@@ -44,7 +44,6 @@ private String extra ;
         mPatternLockView.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
-                Log.d(getClass().getName(), "Pattern drawing started");
             }
 
             @Override
@@ -88,6 +87,8 @@ private String extra ;
                     mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
+                        setResult(RESULT_CANCELED);
+                        finish();
                     }, 500);
                 }
 
