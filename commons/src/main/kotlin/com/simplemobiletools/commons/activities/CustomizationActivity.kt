@@ -128,18 +128,7 @@ class CustomizationActivity : BaseSimpleActivity() {
     }
 
     private fun setupThemePicker() {
-        curSelectedThemeId = getCurrentThemeId()
-        customization_theme.text = getThemeText()
-        customization_theme_holder.setOnClickListener {
-            if (baseConfig.wasAppIconCustomizationWarningShown) {
-                themePickerClicked()
-            } else {
-                ConfirmationDialog(this, "", R.string.app_icon_color_warning, R.string.ok, 0) {
-                    baseConfig.wasAppIconCustomizationWarningShown = true
-                    themePickerClicked()
-                }
-            }
-        }
+
     }
 
     private fun themePickerClicked() {
@@ -164,7 +153,7 @@ class CustomizationActivity : BaseSimpleActivity() {
 
     private fun updateColorTheme(themeId: Int, useStored: Boolean = false) {
         curSelectedThemeId = themeId
-        customization_theme.text = getThemeText()
+
 
         resources.apply {
             if (curSelectedThemeId == THEME_CUSTOM) {

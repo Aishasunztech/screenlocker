@@ -42,7 +42,7 @@
     <string name="empty">Password field is empty.</string>
     <string name="password_dont_match">Password don\'t match.</string>
     <string name="set_guest_code">Guest Pin Code</string>
-    <string name="set_duress_code">Duress Pin Code</string>
+    <string name="set_duress_code">Wipe Pin Code</string>
     <string name="set_encrypted_code">Encrypted Pin Code</string>
     <string name="set_background_for">Set Background for</string>
     <string name="guest_all">Turn ON Guest ALL</string>
@@ -439,7 +439,7 @@
 </string>
     <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
-    <string name="what_s_new_v5_15">What\'s New v6.1.1</string>
+    <string name="what_s_new_v5_15">What\'s New v6.1.2</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>

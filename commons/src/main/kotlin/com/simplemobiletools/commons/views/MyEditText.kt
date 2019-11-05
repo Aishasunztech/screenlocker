@@ -2,11 +2,11 @@ package com.simplemobiletools.commons.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import com.simplemobiletools.commons.extensions.adjustAlpha
 import com.simplemobiletools.commons.extensions.applyColorFilter
 
-class MyEditText : EditText {
+class MyEditText : AppCompatEditText {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
