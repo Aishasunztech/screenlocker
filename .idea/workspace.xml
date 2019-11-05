@@ -6,73 +6,66 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="Socket" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
-    <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4bb928c4-a3e2-4b37-b9d2-879c1de62f07" name="Default Changelist" comment="Merge branch 'new-launcher' of http://51.75.68.188/secure/screenlocker into development&#10;&#10;# Conflicts:&#10;#&#9;.gradle/buildOutputCleanup/buildOutputCleanup.lock&#10;#&#9;.gradle/buildOutputCleanup/cache.properties&#10;#&#9;.gradle/buildOutputCleanup/outputFiles.bin&#10;#&#9;.idea/caches/build_file_checksums.ser&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/vcs.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;app/app.iml&#10;#&#9;app/build.gradle&#10;#&#9;app/src/main/AndroidManifest.xml&#10;#&#9;app/src/main/java/com/screenlocker/secure/app/MyApplication.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/service/LockScreenService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/utils/utils.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/AppConstants.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java&#10;#&#9;app/src/main/java/com/secureSetting/SecureSettingsMain.java&#10;#&#9;app/src/main/res/values/strings.xml&#10;#&#9;app/src/main/res/values/styles.xml&#10;#&#9;commons/commons.iml&#10;#&#9;sfm/sfm.iml">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/CombinationLockActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/NCodeView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/circle_code_empty_lockscreen.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/circle_code_fill_lockscreen.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/code_selector_n.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_combination_lock.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/view_code_checkbox.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/view_code_lockscreen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
+    <list default="true" id="5707838a-0781-40e0-b198-9e215cca3102" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/jarAnalysis.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/NetworkSocketAlarm.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_work_work_runtime_1_0_0_beta02_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_alexvasilkov_gesture_views_2_5_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_alexvasilkov_gesture_views_2_5_2_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_andrognito_patternlockview_patternlockview_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_andrognito_patternlockview_patternlockview_1_0_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_installreferrer_installreferrer_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_answers_1_4_7_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_crashlytics_sdk_android_crashlytics_2_10_1_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_duolingo_open_rtl_viewpager_1_0_3_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_duolingo_open_rtl_viewpager_1_0_3_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_9_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_gifdecoder_4_9_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_9_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_bumptech_glide_glide_4_9_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_javiersantos_AppUpdater_2_7_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_flexbox_1_0_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jakewharton_timber_timber_4_7_1_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_theartofdev_edmodo_android_image_cropper_2_7_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__pub_devrel_easypermissions_2_0_1_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/AppInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/AppInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AdvanceSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AdvanceSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/views/PrepareLockScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/views/PrepareLockScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/UtilityFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/secureSetting/UtilityFunctions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/keypad_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/keypad_screen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/attrs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/attrs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/commons/commons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/commons/commons.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sfm/sfm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sfm/sfm.iml" afterDir="false" />
     </list>
+    <ignored path="$PROJECT_DIR$/build/classes/" />
+    <ignored path="$PROJECT_DIR$/chatkit/build/" />
+    <ignored path="$PROJECT_DIR$/Stepper/build/" />
+    <ignored path="$PROJECT_DIR$/.gradle/" />
+    <ignored path="$PROJECT_DIR$/app/build/" />
+    <ignored path="$PROJECT_DIR$/sfm/build/" />
+    <ignored path="$PROJECT_DIR$/commons/build/" />
+    <ignored path="D:\screenlocker\.idea\shelf/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_27_without_google_services_" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="VSP1001904S02733" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -81,10 +74,13 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
-        <task path="$PROJECT_DIR$/app">
+        <task path="$PROJECT_DIR$/Stepper">
           <activation />
         </task>
-        <task path="$PROJECT_DIR$">
+        <task path="$PROJECT_DIR$/steppers">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/app">
           <activation />
         </task>
         <projects_view />
@@ -92,99 +88,120 @@
     </system>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14">
-              <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Stepper/build.gradle">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>app_nam</find>
-      <find>app_name</find>
-      <find>checkforU</find>
-      <find>my_apk_name</find>
-      <find>regis</find>
-      <find>locale</find>
-      <find>MainAc</find>
-      <find>KEY_DEVICE_LINKED</find>
-      <find>refre</find>
-      <find>se</find>
-      <find>timer</find>
-      <find>sche</find>
-      <find>newDe</find>
+      <find>321</find>
+      <find>Socket reconnection error</find>
+      <find>onInternetConnectivityChanged</find>
+      <find>EVENT_ERROR</find>
+      <find>onSocketEven</find>
+      <find>NetReceiver</find>
+      <find>isInitialConnectivityStatusKnow</find>
+      <find>onNetworkChange</find>
+      <find>socket connect err</find>
+      <find>reconnection error</find>
+      <find>onCrea</find>
+      <find>onCreat</find>
+      <find>dgnsdjkgjksgd</find>
+      <find>onCreate</find>
+      <find>share</find>
+      <find>register</find>
+      <find>onTermi</find>
+      <find>networkChange</find>
+      <find>SharedPreferences.OnSharedPreferenceChangeListener networkChange</find>
+      <find>onDes</find>
+      <find>showError</find>
+      <find>Network</find>
+      <find>show</find>
+      <find>poli</find>
+      <find>isSock</find>
+      <find>isNetworkA</find>
       <find>network</find>
-      <find>onStop</find>
-      <find>URL_1</find>
-      <find>changeSettings</find>
-      <find>updateApps</find>
-      <find>appsLi</find>
-      <find>secureMa</find>
-      <find>updateAPps</find>
-      <find>com.secure.filemanager</find>
-      <find>Test Locker</find>
-      <find>TestLocker</find>
-      <find>tab_text</find>
-      <find>res</find>
-      <find>sim</find>
-      <find>restore</find>
+      <find>isConn</find>
+      <find>isNetwor</find>
+      <find>tvlinkDevice</find>
     </findStrings>
+    <replaceStrings>
+      <replace>LinearLayout</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="REBASE" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="BOYD8" />
+        <entry key="$PROJECT_DIR$" value="batch_notification" />
       </map>
     </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java" />
-        <option value="$PROJECT_DIR$/Stepper/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/secureSetting/UtilityFunctions.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/base/BaseActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
-        <option value="$PROJECT_DIR$/.gitlab-ci.yml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AdvanceSettings.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_about.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_link_device.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/add_sim_fragment.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/LanguageControls/LanguageAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/retrofitapis/ApiOneCaller.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/LifecycleReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/liveClientChat/LiveClientChatActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/views/PrepareLockScreen.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/cb/Ping_navigator.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/Builder.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/NetworkChangeReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/Ping.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/AlarmReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/CheckInternetTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/TaskFinished.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/InternetAvailabilityChecker.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/InternetConnectivityListener.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/InternetConnectivityListener.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/NetworkChangeReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/CheckInternetTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/InternetConnectivityListener.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/OfflineExpiryAlarm.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ShutDownReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/base/BaseActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/CodeSettingActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/installApps/InstallAppsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/policy/PolicyActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/secureMarket/SMActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/NetworkChangeReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/NetworkSocketAlarm.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="290" />
-    <option name="y" value="399" />
-    <option name="width" value="747" />
-    <option name="height" value="659" />
+    <option name="y" value="-2" />
+    <option name="width" value="960" />
+    <option name="height" value="1043" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -195,55 +212,32 @@
       <hideEmptyPackages AndroidView="false" />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="screenlocker" type="b2602c69:ProjectViewProjectNode" />
-              <item name="screenlocker" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
-              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="screenlocker" type="b2602c69:ProjectViewProjectNode" />
-              <item name="screenlocker" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_2_API_27_without_google_services_" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-09-23T23:23:58.947Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="8.1_wos-1" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-10-25T05:45:33.017Z" />
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/screenlocker" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../k-9" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.20276497" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="PsdUISettings">
+    <option name="MODULE_TAB" value="Properties" />
+    <option name="LAST_EDITED_SIGNING_CONFIG" value="debug" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.screenlocker.secure.app" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -260,6 +254,21 @@
   <component name="RunManager" selected="Android App.app">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="com.screenlocker.secure.updateDB in app" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.screenlocker.secure.updateDB.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.screenlocker.secure.updateDB" />
+      <option name="TEST_OBJECT" value="package" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
@@ -318,10 +327,10 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="screenlockerv4:app [assemble]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Stepper" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -329,7 +338,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="assemble" />
+            <option value="lintFix" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -337,10 +346,10 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="screenlockerv4:app [buildDependents]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="/home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/steppers [cleanBuildCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/steppers" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -348,7 +357,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="buildDependents" />
+            <option value="cleanBuildCache" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -368,25 +377,6 @@
         <option name="taskNames">
           <list>
             <option value="cleanBuildCache" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="screenlockerv4:app [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -415,9 +405,9 @@
     </configuration>
     <list>
       <item itemvalue="Android App.app" />
-      <item itemvalue="Gradle.screenlockerv4:app [assemble]" />
-      <item itemvalue="Gradle.screenlockerv4:app [buildDependents]" />
-      <item itemvalue="Gradle.screenlockerv4:app [clean]" />
+      <item itemvalue="Android JUnit.com.screenlocker.secure.updateDB in app" />
+      <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" />
+      <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/steppers [cleanBuildCache]" />
       <item itemvalue="Gradle.screenlockerv4:app [cleanBuildCache]" />
       <item itemvalue="Gradle.screenlockerv4:app [lintFix]" />
     </list>
@@ -425,9 +415,9 @@
       <list>
         <item itemvalue="Gradle.screenlockerv4:app [lintFix]" />
         <item itemvalue="Gradle.screenlockerv4:app [cleanBuildCache]" />
-        <item itemvalue="Gradle.screenlockerv4:app [clean]" />
-        <item itemvalue="Gradle.screenlockerv4:app [buildDependents]" />
-        <item itemvalue="Gradle.screenlockerv4:app [assemble]" />
+        <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/steppers [cleanBuildCache]" />
+        <item itemvalue="Gradle./home/muhammad/work/sunsTech/lockmesh/android/screenlockerv4/Stepper [lintFix]" />
+        <item itemvalue="Android JUnit.com.screenlocker.secure.updateDB in app" />
       </list>
     </recent_temporary>
   </component>
@@ -436,91 +426,71 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="4bb928c4-a3e2-4b37-b9d2-879c1de62f07" name="Default Changelist" comment="" />
-      <created>1568871970874</created>
+      <changelist id="5707838a-0781-40e0-b198-9e215cca3102" name="Default Changelist" comment="" />
+      <created>1570084134202</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1568871970874</updated>
+      <updated>1570084134202</updated>
     </task>
-    <task id="LOCAL-00001" summary="TL-version 6.0 (live)">
-      <created>1568872396012</created>
+    <task id="LOCAL-00001" summary="Changes">
+      <created>1570084568034</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1568872396012</updated>
+      <updated>1570084568034</updated>
     </task>
-    <task id="LOCAL-00002" summary="TL-version 6.2.0 (live)">
-      <created>1569081267981</created>
+    <task id="LOCAL-00002" summary="account layout,link device layout,sim add fragment redesign">
+      <created>1570447052218</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1569081267981</updated>
+      <updated>1570447052218</updated>
     </task>
-    <task id="LOCAL-00003" summary="TL-version 6.2.0 (live)">
-      <created>1569082615609</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1569082615609</updated>
-    </task>
-    <task id="LOCAL-00004" summary="TL-version 6.3.0 (live)">
-      <created>1569231303861</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1569231303861</updated>
-    </task>
-    <task id="LOCAL-00005" summary="bug fixed &#10;1) SS in guest space &#10;2) First time devcie status check">
-      <created>1569233131840</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1569233131840</updated>
-    </task>
-    <task id="LOCAL-00006" summary="TL-version 6.2.0">
-      <created>1569233286072</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1569233286072</updated>
-    </task>
-    <task id="LOCAL-00007" summary="TL-version 6.3.0">
-      <created>1569233488340</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1569233488340</updated>
-    </task>
-    <option name="localTasksCounter" value="8" />
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-2" width="1920" height="1043" extended-state="6" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" weight="0.32977587" />
+      <window_info id="Project" order="1" weight="0.24866596" />
       <window_info id="Structure" order="2" side_tool="true" />
-      <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info id="Build Variants" order="4" side_tool="true" />
-      <window_info id="Image Layers" order="5" />
-      <window_info id="Designer" order="6" />
-      <window_info id="Resources Explorer" order="7" />
-      <window_info id="Capture Tool" order="8" />
-      <window_info anchor="bottom" id="Run" order="0" weight="0.32932165" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49839914" weight="0.7560175" />
-      <window_info anchor="bottom" id="TODO" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994664" weight="0.32932165" />
-      <window_info anchor="bottom" id="Terminal" order="4" sideWeight="0.4994664" weight="0.32932165" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50213444" side_tool="true" weight="0.61269146" />
-      <window_info anchor="bottom" id="Version Control" order="6" sideWeight="0.49786553" weight="0.36761487" />
-      <window_info active="true" anchor="bottom" id="Build" order="7" sideWeight="0.4967983" visible="true" weight="0.72866523" />
-      <window_info anchor="bottom" id="Android Profiler" order="8" />
-      <window_info anchor="bottom" id="Find" order="9" />
-      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
+      <window_info id="Build Variants" order="3" side_tool="true" />
+      <window_info id="Image Layers" order="4" />
+      <window_info id="Designer" order="5" />
+      <window_info id="Resources Explorer" order="6" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info id="Favorites" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="0" sideWeight="0.4994664" weight="0.8501094" />
+      <window_info anchor="bottom" id="TODO" order="1" weight="0.32932165" />
+      <window_info anchor="bottom" id="Android Profiler" order="2" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="3" sideWeight="0.4994664" weight="0.42778993" />
+      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.50053364" side_tool="true" weight="0.8501094" />
+      <window_info active="true" anchor="bottom" id="Build" order="5" sideWeight="0.49519745" visible="true" weight="0.50765866" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.32822758" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.2964989" />
+      <window_info anchor="bottom" id="Find" order="8" weight="0.54923415" />
+      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="9" />
+      <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Logcat" order="11" sideWeight="0.49626467" weight="0.4452954" />
+      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" weight="0.32977587" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
       <window_info anchor="right" id="Gradle" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="right" id="Assistant" order="5" visible="true" weight="0.32955465" />
+      <window_info anchor="right" id="Preview" order="6" weight="0.32955465" />
+      <window_info anchor="right" id="Fabric" order="7" />
+      <window_info anchor="right" id="sbt" order="8" />
     </layout>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -564,387 +534,414 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="TL-version 6.0 (live)" />
-    <MESSAGE value="TL-version 6.2.0 (live)" />
-    <MESSAGE value="TL-version 6.3.0 (live)" />
-    <MESSAGE value="bug fixed &#10;1) SS in guest space &#10;2) First time devcie status check" />
-    <MESSAGE value="TL-version 6.2.0" />
-    <MESSAGE value="TL-version 6.3.0" />
-    <MESSAGE value="Live bug fixes &#10;&#10;1) Restore&#10;2) Secure Marekt tabs&#10;3) Sim Permissions &#10;4) Account Screen SIm numbers" />
-    <MESSAGE value="Merge branch 'new-launcher' of http://51.75.68.188/secure/screenlocker into development&#10;&#10;# Conflicts:&#10;#&#9;.gradle/buildOutputCleanup/buildOutputCleanup.lock&#10;#&#9;.gradle/buildOutputCleanup/cache.properties&#10;#&#9;.gradle/buildOutputCleanup/outputFiles.bin&#10;#&#9;.idea/caches/build_file_checksums.ser&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/vcs.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;app/app.iml&#10;#&#9;app/build.gradle&#10;#&#9;app/src/main/AndroidManifest.xml&#10;#&#9;app/src/main/java/com/screenlocker/secure/app/MyApplication.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/service/LockScreenService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/utils/utils.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/AppConstants.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java&#10;#&#9;app/src/main/java/com/secureSetting/SecureSettingsMain.java&#10;#&#9;app/src/main/res/values/strings.xml&#10;#&#9;app/src/main/res/values/styles.xml&#10;#&#9;commons/commons.iml&#10;#&#9;sfm/sfm.iml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'new-launcher' of http://51.75.68.188/secure/screenlocker into development&#10;&#10;# Conflicts:&#10;#&#9;.gradle/buildOutputCleanup/buildOutputCleanup.lock&#10;#&#9;.gradle/buildOutputCleanup/cache.properties&#10;#&#9;.gradle/buildOutputCleanup/outputFiles.bin&#10;#&#9;.idea/caches/build_file_checksums.ser&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/vcs.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;app/app.iml&#10;#&#9;app/build.gradle&#10;#&#9;app/src/main/AndroidManifest.xml&#10;#&#9;app/src/main/java/com/screenlocker/secure/app/MyApplication.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/service/LockScreenService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/socket/utils/utils.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/AppConstants.java&#10;#&#9;app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java&#10;#&#9;app/src/main/java/com/secureSetting/SecureSettingsMain.java&#10;#&#9;app/src/main/res/values/strings.xml&#10;#&#9;app/src/main/res/values/styles.xml&#10;#&#9;commons/commons.iml&#10;#&#9;sfm/sfm.iml" />
+    <MESSAGE value="Changes" />
+    <MESSAGE value="account layout,link device layout,sim add fragment redesign" />
+    <option name="LAST_COMMIT_MESSAGE" value="account layout,link device layout,sim add fragment redesign" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/Sim/SimAdapter.java</url>
+          <line>59</line>
+          <properties />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java</url>
+          <line>215</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java</url>
+          <line>195</line>
+          <properties />
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java</url>
+          <line>207</line>
+          <properties />
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/RAdapter.java</url>
+          <line>211</line>
+          <properties />
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/helpers/Constants.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/kotlin/com/simplemobiletools/commons/activities/BaseSimpleActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="190" column="92" selection-start-line="190" selection-start-column="92" selection-end-line="190" selection-end-column="92" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e8fc9eb818b4f6c0b23b790d7627db1/xfetch2core-3.1.4/res/values/values.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sfm/src/main/res/values-ar/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cf8fc71cff676befb6f50b161e2f149d/xfetch2-3.1.4/res/values/values.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Android/Sdk/sources/android-28/android/view/WindowManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="981" column="69" lean-forward="true" selection-start-line="981" selection-start-column="69" selection-end-line="981" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/views/PrepareLockScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="87" column="66" selection-start-line="87" selection-start-column="66" selection-end-line="87" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Stepper/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
-          <folding>
-            <element signature="e#198#216#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureSetting/UtilityFunctions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="188" column="13" selection-start-line="188" selection-start-column="13" selection-end-line="188" selection-end-column="13" />
-          <folding>
-            <element signature="e#7133#7183#0" expanded="true" />
-            <element signature="e#7229#7280#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="89" column="13" lean-forward="true" selection-start-line="89" selection-start-column="13" selection-end-line="89" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="115" column="39" selection-start-line="115" selection-start-column="39" selection-end-line="115" selection-end-column="39" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.appcompat/appcompat/1.1.0/9865019bbd2d95e41dede3d8ebf964aa93f97766/appcompat-1.1.0-sources.jar!/androidx/appcompat/app/AppCompatDelegate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="129" column="28" selection-start-line="129" selection-start-column="28" selection-end-line="129" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/commons/src/main/res/drawable-hdpi/ic_check.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/Utils.java">
+    <entry file="file://$USER_HOME$/Android/Sdk/sources/android-28/android/widget/TextView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
-          <caret line="198" column="70" selection-start-line="198" selection-start-column="70" selection-end-line="198" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/CheckUpdateService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="81" selection-start-line="81" selection-end-line="81" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="159" column="30" selection-start-line="159" selection-start-column="30" selection-end-line="159" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="531" column="103" selection-start-line="531" selection-start-column="103" selection-end-line="531" selection-end-column="103" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Android/Sdk/sources/android-28/android/net/NetworkInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="277" column="19" selection-start-line="277" selection-start-column="19" selection-end-line="277" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/NetworkChangeReceiver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="587">
-          <caret line="43" selection-start-line="43" selection-end-line="43" />
+          <caret line="5526" column="22" selection-start-line="5526" selection-start-column="22" selection-end-line="5526" selection-end-column="22" />
           <folding>
-            <element signature="e#671#672#0" expanded="true" />
-            <element signature="e#707#708#0" expanded="true" />
+            <element signature="e#215216#215217#0" expanded="true" />
+            <element signature="e#215258#215259#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/socket.io-client/0.3.0/a1d0077e5aea65e41a93a4759d38eeef58bd7a9a/socket.io-client-0.3.0-sources.jar!/com/github/nkzawa/socketio/client/Socket.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/base/BaseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="314" column="45" lean-forward="true" selection-start-line="314" selection-start-column="45" selection-end-line="314" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/PermissionStepFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3820">
-          <caret line="105" column="13" lean-forward="true" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+        <state relative-caret-position="196">
+          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
           <folding>
-            <element signature="e#4334#4335#0" expanded="true" />
-            <element signature="e#4362#4363#0" expanded="true" />
-            <element signature="e#4436#4437#0" expanded="true" />
-            <element signature="e#4472#4473#0" expanded="true" />
-            <element signature="e#4650#4743#0" expanded="true" />
+            <element signature="e#12638#12639#0" expanded="true" />
+            <element signature="e#12670#12671#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/room/MyDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="56" column="101" selection-start-line="56" selection-start-column="91" selection-end-line="56" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="191" column="134" selection-start-line="191" selection-start-column="123" selection-end-line="191" selection-end-column="134" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/updateDB/BlurWorker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1233">
-          <caret line="395" column="76" lean-forward="true" selection-start-line="395" selection-start-column="76" selection-end-line="395" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SetDefaultLauncherFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="99" column="42" lean-forward="true" selection-start-line="99" selection-start-column="42" selection-end-line="99" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1964#2022#0" expanded="true" />
-            <element signature="e#3615#3670#0" expanded="true" />
-            <element signature="e#3897#3982#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/permissions/SteppersActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="70" column="50" selection-start-line="70" selection-start-column="50" selection-end-line="70" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-345">
-          <caret line="73" column="53" selection-start-line="73" selection-start-column="53" selection-end-line="73" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-zh/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="118" column="18" selection-start-line="118" selection-start-column="18" selection-end-line="118" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/service/SocketService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7620">
-          <caret line="585" column="20" selection-start-line="585" selection-start-column="20" selection-end-line="585" selection-end-column="20" />
+        <state relative-caret-position="276">
+          <caret line="210" column="28" selection-start-line="210" selection-start-column="16" selection-end-line="210" selection-end-column="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1049">
-          <caret line="752" column="31" selection-start-line="752" selection-start-column="31" selection-end-line="752" selection-end-column="31" />
+        <state relative-caret-position="8205">
+          <caret line="552" column="9" selection-start-line="552" selection-start-column="9" selection-end-line="552" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gradle.properties">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/socket.io-client/0.3.0/a1d0077e5aea65e41a93a4759d38eeef58bd7a9a/socket.io-client-0.3.0-sources.jar!/com/github/nkzawa/socketio/client/Manager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7515">
+          <caret line="551" column="33" selection-start-line="551" selection-start-column="33" selection-end-line="551" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/interfaces/OnSocketConnectionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/utils/ApiUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="975">
+          <caret line="113" column="66" selection-start-line="113" selection-start-column="66" selection-end-line="113" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.draxdave/netWatch/0.d.6/842d88587f8dcfee598f7a8139dfef0303b8cb21/netWatch-0.d.6-sources.jar!/ir/drax/netwatch/NetWatch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="26" selection-start-line="6" selection-start-column="26" selection-end-line="6" selection-end-column="26" />
           <folding>
-            <element signature="e#19105#19150#0" expanded="true" />
-            <element signature="e#20668#20956#0" expanded="true" />
-            <element signature="e#20955#20956#0" expanded="true" />
-            <element signature="e#27540#27541#0" expanded="true" />
-            <element signature="e#27569#27570#0" expanded="true" />
+            <element signature="e#163#164#0" expanded="true" />
+            <element signature="e#214#215#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/utils/DeviceIdUtils.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.veyo/autorefreshnetworkconnection/1.0.6/35b670cbd6ea24bb21755615ee6acce0777409ba/autorefreshnetworkconnection-1.0.6-sources.jar!/com/veyo/autorefreshnetworkconnection/CheckNetworkConnectionHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="239" column="55" selection-start-line="239" selection-start-column="55" selection-end-line="239" selection-end-column="55" />
+        <state relative-caret-position="-1427">
+          <caret line="47" selection-start-line="47" selection-end-line="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/cb/NetworkChangeReceiver_navigator.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/cb/Ping_navigator.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/Builder.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/NetworkChangeReceiver.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/netwatch/Ping.java" />
+    <entry file="file://$PROJECT_DIR$/netwatch/src/main/java/ir/drax/netwatch/NetWatch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="310" column="58" selection-start-line="310" selection-start-column="58" selection-end-line="310" selection-end-column="58" />
+        <state relative-caret-position="135">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java">
+    <entry file="file://$PROJECT_DIR$/netwatch/src/main/java/ir/drax/netwatch/Builder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="155" column="44" selection-start-line="155" selection-start-column="44" selection-end-line="155" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AdvanceSettings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="272" column="51" lean-forward="true" selection-start-line="272" selection-start-column="51" selection-end-line="272" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureMarket/SMActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1009">
-          <caret line="730" selection-start-line="730" selection-end-line="730" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureMarket/MainMarketPagerAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="24" column="68" selection-start-line="24" selection-start-column="68" selection-end-line="24" selection-end-column="68" />
+        <state relative-caret-position="-68">
+          <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
           <folding>
-            <element signature="e#839#858#0" expanded="true" />
-            <element signature="e#860#879#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+    <entry file="file://$USER_HOME$/Android/Sdk/sources/android-28/java/net/URLConnection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="101" column="53" lean-forward="true" selection-start-line="101" selection-start-column="53" selection-end-line="101" selection-end-column="53" />
+        <state relative-caret-position="251">
+          <caret line="435" column="26" selection-start-line="435" selection-start-column="26" selection-end-line="435" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.novoda/merlin/1.2.0/7e5561964a2496f0bdac9850429c263b4ec49ee5/merlin-1.2.0-sources.jar!/com/novoda/merlin/NetworkStatus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="89">
-          <caret line="8" column="50" lean-forward="true" selection-start-line="8" selection-start-column="50" selection-end-line="8" selection-end-column="50" />
+        <state relative-caret-position="399">
+          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureSetting/SecureSettingsMain.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/views/PrepareLockScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="73" column="63" selection-start-line="73" selection-start-column="63" selection-end-line="73" selection-end-column="63" />
+        <state relative-caret-position="854">
+          <caret line="382" column="62" selection-start-line="382" selection-start-column="62" selection-end-line="382" selection-end-column="62" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitlab-ci.yml">
+    <entry file="file://$PROJECT_DIR$/netwatch/src/main/java/ir/drax/netwatch/NetworkChangeReceiver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="4" column="25" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="25" />
+        <state relative-caret-position="-4736">
+          <caret line="66" column="5" lean-forward="true" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/internetavailabilitychecker/InternetAvailabilityChecker.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/LinkStatusJobScheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-675">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14">
-          <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
+        <state relative-caret-position="2565">
+          <caret line="171" column="40" selection-start-line="171" selection-start-column="40" selection-end-line="171" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/TaskFinished.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/InternetConnectivityListener.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="315" column="63" selection-start-line="315" selection-start-column="63" selection-end-line="315" selection-end-column="63" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/OfflineExpiryAlarm.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/ShutDownReceiver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="24" column="105" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="105" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/launcher/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1345">
+          <caret line="365" column="46" lean-forward="true" selection-start-line="365" selection-start-column="46" selection-end-line="365" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#13872#14170#0" expanded="true" />
+            <element signature="e#14169#14170#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/app/MyApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="148" column="40" lean-forward="true" selection-start-line="148" selection-start-column="40" selection-end-line="148" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#scheduleTimer#0;class#MyApplication#0" />
+            <element signature="method#stopTimer#0;class#MyApplication#0" />
+            <element signature="method#saveToken#0;class#MyApplication#0" />
+            <element signature="method#addDefaultIgnoreAppsToDB#0;class#MyApplication#0" />
+            <element signature="method#onScheduleTimer#0;class#MyApplication#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/base/BaseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="62" column="41" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="930">
+          <caret line="62" column="53" selection-start-line="62" selection-start-column="53" selection-end-line="62" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/async/AsyncCalls.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="643" column="24" selection-start-line="643" selection-start-column="24" selection-end-line="643" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/CodeSettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="261" column="37" selection-start-line="261" selection-start-column="37" selection-end-line="261" selection-end-column="37" />
+          <folding>
+            <element signature="e#9753#9809#0" expanded="true" />
+            <element signature="e#9950#10014#0" expanded="true" />
+            <element signature="e#10076#10124#0" expanded="true" />
+            <element signature="e#10389#10438#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/policy/PolicyActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="74" column="43" selection-start-line="74" selection-start-column="43" selection-end-line="74" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureMarket/SMActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="786">
+          <caret line="344" lean-forward="true" selection-start-line="344" selection-end-line="344" />
+          <folding>
+            <element signature="e#13642#13689#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureMarket/SecureMarketActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="37" column="27" selection-start-line="37" selection-start-column="27" selection-end-line="37" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/NetworkChangeReceiver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="17" column="3" lean-forward="true" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/codeSetting/installApps/InstallAppsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="242" column="36" selection-start-line="242" selection-start-column="36" selection-end-line="242" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="478" column="54" selection-start-line="478" selection-start-column="54" selection-end-line="478" selection-end-column="54" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/ui/LinkDeviceActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2342">
+          <caret line="331" column="41" lean-forward="true" selection-start-line="331" selection-start-column="41" selection-end-line="331" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/mdm/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="635" column="21" lean-forward="true" selection-start-line="635" selection-start-column="21" selection-end-line="635" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#26455#26521#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/socket/SocketManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5831">
+          <caret line="377" column="13" lean-forward="true" selection-start-line="377" selection-start-column="13" selection-end-line="377" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/CommonUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="447" column="23" selection-start-line="447" selection-start-column="23" selection-end-line="447" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/network/CheckInternetTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="666">
+          <caret line="73" column="63" selection-start-line="73" selection-start-column="63" selection-end-line="73" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/NetworkSocketAlarm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="21" column="59" selection-start-line="21" selection-start-column="59" selection-end-line="21" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="51" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
