@@ -115,11 +115,13 @@ public class UtilityFunctions {
     public static void setScreenBrightness(Context context, int brightnessValue) {
 
         if (brightnessValue >= 0 && brightnessValue <= 255) {
-            Settings.System.putInt(
-                    context.getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS,
-                    brightnessValue
-            );
+            if(Settings.System.canWrite(context)) {
+                Settings.System.putInt(
+                        context.getContentResolver(),
+                        Settings.System.SCREEN_BRIGHTNESS,
+                        brightnessValue
+                );
+            }
         }
     }
 

@@ -483,8 +483,6 @@ public class utils {
         }
 
         String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
-
-
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
 
