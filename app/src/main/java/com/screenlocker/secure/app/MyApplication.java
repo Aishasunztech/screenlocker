@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.room.Room;
 
 import com.crashlytics.android.Crashlytics;
@@ -39,10 +40,9 @@ import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
-import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -80,7 +80,10 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE_STATUS_CHECK;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
+import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
@@ -172,11 +175,12 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
             } else {
                 Timber.i("----------> Network Disconnected");
 
-                if (utils.isMyServiceRunning(SocketService.class, appContext)) {
+                if (isSocketConnected()) {
 
                     Timber.i("-----------> Socket service is stopping. ");
-                    Intent intent = new Intent(this, SocketService.class);
-                    stopService(intent);
+                    Intent intent = new Intent(this, LockScreenService.class);
+                    intent.putExtra(SOCKET_STATUS,STOP_SOCKET);
+                    ActivityCompat.startForegroundService(this,intent);
 
                 } else {
                     Timber.i("--------------> Socket Service is already stopped. ");

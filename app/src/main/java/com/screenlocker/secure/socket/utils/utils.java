@@ -16,6 +16,7 @@ import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.github.nkzawa.socketio.client.Socket;
@@ -37,7 +38,6 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.InstalledAndRemainingApps;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -101,6 +101,9 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SFM_PACKAGE;
 import static com.screenlocker.secure.utils.AppConstants.SFM_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.START_SOCKET;
+import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
 import static com.screenlocker.secure.utils.AppConstants.SUPPORT_PACKAGE;
 import static com.screenlocker.secure.utils.AppConstants.SUPPORT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.TIME_REMAINING;
@@ -719,8 +722,9 @@ public class utils {
         }*/
 
 
-        Intent socketService = new Intent(context, SocketService.class);
-        context.stopService(socketService);
+        Intent intent = new Intent(context, LockScreenService.class);
+        intent.putExtra(SOCKET_STATUS,STOP_SOCKET);
+        ActivityCompat.startForegroundService(context,intent);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction("unlinked");
@@ -765,8 +769,9 @@ public class utils {
         }*/
 
 
-        Intent socketService = new Intent(context, SocketService.class);
-        context.stopService(socketService);
+        Intent intent = new Intent(context, LockScreenService.class);
+        intent.putExtra(SOCKET_STATUS,STOP_SOCKET);
+        ActivityCompat.startForegroundService(context,intent);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction(device_status);
@@ -787,17 +792,13 @@ public class utils {
     public static void startSocket(Context context, String device_id, String token) {
 
         if (device_id != null && token != null) {
-            Intent intent = new Intent(context, SocketService.class);
-            intent.setAction("start");
             PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
             PrefUtils.saveStringPref(context, TOKEN, token);
             PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
-            if (Build.VERSION.SDK_INT >= 26) {
-                context.startForegroundService(intent);
-            } else {
-                context.startService(intent);
-            }
 
+            Intent intent = new Intent(context, LockScreenService.class);
+            intent.putExtra(SOCKET_STATUS,START_SOCKET);
+            ActivityCompat.startForegroundService(context,intent);
         }
 
     }

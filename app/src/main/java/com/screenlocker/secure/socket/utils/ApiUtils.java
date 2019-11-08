@@ -4,17 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.R;
-import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import java.io.IOException;
@@ -42,6 +42,8 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_ACTIVATION;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
@@ -212,12 +214,14 @@ public class ApiUtils implements ApiRequests {
 
                         String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                         Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
-                        Intent socketIntent = new Intent(context, SocketService.class);
+                        Intent socketIntent = new Intent(context, LockScreenService.class);
 
                         if (device_status == null) {
                             intent.putExtra("device_status", (String) null);
                             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                            context.stopService(socketIntent);
+                            socketIntent.putExtra(SOCKET_STATUS, STOP_SOCKET);
+
+                            ActivityCompat.startForegroundService(context,socketIntent);
                             return;
                         }
 

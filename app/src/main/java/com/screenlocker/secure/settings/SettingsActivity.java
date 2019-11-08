@@ -13,7 +13,6 @@ import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -55,7 +54,6 @@ import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageMod
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -92,12 +90,13 @@ import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
-import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
@@ -177,7 +176,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             boolean isConnected = networkStatus.equals(CONNECTED);
 
             if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-                Intent intent = new Intent(this, SocketService.class);
+
+
                 if (isConnected) {
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
@@ -192,7 +192,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         startActivity(linkedIntent);
                     }
                 } else {
-                    stopService(intent);
+                    Intent intent = new Intent(this, LockScreenService.class);
+                    intent.putExtra(SOCKET_STATUS,STOP_SOCKET);
+                    ActivityCompat.startForegroundService(this,intent);
                 }
 
             }
