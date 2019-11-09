@@ -69,8 +69,6 @@ import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;

@@ -436,7 +436,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name=".socket.service.SocketService" />
+<!--        <service android:name=".socket.service.SocketService" />-->
 
         <service
             android:name=".MyService"

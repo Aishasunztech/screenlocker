@@ -30,9 +30,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.ShutDownReceiver;
@@ -47,7 +44,6 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.service.ScreenOffReceiver;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -144,7 +140,7 @@ public class MainActivity extends
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SocketService.downloadCompleteListener = this;
+        LockScreenService.downloadCompleteListener = this;
         main_layout = findViewById(R.id.main_root);
 
         Timber.d("skldnfdnnneeare %s", "onCreate");

@@ -9,33 +9,27 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.LifecycleReceiver;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secureSetting.SecureSettingsMain;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import timber.log.Timber;
 
@@ -45,7 +39,8 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
-public class PolicyActivity extends BaseActivity implements View.OnClickListener, SocketService.PolicyResponse {
+public class PolicyActivity extends BaseActivity implements View.OnClickListener, LockScreenService
+        .PolicyResponse {
 
 
     private boolean isBackPressed;
@@ -63,7 +58,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_policy);
-        doBindService();
+//        doBindService();
         setToolbar();
         setIds();
 
@@ -91,6 +86,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         if (isConnected && !isDeviceLink) {
             showLinkDialog();
         }
+
+        doBindService();
 
     }
 
@@ -198,13 +195,13 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    SocketService mService;
+    LockScreenService mService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // Set the service messenger and connected status
             // cast the IBinder and get MyService instance
-            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
 
             mService = binder.getService();
             mService.setListener(PolicyActivity.this); // register
@@ -221,7 +218,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void doBindService() {
 
         bindService(new Intent(getBaseContext(),
-                SocketService.class), connection, Context.BIND_AUTO_CREATE);
+                LockScreenService.class), connection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -283,6 +280,8 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             sendBroadcast(intent);
         }
 
+        doUnbindService();
+
     }
 
     @Override
@@ -294,7 +293,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        doUnbindService();
+//        doUnbindService();
     }
 
     private boolean isDefault = false;
