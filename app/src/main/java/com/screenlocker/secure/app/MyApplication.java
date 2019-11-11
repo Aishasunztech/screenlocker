@@ -16,6 +16,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
+
 import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -33,7 +36,6 @@ import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
@@ -51,8 +53,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.room.Room;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -143,10 +143,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
                     onlineConnection();
                 }
             } else {
-                if (utils.isMyServiceRunning(SocketService.class, appContext)) {
-                    Intent intent = new Intent(this, SocketService.class);
-                    stopService(intent);
-                }
+                utils.stopSocket(this);
                 if (this.timer != null) {
                     this.timer.cancel();
                     this.timer = null;

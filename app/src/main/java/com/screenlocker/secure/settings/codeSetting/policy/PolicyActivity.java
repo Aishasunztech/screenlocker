@@ -25,7 +25,7 @@ import com.screenlocker.secure.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.socket.service.SocketService;
+import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -39,7 +39,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.BACKGROUND;
 import static com.screenlocker.secure.utils.LifecycleReceiver.LIFECYCLE_ACTION;
 import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
-public class PolicyActivity extends BaseActivity implements View.OnClickListener, SocketService.PolicyResponse {
+public class PolicyActivity extends BaseActivity implements View.OnClickListener, LockScreenService.PolicyResponse {
 
 
     private boolean isBackPressed;
@@ -189,13 +189,13 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    SocketService mService;
+    LockScreenService mService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // Set the service messenger and connected status
             // cast the IBinder and get MyService instance
-            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            LockScreenService.LocalBinder binder = (LockScreenService.LocalBinder) service;
 
             mService = binder.getService();
             mService.setListener(PolicyActivity.this); // register
@@ -212,7 +212,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void doBindService() {
 
         bindService(new Intent(getBaseContext(),
-                SocketService.class), connection, Context.BIND_AUTO_CREATE);
+                LockScreenService.class), connection, Context.BIND_AUTO_CREATE);
 
     }
 

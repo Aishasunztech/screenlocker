@@ -15,7 +15,6 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
 import com.screenlocker.secure.socket.interfaces.ApiRequests;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -173,11 +172,10 @@ public class ApiUtils implements ApiRequests {
                         Timber.d(t);
                         String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
                         Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
-                        Intent socketIntent = new Intent(context, SocketService.class);
                         if (device_status == null) {
                             intent.putExtra("device_status", (String) null);
                             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                            context.stopService(socketIntent);
+                            utils.stopSocket(context);
                             return;
                         }
 
@@ -204,7 +202,7 @@ public class ApiUtils implements ApiRequests {
                                 break;
                         }
 
-                        context.stopService(socketIntent);
+                        utils.stopSocket(context);
                     }
                 });
     }

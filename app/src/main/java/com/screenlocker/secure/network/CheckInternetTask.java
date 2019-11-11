@@ -47,7 +47,7 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
         //parse url. if url is not parsed properly then return
 
         try {
-            URL urls[] = {
+            URL[] urls = {
                     new URL("https://api.meshguard.co"),
                     new URL("https://devapi.meshguard.co"),
                     new URL("https://api.lockmesh.com"),
@@ -58,15 +58,14 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
             };
 
 
-            for (int i = 0; i<urls.length; i++) {
+            for (URL value : urls) {
 
                 try {
-                    URL url = urls[i];
 
                     //open connection. If fails return false
                     HttpURLConnection urlConnection;
                     try {
-                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection = (HttpURLConnection) value.openConnection();
                     } catch (IOException e) {
                         e.printStackTrace();
                         return false;
@@ -81,9 +80,8 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
                     if (urlConnection.getResponseCode() == 200 || urlConnection.getResponseCode() == 204) {
                         return true;
                     }
-                }catch (IOException e)
-                {
-                    Log.i("dgjdgd",e.getMessage());
+                } catch (IOException e) {
+                    Log.i("dgjdgd", e.getMessage());
                 }
 
             }
