@@ -4,6 +4,10 @@ import android.content.Context;
 
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.ArrayList;
+
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
+
 public class MarketUtils {
 
 
@@ -15,6 +19,19 @@ public class MarketUtils {
         }
 
         PrefUtils.saveStringPref(context, type, packages + packageName + ":" + userSpace + ",");
+    }
+
+    public static boolean isInUninstalled(Context context,String packageName)
+    {
+        String packages = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
+        if(packages != null)
+        {
+            if(packages.contains(packageName))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isGuest(String packageName,String type,String userSpace,Context context)

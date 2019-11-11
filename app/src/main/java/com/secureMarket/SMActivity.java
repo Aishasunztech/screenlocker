@@ -88,6 +88,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.CommonUtils.currentSpace;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkConneted;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
+import static com.secureMarket.MarketUtils.isInUninstalled;
 import static com.secureMarket.MarketUtils.savePackages;
 
 public class SMActivity extends AppCompatActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
@@ -459,6 +460,10 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     installedInfo.add(appInfo);
                 }
             } else {
+                if(isInUninstalled(SMActivity.this,appInfo.getPackageName()))
+                {
+                    appInfo.setInstalled(false);
+                }
                 newApps.add(appInfo);
             }
 
@@ -647,7 +652,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             Set<String> packages = new HashSet<>();
             packages.add(MyApplication.getAppContext().getPackageName());
             packages.add("com.vortexlocker.app");
-            packages.add("com.rim.mobilefusion.client");
             packages.add("com.secure.systemcontrol");
             String userSpace = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
 

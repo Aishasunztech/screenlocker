@@ -15,7 +15,7 @@ public class RetrofitClientInstance {
     private static ApiOneCaller whiteLabelInstance;
 
     public static ApiOneCaller getWhiteLabelInstance() {
-        if (whiteLabelInstance == null)
+//        if (whiteLabelInstance == null)
             whiteLabelInstance = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(WHITE_LABEL_URL)
@@ -28,7 +28,7 @@ public class RetrofitClientInstance {
     private static ApiOneCaller superAdminPanelInstance;
 
     public static ApiOneCaller getSuperAdminPanelInstance() {
-        if (superAdminPanelInstance == null)
+//        if (superAdminPanelInstance == null)
             superAdminPanelInstance = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(SUPER_ADMIN_URL)
@@ -41,7 +41,7 @@ public class RetrofitClientInstance {
     private static ApiOneCaller failSafeInstanceForSupperAdmin;
 
     public static ApiOneCaller getFailSafeInstanceForSupperAdmin() {
-        if (failSafeInstanceForSupperAdmin == null)
+//        if (failSafeInstanceForSupperAdmin == null)
             failSafeInstanceForSupperAdmin = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(FAIL_SAFE_URL_FOR_SUPPER_ADMIN)
@@ -54,7 +54,7 @@ public class RetrofitClientInstance {
     private static ApiOneCaller failSafeInstanceForWhiteLabel;
 
     public static ApiOneCaller getFailSafeInstanceForWhiteLabel() {
-        if (failSafeInstanceForWhiteLabel == null)
+//        if (failSafeInstanceForWhiteLabel == null)
             failSafeInstanceForWhiteLabel = new retrofit2.Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(FAIL_SAFE_URL_FOR_WHITE_LABEL)

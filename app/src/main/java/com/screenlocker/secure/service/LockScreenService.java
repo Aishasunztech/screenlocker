@@ -1339,11 +1339,13 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             }
 
             Timber.d("locker screen action :%s", action);
+
             if (action == null) {
                 String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
                 if (main_password == null) {
                     PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
+                if(socketStatus==null)
                 startLockScreen(false);
             } else {
                 switch (action) {
