@@ -550,7 +550,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         WindowChangeDetectingService.serviceConnectedListener = this;
         socketManager = SocketManager.getInstance();
-        socketManager.setSocketConnectionListener(this);
 
         blacklist.add("com.android.systemui");
         blacklist.add("com.vivo.upslide");
@@ -1422,6 +1421,10 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private void startSocket() {
 
         Timber.d("startSocket");
+
+        socketManager = SocketManager.getInstance();
+        socketManager.setSocketConnectionListener(this);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
         IntentFilter intentFilter = new IntentFilter();
