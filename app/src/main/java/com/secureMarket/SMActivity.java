@@ -705,7 +705,6 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         }
         else{
             Log.d("lsakjdf","not connected");
-
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
     }

@@ -500,5 +500,9 @@ public class AppConstants {
     public static final String DISCONNECTED = "disconnected";
     public static final String LIMITED = "limited";
 
+    public static final String START_SOCKET = "start_socket";
+    public static final String STOP_SOCKET = "stop_socket";
+    public static final String SOCKET_STATUS = "socket_status";
+
 
 }

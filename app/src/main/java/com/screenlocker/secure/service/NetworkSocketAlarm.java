@@ -12,42 +12,39 @@ import com.screenlocker.secure.network.TaskFinished;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import timber.log.Timber;
+
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.DISCONNECTED;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 
 public class NetworkSocketAlarm extends BroadcastReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Log.d("lklshdrf","laskjdfh");
+        Timber.d("onReceive");
         if (isNetworkConnected(context)) {
             if (isSocketConnected()) {
                 PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, CONNECTED);
+                Timber.d("socket connected");
             } else {
-                new CheckInternetTask(new TaskFinished<Boolean>() {
-                    @Override
-                    public void onTaskFinished(Boolean data) {
-                        PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
-                    }
+                Timber.d("checking connection....");
+                new CheckInternetTask(data -> {
+                    PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
+                    Timber.d("connection status :%s", data);
                 }).execute();
-
-
             }
 
 //            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
-                setAlarmManager(context, System.currentTimeMillis() + 1500L, 1);
+            setAlarmManager(context, System.currentTimeMillis() + 1500L, 1);
 //            }
 
         } else {
             PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, DISCONNECTED);
+            Timber.d("disconnected");
         }
 
-
     }
-
 
     boolean isNetworkConnected(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -57,5 +54,5 @@ public class NetworkSocketAlarm extends BroadcastReceiver {
         return netInfo != null && netInfo.isAvailable() && netInfo.isConnected();
 
     }
-
 }
+

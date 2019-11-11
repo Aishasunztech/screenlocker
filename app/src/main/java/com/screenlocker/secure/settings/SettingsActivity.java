@@ -44,7 +44,6 @@ import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageMod
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -174,7 +173,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             boolean isConnected = networkStatus.equals(CONNECTED);
 
             if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-                Intent intent = new Intent(this, SocketService.class);
                 if (isConnected) {
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
@@ -188,8 +186,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         startActivity(limitedIntent);
                     }
                 } else {
-                    stopService(intent);
-
+                    utils.stopSocket(this);
                 }
 
             }

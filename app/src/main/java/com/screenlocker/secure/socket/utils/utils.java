@@ -11,11 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.github.nkzawa.socketio.client.Socket;
@@ -29,7 +28,6 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
@@ -37,9 +35,7 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.InstalledAndRemainingApps;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
-import com.screenlocker.secure.socket.service.SocketService;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
@@ -66,7 +62,6 @@ import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PASSWORD_ALREADY_EXIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_GUEST_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -76,7 +71,6 @@ import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
@@ -99,6 +93,9 @@ import static com.screenlocker.secure.utils.AppConstants.SEND_UNINSTALLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SFM_PACKAGE;
 import static com.screenlocker.secure.utils.AppConstants.SFM_UNIQUE;
+import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.START_SOCKET;
+import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
 import static com.screenlocker.secure.utils.AppConstants.SUPPORT_PACKAGE;
 import static com.screenlocker.secure.utils.AppConstants.SUPPORT_UNIQUE;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
@@ -627,8 +624,7 @@ public class utils {
         }*/
 
 
-        Intent socketService = new Intent(context, SocketService.class);
-        context.stopService(socketService);
+        utils.stopSocket(context);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction("unlinked");
@@ -673,8 +669,7 @@ public class utils {
         }*/
 
 
-        Intent socketService = new Intent(context, SocketService.class);
-        context.stopService(socketService);
+       utils.stopSocket(context);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction(device_status);
@@ -695,17 +690,10 @@ public class utils {
     public static void startSocket(Context context, String device_id, String token) {
 
         if (device_id != null && token != null) {
-            Intent intent = new Intent(context, SocketService.class);
-            intent.setAction("start");
+            utils.startSocket(context);
             PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
             PrefUtils.saveStringPref(context, TOKEN, token);
             PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
-            if (Build.VERSION.SDK_INT >= 26) {
-                context.startForegroundService(intent);
-            } else {
-                context.startService(intent);
-            }
-
         }
 
     }
@@ -1130,5 +1118,18 @@ public class utils {
                 applySettings(context, setting, setting.isSetting_status());
             }
         });
+    }
+
+
+    public static void startSocket(Context context) {
+        Intent intent = new Intent(context, LockScreenService.class);
+        intent.putExtra(SOCKET_STATUS, START_SOCKET);
+        ActivityCompat.startForegroundService(context, intent);
+    }
+
+    public static void stopSocket(Context context) {
+        Intent intent = new Intent(context, LockScreenService.class);
+        intent.putExtra(SOCKET_STATUS, STOP_SOCKET);
+        ActivityCompat.startForegroundService(context, intent);
     }
 }
