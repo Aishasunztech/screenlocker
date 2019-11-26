@@ -13,6 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/screenlocker.iml" filepath="$PROJECT_DIR$/screenlocker.iml" />
       <module fileurl="file://$PROJECT_DIR$/Stepper/screenlocker-Stepper.iml" filepath="$PROJECT_DIR$/Stepper/screenlocker-Stepper.iml" />
       <module fileurl="file://$PROJECT_DIR$/sfm/sfm.iml" filepath="$PROJECT_DIR$/sfm/sfm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stepper/sunztech-screenlocker-Stepper.iml" filepath="$PROJECT_DIR$/Stepper/sunztech-screenlocker-Stepper.iml" />
     </modules>
   </component>
 </project>

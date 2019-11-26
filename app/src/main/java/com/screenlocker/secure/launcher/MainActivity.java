@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;

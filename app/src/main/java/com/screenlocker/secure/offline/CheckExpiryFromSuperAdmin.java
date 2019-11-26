@@ -9,7 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;

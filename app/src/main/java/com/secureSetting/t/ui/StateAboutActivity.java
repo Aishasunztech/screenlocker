@@ -48,7 +48,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.base.BaseActivity;
 import com.secureSetting.t.data.AppItem;
 import com.secureSetting.t.data.DataManager;

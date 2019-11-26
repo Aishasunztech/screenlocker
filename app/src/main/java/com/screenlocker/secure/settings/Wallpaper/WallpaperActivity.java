@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;

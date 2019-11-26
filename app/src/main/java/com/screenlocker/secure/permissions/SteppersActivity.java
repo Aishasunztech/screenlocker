@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;

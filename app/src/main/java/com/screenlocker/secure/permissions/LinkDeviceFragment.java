@@ -18,7 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.settings.SettingsActivity;

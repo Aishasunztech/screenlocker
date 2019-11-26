@@ -13,7 +13,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.screenlocker.secure.BuildConfig;
+import com.secure.launcher.BuildConfig;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.utils.AppConstants;

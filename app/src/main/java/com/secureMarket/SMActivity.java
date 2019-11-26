@@ -22,10 +22,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.base.BaseActivity;
@@ -65,14 +75,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,7 +92,6 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETSIM;
 import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
-import static com.screenlocker.secure.utils.AppConstants.SM_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;

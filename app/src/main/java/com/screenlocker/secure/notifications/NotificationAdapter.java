@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.listener.OnItemClickListener;
 
 import java.util.List;

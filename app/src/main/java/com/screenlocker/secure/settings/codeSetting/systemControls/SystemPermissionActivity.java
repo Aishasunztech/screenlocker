@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.service.AppExecutor;

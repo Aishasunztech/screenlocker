@@ -17,7 +17,7 @@ import android.widget.EditText;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.settings.SettingsActivity;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 import java.util.List;

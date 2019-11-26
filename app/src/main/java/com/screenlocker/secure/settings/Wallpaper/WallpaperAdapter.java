@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import java.util.List;
 

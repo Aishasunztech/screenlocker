@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 
 import androidx.annotation.NonNull;

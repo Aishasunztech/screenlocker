@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.MainActivity;
 import com.screenlocker.secure.service.AppExecutor;

@@ -15,8 +15,7 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;

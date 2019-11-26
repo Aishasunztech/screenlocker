@@ -18,7 +18,7 @@ import android.widget.ViewSwitcher;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.utils.AppConstants;

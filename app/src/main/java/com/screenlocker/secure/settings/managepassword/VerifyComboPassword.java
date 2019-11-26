@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.views.patternlock.PatternLockView;

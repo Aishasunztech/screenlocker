@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;

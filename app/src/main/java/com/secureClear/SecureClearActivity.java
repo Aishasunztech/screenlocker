@@ -15,7 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.utils.AppConstants;
 import com.secureSetting.SecureSettingsMain;
 

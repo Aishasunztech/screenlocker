@@ -11,7 +11,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.secureSetting.t.data.DataManager;
 import com.secureSetting.t.ui.MainActivity;
 

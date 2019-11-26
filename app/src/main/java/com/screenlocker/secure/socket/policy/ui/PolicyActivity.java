@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.socket.policy.adapter.PolicyAdapter;
 import com.screenlocker.secure.socket.policy.model.PolicyModel;

@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;

@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.utils.PrefUtils;
 

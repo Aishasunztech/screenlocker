@@ -6,7 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 
 public class WhatsNew extends AppCompatActivity {
 

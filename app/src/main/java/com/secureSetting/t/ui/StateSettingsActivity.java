@@ -7,7 +7,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import androidx.appcompat.widget.Toolbar;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.base.BaseActivity;
 import com.secureSetting.t.util.PreferenceManager;
 

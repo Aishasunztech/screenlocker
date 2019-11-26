@@ -8,7 +8,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.PrefUtils;
 

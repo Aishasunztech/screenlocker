@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.R;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -46,6 +46,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
+import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEALER_NOT_FOUND;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
@@ -63,6 +64,9 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
+import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID2;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
@@ -282,7 +286,7 @@ public class MainActivity extends BaseActivity {
                                 switch (msg) {
 
                                     case ACTIVE:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(),response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -291,19 +295,19 @@ public class MainActivity extends BaseActivity {
                                         break;
                                     case EXPIRED:
 
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(MainActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(MainActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
                                     case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
                                         startActivity(intent);
@@ -312,7 +316,7 @@ public class MainActivity extends BaseActivity {
                                         break;
                                     case PENDING:
 //                                        pending = true;
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         intent.putExtra(DEVICE_STATUS_KEY, PENDING_STATE);
                                         startActivity(intent);
                                         finish();
@@ -417,11 +421,15 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId, String chatID, String pgpId, String simId1, String simId2) {
         PrefUtils.saveStringPref(MainActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(MainActivity.this, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(MainActivity.this, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(MainActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+        PrefUtils.saveStringPref(MainActivity.this, CHAT_ID, chatID);
+        PrefUtils.saveStringPref(MainActivity.this, PGP_EMAIL, pgpId);
+        PrefUtils.saveStringPref(MainActivity.this, SIM_ID, simId1);
+        PrefUtils.saveStringPref(MainActivity.this, SIM_ID2, simId2);
         PrefUtils.saveStringPref(MainActivity.this, USER_ID, userId);
     }
 

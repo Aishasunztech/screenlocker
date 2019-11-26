@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 public class NotificationView extends RecyclerView.ViewHolder {
 

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

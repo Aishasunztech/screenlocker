@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 

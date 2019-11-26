@@ -9,7 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.SubExtension;

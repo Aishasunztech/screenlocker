@@ -19,8 +19,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.R;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -69,6 +69,7 @@ import static com.screenlocker.secure.utils.AppConstants.PENDING;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_STATE;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID2;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
@@ -323,10 +324,14 @@ public class LinkDeviceActivity extends BaseActivity {
     }
 
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String chatId, String pgpId, String simId1, String simId2) {
         PrefUtils.saveStringPref(LinkDeviceActivity.this, TOKEN, token);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, device_id);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, CHAT_ID, chatId);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, PGP_EMAIL, pgpId);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, SIM_ID, simId1);
+        PrefUtils.saveStringPref(LinkDeviceActivity.this, SIM_ID2, simId2);
         PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, dealer_pin);
     }
 
@@ -558,34 +563,34 @@ public class LinkDeviceActivity extends BaseActivity {
 
                                 switch (msg) {
                                     case ACTIVE:
-                                        DeviceStatusResponse deviceStatusResponse = response.body();
-                                        saveInfo(response.body().getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin());
+                                        DeviceStatusResponse dsr = response.body();
+                                        saveInfo(response.body().getToken(), dsr.getDevice_id(), dsr.getExpiry_date(), dsr.getDealer_pin(), dsr.getChatId(), dsr.getPgpID(), dsr.getSimId1(), dsr.getSimId2());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case EXPIRED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
                                         PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case PENDING:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin());
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         finishedRefreshing();
                                         pendingLinkViewState();
                                         break;

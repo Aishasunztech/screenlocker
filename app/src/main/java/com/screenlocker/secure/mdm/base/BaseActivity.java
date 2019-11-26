@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
 
 import butterknife.ButterKnife;

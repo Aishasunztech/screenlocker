@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.R;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 
 import java.io.BufferedInputStream;
 import java.io.File;

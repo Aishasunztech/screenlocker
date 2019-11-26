@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;

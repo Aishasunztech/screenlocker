@@ -24,7 +24,7 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;

@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -48,6 +48,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.OFFLINE_DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
@@ -159,6 +160,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvSimNo2.setOnClickListener(this);
 
         tvSimNo2.setText(simNos != null && simNos.size() > 1 ? simNos.get(1) : "N/A");
+        tvPgpEmail.setText(PrefUtils.getStringPref(this, PGP_EMAIL) != null? PrefUtils.getStringPref(this, PGP_EMAIL) : "N/A");
 
         tvSerialNo.setOnClickListener(this);
         tvMAC.setOnClickListener(this);

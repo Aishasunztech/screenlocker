@@ -6,7 +6,8 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
@@ -26,6 +27,7 @@ import timber.log.Timber;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.socket.utils.utils.unlinkDeviceWithMsg;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
+import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
@@ -40,6 +42,9 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.NEW_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING;
+import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID2;
 import static com.screenlocker.secure.utils.AppConstants.SUSPENDED;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TRIAL;
@@ -107,12 +112,12 @@ public class ApiUtils implements ApiRequests {
                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
                         if (response.isSuccessful() && response.body() != null) {
-                            DeviceStatusResponse deviceStatusResponse = response.body();
-                            String msg = deviceStatusResponse.getMsg();
+                            DeviceStatusResponse dsr = response.body();
+                            String msg = dsr.getMsg();
                             Timber.d("response :" + msg);
-                            if (deviceStatusResponse.isStatus()) {
+                            if (dsr.isStatus()) {
 
-                                saveInfo(deviceStatusResponse.getToken(), deviceStatusResponse.getDevice_id(), deviceStatusResponse.getExpiry_date(), deviceStatusResponse.getDealer_pin(), deviceStatusResponse.getUser_id());
+                                saveInfo(dsr.getToken(), dsr.getDevice_id(), dsr.getExpiry_date(), dsr.getDealer_pin(), dsr.getUser_id(), dsr.getChatId(), dsr.getPgpID(), dsr.getSimId1(), dsr.getSimId2());
 
                                 switch (msg) {
                                     case ACTIVE:
@@ -207,11 +212,15 @@ public class ApiUtils implements ApiRequests {
                 });
     }
 
-    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId) {
+    private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId, String chatId, String pgpId, String simId1, String simId2) {
         PrefUtils.saveStringPref(context, TOKEN, token);
         PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
         PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
         PrefUtils.saveStringPref(context, USER_ID, userId);
+        PrefUtils.saveStringPref(context, CHAT_ID, chatId);
+        PrefUtils.saveStringPref(context, PGP_EMAIL, pgpId);
+        PrefUtils.saveStringPref(context, SIM_ID, simId1);
+        PrefUtils.saveStringPref(context, SIM_ID2, simId2);
         PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
 
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.screenlocker.secure">
+    package="com.secure.launcher">
 
     <application
-        android:name=".app.MyApplication"
+        android:name="com.screenlocker.secure.app.MyApplication"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".settings.managepassword.VerifyComboPassword"></activity>
-        <activity android:name=".settings.managepassword.CombinationLockActivity" />
+        <activity android:name="com.screenlocker.secure.settings.managepassword.VerifyComboPassword"></activity>
+        <activity android:name="com.screenlocker.secure.settings.managepassword.CombinationLockActivity" />
         <activity
             android:name="com.liveClientChat.LiveClientChatActivity"
             android:label="@string/title_activity_live_client_chat"
@@ -30,11 +30,11 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.WhatsNew"
+            android:name="com.screenlocker.secure.settings.WhatsNew"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.managepassword.PasswordOptionsAcitivity"
+            android:name="com.screenlocker.secure.settings.managepassword.PasswordOptionsAcitivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
@@ -42,36 +42,36 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".policy.PolicyActivity"
+            android:name="com.screenlocker.secure.policy.PolicyActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.AdvanceSettings"
+            android:name="com.screenlocker.secure.settings.AdvanceSettings"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.managepassword.VerifyPatternActivity"
+            android:name="com.screenlocker.secure.settings.managepassword.VerifyPatternActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.managepassword.PatternActivity"
+            android:name="com.screenlocker.secure.settings.managepassword.PatternActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.dataConsumption.DataConsumptionActivity"
+            android:name="com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.AboutActivity"
+            android:name="com.screenlocker.secure.settings.AboutActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".socket.TransparentActivity"
+            android:name="com.screenlocker.secure.socket.TransparentActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".settings.Wallpaper.ChangeWallpaper"
+            android:name="com.screenlocker.secure.settings.Wallpaper.ChangeWallpaper"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -81,31 +81,31 @@
             android:screenOrientation="portrait"
             android:theme="@style/SecureSettingsTheme" />
         <activity
-            android:name=".settings.codeSetting.IMEIActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.IMEIActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".permissions.InstallAppSilently"
+            android:name="com.screenlocker.secure.permissions.InstallAppSilently"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".permissions.WelcomeScreenActivity"
+            android:name="com.screenlocker.secure.permissions.WelcomeScreenActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.ExitActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.ExitActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.secureSettings.SecureSettingsActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.policy.PolicyActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".launcher.MainActivity"
+            android:name="com.screenlocker.secure.launcher.MainActivity"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
@@ -127,37 +127,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".socket.policy.ui.PolicyActivity"
+            android:name="com.screenlocker.secure.socket.policy.ui.PolicyActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name="com.screenlocker.secure.settings.SettingsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.Wallpaper.WallpaperActivity"
+            android:name="com.screenlocker.secure.settings.Wallpaper.WallpaperActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".permissions.SteppersActivity"
+            android:name="com.screenlocker.secure.permissions.SteppersActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".settings.managepassword.SetUpLockActivity"
+            android:name="com.screenlocker.secure.settings.managepassword.SetUpLockActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name=".appSelection.AppSelectionActivity"
+            android:name="com.screenlocker.secure.appSelection.AppSelectionActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".settings.managepassword.ManagePasswords"
+            android:name="com.screenlocker.secure.settings.managepassword.ManagePasswords"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
@@ -166,29 +166,29 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".settings.codeSetting.systemControls.SystemPermissionActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.CodeSettingActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.CodeSettingActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.installApps.InstallAppsActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.codeSetting.Sim.SimActivity"
+            android:name="com.screenlocker.secure.settings.codeSetting.Sim.SimActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mdm.MainActivity"
+            android:name="com.screenlocker.secure.mdm.MainActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".mdm.ui.LinkDeviceActivity"
+            android:name="com.screenlocker.secure.mdm.ui.LinkDeviceActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" /> <!-- optional (needed if default theme has no action bar) -->
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
@@ -236,24 +236,24 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <receiver android:name=".settings.codeSetting.Sim.SimStateChangeListener">
+        <receiver android:name="com.screenlocker.secure.settings.codeSetting.Sim.SimStateChangeListener">
             <intent-filter>
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".ReBootReciever">
+        <receiver android:name="com.screenlocker.secure.ReBootReciever">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".ShutDownReceiver">
+        <receiver android:name="com.screenlocker.secure.ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".socket.receiver.AppsStatusReceiver"
+            android:name="com.screenlocker.secure.socket.receiver.AppsStatusReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.secure.systemcontroll.PackageAdded" />
@@ -263,7 +263,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".MyAdmin"
+            android:name="com.screenlocker.secure.MyAdmin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
@@ -274,7 +274,7 @@
                 android:resource="@xml/policies" />
         </receiver>
         <receiver
-            android:name=".utils.AppInstallReceiver"
+            android:name="com.screenlocker.secure.utils.AppInstallReceiver"
             android:enabled="true"
             android:priority="100">
             <intent-filter>
@@ -286,7 +286,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".settings.disableCalls.PhoneCallReceiver"
+            android:name="com.screenlocker.secure.settings.disableCalls.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -295,7 +295,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".socket.receiver.DeviceStatusReceiver"
+            android:name="com.screenlocker.secure.socket.receiver.DeviceStatusReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -305,23 +305,23 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".offline.MyAlarmBroadcastReceiver"
+            android:name="com.screenlocker.secure.offline.MyAlarmBroadcastReceiver"
             android:exported="true"
             android:permission="">
             <intent-filter>
                 <action android:name="com.vortexlocker.app.alarm_time_completed" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".service.OfflineExpiryAlarm" />
-        <receiver android:name=".service.NetworkSocketAlarm" />
-        <service android:name=".utils.LifecycleReceiverService" />
+        <receiver android:name="com.screenlocker.secure.service.OfflineExpiryAlarm" />
+        <receiver android:name="com.screenlocker.secure.service.NetworkSocketAlarm" />
+        <service android:name="com.screenlocker.secure.utils.LifecycleReceiverService" />
         <service
-            android:name=".service.LockScreenService"
+            android:name="com.screenlocker.secure.service.LockScreenService"
             android:enabled="true"
             android:exported="true"
             android:permission="" />
         <service
-            android:name=".service.DeviceNotificationListener"
+            android:name="com.screenlocker.secure.service.DeviceNotificationListener"
             android:enabled="true"
             android:exported="true"
             android:label="@string/app_name"
@@ -332,18 +332,27 @@
         </service>
 <!--        <service android:name=".socket.service.SocketService" />-->
         <service
-            android:name=".MyService"
+            android:name="com.screenlocker.secure.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name=".mdm.utils.LifecycleReceiverService" />
+        <service android:name="com.screenlocker.secure.mdm.utils.LifecycleReceiverService" />
         <service
-            android:name=".service.CheckUpdateService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".offline.CheckExpiryFromSuperAdmin"
+            android:name="com.screenlocker.secure.service.CheckUpdateService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".mdm.LinkStatusJobScheduler"
+            android:name="com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name="com.screenlocker.secure.mdm.LinkStatusJobScheduler"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name="com.screenlocker.secure.service.IPCService"
+            android:exported="true"
+            android:enabled="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="SLRequestService"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />

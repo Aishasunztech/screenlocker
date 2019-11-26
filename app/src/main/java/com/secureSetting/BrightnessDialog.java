@@ -8,7 +8,8 @@ import android.provider.Settings;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.widget.SeekBar;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 
 public class BrightnessDialog extends Dialog {
     private SeekBar seekBar;

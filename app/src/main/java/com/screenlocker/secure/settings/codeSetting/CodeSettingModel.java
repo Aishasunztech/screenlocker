@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 public class CodeSettingModel implements CodeSettingContract.CodeSettingMvpModel {
     private Context mContext;

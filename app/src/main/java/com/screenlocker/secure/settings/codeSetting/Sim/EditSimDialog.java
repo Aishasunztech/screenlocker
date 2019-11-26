@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;

@@ -26,7 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.NetworkSocketAlarm;
 import com.screenlocker.secure.service.OfflineExpiryAlarm;

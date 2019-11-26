@@ -9,7 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 
 import java.util.Timer;
 import java.util.TimerTask;

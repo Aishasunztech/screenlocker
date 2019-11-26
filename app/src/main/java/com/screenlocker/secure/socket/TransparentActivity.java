@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 public class TransparentActivity extends Activity {
 

@@ -7,7 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.utils.AppConstants;

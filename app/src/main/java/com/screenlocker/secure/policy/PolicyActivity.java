@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 public class PolicyActivity extends AppCompatActivity {
 

@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;

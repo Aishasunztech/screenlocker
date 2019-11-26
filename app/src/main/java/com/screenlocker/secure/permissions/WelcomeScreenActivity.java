@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.PrefUtils;

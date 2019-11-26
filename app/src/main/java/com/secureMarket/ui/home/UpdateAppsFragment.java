@@ -13,7 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
 import com.secureMarket.AppInstallUpdateListener;
 import com.secureMarket.SecureMarketAdapter;

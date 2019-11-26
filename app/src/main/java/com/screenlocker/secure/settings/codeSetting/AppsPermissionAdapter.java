@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 
 public class AppsPermissionAdapter extends RecyclerView.Adapter<AppsPermissionAdapter.MyViewHolder> {
     public AppsPermissionAdapter() {

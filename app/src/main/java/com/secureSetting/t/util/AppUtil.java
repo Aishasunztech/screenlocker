@@ -6,7 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
+
 
 import java.util.Calendar;
 import java.util.Locale;

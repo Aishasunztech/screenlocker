@@ -24,8 +24,8 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.screenlocker.secure.BuildConfig;
-import com.screenlocker.secure.R;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 import com.screenlocker.secure.notifications.NotificationItem;
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;

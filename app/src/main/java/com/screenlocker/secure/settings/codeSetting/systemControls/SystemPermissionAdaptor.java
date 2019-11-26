@@ -8,7 +8,7 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.util.List;

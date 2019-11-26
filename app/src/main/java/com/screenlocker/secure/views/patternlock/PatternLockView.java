@@ -30,7 +30,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.Dimension;
 import androidx.annotation.IntDef;
 
-import com.screenlocker.secure.R;
+import com.secure.launcher.R;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 import com.screenlocker.secure.views.patternlock.utils.ResourceUtils;
