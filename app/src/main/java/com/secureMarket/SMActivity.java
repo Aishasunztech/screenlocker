@@ -100,6 +100,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 public class SMActivity extends BaseActivity implements DownloadServiceCallBacks, AppInstallUpdateListener, OnAppsRefreshListener {
 
+    private static final String TAG = SMActivity.class.getSimpleName();
     private LockScreenService mService = null;
     private AsyncCalls asyncCalls;
     private List<ServerAppInfo> appInfos = new ArrayList<>();
@@ -152,13 +153,12 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
 
         registerNetworkPref();
-        if(isNetworkConneted(this))
-        {
+        if (isNetworkConneted(this)) {
+            Timber.d("onCreate: NetworkConneted");
             loadApps();
-        }else{
+        } else {
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
-
 
 
     }
@@ -168,6 +168,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         //Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
             //   getAdminApps();
+            Timber.d("loadApps: ");
             getServerApps(null);
         } else {
             getServerApps(dealerId);
@@ -266,17 +267,17 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     };
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
+    public void onDownLoadProgress(String pn, int progress, long speed, String requestId, String space) {
 
         if (sectionsPagerAdapter != null) {
             MarketFragment fragment = sectionsPagerAdapter.getMarketFragment();
             UpdateAppsFragment fragment1 = sectionsPagerAdapter.getUpdateAppsFragment();
 
             if (fragment != null) {
-                fragment.onDownLoadProgress(pn, progress,requestId, speed);
+                fragment.onDownLoadProgress(pn, progress, requestId, speed);
             }
             if (fragment1 != null) {
-                fragment1.onDownLoadProgress(pn, progress,requestId, speed);
+                fragment1.onDownLoadProgress(pn, progress, requestId, speed);
             }
 
         }
@@ -395,17 +396,18 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 //                    if (dealerId == null) {
 //                        getAdminApps();
 //                    } else {
-                        getAllApps(dealerId);
+                    getAllApps(dealerId);
 //                    }
                 }
             }, this, urls);
 
         } else {
+            Timber.d("instant is not null");
 
 //            if (dealerId == null) {
 //                getAdminApps();
 //            } else {
-                getAllApps(dealerId);
+            getAllApps(dealerId);
 //            }
         }
     }
@@ -414,7 +416,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
 //        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
-                .getAllApps(new DeviceAndSpace(dealerId,currentSpace()))
+                .getAllApps(new DeviceAndSpace(dealerId, currentSpace()))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -425,12 +427,15 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
                             } else {
                                 ////TODO: handle token auth fail
+                                Timber.d("onResponse: token auth fail");
+                                sharedViwModel.setMutableMsgs(Msgs.ERROR);
                             }
 
                         } else {
                             //TODO: server responded with other then 200 response code
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Timber.d("onResponse: server error");
                                 Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
                                 Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -503,8 +508,10 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                 if (isUpdateAvailable(appInfo.getPackageName(), Integer.parseInt(appInfo.getVersion_code()))) {
                     appInfo.setUpdate(true);
                     updatesInfo.add(appInfo);
-                } else
+                } else {
+                    appInfo.setType(ServerAppInfo.PROG_TYPE.GONE);
                     installedInfo.add(appInfo);
+                }
             } else {
                 newApps.add(appInfo);
             }
@@ -701,11 +708,10 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     @Override
     public void onAppsRefreshRequest() {
         if (isNetworkConneted(SMActivity.this)) {
-            Log.d("lsakjdf","connected");
+            Timber.d("connected");
             loadApps();
-        }
-        else{
-            Log.d("lsakjdf","not connected");
+        } else {
+            Timber.d("not connected");
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
         }
     }
