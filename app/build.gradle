@@ -22,8 +22,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 60106
-        versionName "6.1.6"
+        versionCode 60200
+        versionName "6.2.0"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -166,7 +166,7 @@ dependencies {
     //text mask
     implementation 'com.github.santalu:mask-edittext:1.1.1'
 
-    implementation project(path:':Stepper')
+    implementation project(path:':stepper')
     implementation project(path:':chatkit')
     implementation 'androidx.palette:palette:1.0.0'
     implementation project(path: ':sfm')
