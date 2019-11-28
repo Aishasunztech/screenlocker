@@ -8,11 +8,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Stepper" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/chatkit" />
             <option value="$PROJECT_DIR$/commons" />
             <option value="$PROJECT_DIR$/sfm" />
+            <option value="$PROJECT_DIR$/stepper" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
