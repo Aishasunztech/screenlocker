@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_16sdp"
-            android:text="About"
+            android:text="@string/about"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="1.0"
+            tools:text="1.0"
             android:textSize="@dimen/textSize"
             app:layout_constraintBottom_toBottomOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Expiry (days remaining)"
+            android:text="@string/expiry_days_remaining"
             android:textSize="@dimen/textTitle"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="10 days"
+            tools:text="10 days"
             android:textSize="@dimen/textSize"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView16"
@@ -158,15 +158,17 @@
         <TextView
             android:id="@+id/tvPgpEmail"
             android:layout_width="wrap_content"
-            android:layout_height="13dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:text="7992PFY@ARMORSEC.XYZ"
             android:textSize="@dimen/textSize"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView18"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView18" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="@+id/textView18"
+            tools:text="7992PFY@ARMORSEC.XYZ" />
 
 
         <!-- Chat ID view -->

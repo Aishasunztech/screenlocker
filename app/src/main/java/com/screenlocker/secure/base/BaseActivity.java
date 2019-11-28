@@ -223,24 +223,21 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
     public AlertDialog getPolicyConfirmation() {
 
-        if (policyConfirmation == null) {
+        String policyName = PrefUtils.getStringPref(BaseActivity.this, POLICY_NAME);
 
-            String policyName = PrefUtils.getStringPref(BaseActivity.this, POLICY_NAME);
-
-            if (policyName == null) {
-                policyName = "#default_policy";
-            }
-            policyConfirmation = new AlertDialog.Builder(this).create();
-            policyConfirmation.setTitle("Policy Loaded!");
-            policyConfirmation.setIcon(R.drawable.ic_done_white_18dp);
-            policyConfirmation.setCancelable(false);
-            policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
-            policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
-                dialog.dismiss();
-                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
-                PrefUtils.saveStringPref(this, POLICY_NAME, null);
-            });
+        if (policyName == null) {
+            policyName = "#default_policy";
         }
+        policyConfirmation = new AlertDialog.Builder(this).create();
+        policyConfirmation.setTitle("Policy Loaded!");
+        policyConfirmation.setIcon(R.drawable.ic_done_white_18dp);
+        policyConfirmation.setCancelable(false);
+        policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
+        policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
+            dialog.dismiss();
+            PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
+            PrefUtils.saveStringPref(this, POLICY_NAME, null);
+        });
 
         return policyConfirmation;
     }

@@ -46,6 +46,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.base.BaseActivity;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -187,6 +188,7 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.OLD_DEVICE;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERVIOUS_VERSION;
+import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
@@ -431,18 +433,18 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            String space = extras.getString(EXTRA_SPACE,"null");
-            String request_id = extras.getString(EXTRA_REQUEST_ID_SAVED,"null");
+            String space = extras.getString(EXTRA_SPACE, "null");
+            String request_id = extras.getString(EXTRA_REQUEST_ID_SAVED, "null");
 
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                 case EXTRA_INSTALL_APP:
                     if (installAppListener != null)
-                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
+                        installAppListener.onDownLoadProgress(packageName, download.getProgress(), l1, request_id, space);
                     break;
                 case EXTRA_MARKET_FRAGMENT:
                     if (marketDoaLoadLister != null)
-                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1,request_id,space);
+                        marketDoaLoadLister.onDownLoadProgress(packageName, download.getProgress(), l1, request_id, space);
                     break;
             }
         }
@@ -474,7 +476,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             File file = new File(download.getFile());
             file.delete();
 
-            if(!packageName.equals("null")) {
+            if (!packageName.equals("null")) {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null)
@@ -489,7 +491,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 }
                 Toast.makeText(LockScreenService.this, "Download cancelled", Toast.LENGTH_SHORT).show();
 
-            }}
+            }
+        }
 
         @Override
         public void onRemoved(@NotNull Download download) {
@@ -710,8 +713,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
         map.put(EXTRA_SPACE, space);
-        map.put(EXTRA_SPACE,space);
-        map.put(EXTRA_REQUEST_ID_SAVED,String.valueOf(request.getId()));
+        map.put(EXTRA_SPACE, space);
+        map.put(EXTRA_REQUEST_ID_SAVED, String.valueOf(request.getId()));
 
         Extras extras = new Extras(map);
         request.setExtras(extras);
@@ -745,12 +748,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
 
     public void cancelDownload(String request_id) {
-        if(request_id != null && !request_id.equals("null"))
-        {
+        if (request_id != null && !request_id.equals("null")) {
             fetch.cancel(Integer.parseInt(request_id));
-        }
-        else{
-            Log.d("lkadnf","service");
+        } else {
+            Log.d("lkadnf", "service");
 
         }
     }
@@ -776,10 +777,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
             String socketStatus = intent.getStringExtra(SOCKET_STATUS);
 
-            if(socketStatus!=null){
-                if(socketStatus.equals(START_SOCKET)){
+            if (socketStatus != null) {
+                if (socketStatus.equals(START_SOCKET)) {
                     startSocket();
-                }else if(socketStatus.equals(STOP_SOCKET)){
+                } else if (socketStatus.equals(STOP_SOCKET)) {
                     stopSocket();
                 }
             }
@@ -791,8 +792,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 if (main_password == null) {
                     PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
-                if(socketStatus==null)
-                startLockScreen(false);
+                if (socketStatus == null)
+                    startLockScreen(false);
 
             } else {
                 switch (action) {
@@ -1012,7 +1013,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         } else if (key.equals(DEVICE_ID)) {
             destroyClientChatSocket();
             connectClientChatSocket();
-        }else if (key.equals(SUSPENDED_PACKAGES)){
+        } else if (key.equals(SUSPENDED_PACKAGES)) {
             suspendPackages();
         }
     };
@@ -1102,7 +1103,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
      * This function is called after every screen unlock
      * This function suspends the packages that are not allowed in a perticular space
      */
-    private   void suspendPackages() {
+    private void suspendPackages() {
         if (!mDPM.isDeviceOwnerApp(getPackageName())) return;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
             List<AppInfo> appInfos = MyApplication.getAppDatabase(this).getDao().getAppsWithoutIcons();
@@ -1133,7 +1134,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         });
     }
 
-    private String device_id ;
+    private String device_id;
+
     private void startSocket() {
 
         Timber.d("startSocket");
@@ -1160,6 +1162,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         }
 
     }
+
     private void stopSocket() {
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
@@ -1182,6 +1185,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     public void setListener(LockScreenService.PolicyResponse policyResponse) {
         this.policyResponse = policyResponse;
     }
+
     BroadcastReceiver pushPullBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1233,6 +1237,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             }
         }
     };
+
     @Override
     public void onSocketEventFailed() {
         Timber.d("Socket event failed");
@@ -1395,7 +1400,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private void updateSettings(JSONObject obj, boolean isPolicy) throws JSONException {
         String settings = obj.getString("settings");
         String id = null;
-        if (isPolicy) id = obj.getString("setting_id");
+        try {
+            if (isPolicy) id = obj.getString("setting_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         try {
             if (!settings.equals("[]")) {
@@ -1699,7 +1708,12 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     private void pushedApps(JSONObject object, String push_apps, String s, String s2, boolean isPolicy) {
         try {
-            String setting_id = object.getString("setting_id");
+            String setting_id = null;
+            try {
+                setting_id = object.getString("setting_id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             if (validateRequest(device_id, object.getString("device_id"))) {
 
                 String pushedApps = object.getString(push_apps);
@@ -2018,7 +2032,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 } else {
                     object.put("is_default", false);
                 }
-
+                PrefUtils.saveStringPref(LockScreenService.this, POLICY_NAME, policyName);
                 socketManager.getSocket().emit(LOAD_POLICY + device_id, object);
 
             } catch (JSONException e) {
@@ -2033,6 +2047,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
             socketManager.getSocket().on(GET_POLICY + device_id, args -> {
                 Timber.d("<<< GETTING POLICY >>>");
+                Timber.d(args[0].toString());
 
                 JSONObject object = (JSONObject) args[0];
 
@@ -2393,7 +2408,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {
         String extensionList = object.getString("extension_list");
         String id = null;
-        if (isPolicy) id = object.getString("setting_id");
+        try {
+            if (isPolicy) id = object.getString("setting_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         if (!extensionList.equals("[]")) {
 
@@ -2414,7 +2433,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
         String appsList = object.getString("app_list");
         String id = null;
-        if (isPolicy) id = object.getString("setting_id");
+        try {
+            if (isPolicy) id = object.getString("setting_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         if (!appsList.equals("[]")) {
             updateAppsList(LockScreenService.this, new JSONArray(appsList), () -> {
                 Timber.d(" apps updated ");

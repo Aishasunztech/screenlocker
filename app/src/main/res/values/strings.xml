@@ -491,6 +491,7 @@
     <string name="network_limited">Limited network !</string>
     <string name="network_limited_message">Internet may not be available.</string>
     <string name="change_network">Change Network</string>
+    <string name="expiry_days_remaining">Expiry (days remaining)</string>
 
     <string-array name="sort">
         <item>Total</item>
