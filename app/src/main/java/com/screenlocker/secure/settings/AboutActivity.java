@@ -457,34 +457,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-        String url = url_1.getText().toString();
-
-        if (TextUtils.isEmpty(url)) {
-            url_1.setError("Please enter valid url !");
-            return;
-        }
-
-
-        URL_1 = url;
-
-        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+//        String url = url_1.getText().toString();
+//
+//        if (TextUtils.isEmpty(url)) {
+//            url_1.setError("Please enter valid url !");
+//            return;
+//        }
+//
+//
+//        URL_1 = url;
+//
+//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-        clickCount++;
-        int total = 6;
-
-        if (clickCount == 6) {
-            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-            button.setVisibility(View.VISIBLE);
-            button2.setVisibility(View.VISIBLE);
-            url_1.setVisibility(View.VISIBLE);
-        } else {
-            if (clickCount >= 2 && clickCount <= 6) {
-                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        clickCount++;
+//        int total = 6;
+//
+//        if (clickCount == 6) {
+//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+//            button.setVisibility(View.VISIBLE);
+//            button2.setVisibility(View.VISIBLE);
+//            url_1.setVisibility(View.VISIBLE);
+//        } else {
+//            if (clickCount >= 2 && clickCount <= 6) {
+//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
     }
 }

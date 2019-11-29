@@ -12,18 +12,10 @@
     <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ebeb83bd-4e90-4b50-9200-7a74f06aa000" name="Default Changelist" comment="Test Locker SW 6.2.0">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/bg_detail_header.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bg_detail_header.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+    <list default="true" id="ebeb83bd-4e90-4b50-9200-7a74f06aa000" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -119,26 +111,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3638">
-              <caret line="123" column="41" lean-forward="true" selection-start-line="123" selection-start-column="41" selection-end-line="123" selection-end-column="41" />
+            <state relative-caret-position="-278">
+              <caret line="117" column="61" lean-forward="true" selection-start-line="117" selection-start-column="61" selection-end-line="117" selection-end-column="61" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1122">
-              <caret line="12" column="61" lean-forward="true" selection-start-line="12" selection-start-column="61" selection-end-line="12" selection-end-column="61" />
+            <state relative-caret-position="354">
+              <caret line="469" column="87" lean-forward="true" selection-start-line="459" selection-start-column="10" selection-end-line="469" selection-end-column="87" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitlab-ci.yml">
+        <entry file="file://$PROJECT_DIR$/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-717">
-              <caret line="4" column="25" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="25" />
+            <state relative-caret-position="45">
+              <caret line="25" column="26" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -204,7 +196,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/ManagePasswords.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/SettingsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PasswordOptionsAcitivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/managepassword/PatternActivity.java" />
@@ -245,7 +236,6 @@
         <option value="$PROJECT_DIR$/app/src/main/aidl/com/secure/launcher/IPCWithSL.aidl" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/IPCService.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/service/LockScreenService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/base/BaseActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_about_background.xml" />
@@ -253,8 +243,10 @@
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/bg_detail_header.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-night/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
       </list>
     </option>
   </component>
@@ -267,7 +259,7 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages AndroidView="false" />
       <hideEmptyPackages AndroidView="false" />
       <foldersAlwaysOnTop value="true" />
@@ -291,7 +283,32 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="AndroidView" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="mipmap" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="screenlocker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -773,12 +790,25 @@
       <option name="project" value="LOCAL" />
       <updated>1574855336640</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Screen Locker SW 6.2.0">
+      <created>1575015035364</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1575015035364</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Screen Locker SW 6.2.0">
+      <created>1575015167433</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1575015167433</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48358864" visible="true" weight="0.39190283" />
       <window_info id="Structure" order="1" side_tool="true" />
@@ -874,7 +904,8 @@
     <MESSAGE value="IPC aidle process" />
     <MESSAGE value="SL SW 6.2.0" />
     <MESSAGE value="Test Locker SW 6.2.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test Locker SW 6.2.0" />
+    <MESSAGE value="Screen Locker SW 6.2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="Screen Locker SW 6.2.0" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -889,21 +920,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="822">
-          <caret line="344" column="77" selection-start-line="344" selection-start-column="77" selection-end-line="344" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureSetting/t/ui/StateAboutActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
-          <caret line="51" selection-start-line="51" selection-end-line="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/secureSetting/t/ui/StateSettingsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1000,13 +1016,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -1200,12 +1209,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
+    <entry file="file://$PROJECT_DIR$/.gitlab-ci.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3638">
-          <caret line="123" column="41" lean-forward="true" selection-start-line="123" selection-start-column="41" selection-end-line="123" selection-end-column="41" />
+        <state relative-caret-position="-717">
+          <caret line="4" column="25" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="25" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png">
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -1214,10 +1226,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitlab-ci.yml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/utils/AppConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-717">
-          <caret line="4" column="25" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="25" />
+        <state relative-caret-position="-278">
+          <caret line="117" column="61" lean-forward="true" selection-start-line="117" selection-start-column="61" selection-end-line="117" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/screenlocker/secure/settings/AboutActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="354">
+          <caret line="469" column="87" lean-forward="true" selection-start-line="459" selection-start-column="10" selection-end-line="469" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="25" column="26" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
         </state>
       </provider>
     </entry>
