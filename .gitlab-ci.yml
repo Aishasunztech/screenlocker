@@ -1,7 +1,7 @@
 image: jangrewe/gitlab-ci-android
 
 variables:
-  ANDROID_COMPILE_SDK: "27"
+  ANDROID_COMPILE_SDK: "28"
   APP_NAME: "TitanLocker"
   MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
 
