@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp">>
+        <!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
+        <!--    android:layout_width="wrap_content"-->
+        <!--    android:layout_gravity="center"-->
+        <!--    android:layout_height="wrap_content"-->
+        <!--    android:id="@+id/icon_container"-->
+        <!--    android:layout_centerInParent="true"-->
+
+        <!--    android:layout_marginStart="8dp"-->
+        <!--    android:layout_marginLeft="8dp"-->
+        <!--    android:layout_marginTop="8dp"-->
+        <!--    android:layout_marginEnd="8dp"-->
+        <!--    android:layout_marginRight="8dp">-->
+        <ImageView
+            android:id="@+id/img"
+            android:layout_gravity="center"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/description_app_image"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+
+        <TextView
+            android:id="@+id/text"
+            style="@style/icon_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="marquee"
+            tools:text="TextView" />
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/badge_container"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:background="@drawable/notification_badge_bg"
+        >
+
+        <TextView
+            android:id="@+id/number_of_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="99"
+            android:layout_gravity="center"
+            android:textSize="@dimen/_8ssp"/>
+
+    </FrameLayout>
+</RelativeLayout>

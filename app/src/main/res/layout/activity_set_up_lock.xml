@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/stepper_bg_gradient">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/colorWhite" />
+
+
+    <!-- user password pin -->
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/setImage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintLeft_toLeftOf="@+id/password_container"
+                app:layout_constraintRight_toRightOf="@id/password_container"
+                app:layout_constraintTop_toTopOf="@+id/password_container" />
+
+
+            <LinearLayout
+                android:id="@+id/password_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_20sdp"
+
+                android:layout_marginRight="@dimen/_20sdp"
+                android:alpha="0.9"
+                android:background="@drawable/guest_password_bg"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/_20sdp"
+                android:paddingTop="@dimen/_60sdp"
+                android:paddingRight="@dimen/_20sdp"
+                android:paddingBottom="@dimen/_20sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pin_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/TextLabelTheme"
+
+                    >
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEnterPin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:ems="10"
+                        android:inputType="numberPassword"
+
+                        android:maxLength="10"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:textColor="@color/colorWhite"
+                        android:textColorHint="@color/colorPrimary"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/re_pin_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:theme="@style/TextLabelTheme"
+
+
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etConfirmPin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:ems="10"
+                        android:inputType="numberPassword"
+                        android:maxLength="10"
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:textColor="@color/colorWhite"
+                        android:textColorHint="@color/colorPrimary"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/btn_stepper_bg"
+                    android:text="@string/confirm_pin"
+                    android:textAllCaps="false"
+                    app:layout_constraintEnd_toEndOf="@+id/etConfirmPin"
+                    app:layout_constraintStart_toStartOf="@+id/etConfirmPin"
+                    app:layout_constraintTop_toBottomOf="@+id/etConfirmPin" />
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/disable_duress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/btn_stepper_bg"
+                    android:text="Disable Duress Pin"
+                    android:textAllCaps="false"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@+id/btnConfirm"
+                    app:layout_constraintStart_toStartOf="@+id/btnConfirm"
+                    app:layout_constraintTop_toBottomOf="@+id/btnConfirm" />
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/guest_image_icon"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:contentDescription="ic_guest_icon"
+                android:src="@drawable/ic_guest_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/setImage"
+                app:layout_constraintLeft_toLeftOf="@+id/setImage"
+                app:layout_constraintRight_toRightOf="@+id/setImage"
+                app:layout_constraintTop_toTopOf="@+id/setImage"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+    <!--<androidx.appcompat.widget.AppCompatEditText-->
+    <!--android:id="@+id/etEnterPin"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginEnd="24dp"-->
+    <!--android:layout_marginStart="24dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:ems="10"-->
+    <!--android:gravity="center"-->
+    <!--android:hint="@string/enter_pin"-->
+    <!--android:inputType="numberPassword"-->
+    <!--android:maxLength="10"-->
+    <!--android:textColor="@color/textColorPrimary"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.5"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/appBar" />-->
+
+    <!--&lt;!&ndash; confirm user password pin &ndash;&gt;-->
+    <!--<androidx.appcompat.widget.AppCompatEditText-->
+    <!--android:id="@+id/etConfirmPin"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"   android:layout_marginEnd="24dp"-->
+    <!--android:layout_marginStart="24dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:ems="10"-->
+    <!--android:gravity="center"-->
+    <!--android:hint="@string/re_enter_pin"-->
+    <!--android:inputType="numberPassword"-->
+    <!--android:maxLength="10"-->
+    <!--android:textColor="@color/textColorPrimary"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/etEnterPin"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/etEnterPin"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/etEnterPin" />-->
+
+    <!--&lt;!&ndash; save the user password after validating &ndash;&gt;-->
+    <!--<androidx.appcompat.widget.AppCompatButton-->
+    <!--android:id="@+id/btnConfirm"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginEnd="16dp"-->
+    <!--android:layout_marginStart="16dp"-->
+    <!--android:layout_marginTop="32dp"-->
+    <!--android:text="@string/confirm_pin"-->
+    <!--android:textAllCaps="false"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/etConfirmPin"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/etConfirmPin"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/etConfirmPin" />-->
+
+    <!--<androidx.appcompat.widget.AppCompatButton-->
+    <!--android:id="@+id/disable_duress"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="32dp"-->
+    <!--android:visibility="gone"-->
+    <!--android:text="Disable Duress Pin"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/btnConfirm"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/btnConfirm"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/btnConfirm" />-->
+
+    <!--<androidx.constraintlayout.widget.Group-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:visibility="visible"-->
+    <!--app:constraint_referenced_ids="etEnterPin,etConfirmPin,btnConfirm" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

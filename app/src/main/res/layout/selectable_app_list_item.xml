@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="3dp">
+
+    <ImageView
+        android:id="@+id/appImage"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:contentDescription="@string/description_app_image"
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textStyle="bold"
+        tools:text="App Name" />
+
+    <Switch
+        android:id="@+id/guestSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp" />
+
+    <Switch
+        android:id="@+id/encryptedSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp" />
+    <Switch
+        android:id="@+id/enabledSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp" />
+
+</LinearLayout>

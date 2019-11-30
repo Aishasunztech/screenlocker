@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lytSwipeReferesh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/appBar"
+                layout="@layout/main_toolbar"/>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+                <TableLayout
+                    android:id="@+id/linearContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/guest_password_bg"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="50dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="20dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="30dp"
+                        >
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="System Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSystemId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="gone"
+                            tools:text="368768BHH7" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/device_id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvDeviceId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            tools:text="N/A"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="@string/user_id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvUserId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            tools:text="N/A"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </TableRow>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/mode"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvLinkedStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="@string/status_online"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/status"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvDeviceStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="N/A"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+
+                        <TextView
+                            android:id="@+id/textViewExpiry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/expiry"
+                            android:textSize="@dimen/textTitle"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/tvExpiresIn"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="10 days"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+
+                        <TextView
+                            android:id="@+id/textViewImei"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="IMEI 1"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvImei1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="5141281304"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:id="@+id/textViewImei2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="IMEI 2"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvImei2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="5141281304"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/current_dealer"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvCurrentDealerID"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="@string/dealer_pin"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/dealer_pin"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvLinkedDealerPin"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="@string/n_a"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/sim_1"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/tvSimNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="SimNo"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/sim_2"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/tvSimNo2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            tools:text="SimNo 2"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/s_n"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSerialNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            tools:text="@string/n_a"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/mac"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvMAC"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            tools:text="@string/n_a"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="@string/ip_addr"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvIP"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            tools:text="@string/n_a"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="PGP Email"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvPgpEmail"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountValueStyle"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:textSize="@dimen/textSize"
+                            tools:text="7992PFY@ARMORSEC.XYZ"  />
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/chatId"
+                        style="@style/accountRowStyle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:text="Chat Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvChatId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            tools:text="5141281304" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/dividerChatId"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:id="@+id/simId"
+                        style="@style/accountRowStyle">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            style="@style/accountheadingsStyle"
+                            android:layout_weight="1"
+                            android:text="Sim Id"
+                            android:textSize="@dimen/textTitle"
+                            android:visibility="visible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appBar" />
+
+
+                        <TextView
+                            android:id="@+id/tvSimId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="@dimen/textSize"
+                            tools:text="5141281304"/>
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/dividerSimId"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLine"
+                        android:visibility="gone"
+                        />
+
+
+
+                </TableLayout>
+
+
+                <View
+                    android:id="@+id/centerPoint"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@+id/linearContainer"
+                    app:layout_constraintRight_toRightOf="@+id/linearContainer"
+                    app:layout_constraintTop_toTopOf="@+id/linearContainer"/>
+
+
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/ic_guest_icon_24"
+                    app:layout_constraintLeft_toLeftOf="@id/centerPoint"
+                    app:layout_constraintRight_toRightOf="@id/centerPoint"
+                    app:layout_constraintTop_toTopOf="@id/centerPoint"
+                    app:layout_constraintBottom_toBottomOf="@id/centerPoint"
+                    android:contentDescription="sn"
+                    android:onClick="counter"
+                    />
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:onClick="emergencyFlag"
+                android:text="SECURITY ON/OFF"
+                android:visibility="visible" />
+
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="changeUrl"
+                android:text="Change Url"
+                android:visibility="visible"
+
+                />
+
+
+            <EditText
+                android:id="@+id/url_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:hint="http://192.168.18.219:3000"
+                android:inputType="textWebEmailAddress"
+                android:text="http://192.168.18.219:3000"
+
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

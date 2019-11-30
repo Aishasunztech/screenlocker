@@ -1,0 +1,510 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <integer-array name="duration_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+    <string name="my_apk_name" translatable="false">Screen Locker</string>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
+    <string name="apktype" translatable="false">SW</string>
+    <string name="number_zero" translatable="false">0</string>
+    <string name="number_one" translatable="false">1</string>
+    <string name="number_two" translatable="false">2</string>
+    <string name="number_three" translatable="false">3</string>
+    <string name="number_four" translatable="false">4</string>
+    <string name="number_five" translatable="false">5</string>
+    <string name="number_six" translatable="false">6</string>
+    <string name="number_seven" translatable="false">7</string>
+    <string name="number_eight" translatable="false">8</string>
+    <string name="number_nine" translatable="false">9</string>
+    <string name="btn_backspace">Clear</string>
+    <string name="description_notification_icon">notification icon</string>
+    <string name="description_app_image">app image</string>
+    <string name="unlock">UNLOCK</string>
+    <string name="enter_pin">Enter pin</string>
+    <string name="re_enter_pin">Re-Enter pin</string>
+    <string name="confirm_pin">Set Pin</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="pin">PIN</string>
+    <string name="set_guest_password">Set Guest Password</string>
+    <string name="set_encrypted_password">Set Encrypted Password</string>
+    <string name="please_enter_your_current_password">Please enter your current password.</string>
+    <string name="wrong_password_entered">You have entered wrong password.</string>
+    <string name="password_changed">password changed</string>
+    <string name="password_not_changed">password not changed</string>
+    <string name="hint_please_enter_guest_pin">Please enter guest pin</string>
+    <string name="hint_please_enter_duress_pin">Please enter Wipe PIN</string>
+    <string name="hint_please_confirm_your_pin">Please confirm your pin</string>
+    <string name="hint_please_enter_encrypted_pin">Please enter encrypted pin</string>
+    <string name="empty">Password field is empty.</string>
+    <string name="password_dont_match">Password don\'t match.</string>
+    <string name="set_guest_code">Guest Pin Code</string>
+    <string name="set_duress_code">Wipe Pin Code</string>
+    <string name="set_encrypted_code">Encrypted Pin Code</string>
+    <string name="set_background_for">Set Background for</string>
+    <string name="guest_all">Turn ON Guest ALL</string>
+    <string name="encryption_all">Turn ON Encrypted ALL</string>
+    <string name="enable_all">Enable All</string>
+    <string name="please_enter_current_guest_password">Please enter current Guest password.</string>
+    <string name="please_enter_current_encrypted_password">Please enter current Encrypted password.</string>
+    <string name="please_enter_current_duress_password">Please enter current Wipe password.</string>
+    <string name="check_for_updates"><u>Check for updates</u></string>
+    <string name="set_code_pin">Set code pin</string>
+    <string name="hint_please_enter_code_pin">Please enter code pin</string>
+    <string name="please_enter_code_admin_password">Please enter code admin password.</string>
+    <string name="code">Code</string>
+    <string name="set_apps_permissions">Application Permission</string>
+    <string name="reset_guest_encrypted_pass"><![CDATA[Reset Guest & Encrypted Pass]]></string>
+    <string name="change_admin_panel_code">Change Admin Panel Code</string>
+    <string name="password_is_changed_to_default">Password is changed to default.</string>
+    <string name="install_apps">Install Apps</string>
+    <string name="please_check_network_connection">Please check your network connection.</string>
+    <string name="sim_title">SIM</string>
+
+    // MDM strings
+
+    <string name="set_duress_pass">Set Wipe Password</string>
+    <string name="no_internet">Internet not available</string>
+    <string name="processing">Activating device please wait.</string>
+    <string name="submit">Submit</string>
+    <string name="permission_required">We need this permission to read hardware ids to secure your device</string>
+    <string name="dont_have_permission">We do not have permission.</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="info">Info :</string>
+    <string name="device_already_linked">Device linked successfully</string>
+    <string name="link_request_pending">Link request pending!</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="link_device">Link device</string>
+    <string name="device_not_linked">Device not linked!</string>
+    <string name="stop_linking">Stop Linking</string>
+    <string name="session_expired">Session expired</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="expired">expired</string>
+    <string name="system_controls">System Permissions</string>
+    <string name="enable_vpn">Enable VPN</string>
+    <string name="pgp_email">Pgp Email</string>
+    <string name="chat_id">Chat Id</string>
+    <string name="sim_id">Sim Id</string>
+    <!--SecureSeting strings-->
+
+    <string name="settings_controls">Secure Settings Permission</string>
+    <string name="gps_not_found_title">GPS not found</string>
+    <string name="gps_not_found_message">Please turn on gps to further proceed</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="fine_location_and_cross_location">Fine Location</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="some_error_occurred">Some Error Occurred!</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="account">Account</string>
+    <string name="language">Languages</string>
+    <string name="install_app_activity">installAppActivity</string>
+    <string name="secure_market_activity">secureMarketActivity</string>
+    <string name="uptodate">You are currently up to date.</string>
+    <string name="install_app_message">App is installing</string>
+    <string name="permissions">Application Permission</string>
+    <string name="link_heading">To generate a valid IMEI please go to </string>
+    <string name="link">\"https://dyrk.org/tools/imei\"</string>
+    <string name="link_title">Link</string>
+    <string name="simtext">SIM:</string>
+    <string name="slot">Slot :</string>
+    <string name="name">/ Name :</string>
+    <string name="apn">/ Apn :</string>
+    <string name="guest">Guest</string>
+    <string name="encrypted">Encrypted</string>
+    <string name="status">Status :</string>
+    <string name="status_active">Active</string>
+    <string name="status_disabled">Disabled</string>
+    <string name="status_not_inserted">Not Inserted</string>
+    <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
+    <string name="tab_text_1">@string/apps_title</string>
+    <string name="tab_text_2">@string/updates</string>
+    <string name="tab_text_3">@string/uninstall</string>
+    <string name="sim_1">SIM 1</string>
+    <string name="sim_2">SIM 2</string>
+    <string name="add">ADD +</string>
+    <string name="status_online">Online</string>
+    <string name="enable_all_unregistered">Enable All \n<small>(Unregistered)</small></string>
+    <string name="enable_all_registered">Enable All \n<small>(Registered)</small></string>
+    <string name="status_disconnected">Offline</string>
+    <string name="note">Note: </string>
+
+    <string name="note_hint">Note</string>
+    <string name="support">SUPPORT</string>
+    <string name="manage_passwords_settings">Manage Passwords</string>
+    <string name="set_background_image_settings">Set Background Image</string>
+    <string name="about">About</string>
+    <string name="activated">ACTIVATED</string>
+    <string name="manage_password_title">Manage Passwords</string>
+    <string name="activated_code">Activated</string>
+    <string name="not_set">Not Set</string>
+    <string name="invalid_password_title">Invalid Password</string>
+    <string name="invalid_password_message">The password you entered is incorrect.</string>
+    <string name="duress_password_warning">Warning!</string>
+    <string name="duress_password_message">Entering Wipe Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
+    <string name="ok_text">Ok</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="password_changed_title">Password Changed!</string>
+    <string name="password_changed_message">Password Successfully Changed.</string>
+    <string name="change_wallpaper_title">Change Wallpaper</string>
+    <string name="guest_password_dialog_title">Enter Guest Password</string>
+    <string name="encrypted_password_dialog_title">Enter Encrypted Password</string>
+    <string name="please_enter_password">Please Enter Password</string>
+    <string name="update_dialog_title">Update</string>
+    <string name="update_dialog_message">Checking For Updates</string>
+    <string name="update_available_title">Update Available</string>
+    <string name="update_available_message">New update available! Press OK to update your system.</string>
+    <string name="error_occured_toast">An error occurred, Please Try latter.</string>
+    <string name="network_not_connected">Network Not Connected!</string>
+    <string name="network_not_connected_message">Please connect to the internet before proceeding.</string>
+    <string name="network_setup">NETWORK SETUP</string>
+    <string name="enable_admin_device_feature">You have enabled the Admin Device features</string>
+    <string name="problem_admin_device_feature">Problem to enable the Admin Device features</string>
+    <string name="bg_save_encrypted">Background saved for encrypted</string>
+    <string name="bg_save_guest">Background saved for guest</string>
+    <string name="n_a">N/A</string>
+    <string name="active">Active</string>
+    <string name="link_device_title">Link Device</string>
+    <string name="error_321">Error 321 Device ID (</string>
+    <string name="contact_support">) please contact support</string>
+    <string name="error_322">Error 322 Device ID (</string>
+    <string name="error323">Error 323 Device ID (</string>
+    <string name="invaild_dealer_code">Invalid Dealer or Code</string>
+    <string name="guest_wallpaper">Guest Wallpaper</string>
+    <string name="encrypted_wallpaper">Encrypted Wallpaper</string>
+    <string name="lock_screen_image">Lock Screen Image</string>
+    <string name="duress_pin_disabled">Wipe PIN Disabled</string>
+    <string name="password_taken">This password is taken please try again</string>
+    <string name="wallpapers_title">Wallpapers</string>
+    <string name="bg_set_encrypted">Background set for encrypted</string>
+    <string name="bg_set_guest">Background set for guest</string>
+    <string name="bg_set_lockscreen">Background set for lock screen</string>
+    <string name="set_as_wallpaper">Set As Wallpaper</string>
+    <string name="admin_panel_title">Admin Panel</string>
+    <string name="admin_password_changed">Admin Password Changed.</string>
+    <string name="enter_old_password">Please enter your old password.</string>
+    <string name="enter_correct_password">Please enter correct password.</string>
+    <string name="enter_new_password">Please enter new password.</string>
+    <string name="re_enter_password">Please renter your password.</string>
+    <string name="password_not_matched">Password did not match.</string>
+    <string name="apps_title">Apps</string>
+    <string name="app_names">App Names</string>
+    <string name="app_name_heading">App Name</string>
+    <string name="enable">Enable</string>
+    <string name="android_settings">Android Settings</string>
+    <string name="wifi">Wifi</string>
+    <string name="hotspot">Hotspot</string>
+    <string name="location_services">Location Services</string>
+    <string name="screen_capture">Screen Capture</string>
+    <string name="block_calls">Block Calls</string>
+    <string name="nfc">NFC</string>
+    <string name="off">OFF</string>
+    <string name="on">ON</string>
+    <string name="installed_apps_title">Install Apps</string>
+    <string name="something_wrong">something went wrong</string>
+    <string name="downloading_update">Downloading Update, Please Wait</string>
+    <string name="install">Install</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="policy_title">Load Policy</string>
+    <string name="policy_warning_title">Warning!</string>
+    <string name="default_policy">default_policy</string>
+    <string name="default_policy_message">This will push the default Policy set by your Dealer.</string>
+    <string name="enter_policy_name">please enter policy name.</string>
+    <string name="load_policy_to_device">This will load the policy %1$s to this device.</string>
+    <string name="link_device_to_proceed">Please link your device before proceeding.</string>
+    <string name="link_device_button">LINK DEVICE</string>
+    <string name="cancel_capital">CANCEL</string>
+    <string name="invalid_policy_name">Invalid policy name</string>
+    <string name="enter_policy_name_hint">Enter policy name</string>
+    <string name="btn_load_policy">Load Policy</string>
+    <string name="dont_have_policy_message">If you dont have a Policy Name please select default Policy below</string>
+    <string name="btn_default_policy">Default Policy</string>
+    <string name="secure_settings_app">Secure Settings App</string>
+    <string name="menu_displays">In-App Menu Displays</string>
+    <string name="secure_settings_title">Secure Settings Permission</string>
+    <string name="select_a_sim_slot">Select a Sim Slot</string>
+    <string name="slot_1">Slot 1</string>
+    <string name="slot_2">Slot 2</string>
+    <string name="imei_hint">IMEI</string>
+    <string name="btn_write_imei">Write IMEI</string>
+    <string name="imei_menu_title">IMEI Menu</string>
+    <string name="delete_title">Delete</string>
+    <string name="want_to_delete">Do you want to delete SIM with ICCID: %1$s?</string>
+    <string name="registered_sim_cards">Registered Sim Cards</string>
+    <string name="btn_add">ADD +</string>
+    <string name="vortex">Vortex</string>
+    <string name="edit_sim_card">Edit Sim Card</string>
+    <string name="btn_save">Save</string>
+    <string name="should_contain_3_words">Name Should contain at least 3 word</string>
+    <string name="custom_sim_card_message">This is my custom sim card.</string>
+    <string name="secure_clear_title">Secure Clear</string>
+    <string name="clear_cache_title">Clear Cache</string>
+    <string name="clear_cache_message">Proceed with clearing cache?</string>
+    <string name="ok_capital">OK</string>
+    <string name="app_disabled">App is disabled</string>
+    <string name="is_installed">is installed</string>
+    <string name="is_uninstalled">is uninstalled</string>
+    <string name="list_is_empty">List is empty</string>
+    <string name="download_title">Download</string>
+    <string name="install_message">Are you sure you want to install this app?</string>
+    <string name="uninstall_permission_denied">Uninstall permission denied</string>
+    <string name="downloading_app_title">Downloading App, Please Wait</string>
+    <string name="please_wait">Please wait</string>
+    <string name="secure_market_title">Secure Market</string>
+    <string name="wi_fi">Wi-Fi</string>
+    <string name="bluetooth">BlueTooth</string>
+    <string name="disabled">Disabled</string>
+    <string name="sim_cards">SIM Cards</string>
+    <string name="mobile_data">Mobile Data</string>
+    <string name="data_roaming">Data Roaming</string>
+    <string name="finger_print_lock">Finger Print + Lock</string>
+    <string name="brightness">Brightness</string>
+    <string name="brightness_level">brightness level</string>
+    <string name="sleep">Sleep</string>
+    <string name="after_15_seconds_of_inactivity">After seconds of inactivity</string>
+    <string name="battery">Battery</string>
+    <string name="sound">Sound</string>
+    <string name="volume_vibration_do_not_disturb">Volume, vibration, Do Not Disturb</string>
+    <string name="languages_amp_input"><![CDATA[Languages & Input]]></string>
+    <string name="date_amp_time"><![CDATA[Date & time]]></string>
+    <string name="please_grant_permissions">Please Grant Permissions</string>
+    <string name="request_permission">Request Permission</string>
+    <string name="secure_settings_activity_title">Secure Settings</string>
+    <string name="seconds">seconds</string>
+    <string name="minutes">minutes</string>
+    <string name="after_inactivity">"After %1$s of inactivity"</string>
+    <string name="not_connected">Not Connected</string>
+    <string name="enabled">Enabled</string>
+    <string name="allow_device_admin">Allow Device Admin</string>
+    <string name="allow_device_admin_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_overlay_permission">Allow Overlay Permission</string>
+    <string name="allow_overlay_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_modify_system_state">Allow Modify System State</string>
+    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_usage_access">Allow Usage Access</string>
+    <string name="allow_usage_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_run_time_permission">Allow Run time Permission</string>
+    <string name="allow_run_time_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_install_packages">Allow Install Packages</string>
+    <string name="allow_install_packages_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_notification_access">Allow Notification Access</string>
+    <string name="allow_notification_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_access_battery_optimization">Allow Access Battery Optimization</string>
+    <string name="allow_access_battery_optimization_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="guest_password">Guest Password</string>
+    <string name="please_set_encrypted_password">Please Set Encrypted Password</string>
+    <string name="encrypted_password">Encrypted Password</string>
+    <string name="set_skip_password">Please Set or Skip Password</string>
+    <string name="duress_pin">Wipe PIN</string>
+    <string name="warning">Warning!</string>
+    <string name="duress_pin_message">Entering Wipe Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
+    <string name="please_link_skip">Please Link Device or Skip</string>
+    <string name="set_as_default_launcher">Please Set as Default Launcher</string>
+    <string name="default_launcher_set">Default Launcher set</string>
+    <string name="set_default_launcher">Set Default Launcher</string>
+    <string name="launch_application">Launch Application</string>
+
+
+    <string name="chose_password_option">Screen Lock Type</string>
+    <string name="permission">Permissions</string>
+    <string name="setup_completed">Setup Completed !</string>
+    <string name="welcome">Welcome!</string>
+    <string name="welcome_message">We are preparing to launch the system for the first time.</string>
+    <string name="inactivity_message">After %1$s of inactivity</string>
+    <string name="change_language_title">Languages</string>
+    <string name="dealer_pin_or_activation_code">Dealer Pin or Activation Code</string>
+    <string name="clearing_cache">Clearing cache</string>
+    <string name="clearing_cache_successfull">Cache successfully cleared</string>
+    <string name="search">Search</string>
+    <string name="expiry">Expiry (days remaining)</string>
+
+    <string name="device_id">Device Id</string>
+    <string name="please_grant_all_permissions">Please Grant all permissions</string>
+    <string name="invalid_link_code">Invalid link code</string>
+    <string name="register_manual">Register Manual</string>
+    <string name="manual_registration">Manual Registration</string>
+    <string name="confirm_password">Please confirm your password</string>
+    <string name="enter_valid_ICCID">Please Enter a valid ICCID</string>
+    <string name="enter_a_valid_name">Please Enter a valid Name</string>
+    <string name="number_of_attempts_remaining">You have %1$s attempts before device resets and all data is lost !</string>
+    <string name="account_device_id_suspended">Your account with Device ID = %1$s is Suspended.Please contact support</string>
+    <string name="account_device_id_expired">Your account with Device ID = %1$s is Expired.Please contact support</string>
+    <string name="account_device_id_unlinked">Your device ID = %1$s is unlinked, please contact support below.</string>
+    <string name="account_device_id_flagged">This Device is Flagged, contact support.</string>
+    <string name="not_linked_yet">not linked yet</string>
+    <string name="link_status">Link Status</string>
+    <string name="next">Device Linked</string>
+    <string name="next_attempt_in">Next attempt in</string>
+    <string name="contact_support_chat">Contact Support</string>
+    <string name="optional_message_warn">This is an optional message to warn the user about disabling.</string>
+    <string name="device_admin_disabled">Sample Device Admin: disabled</string>
+    <string name="device_admin_changed">Sample Device Admin: pw changed</string>
+    <string name="device_admin_failed">Sample Device Admin: pw failed</string>
+    <string name="device_admin_succeeded">Sample Device Admin: pw succeeded</string>
+    <string name="language_is_changed">Language is changed</string>
+    <string name="please_wait_">Please wait...</string>
+    <string name="account_disabled">Account disabled. Contact your dealer for assistance.</string>
+    <string name="server_error">Server not responsive OR check your internet connection and Try again !</string>
+    <string name="incorrect_pin">Incorrect PIN or Pattern!</string>
+    <string name="version">Version</string>
+    <string name="type">Type</string>
+    <string name="change_language_dialog_title">Change Language</string>
+    <string name="change_language_dialog_message">Proceed with changing the language?</string>
+    <string name="policy">Policy</string>
+    <string name="theme">Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="mode">Mode</string>
+    <string name="link_device_message">Hit the button below to link your device</string>
+    <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="default_launcher_title">Default Launcher</string>
+
+
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
+    <string name="close">Close</string>
+    <string name="detail">Details</string>
+
+
+    <string name="duration">Duration</string>
+
+    <string name="enable_apps_monitor">Enable apps monitor</string>
+    <string name="enable_apps_monitoring">Apps monitoring</string>
+
+    <string name="feedback">feedback: zhishoumowen@gmail.com</string>
+    <string name="grant_success">Permission Granted</string>
+
+    <string name="hide_system_apps">Hide system Apps</string>
+
+    <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
+
+    <string name="ignore">Ignore this app</string>
+    <string name="ignore_hint">Apps in this List will be hidden</string>
+
+    <string name="ignore_list">Ignore List</string>
+    <string name="ignore_success">Move to ignore List successfully</string>
+    <string name="more">More detail</string>
+    <string name="app_info">App info</string>
+
+    <string name="notification_title">AppTimeline running</string>
+    <string name="notification_message">monitoring your app usage</string>
+
+    <string name="not_support">You device not support monitoring</string>
+    <string name="open">Open</string>
+    <string name="refresh">Refresh</string>
+
+    <string name="settings">Settings</string>
+
+    <string name="settings_function">Functions</string>
+
+    <string name="settings_more">More</string>
+    <string name="share">Like and share</string>
+    <string name="share_desc">Hey check out this app, it\'s so cool, it can help checkout every app\'s time your spend on: %1$s%2$s</string>
+    <string name="slogan">Monitor Apps usage</string>
+    <string name="sort">Sort By</string>
+    <string name="toast_permission">Please find \"AppsTimeline\" and grant the permission</string>
+    <string name="times">%1$s · %2$d times</string>
+
+    <string name="times_only">times</string>
+    <string name="total">%1$s</string>
+    <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
+    <string name="data_usage">Data Usage</string>
+
+
+    <string name="updates">Updates</string>
+    <string name="update">Update</string>
+    <string name="sim">SIM</string>
+    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="continue_anyway">Continue Anyways</string>
+    <string name="advance">Advance Settings</string>
+    <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
+    <string name="dealer_pin">Dealer PIN</string>
+    <string name="imei_1">IMEI 1</string>
+    <string name="imei_2">IMEI 2</string>
+    <string name="s_n">S/N</string>
+    <string name="mac">MAC</string>
+    <string name="ip_addr">IP Addr</string>
+    <string name="notifications">Notifications</string>
+    <string name="all_apps">All Apps</string>
+    <string name="no_connection">No Internet Connection</string>
+    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="on_accessibility_service">On Accessibility Service</string>
+    <string name="features">\u25CB Combo Lock. \n\u25CB Auto updates for all apps.\n\u25CB New Update Tab in Sm.\n\u25CB Disable camera feature. \n\u25CB Notification Menu in SS.\n\u25CB New Welcome screen with animation.\n\u25CB New Icons for SM, SS and SC apps.\n\u25CB SIM Settings synchronization with LM. \n\u25CB Updated Install app menu(code.).
+</string>
+    <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
+    <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
+    <string name="what_s_new_v5_15">What\'s New v6.2.0</string>
+    <string name="general_notifications">General Notifications</string>
+    <string name="all_apps_notifications">All Apps Notifications</string>
+    <string name="action_restricted">Action Restricted</string>
+    <string name="set_column">Home Screen Layout</string>
+    <string name="lib_name">PatternLockView</string>
+    <string name="message_pattern_dot_added">Dot added to pattern</string>
+
+    <string name="message_pattern_started">Pattern drawing started</string>
+    <string name="message_pattern_detected">Pattern drawing completed</string>
+    <string name="message_pattern_cleared">Pattern cleared</string>
+    <string name="enter_pin_or_draw_pattern_to_unlock">Enter Pin or Draw Pattern to unlock</string>
+    <string name="expiry_alert_online_title">Expiry Alert</string>
+    <string name="_10_days">10 days</string>
+    <string name="expiry_alert_online_message">Warning! Your device will expire in %1$s day(s), contact support to extend your services."</string>
+    <string name="pattern">Pattern</string>
+    <string name="medium">Medium</string>
+    <string name="high">High</string>
+    <string name="combination">Combination</string>
+    <string name="low">Low</string>
+    <string name="current_dealer">Current Dealer</string>
+    <string name="your_device_is_linked">Device is Linked !</string>
+
+    <string name="waiting_for_approval">Waiting for approval...</string>
+    <string name="restore">Restore</string>
+    <string name="title_activity_sm">SecureMarket</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="title_activity_live_client_chat">LiveClientChatActivity</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+
+    <string name="live_client_device_id">Live Customer Support</string>
+    <string name="service_notification_text" translatable="false">@string/app_name</string>
+    <string name="device_is_connected">Device is connected to LM</string>
+    <string name="user_id">User Id:</string>
+    <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
+    <string name="reset_wipe_password">Reset WIPE Password</string>
+    <string name="draw_pattern">Please Draw Pattern</string>
+    <string name="network_limited">Limited network !</string>
+    <string name="network_limited_message">Internet may not be available.</string>
+    <string name="change_network">Change Network</string>
+    <string name="expiry_days_remaining">Expiry (days remaining)</string>
+
+    <string-array name="sort">
+        <item>Total</item>
+        <item>Date</item>
+        <item>Frequency</item>
+        <item>Mobile data</item>
+    </string-array>
+    <string-array name="duration">
+        <item>Today</item>
+        <item>Yesterday</item>
+        <item>Last Week</item>
+        <item>Last Month</item>
+    </string-array>
+
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="colorPrimary">#9E9E9E</color>
+    <color name="colorPrimaryDark">#616161</color>
+    <color name="colorAccent">#40dcff</color>
+    <color name="colorLine">#212121</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="backgroundSim">#D8D8D8</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="icon_tint">#212121</color>
+    <!--<color name="guest_default_background_color">#4b4b4b</color>-->
+
+    <color name="green_dark">#0e7904</color>
+    <color name="seekbarColor">#EF9C00</color>
+    <color name="switchContainerColor">#eeeeee</color>
+
+
+    <color name="colorBlack">#999999</color>
+    <color name="colorLightBlack">#FFFFFF</color>
+    <color name="colorWhite">#000000</color>
+    <color name="colorPureBlack">#FFFFFF</color>
+    <color name="colorHintMaterial">#9E9E9E</color>
+    <color name="colorPureWhite">#FFFFFF</color>
+
+
+
+    <color name="gray">#EEEEEE</color>
+    <color name="gray_darken">#DDDDDD</color>
+    <color name="colorGray">#4A4A4A</color>
+    <color name="white_t">#fff</color>
+    //Secure Settings colors
+    <color name="SettingsColorPrimary">#008577</color>
+    <color name="SettingsColorAccent">#D81B60</color>
+
+    <color name="pomegranate">#f4511e</color>
+
+
+
+</resources>

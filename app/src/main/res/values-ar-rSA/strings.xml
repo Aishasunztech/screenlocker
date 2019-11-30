@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Screen Locker</string>
+    <string name="btn_backspace">إزالة الكل</string>
+    <string name="description_notification_icon">زر الإشعارات</string>
+    <string name="description_app_image">صورة التطبيق</string>
+    <string name="unlock">فتح القفل</string>
+    <string name="enter_pin">إدخال ال Pin</string>
+    <string name="re_enter_pin">أدخل ال Pin مرة أخري</string>
+    <string name="confirm_pin">تعيين ال Pin</string>
+    <string name="ok">حسنا</string>
+    <string name="cancel">إلغاء</string>
+    <string name="pin">PIN</string>
+    <string name="set_guest_password">تعيين كلمة مرور وضع الزائر</string>
+    <string name="set_encrypted_password">تعيين كلمة مرور وضع المشّفر</string>
+    <string name="please_enter_your_current_password">برجاء إدخال كلمة مروروك الحالية</string>
+    <string name="wrong_password_entered">كلمة السر التي أدخلتها غير صحيحة</string>
+    <string name="password_changed">تم تغيير كلمة السر</string>
+    <string name="password_not_changed">لم يتم تغيير كلمة السر</string>
+    <string name="hint_please_enter_guest_pin">برجاء إدخال كلمة مرور وضع الزائر</string>
+    <string name="hint_please_enter_duress_pin">برجاء إدخال كلمة مرور وضع الطوارئ</string>
+    <string name="hint_please_confirm_your_pin">برجاء تأكيد ال Pin الخاص بك</string>
+    <string name="hint_please_enter_encrypted_pin">برجاء إدخال كلمة مرور وضع المشّفر</string>
+    <string name="empty">خانة كلمة السر فارغة</string>
+    <string name="password_dont_match">كلمات السر غير متطابقة</string>
+    <string name="set_guest_code">ال Pin الخاص بوضع الزائر</string>
+    <string name="set_duress_code">ال Pin الخاص بوضع الطوارئ</string>
+    <string name="set_encrypted_code">ال Pin الخاص بوضع المشّفر</string>
+    <string name="set_background_for">حدد خلفية الشاشة ل</string>
+    <string name="guest_all">تفعيل وضع الزائر للكل</string>
+    <string name="encryption_all">تفعيل وضع المشّفر للكل</string>
+    <string name="enable_all">تمكين الكل</string>
+    <string name="please_enter_current_guest_password">برجاء إدخال كلمة مرور وضع الزائر الحالية</string>
+    <string name="please_enter_current_encrypted_password">برجاء إدخال كلمة مرور وضع المشّفر الحالية</string>
+    <string name="please_enter_current_duress_password">برجاء إدخال كلمة مرور وضع الطوارئ الحالية</string>
+    <string name="check_for_updates"><u>التحقق من وجود تحديثات</u></string>
+    <string name="set_code_pin">تعيين رمز ال Pin</string>
+    <string name="hint_please_enter_code_pin">برجاء إدخال رمز ال Pin</string>
+    <string name="please_enter_code_admin_password">برجاء إدخال رمز كلمة سر المشرف</string>
+    <string name="code">رمز</string>
+    <string name="set_apps_permissions">إذن التطبيق</string>
+    <string name="reset_guest_encrypted_pass">إعادة تعيين كلمتي مرور وضع الزائر و وضع المشّفر</string>
+    <string name="change_admin_panel_code">تغيير رمز لوحة الإشراف</string>
+    <string name="password_is_changed_to_default">تم إعادة تعيين كلمة السر للقيمة الإفتراضية</string>
+    <string name="install_apps">تثبيت التطبيقات</string>
+    <string name="please_check_network_connection">برجاء التحقق من شبكتك الحالية</string>
+    <string name="sim_title">SIM</string>
+    <string name="set_duress_pass">تعيين كلمة مرور وضع الطوارئ</string>
+
+    // MDM strings
+
+    <string name="no_internet">شبكة الإنترنت غير متوفرة</string>
+    <string name="processing">جاري تفعيل الجهاز .. برجاء الإنتظار</string>
+    <string name="submit">إدخال</string>
+    <string name="permission_required">نحتاج هذا الإذن للوصول لهويات الهارد وير لتأمين جهازك</string>
+    <string name="dont_have_permission">ليس لدينا الإذن</string>
+    <string name="permission_denied">طلب الاذن مرفوض</string>
+    <string name="info">معلومات :</string>
+    <string name="device_already_linked">تم ربط الجهاز بنجاج</string>
+    <string name="link_request_pending">طلب الربط قيد الإنتظار!</string>
+    <string name="something_went_wrong">حصل خطأ ما</string>
+    <string name="link_device">ربط الجهاز</string>
+    <string name="device_not_linked">الجهاز غير مربوط!</string>
+    <string name="stop_linking">إيقاف الربط</string>
+    <string name="session_expired">Session expired</string>
+    <string name="expired">expired</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="system_controls">أذونات النظام</string>
+    <string name="enable_vpn">تفعيل VPN</string>
+    <string name="pgp_email">البريد الإلكتروني الخاص ب Pgp</string>
+    <string name="chat_id">هوية الدردشة</string>
+    <string name="sim_id">Sim Id</string>
+    <string name="settings_controls">إذن الإعدادات الآمنة</string>
+    <!--SecureSeting strings-->
+
+    <string name="gps_not_found_title">لم يتم العثور علي ال GPS</string>
+    <string name="gps_not_found_message">برجاء تفعيل ال GPS للإكمال</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fine_location_and_cross_location">Fine Location</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="some_error_occurred">حصل خطأ ما!</string>
+
+    <!-- : Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="account">الحساب</string>
+    <string name="language">Languages</string>
+    <string name="install_app_activity">installAppActivity</string>
+    <string name="secure_market_activity">secureMarketActivity</string>
+    <string name="uptodate">جهازك مجهز بأخر التحديثات</string>
+    <string name="install_app_message">التطبيق يتم تثبيته</string>
+    <string name="permissions">إذن التطبيق</string>
+    <string name="link_heading">لعمل IMEI صالح برجاء التوجه إلي</string>
+    <string name="link">\"https://dyrk.org/tools/imei\"</string>
+    <string name="link_title">ربط</string>
+    <string name="simtext">SIM:</string>
+    <string name="slot">خانة :</string>
+    <string name="name">/ الإسم :</string>
+    <string name="apn">/ Apn :</string>
+    <string name="guest">زائر</string>
+    <string name="encrypted">مشّفر</string>
+    <string name="status">الحالة :</string>
+    <string name="status_active">نشط</string>
+    <string name="status_disabled">غير نشط</string>
+    <string name="status_not_inserted">غير مُدخَل</string>
+    <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
+    <string name="tab_text_1">@string/apps_title</string>
+    <string name="tab_text_2">@string/updates</string>
+    <string name="tab_text_3">@string/uninstall</string>
+    <string name="sim_1">SIM 1</string>
+    <string name="sim_2">SIM 2</string>
+    <string name="add">إضافة +</string>
+    <string name="status_online">أونلاين</string>
+    <string name="enable_all_unregistered">تمكين الكل \n<small>(غير مُسجَل)</small></string>
+    <string name="enable_all_registered">تمكين الكل \n<small>(مُسجَل)</small></string>
+    <string name="status_disconnected">أوفلاين</string>
+    <string name="note">ملحوظة: </string>
+    <string name="note_hint">ملحوظة</string>
+
+    <string name="support">دعم</string>
+    <string name="manage_passwords_settings">إدارة كلمات السر</string>
+    <string name="set_background_image_settings">تعيين صورة الخلفية</string>
+    <string name="about">معلومات عنا</string>
+    <string name="activated">مُفعَل</string>
+    <string name="manage_password_title">إدارة كلمات السر</string>
+    <string name="activated_code">مُفعَل</string>
+    <string name="not_set">غير مُعّين</string>
+    <string name="invalid_password_title">كلمة مرور غير صالحة</string>
+    <string name="invalid_password_message">كلمة السر التي أدخلتها غير صحيحة.</string>
+    <string name="duress_password_warning">تحذير!</string>
+    <string name="duress_password_message">"إدخال Pin وضع الطوارئ و الجهاز مغلق سوف يقوم بمسح بيانات هاتفك.
+ لا يمكنك عكس هذه العملية.
+ كل البينات سوف تُمسح من الجهاز بدون تأكيد منك.
+ لا يوجد هناك طريقة لعكس هذه العملية."</string>
+    <string name="ok_text">حسنا</string>
+    <string name="cancel_text">إلغاء</string>
+    <string name="password_changed_title">تم تغيير كلمة السر!</string>
+    <string name="password_changed_message">تم تغيير كلمة السر بنجاح !</string>
+    <string name="change_wallpaper_title">تغيير الخلفية</string>
+    <string name="guest_password_dialog_title">إدخال كلمة مرور وضع الزائر</string>
+    <string name="encrypted_password_dialog_title">أدخل كلمة السر وضع المشّفر</string>
+    <string name="please_enter_password">برجاء إدخال كلمة السر</string>
+    <string name="update_dialog_title">تحيث</string>
+    <string name="update_dialog_message">التحقق من وجود تحديثات</string>
+    <string name="update_available_title">هناك تحديث متاح</string>
+    <string name="update_available_message">هناك تحديث متاح! إضغط "موافق" لتحديث نظامك</string>
+    <string name="error_occured_toast">حدث خطأ، برجاء المحاولة في وقت لاحق.</string>
+    <string name="network_not_connected">الشبكة غير متصلة!</string>
+    <string name="network_not_connected_message">برجاء الإتصال بالإنترنت قبل التقدم</string>
+    <string name="network_setup">تثبيت الشبكة</string>
+    <string name="enable_admin_device_feature">لقد قمت بتفعيل ميزات جهاز المشرف</string>
+    <string name="problem_admin_device_feature">مشكلة في تفعيل ميزات جهاز المشرف</string>
+    <string name="bg_save_encrypted">تم حفظ الخلفية لوضع المشّفر</string>
+    <string name="bg_save_guest">تم حفظ الخلفية لوضع الضيف</string>
+    <string name="n_a">غير مقبول</string>
+    <string name="active">نشط</string>
+    <string name="link_device_title">ربط الجهاز</string>
+    <string name="error_321">خطأ رقم 321 - هوية الجهاز</string>
+    <string name="contact_support">برجاء الإتصال بالدعم</string>
+    <string name="error_322">خطأ رقم 322 - هوية الجهاز</string>
+    <string name="error323">خطأ رقم 323 - هوية الجهاز</string>
+    <string name="invaild_dealer_code">رمز Pin الموزع غير صحيح</string>
+    <string name="guest_wallpaper">خلفية شاشة وضع الزائر</string>
+    <string name="encrypted_wallpaper">خلفية الشاشة وضع المشّفر</string>
+    <string name="lock_screen_image">تثبيت صورة الشاشة</string>
+    <string name="duress_pin_disabled">رمز Pin الطوارئ غير صحيح</string>
+    <string name="password_taken">كلمة السر تلك مأخوذة، حاول مرة أخري</string>
+    <string name="wallpapers_title">خلفيات الشاشة</string>
+    <string name="bg_set_encrypted">تم تعيين خلفية الشاشة لوضع المشّفر</string>
+    <string name="bg_set_guest">تم تعيين خلفية الشاشة لوضع الزائر</string>
+    <string name="bg_set_lockscreen">خلفية شاشة القفل</string>
+    <string name="set_as_wallpaper">تعيين كخلفية للشاشة</string>
+    <string name="admin_panel_title">لوحة الإدارة</string>
+    <string name="admin_password_changed">تم تغيير كلمة مرور المشرف.</string>
+    <string name="enter_old_password">يُرجي إدخال كلمة مرورك القديمة.</string>
+    <string name="enter_correct_password">يُرجي إدخال كلمة مرور صحيحة.</string>
+    <string name="enter_new_password">يٌرجي إدخال كلمة مرور جديدة.</string>
+    <string name="re_enter_password">يٌرجي إعادة إدخال كلمة مرورك.</string>
+    <string name="password_not_matched">كلمات السر غير متطابقة</string>
+    <string name="apps_title">تطبيقات</string>
+    <string name="app_names">أسماء التطبيقات</string>
+    <string name="app_name_heading">أسماء التطبيقات</string>
+    <string name="enable">تمكين</string>
+    <string name="android_settings">إعدادات أندرويد</string>
+    <string name="wifi">Wifi</string>
+    <string name="hotspot">نقطة إتصال</string>
+    <string name="location_services">خدمات المواقع</string>
+    <string name="screen_capture">أخذ لقطة للشاشة</string>
+    <string name="block_calls">حجب المكالمات</string>
+    <string name="nfc">NFC</string>
+    <string name="off">متوقف عن العمل</string>
+    <string name="on">يعمل</string>
+    <string name="installed_apps_title">التطبيقات المُثبتة</string>
+    <string name="something_wrong">حدث خطأ ما</string>
+    <string name="downloading_update">جاري تحميل التحديث، برجاء الإنتظار</string>
+    <string name="install">تثبيت</string>
+    <string name="uninstall">إلغاء التثبيت</string>
+    <string name="policy_title">عرض السياسة</string>
+    <string name="policy_warning_title">تحذير</string>
+    <string name="default_policy">السياسة الإفتراضية</string>
+    <string name="default_policy_message">هذا سيقوم بمد تاريخ السياسة الإفتراضية المُعيّنة من قِبل مُوزعك.</string>
+    <string name="enter_policy_name">هذا سيقوم بمد تاريخ السياسة الإفتراضية المُعيّنة من قِبل مُوزعك.</string>
+    <string name="load_policy_to_device">This will load the policy %1$s to this device.</string>
+    <string name="link_device_to_proceed">برجاء ربط جهازك قبل الإكمال</string>
+    <string name="link_device_button">ربط الجهاز</string>
+    <string name="cancel_capital">إلغاء</string>
+    <string name="invalid_policy_name">إسم السياسة غير صالح</string>
+    <string name="enter_policy_name_hint">أدخل إسم السياسة</string>
+    <string name="btn_load_policy">عرض السياسة</string>
+    <string name="dont_have_policy_message">إذا لم تملك إسم سياسة، برجاء إختير"السياسة الإفتراضية" أدناه.</string>
+    <string name="btn_default_policy">السياسة الإفتراضية</string>
+    <string name="secure_settings_app">تطبيق الإعدادات الآمنة</string>
+    <string name="menu_displays">عرض القوائم داخل التطبيق</string>
+    <string name="secure_settings_title">إذن الإعدادات الآمنة</string>
+    <string name="select_a_sim_slot">إختر خانة Sim</string>
+    <string name="slot_1">خانة 1</string>
+    <string name="slot_2">خانة 2</string>
+    <string name="imei_hint">IMEI</string>
+    <string name="btn_write_imei">كتابة IMEI</string>
+    <string name="imei_menu_title">قائمة IMEI</string>
+    <string name="delete_title">حذف</string>
+    <string name="want_to_delete">هل تريد حذف SIM بواسطة ICCID %1$s? </string>
+    <string name="registered_sim_cards">بطاقات ال Sim المسجلة</string>
+    <string name="btn_add">ADD +</string>
+    <string name="vortex">Vortex</string>
+    <string name="edit_sim_card">تعديل بطاقة ال Sim</string>
+    <string name="btn_save">حفظ</string>
+    <string name="should_contain_3_words">الإسم يجب أن يحتوي علي 3 كلمات علي الأقل</string>
+    <string name="custom_sim_card_message">هذه بطاقة ال Sim الخاصة خاصتي.</string>
+    <string name="secure_clear_title">تأمين الذاكرة الإنتقالية</string>
+    <string name="clear_cache_title">مسح الذاكرة الإنتقالية</string>
+    <string name="clear_cache_message">هل تريد المضي قدما بمسح الذاكرة الإنتقالية ؟</string>
+    <string name="ok_capital">حسنا</string>
+    <string name="app_disabled">التطبيق غير مُفعّل</string>
+    <string name="is_installed"> تم تثبيت</string>
+    <string name="is_uninstalled">تم إلغاء تثبيت</string>
+    <string name="list_is_empty">القائمة فارغة</string>
+    <string name="download_title">تحميل</string>
+    <string name="install_message">هل أنت واثق أنك تريد تثبيت هذا التطبيق ؟</string>
+    <string name="uninstall_permission_denied">إذن "إلغاء التثبيت" مرفوض</string>
+    <string name="downloading_app_title">جاري تحميل التطبيق، برجاء الإنتظار</string>
+    <string name="please_wait">Please wait</string>
+    <string name="secure_market_title">المتجر الآمن</string>
+    <string name="wi_fi">Wi-Fi</string>
+    <string name="bluetooth">البلوتوث</string>
+    <string name="disabled">غير مفّعل</string>
+    <string name="sim_cards">بطاقات ال Sim</string>
+    <string name="mobile_data">بيانات الهاتف</string>
+    <string name="data_roaming">تجوال البيانات</string>
+    <string name="finger_print_lock">بصمة الإصبع + قفل</string>
+    <string name="brightness">الإضائة</string>
+    <string name="brightness_level">مستوي الإضائة</string>
+    <string name="sleep">وضع الخمول</string>
+    <string name="after_15_seconds_of_inactivity">بعد  ثانية من عدم النشاط</string>
+    <string name="battery">البطارية</string>
+    <string name="sound">الصوت</string>
+    <string name="volume_vibration_do_not_disturb">الصوت، الإهتزازات، عدم الإزعاج</string>
+    <string name="languages_amp_input">اللغة و الإدخال</string>
+    <string name="date_amp_time">الوقت و التاريخ</string>
+    <string name="please_grant_permissions">برجاء منح الأذونات</string>
+    <string name="request_permission">طلب الإذن</string>
+    <string name="secure_settings_activity_title">الإعدادات الآمنة</string>
+    <string name="seconds">ثواني</string>
+    <string name="minutes">دقائق</string>
+    <string name="after_inactivity">بعد %1$s من عدم النشاط</string>
+    <string name="not_connected">غير متصل</string>
+    <string name="enabled">مُمكّن</string>
+    <string name="allow_device_admin">تفعيل مشرف الجهاز</string>
+    <string name="allow_device_admin_message">تفعيل مشرف الجهاز (ScreenLocker). هذا سيقوم بتوفير بيئة أكثر أماناً</string>
+    <string name="allow_overlay_permission">تفعيل إذن التراكب</string>
+    <string name="allow_overlay_permission_message">تفعيل مشرف الجهاز (ScreenLocker). هذا سيقوم بتوفير بيئة أكثر أماناً</string>
+    <string name="allow_modify_system_state">تفعيل حالة تعديل النظام</string>
+    <string name="allow_modify_system_state_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_usage_access">السماح بالولوج للإستخدام</string>
+    <string name="allow_usage_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_run_time_permission">السماح بإذن "وقت التنفيذ"</string>
+    <string name="allow_run_time_permission_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_install_packages">السماح بتثبيت الحزم</string>
+    <string name="allow_install_packages_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_notification_access">السماح بالولوج للإشعارات</string>
+    <string name="allow_notification_access_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="allow_access_battery_optimization">السماح بالولوج لتحسين البطارية</string>
+    <string name="allow_access_battery_optimization_message">Activate ScreenLocker Device Admin. It will provide More Secure environment</string>
+    <string name="guest_password">كلمة سر وضع الزائر</string>
+    <string name="please_set_encrypted_password">برجاء تعيين كلمة سر لوضع المشّفر</string>
+    <string name="encrypted_password">كلمة سر وضع المشّفر</string>
+    <string name="set_skip_password">برجاء تعيين أو تجاوز كلمة السر</string>
+    <string name="duress_pin">رمز Pin الطوارئ</string>
+    <string name="warning">تحذير</string>
+    <string name="duress_pin_message">"إدخال Pin وضع الطوارئ و الجهاز مغلق سوف يقوم بمسح بيانات هاتفك.
+ لا يمكنك عكس هذه العملية.
+ كل البينات سوف تُمسح من الجهاز بدون تأكيد منك.
+ لا يوجد هناك طريقة لعكس هذه العملية."</string>
+    <string name="please_link_skip">برجاء ربط الجهاز أو التجاوز</string>
+    <string name="set_as_default_launcher">برجاء التعيين كمشغل إفتراضي</string>
+    <string name="default_launcher_set">تم تعيين المشغل الإفتراضي</string>
+    <string name="set_default_launcher">تعيين المشغل الإفتراضي</string>
+    <string name="launch_application">تشغيل التطبيق</string>
+    <string name="permission">الأذونات</string>
+    <string name="setup_completed">التثبيتات مكتملة!</string>
+    <string name="welcome">مرحبا!</string>
+    <string name="welcome_message">We are preparing to launch the system for the first time.</string>
+    <string name="inactivity_message">After %1$s of inactivity</string>
+    <string name="change_language_title">Languages</string>
+    <string name="dealer_pin_or_activation_code">رمز Pin الموزع أو رمز التفعيل</string>
+    <string name="clearing_cache">يتم مسح الذاكرة الإنتقالية</string>
+    <string name="clearing_cache_successfull">تم مسح الذاكرة الإنتقالية بنجاح</string>
+    <string name="search">بحث</string>
+    <string name="expiry">تاريخ الإنتهاء (الأيام المتبقية)</string>
+    <string name="device_id">هوية الجهاز</string>
+
+    <string name="please_grant_all_permissions">برجاء منح كل الأذونات</string>
+    <string name="invalid_link_code">رمز ربط غير صالح</string>
+    <string name="register_manual">التسجيل اليدوي</string>
+    <string name="manual_registration">التسجيل اليدوي</string>
+    <string name="confirm_password">برجاء التأكيد علي كلمة السر الخاصة بك.</string>
+    <string name="enter_valid_ICCID">برجاء إدخال ICCID صالح</string>
+    <string name="enter_a_valid_name">برجاء إدخال إسم صالح</string>
+    <string name="number_of_attempts_remaining">لديك %1$s محاولات، بعدها سيتم إعادة تشغل الجهاز و تحذف كل البيانات!</string>
+    <string name="account_device_id_suspended">حسابك في جهاز %1$s موقوف. برجاء الإتصال بالدعم.</string>
+    <string name="account_device_id_expired">حسابك في جهاز %1$s موقوف. برجاء الإتصال بالدعم.</string>
+    <string name="not_linked_yet">غير مربوط بعد</string>
+    <string name="link_status">حالة الربط</string>
+    <string name="next">Device Linked</string>
+    <string name="next_attempt_in">المحاولة التالية في</string>
+    <string name="contact_support_chat">الإتصال بالدعم</string>
+    <string name="optional_message_warn">هذه رسالة إختيارية لتحذير المستخدم حول الإيقاف.</string>
+    <string name="device_admin_disabled">نموذج مسؤول الجهاز: معطل</string>
+    <string name="device_admin_changed">نموذج مسؤول الجهاز: تم تغيير pw</string>
+    <string name="device_admin_failed">نموذج مسؤول الجهاز: فشل pw</string>
+    <string name="device_admin_succeeded">نموذج مسؤول الجهاز: نجح pw</string>
+    <string name="language_is_changed">تم تغيير اللغة</string>
+    <string name="please_wait_">برجاء الإنتظار…</string>
+    <string name="account_disabled">"حسابك مُعطّل.
+
+ يرجي الإتصال بموزعك للمساعدة."</string>
+    <string name="server_error">الخادم غير مستجيب. حاول مرة أخري!</string>
+    <string name="incorrect_pin">رمز Pin غير صحيح</string>
+    <string name="version">الإصدار</string>
+    <string name="type">Type</string>
+    <string name="change_language_dialog_title">Change Language</string>
+    <string name="change_language_dialog_message">Proceed with changing the language?</string>
+    <string name="policy">Policy</string>
+    <string name="theme">Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="mode">Mode</string>
+    <string name="link_device_message">Hit the button below to link your device</string>
+    <string name="link_device_activation_message">Please Add activation code given by dealer and hit \"SUBMIT\" button to link your device"</string>
+    <string name="default_launcher_title">Default Launcher</string>
+    <string name="default_launcher_message">Please set \"SCREEN LOCKER\" as your default launcher to further proceed</string>
+
+
+    <string-array name="sort">
+        <item>Total</item>
+        <item>Date</item>
+        <item>Frequency</item>
+        <item>Mobile data</item>
+    </string-array>
+    <string-array name="duration">
+        <item>Today</item>
+        <item>Yesterday</item>
+        <item>Last Week</item>
+        <item>Last Month</item>
+    </string-array>
+    <integer-array name="duration_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+
+
+    <string name="close">Close</string>
+
+    <string name="detail">Details</string>
+    <string name="duration">Duration</string>
+
+    <string name="enable_apps_monitor">Enable apps monitor</string>
+    <string name="enable_apps_monitoring">Apps monitoring</string>
+
+    <string name="feedback">feedback: zhishoumowen@gmail.com</string>
+
+    <string name="grant_success">Permission Granted</string>
+
+    <string name="hide_system_apps">Hide system Apps</string>
+    <string name="hide_uninstall_apps">Hide uninstalled Apps</string>
+
+    <string name="ignore">Ignore this app</string>
+    <string name="ignore_hint">Apps in this list will be hidden</string>
+    <string name="ignore_list">Ignore serverAppInfo</string>
+    <string name="ignore_success">Move to ignore serverAppInfo successfully</string>
+
+    <string name="more">More detail</string>
+    <string name="app_info">App info</string>
+
+    <string name="notification_title">AppTimeline running</string>
+    <string name="notification_message">monitoring your app usage</string>
+    <string name="not_support">You device not support monitoring</string>
+
+    <string name="open">Open</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="settings">Settings</string>
+    <string name="settings_function">Functions</string>
+    <string name="settings_more">More</string>
+    <string name="share">Like and share</string>
+    <string name="share_desc">Hey check out this app, it\'s so cool, it can help checkout every app\'s time your spend on: %1$s%2$s</string>
+    <string name="slogan">Monitor Apps usage</string>
+    <string name="sort">Sort By</string>
+
+    <string name="toast_permission">Please find \"AppsTimeline\" and grant the permission</string>
+    <string name="times">%1$s · %2$d times</string>
+    <string name="times_only">times</string>
+    <string name="total">%1$s</string>
+
+
+    <string name="wifi_data">WiFi:%1$s · Mobile:%2$s</string>
+    <string name="data_usage">Data Usage</string>
+    <string name="updates">Updates</string>
+    <string name="sim">SIM</string>
+    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="continue_anyway">Continue Anyways</string>
+    <string name="advance">Advance Settings</string>
+    <string name="chose_password_option">Screen Lock Type</string>
+    <string name="current_dealer">Current Dealer</string>
+    <string name="your_device_is_linked">Your Device is Linked !</string>
+    <string name="waiting_for_approval">Waiting for approval...</string>
+
+
+</resources>

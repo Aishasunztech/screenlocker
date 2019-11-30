@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.screenlocker.secure.settings.AdvanceSettings">
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/main_toolbar" />
+    <TextView
+        android:id="@+id/tvDataCunsumption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_consumption"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/data_consumption_settings"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize" />
+
+    <View
+        android:id="@+id/dividerDataCunsumption"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+    <TextView
+        android:id="@+id/tvDataUSage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_data_usage"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/data_usage"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible"/>
+
+    <View
+        android:id="@+id/dividerDataUSage"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+
+    <TextView
+        android:id="@+id/tv_IMEI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_imei"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="IMEI"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible"/>
+
+    <View
+        android:id="@+id/dividerIMEI"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+
+
+    <TextView
+        android:id="@+id/tv_set_column"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_grid"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/set_column"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible" />
+
+    <View
+        android:id="@+id/dividerColumn"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine"/>
+    <TextView
+        android:id="@+id/tvTheme"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_theme"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/theme"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible" />
+
+    <View
+        android:id="@+id/tvthemeDevider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+
+    <TextView
+        android:id="@+id/tvRestore"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="?selectableItemBackground"
+        android:drawableStart="@drawable/ic_restore"
+        android:drawablePadding="@dimen/_8sdp"
+        android:padding="16dp"
+        android:text="@string/restore"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/textSize"
+        android:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLine" />
+    <Switch
+        android:visibility="gone"
+        android:id="@+id/powerMode"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/_8sdp"
+        android:drawableStart="@drawable/ic_secure"
+        android:text="Kill Recent"/>
+
+
+
+
+</LinearLayout>

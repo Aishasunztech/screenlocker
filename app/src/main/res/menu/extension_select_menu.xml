@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/extension_guest_all"
+        android:checkable="true"
+        android:title="@string/guest_all"
+        android:titleCondensed="Options" />
+
+    <item
+        android:id="@+id/extension_encryption_all"
+        android:checkable="true"
+        android:title="@string/encryption_all"
+        android:titleCondensed="Options" />
+</menu>

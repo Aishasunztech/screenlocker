@@ -1,0 +1,238 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="FullScreen" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+
+    </style>
+
+    <style name="HomeScreen" parent="AppTheme">
+
+        <item name="android:windowTranslucentStatus">true</item>
+
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+
+    </style>
+
+
+    <style name="keyboard_row">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="divider">@drawable/keyboard_divider</item>
+        <item name="android:gravity">center</item>
+        <item name="showDividers">beginning|middle|end</item>
+    </style>
+
+    <style name="keyboard_button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/keyboard_button_bg</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="icon_text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:tag">icon_text</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
+
+    </style>
+
+
+    <style name="keyboard_number_button" parent="keyboard_button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:tag">number_button</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
+
+    </style>
+
+    <style name="TextColor">
+        <item name="android:textColor">@color/seekbarColor</item>
+    </style>
+
+
+    <style name="MainActivityItemsStyle">
+        <item name="android:paddingTop">@dimen/_10sdp</item>
+        <item name="android:paddingBottom">@dimen/_10sdp</item>
+    </style>
+
+    <style name="sleep_radio_style">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:layout_marginLeft">@dimen/_20sdp</item>
+        <item name="android:layout_marginBottom">@dimen/_10sdp</item>
+        <item name="android:paddingLeft">@dimen/_10sdp</item>
+    </style>
+
+    <style name="CustomThem" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    //Secure Settings theme
+
+    <style name="SecureSettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/switchContainerColor</item>
+        <item name="colorAccent">@color/SettingsColorPrimary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+
+    <style name="stepper_theme">
+        <item name="android:colorPrimary">@color/colorBlack</item>
+        <item name="android:colorPrimaryDark">@color/colorBlack</item>
+        <item name="android:colorAccent">@color/colorBlack</item>
+    </style>
+
+    <style name="TextLabelTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/colorHintMaterial</item>
+        <item name="android:textSize">@dimen/_16ssp</item>
+
+
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorHintMaterial</item>
+
+        <item name="colorControlActivated">@color/colorWhite</item>
+
+    </style>
+
+    <style name="permissions_title_theme">
+        <item name="android:textColor">@android:color/white
+        </item>
+
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="permissions_message_theme">
+        <item name="android:textColor">@android:color/white
+        </item>
+
+        <item name="android:alpha">0.5</item>
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+    <style name="chipTheme" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
+
+    <style name="accountheadingsStyle">
+        <!--<item name="android:layout_marginStart">10dp</item>-->
+        <!--<item name="android:layout_marginTop">10dp</item>-->
+        <!--<item name="android:layout_marginBottom">10dp</item>-->
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="accountValueStyle">
+
+
+        <!--<item name="android:layout_marginTop">10dp</item>-->
+        <!--<item name="android:layout_marginEnd">10dp</item>-->
+        <!--<item name="android:layout_marginBottom">10dp</item>-->
+    </style>
+
+    <style name="accountRowStyle">
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="addSimHeadingStyle">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AppBarOverlaySM" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
+        <item name="colorAccent">@color/pomegranate</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlaySM" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorPrimary">@color/SettingsColorPrimary</item>
+        <item name="colorPrimaryDark">@color/SettingsColorPrimary</item>
+        <item name="colorAccent">@color/pomegranate</item>
+    </style>
+
+    <style name="GalaxyZooThemeToolbarDarkOverflow" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/SettingsColorPrimary</item>
+        <item name="android:background">@android:color/white</item>
+
+        <item name="actionMenuTextColor">@color/SettingsColorPrimary</item>
+        <!-- android:textColorSecondary is the color of the menu
+             overflow icon (three vertical dots) -->
+        <item name="android:textColorSecondary">@color/SettingsColorPrimary</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+
+    <style name="NCheckBox">
+        <item name="android:checkboxStyle">@style/NLockScreenCodeStyle</item>
+        <item name="checkboxStyle">@style/NLockScreenCodeStyle</item>
+    </style>
+
+    <style name="NLockScreenCodeStyle">
+        <item name="android:button">@drawable/code_selector_n</item>
+    </style>
+    <style name="NLockScreenErrorCodeStyle">
+        <item name="android:button">@drawable/code_selector_wrong</item>
+    </style>
+
+    <style name="NCheckBox.Error">
+        <item name="android:checkboxStyle">@style/NLockScreenErrorCodeStyle</item>
+        <item name="checkboxStyle">@style/NLockScreenErrorCodeStyle</item>
+    </style>
+
+
+
+</resources>
