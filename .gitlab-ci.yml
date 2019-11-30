@@ -27,6 +27,9 @@ build_debug:
   artifacts:
     paths:
       - app/build/outputs
+  only:
+    - master
+
 
 #build_release:
 #  stage: build
