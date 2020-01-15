@@ -8,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.IPCWithSL;
 
@@ -31,13 +32,14 @@ public class IPCService extends Service {
     IPCWithSL.Stub binder =  new IPCWithSL.Stub() {
         @Override
         public String getChatId() throws RemoteException {
-
-            return PrefUtils.getStringPref(IPCService.this, CHAT_ID);
+            Log.d("getChatId", "getChatId: "+PrefUtils.getStringPref(IPCService.this, CHAT_ID));
+            return PrefUtils.getStringPref(MyApplication.getAppContext(), CHAT_ID);
         }
 
         @Override
         public String getDeviceId() throws RemoteException {
-            return PrefUtils.getStringPref(IPCService.this, DEVICE_ID);
+            Log.d("getChatId", "getDeviceId: "+PrefUtils.getStringPref(IPCService.this, DEVICE_ID));
+            return PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID);
         }
     };
 }

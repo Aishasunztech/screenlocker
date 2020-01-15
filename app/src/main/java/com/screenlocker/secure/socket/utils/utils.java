@@ -690,10 +690,10 @@ public class utils {
     public static void startSocket(Context context, String device_id, String token) {
 
         if (device_id != null && token != null) {
-            utils.startSocket(context);
             PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
             PrefUtils.saveStringPref(context, TOKEN, token);
             PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
+            utils.startSocket(context);
         }
 
     }

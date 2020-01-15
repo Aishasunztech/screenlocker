@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.github.nkzawa.engineio.client.EngineIOException;
+import com.github.nkzawa.engineio.client.transports.WebSocket;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.secure.launcher.R;
@@ -96,20 +98,31 @@ public class SocketManager {
         try {
             if (socket == null) {
                 IO.Options opts = new IO.Options();
-                opts.reconnectionDelay = 10 * 60 * 60 * 1000L;
+                opts.reconnectionDelay = 1000L;
 //                opts.reconnectionDelay = 5000;
                 opts.forceNew = true;
                 opts.reconnection = true;
-                opts.timeout = 1500;
                 opts.reconnectionAttempts = 1000;
                 opts.secure = true;
-                opts.query = "device_id=" + device_id + "&token=" + token ;
+                opts.transports = new String[]{WebSocket.NAME};
+                opts.query = "device_id=" + device_id + "&token=" + token;
 
                 socket = IO.socket(url, opts);
 
+
                 socket.on(Socket.EVENT_CONNECT, args -> {
-                    fireSocketStatus(SocketManager.STATE_CONNECTED);
+
                     Timber.i("socket connected");
+                    fireSocketStatus(SocketManager.STATE_CONNECTED);
+//                    try {
+//                        socket.emit("authentication", new JSONObject().put("token", token));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    socket.on("authenticated", args1 -> {
+//                        Timber.i("socket authenticated");
+//
+//                    });
                 }).on(Socket.EVENT_RECONNECTING, args -> {
                     Timber.e("Socket reconnecting");
                     fireSocketStatus(SocketManager.STATE_CONNECTING);
@@ -117,30 +130,52 @@ public class SocketManager {
                     Timber.e("Socket reconnection failed");
                     fireSocketStatus(SocketManager.STATE_DISCONNECTED);
                 }).on(Socket.EVENT_RECONNECT_ERROR, args -> {
-                    Log.e(TAG, "Socket reconnection error");
                     fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+                    if (args[0] instanceof EngineIOException){
+                        Timber.e((EngineIOException)args[0], "Socket reconnection error");
+                    }
+
                 }).on(Socket.EVENT_CONNECT_ERROR, args -> {
-                    Log.e(TAG, "Socket connect error");
                     fireSocketStatus(SocketManager.STATE_DISCONNECTED);
-                    if (socket != null)
+                    if (socket != null) {
                         socket.disconnect();
+                    }
+                    Timber.d("Socket connect error");
+                    if (args[0] instanceof EngineIOException){
+                        Timber.e((EngineIOException)args[0], "Socket connect error");
+                    }
                 }).on(Socket.EVENT_DISCONNECT, args -> {
-                    Log.e(TAG, "Socket disconnect event");
+                    Timber.e("Socket disconnect event");
                     fireSocketStatus(SocketManager.STATE_DISCONNECTED);
+                }).on(Socket.EVENT_CONNECT_TIMEOUT, args -> {
+                    Timber.e("Socket Connection Timeout");
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
-                        final String error = (String) args[0];
-                        Log.e(TAG + " error EVENT_ERROR ", error);
-                        if (error.contains("Unauthorized") && !socket.connected()) {
-                            if (onSocketConnectionListenerList != null) {
-                                for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                                    new Handler(Looper.getMainLooper())
-                                            .post(listener::onSocketEventFailed);
+                        if (args[0] instanceof  EngineIOException){
+                            EngineIOException exception = (EngineIOException) args[0];
+                                if (onSocketConnectionListenerList != null) {
+                                    for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                                        new Handler(Looper.getMainLooper())
+                                                .post(listener::onSocketEventFailed);
+                                    }
+                                }
+                            Timber.e(exception);
+
+                        }else if (args[0] instanceof String){
+                            final String error = (String) args[0];
+                            Timber.e(error);
+                            if (error.contains("Unauthorized") && !socket.connected()) {
+                                if (onSocketConnectionListenerList != null) {
+                                    for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                                        new Handler(Looper.getMainLooper())
+                                                .post(listener::onSocketEventFailed);
+                                    }
                                 }
                             }
                         }
+
                     } catch (Exception e) {
-                        Timber.e(e.getMessage() != null ? e.getMessage() : "");
+                        Timber.e(e);
                     }
                 }).on("Error", args -> Timber.d(" Error"));
                 socket.connect();
@@ -228,14 +263,14 @@ public class SocketManager {
                 }).on(Socket.EVENT_RECONNECT_FAILED, args -> {
                     Timber.e("clientChatSocket reconnection failed");
                 }).on(Socket.EVENT_RECONNECT_ERROR, args -> {
-                    Log.e(TAG, "clientChatSocket reconnection error");
+                    Timber.e("clientChatSocket reconnection error");
 
                 }).on(Socket.EVENT_CONNECT_ERROR, args -> {
-                    Log.e(TAG, "clientChatSocket connect error");
+                    Timber.e("clientChatSocket connect error");
                     if (clientChatSocket != null)
                         clientChatSocket.disconnect();
                 }).on(Socket.EVENT_DISCONNECT, args -> {
-                    Log.e(TAG, "clientChatSocket disconnect event");
+                    Timber.e("clientChatSocket disconnect event");
                     if (clientChatSocket != null) {
                         clientChatSocket.off(notify);
                     }
@@ -245,7 +280,7 @@ public class SocketManager {
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
                         final String error = (String) args[0];
-                        Log.e(TAG + " error EVENT_ERROR ", error);
+                        Timber.e(error);
                         if (error.contains("Unauthorized") && !clientChatSocket.connected()) {
                         }
                     } catch (Exception e) {

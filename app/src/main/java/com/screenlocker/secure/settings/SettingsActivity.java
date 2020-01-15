@@ -18,14 +18,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.screenlocker.secure.settings.notification.NotificationActivity;
+import com.screenlocker.secure.settings.notification.NotificationViewModel;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -64,6 +70,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -138,6 +145,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     View dividerAdvance;
     private TextView tvlinkDevice;
 
+    private int unreadCount = 0;
+
     private Dialog aboutDialog = null, accountDialog = null;
     private AlertDialog limitedDialog;
 
@@ -177,7 +186,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
                     if (!isSocketConnected()) {
-                        new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                        ApiUtils apiUtils = new ApiUtils(SettingsActivity.this, macAddress, serialNo);
+                        apiUtils.connectToSocket();
                     }
                     if(limitedDialog != null && limitedDialog.isShowing())
                     {
@@ -227,6 +237,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             finish();
         }
+        NotificationViewModel viewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
+        viewModel.getUnReadCount().observe(this,integer -> {
+            unreadCount = integer;
+            invalidateOptionsMenu();
+        });
 
 
     }
@@ -270,6 +285,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 ActivityCompat.startForegroundService(this, intent);
             }
         }
+
 
     }
 
@@ -787,6 +803,38 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         builder.show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.msg_alert, menu);
+        final MenuItem itemMessages = menu.findItem(R.id.notification1);
+
+        View badgeLayout =  itemMessages.getActionView();
+        TextView itemMessagesBadgeTextView = (TextView) badgeLayout.findViewById(R.id.badge_textView);
+        if (unreadCount == 0) {
+            itemMessagesBadgeTextView.setVisibility(View.GONE); // initially hidden}
+        }else {
+            itemMessagesBadgeTextView.setText("" + unreadCount);
+            itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+        }
+
+        ImageButton iconButtonMessages = (ImageButton) badgeLayout.findViewById(R.id.badge_icon_button);
+//        iconButtonMessages.setText("{fa-envelope}");
+//        iconButtonMessages.setTextColor(getResources().getColor(R.color.action_bar_icon_color_disabled));
+
+        iconButtonMessages.setOnClickListener(view -> {
+            startActivity(new Intent(this, NotificationActivity.class));
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()== R.id.notification){
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void changeLanguage(String code) {
 

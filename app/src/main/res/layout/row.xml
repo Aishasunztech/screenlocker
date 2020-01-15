@@ -72,7 +72,7 @@
         android:layout_marginTop="@dimen/_2sdp"
         android:layout_alignParentRight="true"
         android:visibility="gone"
-        android:background="@drawable/notification_badge_bg"
+        android:background="@drawable/badge"
         >
 
         <TextView

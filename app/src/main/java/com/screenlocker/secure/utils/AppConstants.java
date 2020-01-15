@@ -1,13 +1,14 @@
 package com.screenlocker.secure.utils;
 
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
+import com.secure.launcher.R;
 
 public class AppConstants {
 
     public static final long ONE_DAY_INTERVAL = 15 * 60 * 1000L;
     public static final long FIVE_MIN_INTERVAL = 5 * 60 * 1000L;
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
+
 
     public static final String KEY_THEME = "is_dark";
     public static final String PENDING_ACTIVATION = "pending_activation";
@@ -112,15 +113,15 @@ public class AppConstants {
 
 
     //servers links
-    public static String URL_1 = "https://api.lockmesh.com";//live SL
-//        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+//    public static String URL_1 = "https://api.lockmesh.com";//live SL
+        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-    //    public static String URL_1 = "http://192.168.18.81:3000";//local
+//    public static String URL_1 = "http://192.168.0.125:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
-    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
+    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/v1/mobile/";
     public static final String SM_END_POINT = "marketApplist/";
@@ -368,6 +369,8 @@ public class AppConstants {
     public static final String FINISH_POLICY_SETTINGS = "finish_policy_settings_";
     public static final String FINISH_POLICY_EXTENSIONS = "finish_policy_extensions_";
     public static final String SYSTEM_EVENT_BUS = "system_event_";
+    public static final String GET_DEVICE_MSG = "send_device_msg_";
+    public static final String SEND_DEVICE_MSG = "ack_msg_to_device_";
     public static final String FINISH_POLICY = "finish_policy_";
     public static final String POLICY_NAME = "policy_name";
 

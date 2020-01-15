@@ -10,38 +10,32 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PixelFormat;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.view.Gravity;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
-import com.secure.launcher.R;
-import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
+
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.util.concurrent.TimeUnit;
-
 
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
-import static android.content.Context.WINDOW_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.CODE_WRITE_SETTINGS_PERMISSION;
 import static com.screenlocker.secure.utils.AppConstants.LOCATION_SETTINGS_CODE;
 import static com.screenlocker.secure.utils.AppConstants.RC_PERMISSION;
@@ -255,6 +249,20 @@ public class UtilityFunctions {
         }
         return 0;
 
+    }
+
+    public static int getNetworkType(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Network n = cm.getActiveNetwork();
+
+        if (n != null) {
+            final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+            if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                return NetworkCapabilities.TRANSPORT_CELLULAR;
+            } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                return NetworkCapabilities.TRANSPORT_WIFI;
+            } return -1;
+        } return -1;
     }
 
 

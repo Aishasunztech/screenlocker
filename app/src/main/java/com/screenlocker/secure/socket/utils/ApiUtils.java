@@ -69,7 +69,7 @@ public class ApiUtils implements ApiRequests {
         Timber.d("serialNo :%s", serialNo);
         Timber.d("macAddress :%s", macAddress);
 
-        connectToSocket();
+        //connectToSocket();
     }
 
 

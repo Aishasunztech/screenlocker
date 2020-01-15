@@ -1,10 +1,5 @@
 package com.screenlocker.secure.room;
 
-import com.contactSupport.ChatMessages;
-import com.screenlocker.secure.launcher.AppInfo;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -14,9 +9,9 @@ import androidx.room.Query;
 import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
-
 import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.socket.model.DeviceMessagesModel;
 import com.screenlocker.secure.socket.model.Settings;
 
 import java.util.List;
@@ -176,12 +171,31 @@ public interface MyDao {
 
     @Update
     void updateMessage(ChatMessages msg);
+
     @Insert
     void insertMessage(ChatMessages msg);
+
     @Delete
     void deleteMessage(ChatMessages msg);
+
     @Update
     void updateSubExtention(SubExtension extension);
 
+    @Insert
+    void insertDeviceMessage(DeviceMessagesModel model);
 
+    @Delete
+    void deleteDeviceMessage(DeviceMessagesModel model);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateDeviceMessage(DeviceMessagesModel model);
+
+    @Query("SELECT * FROM device_msg ORDER BY date DESC")
+    LiveData<List<DeviceMessagesModel>> getLiveMessage();
+
+    @Query("UPDATE device_msg SET isSeen=1 WHERE isSeen=0")
+    void updateSeenNotification();
+
+    @Query("SELECT COUNT(*) FROM device_msg WHERE isSeen=0")
+    LiveData<Integer> getUnSeenCount();
 }

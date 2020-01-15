@@ -22,8 +22,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 60201
-        versionName "6.2.1"
+        versionCode 60203
+        versionName "6.2.3"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -84,15 +84,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
     //kotlin
     implementation "androidx.core:core-ktx:1.1.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.41"
 //    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
 
 // Room
-    implementation 'androidx.room:room-runtime:2.2.0-rc01'
-    annotationProcessor 'androidx.room:room-compiler:2.2.0-rc01'
+    implementation 'androidx.room:room-runtime:2.2.3'
+    annotationProcessor 'androidx.room:room-compiler:2.2.3'
 
 // implementation "android.arch.persistence.room:runtime:1.0.0"
 
@@ -135,7 +135,7 @@ dependencies {
     implementation "android.arch.work:work-runtime:$work"
 
 //SOCKET.IO
-    implementation 'com.github.nkzawa:socket.io-client:0.3.0'
+    implementation 'com.github.nkzawa:socket.io-client:0.6.0'
 
 //fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
@@ -166,8 +166,8 @@ dependencies {
     //text mask
     implementation 'com.github.santalu:mask-edittext:1.1.1'
 
-    implementation project(path:':stepper')
-    implementation project(path:':chatkit')
+    implementation project(path: ':stepper')
+    implementation project(path: ':chatkit')
     implementation 'androidx.palette:palette:1.0.0'
     implementation project(path: ':sfm')
 

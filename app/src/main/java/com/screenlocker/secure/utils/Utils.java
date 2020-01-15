@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.screenlocker.secure.app.MyApplication;
 import com.secure.launcher.BuildConfig;
 import com.secure.launcher.R;
 import com.screenlocker.secure.notifications.NotificationItem;
@@ -40,6 +41,7 @@ import java.util.Random;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
+import static com.screenlocker.secure.app.MyApplication.getAppContext;
 
 public class Utils {
 
@@ -81,6 +83,15 @@ public class Utils {
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 // .setPriority(Notification.PRIORITY_MIN)
                 .setSmallIcon(icon)
+                .build();
+    }
+    public static Notification getDeviceNotification(Context context, int icon,String notification_text) {
+        return  new NotificationCompat.Builder(context, MyApplication.CHANNEL_1_ID)
+                .setContentText(notification_text)
+                .setContentTitle("Notification")
+                .setSmallIcon(R.drawable.ic_notifications)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .build();
     }
 

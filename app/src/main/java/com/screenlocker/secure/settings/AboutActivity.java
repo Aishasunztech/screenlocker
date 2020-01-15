@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
@@ -31,6 +30,7 @@ import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secure.launcher.R;
 import com.secureSetting.SecureSettingsMain;
 
 import java.util.List;
@@ -101,6 +101,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     private SocketManager socketManager;
 
     private Button button, button2;
+    private ApiUtils apiUtils;
 
     int clickCount = 0;
 
@@ -160,7 +161,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvSimNo2.setOnClickListener(this);
 
         tvSimNo2.setText(simNos != null && simNos.size() > 1 ? simNos.get(1) : "N/A");
-        tvPgpEmail.setText(PrefUtils.getStringPref(this, PGP_EMAIL) != null? PrefUtils.getStringPref(this, PGP_EMAIL) : "N/A");
+        tvPgpEmail.setText(PrefUtils.getStringPref(this, PGP_EMAIL) != null ? PrefUtils.getStringPref(this, PGP_EMAIL) : "N/A");
 
         tvSerialNo.setOnClickListener(this);
         tvMAC.setOnClickListener(this);
@@ -257,7 +258,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         if (sim_Id != null) {
             simId.setVisibility(View.VISIBLE);
             dividerSimId.setVisibility(View.VISIBLE);
-            tvSimId.setText(chat_Id);
+            tvSimId.setText(sim_Id);
         }
 
     }
@@ -346,7 +347,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                             String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                             String serialNo = DeviceIdUtils.getSerialNumber();
                             runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
-                            new ApiUtils(this, macAddress, serialNo);
+                            if (apiUtils == null)
+                                apiUtils = new ApiUtils(this, macAddress, serialNo);
+                            apiUtils.connectToSocket();
                         }
                     } else {
                         runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
@@ -414,7 +417,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onSocketEventFailed() {
         Timber.d("Socket event failed");
-        new ApiUtils(this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
+        if (apiUtils == null)
+            apiUtils = new ApiUtils(this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
+        apiUtils.connectToSocket();
     }
 
     @Override
@@ -457,34 +462,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-//        String url = url_1.getText().toString();
-//
-//        if (TextUtils.isEmpty(url)) {
-//            url_1.setError("Please enter valid url !");
-//            return;
-//        }
-//
-//
-//        URL_1 = url;
-//
-//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-//        clickCount++;
-//        int total = 6;
-//
-//        if (clickCount == 6) {
-//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-//            button.setVisibility(View.VISIBLE);
-//            button2.setVisibility(View.VISIBLE);
-//            url_1.setVisibility(View.VISIBLE);
-//        } else {
-//            if (clickCount >= 2 && clickCount <= 6) {
-//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-//            }
-//        }
+        clickCount++;
+        int total = 6;
+
+        if (clickCount == 6) {
+            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+            button.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            url_1.setVisibility(View.VISIBLE);
+        } else {
+            if (clickCount >= 2 && clickCount <= 6) {
+                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }

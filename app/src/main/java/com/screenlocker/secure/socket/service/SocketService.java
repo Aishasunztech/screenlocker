@@ -212,7 +212,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
     @Override
     public void onSocketEventFailed() {
         Timber.d("Socket event failed");
-        new ApiUtils(SocketService.this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber());
+        new ApiUtils(SocketService.this, DeviceIdUtils.generateUniqueDeviceId(this), DeviceIdUtils.getSerialNumber()).connectToSocket();
     }
 
     @Override
@@ -1364,6 +1364,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
         } catch (Exception e) {
             Timber.d(e);
         }
+    }
+
+    @Override
+    public void getDeviceMessages() {
+
     }
 
     private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {
