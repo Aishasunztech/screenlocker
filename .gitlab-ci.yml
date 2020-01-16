@@ -27,6 +27,9 @@ build_debug:
   artifacts:
     paths:
       - app/build/outputs
+  only:
+    - master
+
 
 #build_release:
 #  stage: build
@@ -57,8 +60,6 @@ package_debug:
   <<: *package_template_def
   stage: package
   environment: Development
-  #  only:
-  #    - develop
   script:
     - mv app/build/outputs/apk/debug/app-debug.apk ./deliverables/ScreenLocker-v$VERSION_NAME-$VERSION_CODE-debug.apk
     - java -Djava.library.path=/tools/lib64 -jar /tools/signapk.jar /tools/platform.x509.pem /tools/platform.pk8 ./deliverables/ScreenLocker-v$VERSION_NAME-$VERSION_CODE-debug.apk ./deliverables/ScreenLocker-v$VERSION_NAME-$VERSION_CODE-debug-signed.apk
@@ -68,3 +69,6 @@ package_debug:
       - deliverables
   dependencies:
     - build_debug
+  only:
+    - master
+
