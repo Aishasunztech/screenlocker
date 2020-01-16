@@ -11,20 +11,20 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.secure.launcher.R;
-
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -227,7 +227,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             }else if(v.getId() == R.id.cancel_download)
             {
                 Log.d("lkdfh","ButtonLCicked" + app.getRequest_id());
-                listener.onCancelClick(app.getRequest_id());
+               listener.onCancelClick(app.getRequest_id());
             }
 
         }

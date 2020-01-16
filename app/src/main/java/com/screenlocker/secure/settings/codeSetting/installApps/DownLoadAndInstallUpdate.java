@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import androidx.core.content.FileProvider;
 
 import com.secure.launcher.BuildConfig;
 import com.secure.launcher.R;
@@ -17,8 +20,6 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 
-import androidx.core.content.FileProvider;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> {
@@ -27,26 +28,24 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     private ProgressDialog dialog;
     private String activityName;
 
-    public DownLoadAndInstallUpdate(Context context, final String url, String appName,String activityName) {
+    public DownLoadAndInstallUpdate(Context context, final String url, String appName, String activityName) {
         contextWeakReference = new WeakReference<>(context);
         this.url = url;
         this.appName = appName;
         this.activityName = activityName;
+
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
         dialog = new ProgressDialog(contextWeakReference.get());
-        if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.install_app_activity)))
-        {
+        if (activityName.equals(contextWeakReference.get().getResources().getString(R.string.install_app_activity))) {
             dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
-        }
-        else if(activityName.equals(contextWeakReference.get().getResources().getString(R.string.secure_market_activity)))
-        {
+        } else if (activityName.equals(contextWeakReference.get().getResources().getString(R.string.secure_market_activity))) {
             dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_app_title));
-        }
-        else{
+        } else {
             dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downloading_update));
         }
         dialog.setCancelable(false);
@@ -63,10 +62,10 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     private Boolean downloadApp() {
         FileOutputStream fileOutputStream = null;
         InputStream input = null;
+        File file;
         try {
-            appName = appName.substring(0,(appName.length() -4));
-            File file = contextWeakReference.get().getFileStreamPath(appName);
-
+            appName = appName.substring(0, (appName.length() - 4));
+            file = contextWeakReference.get().getFileStreamPath(appName);
             if (file.exists())
                 return true;
             try {
@@ -77,7 +76,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
 
                 // input = body.byteStream();
                 input = new BufferedInputStream(downloadUrl.openStream());
-                byte data[] = new byte[contentLength];
+                byte[] data = new byte[contentLength];
                 long total = 0;
                 int count;
                 while ((count = input.read(data)) != -1) {
@@ -85,11 +84,11 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
                     publishProgress((int) ((total * 100) / contentLength));
                     fileOutputStream.write(data, 0, count);
                 }
-
                 return true;
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.i("SocketServiceII", "downloadApp: exception 1 is : " + e.toString());
                 return false;
             } finally {
                 if (fileOutputStream != null) {
@@ -102,9 +101,11 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
         } catch (Exception e) {
             e.printStackTrace();
 
+            Log.i("SocketServiceII", "downloadApp: exception 2 is : " + e.toString());
         }
         return false;
     }
+
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
@@ -115,15 +116,19 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Boolean> 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
+        Log.i("SocketServiceII", "onPostExecute: result is : " + aBoolean);
         if (dialog != null)
             dialog.dismiss();
         if (aBoolean) {
-            showInstallDialog(appName);
-        }
+            //  showInstallDialog(appName);
+            File f = contextWeakReference.get().getFileStreamPath(appName);
 
+            Uri apkUri = FileProvider.getUriForFile(contextWeakReference.get(), BuildConfig.APPLICATION_ID, f);
+        }
     }
 
     private void showInstallDialog(String appName) {
+
         File f = contextWeakReference.get().getFileStreamPath(appName);
             /*try {
                 installPackage(appName);

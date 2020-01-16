@@ -61,6 +61,7 @@ import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.utils.AppConstants.ACTION_PASSWORD_ALREADY_EXIST;
+import static com.screenlocker.secure.utils.AppConstants.APPS_LIST;
 import static com.screenlocker.secure.utils.AppConstants.APPS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -1131,5 +1132,20 @@ public class utils {
         Intent intent = new Intent(context, LockScreenService.class);
         intent.putExtra(SOCKET_STATUS, STOP_SOCKET);
         ActivityCompat.startForegroundService(context, intent);
+    }
+
+    public static void saveArrayList(ArrayList<InstallModel> list, Context context) {
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        PrefUtils.saveStringPref(context, APPS_LIST, null);
+        PrefUtils.saveStringPref(context, APPS_LIST, json);
+    }
+
+    public static ArrayList<InstallModel> getArrayList(Context context) {
+        Gson gson = new Gson();
+        String json = PrefUtils.getStringPref(context, APPS_LIST);
+        Type type = new TypeToken<ArrayList<InstallModel>>() {
+        }.getType();
+        return gson.fromJson(json, type);
     }
 }

@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.secure.launcher.R;
-
 import com.secureMarket.ui.home.InstalledAppsFragment;
 import com.secureMarket.ui.home.MarketFragment;
 import com.secureMarket.ui.home.UpdateAppsFragment;

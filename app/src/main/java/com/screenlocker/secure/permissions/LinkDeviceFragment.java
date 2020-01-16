@@ -60,7 +60,7 @@ public class LinkDeviceFragment extends AbstractStep {
     public void onSkip() {
         super.onSkip();
         //save the status of this step as completed
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
     }
 
     //next only if device is linked other wise skip
@@ -69,7 +69,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
 
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
             return true;
         }
         return false;

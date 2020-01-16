@@ -3,6 +3,7 @@ package com.secureMarket.ui.home;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.secure.launcher.R;
-
-import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
-import com.secureMarket.AppInstallUpdateListener;
-import com.secureMarket.SecureMarketAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +22,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
+import com.secure.launcher.R;
+import com.secureMarket.AppInstallUpdateListener;
+import com.secureMarket.SecureMarketAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
 
 public class InstalledAppsFragment extends Fragment implements AppInstallUpdateListener {
 
@@ -64,6 +67,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
 
     }
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,8 +75,9 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         rc = view.findViewById(R.id.appList);
         errorLayout = view.findViewById(R.id.error_layout);
         errorImage = view.findViewById(R.id.error_image);
-        errorText = view.findViewById(R.id.error_text);
         errorBtn = view.findViewById(R.id.error_btn);
+        errorText = view.findViewById(R.id.error_text);
+
         progressBar = view.findViewById(R.id.marketFragmentProgress);
         errorBtn.setOnClickListener(v -> {
             //
@@ -96,10 +101,13 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         viwModel.getInstalled().observe(this, serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
             installedApps.clear();
-            if (serverAppInfos.size() == 0){
+            if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
-                errorText.setText("No App Installed");
-                errorBtn.setVisibility(View.GONE);
+                errorText.setText("No Apps Installed");
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.addAll(serverAppInfos);
@@ -145,25 +153,30 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     }
 
     @Override
-    public void onCancelClick(String request_id) {
+    public void onCancelClick(String requestId) {
+        Log.d("lkdfh","FragmentClicked");
 
+        mListener.onCancelClick(requestId);
     }
 
 
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
             if (!query.equals("")) {
-                java.util.List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
+                List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
                 for (ServerAppInfo app : installedApps) {
                     String apkName = app.getApkName().toLowerCase();
                     if (apkName.contains(query)) {
                         searchedServerAppInfo.add(app);
                     }
                 }
-                if (searchedServerAppInfo.size() == 0){
+                if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-                    errorBtn.setVisibility(View.GONE);
+                    if(isNetworkAvailable(getActivity()))
+                    {
+                        errorBtn.setVisibility(View.GONE);
+                    }
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -223,10 +236,13 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         if (index != -1) {
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
-            if (installedAdapter.getItemCount() == 0){
+            if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }
@@ -273,8 +289,8 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     public void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-        rc.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
+        rc.setVisibility(View.GONE);
         errorText.setText("No Internet Connection");
     }
 

@@ -24,16 +24,25 @@ public class BlockStatusBar {
     public BlockStatusBar(Context context, boolean isPaused) {
         this.context = context;
         this.isPaused = isPaused;
-        collapseNow();
 
     }
 
-    public void collapseNow() {
+    public void collapseNow(boolean stop) {
 
         // Initialize 'collapseNotificationHandler'
+
+
+        if (stop) {
+            if (collapseNotificationHandler != null)
+                collapseNotificationHandler.removeCallbacksAndMessages(null);
+            collapseNotificationHandler = null;
+            return;
+        }
+
         if (collapseNotificationHandler == null) {
             collapseNotificationHandler = new Handler();
         }
+
 
         // If window focus has been lost && activity is not in a paused state
         // Its a valid check because showing of notification panel
@@ -91,7 +100,7 @@ public class BlockStatusBar {
                     }
 
                 }
-            }, 1L);
+            }, 300L);
         }
     }
 }

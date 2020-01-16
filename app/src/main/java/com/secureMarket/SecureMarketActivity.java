@@ -9,11 +9,10 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
+import com.screenlocker.secure.base.BaseActivity;
 import com.secure.launcher.R;
 
-import com.screenlocker.secure.base.BaseActivity;
-
-public class SecureMarketActivity extends BaseActivity  {
+public class SecureMarketActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

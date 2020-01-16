@@ -15,7 +15,10 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.service.CheckUpdateService;
 import com.secure.launcher.BuildConfig;
 import com.secure.launcher.R;
 import com.screenlocker.secure.notifications.NotificationItem;
@@ -42,6 +46,7 @@ import java.util.Random;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
+import static com.screenlocker.secure.service.DeviceNotificationListener.TAG;
 
 public class Utils {
 
@@ -291,6 +296,64 @@ public class Utils {
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static boolean isAccessServiceEnabled(Context mContext, Class accessibilityServiceClass) {
+        int accessibilityEnabled = 0;
+        final String service = mContext.getPackageName() + "/" + accessibilityServiceClass.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+                    + e.getMessage());
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+
+                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+                    if (accessibilityService.equalsIgnoreCase(service)) {
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
+        }
+
+        return false;
+    }
+    public static void scheduleUpdateCheck(Context context) {
+
+        ComponentName componentName = new ComponentName(context, CheckUpdateService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(24 * 60 * 60 * 1000L)
+                .build();
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+        if (utils.isJobServiceOn(context, 123)) {
+            scheduler.cancel(123);
+        }
+        int resultCode = scheduler.schedule(info);
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            //Log.d(TAG, "Job scheduled");
+        } else {
+            //Log.d(TAG, "Job scheduling failed");
+        }
+
     }
 
 }

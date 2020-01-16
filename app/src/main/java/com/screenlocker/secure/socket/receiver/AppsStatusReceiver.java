@@ -18,7 +18,6 @@ import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
-import com.secureMarket.DownloadStatusCls;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -230,14 +229,14 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 String userSpace = intent.getStringExtra("userSpace");
 
                 PackageManager pm = context.getPackageManager();
-                if (PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP) != null) {
-                    Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
-                    }.getType();
-                    String hashmap = PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP);
-                    Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
-                    map1.remove(packageName);
-                    PrefUtils.saveStringPref(context, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
-                }
+//                if (PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP) != null) {
+//                    Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
+//                    }.getType();
+//                    String hashmap = PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP);
+//                    Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
+//                    map1.remove(packageName);
+//                    PrefUtils.saveStringPref(context, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+//                }
 
                 try {
                     ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);

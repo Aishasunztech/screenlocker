@@ -492,6 +492,7 @@
     <string name="network_limited_message">Internet may not be available.</string>
     <string name="change_network">Change Network</string>
     <string name="expiry_days_remaining">Expiry (days remaining)</string>
+    <string name="reboot_your_device">Please restart your device.</string>
 
     <string-array name="sort">
         <item>Total</item>

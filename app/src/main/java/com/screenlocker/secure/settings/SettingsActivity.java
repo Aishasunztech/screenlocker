@@ -25,14 +25,22 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.screenlocker.secure.settings.notification.NotificationActivity;
-import com.screenlocker.secure.settings.notification.NotificationViewModel;
-import com.secure.launcher.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
@@ -50,12 +58,15 @@ import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageMod
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
+import com.screenlocker.secure.settings.notification.NotificationActivity;
+import com.screenlocker.secure.settings.notification.NotificationViewModel;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -63,17 +74,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -541,37 +541,78 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
+
+
+                        Timber.i("-------> Api Check for update on response .");
+
+                        boolean responseStatus = response.isSuccessful();
+
+                        Timber.i("--------> response status : %s", responseStatus);
+
+
                         if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
-
                         }
 
-                        if (response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                if (response.body().isApkStatus()) {
-                                    AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
-                                            .setTitle(getResources().getString(R.string.update_available_title))
-                                            .setMessage(getResources().getString(R.string.update_available_message))
-                                            .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
-                                                String url = response.body().getApkUrl();
+                        if (responseStatus) {
 
-                                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                                DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), false, null, getPackageName());
-                                                obj.execute();
-                                            }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
-                                                dialog1.dismiss();
-                                            });
-                                    dialog.show();
+                            if (response.body() != null) {
+                                UpdateModel updateModel = response.body();
+
+                                boolean validationStatus = updateModel.isSuccess();
+
+                                Timber.i("----------> token validation status :%s", validationStatus);
+
+                                if (validationStatus) {
+
+                                    boolean updateStatus = updateModel.isApkStatus();
+
+                                    Timber.i("------------> update available status : %s", updateStatus);
+
+                                    if (updateStatus) {
+
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingsActivity.this)
+                                                .setTitle(getResources().getString(R.string.update_available_title))
+                                                .setMessage(getResources().getString(R.string.update_available_message))
+                                                .setPositiveButton(getResources().getString(R.string.ok_text), (dialog12, which) -> {
+
+                                                    String apkUrl = updateModel.getApkUrl();
+
+                                                    Timber.i("------------> updated apk url : %s", apkUrl);
+
+
+                                                    String live_url = PrefUtils.getStringPref(SettingsActivity.this, LIVE_URL);
+                                                    Timber.i("------------> Live Server Url :%s ", live_url);
+
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + "getApk/" + CommonUtils.splitName(apkUrl), false, null);
+                                                    obj.execute();
+
+
+                                                }).setNegativeButton(getResources().getString(R.string.cancel_text), (dialog1, which) -> {
+                                                    dialog1.dismiss();
+                                                });
+                                        dialog.show();
+                                    } else {
+                                        Timber.i("-------------> Application is already up to date . :)");
+                                        Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                    }
+
                                 } else {
-                                    Toast.makeText(SettingsActivity.this, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
+                                    Timber.i("-----------> token validation failed . Request for new token. ");
+                                    saveToken();
+                                    Timber.i("-------------> Again checking for update .");
+                                    update(dialog);
                                 }
 
                             } else {
-                                saveToken();
-                                requestCheckForUpdate(dialog);
+                                Timber.i("---------> oops response body is null. ");
                             }
 
+
+                        } else {
+                            Timber.i("-----------> invalid response code :(");
                         }
+
                     }
 
                     @Override

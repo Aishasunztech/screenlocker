@@ -24,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
@@ -36,6 +38,7 @@ import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
@@ -44,6 +47,7 @@ import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements OnAppsRefreshListener {
@@ -156,7 +160,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        WindowChangeDetectingService.serviceConnectedListener = null;
         if (alertDialog != null) {
             alertDialog.dismiss();
             alertDialog = null;
@@ -286,7 +290,9 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!
+        } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
+            launchPermissions();
+        }else if (!
 
                 isNotificationAccess(this)) {
             launchPermissions();
@@ -321,5 +327,29 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     public void onAppsRefresh() {
 
     }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!hasFocus) {
+
+                BlockStatusBar blockStatusBar = new BlockStatusBar(this, false);
+
+                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+                    // Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+
+                    // sendBroadcast(closeDialog);
+//                Method that handles loss of window focus
+                    blockStatusBar.collapseNow(false);
+                } else {
+                    blockStatusBar.collapseNow(true);
+                }
+
+
+            }
+        }
+
+    }
+
 
 }

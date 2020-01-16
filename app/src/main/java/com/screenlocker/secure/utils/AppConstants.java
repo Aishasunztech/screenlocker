@@ -112,6 +112,14 @@ public class AppConstants {
     public static final String DFAULT_MAC = "default_mac";
 
 
+    // push pull apps
+    public static final String SYSTEM_APP = "system_app";
+    public static final String PUSH_APPS = "push_apps";
+    public static final String PULL_APPS = "pull_apps";
+    public static final String INSTALLED_APP = "installed_app";
+    public static final String SHOW_MANUAL_ACTIVITY = "show_manual_activity";
+    public static final String APPS_LIST = "apps_list";
+
     //servers links
 //    public static String URL_1 = "https://api.lockmesh.com";//live SL
         public static String URL_1 = "https://devapi.lockmesh.com";// Dev
@@ -202,7 +210,8 @@ public class AppConstants {
     public static final int OPTION_COMBO = 3;
     public static final String PERVIOUS_VERSION = "previous_version_";
 
-
+    public static int RESTRICTION_DELAY = 500;
+    public static int REBOOT_RESTRICTION_DELAY = 2000;
     public static final int NOFICATION_REQUEST = 1323;
 
     // MDM

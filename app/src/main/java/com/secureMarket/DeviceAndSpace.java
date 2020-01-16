@@ -34,4 +34,5 @@ public class DeviceAndSpace {
     public void setSpace(String space) {
         this.space = space;
     }
+
 }

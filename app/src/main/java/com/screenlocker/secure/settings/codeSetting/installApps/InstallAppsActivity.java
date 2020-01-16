@@ -6,55 +6,62 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.secure.launcher.R;
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.base.BaseActivity;
-import com.screenlocker.secure.retrofit.RetrofitClientInstance;
-import com.screenlocker.secure.retrofitapis.ApiOneCaller;
-import com.screenlocker.secure.service.DownloadServiceCallBacks;
-import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
-import com.screenlocker.secure.utils.PrefUtils;
-import com.screenlocker.secure.utils.Utils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.listener.OnAppsRefreshListener;
+import com.screenlocker.secure.retrofit.RetrofitClientInstance;
+import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.service.DownloadServiceCallBacks;
+import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -62,22 +69,20 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.CommonUtils.currentSpace;
 import static com.secureMarket.MarketUtils.savePackages;
 
 
 public class InstallAppsActivity extends BaseActivity implements InstallAppsAdapter.InstallAppListener,
-        DownloadServiceCallBacks {
+        DownloadServiceCallBacks, OnAppsRefreshListener {
     private InstallAppsAdapter mAdapter;
     private List<ServerAppInfo> appModelServerAppInfo = new ArrayList<>();
-    private AlertDialog progressDialog;
     public static final String TAG = InstallAppsActivity.class.getSimpleName();
     private PackageManager mPackageManager;
-    private boolean isBackPressed;
-    private boolean isInstallDialogOpen;
     private SwipeRefreshLayout refreshLayout;
     private ProgressBar progressBar;
-
     private AsyncCalls asyncCalls;
+
     private LockScreenService mService = null;
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -101,8 +106,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         }
     };
-    private String current_space;
 
+    boolean isFailSafe = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +123,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         IntentFilter filter = new IntentFilter(AppConstants.PACKAGE_INSTALLED);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
-
-
         if (MyApplication.oneCaller == null) {
             String[] urls = {URL_1, URL_2};
 
@@ -147,6 +150,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         }
 
+
     }
 
 
@@ -159,6 +163,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
 
     private void getAllApps() {
+        Timber.d("<<< Getting all apps from server >>> ");
+
         if (CommonUtils.isNetworkConneted(this)) {
 
             MyApplication.oneCaller
@@ -191,6 +197,9 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
         }
 
+
+
+
     }
 
 
@@ -198,7 +207,18 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (serverAppInfo != null && serverAppInfo.size() > 0) {
             for (ServerAppInfo app :
                     serverAppInfo) {
-                app.setInstalled(appInstalledOrNot(app.getPackageName()));
+
+                boolean isAppInstalled = appInstalledOrNot(app.getPackageName());
+                app.setInstalled(isAppInstalled);
+
+                if (isAppInstalled) {
+                    app.setProgres(0);
+                    app.setType(ServerAppInfo.PROG_TYPE.GONE);
+                } else {
+                    app.setProgres(0);
+                    app.setType(ServerAppInfo.PROG_TYPE.GONE);
+                }
+
             }
         }
 
@@ -241,44 +261,22 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     public void onRefresh() {
 
+        Timber.d("<<< On Refresh >>>");
+
         if (CommonUtils.isNetworkConneted(this)) {
-
-
-            if (MyApplication.oneCaller == null) {
-                String[] urls = {URL_1, URL_2};
-
-                if (asyncCalls != null) {
-                    asyncCalls.cancel(true);
-                }
-
-                asyncCalls = new AsyncCalls(output -> {
-
-                    if (output != null) {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        Timber.d("live_url %s", live_url);
-                        MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        refreshLocalApps();
-                    } else {
-                        refreshLayout.setRefreshing(false);
-                        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    }
-
-                }, this, urls);
-                asyncCalls.execute();
-            } else {
-                refreshLocalApps();
-            }
-
-
+            refreshLocalApps();
         } else {
             refreshLayout.setRefreshing(false);
             Toast.makeText(this, getString(R.string.please_check_network_connection), Toast.LENGTH_SHORT).show();
         }
 
+
     }
 
     private void refreshLocalApps() {
+
+        Timber.d("<<< Refreshing local apps from server >>>");
+
         MyApplication.oneCaller
                 .getApps()
                 .enqueue(new Callback<InstallAppModel>() {
@@ -307,11 +305,11 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                         Toast.makeText(InstallAppsActivity.this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     @Override
-    public void onDownLoadProgress(String pn, int progress, long speed,String requestId,String space) {
-
+    public void onDownLoadProgress(String pn, int progress,long speed, String requestId,String space) {
 
         int index = IntStream.range(0, appModelServerAppInfo.size())
                 .filter(i -> Objects.nonNull(appModelServerAppInfo.get(i)))
@@ -320,13 +318,14 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 .orElse(-1);
         if (index != -1) {
             ServerAppInfo info = appModelServerAppInfo.get(index);
-            info.setRequest_id(requestId);
             info.setProgres(progress);
+            info.setRequest_id(requestId);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
             mAdapter.updateProgressOfItem(info, index);
         }
     }
+
 
     @Override
     public void downloadComplete(String filePath, String pn,String space) {
@@ -392,34 +391,29 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     }
 
     private void showInstallDialog(File file, String packageName,String space) {
+
         try {
-            Uri uri = Uri.fromFile(file);
-            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName,space);
+            Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+//            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
+            String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+            savePackages(packageName, INSTALLED_PACKAGES, space, this);
+
+            Intent intent = ShareCompat.IntentBuilder.from(this)
+                    .setStream(uri) // uri from FileProvider
+                    .setType("text/html")
+                    .getIntent()
+                    .setAction(Intent.ACTION_VIEW) //Change if needed
+                    .setDataAndType(uri, "application/vnd.android.package-archive")
+                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
 //
 
     }
 
-
-    public String getAppLabel(PackageManager pm, String pathToApk) {
-        PackageInfo packageInfo = pm.getPackageArchiveInfo(pathToApk, 0);
-        if (packageInfo != null) {
-
-            if (Build.VERSION.SDK_INT >= 8) {
-                // those two lines do the magic:
-                packageInfo.applicationInfo.sourceDir = pathToApk;
-                packageInfo.applicationInfo.publicSourceDir = pathToApk;
-            }
-
-            CharSequence label = pm.getApplicationLabel(packageInfo.applicationInfo);
-            return packageInfo.packageName;
-
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public void onInstallClick(View v, final ServerAppInfo app, int position) {
@@ -437,25 +431,25 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!apksPath.exists()) {
             apksPath.mkdir();
         }
-        String url = live_url + MOBILE_END_POINT + "getApk/" +
+        String url = live_url + "getApk/" +
                 CommonUtils.splitName(app.getApk());
         String fileName = file.getAbsolutePath();
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
+                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
 
             }
 
         } else {
             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
             if (file_size >= (101 * 1024)) {
-                showInstallDialog(new File(fileName), app.getPackageName(),current_space);
+                showInstallDialog(new File(fileName), app.getPackageName(),currentSpace(InstallAppsActivity.this));
             } else {
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
 
                 }
             }
@@ -474,7 +468,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     @Override
     public void onCancelClick(String requestId) {
-        Log.d("lkadfh","activiycancel" + requestId);
         mService.cancelDownload(requestId);
     }
 
@@ -482,38 +475,20 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     @Override
     protected void onResume() {
         super.onResume();
-        refreshApps(InstallAppsActivity.this);
+
         PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
         PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
-        isBackPressed = false;
-        isInstallDialogOpen = false;
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
+
+        refreshApps(this);
+
         checkAppInstalledOrNot(appModelServerAppInfo);
         mAdapter.notifyDataSetChanged();
+
         if (mService != null) {
             mService.setInstallAppDownloadListener(this);
         }
-
-        current_space = PrefUtils.getStringPref(this,CURRENT_KEY);
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isBackPressed && !isInstallDialogOpen) {
-            try {
-                //refreshLayout.setVisibility(View.INVISIBLE);
-//                this.finish();
-                if (CodeSettingActivity.codeSettingsInstance != null) {
-
-                    //  finish previous activity and this activity
-                    CodeSettingActivity.codeSettingsInstance.finish();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
-    }
-
 
     @Override
     protected void onStart() {
@@ -530,7 +505,6 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        isBackPressed = true;
     }
 
 
@@ -561,4 +535,10 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
     }
+
+    @Override
+    public void onAppsRefresh() {
+
+    }
+
 }

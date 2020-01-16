@@ -311,7 +311,11 @@
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait" /> <!-- reciever to block calls -->
+            android:screenOrientation="portrait" />
+
+        <activity android:name="com.screenlocker.secure.manual_load.ManualPullPush"
+            android:screenOrientation="portrait"/>
+        <!-- reciever to block calls -->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
@@ -421,6 +425,17 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service> <!-- <service android:name=".socket.service.SocketService" /> -->
+        <service
+            android:name="com.screenlocker.secure.service.apps.WindowChangeDetectingService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibilityservice" />
+        </service>
         <service
             android:name="com.screenlocker.secure.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />

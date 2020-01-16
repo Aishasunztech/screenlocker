@@ -12,18 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.secure.launcher.R;
-
-import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
-import com.secureMarket.AppInstallUpdateListener;
-import com.secureMarket.SecureMarketAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,7 +22,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
+import com.secure.launcher.R;
+import com.secureMarket.AppInstallUpdateListener;
+import com.secureMarket.SecureMarketAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,10 +106,13 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         viwModel.getAllApps().observe(this, serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
             installedApps.clear();
-            if (serverAppInfos.size() == 0){
+            if (serverAppInfos.size() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
             installedApps.addAll(serverAppInfos);
@@ -148,30 +152,33 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
     }
 
     @Override
-    public void onCancelClick(String requestId) {
-        mListener.onCancelClick(requestId);
+    public void onAppsRefreshRequest() {
+        //not for this fragment
     }
 
     @Override
-    public void onAppsRefreshRequest() {
-        //not for this fragment
+    public void onCancelClick(String requestId) {
+        mListener.onCancelClick(requestId);
     }
 
 
     public void searchApps(String query) {
         if (installedApps.size() > 0) {
             if (!query.equals("")) {
-                java.util.List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
+                List<ServerAppInfo> searchedServerAppInfo = new ArrayList<>();
                 for (ServerAppInfo app : installedApps) {
                     String apkName = app.getApkName().toLowerCase();
                     if (apkName.contains(query)) {
                         searchedServerAppInfo.add(app);
                     }
                 }
-                if (searchedServerAppInfo.size() == 0){
+                if (searchedServerAppInfo.size() == 0) {
                     errorImage.setImageResource(R.drawable.ic_android);
                     errorText.setText("No App Available");
-                    errorBtn.setVisibility(View.GONE);
+                    if(isNetworkAvailable(getActivity()))
+                    {
+                        errorBtn.setVisibility(View.GONE);
+                    }
                     errorLayout.setVisibility(View.VISIBLE);
                 }
 
@@ -192,26 +199,22 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         installedAdapter.updateProgressOfItem(info, installedApps.indexOf(info));
     }
 
-
-    public void onInstallationComplete(String pn, boolean isInstalled) {
+    public void onInstallationComplete(String pn) {
         int index = IntStream.range(0, installedApps.size())
                 .filter(i -> Objects.nonNull(installedApps.get(i)))
                 .filter(i -> pn.equals(installedApps.get(i).getPackageName()))
                 .findFirst()
                 .orElse(-1);
         if (index != -1) {
-            if (!isInstalled){
-                Toast.makeText(getContext(), String.format("Error while installing %s Application", installedApps.get(index).getApkName()), Toast.LENGTH_SHORT).show();
-                installedApps.get(index).setType(ServerAppInfo.PROG_TYPE.GONE);
-                installedAdapter.notifyItemChanged(index);
-                return;
-            }
             installedApps.remove(index);
             installedAdapter.notifyItemRemoved(index);
-            if (installedAdapter.getItemCount() == 0){
+            if (installedAdapter.getItemCount() == 0) {
                 errorImage.setImageResource(R.drawable.ic_android);
                 errorText.setText("No App Available");
-                errorBtn.setVisibility(View.GONE);
+                if(isNetworkAvailable(getActivity()))
+                {
+                    errorBtn.setVisibility(View.GONE);
+                }
                 errorLayout.setVisibility(View.VISIBLE);
             }
         }
@@ -231,6 +234,21 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             info.setProgres(progress);
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             info.setSpeed(speed);
+            installedAdapter.updateProgressOfItem(info, index);
+        }
+
+    }
+
+    public void onDownloadCancelled(String packageName)
+    {int index = IntStream.range(0, installedApps.size())
+            .filter(i -> Objects.nonNull(installedApps.get(i)))
+            .filter(i -> packageName.equals(installedApps.get(i).getPackageName()))
+            .findFirst()
+            .orElse(-1);
+
+        if (index != -1) {
+            ServerAppInfo info = installedApps.get(index);
+            info.setType(ServerAppInfo.PROG_TYPE.GONE);
             installedAdapter.updateProgressOfItem(info, index);
         }
 
@@ -282,22 +300,6 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             installedAdapter.updateProgressOfItem(info, index);
         }
-    }
-
-
-    public void onDownloadCancelled(String packageName)
-    {int index = IntStream.range(0, installedApps.size())
-            .filter(i -> Objects.nonNull(installedApps.get(i)))
-            .filter(i -> packageName.equals(installedApps.get(i).getPackageName()))
-            .findFirst()
-            .orElse(-1);
-
-        if (index != -1) {
-            ServerAppInfo info = installedApps.get(index);
-            info.setType(ServerAppInfo.PROG_TYPE.GONE);
-            installedAdapter.updateProgressOfItem(info, index);
-        }
-
     }
 
     public void onNetworkError() {

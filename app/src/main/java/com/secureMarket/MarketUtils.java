@@ -32,4 +32,16 @@ public class MarketUtils {
         return false;
     }
 
+    public static boolean isGuest(String packageName,String type,String userSpace,Context context)
+    {
+        String[] packagesList = PrefUtils.getStringPref(context,type).split(",");
+        for(String packageItem : packagesList)
+        {
+            if(packageItem.contains(packageName+":" + userSpace))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
