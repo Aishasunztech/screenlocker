@@ -392,16 +392,27 @@ public class BlurWorker extends Worker {
 
             List<com.screenlocker.secure.socket.model.Settings> settings = MyApplication.getAppDatabase(applicationContext)
                     .getDao().getSettings();
-            if (settings.size() != AppConstants.SET_NUMBER) {
-                Log.d(TAG, "doWork: Yahan par sirf aik bar ana chahiye");
+            if (settings != null && settings.size() == 0) {
                 List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
                 for (com.screenlocker.secure.socket.model.Settings localSetting : localSettings) {
                     if (!settings.contains(localSetting)) {
                         MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(localSetting);
                     }
                 }
-
+            } else if (settings != null && settings.size() == 2) {
+                Timber.d("adding screen capture settings");
+                com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, false);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(screen_capture_settings);
+            }else if(settings != null && settings.size() == 3)
+            {
+                com.screenlocker.secure.socket.model.Settings wifi_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_WIFI, true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(wifi_settings);
+            }else if(settings != null && settings.size() == 4)
+            {
+                com.screenlocker.secure.socket.model.Settings bluetooth_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_BLUETOOTH, true);
+                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(bluetooth_settings);
             }
+
 
 
             return Result.success();

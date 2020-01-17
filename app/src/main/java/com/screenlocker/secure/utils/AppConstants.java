@@ -104,6 +104,10 @@ public class AppConstants {
     public static final String KEY_DEF_BRIGHTNESS = "def_brightness_";
     public static final String VALUE_SCREENSHOT_ENABLE = "enable";
     public static final String VALUE_SCREENSHOT_DISABLE = "disable";
+    public static final String KEY_WIFI_ENABLE = "enablewifi";
+    public static final String KEY_BLUETOOTH_ENABLE = "enable_bluetooth";
+    public static final String KEY_HOTSPOT_ENABLE = "enable_hotspot";
+    public static final String KEY_MIC_ENABLE = "enable_mic";
 
     public static final String KEY_DISABLE_CALLS = "disable_calls";
     public static final String DEVICE_ID = "device_id";

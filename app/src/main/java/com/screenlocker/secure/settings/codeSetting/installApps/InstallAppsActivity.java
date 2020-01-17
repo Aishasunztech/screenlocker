@@ -431,7 +431,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!apksPath.exists()) {
             apksPath.mkdir();
         }
-        String url = live_url + "getApk/" +
+        String url = live_url +MOBILE_END_POINT+ "getApk/" +
                 CommonUtils.splitName(app.getApk());
         String fileName = file.getAbsolutePath();
         if (!file.exists()) {

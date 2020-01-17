@@ -672,7 +672,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
-                String url = live_url + "getApk/" +
+
+                String url = live_url +MOBILE_END_POINT+ "getApk/" +
                         CommonUtils.splitName(app.getApk());
 
                 Timber.i("LIVE URL :%s", url);

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.util.Log;
 
@@ -36,6 +37,7 @@ import com.screenlocker.secure.socket.model.InstalledAndRemainingApps;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import org.json.JSONArray;
@@ -72,6 +74,7 @@ import static com.screenlocker.secure.utils.AppConstants.EXTENSIONS_SENT_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.IMEI1;
 import static com.screenlocker.secure.utils.AppConstants.IMEI2;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
+import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
@@ -306,16 +309,15 @@ public class utils {
         }
     }
 
-
     public static void refreshApps(Context context) {
 
         OnAppsRefreshListener listener = (OnAppsRefreshListener) context;
 
         String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
 
+
         if (unInstalledPackage != null) {
             String[] data = unInstalledPackage.split(",");
-
             PackageManager pm = context.getPackageManager();
             for (int i = 0; i < data.length; i++) {
                 String packageName = data[i].split(":")[0];
@@ -327,10 +329,13 @@ public class utils {
                     int finalI = i;
                     new Thread(() -> {
                         MyApplication.getAppDatabase(context).getDao().deletePackage(packageName);
+
                         AppInfo info = new AppInfo();
                         info.setPackageName(packageName);
                         info.setUniqueName(packageName);
+
                         saveAppsList(context, false, info, false);
+
                         if (finalI == data.length - 1) {
                             listener.onAppsRefresh();
                             PrefUtils.saveStringPref(context, UNINSTALLED_PACKAGES, null);
@@ -339,8 +344,8 @@ public class utils {
                 }
             }
         }
-        /*String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
 
+        String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
 
@@ -352,9 +357,7 @@ public class utils {
                     pm.getPackageInfo(packageName, 0);
                     Intent intent = new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-                    ServerAppInfo<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
-
+                    List<ResolveInfo> allApps = pm.queryIntentActivities(intent, 0);
                     for (ResolveInfo ri : allApps) {
                         if (ri.activityInfo.packageName.equals(packageName)) {
                             int finalI = i;
@@ -366,6 +369,7 @@ public class utils {
                             app.setEncrypted(false);
                             app.setGuest(false);
                             app.setVisible(true);
+                            app.setSystemApp(false);
                             switch (space) {
                                 case KEY_GUEST_PASSWORD:
                                     app.setGuest(true);
@@ -393,7 +397,7 @@ public class utils {
 
                 }
             }
-        }*/
+        }
 
 
     }

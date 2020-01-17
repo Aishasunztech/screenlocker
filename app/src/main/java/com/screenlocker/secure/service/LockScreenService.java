@@ -251,16 +251,18 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private FetchListener fetchListener = new FetchListener() {
         @Override
         public void onAdded(@NotNull Download download) {
+            Log.d("TEST!@", "onAdded: ");
         }
 
         @Override
         public void onQueued(@NotNull Download download, boolean b) {
+            Log.d("TEST!@", "onQueued: ");
 
         }
 
         @Override
         public void onWaitingNetwork(@NotNull Download download) {
-
+            Log.d("TEST!@", "onWaitingNetwork: ");
         }
 
         @Override
@@ -358,6 +360,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             Extras extras = download.getExtras();
             //getPackage Name Of download
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            Log.d("TEST!@", "onProgress: "+packageName);
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
             String space = extras.getString(EXTRA_SPACE, "null");
@@ -422,7 +425,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     };
 
 
-    private DownloadServiceCallBacks downloadListener;
     private String url = "";
     private String filePath = "";
     private String packageName = "";
@@ -601,7 +603,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         PackageManager packageManager = getPackageManager();
 
         FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
-                .setDownloadConcurrentLimit(1)
+                .setDownloadConcurrentLimit(2)
                 .setProgressReportingInterval(100)
                 .build();
         fetch = Fetch.Impl.getInstance(fetchConfiguration);
@@ -753,12 +755,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         this.marketDoaLoadLister = downloadListener;
     }
 
-
-    public void setDownloadListener(DownloadServiceCallBacks downloadListener) {
-        if (downloadListener != null) {
-            this.downloadListener = downloadListener;
-        }
-    }
 
     @Override
     public void onDestroy() {

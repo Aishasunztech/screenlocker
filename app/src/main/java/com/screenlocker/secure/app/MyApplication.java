@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +13,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -25,6 +29,7 @@ import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
+import com.screenlocker.secure.mdm.utils.BluetoothHotSpotChangeReceiver;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -64,6 +69,9 @@ import timber.log.Timber;
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
+import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -77,7 +85,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener {
+public class MyApplication extends Application implements BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener, LinkDeviceActivity.OnScheduleTimerListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -87,6 +95,11 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
     private ApiOneCaller apiOneCaller;
+    private WifiManager wifimanager;
+
+    private BluetoothAdapter bluetoothAdapter;
+    private WifiManager.LocalOnlyHotspotReservation mReservation;
+    private BluetoothHotSpotChangeReceiver bluetoothChangeReceiver;
     private PrefManager preferenceManager;
     private AppsStatusReceiver appsStatusReceiver;
     private ApiUtils apiUtils;
@@ -141,6 +154,12 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
             boolean isConnected = networkStatus.equals(CONNECTED);
 
+            boolean isWifiEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_WIFI_ENABLE);
+            if (!isWifiEnable) {
+                wifimanager.setWifiEnabled(false);
+                Toast.makeText(appContext, "Wifi is disabled by admin. ", Toast.LENGTH_SHORT).show();
+            }
+
             Timber.d("ksdklfgsmksls : " + isConnected);
 
             if (isConnected) {
@@ -160,6 +179,8 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         super.onCreate();
         mHandler = new Handler();
         appContext = getApplicationContext();
+        wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
 
         registerNetworkPref();
@@ -211,6 +232,13 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
 
         //   startService(new Intent(this,LifecycleReceiverService.class));
+        bluetoothChangeReceiver = new BluetoothHotSpotChangeReceiver();
+        bluetoothChangeReceiver.setBluetoothListener(this);
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        intentFilter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+        registerReceiver(bluetoothChangeReceiver, intentFilter);
 
         IntentFilter filter = new IntentFilter();
 
@@ -509,6 +537,53 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
             }
         }
     };
+
+    @Override
+    public void isBlueToothEnable(boolean enable) {
+        if (enable) {
+            boolean isBluetoothEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_BLUETOOTH_ENABLE);
+            if (isBluetoothEnable)
+                bluetoothAdapter.enable();
+            else {
+                bluetoothAdapter.disable();
+                Toast.makeText(appContext, "Bluetooth is disabled by admin. ", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    @Override
+    public void isHotspotEnable(boolean enable) {
+        if (enable) {
+            boolean isHotSpotEnable = PrefUtils.getBooleanPref(this, KEY_HOTSPOT_ENABLE);
+            if (isHotSpotEnable) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    wifimanager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
+
+                        @Override
+                        public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+                            super.onStarted(reservation);
+                            mReservation = reservation;
+                        }
+
+                        @Override
+                        public void onStopped() {
+                            super.onStopped();
+                        }
+
+                        @Override
+                        public void onFailed(int reason) {
+                            super.onFailed(reason);
+                        }
+                    }, new Handler());
+                }
+            } else {
+                if (mReservation != null) {
+                    mReservation.close();
+                }
+            }
+        }
+    }
 }
 
 

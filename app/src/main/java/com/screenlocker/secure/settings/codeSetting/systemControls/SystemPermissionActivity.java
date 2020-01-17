@@ -2,9 +2,12 @@ package com.screenlocker.secure.settings.codeSetting.systemControls;
 
 import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -14,13 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.MyAdmin;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,8 @@ import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
+import static com.screenlocker.secure.utils.AppConstants.BROADCAST_VIEW_ADD_REMOVE;
+import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.RESULT_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
@@ -45,11 +50,17 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
     private DevicePolicyManager mDPM;
     private ComponentName compName;
+    private WifiManager wifimanager;
+    private BluetoothAdapter mBluetoothAdapter;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system_controls);
+
+        wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,7 +75,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
         mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         compName = new ComponentName(this, MyAdmin.class);
-
 
 
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
@@ -110,25 +120,37 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
     public void OnPermisionChangeListener(Settings setting, boolean isChecked) {
         switch (setting.getSetting_name()) {
             case AppConstants.SET_WIFI:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_WIFI);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
-                }
-                else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isChecked) {
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_WIFI_ENABLE, true);
+                    } else {
+                        wifimanager.setWifiEnabled(false);
+                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_WIFI_ENABLE, false);
+
+                    }
                 }
 
                 break;
             case AppConstants.SET_BLUETOOTH:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
-                }else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isChecked) {
+                        PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, true);
+                    } else {
+                        if (mBluetoothAdapter != null)
+                            mBluetoothAdapter.disable();
+                        PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, false);
+
+                    }
                 }
                 break;
             case AppConstants.SET_BLUE_FILE_SHARING:
@@ -161,39 +183,40 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                 }
                 break;
             case AppConstants.SET_HOTSPOT:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                     } else {
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
                     }
-                }else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case AppConstants.SET_MIC:
-                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                if (mDPM.isDeviceOwnerApp(getPackageName())) {
+
                     if (isChecked) {
                         mDPM.clearUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
                     } else
                         mDPM.addUserRestriction(compName, DISALLOW_UNMUTE_MICROPHONE);
-                }else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case AppConstants.SET_SPEAKER:
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {
-                    mDPM.setMasterVolumeMuted(compName, !isChecked);
-                } else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    if (mDPM.isDeviceOwnerApp(getPackageName())) {
+                        mDPM.setMasterVolumeMuted(compName, !isChecked);
+                    } else {
+                        Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
                 break;
             case AppConstants.SET_SS:
                 if (mDPM.isDeviceOwnerApp(getPackageName())) {
                     mDPM.setScreenCaptureDisabled(compName, !isChecked);
                 } else {
-                    Toast.makeText(this, "Setting not available.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(BROADCAST_VIEW_ADD_REMOVE);
+                    intent.putExtra("screenCapture", isChecked);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }
                 break;
             default:
@@ -208,4 +231,6 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
             MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateSetting(setting);
         });
     }
+
+
 }
