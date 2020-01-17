@@ -500,6 +500,7 @@ public class AppConstants {
     public static final String OLD_DEVICE_STATUS = "old_device_status";
 
     public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CURRENT_NETWORK_CHANGED = "__current_netrowk_";
     public static final String CONNECTED = "connected";
     public static final String DISCONNECTED = "disconnected";
     public static final String LIMITED = "limited";

@@ -244,7 +244,7 @@
     <orderEntry type="library" name="Gradle: com.android.installreferrer:installreferrer:1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.ybq:Android-SpinKit:1.2.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.santalu:mask-edittext:1.1.1@aar" level="project" />
-    <orderEntry type="module" module-name="stepper" />
+    <orderEntry type="module" module-name="screenlocker-stepper" />
     <orderEntry type="module" module-name="chatkit" />
     <orderEntry type="module" module-name="sfm" />
   </component>

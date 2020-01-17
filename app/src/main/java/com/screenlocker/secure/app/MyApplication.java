@@ -53,6 +53,7 @@ import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -63,6 +64,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -135,8 +137,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
-
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
 
             boolean isConnected = networkStatus.equals(CONNECTED);

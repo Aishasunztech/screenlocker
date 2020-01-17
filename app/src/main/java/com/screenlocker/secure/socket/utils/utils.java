@@ -459,21 +459,14 @@ public class utils {
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
-                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD)!=null && PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) ){
+                    passAlreadyExist(device_id);
+                }
+                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null &&
+                        PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
-                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+                    passAlreadyExist(device_id);
 
-                        JSONObject jsonObject = new JSONObject();
-                        try {
-                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
-                            jsonObject.put("object", "");
-                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
-
-                        } catch (JSONException e) {
-                            Timber.d(e);
-                        }
-                    }
 
                 } else {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
@@ -483,21 +476,16 @@ public class utils {
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
-                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD)!=null
+                        && PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass)) {
                     //password is already taken
-                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+                    passAlreadyExist(device_id);
 
-                        JSONObject jsonObject = new JSONObject();
-                        try {
-                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
-                            jsonObject.put("object", "");
-                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
-
-                        } catch (JSONException e) {
-                            Timber.d(e);
-                        }
-                    }
+                }
+                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null
+                        && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                    //password is already taken
+                    passAlreadyExist(device_id);
 
                 } else {
                     PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
@@ -522,6 +510,22 @@ public class utils {
             Timber.d(e);
         }
 
+    }
+
+    private static void passAlreadyExist(String device_id) {
+        if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+            Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
+                jsonObject.put("object", "");
+                SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+
+            } catch (JSONException e) {
+                Timber.d(e);
+            }
+        }
     }
 
     private static boolean checkString(String string) {
