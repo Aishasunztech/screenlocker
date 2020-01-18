@@ -805,7 +805,8 @@ public class LinkDeviceActivity extends BaseActivity {
         String serialNo = DeviceIdUtils.getSerialNumber();
 
         if (serialNo != null) {
-            new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
+            ApiUtils utils = new ApiUtils(LinkDeviceActivity.this, macAddress, serialNo);
+            utils.connectToSocket();
         }
 
         finishedRefreshing();

@@ -25,9 +25,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.secure.launcher.R;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -37,6 +37,7 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
      * this is used to get the details of apps of the system
      */
     private SharedPreferences sharedPref;
-//    public static Activity context = null;
+    //    public static Activity context = null;
     List<AppInfo> allDbApps;
 
     PowerManager powerManager;
@@ -91,7 +92,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.slide_up,R.anim.slide_up);
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -129,6 +130,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             setBackground(message);
             mainPresenter.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
+            if (viewModel.getmUnReadCount().getValue() != null)
+                adapter.updateNotificationBadgeOfSL(viewModel.getmUnReadCount().getValue());
+        });
+        viewModel.getmUnReadCount().observe(this, integer -> {
+            adapter.updateNotificationBadgeOfSL(integer);
         });
 
 
@@ -179,10 +185,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
         int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
-        if(column_span == 0)
-        {
+        if (column_span == 0) {
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
+        ((SimpleItemAnimator) rvApps.getItemAnimator()).setSupportsChangeAnimations(false);
         rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
         rvApps.setAdapter(adapter);
         rvApps.setItemViewCacheSize(30);
@@ -199,11 +205,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             Instrumentation m_Instrumentation = new Instrumentation();
-            try{
-                m_Instrumentation.sendKeyDownUpSync( KeyEvent.KEYCODE_HOME );
+            try {
+                m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 Timber.e(e.toString());
             }
 
@@ -257,7 +262,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
-        overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
         super.onResume();
 
 
@@ -278,11 +283,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             mainPresenter.startLockService(lockScreenIntent);
         }
 
-        boolean pendingDialog = PrefUtils.getBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG);
-        if(pendingDialog)
-        {
-            String dialogMessage = PrefUtils.getStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE);
-            if(!dialogMessage.equals("")){
+        boolean pendingDialog = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG);
+        if (pendingDialog) {
+            String dialogMessage = PrefUtils.getStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE);
+            if (!dialogMessage.equals("")) {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.expiry_alert_online_title))
                         .setMessage(dialogMessage)
@@ -291,8 +295,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                PrefUtils.saveBooleanPref(this,AppConstants.PENDING_ALARM_DIALOG,false);
-                PrefUtils.saveStringPref(this,AppConstants.PENDING_DIALOG_MESSAGE,"");
+                PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG, false);
+                PrefUtils.saveStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE, "");
             }
         }
 
@@ -396,26 +400,22 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (msg != null && !msg.equals("")) {
                 setBackground(msg);
             }
-        }else if (key.equals(AppConstants.KEY_COLUMN_SIZE)){
+        } else if (key.equals(AppConstants.KEY_COLUMN_SIZE)) {
             int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
-            if(column_span == 0)
-            {
+            if (column_span == 0) {
                 column_span = AppConstants.LAUNCHER_GRID_SPAN;
             }
             rvApps.setLayoutManager(new GridLayoutManager(this, column_span));
-        }
-        else if(key.equals(NUMBER_OF_NOTIFICATIONS))
-        {
+        } else if (key.equals(NUMBER_OF_NOTIFICATIONS)) {
             String name = "Live Chat Support";
-            int index = IntStream.range(0,adapter.appsList.size())
+            int index = IntStream.range(0, adapter.appsList.size())
                     .filter(i -> name.equals(adapter.appsList.get(i).getLabel()))
                     .findFirst()
                     .orElse(-1);
-            if(index != -1)
-            {
+            if (index != -1) {
                 AppInfo app = adapter.appsList.get(index);
-                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this,NUMBER_OF_NOTIFICATIONS));
-                adapter.appsList.set(index,app);
+                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this, NUMBER_OF_NOTIFICATIONS));
+                adapter.appsList.set(index, app);
                 adapter.notifyItemChanged(index);
 
             }

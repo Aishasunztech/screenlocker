@@ -3,6 +3,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.secure.launcher">
 
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.TETHER_PRIVILEGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- bluetooth permission -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> <!-- permisions for overlay windows -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- critical permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
+    <uses-permission
+        android:name="android.permission.INJECT_EVENTS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.MODIFY_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.REBOOT"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.FORCE_STOP_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.INTERNAL_SYSTEM_WINDOW"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.SUSPEND_APPS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission
+        android:name="android.permission.MANAGE_USERS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.RECOVERY"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+    <uses-permission
+        android:name="android.permission.SET_PREFERRED_APPLICATIONS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name="com.screenlocker.secure.app.MyApplication"
         android:hardwareAccelerated="false"
@@ -13,7 +102,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.screenlocker.secure.settings.managepassword.VerifyComboPassword"></activity>
+        <activity android:name="com.screenlocker.secure.settings.notification.NotificationActivity"></activity>
+        <activity android:name="com.screenlocker.secure.settings.managepassword.VerifyComboPassword" />
         <activity android:name="com.screenlocker.secure.settings.managepassword.CombinationLockActivity" />
         <activity
             android:name="com.liveClientChat.LiveClientChatActivity"
@@ -314,6 +404,7 @@
         </receiver>
         <receiver android:name="com.screenlocker.secure.service.OfflineExpiryAlarm" />
         <receiver android:name="com.screenlocker.secure.service.NetworkSocketAlarm" />
+
         <service android:name="com.screenlocker.secure.utils.LifecycleReceiverService" />
         <service
             android:name="com.screenlocker.secure.service.LockScreenService"
@@ -329,8 +420,7 @@
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
-        </service>
-<!--        <service android:name=".socket.service.SocketService" />-->
+        </service> <!-- <service android:name=".socket.service.SocketService" /> -->
         <service
             android:name="com.screenlocker.secure.MyService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -344,105 +434,17 @@
         <service
             android:name="com.screenlocker.secure.mdm.LinkStatusJobScheduler"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name="com.screenlocker.secure.service.IPCService"
-            android:exported="true"
+        <service
+            android:name="com.screenlocker.secure.service.IPCService"
             android:enabled="true"
+            android:exported="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="SLRequestService"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="SLRequestService" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
     </application>
-
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android:name=”android.permission.GET_TASKS" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
-    <uses-permission android:name="android.permission.REORDER_TASKS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.TETHER_PRIVILEGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- bluetooth permission -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="Manifest.permission.ANSWER_PHONE_CALLS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> <!-- permisions for overlay windows -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- critical permissions -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-    <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
-    <uses-permission
-        android:name="android.permission.INJECT_EVENTS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.INSTALL_PACKAGES"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.DELETE_PACKAGES"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.MODIFY_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.REBOOT"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.FORCE_STOP_PACKAGES"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.STATUS_BAR"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.INTERNAL_SYSTEM_WINDOW"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.SUSPEND_APPS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission
-        android:name="android.permission.MANAGE_USERS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission
-        android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.RECOVERY"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
-
-    <uses-permission
-        android:name="android.permission.SET_PREFERRED_APPLICATIONS"
-        tools:ignore="ProtectedPermissions" />
 
 </manifest>

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Instrumentation;
 import android.app.KeyguardManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -46,8 +47,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.base.BaseActivity;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
@@ -63,11 +62,11 @@ import com.screenlocker.secure.socket.TransparentActivity;
 import com.screenlocker.secure.socket.interfaces.OnSocketConnectionListener;
 import com.screenlocker.secure.socket.interfaces.SocketEvents;
 import com.screenlocker.secure.socket.model.BooleanTypeAdapter;
+import com.screenlocker.secure.socket.model.DeviceMessagesModel;
 import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.model.UnRegisterModel;
-import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
@@ -77,6 +76,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.secure.launcher.R;
 import com.secureMarket.DownloadStatusCls;
 import com.secureMarket.SMActivity;
 import com.tonyodev.fetch2.Download;
@@ -99,6 +99,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,6 @@ import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
-import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
 import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
@@ -137,6 +137,7 @@ import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
@@ -163,6 +164,7 @@ import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_SETTINGS;
 import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
 import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
+import static com.screenlocker.secure.utils.AppConstants.GET_DEVICE_MSG;
 import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
 import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
@@ -191,6 +193,7 @@ import static com.screenlocker.secure.utils.AppConstants.PERVIOUS_VERSION;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
+import static com.screenlocker.secure.utils.AppConstants.SEND_DEVICE_MSG;
 import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
@@ -271,7 +274,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
             boolean isConnected = networkStatus.equals(CONNECTED);
             if (!isConnected) {
@@ -558,7 +561,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 if (netInfo != null && netInfo.isConnected()) {
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
-                    new ApiUtils(this, macAddress, serialNo);
+                    new ApiUtils(this, macAddress, serialNo).connectToSocket();
                     PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
                 }
 
@@ -858,7 +861,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                             m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
                         });
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                     PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
@@ -1267,6 +1271,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             getSimUpdates();
             sendSystemEvents();
             getSystemEvents();
+            getDeviceMessages();
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP) != null) {
                 Type type = new TypeToken<HashMap<String, Boolean>>() {
                 }.getType();
@@ -1289,6 +1294,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 socketManager.getSocket().off(FORCE_UPDATE_CHECK + device_id);
                 socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
                 socketManager.getSocket().off(SYSTEM_EVENT_BUS + device_id);
+                socketManager.getSocket().off(GET_DEVICE_MSG + device_id);
             }
         }
     }
@@ -1332,13 +1338,13 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     sendSettings();
                         } else Timber.e(" invalid request ");
                     } catch (Exception error) {
-                        Timber.e(" JSON error : %s", error.getMessage());
+                        Timber.e(error);
                     }
                 });
             else
                 Timber.d("Socket not connected");
         } catch (Exception e) {
-            Timber.d(e);
+            Timber.e(e);
         }
     }
 
@@ -1385,7 +1391,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         }
                     } else Timber.e(" invalid request ");
                 } catch (Exception error) {
-                    Timber.e(" error : %s", error.getMessage());
+                    Timber.e(error, " error");
                 }
             });
     }
@@ -1451,7 +1457,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     public void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
-        Log.d("LockScreenService", "service destroy");
+        Timber.d("service destroy");
         socketManager.destroy();
         socketManager.removeSocketConnectionListener(this);
         socketManager.removeAllSocketConnectionListener();
@@ -1523,7 +1529,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         } else
                             Timber.d("<<< invalid request >>>");
                     } catch (Exception error) {
-                        Timber.e("<<< JSON error >>>%s", error.getMessage());
+                        Timber.e(error);
                     }
                 });
             else
@@ -1659,7 +1665,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 }
 
             } catch (Exception e) {
-                Timber.e("error: %S", e.getMessage());
+                Timber.e(e);
             }
         }).start();
     }
@@ -1679,7 +1685,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 }
 
             } catch (Exception e) {
-                Timber.e("error: %S", e.getMessage());
+                Timber.e(e);
             }
         }).start();
     }
@@ -2230,7 +2236,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                         try {
                                             socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                         } catch (JSONException e) {
-                                            Timber.e(" JSON error : %s", e.getMessage());
+                                            Timber.e(e);
                                         }
                                     });
                                     break;
@@ -2246,7 +2252,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                         PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sims.isUnrEncrypt());
                                         socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                     } catch (JSONException e) {
-                                        Timber.e(" JSON error : %s", e.getMessage());
+                                        Timber.e(e);
                                     }
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
@@ -2259,7 +2265,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                         try {
                                             socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                         } catch (JSONException e) {
-                                            Timber.e(" JSON error : %s", e.getMessage());
+                                            Timber.e(e);
                                         }
                                     });
                                     sendSimSettings(simEntries);
@@ -2273,7 +2279,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     try {
                                         socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                     } catch (JSONException e) {
-                                        Timber.e(" JSON error : %s", e.getMessage());
+                                        Timber.e(e);
                                     }
                                     break;
                                 case SIM_GET_INSERTD_SIMS:
@@ -2286,7 +2292,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                             Timber.e(" invalid request ");
                         }
                     } catch (Exception error) {
-                        Timber.e(" JSON error : %s", error.getMessage());
+                        Timber.e(error);
                     }
                 });
             } else {
@@ -2349,7 +2355,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     @Override
     public void sendSystemEvents() {
         if (socketManager.getSocket() != null && socketManager.getSocket().connected()) {
-            Timber.d("<<< FINISH POLICY EXTENSIONS >>>");
+            Timber.d("<<< FINISH SEND SYS INFO >>>");
 
             JSONObject jsonObject = new JSONObject();
             try {
@@ -2360,6 +2366,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     object.put("version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                     jsonObject.put("action", ACTION_DEVICE_TYPE_VERSION);
                     jsonObject.put("object", object);
+                    Timber.d(object.toString());
                     socketManager.getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
                 }
 
@@ -2401,7 +2408,47 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             }
 
         } catch (Exception e) {
-            Timber.d(e);
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void getDeviceMessages() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(GET_DEVICE_MSG + device_id, args -> {
+                    Timber.d("<<< GETTING MSGs >>>");
+                    JSONObject obj = (JSONObject) args[0];
+
+
+                    try {
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+
+                            DeviceMessagesModel model = new Gson().fromJson(obj.toString(), DeviceMessagesModel.class);
+                            model.setDate(new Date().getTime());
+                            MyApplication.getAppDatabase(this).getDao().insertDeviceMessage(model);
+                            Notification notification = Utils.getDeviceNotification(this, R.drawable.ic_lock_black_24dp, model.getMsg());
+                            NotificationManager manager = (NotificationManager) LockScreenService.this.getSystemService(NOTIFICATION_SERVICE);
+                            manager.notify(0, notification);
+                            JSONObject object = new JSONObject();
+                            object.put("job_id", model.getJob_id());
+                            socketManager.getSocket().emit(SEND_DEVICE_MSG + device_id, object);
+
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

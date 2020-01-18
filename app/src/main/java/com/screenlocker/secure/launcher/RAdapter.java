@@ -3,6 +3,7 @@ package com.screenlocker.secure.launcher;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +20,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
-import com.secure.launcher.BuildConfig;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 import com.secureMarket.SecureMarketActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.simplemobiletools.filemanager.pro.activities.MainActivity;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static android.content.Intent.ACTION_VIEW;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -41,13 +43,14 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     private Context context;
     private ClearCacheListener listener;
 
+
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView textView,numberOfNotifications;
+        final TextView textView, numberOfNotifications;
         final ImageView img;
         final FrameLayout badge;
 
@@ -61,7 +64,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             numberOfNotifications = itemView.findViewById(R.id.number_of_notifications);
 
 
-
             itemView.setOnClickListener(this);
 
         }
@@ -72,8 +74,8 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             final Context context = v.getContext();
             AppInfo info;
             try {
-                 info = appsList.get(getAdapterPosition());
-            }catch (ArrayIndexOutOfBoundsException e ){
+                info = appsList.get(getAdapterPosition());
+            } catch (ArrayIndexOutOfBoundsException e) {
                 return;
             }
 
@@ -85,16 +87,16 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                         Intent i = new Intent(context, SecureSettingsMain.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
-                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                        ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                         break;
                     case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
                         context.startActivity(new Intent(context, LiveClientChatActivity.class));
-                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                        ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                         break;
                     case BuildConfig.APPLICATION_ID:
                         Intent launch = new Intent(context, SettingsActivity.class);
                         context.startActivity(launch);
-                        ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                        ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                         break;
                 }
 
@@ -113,24 +115,24 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                                 i.putExtra("show_default", "show_default");
                             }
                             context.startActivity(i);
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         case AppConstants.SECURE_CLEAR_UNIQUE:
                             showCacheDialog();
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         case AppConstants.SECURE_MARKET_UNIQUE:
                             Intent intent = new Intent(context, SecureMarketActivity.class);
                             context.startActivity(intent);
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         case AppConstants.SUPPORT_UNIQUE:
                             context.startActivity(new Intent(context, ChatActivity.class));
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         case AppConstants.SFM_UNIQUE:
                             context.startActivity(new Intent(context, MainActivity.class));
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         case AppConstants.LIVE_CLIENT_CHAT_UNIQUE:
                             context.startActivity(new Intent(context, LiveClientChatActivity.class));
@@ -139,7 +141,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             Intent intent1 = new Intent(context, SettingsActivity.class);
                             intent1.setAction(ACTION_VIEW);
                             context.startActivity(intent1);
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         default: {
                             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(info.getPackageName());
@@ -148,7 +150,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                             }
                             /*launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );*/
                             context.startActivity(launchIntent);
-                            ((Activity )context).overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                            ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
                         }
                     }
@@ -164,8 +166,6 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.app_disabled), Toast.LENGTH_SHORT).show();
             }
-
-
 
 
         }
@@ -204,14 +204,14 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
         //Here we use the information in the list we created to define the views
 
-        String appLabel = appsList.get(i).getLabel();
+        AppInfo info = appsList.get(i);
 
         // Drawable appIcon = appsList.get(i).getIcon();
 
         viewHolder.badge.setVisibility(View.GONE);
 
         TextView textView = viewHolder.textView;
-        switch (appLabel) {
+        switch (info.getLabel()) {
 
             case "Secure Market":
                 textView.setText(context.getResources().getString(R.string.secure_market_title));
@@ -228,19 +228,17 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             case "Live Chat Support":
                 textView.setText(context.getResources().getString(R.string.live_client_device_id));
 //
-                int number = PrefUtils.getIntegerPref(context,NUMBER_OF_NOTIFICATIONS);
-                if(number > 0 )
-                {
+                int number = PrefUtils.getIntegerPref(context, NUMBER_OF_NOTIFICATIONS);
+                if (number > 0) {
                     viewHolder.badge.setVisibility(View.VISIBLE);
                     viewHolder.numberOfNotifications.setText(number + "");
-                }
-                else{
+                } else {
                     viewHolder.badge.setVisibility(View.GONE);
                 }
 
                 break;
             default:
-                textView.setText(appLabel);
+                textView.setText(info.getLabel());
                 break;
         }
 //        if (appsList.get(i).isNotification()){
@@ -253,6 +251,15 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 .load(appsList.get(i).getIcon())
                 .apply(new RequestOptions().centerCrop())
                 .into(viewHolder.img);
+        if (info.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
+            if (info.getNumberOfnotifications() == 0) {
+                viewHolder.badge.setVisibility(View.GONE);
+            } else {
+                viewHolder.badge.setVisibility(View.VISIBLE);
+                viewHolder.numberOfNotifications.setText(String.valueOf(info.getNumberOfnotifications()));
+                Log.d("TEZST: 1 ", String.valueOf(info.getNumberOfnotifications()));
+            }
+        }
     }
 
 
@@ -275,6 +282,20 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    public void updateNotificationBadgeOfSL(int notification) {
+        Log.d("TEZST: ", String.valueOf(notification));
+        int index = IntStream.range(0, appsList.size())
+                .filter(i -> appsList.get(i).getPackageName().equals(BuildConfig.APPLICATION_ID))
+                .findFirst()
+                .orElse(-1);
+        if (index != -1) {
+            appsList.get(index).setNumberOfnotifications(notification);
+            notifyItemChanged(index);
+            Log.d("TEZST: ", String.valueOf(index));
+        }else {
+            Log.d("TEZST: ", String.valueOf(-1));
+        }
+    }
 
     public interface ClearCacheListener {
         void clearCache(Context context);

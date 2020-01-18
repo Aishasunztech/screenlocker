@@ -11,8 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -34,6 +36,7 @@ import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
+import com.screenlocker.secure.room.migrations.Migration_15_16;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -41,6 +44,7 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.UtilityFunctions;
 import com.secureSetting.t.data.AppItem;
 import com.secureSetting.t.data.DataManager;
 import com.secureSetting.t.db.DbHistoryExecutor;
@@ -49,9 +53,8 @@ import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -61,6 +64,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -84,9 +88,12 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     private ComponentName compName;
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
-    ApiOneCaller apiOneCaller;
-    PrefManager preferenceManager;
-    AppsStatusReceiver appsStatusReceiver;
+    private ApiOneCaller apiOneCaller;
+    private PrefManager preferenceManager;
+    private AppsStatusReceiver appsStatusReceiver;
+    private ApiUtils apiUtils;
+    private long mInterval = 10000; // 10 seconds by default, can be changed later
+    private Handler mHandler;
 
 
     private static Context appContext;
@@ -130,8 +137,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
-
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
 
             boolean isConnected = networkStatus.equals(CONNECTED);
@@ -144,10 +150,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
                 }
             } else {
                 utils.stopSocket(this);
-                if (this.timer != null) {
-                    this.timer.cancel();
-                    this.timer = null;
-                }
+                stopRepeatingTask();
             }
         }
     };
@@ -156,7 +159,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mHandler = new Handler();
         appContext = getApplicationContext();
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
 
@@ -194,7 +197,8 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
             myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
                     .addMigrations(new Migration_11_13(11, 13),
                             new Migration_13_14(13, 14)
-                            , new Migration_14_15(14, 15))
+                            , new Migration_14_15(14, 15)
+                            , new Migration_15_16(15, 16))
                     .build();
         });
         Timber.plant(new Timber.DebugTree());
@@ -313,6 +317,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(myAlarmBroadcastReceiver);
         unRegisterNetworkPref();
+        stopRepeatingTask();
         super.onTerminate();
     }
 
@@ -351,17 +356,23 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
                 if (!old_device_status) {
                     if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                        new ApiUtils(MyApplication.this, macAddress, serialNo);
+                        if (apiUtils == null)
+                            apiUtils = new ApiUtils(MyApplication.this, macAddress, serialNo);
+                        apiUtils.connectToSocket();
                         PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
                     }
                 }
 
                 if (linkStatus) {
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    if (apiUtils == null)
+                        apiUtils = new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    apiUtils.connectToSocket();
                 } else if (pendingActivation) {
                     if (!isFirst)
                         scheduleTimer();
-                    new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    if (apiUtils == null)
+                        apiUtils = new ApiUtils(MyApplication.this, macAddress, serialNo);
+                    apiUtils.connectToSocket();
                 }
 //                checkForDownload();
 
@@ -371,47 +382,12 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         asyncCalls.execute();
     }
 
-    private Timer timer;
-
     private boolean isFirst = false;
 
     private void scheduleTimer() {
 
         isFirst = true;
-
-        if (timer != null) {
-            timer.cancel();
-        }
-        timer = null;
-
-
-        timer = new Timer();
-
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Timber.d("zklvnsdfvnsdklfsdfg : " + "checking online connection ");
-                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
-                    onlineConnection();
-                } else {
-                    if (timer != null) {
-                        timer.cancel();
-                        timer = null;
-                    }
-                }
-
-
-            }
-
-        }, 5000, 10 * 60 * 1000);
-    }
-
-    private void stopTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        Timber.d("zklvnsdfvnsdklfsdfg : " + "stop TImer");
+        startRepeatingTask();
     }
 
 
@@ -473,19 +449,16 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     }
 
     private void addDefaultIgnoreAppsToDB() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> mDefaults = new ArrayList<>();
-                mDefaults.add("com.android.settings");
-                //mDefaults.add(BuildConfig.APPLICATION_ID);
+        new Thread(() -> {
+            List<String> mDefaults = new ArrayList<>();
+            mDefaults.add("com.android.settings");
+            //mDefaults.add(BuildConfig.APPLICATION_ID);
 //                mDefaults.add(BuildConfig.APPLICATION_ID);
-                for (String packageName : mDefaults) {
-                    AppItem item = new AppItem();
-                    item.mPackageName = packageName;
-                    item.mEventTime = System.currentTimeMillis();
-                    DbIgnoreExecutor.getInstance().insertItem(item);
-                }
+            for (String packageName : mDefaults) {
+                AppItem item = new AppItem();
+                item.mPackageName = packageName;
+                item.mEventTime = System.currentTimeMillis();
+                DbIgnoreExecutor.getInstance().insertItem(item);
             }
         }).run();
     }
@@ -495,11 +468,48 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         if (state) {
             scheduleTimer();
         } else {
-            stopTimer();
+            stopRepeatingTask();
         }
     }
 
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
 
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    final Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+
+            boolean schedule = true;
+            try {
+                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
+                    switch (UtilityFunctions.getNetworkType(MyApplication.this)) {
+                        case NetworkCapabilities.TRANSPORT_CELLULAR:
+                            mInterval = mInterval + 10000;
+                            break;
+                        case NetworkCapabilities.TRANSPORT_WIFI:
+                            mInterval = 10000;
+                            break;
+                    }
+                    onlineConnection();
+
+                } else {
+                    //TODO remove timer from here
+                    stopRepeatingTask();
+                    schedule = false;
+                }
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                if (schedule)
+                    mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
 }
 
 

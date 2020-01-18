@@ -18,13 +18,19 @@ import java.util.List;
 public class MainViewModel extends AndroidViewModel {
 
     private LiveData<List<AppInfo>> mAppInfos;
+    private LiveData<Integer> mUnReadCount;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         mAppInfos = MyApplication.getAppDatabase(application).getDao().getAllApps();
+        mUnReadCount = MyApplication.getAppDatabase(application).getDao().getUnSeenCount();
     }
 
     LiveData<List<AppInfo>> getAllApps() {
         return mAppInfos;
+    }
+
+    public LiveData<Integer> getmUnReadCount() {
+        return mUnReadCount;
     }
 }

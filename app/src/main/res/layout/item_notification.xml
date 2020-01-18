@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textSize="@dimen/_12sdp"
+        tools:text="System maintenance from 1am-2am EST...we appologize for the downtime"
+        />
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="6 JAN, 10:10 PM"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/dialog_divider"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"/>
+
+
+</LinearLayout>
