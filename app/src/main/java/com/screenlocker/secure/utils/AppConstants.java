@@ -9,7 +9,6 @@ public class AppConstants {
     public static final long FIVE_MIN_INTERVAL = 5 * 60 * 1000L;
     public static final String KEY_SHOWN_CHOOSER = "shown_chooser";
 
-
     public static final String KEY_THEME = "is_dark";
     public static final String PENDING_ACTIVATION = "pending_activation";
     public static boolean IS_LOCALE_CHANGED = false;
@@ -210,6 +209,8 @@ public class AppConstants {
     public static final String KEY_DEALER_ID = "dId";
     public static final String KEY_CONNECTED_ID = "connectedDid";
     public static final String COPIED_DEVICE_ID = "COPIED_DEVICE_ID";
+    public static final String COPIED_CHAT_ID = "COPIED_CHAT_ID";
+    public static final String COPIED_USER_ID = "COPIED_USER_ID";
     public static final String COPIED_LINKED_STATUS = "COPIED_LINKED_STATUS";
     public static final String COPIED_DEVICE_STATUS = "COPIED_DEVICE_STATUS";
     public static final String COPIED_IMEI_1 = "COPIED_IMEI_1";

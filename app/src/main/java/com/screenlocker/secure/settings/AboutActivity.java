@@ -147,6 +147,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvStatus.setOnClickListener(this);
         tvImei1.setOnClickListener(this);
         tvImei2.setOnClickListener(this);
+        tvChatId.setOnClickListener(this);
+        tvPgpEmail.setOnClickListener(this);
+        tvUserId.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             refresh();
@@ -401,8 +404,16 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 Utils.copyToClipBoard(this, AppConstants.COPIED_IP, tvIP.getText().toString(), "IP address copied to clipboard");
                 break;
             case R.id.tvPgpEmail:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "Pgp email copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "PGP email copied to clipboard");
                 break;
+            case R.id.tvChatId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_CHAT_ID, tvChatId.getText().toString(), "CHAT ID email copied to clipboard");
+                break;
+            case R.id.tvUserId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID email copied to clipboard");
+                break;
+
+
         }
     }
 
