@@ -407,10 +407,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "PGP email copied to clipboard");
                 break;
             case R.id.tvChatId:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_CHAT_ID, tvChatId.getText().toString(), "CHAT ID email copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_CHAT_ID, tvChatId.getText().toString(), "CHAT ID copied to clipboard");
                 break;
             case R.id.tvUserId:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID email copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID copied to clipboard");
                 break;
 
 
@@ -453,13 +453,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void emergencyFlag(View view) {
 
-        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
-            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
-        } else {
-            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
-            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
-        }
+//        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+//            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
+//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
+//        } else {
+//            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
+//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
+//        }
 
     }
 
@@ -473,34 +473,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-        String url = url_1.getText().toString();
-
-        if (TextUtils.isEmpty(url)) {
-            url_1.setError("Please enter valid url !");
-            return;
-        }
-
-
-        URL_1 = url;
-
-        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+//        String url = url_1.getText().toString();
+//
+//        if (TextUtils.isEmpty(url)) {
+//            url_1.setError("Please enter valid url !");
+//            return;
+//        }
+//
+//
+//        URL_1 = url;
+//
+//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-        clickCount++;
-        int total = 6;
-
-        if (clickCount == 6) {
-            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-            button.setVisibility(View.VISIBLE);
-            button2.setVisibility(View.VISIBLE);
-            url_1.setVisibility(View.VISIBLE);
-        } else {
-            if (clickCount >= 2 && clickCount <= 6) {
-                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        clickCount++;
+//        int total = 6;
+//
+//        if (clickCount == 6) {
+//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+//            button.setVisibility(View.VISIBLE);
+//            button2.setVisibility(View.VISIBLE);
+//            url_1.setVisibility(View.VISIBLE);
+//        } else {
+//            if (clickCount >= 2 && clickCount <= 6) {
+//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
     }
 }
