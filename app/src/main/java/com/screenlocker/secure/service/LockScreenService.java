@@ -136,6 +136,7 @@ import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CLIENT_SOCKET_URL;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
@@ -449,7 +450,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
             boolean isConnected = networkStatus.equals(CONNECTED);
             if (!isConnected) {
@@ -2108,8 +2109,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
                             List<InstallModel> finalPushedApps = list.stream().filter(model -> model.getType().equals(PUSH_APPS)).collect(Collectors.toList());
 
+                            for (InstallModel finalPushedApp : finalPushedApps) {
+                                finalPushedApp.setSettingId(setting_id);
+                            }
 
-                            if (finalPushedApps != null && finalPushedApps.size() > 0) {
+
+                            if (finalPushedApps.size() > 0) {
 
                                 if (task != null) {
                                     task.cancel(true);
@@ -2124,7 +2129,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                                     }
 
 
-                                }, this, (ArrayList<InstallModel>) finalPushedApps);
+                                }, this, (ArrayList<InstallModel>) finalPushedApps, setting_id);
 
                                 task.execute();
 
@@ -2160,6 +2165,9 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                             }
 
                             ArrayList<InstallModel> savedApps = utils.getArrayList(this);
+                            for (InstallModel savedApp : savedApps) {
+                                savedApp.setSettingId(setting_id);
+                            }
 
                             if (savedApps != null && savedApps.size() > 0) {
                                 Timber.d("Old Apps size %s", savedApps.size());

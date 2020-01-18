@@ -71,7 +71,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
 
             if (pushDbApps != null && pushDbApps.size() > 0) {
                 for (int i = 0; i < pushDbApps.size(); i++) {
-                    sendBroadcast(this, true, pushDbApps.get(i), i == pushDbApps.size() - 1, true);
+                    sendBroadcast(this, true, pushDbApps.get(i), i == pushDbApps.size() - 1, true,pushDbApps.get(i).getSettingId());
                     Timber.d(pushDbApps.get(i).getPackage_name());
                 }
             }
@@ -86,7 +86,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
 
             if (pullApps != null && pullApps.size() > 0) {
                 for (int i = 0; i < pullApps.size(); i++) {
-                    sendDelBroadCast(this, false, pullApps.get(i), i == pullApps.size() - 1, "", pullApps.get(i).getPackage_name(), false);
+                    sendDelBroadCast(this, false, pullApps.get(i), i == pullApps.size() - 1, "", pullApps.get(i).getPackage_name(), false,pullApps.get(i).getSettingId());
                     Timber.d(pullApps.get(i).getPackage_name());
                 }
             }
@@ -162,7 +162,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
 
 
     //send Intent with success status of package push request
-    private void sendBroadcast(Context context, boolean status, InstallModel model, boolean isLast, boolean insertApp) {
+    private void sendBroadcast(Context context, boolean status, InstallModel model, boolean isLast, boolean insertApp,String setting_id) {
 
         Timber.d(model.getPackage_name());
 
@@ -172,13 +172,15 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         appInstalled.putExtra("packageAdded", new Gson().toJson(model));
         appInstalled.putExtra("status", status);
         appInstalled.putExtra("isPolicy", model.isPolicy());
+        appInstalled.putExtra("setting_id", setting_id);
         appInstalled.putExtra("isLast", isLast);
         appInstalled.putExtra("insertApp", insertApp);
         context.sendBroadcast(appInstalled);
     }
 
 
-    private void sendDelBroadCast(Context context, boolean secureMarket, InstallModel model, boolean isLast, String label, String packageName, boolean sendStatus) {
+    private void sendDelBroadCast(Context context, boolean secureMarket, InstallModel model, boolean isLast, String label,
+                                  String packageName, boolean sendStatus, String setting_id) {
         //package already uninstall
         Intent delIntent = new Intent();
         delIntent.setComponent(new ComponentName(context.getPackageName(), "com.screenlocker.secure.socket.receiver.AppsStatusReceiver"));
@@ -190,6 +192,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         // isLast specifies if this is the last package of requested delete packages list
         // for notifying LM About operation
         delIntent.putExtra("isLast", isLast);
+        delIntent.putExtra("setting_id", setting_id);
         delIntent.putExtra("sendStatus", sendStatus);
         //Label of deleting package (important for deleting record from local database)
         delIntent.putExtra("label", label);

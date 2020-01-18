@@ -29,6 +29,7 @@ import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.interfaces.GetApplications;
 import com.screenlocker.secure.socket.interfaces.GetExtensions;
@@ -464,49 +465,41 @@ public class utils {
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
-                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD)!=null && PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) ){
+                    passAlreadyExist(device_id);
+                }
+                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null &&
+                        PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
-                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+                    passAlreadyExist(device_id);
 
-                        JSONObject jsonObject = new JSONObject();
-                        try {
-                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
-                            jsonObject.put("object", "");
-                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
-
-                        } catch (JSONException e) {
-                            Timber.d(e);
-                        }
-                    }
 
                 } else {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
                     PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
-                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass) && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD)!=null
+                        && PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass)) {
                     //password is already taken
-                    if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
-                        Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+                    passAlreadyExist(device_id);
 
-                        JSONObject jsonObject = new JSONObject();
-                        try {
-                            jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
-                            jsonObject.put("object", "");
-                            SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
-
-                        } catch (JSONException e) {
-                            Timber.d(e);
-                        }
-                    }
+                }
+                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null
+                        && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                    //password is already taken
+                    passAlreadyExist(device_id);
 
                 } else {
                     PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
                     PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
@@ -518,14 +511,17 @@ public class utils {
                 if (duress_password.equals("clear")) {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
                     PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
 
                 }
             }
         } catch (Exception e) {
 
-            Timber.d(e);
+            Timber.e(e);
         }
+
 
     }
 
@@ -1152,4 +1148,21 @@ public class utils {
         }.getType();
         return gson.fromJson(json, type);
     }
+
+    private static void passAlreadyExist(String device_id) {
+        if (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected()) {
+            Timber.d("<<< PASSWORD ALREADY EXIST >>>");
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("action", ACTION_PASSWORD_ALREADY_EXIST);
+                jsonObject.put("object", "");
+                SocketManager.getInstance().getSocket().emit(SYSTEM_EVENT_BUS + device_id, jsonObject);
+
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
+    }
+
 }

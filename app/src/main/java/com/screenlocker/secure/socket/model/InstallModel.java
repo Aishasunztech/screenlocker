@@ -16,6 +16,16 @@ public class InstallModel {
     private boolean install;
     private boolean enable;
 
+    private String settingId;
+
+    public String getSettingId() {
+        return settingId;
+    }
+
+    public void setSettingId(String settingId) {
+        this.settingId = settingId;
+    }
+
     private String apk_uri;
 
     private boolean policy;

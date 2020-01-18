@@ -31,10 +31,13 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.ShutDownReceiver;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.manual_load.DownloadCompleteListener;
+import com.screenlocker.secure.manual_load.ManualPullPush;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
+import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
@@ -56,13 +59,17 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
+import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView, SettingContract.SettingsMvpView, RAdapter.ClearCacheListener {
+public class MainActivity extends BaseActivity implements MainContract.MainMvpView,
+        SettingContract.SettingsMvpView,
+        RAdapter.ClearCacheListener ,
+        DownloadCompleteListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
@@ -101,6 +108,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             finish();
             return;
         }
+        LockScreenService.downloadCompleteListener = this;
 
 //
 //        NetWatch.builder(this)
@@ -283,6 +291,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             mainPresenter.startLockService(lockScreenIntent);
         }
 
+        String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+        if (PrefUtils.getBooleanPref(this, SHOW_MANUAL_ACTIVITY) && msg != null && msg.equals(KEY_MAIN_PASSWORD)) {
+            Timber.d("<<< Policy Remaining >>>");
+            Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
         boolean pendingDialog = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG);
         if (pendingDialog) {
             String dialogMessage = PrefUtils.getStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE);
@@ -484,6 +499,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         });
 
         alertDialog.show();
+    }
+
+    @Override
+    public void onDownloadCompleted(ArrayList<InstallModel> downloadedApps) {
+        Timber.d("<<< Downloading Completed >>>");
+        PrefUtils.saveBooleanPref(MainActivity.this, SHOW_MANUAL_ACTIVITY, true);
+        Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }
 

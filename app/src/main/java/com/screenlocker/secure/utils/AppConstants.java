@@ -513,6 +513,7 @@ public class AppConstants {
     public static final String OLD_DEVICE_STATUS = "old_device_status";
 
     public static final String CURRENT_NETWORK_STATUS = "current_netrowk_status";
+    public static final String CURRENT_NETWORK_CHANGED = "__current_netrowk_";
     public static final String CONNECTED = "connected";
     public static final String DISCONNECTED = "disconnected";
     public static final String LIMITED = "limited";
@@ -520,6 +521,4 @@ public class AppConstants {
     public static final String START_SOCKET = "start_socket";
     public static final String STOP_SOCKET = "stop_socket";
     public static final String SOCKET_STATUS = "socket_status";
-
-
 }

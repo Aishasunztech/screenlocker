@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.gson.Gson;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -28,11 +29,12 @@ import java.util.Optional;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
+import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
 
 public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<InstallModel>> {
 
-    private String appName;
+    private String appName, setting_id;
     private ArrayList<InstallModel> InstallModels;
     private WeakReference<Context> contextWeakReference;
 
@@ -40,9 +42,10 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
     private DownloadCompleteListener downloadCompleteListener;
 
 
-    public DownloadPushedApps(DownloadCompleteListener downloadCompleteListener, Context context, final ArrayList<InstallModel> InstallModels) {
+    public DownloadPushedApps(DownloadCompleteListener downloadCompleteListener, Context context, final ArrayList<InstallModel> InstallModels, String setting_id) {
         contextWeakReference = new WeakReference<>(context);
         this.InstallModels = InstallModels;
+        this.setting_id = setting_id;
         this.downloadCompleteListener = downloadCompleteListener;
 
     }
@@ -62,13 +65,13 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
             InstallModel model = InstallModels.get(i);
 
 
-            File file = downloadApp(live_url + "getApk/" + CommonUtils.splitName(model.getApk()));
+            File file = downloadApp(live_url +MOBILE_END_POINT+ "getApk/" + CommonUtils.splitName(model.getApk()));
 
             installModelList.add(model);
 
             if (file == null) {
                 model.setApk_uri(null);
-                sendBroadcast(contextWeakReference.get(), false, model, i == InstallModels.size() - 1, false);
+                sendBroadcast(contextWeakReference.get(), false, model, i == InstallModels.size() - 1, false, setting_id);
             } else {
                 int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
                 Timber.d("<<< File Size : >>> %s ", file_size);
@@ -88,10 +91,10 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
 
                     utils.saveArrayList(list, contextWeakReference.get());
 
-                    sendBroadcast(contextWeakReference.get(), true, model, i == InstallModels.size() - 1, false);
+                    sendBroadcast(contextWeakReference.get(), true, model, i == InstallModels.size() - 1, false, setting_id);
                 } else {
                     model.setApk_uri(null);
-                    sendBroadcast(contextWeakReference.get(), false, model, i == InstallModels.size() - 1, false);
+                    sendBroadcast(contextWeakReference.get(), false, model, i == InstallModels.size() - 1, false,setting_id);
                 }
             }
 
@@ -105,7 +108,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
 
 
     //send Intent with success status of package push request
-    private void sendBroadcast(Context context, boolean status, InstallModel model, boolean isLast, boolean insertApp) {
+    private void sendBroadcast(Context context, boolean status, InstallModel model, boolean isLast, boolean insertApp, String Settings_id) {
 
         Timber.d(model.getPackage_name());
 
@@ -114,6 +117,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
         appInstalled.setAction("com.secure.systemcontroll.PackageAdded");
         appInstalled.putExtra("packageAdded", new Gson().toJson(model));
         appInstalled.putExtra("status", status);
+        appInstalled.putExtra("setting_id", Settings_id);
         appInstalled.putExtra("isPolicy", model.isPolicy());
         appInstalled.putExtra("isLast", isLast);
         appInstalled.putExtra("insertApp", insertApp);

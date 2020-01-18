@@ -68,6 +68,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
@@ -148,7 +149,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
 
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
 

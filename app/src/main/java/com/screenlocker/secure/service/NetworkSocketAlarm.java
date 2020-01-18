@@ -12,6 +12,8 @@ import com.screenlocker.secure.network.TaskFinished;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.Date;
+
 import timber.log.Timber;
 
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
@@ -31,6 +33,7 @@ public class NetworkSocketAlarm extends BroadcastReceiver {
                 Timber.d("checking connection....");
                 new CheckInternetTask(data -> {
                     PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
+                    PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_CHANGED, String.valueOf(new Date().getTime()));
                     Timber.d("connection status :%s", data);
                 }).execute();
             }
