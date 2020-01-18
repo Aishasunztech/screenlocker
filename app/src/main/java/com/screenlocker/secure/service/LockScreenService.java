@@ -630,6 +630,12 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_PUSH_APPS);
+        intentFilter.addAction(ACTION_PULL_APPS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
@@ -715,7 +721,6 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         map.put(EXTRA_PACKAGE_NAME, packageName);
         map.put(EXTRA_FILE_PATH, filePath);
         map.put(EXTRA_REQUEST, type);
-        map.put(EXTRA_SPACE, space);
         map.put(EXTRA_SPACE, space);
         map.put(EXTRA_REQUEST_ID_SAVED, String.valueOf(request.getId()));
 
@@ -1147,12 +1152,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_PUSH_APPS);
-        intentFilter.addAction(ACTION_PULL_APPS);
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
 
         String token = PrefUtils.getStringPref(LockScreenService.this, TOKEN);
         device_id = PrefUtils.getStringPref(LockScreenService.this, DEVICE_ID);
@@ -1169,8 +1169,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     private void stopSocket() {
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
+
 
         Log.d("LockScreenService", "service destroy");
 
@@ -1286,7 +1285,6 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 socketManager.getSocket().off(GET_SYNC_STATUS + device_id);
                 socketManager.getSocket().off(GET_APPLIED_SETTINGS + device_id);
                 socketManager.getSocket().off(DEVICE_STATUS + device_id);
-                socketManager.getSocket().off(GET_PUSHED_APPS + device_id);
                 socketManager.getSocket().off(WRITE_IMEI + device_id);
                 socketManager.getSocket().off(GET_PUSHED_APPS + device_id);
                 socketManager.getSocket().off(GET_PULLED_APPS + device_id);
@@ -1735,8 +1733,9 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
 
                     for (int i = 0; i < list.size(); i++) {
-
                         InstallModel item = list.get(i);
+                        Timber.d("pushedApps: " + item.getApk_name());
+
                         String apk = item.getApk();
 
                         String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
