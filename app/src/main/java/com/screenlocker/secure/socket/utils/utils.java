@@ -471,6 +471,8 @@ public class utils {
                 } else {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
                     PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
@@ -490,6 +492,8 @@ public class utils {
                 } else {
                     PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
                     PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
@@ -501,13 +505,15 @@ public class utils {
                 if (duress_password.equals("clear")) {
                     PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
                     PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PATTERN, null);
+                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PIN, null);
                     PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
 
                 }
             }
         } catch (Exception e) {
 
-            Timber.d(e);
+            Timber.e(e);
         }
 
     }

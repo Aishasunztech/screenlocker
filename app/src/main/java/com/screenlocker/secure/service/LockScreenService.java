@@ -137,6 +137,7 @@ import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
 import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
@@ -273,7 +274,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
+        if (key.equals(CURRENT_NETWORK_CHANGED)) {
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
             boolean isConnected = networkStatus.equals(CONNECTED);
             if (!isConnected) {
