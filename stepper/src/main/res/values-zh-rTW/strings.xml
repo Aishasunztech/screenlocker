@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">跳躍</string>
+	<string name="ms_next">下一個</string>
+	<string name="ms_end">發射</string>
+	<string name="ms_continue">繼續</string>
+	<string name="ms_optional">可選的</string>
+	<string name="ms_text_step">步驟$總共$當前</string>
+	<string name="previous">以前</string>
+</resources>

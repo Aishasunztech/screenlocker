@@ -57,8 +57,7 @@ import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
-    @BindView(R.id.tvSystemId)
-    TextView tvSystemId;
+
 
     @BindView(R.id.tvUserId)
     TextView tvUserId;
@@ -67,8 +66,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvLinkedStatus;
     @BindView(R.id.tvDeviceStatus)
     TextView tvDeviceStatus;
-    @BindView(R.id.tvCurrentDealerID)
-    TextView tvCurrentDealerID;
     @BindView(R.id.tvLinkedDealerPin)
     TextView tvLinkedDealerPin;
     @BindView(R.id.tvSimNo)
@@ -85,16 +82,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvPgpEmail;
     @BindView(R.id.tvChatId)
     TextView tvChatId;
-    @BindView(R.id.tvSimId)
-    TextView tvSimId;
-    @BindView(R.id.chatId)
-    LinearLayout chatId;
-    @BindView(R.id.dividerChatId)
-    View dividerChatId;
-    @BindView(R.id.simId)
-    LinearLayout simId;
-    @BindView(R.id.dividerSimId)
-    View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -127,9 +114,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setTitle(getResources().getString(R.string.account));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView systemId = findViewById(R.id.tvSystemId);
-        systemId.setText("N/A");
-
         onlineStatus = findViewById(R.id.tvLinkedStatus);
         tvDeviceId = findViewById(R.id.tvDeviceId);
         tvStatus = findViewById(R.id.tvDeviceStatus);
@@ -147,6 +131,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvStatus.setOnClickListener(this);
         tvImei1.setOnClickListener(this);
         tvImei2.setOnClickListener(this);
+        tvChatId.setOnClickListener(this);
+        tvPgpEmail.setOnClickListener(this);
+        tvUserId.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             refresh();
@@ -182,12 +169,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         }
 
         /*Status*/
-        TextView textView18 = findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(this, DEVICE_STATUS);
         boolean b = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
         if (b) {
             tvStatus.setVisibility(View.VISIBLE);
-            textView18.setVisibility(View.VISIBLE);
 
             if (PrefUtils.getBooleanPref(AboutActivity.this, DEVICE_LINKED_STATUS)) {
                 if (device_status == null) {
@@ -200,10 +185,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-
-        // Expiry Date
-        TextView textView16 = findViewById(R.id.textViewExpiry);
-
         String remaining_days = getRemainingDays(this);
 
         if (remaining_days != null) {
@@ -215,10 +196,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         List<String> imeis = DeviceIdUtils.getIMEI(this);
 
-
-        // IMEI 1
-        TextView textViewImei = findViewById(R.id.textViewImei);
-
         if (imeis.size() > 0) {
             String imei = imeis.get(0);
             if (imei != null) {
@@ -227,9 +204,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 tvImei1.setText(getResources().getString(R.string.n_a));
             }
         }
-
-        // IMEI 2
-        TextView textViewImei2 = findViewById(R.id.textViewImei2);
 
         if (imeis.size() > 1) {
             String imei2 = imeis.get(1);
@@ -249,16 +223,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String chat_Id = PrefUtils.getStringPref(this, CHAT_ID);
         if (chat_Id != null) {
-            chatId.setVisibility(View.VISIBLE);
-            dividerChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
         }
         // sim ID
         String sim_Id = PrefUtils.getStringPref(this, SIM_ID);
         if (sim_Id != null) {
-            simId.setVisibility(View.VISIBLE);
-            dividerSimId.setVisibility(View.VISIBLE);
-            tvSimId.setText(sim_Id);
+//            tvSimId.setText(sim_Id);
         }
 
     }
@@ -401,7 +371,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 Utils.copyToClipBoard(this, AppConstants.COPIED_IP, tvIP.getText().toString(), "IP address copied to clipboard");
                 break;
             case R.id.tvPgpEmail:
-                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "Pgp email copied to clipboard");
+                Utils.copyToClipBoard(this, AppConstants.COPIED_PGP, tvPgpEmail.getText().toString(), "PGP email copied to clipboard");
+                break;
+            case R.id.tvChatId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_CHAT_ID, tvChatId.getText().toString(), "CHAT ID copied to clipboard");
+                break;
+            case R.id.tvUserId:
+                Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID copied to clipboard");
                 break;
         }
     }

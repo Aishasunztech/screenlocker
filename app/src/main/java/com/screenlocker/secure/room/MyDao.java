@@ -104,11 +104,14 @@ public interface MyDao {
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension WHERE uniqueName=:uniqueName AND guest=:status")
-    List<SubExtension> getGuestExtensions(String uniqueName, boolean status);
+    LiveData<List<SubExtension>> getGuestExtensions(String uniqueName, boolean status);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
-    List<SubExtension> getEncryptedExtensions(String uniqueName, boolean status);
+    LiveData<List<SubExtension>> getEncryptedExtensions(String uniqueName, boolean status);
+
+    @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension ")
+    LiveData<List<SubExtension>> getExtensions();
 
     @Query("UPDATE subextension set guest=:status WHERE uniqueName=:uniqueName ")
     void setAllGuest(String uniqueName, boolean status);

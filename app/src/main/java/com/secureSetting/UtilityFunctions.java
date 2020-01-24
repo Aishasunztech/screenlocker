@@ -23,8 +23,6 @@ import android.provider.Settings;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -62,19 +60,11 @@ public class UtilityFunctions {
 
     public static boolean permissionModify(Activity activity) {
         boolean permission;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permission = Settings.System.canWrite(activity);
-        } else {
-            permission = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
-        }
+        permission = Settings.System.canWrite(activity);
         if (!permission) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                intent.setData(Uri.parse("package:" + activity.getPackageName()));
-                activity.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
-            } else {
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_SETTINGS}, CODE_WRITE_SETTINGS_PERMISSION);
-            }
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivityForResult(intent, CODE_WRITE_SETTINGS_PERMISSION);
         }
         return permission;
     }
@@ -155,6 +145,9 @@ public class UtilityFunctions {
             NetworkInfo info = cm.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
                 String ssid = info.getExtraInfo();
+                if (ssid == null) {
+                    return context.getResources().getString(R.string.unknown);
+                }
                 return ssid.substring(1, ssid.length() - 1);
             } else {
                 return context.getResources().getString(R.string.unknown);
@@ -261,8 +254,10 @@ public class UtilityFunctions {
                 return NetworkCapabilities.TRANSPORT_CELLULAR;
             } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 return NetworkCapabilities.TRANSPORT_WIFI;
-            } return -1;
-        } return -1;
+            }
+            return -1;
+        }
+        return -1;
     }
 
 

@@ -56,7 +56,7 @@ import static com.screenlocker.secure.utils.LifecycleReceiver.STATE;
 
 public class CodeSettingActivity extends BaseActivity implements View.OnClickListener
         , CodeSettingContract.CodeSettingMvpView {
-    private ConstraintLayout rootLayout;
+    private LinearLayout rootLayout;
     private InputMethodManager imm;
     private Toolbar mToolbar;
     private CodeSettingPresenter mPresenter;
@@ -130,7 +130,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         input.setLayoutParams(lp);
         alertDialog.setView(input);
-        alertDialog.setIcon(R.mipmap.ic_launcher);
+        alertDialog.setIcon(R.drawable.ic_secure_settings);
         input.setFocusable(true);
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -168,7 +168,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private void setToolbar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.admin_panel_title));
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -511,7 +510,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         input.setLayoutParams(lp);
         alertDialog.setView(input);
-        alertDialog.setIcon(R.mipmap.ic_launcher);
+        alertDialog.setIcon(R.drawable.ic_secure_settings);
         input.setFocusable(true);
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {

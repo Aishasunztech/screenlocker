@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Aman File Manager</string>
+	<string name="app_launcher_name">Aman File Manager</string>
+	<string name="press_back_again">Tekan kembali lagi untuk keluar</string>
+	<string name="no_app_found">Tidak ada aplikasi untuk membuka file jenis ini diinstal</string>
+	<string name="go_to_home_folder">Buka folder rumah</string>
+	<string name="set_as_home_folder">Ditetapkan sebagai home folder</string>
+	<string name="home_folder_updated">folder rumah diperbarui</string>
+	<string name="copy_path">Salin jalan ke clipboard</string>
+	<string name="path_copied">jalan disalin</string>
+	<string name="select_audio_file">Silakan pilih file audio</string>
+	<string name="search_folder">folder pencarian</string>
+	<string name="rooted_device_only">Operasi ini hanya bekerja pada perangkat berakar</string>
+	<string name="open_as">Buka sebagai</string>
+	<string name="text_file">file teks</string>
+	<string name="image_file">file gambar</string>
+	<string name="audio_file">file audio</string>
+	<string name="video_file">File Video</string>
+	<string name="other_file">file lain</string>
+	<string name="compress">Kompres</string>
+	<string name="decompress">dekompresi</string>
+	<string name="compress_as">Compress sebagai</string>
+	<string name="compressing">Mengompresi ...</string>
+	<string name="decompressing">Dekompresi ...</string>
+	<string name="compression_successful">kompresi sukses</string>
+	<string name="decompression_successful">dekompresi sukses</string>
+	<string name="compressing_failed">mengompresi gagal</string>
+	<string name="decompressing_failed">dekompresi gagal</string>
+	<string name="manage_favorites">mengelola favorit</string>
+	<string name="go_to_favorite">Pergi ke favorit</string>
+	<string name="favorites_activity_placeholder">Anda dapat menambahkan folder yang sering digunakan ke favorit untuk akses mudah dari mana saja.</string>
+	<string name="file_editor">Editor File</string>
+	<string name="enable_root_access">Aktifkan akses root</string>
+	<string name="app_short_description">Seorang manajer file sederhana untuk browsing dan mengedit file dan direktori.</string>
+	<string name="app_long_description">Bisa juga digunakan untuk browsing file root dan konten kartu SD. </string>
+	<string name="sfm">Aman File Manager</string>
+</resources>

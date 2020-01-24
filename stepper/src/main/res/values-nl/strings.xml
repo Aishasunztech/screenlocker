@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">OVERSPRINGEN</string>
+	<string name="ms_next">DE VOLGENDE</string>
+	<string name="ms_end">Lancering</string>
+	<string name="ms_continue">DOORGAAN MET</string>
+	<string name="ms_optional">Optioneel</string>
+	<string name="ms_text_step">Stap $ stroom van $ totale</string>
+	<string name="previous">VORIGE</string>
+</resources>

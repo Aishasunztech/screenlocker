@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Ապահով Ֆայլի մենեջեր</string>
+	<string name="app_launcher_name">Ապահով Ֆայլի մենեջեր</string>
+	<string name="press_back_again">Մամլո նորից դուրս գալու</string>
+	<string name="no_app_found">Ոչ մի հավելված համար բացելով այս տեսակի ֆայլ է տեղադրված</string>
+	<string name="go_to_home_folder">Գնալ դեպի տուն թղթապանակում</string>
+	<string name="set_as_home_folder">Սահմանել որպես գլխավոր թղթապանակում</string>
+	<string name="home_folder_updated">Գլխավոր էջ թղթապանակը թարմացվել</string>
+	<string name="copy_path">Պատճենել ուղին Ավելացված</string>
+	<string name="path_copied">path պատճենված</string>
+	<string name="select_audio_file">Խնդրում ենք ընտրել ձայնային ֆայլ</string>
+	<string name="search_folder">Որոնել թղթապանակը</string>
+	<string name="rooted_device_only">Այս գործողությունը աշխատում է միայն արմատավորված սարքերի</string>
+	<string name="open_as">Բացել որպես</string>
+	<string name="text_file">տեքստային ֆայլ</string>
+	<string name="image_file">պատկերի ֆայլը</string>
+	<string name="audio_file">աուդիո ֆայլը</string>
+	<string name="video_file">վիդեո ֆայլ</string>
+	<string name="other_file">Այլ ֆայլի</string>
+	<string name="compress">կոմպրես</string>
+	<string name="decompress">decompress</string>
+	<string name="compress_as">կոմպրես քանի որ</string>
+	<string name="compressing">Compressing ...</string>
+	<string name="decompressing">Decompressing ...</string>
+	<string name="compression_successful">Կոմպրեսիոն հաջող</string>
+	<string name="decompression_successful">decompression հաջող</string>
+	<string name="compressing_failed">compressing ձախողվեց</string>
+	<string name="decompressing_failed">decompressing ձախողվեց</string>
+	<string name="manage_favorites">Կառավարեք էջանշանի</string>
+	<string name="go_to_favorite">Գնալ սիրած</string>
+	<string name="favorites_activity_placeholder">Դուք կարող եք ավելացնել հաճախակի օգտագործվող թղթապանակների մեջ եւ հեշտ մուտք գործել ցանկացած վայրից:</string>
+	<string name="file_editor">Պատկեր խմբագիր</string>
+	<string name="enable_root_access">Միացնել արմատային մուտք</string>
+	<string name="app_short_description">Մի պարզ ֆայլ մենեջեր համար թերթելիս խմբագրում ֆայլերը եւ տեղեկագրքեր.</string>
+	<string name="app_long_description">Կարող է օգտագործվել նաեւ զննարկման համար խորքային ֆայլերը եւ SD քարտի բովանդակությունը: </string>
+	<string name="sfm">Ապահով Ֆայլի մենեջեր</string>
+</resources>

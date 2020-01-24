@@ -431,6 +431,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
                     break;
                 case R.id.active_accessibility:
                     if (!isAccessServiceEnabled(MyApplication.getAppContext(), WindowChangeDetectingService.class)) {
+                        AppConstants.TEMP_SETTINGS_ALLOWED = true;
                         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         startActivityForResult(intent, CODE_ACCESSIBILITY);
                     }

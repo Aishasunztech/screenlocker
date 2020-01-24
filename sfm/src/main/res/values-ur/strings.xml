@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">محفوظ فائل مینیجر</string>
+    <string name="app_launcher_name">محفوظ فائل مینیجر</string>
+    <string name="press_back_again">باہر نکلیں کرنے کے لئے دبائیں دوبارہ واپس</string>
+    <string name="no_app_found">اس قسم کی فائل کو کھولنے کے لئے کوئی اپلی کیشن انسٹال ہے</string>
+    <string name="go_to_home_folder">ہوم فولڈر پر جائیں</string>
+    <string name="set_as_home_folder">ہوم فولڈر کے طور پر مقرر</string>
+    <string name="home_folder_updated">ہوم فولڈر کو اپ ڈیٹ</string>
+    <string name="copy_path">کلپ بورڈ پر راستے کو کاپی کریں</string>
+    <string name="path_copied">راہ کاپی کیا</string>
+    <string name="select_audio_file">ایک آڈیو فائل براہ مہربانی منتخب کریں</string>
+    <string name="search_folder">تلاش فولڈر</string>
+    <string name="rooted_device_only">یہ عمل صرف جڑیں آلات پر کام کرتا ہے</string>
+    <string name="open_as">بطور کھولیں</string>
+    <string name="text_file">ٹیکسٹ فائل</string>
+    <string name="image_file">تصویری فائل</string>
+    <string name="audio_file">آڈیو فائل</string>
+    <string name="video_file">ویڈیو فائل</string>
+    <string name="other_file">دیگر فائل</string>
+    <string name="compress">سکیڑیں</string>
+    <string name="decompress">پھیلائیں</string>
+    <string name="compress_as">اس کو سکیڑیں</string>
+    <string name="compressing">سکیڑنا ...</string>
+    <string name="decompressing">پھیلانا ...</string>
+    <string name="compression_successful">سمپیڑن کامیاب</string>
+    <string name="decompression_successful">کی Decompression کامیاب</string>
+    <string name="compressing_failed">سکیڑنا ناکام رہے</string>
+    <string name="decompressing_failed">پھیلانا ناکام رہے</string>
+    <string name="manage_favorites">پسندیدہ انتظام کریں</string>
+    <string name="go_to_favorite">پسندیدہ جائیں</string>
+    <string name="favorites_activity_placeholder">آپ کہیں سے بھی آسان رسائی کے لئے پسندیدہ میں اکثر استعمال کیا فولڈرز کو شامل کر سکتے ہیں.</string>
+    <string name="file_editor">فائل ایڈیٹر</string>
+    <string name="enable_root_access">جڑ تک رسائی فعال کریں</string>
+    <string name="app_short_description">براؤزنگ اور فائلوں اور ڈائریکٹریز میں ترمیم کے لئے ایک سادہ فائل مینیجر.</string>
+    <string name="app_long_description">بھی جڑ فائلوں اور ایسڈی کارڈ مواد براؤزنگ کے لئے استعمال کیا جا سکتا ہے. </string>
+    <string name="sfm">محفوظ فائل مینیجر</string>
+</resources>

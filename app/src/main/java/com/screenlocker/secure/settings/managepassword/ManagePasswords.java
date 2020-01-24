@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings.managepassword;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,7 +36,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
     private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTDURES = 102;
 
-    private ConstraintLayout rootLayout;
+    private LinearLayout rootLayout;
     private SettingsActivity settingsActivity;
     private Toolbar mToolbar;
     private Chip duressStatus;
@@ -116,6 +118,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         findViewById(R.id.tvSetGuestPassword).setOnClickListener(this);
         findViewById(R.id.tvSetMainPassword).setOnClickListener(this);
         findViewById(R.id.tvSetDuressPassword).setOnClickListener(this);
+        findViewById(R.id.screen_lock_container).setOnClickListener(this);
         setToolbar(mToolbar);
     }
 
@@ -142,7 +145,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.manage_password_title));
+            getSupportActionBar().setTitle(getResources().getString(R.string.biometrics_and_security));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -174,6 +177,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
 //                settingsActivity.handleSetDuressPassword(ManagePasswords.this, rootLayout);
                 handleSetDuressPassword(ManagePasswords.this, null, rootLayout);
+                break;
+            case R.id.screen_lock_container:
+                startActivity(new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD));
                 break;
 
         }

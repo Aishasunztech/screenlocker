@@ -84,7 +84,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                 switch (unique) {
                     case AppConstants.SECURE_SETTINGS_UNIQUE:
-                        Intent i = new Intent(context, SecureSettingsMain.class);
+                        Intent i = new Intent(context, SettingsActivity.class);
                         i.putExtra("show_default", "show_default");
                         context.startActivity(i);
                         ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
@@ -110,7 +110,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
-                            Intent i = new Intent(context, SecureSettingsMain.class);
+                            Intent i = new Intent(context, SettingsActivity.class);
                             if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                                 i.putExtra("show_default", "show_default");
                             }
@@ -283,17 +283,13 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     }
 
     public void updateNotificationBadgeOfSL(int notification) {
-        Log.d("TEZST: ", String.valueOf(notification));
         int index = IntStream.range(0, appsList.size())
-                .filter(i -> appsList.get(i).getPackageName().equals(BuildConfig.APPLICATION_ID))
+                .filter(i -> appsList.get(i).getPackageName().equals(AppConstants.SECURE_SETTINGS_PACKAGE))
                 .findFirst()
                 .orElse(-1);
         if (index != -1) {
             appsList.get(index).setNumberOfnotifications(notification);
             notifyItemChanged(index);
-            Log.d("TEZST: ", String.valueOf(index));
-        }else {
-            Log.d("TEZST: ", String.valueOf(-1));
         }
     }
 

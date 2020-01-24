@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">ข้าม</string>
+	<string name="ms_next">ต่อไป</string>
+	<string name="ms_end">เปิด</string>
+	<string name="ms_continue">ดำเนินการต่อ</string>
+	<string name="ms_optional">ไม่จำเป็น</string>
+	<string name="ms_text_step">ขั้นตอนที่ $ ปัจจุบันของ $ รวม</string>
+	<string name="previous">ก่อนหน้านี้</string>
+</resources>

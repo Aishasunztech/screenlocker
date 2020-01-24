@@ -662,6 +662,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 broadcastReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 viewAddRemoveReceiver, new IntentFilter(AppConstants.BROADCAST_VIEW_ADD_REMOVE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_PUSH_APPS);
+        intentFilter.addAction(ACTION_PULL_APPS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         PrefUtils.saveToPref(this, true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
@@ -763,6 +769,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         try {
             Timber.d("screen locker distorting.");
             unregisterReceiver(screenOffReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
             PrefUtils.saveToPref(this, false);
@@ -1427,12 +1435,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         socketManager = SocketManager.getInstance();
         socketManager.setSocketConnectionListener(this);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_PUSH_APPS);
-        intentFilter.addAction(ACTION_PULL_APPS);
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
 
 
         String token = PrefUtils.getStringPref(LockScreenService.this, TOKEN);
@@ -1450,8 +1453,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     private void stopSocket() {
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
+
 
         Log.d("LockScreenService", "service destroy");
 
@@ -2165,11 +2167,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                             }
 
                             ArrayList<InstallModel> savedApps = utils.getArrayList(this);
-                            for (InstallModel savedApp : savedApps) {
-                                savedApp.setSettingId(setting_id);
-                            }
+
 
                             if (savedApps != null && savedApps.size() > 0) {
+                                for (InstallModel savedApp : savedApps) {
+                                    savedApp.setSettingId(setting_id);
+                                }
                                 Timber.d("Old Apps size %s", savedApps.size());
                                 for (InstallModel app : list) {
                                     List<InstallModel> result = savedApps.stream().filter(model ->

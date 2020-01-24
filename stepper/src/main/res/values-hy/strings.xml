@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">SKIP</string>
+	<string name="ms_next">ՀԱՋՈՐԴ</string>
+	<string name="ms_end">սկսել</string>
+	<string name="ms_continue">ՇԱՐՈՒՆԱԿԵԼ</string>
+	<string name="ms_optional">կամավոր կերպով ընտրած</string>
+	<string name="ms_text_step">Քայլ $ ընթացիկ $ ընդամենը</string>
+	<string name="previous">ՆԱԽՈՐԴ</string>
+</resources>

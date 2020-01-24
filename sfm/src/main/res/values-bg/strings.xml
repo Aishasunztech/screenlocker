@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Secure File Manager</string>
+	<string name="app_launcher_name">Secure File Manager</string>
+	<string name="press_back_again">Натиснете отново, за да излезете</string>
+	<string name="no_app_found">Няма приложение за отваряне на този тип файлове е инсталиран</string>
+	<string name="go_to_home_folder">Отиди на първата папка</string>
+	<string name="set_as_home_folder">Задай като у дома папка</string>
+	<string name="home_folder_updated">Начало папка актуализиран</string>
+	<string name="copy_path">Копирайте път към клипборда</string>
+	<string name="path_copied">Path копирано</string>
+	<string name="select_audio_file">Моля, изберете аудио файл</string>
+	<string name="search_folder">Търсене папка</string>
+	<string name="rooted_device_only">Тази операция работи само на отключени устройства</string>
+	<string name="open_as">Отваряне като</string>
+	<string name="text_file">Текстов файл</string>
+	<string name="image_file">Графичният файл</string>
+	<string name="audio_file">Аудио файл</string>
+	<string name="video_file">Видео файл</string>
+	<string name="other_file">Други файл</string>
+	<string name="compress">Компресиране</string>
+	<string name="decompress">намаляване натиска на</string>
+	<string name="compress_as">Компресиране като</string>
+	<string name="compressing">Компресирането на ...</string>
+	<string name="decompressing">Декомпресиране ...</string>
+	<string name="compression_successful">Compression успешно</string>
+	<string name="decompression_successful">декомпресия успешно</string>
+	<string name="compressing_failed">Компресирането се провали</string>
+	<string name="decompressing_failed">декомпресиране провали</string>
+	<string name="manage_favorites">Управление любими</string>
+	<string name="go_to_favorite">Отидете на любимите</string>
+	<string name="favorites_activity_placeholder">Можете да добавите често използваните папки към предпочитани за лесен достъп от всяко място.</string>
+	<string name="file_editor">Редактор на файла</string>
+	<string name="enable_root_access">Активиране на достъп до корен</string>
+	<string name="app_short_description">А просто файлов мениджър за четене и редактиране на файлове и директории.</string>
+	<string name="app_long_description">Може да се използва за сърфиране основните файлове и съдържание SD карта. </string>
+	<string name="sfm">Secure File Manager</string>
+</resources>

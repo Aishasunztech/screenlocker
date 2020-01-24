@@ -1,249 +1,421 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stepper_bg_gradient">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/rootLayout"
+    <include
+        android:id="@+id/include"
+        layout="@layout/main_toolbar" />
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
+        android:layout_height="match_parent">
 
-        tools:context=".settings.codeSetting.CodeSettingActivity">
-
-        <include
-            android:id="@+id/include"
-            layout="@layout/main_toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/tvSetAppsPermission"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_permission"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/permissions"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/include" />
+            android:orientation="vertical">
 
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSetAppsPermission" />
-
-        <TextView
-            android:id="@+id/tvResetPassword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_chamge_pass"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/reset_guest_encrypted_pass"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider14" />
-
-        <TextView
-            android:id="@+id/tvSettingsMenu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_settings"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/system_controls"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSettingsControl" />
-
-        <TextView
-
-            android:id="@+id/tvSettingsControl"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_settings_small"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/settings_controls"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider6" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSettingsControl" />
-
-        <TextView
-            android:id="@+id/tvChangeAdminPassword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_admincode"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/change_admin_panel_code"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider8" />
-
-        <View
-            android:id="@+id/divider8"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvResetPassword" />
+            <LinearLayout
+                android:id="@+id/tvSetAppsPermission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
 
 
-        <View
-            android:id="@+id/divider14"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSettingsMenu" />
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_apps" />
 
-        <View
-            android:id="@+id/divider15"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvChangeAdminPassword" />
-
-        <TextView
-            android:id="@+id/tvInstallApps"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_install"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/install_apps"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider15" />
-
-        <View
-            android:id="@+id/divider19"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvInstallApps" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/tvPolicyMenu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_policy"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/policy"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider19" />
+                    <TextView
+                        android:id="@+id/wifi_label11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/permissions"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:id="@+id/wifi_name11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/allow_apps_to_guest_and_encrypt_space"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
 
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPolicyMenu" />
+                </LinearLayout>
 
-        <!--<TextView-->
-        <!--android:id="@+id/tvIMEIMenu"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?selectableItemBackground"-->
-        <!--android:drawableStart="@drawable/ic_imei"-->
-        <!--android:drawablePadding="@dimen/_8sdp"-->
-        <!--android:padding="16dp"-->
-        <!--android:text="IMEI"-->
-        <!--android:textColor="@color/textColorPrimary"-->
-        <!--android:textSize="@dimen/textSize"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/tvPolicyMenu" />-->
+            </LinearLayout>
 
 
-        <!--<View-->
-        <!--android:id="@+id/divider20"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/colorLine"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/tvIMEIMenu" />-->
 
-        <TextView
-            android:id="@+id/tvSim"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_simcard"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/sim"
-            android:textColor="@color/textColorPrimary"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPolicyMenu" />
+            <LinearLayout
+                android:id="@+id/tvSettingsMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_sys_prem" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/system_controls"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/mic_camera_speaker"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvSettingsControl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_settings_small" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/settings_controls"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/allow_settings_to_guest_and_encrypt_space"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/tvResetPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_device_mng" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/reset_guest_encrypted_pass"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/guest_amp_encrypted"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvChangeAdminPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_lock_screen_s" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/change_admin_panel_code"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/change_password"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvInstallApps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_download_s" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/install_apps"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/all_available_application"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvPolicyMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_circle_p" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/policy"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/load_policy_to_device_"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvSim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="ic_mobile_data"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_sim_card" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/sim"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/allow_sim_usage_to_guest_and_encrypted"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

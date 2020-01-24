@@ -128,7 +128,7 @@ public class AppConstants {
 //    public static String URL_1 = "https://api.lockmesh.com";//live SL
         public static String URL_1 = "https://devapi.lockmesh.com";// Dev
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.0.125:3000";//local
+//    public static String URL_1 = "http://192.168.0.143:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
@@ -507,6 +507,8 @@ public class AppConstants {
     public static final String COPIED_MAC_ADDRESS = "COPIED_MAC_ADDRESS";
     public static final String COPIED_IP = "COPIED_IP";
     public static final String COPIED_PGP = "COPIED_PGP";
+    public static final String COPIED_CHAT_ID = "COPIED_CHAT_ID";
+    public static final String COPIED_USER_ID = "COPIED_USER_ID";
     public static final String NUMBER_OF_NOTIFICATIONS = "number_of_notifications";
 
 
@@ -521,4 +523,21 @@ public class AppConstants {
     public static final String START_SOCKET = "start_socket";
     public static final String STOP_SOCKET = "stop_socket";
     public static final String SOCKET_STATUS = "socket_status";
+
+
+    public static final String SUB_WIFI = "wi-fi";
+    public static final String SUB_Bluetooth = "Bluetooth";
+    public static final String SUB_SIM = "SIM Cards";
+    public static final String SUB_DataRoaming = "Data Roaming";
+    public static final String SUB_MobileData = "Mobile Data";
+    public static final String SUB_Hotspot= "Hotspot";
+    public static final String SUB_Finger = "Finger Print + Lock";
+    public static final String SUB_Brightness = "Brightness";
+    public static final String SUB_Sleep = "Sleep";
+    public static final String SUB_Battery = "Battery";
+    public static final String SUB_Sound = "Sound";
+    public static final String SUB_DateTime = "Date & Time";
+    public static final String SUB_LanguagesInput = "Languages & Input";
+    public static final String SUB_Notifications = "Notifications";
+    public static final String SUB_AdminPanel = "Admin Panel";
 }

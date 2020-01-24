@@ -261,6 +261,7 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
     }
 
     private void appUninstallRequest(String app_pkg_name) {
+
         Timber.d("UNINSTALL PACKAGE " + app_pkg_name);
 
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);

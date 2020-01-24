@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/transparent"
+        android:tint="@color/dark_gray"
         android:src="@drawable/ic_notifications" />
 
     <TextView

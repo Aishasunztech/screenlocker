@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">ПРОПУСКАТЬ</string>
+	<string name="ms_next">СЛЕДУЮЩИЙ</string>
+	<string name="ms_end">запуск</string>
+	<string name="ms_continue">ПРОДОЛЖИТЬ</string>
+	<string name="ms_optional">Необязательный</string>
+	<string name="ms_text_step">Шаг $ тока $ общего</string>
+	<string name="previous">ПРЕДЫДУЩИЙ</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">ATLA</string>
+	<string name="ms_next">SONRAKİ</string>
+	<string name="ms_end">Başlatmak</string>
+	<string name="ms_continue">DEVAM ET</string>
+	<string name="ms_optional">İsteğe bağlı</string>
+	<string name="ms_text_step">$ Toplam $ akımını Adım</string>
+	<string name="previous">ÖNCEKİ</string>
+</resources>

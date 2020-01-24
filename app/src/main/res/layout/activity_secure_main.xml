@@ -46,7 +46,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent">
 
 
@@ -98,7 +98,7 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:orientation="horizontal"-->
-            <!--android:visibility="gone"-->
+            <!--android:visibility="visible"-->
             <!--app:layout_constraintTop_toBottomOf="@id/wif_container_layout">-->
 
 
@@ -134,7 +134,7 @@
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_marginEnd="25dp"-->
             <!--android:layout_weight="1"-->
-            <!--android:visibility="gone" />-->
+            <!--android:visibility="visible" />-->
             <!--</LinearLayout>-->
 
             <LinearLayout
@@ -142,7 +142,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/wif_container_layout">
 
 
@@ -151,7 +151,8 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="ic_bluetooth" android:src="@drawable/ic_bluetooth"
+                    android:contentDescription="ic_bluetooth"
+                    android:src="@drawable/ic_bluetooth"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -191,7 +192,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/bluetooth_container_layout">
 
 
@@ -230,7 +231,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/sim_cotainer">
 
 
@@ -268,7 +269,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_32sdp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
 
 
@@ -277,7 +278,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/mobile_data_cotainer">
 
 
@@ -316,7 +317,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/data_roaming_cotainer">
 
 
@@ -356,7 +357,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/hotspot_container">
 
 
@@ -395,7 +396,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/screen_lock_container">
 
 
@@ -446,7 +447,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/brightness_container_layout">
 
 
@@ -455,7 +456,8 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
-                    android:contentDescription="ic_mobile_data" android:src="@drawable/ic_sleep"
+                    android:contentDescription="ic_mobile_data"
+                    android:src="@drawable/ic_sleep"
                     android:tint="@android:color/black" />
 
                 <LinearLayout
@@ -497,7 +499,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/sleep_cotainer">
 
 
@@ -548,7 +550,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/battery_cotainer">
 
 
@@ -597,7 +599,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/sound_container">
 
 
@@ -644,7 +646,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/language_container">
 
 
@@ -681,7 +683,7 @@
                 style="@style/MainActivityItemsStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/dateTime_container">
 
 
@@ -721,7 +723,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView"
@@ -756,6 +758,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
+        android:visibility="visible"
         android:id="@+id/no_settings_layout">
 
         <ImageView

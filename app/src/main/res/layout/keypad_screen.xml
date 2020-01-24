@@ -144,22 +144,24 @@
 
     <com.screenlocker.secure.settings.managepassword.NCodeView
         android:id="@+id/codeView"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/patternLock"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtWarning" />
+        app:layout_constraintTop_toBottomOf="@+id/password_field" />
 
     <com.screenlocker.secure.views.patternlock.PatternLockView
         android:id="@+id/patternLock"
         android:layout_width="@dimen/_230sdp"
         android:layout_height="@dimen/_280sdp"
+        android:layout_marginBottom="32dp"
         app:aspectRatio="height_bias"
         app:correctStateColor="@color/colorAccent"
         app:dotAnimationDuration="100"
         app:dotNormalSize="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_field" />

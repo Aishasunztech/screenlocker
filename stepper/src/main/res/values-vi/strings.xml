@@ -7,4 +7,5 @@
     <string name="ms_continue">Tiếp tục</string>
     <string name="ms_optional">Không bắt buộc</string>
     <string name="ms_text_step">Bước $current của $total</string>
+    <string name="previous">TRƯỚC</string>
 </resources>

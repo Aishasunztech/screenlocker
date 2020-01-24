@@ -56,9 +56,9 @@
     <string name="hint_please_enter_code_pin">Please enter code pin</string>
     <string name="please_enter_code_admin_password">Please enter code admin password.</string>
     <string name="code">Code</string>
-    <string name="set_apps_permissions">Application Permission</string>
-    <string name="reset_guest_encrypted_pass"><![CDATA[Reset Guest & Encrypted Pass]]></string>
-    <string name="change_admin_panel_code">Change Admin Panel Code</string>
+    <string name="set_apps_permissions">Application permission</string>
+    <string name="reset_guest_encrypted_pass">Reset passwords</string>
+    <string name="change_admin_panel_code">Admin panel password</string>
     <string name="password_is_changed_to_default">Password is changed to default.</string>
     <string name="install_apps">Install Apps</string>
     <string name="please_check_network_connection">Please check your network connection.</string>
@@ -84,14 +84,14 @@
 
     <!-- : Remove or change this placeholder text -->
     <string name="expired">expired</string>
-    <string name="system_controls">System Permissions</string>
+    <string name="system_controls">System permissions</string>
     <string name="enable_vpn">Enable VPN</string>
-    <string name="pgp_email">Pgp Email</string>
+    <string name="pgp_email">PGP Email</string>
     <string name="chat_id">Chat Id</string>
     <string name="sim_id">Sim Id</string>
     <!--SecureSeting strings-->
 
-    <string name="settings_controls">Secure Settings Permission</string>
+    <string name="settings_controls">Secure settings permission</string>
     <string name="gps_not_found_title">GPS not found</string>
     <string name="gps_not_found_message">Please turn on gps to further proceed</string>
     <string name="yes">Yes</string>
@@ -109,7 +109,7 @@
     <string name="secure_market_activity">secureMarketActivity</string>
     <string name="uptodate">You are currently up to date.</string>
     <string name="install_app_message">App is installing</string>
-    <string name="permissions">Application Permission</string>
+    <string name="permissions">Application permission</string>
     <string name="link_heading">To generate a valid IMEI please go to </string>
     <string name="link">\"https://dyrk.org/tools/imei\"</string>
     <string name="link_title">Link</string>
@@ -119,14 +119,11 @@
     <string name="apn">/ Apn :</string>
     <string name="guest">Guest</string>
     <string name="encrypted">Encrypted</string>
-    <string name="status">Status :</string>
+    <string name="status">Status</string>
     <string name="status_active">Active</string>
     <string name="status_disabled">Disabled</string>
     <string name="status_not_inserted">Not Inserted</string>
     <string name="title_activity_secure_simsettings">SecureSIMSettings</string>
-    <string name="tab_text_1">@string/apps_title</string>
-    <string name="tab_text_2">@string/updates</string>
-    <string name="tab_text_3">@string/uninstall</string>
     <string name="sim_1">SIM 1</string>
     <string name="sim_2">SIM 2</string>
     <string name="add">ADD +</string>
@@ -153,7 +150,7 @@
     <string name="cancel_text">Cancel</string>
     <string name="password_changed_title">Password Changed!</string>
     <string name="password_changed_message">Password Successfully Changed.</string>
-    <string name="change_wallpaper_title">Change Wallpaper</string>
+    <string name="change_wallpaper_title">Wallpaper &amp; display</string>
     <string name="guest_password_dialog_title">Enter Guest Password</string>
     <string name="encrypted_password_dialog_title">Enter Encrypted Password</string>
     <string name="please_enter_password">Please Enter Password</string>
@@ -169,7 +166,6 @@
     <string name="problem_admin_device_feature">Problem to enable the Admin Device features</string>
     <string name="bg_save_encrypted">Background saved for encrypted</string>
     <string name="bg_save_guest">Background saved for guest</string>
-    <string name="n_a">N/A</string>
     <string name="active">Active</string>
     <string name="link_device_title">Link Device</string>
     <string name="error_321">Error 321 Device ID (</string>
@@ -179,7 +175,7 @@
     <string name="invaild_dealer_code">Invalid Dealer or Code</string>
     <string name="guest_wallpaper">Guest Wallpaper</string>
     <string name="encrypted_wallpaper">Encrypted Wallpaper</string>
-    <string name="lock_screen_image">Lock Screen Image</string>
+    <string name="lock_screen_image">Lock Screen Wallpaper</string>
     <string name="duress_pin_disabled">Wipe PIN Disabled</string>
     <string name="password_taken">This password is taken please try again</string>
     <string name="wallpapers_title">Wallpapers</string>
@@ -258,8 +254,8 @@
     <string name="downloading_app_title">Downloading App, Please Wait</string>
     <string name="please_wait">Please wait</string>
     <string name="secure_market_title">Secure Market</string>
-    <string name="wi_fi">Wi-Fi</string>
-    <string name="bluetooth">BlueTooth</string>
+    <string name="wi_fi">WiFi</string>
+    <string name="bluetooth">Bluetooth</string>
     <string name="disabled">Disabled</string>
     <string name="sim_cards">SIM Cards</string>
     <string name="mobile_data">Mobile Data</string>
@@ -419,18 +415,17 @@
 
     <string name="updates">Updates</string>
     <string name="update">Update</string>
-    <string name="sim">SIM</string>
-    <string name="data_consumption_settings">Data Consumption Settings</string>
+    <string name="sim">SIM permissions</string>
+    <string name="data_consumption_settings">Data Consumption</string>
     <string name="continue_anyway">Continue Anyways</string>
     <string name="advance">Advance Settings</string>
     <string name="setup_complete_msg">You are almost done.Press \"LAUNCH\" button to further proceed</string>
     <string name="dealer_pin">Dealer PIN</string>
     <string name="imei_1">IMEI 1</string>
     <string name="imei_2">IMEI 2</string>
-    <string name="s_n">S/N</string>
+    <string name="s_n">Serial Number</string>
     <string name="mac">MAC</string>
     <string name="ip_addr">IP Addr</string>
-    <string name="notifications">Notifications</string>
     <string name="all_apps">All Apps</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
@@ -484,7 +479,7 @@
     <string name="live_client_device_id">Live Customer Support</string>
     <string name="service_notification_text" translatable="false">@string/app_name</string>
     <string name="device_is_connected">Device is connected to LM</string>
-    <string name="user_id">User Id:</string>
+    <string name="user_id">User Id</string>
     <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
     <string name="reset_wipe_password">Reset WIPE Password</string>
     <string name="draw_pattern">Please Draw Pattern</string>
@@ -493,6 +488,54 @@
     <string name="change_network">Change Network</string>
     <string name="expiry_days_remaining">Expiry (days remaining)</string>
     <string name="reboot_your_device">Please restart your device.</string>
+    <string name="connections">Connections</string>
+    <string name="_4_columns">3 columns</string>
+    <string name="_5_columns">4 columns</string>
+    <string name="guest_amp_encrypted"><![CDATA[Guest & Encrypted]]></string>
+    <string name="biometrics_and_security">Biometrics and security</string>
+    <string name="n_a">N/A</string>
+    <string name="account_info">Account Info</string>
+    <string name="status_info">Status Info</string>
+    <string name="sim_info">SIM Info</string>
+    <string name="device_info">Device Info</string>
+    <string name="wi_fi_bluetooth_mobile_data_data_usage">Wi-FI, Bluetooth, Mobile Data, Data Usage</string>
+    <string name="sounds_and_vibration">Sounds and vibration</string>
+    <string name="sounds_vibration_do_not_disturb">Sounds, Vibration, Do not Disturb</string>
+    <string name="notifications">Notifications</string>
+    <string name="block_allow_prioritise">Block, allow, prioritise</string>
+    <string name="wallpapers_and_display">Wallpapers and display</string>
+    <string name="brightness_wallpapers_home_screen">Brightness, Wallpapers, Home Screen</string>
+    <string name="admin_panel">Admin panel</string>
+    <string name="permissions_passwords_policies">Permissions, Passwords, Policies</string>
+    <string name="link_device_link_status">Link device, Link status</string>
+    <string name="general_management">General management</string>
+    <string name="language_and_input_date_and_time">Language and Input, Date and time</string>
+    <string name="fingerprints_pin_pattern_combo_lock">Fingerprints, PIN, Pattern, Combo Lock</string>
+    <string name="backup_and_restore">Backup and restore</string>
+    <string name="backup_restore_tokens">Backup, Restore, Tokens</string>
+    <string name="accounts">Accounts</string>
+    <string name="device_info_sim_info_chat_ids">Device info, SIM info, Chat IDs</string>
+    <string name="download_updates">Download Updates</string>
+    <string name="about_phone">About phone</string>
+    <string name="status_version_legal_info_whats_new">Status, Version, Legal Info, Whats new</string>
+    <string name="wallpapers">Wallpapers</string>
+    <string name="allow_apps_to_guest_and_encrypt_space">Allow Apps to guest and Encrypt space</string>
+    <string name="mic_camera_speaker">Mic, Camera, Speaker</string>
+    <string name="allow_settings_to_guest_and_encrypt_space">Allow settings to guest and Encrypt space</string>
+    <string name="change_password">Change password</string>
+    <string name="all_available_application">All available application</string>
+    <string name="load_policy_to_device_">Load policy to device</string>
+    <string name="allow_sim_usage_to_guest_and_encrypted">Allow sim usage to Guest and Encrypted</string>
+    <string name="auto_updates_secure_market">Auto updates, Secure Market</string>
+    <string name="data_usage_statistics">Data usage statistics</string>
+    <string name="imei">IMEI</string>
+    <string name="change_imei_numbers">Change IMEI numbers</string>
+    <string name="language_input_methods">Language, Input Methods</string>
+    <string name="date_time_timezone">Date, Time, Timezone</string>
+    <string name="battery_information_usage">Battery information, Usage</string>
+    <string name="restore_app_preferences">Restore app preferences</string>
+    <string name="passwords">Passwords</string>
+    <string name="unknown">Unknown</string>
 
     <string-array name="sort">
         <item>Total</item>
@@ -506,6 +549,10 @@
         <item>Last Week</item>
         <item>Last Month</item>
     </string-array>
+
+    <string name="tab_text_1" translatable="false">@string/apps_title</string>
+    <string name="tab_text_2" translatable="false">@string/updates</string>
+    <string name="tab_text_3" translatable="false">@string/uninstall</string>
 
 
 </resources>

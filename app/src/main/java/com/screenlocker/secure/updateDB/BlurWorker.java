@@ -139,10 +139,10 @@ public class BlurWorker extends Worker {
                     if (app.getPackageName().equals(applicationContext.getPackageName())) {
 
                         app.setGuest(false);
-                        app.setEncrypted(true);
-                        app.setEnable(true);
+                        app.setEncrypted(false);
+                        app.setEnable(false);
                         app.setExtension(false);
-                        app.setVisible(true);
+                        app.setVisible(false);
                         app.setDefaultApp(true);
                         app.setSystemApp(true);
 
@@ -195,6 +195,20 @@ public class BlurWorker extends Worker {
                         app.setExtension(false);
                         app.setSystemApp(true);
                         MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                    }
+                    if (app.getPackageName().equals(applicationContext.getPackageName())){
+                        if (app.getPackageName().equals(applicationContext.getPackageName())) {
+
+                            app.setGuest(false);
+                            app.setEncrypted(false);
+                            app.setEnable(false);
+                            app.setExtension(false);
+                            app.setVisible(false);
+                            app.setDefaultApp(true);
+                            app.setSystemApp(true);
+                            MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+
+                        }
                     }
 
 

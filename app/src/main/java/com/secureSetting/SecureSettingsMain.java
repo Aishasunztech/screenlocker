@@ -107,63 +107,62 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     // showing allowed menu for each user type
     private void showMenus() {
         String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-        if (userType != null) {
-            switch (userType) {
-                // encrypted user
-                case KEY_MAIN_PASSWORD:
-
-                    new Thread(() -> {
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-                        if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> {
-                                settingsLayout.setVisibility(View.GONE);
-                                no_settings_layout.setVisibility(View.VISIBLE);
-                            });
-                        } else {
-                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
-                            for (SubExtension subExtension : subExtensions) {
-                                String extensionName = subExtension.getUniqueExtension();
-                                if (extensions.containsKey(extensionName)) {
-                                    LinearLayout extension = extensions.get(extensionName);
-                                    if (extension != null) {
-                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
-                                    }
-                                }
-                            }
-                        }
-
-                    }).start();
-
-                    break;
-
-                //guest user
-                case KEY_GUEST_PASSWORD:
-                    new Thread(() -> {
-
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
-
-                        if (subExtensions == null || subExtensions.size() == 0) {
-                            runOnUiThread(() -> {
-                                settingsLayout.setVisibility(View.GONE);
-                                no_settings_layout.setVisibility(View.VISIBLE);
-                            });
-                        } else {
-                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
-                            for (SubExtension subExtension : subExtensions) {
-                                String extensionName = subExtension.getUniqueExtension();
-                                if (extensions.containsKey(extensionName)) {
-                                    LinearLayout extension = extensions.get(extensionName);
-                                    if (extension != null) {
-                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
-                                    }
-                                }
-                            }
-                        }
-                    }).start();
-
-                    break;
-            }
-        }
+//        if (userType != null) {
+//            switch (userType) {
+//                // encrypted user
+//                case KEY_MAIN_PASSWORD:
+//                    new Thread(() -> {
+//                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+//                        if (subExtensions == null || subExtensions.size() == 0) {
+//                            runOnUiThread(() -> {
+//                                settingsLayout.setVisibility(View.GONE);
+//                                no_settings_layout.setVisibility(View.VISIBLE);
+//                            });
+//                        } else {
+//                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
+//                            for (SubExtension subExtension : subExtensions) {
+//                                String extensionName = subExtension.getUniqueExtension();
+//                                if (extensions.containsKey(extensionName)) {
+//                                    LinearLayout extension = extensions.get(extensionName);
+//                                    if (extension != null) {
+//                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                    }).start();
+//
+//                    break;
+//
+//                //guest user
+//                case KEY_GUEST_PASSWORD:
+//                    new Thread(() -> {
+//
+//                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+//
+//                        if (subExtensions == null || subExtensions.size() == 0) {
+//                            runOnUiThread(() -> {
+//                                settingsLayout.setVisibility(View.GONE);
+//                                no_settings_layout.setVisibility(View.VISIBLE);
+//                            });
+//                        } else {
+//                            runOnUiThread(() -> no_settings_layout.setVisibility(View.GONE));
+//                            for (SubExtension subExtension : subExtensions) {
+//                                String extensionName = subExtension.getUniqueExtension();
+//                                if (extensions.containsKey(extensionName)) {
+//                                    LinearLayout extension = extensions.get(extensionName);
+//                                    if (extension != null) {
+//                                        runOnUiThread(() -> extension.setVisibility(View.VISIBLE));
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }).start();
+//
+//                    break;
+//            }
+//        }
 
     }
 
@@ -258,13 +257,10 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     private void clickListeners() {
 
         findViewById(R.id.wif_container_layout)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                .setOnClickListener(v -> {
+                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
 //                Intent intent = new Intent(SettingsMainActivity.this,WifiMainActivity.class);
-                        startActivity(intent);
-                    }
+                    startActivity(intent);
                 });
         findViewById(R.id.bluetooth_container_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,44 +274,41 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
             }
         });
 
-        findViewById(R.id.brightness_container_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean permission = permissionModify(SecureSettingsMain.this);
-                if (permission) {
-                    int width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.90);
-                    LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                    ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
+        findViewById(R.id.brightness_container_layout).setOnClickListener(v -> {
+            boolean permission = permissionModify(SecureSettingsMain.this);
+            if (permission) {
+                int width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.90);
+                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
 
-                    popupWindow = new PopupWindow(container, width, (int) pxFromDp(SecureSettingsMain.this, 60), true);
-                    popupWindow.showAtLocation(findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
-                    SeekBar seekBar = container.findViewById(R.id.seek_bar);
+                popupWindow = new PopupWindow(container, width, (int) pxFromDp(SecureSettingsMain.this, 60), true);
+                popupWindow.showAtLocation(findViewById(R.id.linearLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
+                SeekBar seekBar = container.findViewById(R.id.seek_bar);
 
-                    int brightness = getScreenBrightness(SecureSettingsMain.this);
-                    seekBar.setProgress(brightness);
-                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int brightness = getScreenBrightness(SecureSettingsMain.this);
+                seekBar.setProgress(brightness);
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-                        @Override
-                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            setScreenBrightness(SecureSettingsMain.this, progress);
-                            brightnessLevel.setText((int) (((float) getScreenBrightness(SecureSettingsMain.this) / 255) * 100) + "%");
-                        }
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        setScreenBrightness(SecureSettingsMain.this, progress);
+                        brightnessLevel.setText((int) (((float) getScreenBrightness(SecureSettingsMain.this) / 255) * 100) + "%");
+                    }
 
-                        @Override
-                        public void onStartTrackingTouch(SeekBar seekBar) {
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onStopTrackingTouch(SeekBar seekBar) {
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-                        }
-                    });
-
-                }
-
+                    }
+                });
 
             }
+
+
         });
 
         findViewById(R.id.sleep_cotainer).setOnClickListener(v -> {
@@ -457,7 +450,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
         bluetoothName.setText(getBlueToothStatus(this));
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
 //        sleepTime.setText("After " + secondsToMintues(getSleepTime(SecureSettingsMain.this),SecureSettingsMain.this) + " of inactivity");
-        sleepTime.setText(getResources().getString(R.string.inactivity_message, secondsToMintues(getSleepTime(SecureSettingsMain.this), SecureSettingsMain.this)));
+        //sleepTime.setText(getResources().getString(R.string.inactivity_message, secondsToMintues(getSleepTime(SecureSettingsMain.this), SecureSettingsMain.this)));
         wifiName.setText(getWifiStatus(this));
 
         Intent intent = getIntent();

@@ -3,8 +3,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/stepper_bg_gradient">
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/main_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progress"
@@ -16,252 +21,645 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/rootLayout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- including  the toolbar -->
-
-        <include
-            android:id="@+id/appBar"
-            layout="@layout/main_toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/tvManagePasswords"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_chamge_pass"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/manage_passwords_settings"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBar"
-            tools:layout_editor_absoluteY="160dp" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvManagePasswords" />
-
-
-        <!--to enable or disable vpn -->
-
-        <Switch
-            android:id="@+id/switchEnableVpn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:padding="16dp"
-            android:text="@string/enable_vpn"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAbout" />
-
-        <!-- to enable or enable the lock screen pin -->
-
-        <!-- to select the apps those user want to encrypt -->
-
-        <TextView
-            android:id="@+id/tvlinkDevice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_link"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/link_device"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider15" />
-
-        <View
-            android:id="@+id/divider14"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvlinkDevice" />
-
-        <TextView
-            android:id="@+id/tvChooseBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_wallpaper"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-
-            android:text="@string/set_background_image_settings"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-        <View
-            android:id="@+id/divider5"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvChooseBackground" />
-
-
-        <TextView
-            android:id="@+id/tvAbout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:padding="16dp"
-            android:text="@string/about"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvCheckForUpdate"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLanguage"
-            app:layout_constraintVertical_bias="1.0" />
-
-
-        <TextView
-            android:id="@+id/tvAccount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_user"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/account"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider14" />
-        <View
-            android:id="@+id/divider15"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCode" />
-        <TextView
-            android:id="@+id/tvAdvance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_career"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/advance"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerAdvance" />
-        <View
-            android:id="@+id/dividerAdvance"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAccount" />
-
-        <TextView
-        android:id="@+id/tvCheckForUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:padding="16dp"
-        android:text="@string/check_for_updates"
-        android:textColor="@color/colorAccent"
-        android:textSize="@dimen/textSize"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAbout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar">
 
+        <LinearLayout
 
-        <TextView
-            android:id="@+id/tvCode"
-            android:layout_width="0dp"
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_admincode"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/code"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider5" />
-
-        <View
-            android:id="@+id/dividerLanguage"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAdvance" />
+            android:orientation="vertical">
+            <!-- including  the toolbar -->
 
 
-        <TextView
-            android:id="@+id/tvLanguage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:drawableStart="@drawable/ic_worldwide"
-            android:drawablePadding="@dimen/_8sdp"
-            android:padding="16dp"
-            android:text="@string/language"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="@dimen/textSize"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerLanguage" />
+            <LinearLayout
+                android:id="@+id/connection_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_connections" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/wifi_label11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/connections"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:id="@+id/wifi_name11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/wi_fi_bluetooth_mobile_data_data_usage"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_sound" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/sounds_and_vibration"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/sounds_vibration_do_not_disturb"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/notification_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_notification" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/notifications"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/block_allow_prioritise"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvChooseBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:id="@+id/wifi_icon1"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_display" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/wallpapers_and_display"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/brightness_wallpapers_home_screen"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_lock_screen_s" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/admin_panel"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/permissions_passwords_policies"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvlinkDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_hyperlink" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/link_device"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/link_device_link_status"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvAdvance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_general_mng" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/general_management"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/language_and_input_date_and_time"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/screen_lock_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_biometrics" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/biometrics_and_security"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/fingerprints_pin_pattern_combo_lock"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/baclupAndRestore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_device_mng" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/backup_and_restore"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/backup_restore_tokens"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/wifi_label"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_accounts" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/accounts"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/device_info_sim_info_chat_ids"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvCheckForUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_software_update" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/updates"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/download_updates"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tvAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:contentDescription="@string/description_app_image"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_infos" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_16sdp"
+
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:paddingBottom="@dimen/_1sdp"
+                        android:text="@string/about_phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:text="@string/status_version_legal_info_whats_new"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_darken" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

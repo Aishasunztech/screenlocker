@@ -170,6 +170,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
         ssPermissions.add(getPackageName() + "/com.screenlocker.secure.launcher.MainActivity");
         ssPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
+        ssPermissions.add("com.secure.launcher/android.widget.FrameLayout");
 
         // SM permission
 

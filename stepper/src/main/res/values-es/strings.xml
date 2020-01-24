@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">OMITIR</string>
+	<string name="ms_next">SIGUIENTE</string>
+	<string name="ms_end">Lanzamiento</string>
+	<string name="ms_continue">SEGUIR</string>
+	<string name="ms_optional">Opcional</string>
+	<string name="ms_text_step">Paso actual de $ $ Total</string>
+	<string name="previous">ANTERIOR</string>
+</resources>
