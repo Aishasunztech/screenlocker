@@ -80,8 +80,8 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
     private void resetSettings() {
 
         ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle("Restoring Settings");
-        dialog.setMessage("Please wait while we are restoring your default settings. Don not turn off your mobile.");
+        dialog.setTitle(getResources().getString(R.string.restore_settings));
+        dialog.setMessage(getResources().getString(R.string.rest_msg));
         dialog.setCancelable(false);
         dialog.show();
 
@@ -90,9 +90,9 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
 
         //default wallpapers
 
-        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._1239));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._12318));
         PrefUtils.saveStringPref(this, AppConstants.KEY_SUPPORT_IMAGE, String.valueOf(R.raw.texture));
-        PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._12321));
+        PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._1239));
         PrefUtils.saveStringPref(this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._12316));
 
         //enable wifi by default
@@ -157,9 +157,9 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
                     app.setEncrypted(true);
                     app.setGuest(true);
                 } else if (app.getPackageName().equals(getPackageName())) {
-                    app.setEncrypted(true);
+                    app.setEncrypted(false);
                     app.setGuest(false);
-                    app.setEnable(true);
+                    app.setEnable(false);
                 } else if (app.getPackageName().equals("com.armorSec.android")) {
                     app.setEnable(true);
                     app.setGuest(false);

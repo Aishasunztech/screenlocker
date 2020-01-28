@@ -31,7 +31,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Notifications");
+        getSupportActionBar().setTitle(R.string.notifications);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
         RecyclerView recyclerView = findViewById(R.id.notification);

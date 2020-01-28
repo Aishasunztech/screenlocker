@@ -4,7 +4,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -13,17 +15,29 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
-import com.secure.launcher.R;
 import com.screenlocker.secure.launcher.MainActivity;
+import com.screenlocker.secure.service.apps.RefreshTimerTask;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secure.launcher.R;
 
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
     private boolean isEmergency = false;
+    public static int STEP_LANGUAGE = 1;
+    public static int STEP_PERMISSION = 2;
+    public static int STEP_SETUP_GUEST = 3;
+    public static int STEP_GUEST_PASS = 4;
+    public static int STEP_SETUP_ENCRYPT = 5;
+    public static int STEP_ENCRYPT_PASS = 6;
+    public static int STEP_SETUP_WIPE = 7;
+    public static int STEP_WIPE_PASS = 8;
+    public static int STEP_DEFAULT_LAUNCHER = 9;
+    public static int STEP_LINK = 10;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,29 +59,38 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         if (getIntent().hasExtra("emergency")) {
             isEmergency = getIntent().getBooleanExtra("emergency", true);
             addStep(new PermissionStepFragment());//0
+        } else if (getIntent().hasExtra("emergencyLauncher")) {
+            addStep(new SetDefaultLauncherFragment());
         } else if (tour_status) {
             Intent intent = new Intent(SteppersActivity.this, SettingsActivity.class);
             startActivity(intent);
             finish();
         } else {
-            addStep(new PermissionStepFragment());//0
-            addStep(new PasswordOptionsStepFragment());//1
-            addStep(new SetGuestPasswordFragment());//2
-            addStep(new EncryptPasswordOptionsFragment());//3
-            addStep(new SetEncryptedPasswordFragment());//4
-            addStep(new DuressPasswordOptionFragment());//5
-            addStep(new SetDuressPasswordFragment());//6
-            addStep(new SetDefaultLauncherFragment());//7
-            addStep(new LinkDeviceFragment());//8
-            addStep(new FinishFragment());//9
+            addStep(new LaungaugeSelectionStepFragment());//0
+            addStep(new PermissionStepFragment());//01
+            addStep(new PasswordOptionsStepFragment());//2
+            addStep(new SetGuestPasswordFragment());//3
+            addStep(new EncryptPasswordOptionsFragment());//4
+            addStep(new SetEncryptedPasswordFragment());//5
+            addStep(new DuressPasswordOptionFragment());//6
+            addStep(new SetDuressPasswordFragment());//7
+            addStep(new SetDefaultLauncherFragment());//8
+            addStep(new LinkDeviceFragment());//9
+            addStep(new FinishFragment());//10
         }
+
 
         super.onCreate(savedInstanceState);
 
         //mPager.requestDisallowInterceptTouchEvent(true);
         //move user to position were he/she left
         int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
+        if (getIntent().hasExtra("emergencyLauncher")){
+            isEmergency = true;
 
+//            mSteps.current(7);
+//            onUpdate();
+        }else
         if (!getIntent().hasExtra("emergency")) {
             mSteps.current(position);
             onUpdate();
@@ -144,5 +167,12 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
             pm.addPreferredActivity(f, IntentFilter.MATCH_CATEGORY_EMPTY, null, cn);
         }
 
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Window window = getWindow();
+        window.setFormat(PixelFormat.RGBA_8888);
     }
 }

@@ -26,28 +26,26 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
-import com.screenlocker.secure.settings.AdvanceSettings;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
 import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
 import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
+import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
-import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements OnAppsRefreshListener {
@@ -160,7 +158,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WindowChangeDetectingService.serviceConnectedListener = null;
         if (alertDialog != null) {
             alertDialog.dismiss();
             alertDialog = null;
@@ -265,10 +262,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
 
-        String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
-        if (language_key != null && !language_key.equals("")) {
-            CommonUtils.setAppLocale(language_key, this);
-        }
+//        String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+//        if (language_key != null && !language_key.equals("")) {
+//            CommonUtils.setAppLocale(language_key, this);
+//        }
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (!devicePolicyManager.isAdminActive(compName)) {
@@ -290,9 +287,18 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
-            launchPermissions();
-        }else if (!
+        }
+
+        else if (!isMyLauncherDefault(MyApplication.getAppContext())) {
+            PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING,true);
+            PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW,false);
+            Intent a = new Intent(this, SteppersActivity.class);
+            if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                a.putExtra("emergencyLauncher", true);
+            }
+            startActivity(a);
+        }
+        else if (!
 
                 isNotificationAccess(this)) {
             launchPermissions();
@@ -315,6 +321,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     }
 
     private void launchPermissions() {
+        PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING,true);
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW,false);
         Intent a = new Intent(this, SteppersActivity.class);
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             a.putExtra("emergency", true);

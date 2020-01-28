@@ -1,32 +1,29 @@
 package com.screenlocker.secure.service.apps;
 
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.os.Handler;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
+import android.os.Looper;
 
 import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.BuildConfig;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import java.util.HashSet;
-import java.util.concurrent.Future;
+import java.util.Queue;
+import java.util.TimerTask;
 
 import timber.log.Timber;
 
@@ -38,10 +35,19 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.PERMISSION_GRANTING;
 import static com.screenlocker.secure.utils.AppConstants.RESTRICTION_DELAY;
+import static com.screenlocker.secure.utils.AppConstants.TEMP_SETTINGS_ALLOWED;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 
-public class WindowChangeDetectingService extends AccessibilityService {
+/**
+ * @author : Muhammad Nadeem
+ * Created at: 1/27/2020
+ */
+public class RefreshTimerTask extends TimerTask {
+    private UsageStatsManager usm;
+    private boolean aff1 = true;
+    private Context context;
+    private Handler handler;
 
     private HashSet<String> ssPermissions = new HashSet<>();
 
@@ -52,20 +58,108 @@ public class WindowChangeDetectingService extends AccessibilityService {
     private HashSet<String> globalActions = new HashSet<>();
 
     private HashSet<String> callingApps = new HashSet<>();
+    private HashSet<String> previousTasksFor = new HashSet<>();
+    private Queue<String> fifo = new CircularFifoQueue<String>(2);
 
-    public static ServiceConnectedListener serviceConnectedListener;
 
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        return super.onStartCommand(intent, flags, startId);
+    public RefreshTimerTask(Context context) {
+        this.context = context;
+        usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        setupStrings();
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public void run() {
+        if (!PrefUtils.getBooleanPref(context, EMERGENCY_FLAG)) {
 
+            if (PrefUtils.getBooleanPref(context, TOUR_STATUS)) {
+                Timber.d("Tour Completed");
+                ComponentName componentName = m108a();
+
+                if (componentName != null) {
+                    String activity = componentName.flattenToShortString();
+                    boolean break1 = false;
+                    if (PrefUtils.getBooleanPref(context, IS_SETTINGS_ALLOW)) {
+
+                        if (ssPermissions.contains(activity)) {
+                            Timber.d("activity allowed");
+                            AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                            //privousTrack = activity;
+                        }
+                        else if ("com.android.settings/.SubSettings".contains(activity) ){
+
+                            for (String s : previousTasksFor) {
+                                if (fifo.contains(s)){
+                                    Timber.d("SubActivity allowed allowed");
+                                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                                }
+                            }
+                            if (!TEMP_SETTINGS_ALLOWED) {
+                                checkAppStatus(componentName);
+                            }
+
+                        }
+                        else {
+                            checkAppStatus(componentName);
+                        }
+                        if (!fifo.contains(activity)){
+                            fifo.add(activity);
+                        }
+                    } else if (PrefUtils.getBooleanPref(context, UNINSTALL_ALLOWED)) {
+                        Timber.d("uninstall allowed");
+                        if (smPermissions.contains(activity)) {
+                            Timber.d("activity allowed");
+                            AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                        } else {
+                            Timber.d("activity not allowed");
+                            checkAppStatus(componentName);
+                        }
+                    } else if (PrefUtils.getBooleanPref(context, PERMISSION_GRANTING)) {
+                        Timber.d("permission granting");
+                        AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                    } else {
+                        Timber.d("checking app permission");
+                        checkAppStatus(componentName);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private ComponentName m108a() {
+        long currentTimeMillis = System.currentTimeMillis();
+        UsageEvents queryEvents = usm.queryEvents(currentTimeMillis - ((long) (aff1 ? 60000 : 60000)), currentTimeMillis);
+        String str = null;
+        String str2 = null;
+        ComponentName componentName = null;
+        while (queryEvents.hasNextEvent()) {
+            UsageEvents.Event event = new UsageEvents.Event();
+            queryEvents.getNextEvent(event);
+            switch (event.getEventType()) {
+                case 1:
+                    str2 = event.getPackageName();
+                    str = event.getClassName();
+                    componentName = new ComponentName(str2, str);
+                    componentName.flattenToShortString();
+                    Timber.d(componentName.flattenToShortString());
+                    break;
+                case 2:
+                    if (!event.getPackageName().equals(str2)) {
+                        break;
+                    } else {
+                        str2 = null;
+                        break;
+                    }
+            }
+        }
+        if (componentName != null) {
+            return componentName;
+        }
+        return null;
+    }
+
+    private void setupStrings() {
         ssPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$WifiSettingsActivity");
         ssPermissions.add("com.android.settings/.ConfirmLockPassword$InternalActivity");
@@ -111,12 +205,12 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/android.app.AlertDialog");
         ssPermissions.add("com.android.settings/.sim.SimDialogActivity");
         ssPermissions.add("com.android.settings/.Settings$WifiApSettingsActivity");
-        ssPermissions.add(getPackageName() + "/android.widget.FrameLayout");
+        ssPermissions.add("com.android.settings/.password.SetNewPasswordActivity");
         ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
 
         // samsung
         ssPermissions.add("com.android.settings/.Settings$ConnectionsSettingsActivity");
-
+        ssPermissions.add("com.android.phone/com.samsung.telephony.phone.activities.SamsungMobileNetworkSettingsActivity");
 
         // huwei
         ssPermissions.add("com.android.phone/.MSimMobileNetworkSettings");
@@ -129,7 +223,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.documentsui/.picker.PickActivity");
 
 
-        ssPermissions.add(getPackageName() + "/android.widget.FrameLayout");
+//        ssPermissions.add(BuildConfig.APPLICATION_ID + "/android.widget.FrameLayout");
 
 
         // samsung
@@ -166,15 +260,15 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.phone/.settings.MobileNetworkSettings");
 
 
-        ssPermissions.add(getPackageName() + "/com.secureSetting.SecureSettingsMain");
-        ssPermissions.add(getPackageName() + "/com.secureMarket.SecureMarketActivity");
-        ssPermissions.add(getPackageName() + "/com.screenlocker.secure.launcher.MainActivity");
-        ssPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
-        ssPermissions.add("com.secure.launcher/android.widget.FrameLayout");
+        ssPermissions.add(BuildConfig.APPLICATION_ID + "/com.secureSetting.SecureSettingsMain");
+        ssPermissions.add(BuildConfig.APPLICATION_ID + "/com.secureMarket.SecureMarketActivity");
+        ssPermissions.add(BuildConfig.APPLICATION_ID + "/com.screenlocker.secure.launcher.MainActivity");
+        ssPermissions.add(BuildConfig.APPLICATION_ID + "/com.screenlocker.secure.manual_load.ManualPullPush");
+        ssPermissions.add(BuildConfig.APPLICATION_ID + "/android.widget.FrameLayout");
 
         // SM permission
 
-        smPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
+        smPermissions.add(BuildConfig.APPLICATION_ID + "/com.screenlocker.secure.manual_load.ManualPullPush");
         smPermissions.add("com.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallerActivity");
@@ -228,7 +322,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         stepperPermissions.add("com.google.android.packageinstaller/.permission.ui.ManagePermissionsActivity");
         stepperPermissions.add("com.android.settings/.SubSettings");
         stepperPermissions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
-        stepperPermissions.add(getPackageName() + "/com.screenlocker.secure.manual_load.ManualPullPush");
+        stepperPermissions.add(BuildConfig.APPLICATION_ID + "/com.screenlocker.secure.manual_load.ManualPullPush");
 
 
         // some global actions
@@ -256,109 +350,10 @@ public class WindowChangeDetectingService extends AccessibilityService {
         callingApps.add("com.samsung.android.incallui");
         callingApps.add("com.android.incallui/.InCallActivity");
 
-
+        //Previous allowed subsetting activities
+        previousTasksFor.add("com.secure.launcher/com.screenlocker.secure.settings.SettingsActivity");
+        previousTasksFor.add("com.android.settings/.Settings$LanguageAndInputSettingsActivity");
     }
-
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-
-        Toast.makeText(this, "Service Connected ", Toast.LENGTH_SHORT).show();
-
-        //Configure these here for compatibility with API 13 and below.
-        AccessibilityServiceInfo config = new AccessibilityServiceInfo();
-        config.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-        config.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-
-        config.flags = AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
-
-        setServiceInfo(config);
-
-
-    }
-
-
-//    @Override
-//    protected boolean onKeyEvent(KeyEvent event) {
-//        if (event.getKeyCode() == KeyEvent.KEYCODE_HOME)
-//            return true;
-//        else
-//            return super.onKeyEvent(event);
-//    }
-
-
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-
-
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-
-            if (event.getAction() == 1452) {
-//                Timber.d("Custom Event");
-                if (serviceConnectedListener != null) {
-                    serviceConnectedListener.serviceConnected(true);
-//                    Timber.d("call back fire");
-                }
-                return;
-            }
-
-
-//            performGlobalAction(GLOBAL_ACTION_RECENTS);
-
-
-            if (event.getPackageName() != null && event.getClassName() != null) {
-                ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());
-                ActivityInfo activityInfo = tryGetActivity(componentName);
-
-                AccessibilityNodeInfo info = event.getSource();
-                if (info != null) {
-                    Bundle bundle = info.getExtras();
-                    if (bundle != null) {
-                        Timber.d(bundle.toString());
-                    }
-                }
-
-                boolean isActivity = activityInfo != null;
-                Timber.d("Activity: %s", componentName.flattenToShortString());
-
-                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-
-                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
-                        Timber.d("Tour Completed");
-                        if (isActivity) {
-                            if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
-                                Timber.d("settings allowed");
-                                if (ssPermissions.contains(componentName.flattenToShortString())) {
-                                    Timber.d("activity allowed");
-                                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
-                                } else {
-                                    checkAppStatus(componentName);
-                                }
-                            } else if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
-                                Timber.d("uninstall allowed");
-                                if (smPermissions.contains(componentName.flattenToShortString())) {
-                                    Timber.d("activity allowed");
-                                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
-                                } else {
-                                    Timber.d("activity not allowed");
-                                    checkAppStatus(componentName);
-                                }
-                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING)) {
-                                Timber.d("permission granting");
-                                AppConstants.TEMP_SETTINGS_ALLOWED = true;
-                            } else {
-                                Timber.d("checking app permission");
-                                checkAppStatus(componentName);
-                            }
-                        }
-                    }
-                }
-
-
-            }
-        }
-    }
-
 
     private void checkAppStatus(ComponentName componentName) {
 
@@ -367,7 +362,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
             return;
         }
 
-        if (globalActions.contains(componentName.flattenToShortString())) {
+        if (globalActions.contains(componentName.getPackageName())) {
             AppConstants.TEMP_SETTINGS_ALLOWED = true;
             return;
         }
@@ -377,32 +372,40 @@ public class WindowChangeDetectingService extends AccessibilityService {
             return;
         }
 
-        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
-                .submit(() -> isAllowed(WindowChangeDetectingService.this, componentName.getPackageName()));
+        boolean status = isAllowed(context, componentName.getPackageName());
 
 
-        try {
-            boolean status = futureObject.get();
-            Timber.d("isAllowed : %s", status);
-            if (!status) {
-                AppConstants.TEMP_SETTINGS_ALLOWED = false;
-                clearRecentApp(this, componentName.getPackageName());
-            } else {
-                AppConstants.TEMP_SETTINGS_ALLOWED = true;
-            }
-        } catch (Exception e) {
-            clearRecentApp(this, componentName.getPackageName());
+        Timber.d("isAllowed : %s", status);
+        if (!status) {
+            AppConstants.TEMP_SETTINGS_ALLOWED = false;
+            clearRecentApp(context, componentName.getPackageName());
+        } else {
+            AppConstants.TEMP_SETTINGS_ALLOWED = true;
         }
-    }
-
-    @Override
-    public void onInterrupt() {
 
     }
 
+    private boolean isAllowed(Context context, String packageName) {
 
-    private Handler handler;
+        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
+        String currentSpace = (space == null) ? "" : space;
+        Timber.d("<<< QUERYING DATA >>>");
+        boolean status = false;
 
+        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+        if (info != null) {
+            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
+                status = true;
+            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
+                status = true;
+            } else
+                status = currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()));
+
+        }
+
+
+        return status;
+    }
 
     private void clearRecentApp(Context context, String packageName) {
 
@@ -415,49 +418,13 @@ public class WindowChangeDetectingService extends AccessibilityService {
             handler.removeCallbacksAndMessages(null);
             handler = null;
         }
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
-        ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
+        ActivityCompat.startForegroundService(context, new Intent(context, LockScreenService.class).setAction("add"));
 
-        handler.postDelayed(() -> ActivityCompat.startForegroundService(WindowChangeDetectingService.this, new Intent(WindowChangeDetectingService.this, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
+        handler.postDelayed(() -> ActivityCompat.startForegroundService(context, new Intent(context, LockScreenService.class).setAction("remove")), RESTRICTION_DELAY);
 
 
     }
-
-    private ActivityInfo tryGetActivity(ComponentName componentName) {
-        try {
-            return getPackageManager().getActivityInfo(componentName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
-    }
-
-
-    boolean status = false;
-
-
-    private boolean isAllowed(Context context, String packageName) {
-
-        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
-        String currentSpace = (space == null) ? "" : space;
-        Timber.d("<<< QUERYING DATA >>>");
-
-        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
-        if (info != null) {
-            if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
-                status = true;
-            } else if (currentSpace.equals(KEY_GUEST_PASSWORD) && (info.isEnable() && info.isGuest())) {
-                status = true;
-            } else
-                status = currentSpace.equals(KEY_SUPPORT_PASSWORD) && (packageName.equals(context.getPackageName()));
-
-        } else {
-            status = false;
-        }
-
-
-        return status;
-    }
-
 
 }

@@ -8,9 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -26,6 +30,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.ShutDownReceiver;
@@ -38,6 +44,7 @@ import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.socket.model.InstallModel;
+import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
@@ -68,7 +75,7 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
  */
 public class MainActivity extends BaseActivity implements MainContract.MainMvpView,
         SettingContract.SettingsMvpView,
-        RAdapter.ClearCacheListener ,
+        RAdapter.ClearCacheListener,
         DownloadCompleteListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
@@ -100,6 +107,20 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
+        /*DEVELOPER OPTION*/
+//        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .detectNetwork()   // or .detectAll() for all detectable problems
+//                .penaltyLog()
+//                .build());
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectLeakedSqlLiteObjects()
+//                .detectLeakedClosableObjects()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
@@ -508,6 +529,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        Timber.d("onConfigurationChangedWithNadeem: " + newConfig.getLocales().toString());
+        super.onConfigurationChanged(newConfig);
+//        OneTimeWorkRequest insertionWork =
+//                new OneTimeWorkRequest.Builder(BlurWorker.class)
+//                        .build();
+//        WorkManager.getInstance().enqueue(insertionWork);
     }
 }
 

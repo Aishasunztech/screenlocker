@@ -540,6 +540,7 @@
     <string name="restore_app_preferences">ایپ کی ترجیحات کو بحال کریں</string>
     <string name="passwords">پاس ورڈ</string>
     <string name="unknown">نامعلوم</string>
+    <string name="please_draw_pattern">Please Draw Pattern</string>
 
     <string-array name="sort">
         <item>کل</item>

@@ -22,8 +22,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 60206
-        versionName "6.2.6"
+        versionCode 60207
+        versionName "6.2.7"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -163,6 +163,7 @@ dependencies {
 
     //loading
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
     //text mask
     implementation 'com.github.santalu:mask-edittext:1.1.1'
 

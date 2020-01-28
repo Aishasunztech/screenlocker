@@ -15,9 +15,12 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.service.LockScreenService;
+import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -25,7 +28,6 @@ import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
@@ -43,7 +45,7 @@ public class ReBootReciever extends BroadcastReceiver {
         PrefUtils.saveBooleanPref(context, AppConstants.REBOOT_STATUS, true);
 
 
-        if (intent.getAction() != null)
+        if (intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 
                 ComponentName componentName1 = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
@@ -99,8 +101,15 @@ public class ReBootReciever extends BroadcastReceiver {
                     PrefUtils.saveStringPref(context, SIM_1_ICCID, null);
 
             }
+            else if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
+                Log.d(TAG, "onReceive: locale chaneged");
+                OneTimeWorkRequest insertionWork =
+                        new OneTimeWorkRequest.Builder(BlurWorker.class)
+                                .build();
+                WorkManager.getInstance().enqueue(insertionWork);
+            }
 
-
+        }
     }
 
 }

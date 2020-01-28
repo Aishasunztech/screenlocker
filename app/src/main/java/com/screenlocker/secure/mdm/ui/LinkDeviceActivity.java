@@ -821,8 +821,8 @@ public class LinkDeviceActivity extends BaseActivity {
         if (dealerPin != null) {
 
             tvLinkedDealerPin.setText(dealerPin);
-            tv_label_dealer_pin.setText(String.format("%s: %s", getResources().getString(R.string.dealer_pin), dealerPin));
-            tv_linked_deviceId.setText(String.format("Device ID: %s", PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
+            tv_label_dealer_pin.setText(String.format("%s", dealerPin));
+            tv_linked_deviceId.setText(String.format("%s", PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
         }
 
 

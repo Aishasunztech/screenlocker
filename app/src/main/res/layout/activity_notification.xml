@@ -12,11 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/_8sdp"
+        android:visibility="gone"
         tools:context="com.screenlocker.secure.settings.notification.NotificationActivity">
     </androidx.recyclerview.widget.RecyclerView>
     <LinearLayout
         android:id="@+id/empty_image_view"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -31,7 +32,8 @@
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Display1"
-            android:text="No Notifications"/>
+            android:textSize="@dimen/_16ssp"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:text="@string/no_notifications"/>
     </LinearLayout>
 </LinearLayout>

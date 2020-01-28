@@ -17,6 +17,8 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -106,6 +108,8 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
     private ApiUtils apiUtils;
     private long mInterval = 10000; // 10 seconds by default, can be changed later
     private Handler mHandler;
+    private HandlerThread receiverHandlerThread;
+    private Handler braodcast;
 
 
     private static Context appContext;
@@ -134,10 +138,11 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
     private SharedPreferences sharedPref;
 
     private void registerNetworkPref() {
+
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),null, braodcast);
     }
 
     private void unRegisterNetworkPref() {
@@ -183,7 +188,10 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
         wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
-
+        receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        braodcast = new Handler(looper);
         registerNetworkPref();
 
         if (LinkDeviceActivity.mListener == null)
@@ -235,7 +243,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
         //   startService(new Intent(this,LifecycleReceiverService.class));
         bluetoothChangeReceiver = new BluetoothHotSpotChangeReceiver();
         bluetoothChangeReceiver.setBluetoothListener(this);
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         intentFilter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");

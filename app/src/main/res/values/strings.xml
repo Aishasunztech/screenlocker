@@ -150,7 +150,7 @@
     <string name="cancel_text">Cancel</string>
     <string name="password_changed_title">Password Changed!</string>
     <string name="password_changed_message">Password Successfully Changed.</string>
-    <string name="change_wallpaper_title">Wallpaper &amp; display</string>
+    <string name="change_wallpaper_title">Wallpaper  &amp; display</string>
     <string name="guest_password_dialog_title">Enter Guest Password</string>
     <string name="encrypted_password_dialog_title">Enter Encrypted Password</string>
     <string name="please_enter_password">Please Enter Password</string>
@@ -428,7 +428,7 @@
     <string name="ip_addr">IP Addr</string>
     <string name="all_apps">All Apps</string>
     <string name="no_connection">No Internet Connection</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
     <string name="on_accessibility_service">On Accessibility Service</string>
     <string name="features">\u25CB Combo Lock. \n\u25CB Auto updates for all apps.\n\u25CB New Update Tab in Sm.\n\u25CB Disable camera feature. \n\u25CB Notification Menu in SS.\n\u25CB New Welcome screen with animation.\n\u25CB New Icons for SM, SS and SC apps.\n\u25CB SIM Settings synchronization with LM. \n\u25CB Updated Install app menu(code.).
 </string>
@@ -455,7 +455,7 @@
     <string name="combination">Combination</string>
     <string name="low">Low</string>
     <string name="current_dealer">Current Dealer</string>
-    <string name="your_device_is_linked">Device is Linked !</string>
+    <string name="your_device_is_linked">Device is Linked</string>
 
     <string name="waiting_for_approval">Waiting for approval...</string>
     <string name="restore">Restore</string>
@@ -553,6 +553,20 @@
     <string name="tab_text_1" translatable="false">@string/apps_title</string>
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
+    <string name="no_notifications">No Notifications</string>
+    <string name="restore_settings">Restoring Settings</string>
+    <string name="rest_msg">Please wait while we are restoring your default settings. Don not turn off your mobile.</string>
+    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="input_pin">Input PIN</string>
+    <string name="confirm_pattern">Confirm Pattern</string>
+    <string name="pattern_is_too_short">Pattern is too Short</string>
+    <string name="pattern_already_aken">Pattern already taken</string>
+    <string name="pattern_did_not_match">Pattern did not match</string>
+    <string name="pattern_updated">Pattern Updated</string>
+    <string name="guest_space_lock">GUEST SPACE LOCK</string>
+    <string name="encrypted_space_lock">ENCRYPT SPACE LOCK</string>
+    <string name="wipe_lock">WIPE LOCK</string>
+    <string name="please_select_an_option">Please Select An Option.</string>
 
 
 </resources>

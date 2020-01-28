@@ -36,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_LINK;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 
@@ -60,7 +61,7 @@ public class LinkDeviceFragment extends AbstractStep {
     public void onSkip() {
         super.onSkip();
         //save the status of this step as completed
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
+        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_LINK);
     }
 
     //next only if device is linked other wise skip
@@ -69,7 +70,7 @@ public class LinkDeviceFragment extends AbstractStep {
 
 
         if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_LINK);
             return true;
         }
         return false;

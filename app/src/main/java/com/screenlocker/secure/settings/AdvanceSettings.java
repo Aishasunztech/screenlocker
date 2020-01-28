@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -14,12 +15,27 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
+import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.settings.codeSetting.IMEIActivity;
 import com.screenlocker.secure.settings.dataConsumption.DataConsumptionActivity;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
 import com.secureSetting.t.ui.MainActivity;
+
+import java.io.File;
+import java.util.List;
+
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
+import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
+import static com.secureSetting.UtilityFunctions.getWifiStatus;
 
 public class AdvanceSettings extends BaseActivity implements View.OnClickListener {
 
@@ -31,6 +47,23 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advance_settings);
 
+        setIds();
+
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
+
+        settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
+            if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                setUpPermissionSettingsEncrypted(subExtensions);
+            } else if (userType.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                setUpPermissionSettingsGuest(subExtensions);
+            }
+        });
+
+
+    }
+
+    private void setIds() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.advance));
@@ -43,8 +76,6 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
         findViewById(R.id.dateTime_container).setOnClickListener(this);
         findViewById(R.id.battery_cotainer).setOnClickListener(this);
         mView = new FrameLayout(this);
-
-
     }
 
     @Override
@@ -148,12 +179,67 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         removeview();
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
         super.onDestroy();
     }
 
     @Override
     protected void onResume() {
         removeview();
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
         super.onResume();
     }
+
+
+
+    void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsEncrypted: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_LanguagesInput:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.language_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.language_container).setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_DateTime:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.dateTime_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.dateTime_container).setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Battery:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.battery_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.battery_cotainer).setVisibility(View.GONE);
+                    break;
+
+            }
+        }
+    }
+
+    void setUpPermissionSettingsGuest(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsGuest: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_LanguagesInput:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.language_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.language_container).setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_DateTime:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.dateTime_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.dateTime_container).setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Battery:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.battery_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.battery_cotainer).setVisibility(View.GONE);
+                    break;
+
+            }
+        }
+    }
+
+
 }

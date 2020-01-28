@@ -82,6 +82,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kotlin.jvm.Throws;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -235,6 +236,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
         ButterKnife.bind(this);
         init();
 
@@ -245,6 +247,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             finish();
         }
+
         String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
         NotificationViewModel viewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
@@ -277,12 +280,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //            tvManagePasswords.setVisibility(View.GONE);
             tvChooseBackground.setVisibility(View.GONE);
             tvCode.setVisibility(View.GONE);
+            soundContainer.setVisibility(View.GONE);
+            notificationContainer.setVisibility(View.GONE);
+            screenLockContainer.setVisibility(View.GONE);
+            findViewById(R.id.baclupAndRestore).setVisibility(View.GONE);
             // tvLanguage.setVisibility(View.VISIBLE);
             tvAdvance.setVisibility(View.GONE);
         } else {
 //            tvManagePasswords.setVisibility(View.VISIBLE);
             tvChooseBackground.setVisibility(View.VISIBLE);
-            tvCode.setVisibility(View.VISIBLE);
+            screenLockContainer.setVisibility(View.VISIBLE);
+            findViewById(R.id.baclupAndRestore).setVisibility(View.VISIBLE);
+            //tvCode.setVisibility(View.VISIBLE);
             ///tvLanguage.setVisibility(View.VISIBLE);
             tvAdvance.setVisibility(View.VISIBLE);
         }
@@ -361,7 +370,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             getSupportActionBar().setTitle(R.string.secure_settings_activity_title);
             String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
             if (deviceid != null) {
-                getSupportActionBar().setSubtitle("Device ID: " + deviceid);
+                getSupportActionBar().setSubtitle(getResources().getString(R.string.device_id) + ": " + deviceid);
             }
             //getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }

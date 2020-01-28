@@ -26,6 +26,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_SETUP_ENCRYPT;
 import static com.screenlocker.secure.utils.AppConstants.ENCRYPT_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
@@ -69,27 +70,27 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         tittleIcon.setImageResource(R.drawable.ic_encrypted_third);
-        titleText.setText("ENCRYPT SPACE LOCK");
+        titleText.setText(MyApplication.getAppContext().getResources().getString(R.string.encrypted_space_lock));
 
 
         layout_pin.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
-            mListener.onPageUpdate(4);
+            mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
 
 
         });
         layout_pattern.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
-            mListener.onPageUpdate(4);
+            mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
 
 
         });
         layout_combination.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
-            mListener.onPageUpdate(4);
+            mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
         });
     }
 

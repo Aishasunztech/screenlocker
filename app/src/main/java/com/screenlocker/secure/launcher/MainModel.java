@@ -115,9 +115,10 @@ public class MainModel implements MainContract.MainMvpModel {
                                 adapter.appsList.add(model);
                             } else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
                                 adapter.appsList.add(model);
-                            }else if (model.getPackageName().equals(context.getPackageName())){
-                                adapter.appsList.add(model);
                             }
+//                            else if (model.getPackageName().equals(context.getPackageName())){
+//                                adapter.appsList.add(model);
+//                            }
                             break;
                         case AppConstants.KEY_MAIN_PASSWORD:
                             // for the encrypted user typemessage

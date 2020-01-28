@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
+import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.settings.AdvanceSettings;
 import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
@@ -39,16 +41,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
+import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
 import static com.secureSetting.UtilityFunctions.getScreenBrightness;
+import static com.secureSetting.UtilityFunctions.getWifiStatus;
 import static com.secureSetting.UtilityFunctions.permissionModify;
 import static com.secureSetting.UtilityFunctions.pxFromDp;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
@@ -118,6 +128,15 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             }
 
 
+        });
+        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
+            if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                setUpPermissionSettingsEncrypted(subExtensions);
+            } else if (userType.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                setUpPermissionSettingsGuest(subExtensions);
+            }
         });
     }
 
@@ -255,6 +274,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         TextView textView = findViewById(R.id.coloumn_numbers);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
         int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
         if (item != 0) {
@@ -448,6 +468,8 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
         sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
     }
 
@@ -514,4 +536,45 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         });
         builder.show();
     }
+
+
+    void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsEncrypted: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Brightness:
+                    if (setting.isEncrypted()) {
+                        brightnessContainer.setVisibility(View.VISIBLE);
+                    } else brightnessContainer.setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Sleep:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.sleep_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.sleep_cotainer).setVisibility(View.GONE);
+                    break;
+
+            }
+        }
+    }
+
+    void setUpPermissionSettingsGuest(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsGuest: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Brightness:
+                    if (setting.isGuest()) {
+                        brightnessContainer.setVisibility(View.VISIBLE);
+                    } else brightnessContainer.setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Sleep:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.sleep_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.sleep_cotainer).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+
+
 }

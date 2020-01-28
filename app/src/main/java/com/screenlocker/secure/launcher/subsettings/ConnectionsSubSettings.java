@@ -241,7 +241,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
-        AppConstants.TEMP_SETTINGS_ALLOWED = true;
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
     }
 }

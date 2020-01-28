@@ -13,12 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.utils.AppConstants;
@@ -29,11 +30,7 @@ import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +38,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_ENCRYPT_PASS;
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_GUEST_PASS;
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.ENCRYPT_PASSORD_OPTION;
@@ -72,18 +71,29 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     private View v;
     private Context mContext;
+    private boolean isAllowed = false;
 
     @Override
     public boolean nextIf() {
-        if (setPassword()) {
-            if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null) {
-                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
+            case OPTION_PIN:
+                if (setPassword()) {
 
-//                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null ) {
+                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                        return true;
+                    }
+                }
+                break;
+            case OPTION_PATTERN:
+            case OPTION_COMBO:
+                if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD) != null || isAllowed) {
+                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                    return true;
+                }
+                break;
 
-                return true;
-            }
+
         }
         return false;
     }
@@ -113,7 +123,8 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             case OPTION_PATTERN:
                 mTry = 0;
                 tryPattern = "";
-                responsTitle.setText("Please Draw Pattern");
+                patternLock.setEnableHapticFeedback(false);
+                responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.please_draw_pattern));
                 viewSwitcher.setDisplayedChild(0);
                 break;
             case OPTION_COMBO:
@@ -121,7 +132,9 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                 mTryCombo = 0;
                 mCode = null;
                 mPattern = null;
-                msg.setText("Input PIN");
+                msg.setText(MyApplication.getAppContext().getResources().getString(R.string.input_pin));
+                patternLock.setEnableHapticFeedback(false);
+                patternLockView.setEnableHapticFeedback(false);
                 patternLockView.setNumberInputAllow(true);
                 patternLockView.invalidate();
                 viewSwitcher.setDisplayedChild(2);
@@ -178,7 +191,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     @BindView(R.id.patter_lock_view_combo)
     PatternLockView patternLockView;
     @BindView(R.id.btntry)
-     Button btnrTry;
+    Button btnrTry;
     @BindView(R.id.btnConfirm)
     Button btnConfirm;
 
@@ -196,6 +209,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
         img_picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_encrypted_third));
         img_picture2.setImageDrawable(getResources().getDrawable(R.drawable.ic_encrypted_third));
         ((ImageView) v.findViewById(R.id.profile_image_combo)).setImageResource(R.drawable.ic_encrypted_third);
+        patternLock.setEnableHapticFeedback(false);
         patternLock.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
@@ -211,7 +225,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             public void onComplete(List<PatternLockWithDotsOnly.Dot> pattern) {
 
                 if (pattern.size() < 4) {
-                    Toast.makeText(MyApplication.getAppContext(), "Pattern is too Short", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_is_too_short), Toast.LENGTH_SHORT).show();
                     patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     new Handler().postDelayed(patternLock::clearPattern, 500);
                     return;
@@ -219,7 +233,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                 if (mTry == 0) {
                     tryPattern = PatternLockUtils.patternToString(patternLock, pattern);
                     if (tryPattern.equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.GUEST_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.DURESS_PATTERN))) {
-                        Toast.makeText(MyApplication.getAppContext(), "Pattern already Taken", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_already_aken), Toast.LENGTH_SHORT).show();
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> {
                             patternLock.clearPattern();
@@ -229,29 +243,30 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
 
                     mTry++;
-                    responsTitle.setText("Confirm Pattern");
+                    responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.confirm_password));
                     patternLock.clearPattern();
 
                 } else if (mTry == 1) {
                     if (tryPattern.equals(PatternLockUtils.patternToString(patternLock, pattern))) {
+                        patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                         PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
                         PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_PATTERN, tryPattern);
                         PrefUtils.saveStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD, null);
-                        Toast.makeText(MyApplication.getAppContext(), "Pattern Updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_updated), Toast.LENGTH_SHORT).show();
                         //move to next
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
-                        mListener.onPageUpdate(5);
-
+                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+//                        mListener.onPageUpdate(STEP_ENCRYPT_PASS);
+                        isAllowed = true;
                     }
 
 
                     //wrong pattern
                     else {
                         mTry = 0;
-                        Toast.makeText(MyApplication.getAppContext(), "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_did_not_match), Toast.LENGTH_SHORT).show();
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
-                        responsTitle.setText("Please Draw Pattern");
+                        responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.please_draw_pattern));
 
                     }
                 }
@@ -276,7 +291,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             mTryCombo = 0;
             mCode = "";
             mPattern = "";
-            msg.setText("Input PIN");
+            msg.setText(MyApplication.getAppContext().getResources().getString(R.string.input_pin));
             patternLockView.setInputEnabled(true);
             codeView.clearCode();
             patternLockView.clearPattern();
@@ -293,7 +308,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             patternLockView.setNumberInputAllow(true);
             patternLockView.invalidate();
             btnConfirm.setEnabled(false);
-            msg.setText("Confirm PIN");
+            msg.setText(MyApplication.getAppContext().getResources().getString(R.string.confirm_pattern));
         });
 
         patternLockView.addPatternLockListener(
@@ -336,9 +351,9 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                                 PrefUtils.saveStringPref(MyApplication.getAppContext(), KEY_MAIN_PASSWORD, null);
                                 PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_PATTERN, null);
                                 //update code here
-                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
-                                mListener.onPageUpdate(5);
-
+                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+//                                mListener.onPageUpdate(STEP_ENCRYPT_PASS);
+                                isAllowed = true;
 
                             } else {
                                 patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
@@ -367,7 +382,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                         mCode = code.toString();
                         patternLockView.setNumberInputAllow(false);
                         patternLockView.invalidate();
-                        msg.setText("Draw Pattern");
+                        msg.setText(MyApplication.getAppContext().getResources().getString(R.string.draw_pattern));
                     }
 
 
@@ -375,7 +390,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                     if (code.toString().equals(mCode)) {
                         patternLockView.setNumberInputAllow(false);
                         patternLockView.invalidate();
-                        msg.setText("Confirm Pattern");
+                        msg.setText(MyApplication.getAppContext().getResources().getString(R.string.confirm_pattern));
                     } else {
                         codeView.setColor();
                     }
@@ -404,6 +419,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
             if (keyOk) {
                 PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
+                isAllowed = true;
                 return true;
 
             } else {

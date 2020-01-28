@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
+import com.screenlocker.secure.room.SubExtension;
 import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingContract;
@@ -28,9 +31,17 @@ import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.List;
+
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
+import static com.secureSetting.UtilityFunctions.getWifiStatus;
 
 public class ManagePasswords extends BaseActivity implements View.OnClickListener {
 
@@ -63,6 +74,17 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         }
         setListeners();
         settingsActivity = new SettingsActivity();
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
+
+        settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
+            if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                setUpPermissionSettingsEncrypted(subExtensions);
+            } else if (userType.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                setUpPermissionSettingsGuest(subExtensions);
+            }
+        });
+
 
     }
 
@@ -214,6 +236,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             }
         }
         setListeners();
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
     }
 
     @Override
@@ -457,6 +480,42 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                 startActivityForResult(intent3, RESULTDURES);
                 break;
         }
+    }
+
+
+
+
+    void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsEncrypted: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Finger:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.screen_lock_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.screen_lock_container).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    void setUpPermissionSettingsGuest(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsGuest: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Finger:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.screen_lock_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.screen_lock_container).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
     }
 
 

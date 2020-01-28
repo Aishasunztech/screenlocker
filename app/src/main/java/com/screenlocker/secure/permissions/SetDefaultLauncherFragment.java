@@ -24,6 +24,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_DEFAULT_LAUNCHER;
 import static com.screenlocker.secure.utils.AppConstants.CODE_LAUNCHER;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
@@ -46,7 +47,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public boolean nextIf() {
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_DEFAULT_LAUNCHER);
             return true;
         }
         return false;
@@ -56,7 +57,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public void onStepVisible() {
         super.onStepVisible();
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_DEFAULT_LAUNCHER);
             if (mListener != null) {
                 mListener.onPageUpdate(9);
             }

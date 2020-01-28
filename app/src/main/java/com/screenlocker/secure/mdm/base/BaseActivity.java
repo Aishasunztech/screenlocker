@@ -6,6 +6,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,10 +39,14 @@ public abstract class BaseActivity
     private SharedPreferences sharedPref;
 
     private void registerNetworkPref() {
+        HandlerThread receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        Handler handler = new Handler(looper);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),null,handler);
     }
 
     private void unRegisterNetworkPref() {
