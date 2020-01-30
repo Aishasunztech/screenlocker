@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.utils.AppConstants;
@@ -29,9 +30,7 @@ import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import com.secure.launcher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,6 @@ import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;

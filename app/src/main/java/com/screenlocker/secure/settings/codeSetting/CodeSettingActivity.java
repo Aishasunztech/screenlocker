@@ -2,6 +2,8 @@ package com.screenlocker.secure.settings.codeSetting;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.MyAdmin;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
@@ -206,7 +209,12 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                 handleInstallApps();
                 break;
             case R.id.tvSim:
-                handleSim();
+                DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    handleSim();
+                }else {
+                    Toast.makeText(this, getResources().getString(R.string.permission_not_allowed), Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.tvPolicyMenu:
                 handlePolicyMenu();
@@ -435,6 +443,11 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_PATTERN, null);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_COMBO_PIN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_COMBO_PIN, null);
+        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
+
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
         PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
 

@@ -58,7 +58,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
         if (!isSilent) {
             dialog = new ProgressDialog(contextWeakReference.get());
-            dialog.setTitle("Downloading Update, Please Wait");
+            dialog.setTitle(contextWeakReference.get().getResources().getString(R.string.downlaoding_update_please_wait));
             dialog.setCancelable(false);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

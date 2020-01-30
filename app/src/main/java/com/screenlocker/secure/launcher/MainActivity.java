@@ -68,6 +68,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_SUPPORT_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.NUMBER_OF_NOTIFICATIONS;
 import static com.screenlocker.secure.utils.AppConstants.SHOW_MANUAL_ACTIVITY;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
@@ -293,7 +294,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
         super.onResume();
-
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
 
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
         String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);

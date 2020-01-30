@@ -286,6 +286,7 @@ public class MainActivity extends BaseActivity {
                                 switch (msg) {
 
                                     case ACTIVE:
+                                    case TRIAL:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(),response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.unSuspendDevice(MainActivity.this);
                                         intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
@@ -306,14 +307,6 @@ public class MainActivity extends BaseActivity {
                                         PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
                                         finish();
                                         break;
-                                    case TRIAL:
-                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
-                                        utils.unSuspendDevice(MainActivity.this);
-                                        intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
-                                        startActivity(intent);
-                                        PrefUtils.saveBooleanPref(MainActivity.this, DEVICE_LINKED_STATUS, true);
-                                        finish();
-                                        break;
                                     case PENDING:
 //                                        pending = true;
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
@@ -322,7 +315,11 @@ public class MainActivity extends BaseActivity {
                                         finish();
                                         break;
                                     case FLAGGED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getUser_id(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
+                                        intent.putExtra(DEVICE_STATUS_KEY, ACTIVE_STATE);
+                                        startActivity(intent);
                                         suspendedDevice(MainActivity.this, "flagged");
+                                        finish();
                                         break;
                                 }
                             } else {

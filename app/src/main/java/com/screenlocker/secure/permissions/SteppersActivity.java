@@ -27,16 +27,16 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 
 public class SteppersActivity extends DotStepper implements OnPageUpdateListener {
     private boolean isEmergency = false;
-    public static int STEP_LANGUAGE = 1;
-    public static int STEP_PERMISSION = 2;
-    public static int STEP_SETUP_GUEST = 3;
-    public static int STEP_GUEST_PASS = 4;
-    public static int STEP_SETUP_ENCRYPT = 5;
-    public static int STEP_ENCRYPT_PASS = 6;
-    public static int STEP_SETUP_WIPE = 7;
-    public static int STEP_WIPE_PASS = 8;
-    public static int STEP_DEFAULT_LAUNCHER = 9;
-    public static int STEP_LINK = 10;
+    public static final int STEP_LANGUAGE = 1;
+    public static final int STEP_PERMISSION = 2;
+    public static final int STEP_SETUP_GUEST = 3;
+    public static final int STEP_GUEST_PASS = 4;
+    public static final int STEP_SETUP_ENCRYPT = 5;
+    public static final int STEP_ENCRYPT_PASS = 6;
+    public static final int STEP_SETUP_WIPE = 7;
+    public static final int STEP_WIPE_PASS = 8;
+    public static final int STEP_DEFAULT_LAUNCHER = 9;
+    public static final int STEP_LINK = 10;
 
 
     @Override

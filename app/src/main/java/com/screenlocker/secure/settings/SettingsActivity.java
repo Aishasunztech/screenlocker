@@ -493,8 +493,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                 if (!PrefUtils.getBooleanPref(this, UPDATESIM)) {
                     new AlertDialog.Builder(this)
-                            .setTitle("Warning!")
-                            .setMessage("Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.")
+                            .setTitle(getResources().getString(R.string.warning))
+                            .setMessage(getResources().getString(R.string.sim_update_warning))
                             .setPositiveButton(getResources().getString(R.string.continue_anyway), (dialog, which) -> {
                                 proccedToDownload();
                             })

@@ -14,4 +14,16 @@ interface IPCWithSL {
      * return device id of the currnet device
      */
     String getDeviceId();
+
+    /**
+    *resturn pgp email assigned to device
+    */
+
+    String getPGPEmail();
+
+    /*
+    *query if package suspended
+    */
+
+    boolean isPackageSuspended(String packageName);
 }

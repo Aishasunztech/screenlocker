@@ -14,6 +14,7 @@ import com.secure.launcher.IPCWithSL;
 
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
+import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
 
 public class IPCService extends Service {
 
@@ -28,18 +29,25 @@ public class IPCService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-
     IPCWithSL.Stub binder =  new IPCWithSL.Stub() {
         @Override
         public String getChatId() throws RemoteException {
-            Log.d("getChatId", "getChatId: "+PrefUtils.getStringPref(IPCService.this, CHAT_ID));
             return PrefUtils.getStringPref(MyApplication.getAppContext(), CHAT_ID);
         }
 
         @Override
         public String getDeviceId() throws RemoteException {
-            Log.d("getChatId", "getDeviceId: "+PrefUtils.getStringPref(IPCService.this, DEVICE_ID));
             return PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID);
+        }
+
+        @Override
+        public String getPGPEmail() throws RemoteException {
+            return PrefUtils.getStringPref(MyApplication.getAppContext(), PGP_EMAIL);
+        }
+
+        @Override
+        public boolean isPackageSuspended(String packageName) throws RemoteException {
+            return false;
         }
     };
 }

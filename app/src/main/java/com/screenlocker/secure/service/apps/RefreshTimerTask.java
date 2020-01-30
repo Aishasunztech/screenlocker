@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -43,7 +44,7 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALL_ALLOWED;
  * @author : Muhammad Nadeem
  * Created at: 1/27/2020
  */
-public class RefreshTimerTask extends TimerTask {
+public class RefreshTimerTask implements Runnable {
     private UsageStatsManager usm;
     private boolean aff1 = true;
     private Context context;
@@ -66,6 +67,7 @@ public class RefreshTimerTask extends TimerTask {
         this.context = context;
         usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         setupStrings();
+
     }
 
     @Override
@@ -78,34 +80,9 @@ public class RefreshTimerTask extends TimerTask {
 
                 if (componentName != null) {
                     String activity = componentName.flattenToShortString();
+                    Timber.d(activity);
                     boolean break1 = false;
-                    if (PrefUtils.getBooleanPref(context, IS_SETTINGS_ALLOW)) {
-
-                        if (ssPermissions.contains(activity)) {
-                            Timber.d("activity allowed");
-                            AppConstants.TEMP_SETTINGS_ALLOWED = true;
-                            //privousTrack = activity;
-                        }
-                        else if ("com.android.settings/.SubSettings".contains(activity) ){
-
-                            for (String s : previousTasksFor) {
-                                if (fifo.contains(s)){
-                                    Timber.d("SubActivity allowed allowed");
-                                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
-                                }
-                            }
-                            if (!TEMP_SETTINGS_ALLOWED) {
-                                checkAppStatus(componentName);
-                            }
-
-                        }
-                        else {
-                            checkAppStatus(componentName);
-                        }
-                        if (!fifo.contains(activity)){
-                            fifo.add(activity);
-                        }
-                    } else if (PrefUtils.getBooleanPref(context, UNINSTALL_ALLOWED)) {
+                    if (PrefUtils.getBooleanPref(context, UNINSTALL_ALLOWED)) {
                         Timber.d("uninstall allowed");
                         if (smPermissions.contains(activity)) {
                             Timber.d("activity allowed");
@@ -114,14 +91,42 @@ public class RefreshTimerTask extends TimerTask {
                             Timber.d("activity not allowed");
                             checkAppStatus(componentName);
                         }
-                    } else if (PrefUtils.getBooleanPref(context, PERMISSION_GRANTING)) {
+                    }
+                    else if (PrefUtils.getBooleanPref(context, IS_SETTINGS_ALLOW)) {
+                        Timber.d("System settings allowed");
+                        if (ssPermissions.contains(activity)) {
+                            Timber.d("activity allowed");
+                            AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                            //privousTrack = activity;
+                        } else if ("com.android.settings/.SubSettings".contains(activity)) {
+                            AppConstants.TEMP_SETTINGS_ALLOWED = false;
+                            for (String s : previousTasksFor) {
+                                if (fifo.contains(s)) {
+                                    Timber.d("SubActivity allowed allowed");
+                                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                                }
+                            }
+                            if (!TEMP_SETTINGS_ALLOWED) {
+                                checkAppStatus(componentName);
+                            }
+
+                        } else {
+                            checkAppStatus(componentName);
+                        }
+
+                    }
+                    else if (PrefUtils.getBooleanPref(context, PERMISSION_GRANTING)) {
                         Timber.d("permission granting");
                         AppConstants.TEMP_SETTINGS_ALLOWED = true;
                     } else {
                         Timber.d("checking app permission");
                         checkAppStatus(componentName);
                     }
+                    if (!fifo.contains(activity)) {
+                        fifo.add(activity);
+                    }
                 }
+
             }
         }
     }
@@ -142,7 +147,6 @@ public class RefreshTimerTask extends TimerTask {
                     str = event.getClassName();
                     componentName = new ComponentName(str2, str);
                     componentName.flattenToShortString();
-                    Timber.d(componentName.flattenToShortString());
                     break;
                 case 2:
                     if (!event.getPackageName().equals(str2)) {
@@ -153,10 +157,7 @@ public class RefreshTimerTask extends TimerTask {
                     }
             }
         }
-        if (componentName != null) {
-            return componentName;
-        }
-        return null;
+        return componentName;
     }
 
     private void setupStrings() {
@@ -190,8 +191,10 @@ public class RefreshTimerTask extends TimerTask {
         ssPermissions.add("com.android.phone/android.app.ProgressDialog");
         ssPermissions.add("com.android.providers.telephony/com.android.settings.Settings$ApnSettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$ApnEditorActivity");
+        ssPermissions.add("com.android.settings/.Settings$ApnSettingsActivity");
 
 
+//
         ssPermissions.add("com.google.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         ssPermissions.add("com.android.packageinstaller/.permission.ui.GrantPermissionsActivity");
         ssPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity");
@@ -207,10 +210,12 @@ public class RefreshTimerTask extends TimerTask {
         ssPermissions.add("com.android.settings/.Settings$WifiApSettingsActivity");
         ssPermissions.add("com.android.settings/.password.SetNewPasswordActivity");
         ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
+        ssPermissions.add("com.android.vpndialogs/.ConfirmDialog");
 
         // samsung
         ssPermissions.add("com.android.settings/.Settings$ConnectionsSettingsActivity");
         ssPermissions.add("com.android.phone/com.samsung.telephony.phone.activities.SamsungMobileNetworkSettingsActivity");
+        ssPermissions.add("com.android.settings/com.samsung.android.settings.personalvibration.SelectPatternDialog");
 
         // huwei
         ssPermissions.add("com.android.phone/.MSimMobileNetworkSettings");
@@ -221,6 +226,8 @@ public class RefreshTimerTask extends TimerTask {
         ssPermissions.add("com.android.settings/.Settings$ConfigureNotificationSettingsActivity");
         ssPermissions.add("android/com.android.internal.app.ResolverActivity");
         ssPermissions.add("com.android.documentsui/.picker.PickActivity");
+        ssPermissions.add("com.android.settings/.bluetooth.BluetoothPairingDialog");
+        ssPermissions.add("com.android.settings/.Settings$WifiNetworkConnectActivity");
 
 
 //        ssPermissions.add(BuildConfig.APPLICATION_ID + "/android.widget.FrameLayout");
@@ -231,8 +238,8 @@ public class RefreshTimerTask extends TimerTask {
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettings");
         ssPermissions.add("com.samsung.crane/com.android.settings.Settings$ApnSettingsActivity");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettingsTab");
-
         ssPermissions.add("com.samsung.android.app.telephonyui/.netsettings.ui.NetSettingsActivity");
+
         ssPermissions.add("com.android.settings/com.samsung.android.settings.face.FaceLockSettings");
         ssPermissions.add("com.android.settings/com.samsung.android.settings.biometrics.BiometricsDisclaimerActivity");
 
@@ -272,6 +279,9 @@ public class RefreshTimerTask extends TimerTask {
         smPermissions.add("com.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/.UninstallerActivity");
         smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.UninstallerActivity");
+        smPermissions.add(" com.google.android.packageinstaller/com.android.packageinstaller.UninstallerActivity");
+        ;
+        smPermissions.add("com.google.android.packageinstaller/com.android.packageinstaller.InstallStart");
 
 
         smPermissions.add("com.android.packageinstaller/.PackageInstallerActivity");
@@ -353,6 +363,9 @@ public class RefreshTimerTask extends TimerTask {
         //Previous allowed subsetting activities
         previousTasksFor.add("com.secure.launcher/com.screenlocker.secure.settings.SettingsActivity");
         previousTasksFor.add("com.android.settings/.Settings$LanguageAndInputSettingsActivity");
+        previousTasksFor.add("com.android.settings/.Settings$SoundSettingsActivity");
+//        previousTasksFor.add("com.android.settings/.Settings$PowerUsageSummaryActivity");
+        previousTasksFor.add("com.android.settings/.Settings$DateTimeSettingsActivity");
     }
 
     private void checkAppStatus(ComponentName componentName) {

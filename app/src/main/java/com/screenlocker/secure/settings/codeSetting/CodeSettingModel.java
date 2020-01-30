@@ -9,7 +9,7 @@ import com.secure.launcher.R;
 public class CodeSettingModel implements CodeSettingContract.CodeSettingMvpModel {
     private Context mContext;
 
-    public CodeSettingModel(Context context) {
+    CodeSettingModel(Context context) {
         mContext = context;
     }
 
@@ -18,19 +18,9 @@ public class CodeSettingModel implements CodeSettingContract.CodeSettingMvpModel
 
         new AlertDialog.Builder(mContext)
                 .setCancelable(false)
-                .setTitle("Warning")
-                .setMessage("This will reset Guest and Encrypted \tpasswords.Do you want to reset passwords?")
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mvpView.resetPassword();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                }).show();
+                .setTitle(mContext.getResources().getString(R.string.warning))
+                .setMessage(mContext.getResources().getString(R.string.rest_pass_msg))
+                .setPositiveButton(R.string.ok, (dialogInterface, i) -> mvpView.resetPassword())
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel()).show();
     }
 }

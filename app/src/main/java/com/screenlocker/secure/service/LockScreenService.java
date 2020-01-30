@@ -103,9 +103,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
-import java.util.Timer;
 import java.util.TreeMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import timber.log.Timber;
@@ -239,7 +239,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     private boolean viewAdded = false;
     private View view;
     private SocketManager socketManager;
-    private Timer timer;
 
 
     private HashSet<String> tempAllowed = new HashSet<>();
@@ -812,11 +811,21 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     appExecutor.getMainThread().execute(() -> startLockScreen(true));
                     running = false;
                     count = 0;
+                    if (!appExecutor.getSingleScheduleThreadExecutor().isShutdown())
+                        appExecutor.getSingleScheduleThreadExecutor().shutdownNow();
                     return;
                 }
                 running = true;
             }
         });
+        appExecutor.getSingleScheduleThreadExecutor().shutdownNow();
+        if (appExecutor.getSingleScheduleThreadExecutor().isShutdown()) {
+            appExecutor.prepareSingleScheduleThreadExecutor();
+        }
+
+        appExecutor.getSingleScheduleThreadExecutor().scheduleAtFixedRate(new RefreshTimerTask(this), 0, 100, TimeUnit.MILLISECONDS);
+
+
     }
 
 
@@ -1253,10 +1262,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 //        if (WindowChangeDetectingService.serviceConnectedListener == null) {
 //            WindowChangeDetectingService.serviceConnectedListener = this;
 //        }
-        if (timer == null) {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new RefreshTimerTask(this), 0, 100);
-        }
+
 
         if (intent != null) {
             String action = intent.getAction();

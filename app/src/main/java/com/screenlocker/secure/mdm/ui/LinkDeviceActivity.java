@@ -50,6 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE;
 import static com.screenlocker.secure.utils.AppConstants.ACTIVE_STATE;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
@@ -61,6 +62,7 @@ import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
 import static com.screenlocker.secure.utils.AppConstants.EXPIRED;
+import static com.screenlocker.secure.utils.AppConstants.FLAGGED;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -593,6 +595,13 @@ public class LinkDeviceActivity extends BaseActivity {
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         finishedRefreshing();
                                         pendingLinkViewState();
+                                        break;
+                                    case FLAGGED:
+                                        saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
+                                        utils.suspendedDevice(LinkDeviceActivity.this, "flagged");
+                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        isPendingActivation = false;
+                                        finish();
                                         break;
                                 }
                             } else {

@@ -160,6 +160,13 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
         tvConnectedWIF.setText(getWifiStatus(this));
         tvConnectedBluetooth.setText(getBlueToothStatus(this));
+        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+
+        if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+//            tvManagePasswords.setVisibility(View.GONE);
+            bluethooth_layout.setVisibility(View.GONE);
+            layout_hotspot.setVisibility(View.GONE);
+        }
     }
 
     void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {

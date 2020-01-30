@@ -299,7 +299,6 @@
     <string name="encrypted_password">Encrypted Password</string>
     <string name="set_skip_password">Please Set or Skip Password</string>
     <string name="duress_pin">Wipe PIN</string>
-    <string name="warning">Warning!</string>
     <string name="duress_pin_message">Entering Wipe Pin when device is locked will wipe your phone data. You cannot undo this action. All data will be deleted from target device without any confirmation. There is no way to reverse this action.</string>
     <string name="please_link_skip">Please Link Device or Skip</string>
     <string name="set_as_default_launcher">Please Set as Default Launcher</string>
@@ -483,6 +482,7 @@
     <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
     <string name="reset_wipe_password">Reset WIPE Password</string>
     <string name="draw_pattern">Please Draw Pattern</string>
+    <string name="permission_not_allowed">This feature is only available in SW</string>
     <string name="network_limited">Limited network !</string>
     <string name="network_limited_message">Internet may not be available.</string>
     <string name="change_network">Change Network</string>
@@ -567,6 +567,10 @@
     <string name="encrypted_space_lock">ENCRYPT SPACE LOCK</string>
     <string name="wipe_lock">WIPE LOCK</string>
     <string name="please_select_an_option">Please Select An Option.</string>
+    <string name="warning">Warning!</string>
+    <string name="sim_update_warning">Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.</string>
+    <string name="downlaoding_update_please_wait">Downloading Update, Please Wait</string>
+    <string name="rest_pass_msg">This will reset Guest and Encrypted \tpasswords.Do you want to reset passwords?</string>
 
 
 </resources>

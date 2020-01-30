@@ -16,6 +16,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -140,18 +141,12 @@ public class UtilityFunctions {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
 
         if (isWifiConnected(context)) {
-
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            if (info != null && info.isConnected()) {
-                String ssid = info.getExtraInfo();
-                if (ssid == null) {
-                    return context.getResources().getString(R.string.unknown);
-                }
-                return ssid.substring(1, ssid.length() - 1);
-            } else {
+            WifiInfo info = wifiManager.getConnectionInfo();
+            String ssid = info.getSSID();
+            if (ssid == null) {
                 return context.getResources().getString(R.string.unknown);
             }
+            return ssid.substring(1, ssid.length() - 1);
 
 
         } else {

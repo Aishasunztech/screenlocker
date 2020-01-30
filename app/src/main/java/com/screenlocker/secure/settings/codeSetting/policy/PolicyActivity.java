@@ -48,7 +48,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private ConstraintLayout containerLayout;
     private CardView cardView;
 
-    private Button btnDefault, btnLoadPolicy;
+    private Button  btnLoadPolicy;
     private EditText etPolicyName;
 
     private ProgressBar progressBar;
@@ -90,8 +90,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
 
     private void setIds() {
-        btnDefault = findViewById(R.id.btnDefaultPolicy);
-        btnDefault.setOnClickListener(this);
         btnLoadPolicy = findViewById(R.id.btnLoadPolicy);
         btnLoadPolicy.setOnClickListener(this);
         etPolicyName = findViewById(R.id.edtTxtPin);
@@ -120,9 +118,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnDefaultPolicy:
-                handleLoadPolicy(getResources().getString(R.string.default_policy), getResources().getString(R.string.default_policy_message));
-                break;
             case R.id.btnLoadPolicy:
                 submit();
                 break;
@@ -136,7 +131,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
             etPolicyName.setError(getResources().getString(R.string.enter_policy_name));
         } else {
 //            handleLoadPolicy(policyName, "This will load the policy \"" + policyName + "\" to this device.");
-            handleLoadPolicy(policyName, getResources().getString(R.string.load_policy_to_device, policyName));
+            handleLoadPolicy(policyName, getString(R.string.load_policy_to_device, policyName));
         }
     }
 
@@ -308,7 +303,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void errorView() {
         etPolicyName.setEnabled(true);
         btnLoadPolicy.setEnabled(true);
-        btnDefault.setEnabled(true);
         progressBar.setVisibility(View.GONE);
         etPolicyName.setError(getResources().getString(R.string.invalid_policy_name));
     }
@@ -316,7 +310,6 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     private void processingView() {
         etPolicyName.setEnabled(false);
         btnLoadPolicy.setEnabled(false);
-        btnDefault.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
     }
 

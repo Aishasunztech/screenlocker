@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -97,7 +99,13 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.tv_IMEI:
-                startActivity(new Intent(this, IMEIActivity.class));
+                DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+                if (mDPM.isDeviceOwnerApp(getPackageName())){
+                    startActivity(new Intent(this, IMEIActivity.class));
+                }else {
+                    Toast.makeText(this, getResources().getString(R.string.permission_not_allowed), Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.language_container:
                 final Intent intent = new Intent(Intent.ACTION_MAIN, null);

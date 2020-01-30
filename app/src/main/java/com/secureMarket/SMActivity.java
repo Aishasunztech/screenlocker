@@ -556,6 +556,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         if (mService != null) {
             mService.setMarketDownloadListener(null);
         }
+        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
         unRegisterNetworkPref();
