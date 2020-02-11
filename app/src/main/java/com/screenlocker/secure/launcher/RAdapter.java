@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.contactSupport.ChatActivity;
 import com.liveClientChat.LiveClientChatActivity;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.AppConstants;
@@ -159,7 +160,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     if (!BuildConfig.APPLICATION_ID.equals(info.getPackageName()))
-                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(info.getUniqueName()));
+                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> MyAppDatabase.getInstance(context).getDao().deleteOne(info.getUniqueName()));
 
                 }
 

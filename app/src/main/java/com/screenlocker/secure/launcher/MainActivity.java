@@ -1,7 +1,6 @@
 package com.screenlocker.secure.launcher;
 
 import android.annotation.SuppressLint;
-import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,11 +11,10 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.os.StrictMode;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
@@ -30,8 +28,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.screenlocker.secure.ShutDownReceiver;
@@ -44,7 +40,6 @@ import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.socket.model.InstallModel;
-import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
@@ -57,6 +52,7 @@ import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
+import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
@@ -234,13 +230,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            Instrumentation m_Instrumentation = new Instrumentation();
-            try {
-                m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
 
-            } catch (Exception e) {
-                Timber.e(e.toString());
-            }
+            Intent i = new Intent(this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(i);
+//            Instrumentation m_Instrumentation = new Instrumentation();
+//            try {
+//                m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
+//
+//            } catch (Exception e) {
+//                Timber.e(e.toString());
+//            }
 
         });
 
@@ -481,6 +483,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                 });
             }
         }, 2000);
+        AccessibilityManager manager = (AccessibilityManager) this.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (manager.isEnabled()) {
+            AccessibilityEvent event = AccessibilityEvent.obtain();
+            event.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+            event.setAction(GLOBAL_ACTION_RECENTS);
+            manager.sendAccessibilityEvent(event);
+        }
     }
 
 

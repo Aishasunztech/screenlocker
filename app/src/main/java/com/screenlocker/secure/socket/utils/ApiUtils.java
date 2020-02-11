@@ -2,6 +2,7 @@ package com.screenlocker.secure.socket.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -111,7 +112,7 @@ public class ApiUtils implements ApiRequests {
                     @Override
                     public void onResponse(@NonNull Call<DeviceStatusResponse> call, @NonNull Response<DeviceStatusResponse> response) {
 
-                        if (response.isSuccessful() && response.body() != null) {
+                        if (response.isSuccessful() ) {
                             DeviceStatusResponse dsr = response.body();
                             String msg = dsr.getMsg();
                             Timber.d("response :" + msg);

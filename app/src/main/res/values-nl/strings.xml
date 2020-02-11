@@ -75,7 +75,7 @@
     <string name="permission_required">We hebben deze toestemming nodig om hardware-ID\'s te lezen om uw apparaat te beveiligen</string>
     <string name="dont_have_permission">We hebben geen toestemming.</string>
     <string name="permission_denied">Toestemming geweigerd</string>
-    <string name="info">Info :</string>
+    <string name="info">Info:</string>
     <string name="device_already_linked">Apparaat succesvol gekoppeld</string>
     <string name="link_request_pending">Linkverzoek in behandeling!</string>
     <string name="something_went_wrong">Er is iets fout gegaan</string>
@@ -116,7 +116,7 @@
     <string name="link">\ "Https: //dyrk.org/tools/imei \"</string>
     <string name="link_title">Koppeling</string>
     <string name="simtext">SIM:</string>
-    <string name="slot">Slot :</string>
+    <string name="slot">Slot:</string>
     <string name="name">/ Naam :</string>
     <string name="apn">/ Apn:</string>
     <string name="guest">Gast</string>
@@ -207,7 +207,7 @@
     <string name="on">AAN</string>
     <string name="installed_apps_title">Apps installeren</string>
     <string name="something_wrong">er is iets fout gegaan</string>
-    <string name="downloading_update">Bezig met downloaden van update, een ogenblik geduld</string>
+    <string name="downloading_update">Downloaden van update, een ogenblik geduld</string>
     <string name="install">Installeren</string>
     <string name="uninstall">Uninstall</string>
     <string name="policy_title">Laadbeleid</string>
@@ -256,7 +256,7 @@
     <string name="downloading_app_title">App downloaden, een ogenblik geduld</string>
     <string name="please_wait">Wacht alsjeblieft</string>
     <string name="secure_market_title">Veilige markt</string>
-    <string name="wi_fi">WiFi</string>
+    <string name="wi_fi">Wifi</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="disabled">Gehandicapt</string>
     <string name="sim_cards">SIM-kaarten</string>
@@ -301,7 +301,6 @@
     <string name="encrypted_password">Gecodeerd wachtwoord</string>
     <string name="set_skip_password">Stel het wachtwoord in of sla het over</string>
     <string name="duress_pin">Pincode wissen</string>
-    <string name="warning">Waarschuwing!</string>
     <string name="duress_pin_message">Als u Wipe Pin invoert wanneer het apparaat is vergrendeld, worden uw telefoongegevens gewist. U kunt deze actie niet ongedaan maken. Alle gegevens worden zonder bevestiging van het doelapparaat verwijderd. Er is geen manier om deze actie terug te draaien.</string>
     <string name="please_link_skip">Koppel het apparaat of sla over</string>
     <string name="set_as_default_launcher">Stel in als standaardstarter</string>
@@ -334,13 +333,13 @@
     <string name="number_of_attempts_remaining">Je hebt %1$s pogingen gedaan voordat het apparaat wordt gereset en alle gegevens zijn verloren!</string>
     <string name="account_device_id_suspended">Uw account met apparaat-ID = %1$s is opgeschort. Neem contact op met ondersteuning</string>
     <string name="account_device_id_expired">Uw account met apparaat-ID = %1$s is verlopen. Neem contact op met ondersteuning</string>
-    <string name="account_device_id_unlinked">Uw apparaat-ID = %1$s is ontkoppeld. Neem hieronder contact op met ondersteuning.</string>
+    <string name="account_device_id_unlinked">Uw apparaat-ID = %1$s is ontkoppeld. Neem hieronder contact op met de ondersteuning.</string>
     <string name="account_device_id_flagged">Dit apparaat is gemarkeerd, neem contact op met ondersteuning.</string>
     <string name="not_linked_yet">nog niet gelinkt</string>
     <string name="link_status">Linkstatus</string>
     <string name="next">Device Linked</string>
     <string name="next_attempt_in">Volgende poging in</string>
-    <string name="contact_support_chat">Contact Support</string>
+    <string name="contact_support_chat">Contact opnemen met ondersteuning</string>
     <string name="optional_message_warn">Dit is een optioneel bericht om de gebruiker te waarschuwen voor uitschakelen.</string>
     <string name="device_admin_disabled">Sample Device Admin: uitgeschakeld</string>
     <string name="device_admin_changed">Sample Device Admin: pw gewijzigd</string>
@@ -361,7 +360,7 @@
     <string name="dark_theme">Donker thema</string>
     <string name="mode">mode</string>
     <string name="link_device_message">Druk op de onderstaande knop om uw apparaat te koppelen</string>
-    <string name="link_device_activation_message">Voeg activeringscode toe gegeven door dealer en druk op \ "VERZENDEN \" knop om uw apparaat te koppelen "</string>
+    <string name="link_device_activation_message">Voeg activeringscode toe die door de dealer is gegeven en druk op de knop "VERZENDEN \" om uw apparaat te koppelen "</string>
     <string name="default_launcher_title">Standaard Launcher</string>
 
 
@@ -388,7 +387,7 @@
     <string name="ignore_list">Negeer lijst</string>
     <string name="ignore_success">Ga naar Lijst met succes negeren</string>
     <string name="more">Meer detail</string>
-    <string name="app_info">App info</string>
+    <string name="app_info">App informatie</string>
 
     <string name="notification_title">AppTimeline actief</string>
     <string name="notification_message">bijhouden van uw app-gebruik</string>
@@ -403,7 +402,7 @@
 
     <string name="settings_more">Meer</string>
     <string name="share">Like en deel</string>
-    <string name="share_desc">Hey, bekijk deze app, hij is zo cool dat hij kan helpen bij het afrekenen van elke app waar je aan uitgeeft: %1$s %2$s</string>
+    <string name="share_desc">Hallo, bekijk deze app, hij is zo cool dat hij kan helpen bij het uitchecken van elke app waar je aan uitgeeft: %1$s %2$s</string>
     <string name="slogan">Gebruik van apps controleren</string>
     <string name="sort">Sorteer op</string>
     <string name="toast_permission">Zoek \ "AppsTimeline \" en verleen de toestemming</string>
@@ -430,7 +429,7 @@
     <string name="ip_addr">IP-adres</string>
     <string name="all_apps">Alle apps</string>
     <string name="no_connection">Geen internet verbinding</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"Deze toestemming is vereist voor apparaten met Android 5.0 en hoger waarop de machtiging Gebruiksstatistieken niet werkt. \ N \ n Inschakelen helpt bij het detecteren van gebruikersacties en voorkomt onbedoelde overschakeling naar toepassingen die niet vereist zijn. \ N \ n Als u zie dat al is ingeschakeld, schakel het selectievakje uit en opnieuw uit zodat de service opnieuw wordt gestart. "</string>
     <string name="on_accessibility_service">Over toegankelijkheidsservice</string>
     <string name="features">\ u25CB Combo Lock. \ n \ u25CB Automatische updates voor alle apps. \ n \ u25CB Nieuw tabblad Update in Sm. \ n \ u25CB Camera-functie uitschakelen. \ n \ u25CB Meldingsmenu in SS. \ n \ u25CB Nieuw welkomstscherm met animatie. \ n \ u25CB Nieuwe pictogrammen voor SM-, SS- en SC-apps. \ n \ u25CB SIM-instellingen synchronisatie met LM. \ n \ u25CB Bijgewerkt App-menu installeren (code.).</string>
     <string name="accessibility_service_msg">Deze toestemming is vereist voor apparaten met Android 5.0 en hoger waarop de machtiging Gebruiksstatistieken niet werkt.</string>
@@ -449,14 +448,14 @@
     <string name="enter_pin_or_draw_pattern_to_unlock">Voer Pin of Draw Pattern in om te ontgrendelen</string>
     <string name="expiry_alert_online_title">Vervalwaarschuwing</string>
     <string name="_10_days">10 dagen</string>
-    <string name="expiry_alert_online_message">Waarschuwing! Uw apparaat verloopt over %1$s dag (en). Neem contact op met ondersteuning om uw services uit te breiden. "</string>
+    <string name="expiry_alert_online_message">Waarschuwing! Uw apparaat verloopt over %1$s dag (en), neem contact op met ondersteuning om uw services uit te breiden. "</string>
     <string name="pattern">Patroon</string>
     <string name="medium">Medium</string>
     <string name="high">hoog</string>
     <string name="combination">Combinatie</string>
     <string name="low">Laag</string>
     <string name="current_dealer">Huidige dealer</string>
-    <string name="your_device_is_linked">Apparaat is gekoppeld!</string>
+    <string name="your_device_is_linked">Apparaat is gekoppeld</string>
 
     <string name="waiting_for_approval">Wachten op goedkeuring...</string>
     <string name="restore">Herstellen</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">Uw apparaat-ID = %1$s is overgedragen. Neem contact op met de onderstaande ondersteuning.</string>
     <string name="reset_wipe_password">Reset WIPE-wachtwoord</string>
     <string name="draw_pattern">Teken alstublieft patroon</string>
+    <string name="permission_not_allowed">Deze functie is alleen beschikbaar op aangepaste apparaten</string>
     <string name="network_limited">Beperkte netwerk!</string>
     <string name="network_limited_message">Internet is mogelijk niet beschikbaar.</string>
     <string name="change_network">Verander netwerk</string>
@@ -495,10 +495,10 @@
     <string name="guest_amp_encrypted">Gast</string>
     <string name="biometrics_and_security">Biometrie en beveiliging</string>
     <string name="n_a">N / A</string>
-    <string name="account_info">Account Info</string>
-    <string name="status_info">Status Info</string>
-    <string name="sim_info">SIM Info</string>
-    <string name="device_info">Device Info</string>
+    <string name="account_info">Account informatie</string>
+    <string name="status_info">Statusinfo</string>
+    <string name="sim_info">SIM-info</string>
+    <string name="device_info">Apparaat info</string>
     <string name="wi_fi_bluetooth_mobile_data_data_usage">Wi-FI, Bluetooth, mobiele gegevens, gegevensgebruik</string>
     <string name="sounds_and_vibration">Geluiden en trillingen</string>
     <string name="sounds_vibration_do_not_disturb">Geluiden, trillingen, niet storen</string>
@@ -520,7 +520,7 @@
     <string name="about_phone">Over telefoon</string>
     <string name="status_version_legal_info_whats_new">Status, versie, juridische informatie, wat is nieuw</string>
     <string name="wallpapers">wallpapers</string>
-    <string name="allow_apps_to_guest_and_encrypt_space">Toestaan dat apps gast zijn en ruimte versleutelen</string>
+    <string name="allow_apps_to_guest_and_encrypt_space">Toestaan dat apps gast zijn en ruimte coderen</string>
     <string name="mic_camera_speaker">Microfoon, camera, luidspreker</string>
     <string name="allow_settings_to_guest_and_encrypt_space">Instellingen toestaan voor gast en Ruimte coderen</string>
     <string name="change_password">Verander wachtwoord</string>
@@ -547,14 +547,33 @@
     <string-array name="duration">
         <item>Vandaag</item>
         <item>Gisteren</item>
-        <item>Last Week</item>
+        <item>Vorige week</item>
         <item>Vorige maand</item>
     </string-array>
 
     <string name="tab_text_1" translatable="false">@string/apps_title</string>
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="no_notifications">Geen notificaties</string>
+    <string name="restore_settings">Instellingen herstellen</string>
+    <string name="rest_msg">Even geduld aub terwijl we uw standaardinstellingen herstellen. Schakel uw mobiel niet uit.</string>
+    <string name="please_draw_pattern">Teken alstublieft patroon</string>
+    <string name="input_pin">Voer PIN in</string>
+    <string name="confirm_pattern">Patroon bevestigen</string>
+    <string name="pattern_is_too_short">Patroon is te kort</string>
+    <string name="pattern_already_aken">Patroon al in gebruik</string>
+    <string name="pattern_did_not_match">Patroon kwam niet overeen</string>
+    <string name="pattern_updated">Patroon bijgewerkt</string>
+    <string name="guest_space_lock">GASTENRUIMTESLOT</string>
+    <string name="encrypted_space_lock">ENCRYPT RUIMTESLOT</string>
+    <string name="wipe_lock">SLUITSLOT</string>
+    <string name="please_select_an_option">Maak een keuze a.u.b.</string>
+    <string name="warning">Waarschuwing!</string>
+    <string name="sim_update_warning">Het gebruik van SIM-gegevens voor het bijwerken van het apparaat kan gegevens van meer dan 100 MB vereisen. Gebruik in plaats daarvan WIFI of ga toch door.</string>
+    <string name="downlaoding_update_please_wait">Downloaden van update, een ogenblik geduld</string>
+    <string name="rest_pass_msg">Hiermee worden Gast en gecodeerde \ tpasswords. opnieuw ingesteld. Wilt u wachtwoorden opnieuw instellen?</string>
+    <string name="confirm">Bevestigen</string>
+    <string name="retry">Opnieuw</string>
 
 
     <!-- Generated by Automatic String Resource Translation

@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import timber.log.Timber;
 
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.TOKEN;
@@ -65,7 +66,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
             InstallModel model = InstallModels.get(i);
 
 
-            File file = downloadApp(live_url +MOBILE_END_POINT+ "getApk/" + CommonUtils.splitName(model.getApk()));
+            File file = downloadApp(live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT + CommonUtils.splitName(model.getApk()));
 
             installModelList.add(model);
 

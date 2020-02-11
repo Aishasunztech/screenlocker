@@ -26,4 +26,6 @@ interface IPCWithSL {
     */
 
     boolean isPackageSuspended(String packageName);
+
+    int getWhiteLabelType();
 }

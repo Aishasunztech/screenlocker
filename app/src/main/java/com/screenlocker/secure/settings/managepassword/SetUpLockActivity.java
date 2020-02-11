@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Validator;
 
 import butterknife.BindView;
@@ -59,10 +59,12 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
 
     @BindView(R.id.guest_image_icon)
     ImageView img_picture;
+    private SecuredSharedPref securedSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         setContentView(R.layout.activity_set_up_lock);
         ButterKnife.bind(this);
         Toolbar mToolbar = findViewById(R.id.toolbar);
@@ -89,7 +91,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                 // setting toolbar name for guest type
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.set_duress_code);
-                if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD)!=null){
+                if (securedSharedPref.getStringPref( AppConstants.KEY_DURESS_PASSWORD)!=null){
 
                     btnDisableDuress.setVisibility(View.VISIBLE );
                 }
@@ -157,7 +159,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.disable_duress){
-            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD,null);
+            securedSharedPref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD,null);
             btnDisableDuress.setEnabled(false);
             btnDisableDuress.setText(getResources().getString(R.string.duress_pin_disabled));
         }
@@ -180,11 +182,11 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_GUEST:
 
                         if (keyOk) {
-                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
-                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_PATTERN, null);
-                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
-                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
-                            PrefUtils.saveStringPref(SetUpLockActivity.this, AppConstants.GUEST_COMBO_PIN, null);
+                            securedSharedPref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            securedSharedPref.saveStringPref( AppConstants.GUEST_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
+                            securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PIN, null);
 
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
@@ -196,7 +198,7 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_CODE:
 
                         if (keyOk) {
-                            PrefUtils.saveStringPref(this, AppConstants.KEY_CODE_PASSWORD, reEnteredPassword);
+                            securedSharedPref.saveStringPref( AppConstants.KEY_CODE_PASSWORD, reEnteredPassword);
                             setResult(RESULT_OK);
                             finish();
                         } else {
@@ -207,11 +209,11 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_MAIN:
 
                         if (keyOk) {
-                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
-                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_PATTERN, null);
-                            PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
-                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
-                            PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PIN, null);
+                            securedSharedPref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            securedSharedPref.saveStringPref( AppConstants.ENCRYPT_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.KEY_MAIN_PASSWORD, reEnteredPassword);
+                            securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, null);
                             setResult(RESULT_OK);
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             finish();
@@ -223,11 +225,11 @@ public class SetUpLockActivity extends AppCompatActivity implements View.OnClick
                     case AppConstants.KEY_DURESS:
 
                         if (keyOk) {
-                            PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
-                            PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
-                            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
-                            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PATTERN, null);
-                            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PIN, null);
+                            securedSharedPref.saveStringPref( AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                            securedSharedPref.saveStringPref( AppConstants.DURESS_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD, reEnteredPassword);
+                            securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PATTERN, null);
+                            securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PIN, null);
                             Toast.makeText(this, "Pin Updated", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();

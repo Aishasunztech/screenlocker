@@ -301,7 +301,6 @@
     <string name="encrypted_password">Verschlüsseltes Passwort</string>
     <string name="set_skip_password">Bitte setzen oder überspringen Sie das Passwort</string>
     <string name="duress_pin">PIN abwischen</string>
-    <string name="warning">Warnung!</string>
     <string name="duress_pin_message">Wenn Sie den Wipe Pin eingeben, während das Gerät gesperrt ist, werden Ihre Telefondaten gelöscht. Sie können diese Aktion nicht rückgängig machen. Alle Daten werden ohne Bestätigung vom Zielgerät gelöscht. Es gibt keine Möglichkeit, diese Aktion umzukehren.</string>
     <string name="please_link_skip">Bitte Gerät verknüpfen oder überspringen</string>
     <string name="set_as_default_launcher">Bitte als Standard-Launcher festlegen</string>
@@ -403,7 +402,7 @@
 
     <string name="settings_more">Mehr</string>
     <string name="share">Mögen und teilen</string>
-    <string name="share_desc">Hey, schau dir diese App an, sie ist so cool, dass sie dir dabei helfen kann, die Zeit jeder App zu überprüfen, für die du ausgegeben hast: %1$s %2$s</string>
+    <string name="share_desc">Hey, sieh dir diese App an, sie ist so cool, dass sie dir dabei helfen kann, die Zeit, die du für jede App aufgewendet hast, zu überprüfen: %1$s %2$s</string>
     <string name="slogan">Überwachen Sie die Nutzung von Apps</string>
     <string name="sort">Sortiere nach</string>
     <string name="toast_permission">Suchen Sie nach "AppsTimeline" und erteilen Sie die Berechtigung</string>
@@ -430,7 +429,7 @@
     <string name="ip_addr">IP-Adresse</string>
     <string name="all_apps">Alle Apps</string>
     <string name="no_connection">Keine Internetverbindung</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"Diese Berechtigung ist für Geräte erforderlich, auf denen Android 5.0 oder höher ausgeführt wird, auf denen die Berechtigung" Nutzungsstatistik "nicht funktioniert. \ N \ n Durch Aktivieren dieser Berechtigung werden Benutzeraktionen erkannt und ein versehentliches Umschalten auf nicht erforderliche Anwendungen verhindert. \ N \ n Wenn Sie Wenn dies bereits aktiviert ist, deaktivieren Sie das Kontrollkästchen und wiederholen Sie die Überprüfung, damit der Dienst erneut gestartet wird. "</string>
     <string name="on_accessibility_service">On Accessibility Service</string>
     <string name="features">\ u25CB Combo Lock. \ n \ u25CB Automatische Updates für alle Apps. \ n \ u25CB Neuer Tab "Update" in Sm. \ n \ u25CB Deaktiviert die Kamerafunktion. \ n \ u25CB-Benachrichtigungsmenü in SS. \ n \ u25CB Neuer Begrüßungsbildschirm mit Animation. \ n \ u25CB Neue Symbole für SM-, SS- und SC-Apps. \ n \ u25CB SIM-Einstellungssynchronisation mit LM. \ n \ u25CB Aktualisiertes App-Installationsmenü (Code.).</string>
     <string name="accessibility_service_msg">Diese Berechtigung ist für Geräte mit Android 5.0 und höher erforderlich, auf denen die Berechtigung "Nutzungsstatistik" nicht funktioniert.</string>
@@ -446,7 +445,7 @@
     <string name="message_pattern_started">Musterzeichnung gestartet</string>
     <string name="message_pattern_detected">Musterzeichnung abgeschlossen</string>
     <string name="message_pattern_cleared">Muster gelöscht</string>
-    <string name="enter_pin_or_draw_pattern_to_unlock">Geben Sie zum Entsperren Pin- oder Zeichenmuster ein</string>
+    <string name="enter_pin_or_draw_pattern_to_unlock">Zum Entsperren Pin- oder Zeichenmuster eingeben</string>
     <string name="expiry_alert_online_title">Ablaufbenachrichtigung</string>
     <string name="_10_days">10 Tage</string>
     <string name="expiry_alert_online_message">Warnung! Ihr Gerät läuft in %1$s Tag (en) ab. Wenden Sie sich an den Support, um Ihre Dienste zu erweitern. "</string>
@@ -456,7 +455,7 @@
     <string name="combination">Kombination</string>
     <string name="low">Niedrig</string>
     <string name="current_dealer">Aktueller Händler</string>
-    <string name="your_device_is_linked">Gerät ist verbunden!</string>
+    <string name="your_device_is_linked">Gerät ist verbunden</string>
 
     <string name="waiting_for_approval">Warten auf die Bestätigung...</string>
     <string name="restore">Wiederherstellen</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">Ihre Geräte-ID = %1$s wird übertragen. Bitte wenden Sie sich an den unten stehenden Support.</string>
     <string name="reset_wipe_password">WIPE-Passwort zurücksetzen</string>
     <string name="draw_pattern">Bitte Muster zeichnen</string>
+    <string name="permission_not_allowed">Diese Funktion ist nur auf benutzerdefinierten Geräten verfügbar</string>
     <string name="network_limited">Begrenztes Netzwerk !</string>
     <string name="network_limited_message">Internet ist möglicherweise nicht verfügbar.</string>
     <string name="change_network">Netzwerk wechseln</string>
@@ -554,7 +554,26 @@
     <string name="tab_text_1" translatable="false">@string/apps_title</string>
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="no_notifications">Keine Benachrichtigungen</string>
+    <string name="restore_settings">Einstellungen wiederherstellen</string>
+    <string name="rest_msg">Bitte warten Sie, während wir Ihre Standardeinstellungen wiederherstellen. Schalten Sie Ihr Handy nicht aus.</string>
+    <string name="please_draw_pattern">Bitte Muster zeichnen</string>
+    <string name="input_pin">PIN eingeben</string>
+    <string name="confirm_pattern">Muster bestätigen</string>
+    <string name="pattern_is_too_short">Muster ist zu kurz</string>
+    <string name="pattern_already_aken">Muster bereits vergeben</string>
+    <string name="pattern_did_not_match">Muster stimmte nicht überein</string>
+    <string name="pattern_updated">Muster aktualisiert</string>
+    <string name="guest_space_lock">GÄSTEPLATZSPERRE</string>
+    <string name="encrypted_space_lock">ENCRYPT SPACE LOCK</string>
+    <string name="wipe_lock">WIPE LOCK</string>
+    <string name="please_select_an_option">Bitte wähle eine Option.</string>
+    <string name="warning">Warnung!</string>
+    <string name="sim_update_warning">Die Verwendung von SIM-Daten zur Aktualisierung des Geräts erfordert möglicherweise Daten über 100 MB. Verwenden Sie stattdessen WIFI oder fahren Sie fort.</string>
+    <string name="downlaoding_update_please_wait">Update wird heruntergeladen, bitte warten</string>
+    <string name="rest_pass_msg">Dadurch werden Guest und Encrypted \ tpasswords zurückgesetzt. Möchten Sie Kennwörter zurücksetzen?</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="retry">Wiederholen</string>
 
 
     <!-- Generated by Automatic String Resource Translation

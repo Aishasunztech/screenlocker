@@ -9,15 +9,21 @@ import androidx.annotation.NonNull;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
+import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
+import com.screenlocker.secure.retrofit.ErrorResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,6 +31,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
+import static com.screenlocker.secure.utils.AppConstants.GET_UPDATE_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
@@ -90,7 +98,7 @@ public class CheckUpdateService extends JobService {
         }
 
         MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -100,7 +108,7 @@ public class CheckUpdateService extends JobService {
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + "getApk/" + CommonUtils.splitName(url), true, params);
+                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url +MOBILE_END_POINT+GET_APK_ENDPOINT  + CommonUtils.splitName(url), true, params);
                                     obj.execute();
 
                                 }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
@@ -133,7 +141,25 @@ public class CheckUpdateService extends JobService {
                     }
                 });
 
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            List<ErrorLogRequestBody> errorLogRequestBodies = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().getAllErrorLogs();
+            for (ErrorLogRequestBody errorLogRequestBody : errorLogRequestBodies) {
 
+                try {
+                    Response<ErrorResponse> responseResponse = MyApplication.oneCaller.submitLog(errorLogRequestBody).execute();
+                    if (responseResponse.isSuccessful()){
+                            AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                                if (responseResponse.body() != null)
+                                    MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(responseResponse.body().getRequestId());
+                            });
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 }
 

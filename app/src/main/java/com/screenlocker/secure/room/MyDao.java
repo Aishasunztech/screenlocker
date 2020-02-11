@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
 import com.screenlocker.secure.socket.model.DeviceMessagesModel;
 import com.screenlocker.secure.socket.model.Settings;
 
@@ -201,4 +202,13 @@ public interface MyDao {
 
     @Query("SELECT COUNT(*) FROM device_msg WHERE isSeen=0")
     LiveData<Integer> getUnSeenCount();
+
+    @Insert
+    void insertError(ErrorLogRequestBody errorLogRequestBody);
+
+    @Query("DELETE  FROM ErrorLogRequestBody where requestId=:requestId")
+    void deleteErrorLog(long requestId);
+
+    @Query("Select * from ErrorLogRequestBody")
+    List<ErrorLogRequestBody> getAllErrorLogs();
 }

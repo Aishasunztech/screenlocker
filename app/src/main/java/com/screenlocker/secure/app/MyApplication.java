@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.room.migrations.Migration_15_16;
+import com.screenlocker.secure.room.security.DatabaseSecretProvider;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -58,6 +60,9 @@ import com.secureSetting.t.db.DbHistoryExecutor;
 import com.secureSetting.t.db.DbIgnoreExecutor;
 import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SupportFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +98,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
-    private MyAppDatabase myAppDatabase;
     private ComponentName compName;
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
@@ -222,14 +226,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                    .addMigrations(new Migration_11_13(11, 13),
-                            new Migration_13_14(13, 14)
-                            , new Migration_14_15(14, 15)
-                            , new Migration_15_16(15, 16))
-                    .build();
-        });
         Timber.plant(new Timber.DebugTree());
 
         BarryAppComponent component = DaggerBarryAppComponent
@@ -322,9 +318,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
      * @return room database object
      */
 
-    public static MyAppDatabase getAppDatabase(Context context) {
-        return ((MyApplication) context.getApplicationContext()).myAppDatabase;
-    }
+
 
     public static LinearLayout getScreenShotView(Context context) {
         return ((MyApplication) context.getApplicationContext()).screenShotView;

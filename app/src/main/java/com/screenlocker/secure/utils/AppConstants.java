@@ -128,20 +128,23 @@ public class AppConstants {
 //    public static String URL_1 = "https://api.lockmesh.com";//live SL
         public static String URL_1 = "https://devapi.lockmesh.com";// Dev
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.0.143:3000";//local
+//    public static String URL_1 = "http://192.168.0.119:3000";//local
     public static final String URL_2 = "https://securenet.guru";
 
     //super admin domain
 //    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
     public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
-    public static final String SUPER_END_POINT = "/api/v1/mobile/";
+    public static final String SUPER_END_POINT = "/api/";
     public static final String SM_END_POINT = "marketApplist/";
 
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/api/v2/mobile/"; // dev
+    public static final String MOBILE_END_POINT = "/api/"; // dev
+    public static final String GET_APK_ENDPOINT = "v2/mobile/getApk/"; // dev
+    public static final String GET_UPDATE_ENDPOINT = "v2/mobile/getUpdate/"; // dev
+
 //    public static final String MOBILE_END_POINT = "/mobile/"; live
 
     //available live host
@@ -383,6 +386,7 @@ public class AppConstants {
     public static final String FINISH_POLICY_EXTENSIONS = "finish_policy_extensions_";
     public static final String SYSTEM_EVENT_BUS = "system_event_";
     public static final String GET_DEVICE_MSG = "send_device_msg_";
+    public static final String GET_DEVICE_INFO = "device_info_updated_";
     public static final String SEND_DEVICE_MSG = "ack_msg_to_device_";
     public static final String FINISH_POLICY = "finish_policy_";
     public static final String POLICY_NAME = "policy_name";
@@ -540,4 +544,8 @@ public class AppConstants {
     public static final String SUB_LanguagesInput = "Languages & Input";
     public static final String SUB_Notifications = "Notifications";
     public static final String SUB_AdminPanel = "Admin Panel";
+
+    //
+    public static final String DatabaseUnencryptedSecret = "getDatabaseUnencryptedSecret";
+    public static final String DatabaseEncryptedSecret = "getDatabaseEncryptedSecret";
 }

@@ -16,7 +16,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.github.fcannizzaro.materialstepper.style.DotStepper;
 import com.screenlocker.secure.launcher.MainActivity;
-import com.screenlocker.secure.service.apps.RefreshTimerTask;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;

@@ -482,7 +482,7 @@
     <string name="account_device_id_transferred">Your device ID = %1$s is transferred, please contact support below.</string>
     <string name="reset_wipe_password">Reset WIPE Password</string>
     <string name="draw_pattern">Please Draw Pattern</string>
-    <string name="permission_not_allowed">This feature is only available in SW</string>
+    <string name="permission_not_allowed">This feature is only available on custom devices</string>
     <string name="network_limited">Limited network !</string>
     <string name="network_limited_message">Internet may not be available.</string>
     <string name="change_network">Change Network</string>
@@ -571,6 +571,9 @@
     <string name="sim_update_warning">Using SIM data for Updating Device may require data over 100MBs, please use WIFI instead or continue anyways.</string>
     <string name="downlaoding_update_please_wait">Downloading Update, Please Wait</string>
     <string name="rest_pass_msg">This will reset Guest and Encrypted \tpasswords.Do you want to reset passwords?</string>
+    <string name="confirm">Confirm</string>
+    <string name="retry">Retry</string>
+    <string name="incorrect_password">Incorrect Password</string>
 
 
 </resources>

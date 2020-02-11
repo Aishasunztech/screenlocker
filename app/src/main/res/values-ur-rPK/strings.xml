@@ -32,7 +32,7 @@
     <string name="cancel">منسوخ کریں</string>
     <string name="pin">پن</string>
     <string name="set_guest_password">مہمان کا پاس ورڈ سیٹ کریں</string>
-    <string name="set_encrypted_password">خفیہ پاس ورڈ کو سیٹ کریں</string>
+    <string name="set_encrypted_password">انکرپٹڈ پاس ورڈ سیٹ کریں</string>
     <string name="please_enter_your_current_password">براہ کرم اپنا موجودہ پاس ورڈ درج کریں۔</string>
     <string name="wrong_password_entered">آپ نے غلط پاس ورڈ درج کیا ہے۔</string>
     <string name="password_changed">پاس ورڈ تبدیل کر دیا گیا</string>
@@ -48,13 +48,13 @@
     <string name="set_encrypted_code">خفیہ کردہ پن کوڈ</string>
     <string name="set_background_for">کے لئے پس منظر مرتب کریں</string>
     <string name="guest_all">مہمان سب کو چالو کریں</string>
-    <string name="encryption_all">تمام خفیہ کردہ کو آن کریں</string>
+    <string name="encryption_all">سب کو انکرپٹڈ آن کریں</string>
     <string name="enable_all">سب کو قابل بنائیں</string>
     <string name="please_enter_current_guest_password">براہ کرم موجودہ مہمان کا پاس ورڈ درج کریں۔</string>
     <string name="please_enter_current_encrypted_password">براہ کرم موجودہ خفیہ کردہ پاس ورڈ درج کریں۔</string>
     <string name="please_enter_current_duress_password">براہ کرم موجودہ مسح کا پاس ورڈ درج کریں۔</string>
     <string name="check_for_updates"><u>Check for updates</u></string>
-    <string name="set_code_pin">کوڈ پن سیٹ کریں</string>
+    <string name="set_code_pin">کوڈ پن کو سیٹ کریں</string>
     <string name="hint_please_enter_code_pin">براہ کرم کوڈ پن درج کریں</string>
     <string name="please_enter_code_admin_password">براہ کرم کوڈ ایڈمن پاس ورڈ درج کریں۔</string>
     <string name="code">کوڈ</string>
@@ -62,7 +62,7 @@
     <string name="reset_guest_encrypted_pass">پاس ورڈ دوبارہ ترتیب دیں</string>
     <string name="change_admin_panel_code">ایڈمن پینل کا پاس ورڈ</string>
     <string name="password_is_changed_to_default">پاس ورڈ کو ڈیفالٹ میں تبدیل کردیا جاتا ہے۔</string>
-    <string name="install_apps">ایپس انسٹال کریں</string>
+    <string name="install_apps">اطلاقات انسٹال کریں</string>
     <string name="please_check_network_connection">براہ کرم اپنا نیٹ ورک کنکشن چیک کریں۔</string>
     <string name="sim_title">سم</string>
 
@@ -76,12 +76,12 @@
     <string name="dont_have_permission">ہمارے پاس اجازت نہیں ہے۔</string>
     <string name="permission_denied">اجازت نہیں دی گئی</string>
     <string name="info">معلومات:</string>
-    <string name="device_already_linked">آلہ کامیابی کے ساتھ منسلک ہوا</string>
+    <string name="device_already_linked">آلہ کامیابی سے منسلک ہوا</string>
     <string name="link_request_pending">لنک کی درخواست زیر التوا ہے!</string>
     <string name="something_went_wrong">کچھ غلط ہو گیا</string>
     <string name="link_device">آلہ لنک کریں</string>
     <string name="device_not_linked">آلہ منسلک نہیں ہے!</string>
-    <string name="stop_linking">جڑنا بند کرو</string>
+    <string name="stop_linking">جوڑنا بند کریں</string>
     <string name="session_expired">مدت ختم ہو گئی</string>
 
 
@@ -112,7 +112,7 @@
     <string name="uptodate">آپ فی الحال تازہ ترین ہیں۔</string>
     <string name="install_app_message">ایپ انسٹال ہو رہی ہے</string>
     <string name="permissions">درخواست کی اجازت</string>
-    <string name="link_heading">ایک درست آئی ایم ای آئی تیار کرنے کے لئے براہ کرم جائیں</string>
+    <string name="link_heading">ایک درست IMEI تیار کرنے کے لئے براہ کرم جائیں</string>
     <string name="link">\ "https: //dyrk.org/tools/imei \"</string>
     <string name="link_title">لنک</string>
     <string name="simtext">سم:</string>
@@ -126,9 +126,6 @@
     <string name="status_disabled">غیر فعال</string>
     <string name="status_not_inserted">داخل نہیں کیا گیا</string>
     <string name="title_activity_secure_simsettings">سیکورسمس سیٹنگز</string>
-    <string name="tab_text_1">@string/apps_title</string>
-    <string name="tab_text_2">@string/updates</string>
-    <string name="tab_text_3">@string/uninstall</string>
     <string name="sim_1">سم 1</string>
     <string name="sim_2">سم 2</string>
     <string name="add">شامل کریں</string>
@@ -208,7 +205,7 @@
     <string name="nfc">این ایف سی</string>
     <string name="off">بند</string>
     <string name="on">آن</string>
-    <string name="installed_apps_title">ایپس انسٹال کریں</string>
+    <string name="installed_apps_title">اطلاقات انسٹال کریں</string>
     <string name="something_wrong">کچھ غلط ہو گیا</string>
     <string name="downloading_update">اپ ڈیٹ ڈاؤن لوڈ ، براہ کرم انتظار کریں</string>
     <string name="install">انسٹال کریں</string>
@@ -230,11 +227,11 @@
     <string name="secure_settings_app">محفوظ ترتیبات ایپ</string>
     <string name="menu_displays">ایپ میں مینو دکھاتا ہے</string>
     <string name="secure_settings_title">محفوظ ترتیبات کی اجازت</string>
-    <string name="select_a_sim_slot">سم سلاٹ منتخب کریں</string>
+    <string name="select_a_sim_slot">ایک سم سلاٹ منتخب کریں</string>
     <string name="slot_1">سلاٹ 1</string>
     <string name="slot_2">سلاٹ 2</string>
-    <string name="imei_hint">آئی ایم ای آئی</string>
-    <string name="btn_write_imei">آئی ایم ای آئی لکھیں</string>
+    <string name="imei_hint">IMEI</string>
+    <string name="btn_write_imei">IMEI لکھیں</string>
     <string name="imei_menu_title">آئی ایم ای آئی مینو</string>
     <string name="delete_title">حذف کریں</string>
     <string name="want_to_delete">کیا آپ آئی سی سی آئی ڈی کے ساتھ سم کو ختم کرنا چاہتے ہیں:٪ 1 $ s؟</string>
@@ -259,7 +256,7 @@
     <string name="downloading_app_title">اپلی کیشن ڈاؤن لوڈ ، براہ کرم انتظار کریں</string>
     <string name="please_wait">برائے مہربانی انتظار کریں</string>
     <string name="secure_market_title">محفوظ بازار</string>
-    <string name="wi_fi">وائی ​​فائی</string>
+    <string name="wi_fi">وائی فائی</string>
     <string name="bluetooth">بلوٹوتھ</string>
     <string name="disabled">غیر فعال</string>
     <string name="sim_cards">سم کارڈز</string>
@@ -282,7 +279,7 @@
     <string name="minutes">منٹ</string>
     <string name="after_inactivity">"٪ 1 $ s غیر فعال ہونے کے بعد"</string>
     <string name="not_connected">منسلک نہیں</string>
-    <string name="enabled">فعال</string>
+    <string name="enabled">قابل بنایا گیا</string>
     <string name="allow_device_admin">ڈیوائس ایڈمن کی اجازت دیں</string>
     <string name="allow_device_admin_message">اسکرین لاکر ڈیوائس ایڈمن کو چالو کریں۔ یہ مزید محفوظ ماحول مہیا کرے گا</string>
     <string name="allow_overlay_permission">اوورلی اجازت کی اجازت دیں</string>
@@ -304,7 +301,6 @@
     <string name="encrypted_password">خفیہ پاس ورڈ</string>
     <string name="set_skip_password">براہ کرم پاس ورڈ سیٹ یا چھوڑ دیں</string>
     <string name="duress_pin">پن صاف کریں</string>
-    <string name="warning">انتباہ!</string>
     <string name="duress_pin_message">آلہ لاک ہونے پر وائپ پن میں داخل ہونا آپ کے فون کا ڈیٹا مٹا دے گا۔ آپ اس عمل کو کالعدم نہیں کرسکتے ہیں۔ تمام ڈیٹا کو بغیر کسی تصدیق کے ہدف والے آلہ سے حذف کردیا جائے گا۔ اس کارروائی کو پلٹنے کا کوئی راستہ نہیں ہے۔</string>
     <string name="please_link_skip">براہ کرم ڈیوائس کو لنک کریں یا جائیں</string>
     <string name="set_as_default_launcher">براہ کرم بطور ڈیفالٹ لانچر متعین کریں</string>
@@ -426,14 +422,14 @@
     <string name="advance">ایڈوانس سیٹنگیں</string>
     <string name="setup_complete_msg">آپ کا کام قریب ہوچکا ہے۔ مزید کارروائی کے لئے \ "لانچ button" بٹن دبائیں</string>
     <string name="dealer_pin">ڈیلر پن</string>
-    <string name="imei_1">1 آئی ایم ای آئی</string>
+    <string name="imei_1">IMEI 1</string>
     <string name="imei_2">آئی ایم ای آئی 2</string>
     <string name="s_n">سیریل نمبر</string>
     <string name="mac">میک</string>
     <string name="ip_addr">آئی پی ایڈر</string>
     <string name="all_apps">تمام ایپس</string>
     <string name="no_connection">انٹرنیٹ کنکشن نہیں ہے</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"یہ اجازت ان آلات کے ل is ضروری ہے جو Android 5.0 اور اس سے اوپر چل رہے ہیں جہاں استعمال کے اعدادوشمار کی اجازت کام نہیں کررہی ہے۔ \ n \ n اس کو چالو کرنے سے صارف کے افعال کا پتہ لگانے میں مدد ملتی ہے اور ایسی ایپلیکیشنز پر حادثاتی سوئچ کو روکتا ہے جن کی ضرورت نہیں ہے۔ \ n \ n اگر آپ دیکھیں کہ یہ پہلے سے ہی قابل ہے ، صرف انچیک کریں اور دوبارہ چیک کریں تاکہ سروس دوبارہ شروع ہوجائے۔ "</string>
     <string name="on_accessibility_service">رسائی سروس پر</string>
     <string name="features">25 u25CB کومبو لاک۔ apps n \ u25CB تمام ایپس کیلئے خودکار تازہ کاری۔ Sm n \ u25CB مس میں نئی تازہ کاری کا ٹیب۔ \ n \ u25CB کیمرہ کی خصوصیت کو غیر فعال کریں۔ SS n \ u25CB نوٹیفیکیشن مینو میں ایس ایس۔ \ n \ u25CB ایس ایم ، ایس ایس اور ایس سی ایپس کیلئے نیا شبیہیں۔ \ n \ u25CB ایل ایم کے ساتھ سم ترتیبات کی ہم آہنگی۔ \ n \ u25CB اپ ڈیٹ انسٹال کریں ایپ مینو (کوڈ)۔</string>
     <string name="accessibility_service_msg">یہ اجازت ان آلات کیلئے ضروری ہے جو Android 5.0 اور اس سے اوپر چل رہے ہو جہاں استعمال کے اعدادوشمار کی اجازت کام نہیں کررہی ہے۔</string>
@@ -459,7 +455,7 @@
     <string name="combination">مجموعہ</string>
     <string name="low">کم</string>
     <string name="current_dealer">موجودہ ڈیلر</string>
-    <string name="your_device_is_linked">آلہ جوڑا ہوا ہے!</string>
+    <string name="your_device_is_linked">ڈیوائس لنکڈ ہے</string>
 
     <string name="waiting_for_approval">منظوری کے انتظار میں...</string>
     <string name="restore">بحال کریں</string>
@@ -487,6 +483,7 @@
     <string name="account_device_id_transferred">آپ کا آلہ ID =٪ 1 $ s منتقل ہوگیا ہے ، براہ کرم نیچے کی حمایت سے رابطہ کریں۔</string>
     <string name="reset_wipe_password">WIPE پاس ورڈ کو دوبارہ ترتیب دیں</string>
     <string name="draw_pattern">براہ کرم پیٹرن ڈرا کریں</string>
+    <string name="permission_not_allowed">یہ خصوصیت صرف کسٹم آلات پر دستیاب ہے</string>
     <string name="network_limited">محدود نیٹ ورک!</string>
     <string name="network_limited_message">انٹرنیٹ دستیاب نہیں ہوسکتا ہے۔</string>
     <string name="change_network">نیٹ ورک کو تبدیل کریں</string>
@@ -532,15 +529,14 @@
     <string name="allow_sim_usage_to_guest_and_encrypted">مہمان اور خفیہ کردہ کو سم استعمال کی اجازت دیں</string>
     <string name="auto_updates_secure_market">آٹو اپ ڈیٹ ، سیکیور مارکیٹ</string>
     <string name="data_usage_statistics">ڈیٹا کے استعمال کے اعدادوشمار</string>
-    <string name="imei">آئی ایم ای آئی</string>
-    <string name="change_imei_numbers">آئی ایم ای آئی نمبر تبدیل کریں </string>
+    <string name="imei">IMEI</string>
+    <string name="change_imei_numbers">IMEI نمبر تبدیل کریں</string>
     <string name="language_input_methods">زبان ، ان پٹ کے طریقے</string>
     <string name="date_time_timezone">تاریخ ، وقت ، ٹائم زون</string>
     <string name="battery_information_usage">بیٹری کی معلومات ، استعمال</string>
     <string name="restore_app_preferences">ایپ کی ترجیحات کو بحال کریں</string>
     <string name="passwords">پاس ورڈ</string>
     <string name="unknown">نامعلوم</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
 
     <string-array name="sort">
         <item>کل</item>
@@ -554,6 +550,30 @@
         <item>پچھلا ہفتہ</item>
         <item>پچھلے مہینے</item>
     </string-array>
+
+    <string name="tab_text_1" translatable="false">@string/apps_title</string>
+    <string name="tab_text_2" translatable="false">@string/updates</string>
+    <string name="tab_text_3" translatable="false">@string/uninstall</string>
+    <string name="no_notifications">کوئی اطلاع نہیں ہے</string>
+    <string name="restore_settings">ترتیبات کی بحالی</string>
+    <string name="rest_msg">براہ کرم انتظار کریں جب تک ہم آپ کی ڈیفالٹ سیٹنگیں بحال کررہے ہیں۔ اپنا موبائل بند نہ کریں۔</string>
+    <string name="please_draw_pattern">براہ کرم پیٹرن ڈرا کریں</string>
+    <string name="input_pin">ان پٹ</string>
+    <string name="confirm_pattern">پیٹرن کی تصدیق کریں</string>
+    <string name="pattern_is_too_short">پیٹرن بہت چھوٹا ہے</string>
+    <string name="pattern_already_aken">پیٹرن پہلے ہی لیا گیا ہے</string>
+    <string name="pattern_did_not_match">پیٹرن مماثل نہیں تھا</string>
+    <string name="pattern_updated">پیٹرن کی تازہ کاری</string>
+    <string name="guest_space_lock">گیس اسپیس لاک</string>
+    <string name="encrypted_space_lock">جگہ کو محفوظ کریں</string>
+    <string name="wipe_lock">وائپ لاک</string>
+    <string name="please_select_an_option">براہ کرم ایک آپشن منتخب کریں۔</string>
+    <string name="warning">انتباہ!</string>
+    <string name="sim_update_warning">ڈیوائس کو اپ ڈیٹ کرنے کیلئے سم ڈیٹا کو استعمال کرنے میں 100MBs سے زیادہ کے ڈیٹا کی ضرورت ہوسکتی ہے ، براہ کرم اس کے بجائے WIFI استعمال کریں یا پھر بھی جاری رکھیں۔</string>
+    <string name="downlaoding_update_please_wait">اپ ڈیٹ ڈاؤن لوڈ ، براہ کرم انتظار کریں</string>
+    <string name="rest_pass_msg">یہ مہمان اور خفیہ کردہ ass t پاس ورڈز کو دوبارہ ترتیب دے گا۔ کیا آپ پاس ورڈ دوبارہ ترتیب دینا چاہتے ہیں؟</string>
+    <string name="confirm">تصدیق کریں</string>
+    <string name="retry">دوبارہ کوشش کریں</string>
 
 
     <!-- Generated by Automatic String Resource Translation

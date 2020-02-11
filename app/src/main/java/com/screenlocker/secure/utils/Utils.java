@@ -45,8 +45,6 @@ import java.util.Random;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
-import static com.screenlocker.secure.app.MyApplication.getAppContext;
-import static com.screenlocker.secure.service.DeviceNotificationListener.TAG;
 
 public class Utils {
 
@@ -305,15 +303,11 @@ public class Utils {
             accessibilityEnabled = Settings.Secure.getInt(
                     mContext.getApplicationContext().getContentResolver(),
                     android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
         } catch (Settings.SettingNotFoundException e) {
-            Log.e(TAG, "Error finding setting, default accessibility to not found: "
-                    + e.getMessage());
         }
         TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
 
         if (accessibilityEnabled == 1) {
-            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
             String settingValue = Settings.Secure.getString(
                     mContext.getApplicationContext().getContentResolver(),
                     Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -322,15 +316,12 @@ public class Utils {
                 while (mStringColonSplitter.hasNext()) {
                     String accessibilityService = mStringColonSplitter.next();
 
-                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
                     if (accessibilityService.equalsIgnoreCase(service)) {
-                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
                         return true;
                     }
                 }
             }
         } else {
-            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
         }
 
         return false;

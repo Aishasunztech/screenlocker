@@ -6,21 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.secureSetting.AllNotificationActivity">
-    <com.google.android.material.appbar.AppBarLayout
+    <include
         android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        >
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            app:title="NotificationSettings"
-            app:titleTextColor="@color/SettingsColorPrimary" />
-    </com.google.android.material.appbar.AppBarLayout>
+        layout="@layout/main_toolbar" />
     <TextView
         android:id="@+id/app_notification"
         android:layout_width="match_parent"

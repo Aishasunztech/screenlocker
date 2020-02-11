@@ -301,7 +301,6 @@
     <string name="encrypted_password">كلمة المرور المشفرة</string>
     <string name="set_skip_password">يرجى تعيين أو تخطي كلمة المرور</string>
     <string name="duress_pin">مسح PIN</string>
-    <string name="warning">تحذير!</string>
     <string name="duress_pin_message">يؤدي إدخال Wipe Pin عند قفل الجهاز إلى مسح بيانات هاتفك. لا يمكنك التراجع عن هذا الإجراء. سيتم حذف جميع البيانات من الجهاز المستهدف دون أي تأكيد. لا توجد وسيلة لعكس هذا الإجراء.</string>
     <string name="please_link_skip">يرجى ربط الجهاز أو تخطي</string>
     <string name="set_as_default_launcher">يرجى تعيين الافتراضي قاذفة</string>
@@ -403,7 +402,7 @@
 
     <string name="settings_more">أكثر</string>
     <string name="share">اعجاب و مشاركة</string>
-    <string name="share_desc">مرحبًا ، تحقق من هذا التطبيق ، إنه رائع للغاية ، ويمكن أن يساعد في تسجيل الخروج من كل وقت تنفقه على:٪ 1 $ s٪ 2 $ s</string>
+    <string name="share_desc">مرحبًا ، تحقق من هذا التطبيق ، إنه رائع للغاية ، ويمكن أن يساعدك في الخروج من كل وقت تنفقه على:٪ 1 $ s٪ 2 $ s</string>
     <string name="slogan">مراقبة استخدام التطبيقات</string>
     <string name="sort">ترتيب حسب</string>
     <string name="toast_permission">الرجاء العثور على \ "AppsTimeline \" ومنح الإذن</string>
@@ -430,9 +429,9 @@
     <string name="ip_addr">عنوان IP</string>
     <string name="all_apps">كل التطبيقات</string>
     <string name="no_connection">لا يوجد اتصال إنترنت</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"هذا الإذن مطلوب للأجهزة التي تعمل بنظام أندرويد 5.0 وما فوق حيث لا يعمل إذن إحصائيات الاستخدام. \ n \ n تمكينه يساعد في اكتشاف تصرفات المستخدم ويمنع التبديل العرضي إلى التطبيقات غير المطلوبة. \ n \ n إذا كنت نرى أن هذا ممكن بالفعل ، فقط قم بإلغاء التحديد وإعادة الفحص حتى تبدأ الخدمة من جديد. "</string>
     <string name="on_accessibility_service">على خدمة الوصول</string>
-    <string name="features">\ u25CB Combo Lock. \ n \ u25CB التحديثات التلقائية لجميع التطبيقات. \ n \ u25CB علامة تبويب تحديث جديدة في Sm. \ n \ u25CB تعطيل ميزة الكاميرا. \ n \ u25CB قائمة الإعلام في SS. \ n \ u25CB شاشة ترحيب جديدة مع الرسوم المتحركة. \ n \ u25CB رموز جديدة لتطبيقات SM و SS و SC. \ n \ u25CB SIM إعدادات المزامنة مع LM. \ n \ u25CB تم تحديث قائمة تثبيت التطبيق (الكود.).</string>
+    <string name="features">\ u25CB Combo Lock. \ n \ u25CB التحديثات التلقائية لجميع التطبيقات. \ n \ u25CB علامة تبويب تحديث جديدة في Sm. \ n \ u25CB تعطيل ميزة الكاميرا. \ n \ u25CB قائمة الإعلام في SS. \ n \ u25CB شاشة الترحيب الجديدة مع الرسوم المتحركة. \ n \ u25CB رموز جديدة لتطبيقات SM و SS و SC. \ n \ u25CB SIM إعدادات المزامنة مع LM. \ n \ u25CB تم تحديث قائمة تثبيت التطبيق (الكود.).</string>
     <string name="accessibility_service_msg">هذا الإذن مطلوب للأجهزة التي تعمل بنظام أندرويد 5.0 وما فوق حيث لا يعمل إذن إحصائيات الاستخدام.</string>
     <string name="bugs">\ u25CB تمكين التقاط الشاشة افتراضيًا. \ n \ u25CB تم إصلاح علة الصبغة السوداء على أيقونات التطبيق. \ n \ u25CB تحولت إعدادات IMEI إلى الإعدادات المتقدمة. \ n \ u25CB حشرة خلفية ثابتة. \ n \ u25CB أخطاء إطلاق SL الثابتة (على سبيل المثال ، الانتقال إلى السائر)</string>
     <string name="what_s_new_v5_15">ما الجديد v6.2.0</string>
@@ -454,9 +453,9 @@
     <string name="medium">متوسط</string>
     <string name="high">عالي</string>
     <string name="combination">مزيج</string>
-    <string name="low">Low</string>
+    <string name="low">منخفض</string>
     <string name="current_dealer">الموزع الحالي</string>
-    <string name="your_device_is_linked">الجهاز مرتبط!</string>
+    <string name="your_device_is_linked">الجهاز مرتبط</string>
 
     <string name="waiting_for_approval">بانتظار الموافقة...</string>
     <string name="restore">استعادة</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">تم نقل معرف جهازك =٪ 1 $ s ، يرجى الاتصال بالدعم أدناه.</string>
     <string name="reset_wipe_password">إعادة تعيين كلمة المرور WIPE</string>
     <string name="draw_pattern">يرجى رسم نمط</string>
+    <string name="permission_not_allowed">هذه الميزة متاحة فقط على الأجهزة المخصصة</string>
     <string name="network_limited">شبكة محدودة !</string>
     <string name="network_limited_message">قد لا يكون الإنترنت متاحًا.</string>
     <string name="change_network">تغيير الشبكة</string>
@@ -551,10 +551,29 @@
         <item>الشهر الماضي</item>
     </string-array>
 
-    <string name="tab_text_1">@string/apps_title</string>
-    <string name="tab_text_2">@string/updates</string>
-    <string name="tab_text_3">@string/uninstall</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="tab_text_1" translatable="false">@string/apps_title</string>
+    <string name="tab_text_2" translatable="false">@string/updates</string>
+    <string name="tab_text_3" translatable="false">@string/uninstall</string>
+    <string name="no_notifications">لا إشعارات</string>
+    <string name="restore_settings">استعادة الإعدادات</string>
+    <string name="rest_msg">يرجى الانتظار بينما نقوم باستعادة الإعدادات الافتراضية. لا تقم بإيقاف تشغيل هاتفك المحمول.</string>
+    <string name="please_draw_pattern">يرجى رسم نمط</string>
+    <string name="input_pin">إدخال رقم التعريف الشخصي</string>
+    <string name="confirm_pattern">تأكيد النمط</string>
+    <string name="pattern_is_too_short">نمط قصير جدا</string>
+    <string name="pattern_already_aken">نمط اتخذت بالفعل</string>
+    <string name="pattern_did_not_match">نمط لا تتطابق</string>
+    <string name="pattern_updated">تم تحديث النمط</string>
+    <string name="guest_space_lock">GUEST SPACE LOCK</string>
+    <string name="encrypted_space_lock">تشفير قفل الفضاء</string>
+    <string name="wipe_lock">مسح القفل</string>
+    <string name="please_select_an_option">يرجى اختيار خيار.</string>
+    <string name="warning">تحذير!</string>
+    <string name="sim_update_warning">قد يتطلب استخدام بيانات SIM لجهاز التحديث بيانات أكثر من 100 ميجابايت ، يرجى استخدام WIFI بدلاً من ذلك أو المتابعة على أي حال.</string>
+    <string name="downlaoding_update_please_wait">تنزيل التحديث ، يرجى الانتظار</string>
+    <string name="rest_pass_msg">سيؤدي هذا إلى إعادة تعيين Guest و Encrypted \ tpasswords. هل تريد إعادة تعيين كلمات المرور؟</string>
+    <string name="confirm">تؤكد</string>
+    <string name="retry">إعادة المحاولة</string>
 
 
     <!-- Generated by Automatic String Resource Translation

@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.utils.AppConstants;
@@ -132,7 +133,7 @@ public class RefreshTimerTask implements Runnable {
     }
 
 
-    private ComponentName m108a() {
+    public ComponentName m108a() {
         long currentTimeMillis = System.currentTimeMillis();
         UsageEvents queryEvents = usm.queryEvents(currentTimeMillis - ((long) (aff1 ? 60000 : 60000)), currentTimeMillis);
         String str = null;
@@ -366,6 +367,7 @@ public class RefreshTimerTask implements Runnable {
         previousTasksFor.add("com.android.settings/.Settings$SoundSettingsActivity");
 //        previousTasksFor.add("com.android.settings/.Settings$PowerUsageSummaryActivity");
         previousTasksFor.add("com.android.settings/.Settings$DateTimeSettingsActivity");
+        previousTasksFor.add("Settings$ConfigureNotificationSettingsActivity");
     }
 
     private void checkAppStatus(ComponentName componentName) {
@@ -405,7 +407,7 @@ public class RefreshTimerTask implements Runnable {
         Timber.d("<<< QUERYING DATA >>>");
         boolean status = false;
 
-        AppInfo info = MyApplication.getAppDatabase(context).getDao().getParticularApp(packageName);
+        AppInfo info = MyAppDatabase.getInstance(context).getDao().getParticularApp(packageName);
         if (info != null) {
             if (currentSpace.equals(KEY_MAIN_PASSWORD) && (info.isEnable() && info.isEncrypted())) {
                 status = true;

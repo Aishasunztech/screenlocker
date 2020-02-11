@@ -21,7 +21,7 @@ public class ChatViewModel extends AndroidViewModel {
      private LiveData<List<ChatMessages>> mMessgaes;
     public ChatViewModel(@NonNull Application application) {
         super(application);
-        mDB = MyApplication.getAppDatabase(application);
+        mDB = MyAppDatabase.getInstance(application);
         mMessgaes =  mDB.getDao().getAllMessages();
     }
     LiveData<List<ChatMessages>> getAllMessages (){

@@ -38,7 +38,7 @@
     <string name="password_changed">contraseña cambiada</string>
     <string name="password_not_changed">Contraseña no modificada</string>
     <string name="hint_please_enter_guest_pin">Por favor, introduzca el pin de invitado</string>
-    <string name="hint_please_enter_duress_pin">Por favor, introduzca el PIN de borrado</string>
+    <string name="hint_please_enter_duress_pin">Por favor, introduzca el PIN de limpieza</string>
     <string name="hint_please_confirm_your_pin">Por favor confirme su pin</string>
     <string name="hint_please_enter_encrypted_pin">Por favor ingrese el pin encriptado</string>
     <string name="empty">El campo de contraseña está vacío.</string>
@@ -301,7 +301,6 @@
     <string name="encrypted_password">Contraseña Encriptada</string>
     <string name="set_skip_password">Por favor, configure u omita la contraseña</string>
     <string name="duress_pin">Limpiar PIN</string>
-    <string name="warning">¡Advertencia!</string>
     <string name="duress_pin_message">Al ingresar el Pin de limpieza cuando el dispositivo está bloqueado, se borrarán los datos de su teléfono. No puedes deshacer esta acción. Todos los datos se eliminarán del dispositivo de destino sin ninguna confirmación. No hay forma de revertir esta acción.</string>
     <string name="please_link_skip">Vincular dispositivo o Saltar</string>
     <string name="set_as_default_launcher">Establecer como iniciador predeterminado</string>
@@ -430,7 +429,7 @@
     <string name="ip_addr">Dirección IP</string>
     <string name="all_apps">Todas las aplicaciones</string>
     <string name="no_connection">Sin conexión a Internet</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"Este permiso es necesario para los dispositivos que ejecutan Android 5.0 y versiones superiores donde el permiso Usage Statics no funciona. \ N \ n Habilitarlo ayuda a detectar las acciones del usuario y evita el cambio accidental a aplicaciones que no son necesarias. \ N \ n Si usted vea que ya está habilitado, simplemente desmarque y vuelva a verificar para que el servicio comience nuevamente ".</string>
     <string name="on_accessibility_service">Servicio de accesibilidad</string>
     <string name="features">\ u25CB Combo Lock. \ n \ u25CB Actualizaciones automáticas para todas las aplicaciones. \ n \ u25CB Nueva pestaña de actualización en Sm. \ n \ u25CB Desactiva la función de cámara. \ n \ u25CB Menú de notificaciones en SS. \ n \ u25CB Nueva pantalla de bienvenida con animación. \ n \ u25CB Nuevos iconos para aplicaciones SM, SS y SC. \ n \ u25CB Sincronización de configuraciones SIM con LM. \ n \ u25CB Menú de instalación de la aplicación actualizado (código).</string>
     <string name="accessibility_service_msg">Este permiso se requiere para dispositivos que ejecutan Android 5.0 y versiones posteriores donde el permiso de estadísticas de uso no funciona.</string>
@@ -456,7 +455,7 @@
     <string name="combination">Combinación</string>
     <string name="low">Bajo</string>
     <string name="current_dealer">Distribuidor actual</string>
-    <string name="your_device_is_linked">¡El dispositivo está vinculado!</string>
+    <string name="your_device_is_linked">El dispositivo está vinculado</string>
 
     <string name="waiting_for_approval">A la espera de la aprobación...</string>
     <string name="restore">Restaurar</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">Su ID de dispositivo = %1$s se transfiere, comuníquese con el soporte a continuación.</string>
     <string name="reset_wipe_password">Restablecer contraseña de WIPE</string>
     <string name="draw_pattern">Por favor dibuje el patrón</string>
+    <string name="permission_not_allowed">Esta función solo está disponible en dispositivos personalizados</string>
     <string name="network_limited">Red limitada!</string>
     <string name="network_limited_message">Internet puede no estar disponible.</string>
     <string name="change_network">Cambiar red</string>
@@ -554,7 +554,26 @@
     <string name="tab_text_1" translatable="false">@string/apps_title</string>
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="no_notifications">No Notificaciones</string>
+    <string name="restore_settings">Restauración de configuraciones</string>
+    <string name="rest_msg">Espere mientras restauramos su configuración predeterminada. No apagues tu móvil.</string>
+    <string name="please_draw_pattern">Por favor dibuje el patrón</string>
+    <string name="input_pin">PIN de entrada</string>
+    <string name="confirm_pattern">Confirmar patrón</string>
+    <string name="pattern_is_too_short">El patrón es demasiado corto.</string>
+    <string name="pattern_already_aken">Patrón ya tomado</string>
+    <string name="pattern_did_not_match">El patrón no coincide</string>
+    <string name="pattern_updated">Patrón actualizado</string>
+    <string name="guest_space_lock">BLOQUEO DE ESPACIO INVITADO</string>
+    <string name="encrypted_space_lock">BLOQUEO DE ESPACIO ENCRIPTADO</string>
+    <string name="wipe_lock">BLOQUEO DE LIMPIEZA</string>
+    <string name="please_select_an_option">Por favor seleccione una opción.</string>
+    <string name="warning">¡Advertencia!</string>
+    <string name="sim_update_warning">El uso de datos SIM para actualizar el dispositivo puede requerir datos de más de 100 MB, utilice WIFI en su lugar o continúe de todos modos.</string>
+    <string name="downlaoding_update_please_wait">Descargando actualización, por favor espere</string>
+    <string name="rest_pass_msg">Esto restablecerá Guest y Encrypted \ tpasswords. ¿Desea restablecer las contraseñas?</string>
+    <string name="confirm">Confirmar</string>
+    <string name="retry">Procesar de nuevo</string>
 
 
     <!-- Generated by Automatic String Resource Translation

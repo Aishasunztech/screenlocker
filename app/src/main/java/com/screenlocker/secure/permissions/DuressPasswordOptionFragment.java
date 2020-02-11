@@ -120,7 +120,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
     @Override
     public String error() {
-        return "Please Select An Option";
+        return MyApplication.getAppContext().getResources().getString(R.string.please_select_an_option);
     }
 
     @Override
@@ -155,5 +155,10 @@ public class DuressPasswordOptionFragment extends AbstractStep {
             }
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public void onSkip() {
+        super.onSkip();
     }
 }

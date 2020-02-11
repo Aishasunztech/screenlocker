@@ -27,6 +27,7 @@ public class PrefUtils {
         editor.putStringSet(key, value);
         editor.apply();
     }
+
     public static void saveStringPref(Context context, String key, String value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -38,6 +39,7 @@ public class PrefUtils {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
     }
+
     public static Set<String> getStringSet(Context context, String key) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getStringSet(key, null);
@@ -47,6 +49,7 @@ public class PrefUtils {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, false);
     }
+
     public static boolean getBooleanPrefWithDefTrue(Context context, String key) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, true);

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
@@ -72,10 +73,11 @@ public class PrepareLockScreen {
 
     private static boolean isClockTicking = false;
     public static String incomingComboRequest = null;
+    private static SecuredSharedPref sharedPref;
 
     @SuppressLint({"ResourceType", "SetTextI18n"})
     public static WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
-
+        sharedPref = SecuredSharedPref.getInstance(context);
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -139,16 +141,16 @@ public class PrepareLockScreen {
             @Override
             public void onCodeCompleted(ArrayList<Integer> code) {
 
-                if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_COMBO_PIN))) {
+                if (code.toString().equals(sharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PIN))) {
 
                     mPatternLockView.setNumberInputAllow(false);
                     mPasswordField.invalidate();
                     incomingComboRequest = KEY_MAIN;
-                } else if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.GUEST_COMBO_PIN))) {
+                } else if (code.toString().equals(sharedPref.getStringPref( AppConstants.GUEST_COMBO_PIN))) {
                     mPatternLockView.setNumberInputAllow(false);
                     mPasswordField.invalidate();
                     incomingComboRequest = KEY_GUEST;
-                } else if (code.toString().equals(PrefUtils.getStringPref(context, AppConstants.DURESS_COMBO_PIN))) {
+                } else if (code.toString().equals(sharedPref.getStringPref(AppConstants.DURESS_COMBO_PIN))) {
                     mPatternLockView.setNumberInputAllow(false);
                     mPasswordField.invalidate();
                     incomingComboRequest = KEY_DURESS;
@@ -192,7 +194,7 @@ public class PrepareLockScreen {
                 } else if (!mPatternLockView.isNumberInputAllow()) {
                     switch (incomingComboRequest) {
                         case KEY_MAIN:
-                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN))) {
+                            if (patternString.equals(sharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PATTERN))) {
                                 //correct
 
                                 encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
@@ -203,7 +205,7 @@ public class PrepareLockScreen {
                             }
                             break;
                         case KEY_GUEST:
-                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_COMBO_PATTERN))) {
+                            if (patternString.equals(sharedPref.getStringPref(AppConstants.GUEST_COMBO_PATTERN))) {
                                 //correct
                                 guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
                             } else {
@@ -212,7 +214,7 @@ public class PrepareLockScreen {
                             }
                             break;
                         case KEY_DURESS:
-                            if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_COMBO_PATTERN))) {
+                            if (patternString.equals(sharedPref.getStringPref(AppConstants.DURESS_COMBO_PATTERN))) {
                                 //correct
                                 duressLogin(clearance, mPatternLockView, codeView, context);
                             } else {
@@ -232,14 +234,14 @@ public class PrepareLockScreen {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                     Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(mPatternLockView::clearPattern, 500);
-                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.GUEST_PATTERN))) {
+                } else if (patternString.equals(sharedPref.getStringPref( AppConstants.GUEST_PATTERN))) {
                     guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
 
 
-                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.ENCRYPT_PATTERN))) {
+                } else if (patternString.equals(sharedPref.getStringPref( AppConstants.ENCRYPT_PATTERN))) {
 
                     encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
-                } else if (patternString.equals(PrefUtils.getStringPref(context, AppConstants.DURESS_PATTERN))) {
+                } else if (patternString.equals(sharedPref.getStringPref( AppConstants.DURESS_PATTERN))) {
                     duressLogin(clearance, mPatternLockView, codeView, context);
                 } else if (device_status != null) {
                     String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
@@ -454,7 +456,7 @@ public class PrepareLockScreen {
 
 
         int attempts = 10;
-        int count = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+        int count = sharedPref.getIntegerPref( LOGIN_ATTEMPTS);
         int x = attempts - count;
 
         if (time_remaining != 0) {
@@ -486,8 +488,8 @@ public class PrepareLockScreen {
                         break;
                 }
             } else {
-                PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-                PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+                sharedPref.saveLongPref( TIME_REMAINING_REBOOT, 0);
+                sharedPref.saveLongPref( TIME_REMAINING, 0);
             }
 
         }
@@ -726,7 +728,7 @@ public class PrepareLockScreen {
 
     private static void wrongAttempt(Context context, TextView txtWarning, ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField, NCodeView codeView) {
         int attempts1 = 10;
-        int count1 = PrefUtils.getIntegerPref(context, LOGIN_ATTEMPTS);
+        int count1 = sharedPref.getIntegerPref( LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
 
         if (count1 > 9) {
@@ -766,7 +768,7 @@ public class PrepareLockScreen {
                     countDownTimer.start();
                 break;
             default:
-                PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count1 + 1);
+                sharedPref.saveIntegerPref(LOGIN_ATTEMPTS, count1 + 1);
                 unLockButton.setEnabled(true);
                 unLockButton.setClickable(true);
                 mPasswordField.setText(null);
@@ -785,8 +787,8 @@ public class PrepareLockScreen {
         unLockButton.setClickable(false);
         patternLockView.setInputEnabled(false);
         time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
+        sharedPref.saveLongPref( TIME_REMAINING_REBOOT, 0);
+        sharedPref.saveLongPref( TIME_REMAINING, 0);
         countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, time, x, context, count);
         if (countDownTimer != null)
             countDownTimer.start();
@@ -812,7 +814,7 @@ public class PrepareLockScreen {
                     mPasswordField.setText(null);
                     txtWarning.setVisibility(VISIBLE);
                     txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
-                    PrefUtils.saveLongPref(context, TIME_REMAINING, l);
+                    sharedPref.saveLongPref( TIME_REMAINING, l);
                     isClockTicking = true;
                     setTimeRemaining(context);
                 }
@@ -828,9 +830,9 @@ public class PrepareLockScreen {
                     txtWarning.setVisibility(INVISIBLE);
                     txtWarning.setText(null);
                     isClockTicking = false;
-                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, count + 1);
-                    PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-                    PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+                    sharedPref.saveIntegerPref( LOGIN_ATTEMPTS, count + 1);
+                    sharedPref.saveLongPref( TIME_REMAINING, 0);
+                    sharedPref.saveLongPref( TIME_REMAINING_REBOOT, 0);
                 }
 
 

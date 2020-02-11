@@ -16,6 +16,7 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -70,6 +71,7 @@ import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.secureSetting.AllNotificationActivity;
 import com.secureSetting.SecureSettingsMain;
@@ -97,6 +99,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.GET_UPDATE_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
@@ -234,6 +237,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectNetwork()   // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .build());
+//            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .penaltyLog()
+//                    .penaltyDeath()
+//                    .build());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
@@ -457,8 +472,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private void handleCodeAdmin() {
-
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_CODE_PASSWORD) == null) {
+        SecuredSharedPref sharedPref = SecuredSharedPref.getInstance(this);
+        if (sharedPref.getStringPref( AppConstants.KEY_CODE_PASSWORD) == null) {
             Intent intent = new Intent(this, SetUpLockActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_CODE);
             startActivityForResult(intent, REQUEST_CODE_PASSWORD);
@@ -471,7 +486,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
                     return;
                 }
-                if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(SettingsActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
+                if (input.getText().toString().equalsIgnoreCase(sharedPref.getStringPref( AppConstants.KEY_CODE_PASSWORD))) {
                     // start Code settings activity if the code password entered is correct
 
                     startActivity(new Intent(SettingsActivity.this, CodeSettingActivity.class));
@@ -568,7 +583,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void update(ProgressDialog dialog) {
         MyApplication.oneCaller
-                .getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -615,7 +630,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                     String live_url = PrefUtils.getStringPref(SettingsActivity.this, LIVE_URL);
                                                     Timber.i("------------> Live Server Url :%s ", live_url);
 
-                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url + "getApk/" + CommonUtils.splitName(apkUrl), false, null);
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url +MOBILE_END_POINT+ "v2/mobile/getApk/" + CommonUtils.splitName(apkUrl), false, null);
                                                     obj.execute();
 
 

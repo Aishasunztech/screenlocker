@@ -181,8 +181,22 @@ public class DeviceIdUtils {
             serialNumber = "123456789ABCDEF";
         }
 
+
+        if (serialNumber.equals("unknown")){
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    serialNumber = Build.getSerial();
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                Log.d("responseData", String.valueOf(e.getMessage()));
+            }
+        }
+
+
         return serialNumber;
     }
+
 
     public static String getIPAddress(boolean useIPv4) {
         try {

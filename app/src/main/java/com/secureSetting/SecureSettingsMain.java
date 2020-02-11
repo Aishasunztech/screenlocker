@@ -112,7 +112,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 //                // encrypted user
 //                case KEY_MAIN_PASSWORD:
 //                    new Thread(() -> {
-//                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+//                        List<SubExtension> subExtensions = MyAppDatabase.getInstance(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 //                        if (subExtensions == null || subExtensions.size() == 0) {
 //                            runOnUiThread(() -> {
 //                                settingsLayout.setVisibility(View.GONE);
@@ -139,7 +139,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 //                case KEY_GUEST_PASSWORD:
 //                    new Thread(() -> {
 //
-//                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+//                        List<SubExtension> subExtensions = MyAppDatabase.getInstance(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 //
 //                        if (subExtensions == null || subExtensions.size() == 0) {
 //                            runOnUiThread(() -> {

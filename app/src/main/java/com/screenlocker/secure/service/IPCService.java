@@ -12,9 +12,12 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.IPCWithSL;
 
+import timber.log.Timber;
+
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
+import static com.screenlocker.secure.utils.AppConstants.URL_1;
 
 public class IPCService extends Service {
 
@@ -29,25 +32,37 @@ public class IPCService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
-    IPCWithSL.Stub binder =  new IPCWithSL.Stub() {
+
+    IPCWithSL.Stub binder = new IPCWithSL.Stub() {
         @Override
         public String getChatId() throws RemoteException {
+            Timber.d("getChatId");
             return PrefUtils.getStringPref(MyApplication.getAppContext(), CHAT_ID);
         }
 
         @Override
         public String getDeviceId() throws RemoteException {
+            Timber.d("getdevice Id");
             return PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID);
         }
 
         @Override
         public String getPGPEmail() throws RemoteException {
+
             return PrefUtils.getStringPref(MyApplication.getAppContext(), PGP_EMAIL);
         }
 
         @Override
         public boolean isPackageSuspended(String packageName) throws RemoteException {
             return false;
+        }
+
+        @Override
+        public int getWhiteLabelType() throws RemoteException {
+            Timber.d("getwhitelabletype");
+            int value = URL_1.equals("https://api.lockmesh.com") ? 0 : 1;
+            Timber.d( "getWhiteLabelType: %s", String.valueOf(value));
+            return value;
         }
     };
 }

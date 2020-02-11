@@ -69,5 +69,7 @@ public interface SocketEvents {
 
     void getDeviceMessages();
 
+    void getDeviceInfoUpdate();
+
 
 }

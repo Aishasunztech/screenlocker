@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.settings.AdvanceSettings;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingsPresenter;
@@ -71,10 +72,12 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     private PopupWindow popupWindow;
     private LinearLayout brightnessContainer;
     private TextView brightnessLevel;
+    private SecuredSharedPref securedSharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_wallpaper);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -220,7 +223,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     private void handlePassword(String password, String type) {
         switch (type) {
             case KEY_GUEST:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_GUEST_PASSWORD))) {
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_GUEST_PASSWORD))) {
                     //
 
                     goToGuest = true;
@@ -231,7 +234,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                     showInvalidPasswordDialog(this);
                 break;
             case KEY_MAIN:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_MAIN_PASSWORD))){
 
                     goToEncrypt = true;
 
@@ -244,7 +247,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
                 break;
             case KEY_CODE:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_MAIN_PASSWORD))){
 
                     goToLockScreen = true;
 
@@ -342,9 +345,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetGuestPassword() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.GUEST_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_GUEST_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
             return;
 
@@ -364,9 +367,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetMainPassword() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_MAIN_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
             return;
 
@@ -385,9 +388,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetMainPasswordForLS() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_MAIN_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
             return;
 

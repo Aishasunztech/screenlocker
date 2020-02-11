@@ -106,7 +106,7 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
 
     @Override
     public String error() {
-        return "Please Select An Option";
+        return MyApplication.getAppContext().getResources().getString(R.string.please_select_an_option);
     }
 
     @Override

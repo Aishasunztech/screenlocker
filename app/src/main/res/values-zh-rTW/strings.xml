@@ -30,7 +30,7 @@
     <string name="confirm_pin">固定銷</string>
     <string name="ok">好</string>
     <string name="cancel">取消</string>
-    <string name="pin">銷</string>
+    <string name="pin">PIN</string>
     <string name="set_guest_password">設置訪客密碼</string>
     <string name="set_encrypted_password">設置加密密碼</string>
     <string name="please_enter_your_current_password">請輸入您的當前密碼。</string>
@@ -117,7 +117,7 @@
     <string name="link_title">鏈接</string>
     <string name="simtext">SIM卡：</string>
     <string name="slot">廣告位：</string>
-    <string name="name">/ 名稱 ：</string>
+    <string name="name">/ Name :</string>
     <string name="apn">/ Apn：</string>
     <string name="guest">客人</string>
     <string name="encrypted">加密的</string>
@@ -301,7 +301,6 @@
     <string name="encrypted_password">加密密碼</string>
     <string name="set_skip_password">請設置或跳過密碼</string>
     <string name="duress_pin">清除PIN碼</string>
-    <string name="warning">警告！</string>
     <string name="duress_pin_message">設備鎖定時輸入“擦除密碼”將擦除您的電話數據。您無法撤消此操作。未經確認，所有數據將從目標設備中刪除。無法撤消此操作。</string>
     <string name="please_link_skip">請鏈接設備或跳過</string>
     <string name="set_as_default_launcher">請設置為默認啟動器</string>
@@ -333,7 +332,7 @@
     <string name="enter_a_valid_name">請輸入有效的名字</string>
     <string name="number_of_attempts_remaining">您需要％1 $ s次嘗試才能重置設備，所有數據都將丟失！</string>
     <string name="account_device_id_suspended">您的設備ID為％1 $ s的帳戶已被暫停。請與支持小組聯繫</string>
-    <string name="account_device_id_expired">您的設備ID =％1 $ s的帳戶已過期。請聯繫支持</string>
+    <string name="account_device_id_expired">您的設備ID為％1 $ s的帳戶已過期。請與支持小組聯繫</string>
     <string name="account_device_id_unlinked">您的設備ID =％1 $ s已取消鏈接，請聯繫下面的支持。</string>
     <string name="account_device_id_flagged">此設備已標記，請聯繫支持部門。</string>
     <string name="not_linked_yet">尚未連結</string>
@@ -430,11 +429,11 @@
     <string name="ip_addr">IP地址</string>
     <string name="all_apps">所有應用</string>
     <string name="no_connection">沒有網絡連接</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">“運行Android 5.0及更高版本且其中的“使用靜態”權限不起作用的設備需要此權限。\ n \ n啟用該功能有助於檢測用戶操作並防止意外切換到不需要的應用程序。\ n \ n看到已啟用，只需取消選中然後重新選中，以便該服務再次啟動。”</string>
     <string name="on_accessibility_service">關於無障礙服務</string>
-    <string name="features">\ u25CB組合鎖。 \ n \ u25CB所有應用程序的自動更新。\ n \ u25CB Sm中的“新更新”選項卡。\ n \ u25CB禁用相機功能。 \ n \ u25CB SS中的通知菜單。\ n \ u25CB帶有動畫的新“歡迎”屏幕。\ n \ u25CB SM，SS和SC應用程序的新圖標。\ n \ u25CB SIM設置與LM同步。 \ n \ u25CB更新了“安裝應用”菜單（代碼。）。</string>
+    <string name="features">\ u25CB組合鎖。 \ n \ u25CB所有應用程序的自動更新。\ n \ u25CB Sm中的“新更新”選項卡。\ n \ u25CB禁用相機功能。 \ n \ u25CB SS中的通知菜單。\ n \ u25CB帶有動畫的新歡迎屏幕。\ n \ u25CB SM，SS和SC應用程序的新圖標。\ n \ u25CB SIM卡設置與LM同步。 \ n \ u25CB更新了“安裝應用”菜單（代碼。）。</string>
     <string name="accessibility_service_msg">對於運行Android 5.0及更高版本且“使用靜態”權限不起作用的設備，此權限是必需的。</string>
-    <string name="bugs"> \ u25CB默認情況下已啟用屏幕截圖。\ n \ u25CB修復了應用程序圖標上的黑色色調錯誤。\ n \ u25CB IMEI設置已更改為“高級設置”。 \ n \ u25CB修復了牆紙錯誤。 \ n \ u25CB修復了SL啟動錯誤（例如，需要步進）</string>
+    <string name="bugs"> \ u25CB默認情況下已啟用屏幕截圖。\ n \ u25CB修復了應用程序圖標上的黑色調錯誤。\ n \ u25CB IMEI設置已更改為“高級設置”。 \ n \ u25CB修復了牆紙錯誤。 \ n \ u25CB修復了SL啟動錯誤（例如，需要步進）</string>
     <string name="what_s_new_v5_15">新增功能v6.2.0</string>
     <string name="general_notifications">一般通知</string>
     <string name="all_apps_notifications">所有應用程序通知</string>
@@ -456,7 +455,7 @@
     <string name="combination">組合</string>
     <string name="low">低</string>
     <string name="current_dealer">當前經銷商</string>
-    <string name="your_device_is_linked">設備已鏈接！</string>
+    <string name="your_device_is_linked">設備已鏈接</string>
 
     <string name="waiting_for_approval">等待批准...</string>
     <string name="restore">恢復</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">您的設備ID =％1 $ s已轉移，請聯繫下面的支持。</string>
     <string name="reset_wipe_password">重置WIPE密碼</string>
     <string name="draw_pattern">請畫圖案</string>
+    <string name="permission_not_allowed">此功能僅在自定義設備上可用</string>
     <string name="network_limited">網絡有限！</string>
     <string name="network_limited_message">互聯網可能不可用。</string>
     <string name="change_network">變更聯播網</string>
@@ -554,7 +554,27 @@
     <string name="tab_text_1" translatable="false">@string/apps_title</string>
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="no_notifications">沒有通知</string>
+    <string name="restore_settings">恢復設置</string>
+    <string name="rest_msg">請稍等，我們正在還原您的默認設置。不要關閉手機。</string>
+    <string name="please_draw_pattern">請畫圖案</string>
+    <string name="input_pin">輸入密碼</string>
+    <string name="confirm_pattern">確認圖案</string>
+    <string name="pattern_is_too_short">圖案太短</string>
+    <string name="pattern_already_aken">模式已採取</string>
+    <string name="pattern_did_not_match">模式不匹配</string>
+    <string name="pattern_updated">模式已更新</string>
+    <string name="guest_space_lock">訪客空間鎖</string>
+    <string name="encrypted_space_lock">加密空間鎖</string>
+    <string name="wipe_lock">擦拭鎖</string>
+    <string name="please_select_an_option">請選擇一個選項。</string>
+    <string name="warning">警告！</string>
+    <string name="sim_update_warning">使用SIM卡數據更新設備可能需要超過100MB的數據，請改用WIFI或繼續進行。</string>
+    <string name="downlaoding_update_please_wait">正在下載更新，請稍候</string>
+    <string name="rest_pass_msg">這將重置Guest和Encrypted \ tpasswords。是否要重置密碼？</string>
+    <string name="confirm">確認</string>
+    <string name="retry">重試</string>
+    <string name="incorrect_password">密碼錯誤</string>
 
 
     <!-- Generated by Automatic String Resource Translation

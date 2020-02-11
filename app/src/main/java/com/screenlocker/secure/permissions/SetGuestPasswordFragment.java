@@ -24,6 +24,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.screenlocker.secure.utils.Validator;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
@@ -41,8 +42,13 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.permissions.SteppersActivity.STEP_GUEST_PASS;
 import static com.screenlocker.secure.socket.utils.utils.passwordsOk;
+import static com.screenlocker.secure.utils.AppConstants.COMBO_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
+import static com.screenlocker.secure.utils.AppConstants.GUEST_COMBO_PATTERN;
+import static com.screenlocker.secure.utils.AppConstants.GUEST_COMBO_PIN;
+import static com.screenlocker.secure.utils.AppConstants.GUEST_DEFAULT_CONFIG;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
+import static com.screenlocker.secure.utils.AppConstants.GUEST_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
@@ -53,7 +59,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
     private Context mContext;
     private int mTry = 0;
     private String tryPattern;
-    private OnPageUpdateListener mListener;
     private String mCode;
     private String mPattern;
     private int mTryCombo = 0;
@@ -90,6 +95,13 @@ public class SetGuestPasswordFragment extends AbstractStep {
     Button btnrTry;
     @BindView(R.id.btnConfirm)
     Button btnConfirm;
+    @BindView(R.id.confirm)
+    Button btnPatternConfirm;
+    @BindView(R.id.cancel)
+    Button btnPatternCancel;
+
+    private SecuredSharedPref sharedPref ;
+
 
     private boolean isAllowed = false;
 
@@ -126,6 +138,9 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.please_draw_pattern));
                 patternLock.setEnableHapticFeedback(false);
                 viewSwitcher.setDisplayedChild(0);
+                btnPatternCancel.setEnabled(false);
+                btnPatternConfirm.setEnabled(false);
+
                 break;
             case OPTION_COMBO:
                 codeView.clearCode();
@@ -150,7 +165,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
             case OPTION_PIN:
                 if (setPassword()) {
 
-                    if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null ) {
+                    if (sharedPref.getStringPref(KEY_GUEST_PASSWORD) != null) {
                         PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
                         return true;
                     }
@@ -158,7 +173,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 break;
             case OPTION_PATTERN:
             case OPTION_COMBO:
-                if (PrefUtils.getStringPref(MyApplication.getAppContext(), KEY_GUEST_PASSWORD) != null || isAllowed) {
+                if (sharedPref.getStringPref(KEY_GUEST_PASSWORD) != null || isAllowed) {
                     PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
                     return true;
                 }
@@ -228,7 +243,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 }
                 if (mTry == 0) {
                     tryPattern = PatternLockUtils.patternToString(patternLock, pattern);
-                    if (tryPattern.equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.DURESS_PATTERN))) {
+                    if (tryPattern.equals(sharedPref.getStringPref(AppConstants.ENCRYPT_PATTERN)) || tryPattern.equals(sharedPref.getStringPref(AppConstants.DURESS_PATTERN))) {
                         Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_already_aken), Toast.LENGTH_SHORT).show();
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> {
@@ -236,22 +251,25 @@ public class SetGuestPasswordFragment extends AbstractStep {
                         }, 150);
                         return;
                     }
-
-
-                    mTry++;
-                    responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.input_pin));
-                    patternLock.clearPattern();
+                    patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
+                    patternLock.setInputEnabled(false);
+                    btnPatternCancel.setEnabled(true);
+                    btnPatternConfirm.setEnabled(true);
 
                 } else if (mTry == 1) {
                     if (tryPattern.equals(PatternLockUtils.patternToString(patternLock, pattern))) {
+
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
-                        PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
-                        PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_PATTERN, tryPattern);
-                        PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, null);
+                        sharedPref.saveStringPref(GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                        sharedPref.saveStringPref(GUEST_PATTERN, tryPattern);
+                        sharedPref.saveStringPref(KEY_GUEST_PASSWORD, null);
                         Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_updated), Toast.LENGTH_SHORT).show();
                         //move to next
                         PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
 //                        mListener.onPageUpdate(STEP_GUEST_PASS);
+                        patternLock.setInputEnabled(false);
+                        btnPatternCancel.setEnabled(false);
+                        btnPatternConfirm.setEnabled(false);
                         isAllowed = true;
                     }
                     //wrong pattern
@@ -261,6 +279,8 @@ public class SetGuestPasswordFragment extends AbstractStep {
                         patternLock.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                         new Handler().postDelayed(() -> patternLock.clearPattern(), 500);
                         responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.please_draw_pattern));
+                        btnPatternConfirm.setEnabled(false);
+                        btnPatternCancel.setEnabled(false);
 
                     }
                 }
@@ -278,7 +298,24 @@ public class SetGuestPasswordFragment extends AbstractStep {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        sharedPref = SecuredSharedPref.getInstance(MyApplication.getAppContext());
         btnConfirm.setEnabled(false);
+        btnPatternCancel.setOnClickListener(v -> {
+            mTry = 0;
+            tryPattern = "";
+            responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.please_draw_pattern));
+            patternLock.clearPattern();
+            patternLock.setInputEnabled(true);
+            btnPatternCancel.setEnabled(false);
+            btnPatternConfirm.setEnabled(false);
+        });
+        btnPatternConfirm.setOnClickListener(v -> {
+            mTry = 1;
+            patternLock.clearPattern();
+            patternLock.setInputEnabled(true);
+            btnPatternConfirm.setEnabled(false);
+            responsTitle.setText(MyApplication.getAppContext().getResources().getString(R.string.confirm_pattern));
+        });
         btnrTry.setOnClickListener(v -> {
             mTryCombo = 0;
             mCode = "";
@@ -337,16 +374,16 @@ public class SetGuestPasswordFragment extends AbstractStep {
                                 //write pattern
                                 patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
 
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_COMBO_PATTERN, mPattern);
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_COMBO_PIN, mCode);
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, null);
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.GUEST_PATTERN, null);
+                                sharedPref.saveStringPref(GUEST_DEFAULT_CONFIG, COMBO_PASSWORD);
+                                sharedPref.saveStringPref(GUEST_COMBO_PATTERN, mPattern);
+                                sharedPref.saveStringPref(GUEST_COMBO_PIN, mCode);
+                                sharedPref.saveStringPref(KEY_GUEST_PASSWORD, null);
+                                sharedPref.saveStringPref(GUEST_PATTERN, null);
                                 //update code here
                                 isAllowed = true;
 //                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
 //                                mListener.onPageUpdate(STEP_GUEST_PASS);
-                                Timber.d( "onComplete: ");
+                                Timber.d("onComplete: ");
 
 
                             } else {
@@ -370,7 +407,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
                 if (mTryCombo == 0) {
                     if (code.toString().equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_COMBO_PIN)) ||
                             code.toString().equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.DURESS_COMBO_PIN))) {
-                        //FIXME: duplicate
                         codeView.setColor();
                     } else {
                         mCode = code.toString();
@@ -412,8 +448,8 @@ public class SetGuestPasswordFragment extends AbstractStep {
             boolean keyOk = passwordsOk(getContext(), reEnteredPassword);
 
             if (keyOk) {
-                PrefUtils.saveStringPref(MyApplication.getAppContext(), AppConstants.KEY_GUEST_PASSWORD, reEnteredPassword);
-                isAllowed =true;
+                sharedPref.saveStringPref(KEY_GUEST_PASSWORD, reEnteredPassword);
+                isAllowed = true;
                 return true;
 
             } else {
@@ -439,11 +475,9 @@ public class SetGuestPasswordFragment extends AbstractStep {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (OnPageUpdateListener) context;
             mContext = context;
         } catch (Exception ignored) {
 
         }
     }
-
 }

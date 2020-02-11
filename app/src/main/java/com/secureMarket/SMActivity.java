@@ -77,6 +77,7 @@ import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
@@ -239,19 +240,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 }
 
         }
-
-//        int index = IntStream.range(0, unInstalledApps.size())
-//                .filter(i -> Objects.nonNull(unInstalledApps.get(i)))
-//                .filter(i -> pn.equals(unInstalledApps.get(i).getPackageName()))
-//                .findFirst()
-//                .orElse(-1);
-//        if (index != -1) {
-//            ServerAppInfo info = unInstalledApps.get(index);
-//            info.setProgres(progress);
-//            info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
-//            info.setSpeed(speed);
-//            uninstalledAdapter.updateProgressOfItem(info, index);
-//        }
 
     }
 
@@ -674,7 +662,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     apksPath.mkdir();
                 }
 
-                String url = live_url +MOBILE_END_POINT+ "getApk/" +
+                String url = live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT +
                         CommonUtils.splitName(app.getApk());
 
                 Timber.i("LIVE URL :%s", url);
@@ -812,7 +800,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
             boolean isConnected = networkStatus.equals(CONNECTED);
 
-            Timber.d("ksdklfgsmksls : " + isConnected);
+            Timber.d("ksdklfgsmksls : %s", isConnected);
 
             if (isConnected) {
                 loadApps();

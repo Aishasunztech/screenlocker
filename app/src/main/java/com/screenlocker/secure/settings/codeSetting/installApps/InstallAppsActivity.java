@@ -60,6 +60,7 @@ import timber.log.Timber;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APP;
 import static com.screenlocker.secure.utils.AppConstants.INSTALLED_PACKAGES;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
@@ -431,7 +432,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!apksPath.exists()) {
             apksPath.mkdir();
         }
-        String url = live_url +MOBILE_END_POINT+ "getApk/" +
+        String url = live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT +
                 CommonUtils.splitName(app.getApk());
         String fileName = file.getAbsolutePath();
         if (!file.exists()) {

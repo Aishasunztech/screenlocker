@@ -98,11 +98,8 @@ public class SetDefaultLauncherFragment extends AbstractStep {
         }
         setLauncher.setOnClickListener(v -> {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                {
                     Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
-                    startActivityForResult(intent, CODE_LAUNCHER);
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
                     startActivityForResult(intent, CODE_LAUNCHER);
                 }
             } catch (Exception ignored) {

@@ -207,7 +207,7 @@
     <string name="on">بر</string>
     <string name="installed_apps_title">برنامه ها را نصب کنید</string>
     <string name="something_wrong">چیزی پیش آمد</string>
-    <string name="downloading_update">در حال بارگیری به روزرسانی ، لطفاً صبر کنید</string>
+    <string name="downloading_update">در حال بارگیری به روز رسانی ، لطفا صبر کنید</string>
     <string name="install">نصب</string>
     <string name="uninstall">حذف نصب کنید</string>
     <string name="policy_title">خط مشی بار</string>
@@ -301,7 +301,6 @@
     <string name="encrypted_password">رمز عبور رمزگذاری شده</string>
     <string name="set_skip_password">لطفا رمز عبور را تنظیم یا پرش کنید</string>
     <string name="duress_pin">پین را پاک کنید</string>
-    <string name="warning">هشدار!</string>
     <string name="duress_pin_message">وارد کردن Wipe Pin هنگام قفل دستگاه ، اطلاعات تلفن شما را پاک می کند. شما نمی توانید این عمل را خنثیسازی کنید. تمام داده ها بدون تأیید از دستگاه هدف حذف می شوند. هیچ راهی برای معکوس کردن این اقدام وجود ندارد.</string>
     <string name="please_link_skip">لطفاً دستگاه را پیوند داده یا پرش کنید</string>
     <string name="set_as_default_launcher">لطفاً به عنوان پرتاب پیش فرض تنظیم کنید</string>
@@ -349,7 +348,7 @@
     <string name="language_is_changed">زبان تغییر کرده است</string>
     <string name="please_wait_">لطفا صبر کنید...</string>
     <string name="account_disabled">حساب غیرفعال شد برای کمک با فروشنده خود تماس بگیرید.</string>
-    <string name="server_error">سرور پاسخگو نیست یا اتصال اینترنت خود را بررسی کنید و دوباره امتحان کنید!</string>
+    <string name="server_error">سرور پاسخگو نیست و یا اتصال به اینترنت خود را بررسی کنید و دوباره امتحان کنید!</string>
     <string name="incorrect_pin">PIN یا الگوی نادرست!</string>
     <string name="version">نسخه</string>
     <string name="type">تایپ کنید</string>
@@ -403,7 +402,7 @@
 
     <string name="settings_more">بیشتر</string>
     <string name="share">لایک و شیر کن</string>
-    <string name="share_desc">سلام این برنامه را بررسی کنید ، خیلی جالب است ، می تواند به زمان هر برنامه شما برای پرداخت هزینه کمک کند:٪ 1 $ s٪ 2 $ s</string>
+    <string name="share_desc">سلام این برنامه را بررسی کنید ، خیلی جالب است ، می تواند به زمان هر برنامه شما برای پرداخت هر برنامه کمک کند:٪ 1 $ s٪ 2 $ s</string>
     <string name="slogan">نظارت بر استفاده از برنامه ها</string>
     <string name="sort">مرتب سازی بر اساس</string>
     <string name="toast_permission">لطفا \ "AppsTimeline \" را پیدا کنید و اجازه دهید</string>
@@ -430,11 +429,11 @@
     <string name="ip_addr">IP Addr</string>
     <string name="all_apps">همه برنامه ها</string>
     <string name="no_connection">بدون اتصال به اینترنت</string>
-    <string name="accessibility_service_description" translatable="false">"This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working. \n \n Enabling it helps in detecting user actions and prevents accidental switch over to applications that are not required. \n \n If you see that is already enabled , just uncheck and recheck so that the service starts again."</string>
+    <string name="accessibility_service_description">"این مجوز برای دستگاههایی که دارای Android نسخه 5.0 و بالاتر که در آن مجوز Usage Statics کار نمی کند ضروری است. \ n \ n فعال کردن این امر به تشخیص اقدامات کاربر کمک می کند و از تغییر تصادفی در برنامه های موردنیاز جلوگیری می کند. \ n \ n اگر شما مشاهده کنید که از قبل فعال شده است ، فقط علامت بررسی و بررسی مجدد را بزنید تا دوباره خدمات شروع شود. "</string>
     <string name="on_accessibility_service">در سرویس قابلیت دسترسی</string>
     <string name="features">\ u25CB قفل دسته کوچک موسیقی جاز. \ n \ u25CB به روزرسانی های خودکار برای همه برنامه ها. \ n \ u25CB برگه بروزرسانی جدید در Sm. \ n \ u25CB ویژگی دوربین را غیرفعال کنید. \ n \ u25CB فهرست اعلان در SS. \ n \ u25CB صفحه نمایش جدید خوش آمدید با انیمیشن. \ n \ u25CB نمادهای جدید برای برنامه های SM ، SS و SC. \ n \ u25CB همگام سازی تنظیمات سیم کارت با LM. \ n \ u25CB منوی برنامه نصب (کد.) به روز شد.</string>
     <string name="accessibility_service_msg">این مجوز برای دستگاههایی که دارای Android نسخه 5.0 و بالاتر هستند ، در جایی که مجوز Usage Statics کار نکند ، لازم است.</string>
-    <string name="bugs">\ u25CB ضبط صفحه به طور پیش فرض فعال شده است. \ n \ u25CB اشکال رنگ سیاه روی نمادهای برنامه ثابت شد. \ n \ u25CB تنظیمات IMEI به تنظیمات Advance تغییر یافت. \ n \ u25CB رفع اشکال تصویر زمینه. \ n \ u25CB اشکالات راه اندازی SL ثابت (به عنوان مثال طول می کشد به پله)</string>
+    <string name="bugs">\ u25CB ضبط صفحه به طور پیش فرض فعال شده است. \ n \ u25CB اشکال رنگ سیاه روی نمادهای برنامه ثابت شد. \ n \ u25CB تنظیمات IMEI به تنظیمات Advance تغییر یافت. \ n \ u25CB رفع اشکال تصویر زمینه. \ n \ u25CB اشکالات پرتاب SL ثابت (به عنوان مثال طول می کشد تا پله ها باشد)</string>
     <string name="what_s_new_v5_15">v6.2.0 جدید چیست</string>
     <string name="general_notifications">اطلاعیه های عمومی</string>
     <string name="all_apps_notifications">همه اعلان های برنامه</string>
@@ -484,6 +483,7 @@
     <string name="account_device_id_transferred">شناسه دستگاه شما =٪ 1 $ s منتقل شده است ، لطفاً در زیر با پشتیبانی تماس بگیرید.</string>
     <string name="reset_wipe_password">بازنشانی گذرواژه WIPE</string>
     <string name="draw_pattern">لطفا الگوی ترسیم کنید</string>
+    <string name="permission_not_allowed">این ویژگی فقط در دستگاه های سفارشی در دسترس است</string>
     <string name="network_limited">شبکه محدود!</string>
     <string name="network_limited_message">ممکن است اینترنت در دسترس نباشد.</string>
     <string name="change_network">تغییر شبکه</string>
@@ -555,7 +555,25 @@
     <string name="tab_text_2" translatable="false">@string/updates</string>
     <string name="tab_text_3" translatable="false">@string/uninstall</string>
     <string name="no_notifications">بدون اعلان</string>
-    <string name="please_draw_pattern">Please Draw Pattern</string>
+    <string name="restore_settings">بازیابی تنظیمات</string>
+    <string name="rest_msg">لطفاً در حال بازگرداندن تنظیمات پیش فرض شما صبر کنید. تلفن خود را خاموش نکنید.</string>
+    <string name="please_draw_pattern">لطفا الگوی ترسیم کنید</string>
+    <string name="input_pin">پین ورودی</string>
+    <string name="confirm_pattern">الگوی را تأیید کنید</string>
+    <string name="pattern_is_too_short">الگوی خیلی کوتاه است</string>
+    <string name="pattern_already_aken">الگوی قبلاً گرفته شده</string>
+    <string name="pattern_did_not_match">الگوی مطابقت نداشت</string>
+    <string name="pattern_updated">الگوی به روز شده</string>
+    <string name="guest_space_lock">قفل فاصله</string>
+    <string name="encrypted_space_lock">قفل فضای رمزگذاری شده</string>
+    <string name="wipe_lock">قفل WIPE</string>
+    <string name="please_select_an_option">لطفا یک گزینه را انتخاب کنید.</string>
+    <string name="warning">هشدار!</string>
+    <string name="sim_update_warning">استفاده از داده های SIM برای به روزرسانی دستگاه ممکن است به داده های بیش از 100 مگابایت نیاز داشته باشد ، لطفاً به جای آن از WIFI استفاده کنید یا به هر حال ادامه دهید.</string>
+    <string name="downlaoding_update_please_wait">در حال بارگیری به روز رسانی ، لطفا صبر کنید</string>
+    <string name="rest_pass_msg">با این کار مهمان و رمزگذاری شده \ tpasswords. آیا می خواهید رمزعبور را مجددا تنظیم کنید؟</string>
+    <string name="confirm">تایید</string>
+    <string name="retry">دوباره امتحان کنید</string>
 
 
     <!-- Generated by Automatic String Resource Translation

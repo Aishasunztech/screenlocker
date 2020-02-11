@@ -22,8 +22,8 @@ android {
         applicationId "com.secure.launcher"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 60208
-        versionName "6.2.8"
+        versionCode 60209
+        versionName "6.2.9"
         buildConfigField("String", "DATABASE_NAME", "\"lock.db\"")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -166,6 +166,16 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
     //text mask
     implementation 'com.github.santalu:mask-edittext:1.1.1'
+
+    //android crypto graphy by android
+    implementation "androidx.security:security-crypto:1.0.0-alpha02"
+    implementation 'net.zetetic:android-database-sqlcipher:4.3.0'
+    implementation "androidx.sqlite:sqlite:2.1.0"
+
+    //faster xml
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
 
     implementation project(path: ':stepper')
     implementation project(path: ':chatkit')

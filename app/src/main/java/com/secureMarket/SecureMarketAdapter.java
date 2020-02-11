@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.codeSetting.installApps.ServerAppInfo;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -186,7 +187,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                     case KEY_GUEST_PASSWORD:
 
                         new Thread(() -> {
-                            boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
+                            boolean isGuest = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
 
                             AppExecutor.getInstance().getMainThread().execute(() -> {
                                 if (isGuest) {
@@ -207,7 +208,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                     case KEY_MAIN_PASSWORD:
 
                         new Thread(() -> {
-                            boolean isEncrypted = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
+                            boolean isEncrypted = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
                             AppExecutor.getInstance().getMainThread().execute(() -> {
                                 if (isEncrypted) {
                                     if (app.getIs_restrict_uninstall() == 0) {

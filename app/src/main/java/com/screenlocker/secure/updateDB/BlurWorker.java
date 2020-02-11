@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 
 import com.screenlocker.secure.app.MyApplication;
@@ -67,7 +68,7 @@ public class BlurWorker extends Worker {
 
             PackageManager pm = applicationContext.getPackageManager();
 
-            List<AppInfo> dbApps = MyApplication.getAppDatabase(applicationContext).getDao().getAppsForBlurWorker(false);
+            List<AppInfo> dbApps = MyAppDatabase.getInstance(applicationContext).getDao().getAppsForBlurWorker(false);
 
             Intent i = new Intent(Intent.ACTION_MAIN, null);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -108,7 +109,7 @@ public class BlurWorker extends Worker {
 
                         if (!dbLabel.equals(label)) {
                             dbApp.setLabel(label);
-                            MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
+                            MyAppDatabase.getInstance(applicationContext).getDao().updateApps(dbApp);
                             Timber.e("databaseLabel :%s", dbLabel);
                             Timber.e("Label :%s", label);
                             break;
@@ -116,7 +117,7 @@ public class BlurWorker extends Worker {
                             boolean is_dbApp_system = isSystemApp(dbApp.getPackageName(), MyApplication.getAppContext());
                             if (!is_dbApp_system) {
                                 dbApp.setSystemApp(true);
-                                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApp);
+                                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(dbApp);
                                 break;
                             }
                         }
@@ -128,7 +129,7 @@ public class BlurWorker extends Worker {
 
 //                if (!dbLabel.equals(label)) {
 //                    dbApps.get(j).setLabel(label);
-//                    MyApplication.getAppDatabase(applicationContext).getDao().updateApps(dbApps.get(j));
+//                    MyAppDatabase.getInstance(applicationContext).getDao().updateApps(dbApps.get(j));
 //                }
 //
 
@@ -184,7 +185,7 @@ public class BlurWorker extends Worker {
                         app.setSystemApp(isSystemApp(app.getPackageName(), MyApplication.getAppContext()));
                     }
 
-                    MyApplication.getAppDatabase(applicationContext).getDao().insertApps(app);
+                    MyAppDatabase.getInstance(applicationContext).getDao().insertApps(app);
                 } else {
 
                     if (app.getPackageName().equals(settingPackageName)) {
@@ -194,7 +195,7 @@ public class BlurWorker extends Worker {
                         app.setEncrypted(false);
                         app.setExtension(false);
                         app.setSystemApp(true);
-                        MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                        MyAppDatabase.getInstance(applicationContext).getDao().updateApps(app);
                     }
                     if (app.getPackageName().equals(applicationContext.getPackageName())){
                         if (app.getPackageName().equals(applicationContext.getPackageName())) {
@@ -206,7 +207,7 @@ public class BlurWorker extends Worker {
                             app.setVisible(false);
                             app.setDefaultApp(true);
                             app.setSystemApp(true);
-                            MyApplication.getAppDatabase(applicationContext).getDao().updateApps(app);
+                            MyAppDatabase.getInstance(applicationContext).getDao().updateApps(app);
 
                         }
                     }
@@ -216,7 +217,7 @@ public class BlurWorker extends Worker {
 
             }
 
-            AppInfo appInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_SETTINGS_UNIQUE);
+            AppInfo appInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.SECURE_SETTINGS_UNIQUE);
 
             if (appInfo == null) {
                 //Secure settings Extension
@@ -232,17 +233,17 @@ public class BlurWorker extends Worker {
                 secureSettingsExtension.setDefaultApp(false);
                 secureSettingsExtension.setSystemApp(true);
 
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(secureSettingsExtension);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(secureSettingsExtension);
             } else {
                 appInfo.setExtension(true);
                 Drawable wifi_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_settings);
                 byte[] secure_settings_icon = CommonUtils.convertDrawableToByteArray(wifi_drawable);
                 appInfo.setIcon(secure_settings_icon);
                 appInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(appInfo);
+                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(appInfo);
             }
 
-            AppInfo secureCleanInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_CLEAR_UNIQUE);
+            AppInfo secureCleanInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.SECURE_CLEAR_UNIQUE);
 
             if (secureCleanInfo == null) {
                 //Secure clear Extension
@@ -257,16 +258,16 @@ public class BlurWorker extends Worker {
                 clearExtension.setVisible(true);
                 clearExtension.setDefaultApp(false);
                 clearExtension.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clearExtension);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(clearExtension);
             } else {
                 Drawable clear_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_new_cleaner);
                 byte[] secure_clear_icon = CommonUtils.convertDrawableToByteArray(clear_drawable);
                 secureCleanInfo.setIcon(secure_clear_icon);
                 secureCleanInfo.setExtension(false);
                 secureCleanInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureCleanInfo);
+                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(secureCleanInfo);
             }
-//            AppInfo supportInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
+//            AppInfo supportInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.SUPPORT_UNIQUE);
 //
 //            if (supportInfo == null) {
 //                //Secure Contact Support
@@ -282,15 +283,15 @@ public class BlurWorker extends Worker {
 //                supportExtension.setDefaultApp(false);
 //                supportExtension.setSystemApp(true);
 //
-//                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(supportExtension);
+//                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(supportExtension);
 //            } else {
 //                supportInfo.setExtension(false);
 //                supportInfo.setSystemApp(true);
-//                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(supportInfo);
+//                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(supportInfo);
 //            }
 
 
-            AppInfo sfmInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SFM_UNIQUE);
+            AppInfo sfmInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.SFM_UNIQUE);
 
             if (sfmInfo == null) {
                 //Secure File Manager
@@ -305,14 +306,14 @@ public class BlurWorker extends Worker {
                 sfmExtension.setVisible(true);
                 sfmExtension.setDefaultApp(false);
                 sfmExtension.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(sfmExtension);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(sfmExtension);
             } else {
                 sfmInfo.setExtension(false);
                 sfmInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(sfmInfo);
+                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(sfmInfo);
             }
 
-            AppInfo secureMarketInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.SECURE_MARKET_UNIQUE);
+            AppInfo secureMarketInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.SECURE_MARKET_UNIQUE);
 
             if (secureMarketInfo == null) {
                 //Secure Market Extension
@@ -327,17 +328,17 @@ public class BlurWorker extends Worker {
                 marketExtension.setVisible(true);
                 marketExtension.setDefaultApp(false);
                 marketExtension.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(marketExtension);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(marketExtension);
             } else {
                 Drawable market_drawable = applicationContext.getResources().getDrawable(R.drawable.ic_secure_market);
                 byte[] secure_market_icon = CommonUtils.convertDrawableToByteArray(market_drawable);
                 secureMarketInfo.setIcon(secure_market_icon);
                 secureMarketInfo.setExtension(false);
                 secureMarketInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(secureMarketInfo);
+                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(secureMarketInfo);
             }
 
-            AppInfo liveClientChatInfo = MyApplication.getAppDatabase(applicationContext).getDao().getParticularApp(AppConstants.LIVE_CLIENT_CHAT_UNIQUE);
+            AppInfo liveClientChatInfo = MyAppDatabase.getInstance(applicationContext).getDao().getParticularApp(AppConstants.LIVE_CLIENT_CHAT_UNIQUE);
 
             if (liveClientChatInfo == null) {
                 //Live Client Chat Extension
@@ -352,21 +353,21 @@ public class BlurWorker extends Worker {
                 clientChatExtension.setVisible(true);
                 clientChatExtension.setDefaultApp(false);
                 clientChatExtension.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertApps(clientChatExtension);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertApps(clientChatExtension);
             } else {
                 Drawable liveClientChatDrawable = applicationContext.getResources().getDrawable(R.drawable.ic_chat);
                 byte[] live_chat_icon = CommonUtils.convertDrawableToByteArray(liveClientChatDrawable);
                 liveClientChatInfo.setIcon(live_chat_icon);
                 liveClientChatInfo.setExtension(false);
                 liveClientChatInfo.setSystemApp(true);
-                MyApplication.getAppDatabase(applicationContext).getDao().updateApps(liveClientChatInfo);
+                MyAppDatabase.getInstance(applicationContext).getDao().updateApps(liveClientChatInfo);
             }
 
 
 
             Log.d(TAG, "doWork: Agya");
 
-            List<SubExtension> dbExtensions = MyApplication.getAppDatabase(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
+            List<SubExtension> dbExtensions = MyAppDatabase.getInstance(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
             List<SubExtension> subExtensions = setSecureSettingsMenu(applicationContext);
 
 
@@ -376,7 +377,7 @@ public class BlurWorker extends Worker {
             if (dbExtensions == null || dbExtensions.size() == 0) {
                 //Secure settings Menu
                 for (SubExtension subExtension : subExtensions) {
-                    MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+                    MyAppDatabase.getInstance(applicationContext).getDao().insertSubExtensions(subExtension);
                 }
 
             } else {
@@ -393,7 +394,7 @@ public class BlurWorker extends Worker {
                             }
                         }
                         if (!isPresent) {
-                            MyApplication.getAppDatabase(applicationContext).getDao().insertSubExtensions(subExtension);
+                            MyAppDatabase.getInstance(applicationContext).getDao().insertSubExtensions(subExtension);
                         } else {
                             isPresent = false;
                         }
@@ -404,27 +405,27 @@ public class BlurWorker extends Worker {
 
             }
 
-            List<com.screenlocker.secure.socket.model.Settings> settings = MyApplication.getAppDatabase(applicationContext)
+            List<com.screenlocker.secure.socket.model.Settings> settings = MyAppDatabase.getInstance(applicationContext)
                     .getDao().getSettings();
             if (settings != null && settings.size() == 0) {
                 List<com.screenlocker.secure.socket.model.Settings> localSettings = CommonUtils.getDefaultSetting(applicationContext);
                 for (com.screenlocker.secure.socket.model.Settings localSetting : localSettings) {
                     if (!settings.contains(localSetting)) {
-                        MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(localSetting);
+                        MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(localSetting);
                     }
                 }
             } else if (settings != null && settings.size() == 2) {
                 Timber.d("adding screen capture settings");
                 com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, false);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(screen_capture_settings);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(screen_capture_settings);
             }else if(settings != null && settings.size() == 3)
             {
                 com.screenlocker.secure.socket.model.Settings wifi_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_WIFI, true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(wifi_settings);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(wifi_settings);
             }else if(settings != null && settings.size() == 4)
             {
                 com.screenlocker.secure.socket.model.Settings bluetooth_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_BLUETOOTH, true);
-                MyApplication.getAppDatabase(applicationContext).getDao().insertSetting(bluetooth_settings);
+                MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(bluetooth_settings);
             }
 
 

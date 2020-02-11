@@ -31,6 +31,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.MyAdmin;
+import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
@@ -72,11 +74,13 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean goToPolicyMenu;
     private boolean goToIMEIMenu;
     private boolean goToSettingsAppPermission, goToSimActivity;
+    private SecuredSharedPref securedSharedPref ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_setting);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         codeSettingsInstance = this;
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mPresenter = new CodeSettingPresenter(new CodeSettingModel(this), this);
@@ -95,7 +99,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                     settingPackageName = resolveInfos.get(0).activityInfo.packageName;
                 }
                 if (settingPackageName != null) {
-                    AppInfo particularApp = MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
+                    AppInfo particularApp = MyAppDatabase.getInstance(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
                     if (particularApp == null) {
                         AppInfo appInfo = new AppInfo();
                         appInfo.setEncrypted(false);
@@ -104,7 +108,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                         appInfo.setPackageName(resolveInfos.get(0).activityInfo.packageName);
                         appInfo.setLabel(String.valueOf(resolveInfos.get(0).loadLabel(getPackageManager())));
                         appInfo.setUniqueName(settingPackageName);
-                        MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().insertApps(appInfo);
+                        MyAppDatabase.getInstance(CodeSettingActivity.this).getDao().insertApps(appInfo);
                     }
 
                 }
@@ -151,7 +155,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                         Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
                         return;
                     }
-                    if (input.getText().toString().equalsIgnoreCase(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
+                    if (input.getText().toString().equalsIgnoreCase(securedSharedPref.getStringPref( AppConstants.KEY_CODE_PASSWORD))) {
                         dialog.cancel();
                     } else {
                         Snackbar.make(rootLayout, R.string.wrong_password_entered, Snackbar.LENGTH_SHORT).show();
@@ -297,34 +301,28 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         etNewPassword = dialog.findViewById(R.id.etNewPassword);
         confirmPassword = dialog.findViewById(R.id.etNewConfirmPassword);
         btOk = dialog.findViewById(R.id.btOk);
-        dialog.findViewById(R.id.btCancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                if (dialog.isShowing())
-                    dialog.cancel();
+        dialog.findViewById(R.id.btCancel).setOnClickListener(view -> {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (dialog.isShowing())
+                dialog.cancel();
 
-            }
         });
 
         //validate password
-        btOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validatePassword(etOldText, etNewPassword, confirmPassword)) {
+        btOk.setOnClickListener(view -> {
+            if (validatePassword(etOldText, etNewPassword, confirmPassword)) {
 //                    boolean keyOk = passwordsOk(this, reEnteredPassword);
-                    PrefUtils.saveStringPref(CodeSettingActivity.this,
-                            AppConstants.KEY_CODE_PASSWORD, etNewPassword.getText().toString().trim());
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                securedSharedPref.saveStringPref(
+                        AppConstants.KEY_CODE_PASSWORD, etNewPassword.getText().toString().trim());
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                    if (dialog != null && dialog.isShowing()) {
-                        dialog.cancel();
-                    }
-                    Snackbar.make(rootLayout, getResources().getString(R.string.admin_password_changed), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(CodeSettingActivity.this, getResources().getString(R.string.password_taken), Toast.LENGTH_SHORT).show();
-
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
                 }
+                Snackbar.make(rootLayout, getResources().getString(R.string.admin_password_changed), Snackbar.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(CodeSettingActivity.this, getResources().getString(R.string.password_taken), Toast.LENGTH_SHORT).show();
+
             }
         });
         dialog.show();
@@ -364,7 +362,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
             etOldText.requestFocus();
             Toast.makeText(this, getResources().getString(R.string.enter_old_password), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!etOldText.getText().toString().equals(PrefUtils.getStringPref(CodeSettingActivity.this, AppConstants.KEY_CODE_PASSWORD))) {
+        } else if (!etOldText.getText().toString().equals(securedSharedPref.getStringPref( AppConstants.KEY_CODE_PASSWORD))) {
 
             etOldText.requestFocus();
             Toast.makeText(this, getResources().getString(R.string.enter_correct_password), Toast.LENGTH_SHORT).show();
@@ -439,17 +437,17 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void resetPassword() {
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_PATTERN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_COMBO_PIN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_COMBO_PIN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
+        securedSharedPref.saveStringPref( AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, null);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PIN, null);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, null);
 
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
 
 //        if (isServiceRunning()) {
 //            final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);

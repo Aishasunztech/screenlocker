@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.utils.AppConstants;
@@ -78,7 +79,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
 
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            settings = MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().getSettings();
+            settings = MyAppDatabase.getInstance(SystemPermissionActivity.this).getDao().getSettings();
             adaptor.setSettings(settings);
             AppExecutor.getInstance().getMainThread().execute(() -> adaptor.notifyDataSetChanged());
 
@@ -228,7 +229,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
         setting.setSetting_status(isChecked);
         isSettingsChanged = true;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            MyApplication.getAppDatabase(SystemPermissionActivity.this).getDao().updateSetting(setting);
+            MyAppDatabase.getInstance(SystemPermissionActivity.this).getDao().updateSetting(setting);
         });
     }
 

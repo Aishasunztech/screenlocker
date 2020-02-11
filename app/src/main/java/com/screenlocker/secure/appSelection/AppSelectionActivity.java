@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
@@ -252,7 +253,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
             @Override
             protected Void doInBackground(Void... voids) {
 
-                List<AppInfo> apps = MyApplication.getAppDatabase(AppSelectionActivity.this).getDao().getAppsOrExtensions(false);
+                List<AppInfo> apps = MyAppDatabase.getInstance(AppSelectionActivity.this).getDao().getAppsOrExtensions(false);
                 // add the data to the list to show apps
 
                 selectionPresenter.addAppsToList(mPackageManager, mAppsList, apps);

@@ -460,7 +460,9 @@ public class MainActivity extends BaseActivity {
                 }
             }, this, urls);
 
-        } else {
+        }
+        else
+            {
             if (dealerPin.length() == 6) {
                 request(1, dealerPin);
             } else if (dealerPin.length() == 7) {

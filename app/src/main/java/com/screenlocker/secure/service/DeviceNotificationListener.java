@@ -34,13 +34,13 @@ public class DeviceNotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
-        Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
+//        Log.d(TAG, "onNotificationPosted: "+sbn.getPackageName());
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
-        Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
+//        Log.d(TAG, "onNotificationRemoved: "+sbn.getPackageName());
 
         
     }
@@ -80,7 +80,6 @@ public class DeviceNotificationListener extends NotificationListenerService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: ");
             if (intent.getStringExtra("command").equals("clearall")) {
                 DeviceNotificationListener.this.cancelAllNotifications();
             }

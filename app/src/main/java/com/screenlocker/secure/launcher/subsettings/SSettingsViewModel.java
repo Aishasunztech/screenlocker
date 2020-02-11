@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.SubExtension;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class SSettingsViewModel extends AndroidViewModel {
 
     public SSettingsViewModel(@NonNull Application application) {
         super(application);
-        subExtensions = MyApplication.getAppDatabase(application).getDao().getExtensions();
+        subExtensions = MyAppDatabase.getInstance(application).getDao().getExtensions();
     }
 
     public LiveData<List<SubExtension>> getSubExtensions() {

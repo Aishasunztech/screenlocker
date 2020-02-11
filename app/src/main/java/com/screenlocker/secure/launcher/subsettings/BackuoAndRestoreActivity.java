@@ -19,6 +19,7 @@ import android.view.View;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.settings.AdvanceSettings;
@@ -126,7 +127,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
         PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, false);
         //SS app permissions to default
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<SubExtension> subExtensions = MyApplication.getAppDatabase(this).getDao().getAllSubExtensions();
+            List<SubExtension> subExtensions = MyAppDatabase.getInstance(this).getDao().getAllSubExtensions();
             for (SubExtension subExtension : subExtensions) {
                 if (subExtension.getLabel().equals("Bluetooth") || subExtension.getLabel().equals("Hotspot")) {
                     subExtension.setEncrypted(false);
@@ -135,7 +136,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
                     subExtension.setEncrypted(true);
                     subExtension.setGuest(false);
                 }
-                MyApplication.getAppDatabase(this).getDao().updateSubExtention(subExtension);
+                MyAppDatabase.getInstance(this).getDao().updateSubExtention(subExtension);
             }
         });
 
@@ -144,7 +145,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
 
         //Application permissions
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<AppInfo> allapps = MyApplication.getAppDatabase(this).getDao().getApps();
+            List<AppInfo> allapps = MyAppDatabase.getInstance(this).getDao().getApps();
             for (AppInfo app : allapps) {
                 if (app.getUniqueName().equals(AppConstants.SFM_UNIQUE) ||
                         app.getUniqueName().equals(AppConstants.SECURE_CLEAR_UNIQUE) ||
@@ -181,7 +182,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
                     app.setGuest(true);
                     app.setEncrypted(false);
                 }
-                MyApplication.getAppDatabase(this).getDao().updateApps(app);
+                MyAppDatabase.getInstance(this).getDao().updateApps(app);
             }
             AppExecutor.getInstance().getMainThread().execute(() -> {
 

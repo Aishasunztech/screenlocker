@@ -26,13 +26,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.screenlocker.secure.BlockStatusBar;
 import com.screenlocker.secure.MyAdmin;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.permissions.SteppersActivity;
+import com.screenlocker.secure.service.apps.WindowChangeDetectingService;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
@@ -46,6 +47,7 @@ import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.PermissionUtils.isAccessGranted;
 import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 import static com.screenlocker.secure.utils.PermissionUtils.isNotificationAccess;
+import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements OnAppsRefreshListener {
@@ -96,6 +98,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
                     getDelegate().applyDayNight();
                     recreate();
                     break;
+                case AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM:
+                    break;
+                case AppCompatDelegate.MODE_NIGHT_YES:
+                    break;
             }
         }
         createAlertDialog();
@@ -124,12 +130,14 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
 
     private void createAlertDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        this.alertDialog = alertDialog
-                .setCancelable(false)
-                .setTitle("This app requires permission to draw overlay.")
-                .setMessage("Please allow this permission")
-                .setPositiveButton("allow", (dialogInterface, i) -> PermissionUtils.requestOverlayPermission(BaseActivity.this)).create();
+        if (alertDialog == null) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            this.alertDialog = alertDialog
+                    .setCancelable(false)
+                    .setTitle("This app requires permission to draw overlay.")
+                    .setMessage("Please allow this permission")
+                    .setPositiveButton("allow", (dialogInterface, i) -> PermissionUtils.requestOverlayPermission(BaseActivity.this)).create();
+        }
     }
 
 
@@ -288,20 +296,18 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
                         checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             launchPermissions();
-        }
-
-        else if (!isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING,true);
-            PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW,false);
+        } else if (!isAccessServiceEnabled(this, WindowChangeDetectingService.class)) {
+            launchPermissions();
+//            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("startThread"));
+        } else if (!isMyLauncherDefault(MyApplication.getAppContext())) {
+            PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING, true);
+            PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
             Intent a = new Intent(this, SteppersActivity.class);
             if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
                 a.putExtra("emergencyLauncher", true);
             }
             startActivity(a);
-        }
-        else if (!
-
-                isNotificationAccess(this)) {
+        } else if (!isNotificationAccess(this)) {
             launchPermissions();
         } else if (!pm.isIgnoringBatteryOptimizations(MyApplication.getAppContext().
 
@@ -322,8 +328,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     }
 
     private void launchPermissions() {
-        PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING,true);
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW,false);
+        PrefUtils.saveBooleanPref(this, PERMISSION_GRANTING, true);
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         Intent a = new Intent(this, SteppersActivity.class);
         if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
             a.putExtra("emergency", true);
@@ -336,6 +342,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     public void onAppsRefresh() {
 
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
 

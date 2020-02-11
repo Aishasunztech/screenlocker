@@ -26,6 +26,7 @@ import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
@@ -40,6 +41,7 @@ import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,11 +119,11 @@ public class utils {
 
 
     public static boolean passwordsOk(Context context, String key) {
-
-        String guest = PrefUtils.getStringPref(context, AppConstants.KEY_GUEST_PASSWORD);
-        String main = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
-        String code = PrefUtils.getStringPref(context, AppConstants.KEY_CODE_PASSWORD);
-        String duress = PrefUtils.getStringPref(context, AppConstants.KEY_DURESS_PASSWORD);
+        SecuredSharedPref pref = SecuredSharedPref.getInstance(context);
+        String guest = pref.getStringPref( AppConstants.KEY_GUEST_PASSWORD);
+        String main = pref.getStringPref( AppConstants.KEY_MAIN_PASSWORD);
+        String code = pref.getStringPref( AppConstants.KEY_CODE_PASSWORD);
+        String duress = pref.getStringPref( AppConstants.KEY_DURESS_PASSWORD);
 
         if (guest != null) {
             if (guest.equals(key)) {
@@ -188,7 +190,7 @@ public class utils {
                 super.run();
 
                 if (isPolicy) {
-//                    MyApplication.getAppDatabase(context).getDao().updateAllApps(false, false, false);
+//                    MyApplxication.getAppDatabase(context).getDao().updateAllApps(false, false, false);
                 }
 
                 for (int i = 0; i < apps.length(); i++) {
@@ -205,25 +207,25 @@ public class utils {
 
                         switch (packageName) {
                             case SECURE_CLEAR_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
                                 break;
                             case SECURE_MARKET_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
                                 break;
                             case LIVE_CLIENT_CHAT_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
                                 break;
                             case SECURE_SETTINGS_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
                                 break;
                             case SFM_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
                                 break;
                             case SUPPORT_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
                                 break;
                             default:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
                         }
 
 
@@ -329,7 +331,7 @@ public class utils {
                     e.printStackTrace();
                     int finalI = i;
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deletePackage(packageName);
+                        MyAppDatabase.getInstance(context).getDao().deletePackage(packageName);
 
                         AppInfo info = new AppInfo();
                         info.setPackageName(packageName);
@@ -382,7 +384,7 @@ public class utils {
 
                             app.setEnable(true);
                             new Thread(() -> {
-                                MyApplication.getAppDatabase(context).getDao().insertApps(app);
+                                MyAppDatabase.getInstance(context).getDao().insertApps(app);
                                 saveAppsList(context, true, app, false);
                                 if (finalI == data.length - 1) {
                                     listener.onAppsRefresh();
@@ -412,7 +414,7 @@ public class utils {
                 super.run();
 
                 if (isPolicy) {
-//                    MyApplication.getAppDatabase(context).getDao().updateAllExtensions(false,false);
+//                    MyAppDatabase.getInstance()(context).getDao().updateAllExtensions(false,false);
                 }
 
                 for (int i = 0; i < extensions.length(); i++) {
@@ -431,7 +433,7 @@ public class utils {
                         int encrypted = (int) app.get("encrypted");
 
 
-                        MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
+                        MyAppDatabase.getInstance(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
 
                         if (i == extensions.length() - 1) {
                             listener.onExtensionsReady();
@@ -457,7 +459,7 @@ public class utils {
 
     public static void updatePasswords(Context context, JSONObject object, String device_id) {
         try {
-
+            SecuredSharedPref pref = SecuredSharedPref.getInstance(context);
             String guest_pass = object.getString("guest_password");
             String encrypted_pass = object.getString("encrypted_password");
             String admin_pass = object.getString("admin_password");
@@ -465,55 +467,55 @@ public class utils {
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
-                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD)!=null && PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) ){
+                if (pref.getStringPref( KEY_MAIN_PASSWORD)!=null && pref.getStringPref( KEY_MAIN_PASSWORD).equals(guest_pass) ){
                     passAlreadyExist(device_id);
                 }
-                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null &&
-                        PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                else if (pref.getStringPref( KEY_DURESS_PASSWORD)!=null &&
+                        pref.getStringPref( KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
 
                 } else {
-                    PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                    pref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, guest_pass);
+                    pref.saveStringPref( AppConstants.GUEST_PATTERN, null);
+                    pref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, null);
+                    pref.saveStringPref( AppConstants.GUEST_COMBO_PIN, null);
+                    pref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
-                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD)!=null
-                        && PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass)) {
+                if (pref.getStringPref( KEY_GUEST_PASSWORD)!=null
+                        && pref.getStringPref( KEY_GUEST_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
                 }
-                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null
-                        && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                else if (pref.getStringPref( KEY_DURESS_PASSWORD)!=null
+                        && pref.getStringPref( KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
                 } else {
-                    PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                    pref.saveStringPref( KEY_MAIN_PASSWORD, encrypted_pass);
+                    pref.saveStringPref( AppConstants.ENCRYPT_PATTERN, null);
+                    pref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                    pref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, null);
+                    pref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
             if (checkString(admin_pass)) {
                 Timber.d("admin pass : %s", admin_pass);
-                PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
+                pref.saveStringPref( AppConstants.KEY_CODE_PASSWORD, admin_pass);
             }
             if (checkString(duress_password)) {
                 if (duress_password.equals("clear")) {
-                    PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
+                    pref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD, null);
+                    pref.saveStringPref( AppConstants.DURESS_PATTERN, null);
+                    pref.saveStringPref( AppConstants.DURESS_COMBO_PATTERN, null);
+                    pref.saveStringPref( AppConstants.DURESS_COMBO_PIN, null);
+                    pref.saveStringPref( AppConstants.DUERESS_DEFAULT_CONFIG, null);
 
                 }
             }
@@ -800,10 +802,10 @@ public class utils {
     }
 
     public static void loginAsGuest(Context context) {
-
-        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        SecuredSharedPref securedSharedPref = SecuredSharedPref.getInstance(context);
+        securedSharedPref.saveIntegerPref( LOGIN_ATTEMPTS, 0);
+        securedSharedPref.saveLongPref( TIME_REMAINING, 0);
+        securedSharedPref.saveLongPref( TIME_REMAINING_REBOOT, 0);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
@@ -831,10 +833,10 @@ public class utils {
     }
 
     public static void loginAsEncrypted(Context context) {
-
-        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
+        SecuredSharedPref securedSharedPref = SecuredSharedPref.getInstance(context);
+        securedSharedPref.saveIntegerPref( LOGIN_ATTEMPTS, 0);
+        securedSharedPref.saveLongPref( TIME_REMAINING, 0);
+        securedSharedPref.saveLongPref( TIME_REMAINING_REBOOT, 0);
         PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
@@ -857,13 +859,13 @@ public class utils {
     }
 
     public static String getUserType(String enteredPin, Context context) {
+        SecuredSharedPref sharedPref = SecuredSharedPref.getInstance(context);
+        String duressPin = sharedPref.getStringPref( AppConstants.KEY_DURESS_PASSWORD);
 
-        String duressPin = PrefUtils.getStringPref(context, AppConstants.KEY_DURESS_PASSWORD);
 
-
-        if (enteredPin.equals(PrefUtils.getStringPref(context, AppConstants.KEY_GUEST_PASSWORD))) {
+        if (enteredPin.equals(sharedPref.getStringPref( AppConstants.KEY_GUEST_PASSWORD))) {
             return "guest";
-        } else if (enteredPin.equals(PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD))) {
+        } else if (enteredPin.equals(sharedPref.getStringPref( AppConstants.KEY_MAIN_PASSWORD))) {
             return "encrypted";
         } else if (duressPin != null) {
             if (enteredPin.equals(duressPin)) {
@@ -1107,14 +1109,14 @@ public class utils {
 
         }
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            MyApplication.getAppDatabase(context).getDao().updateSetting(setting);
+            MyAppDatabase.getInstance(context).getDao().updateSetting(setting);
         });
 
     }
 
     public static void verifySettings(Context context) {
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<Settings> settings = MyApplication.getAppDatabase(context).getDao().getSettings();
+            List<Settings> settings = MyAppDatabase.getInstance(context).getDao().getSettings();
             for (Settings setting : settings) {
                 applySettings(context, setting, setting.isSetting_status());
             }

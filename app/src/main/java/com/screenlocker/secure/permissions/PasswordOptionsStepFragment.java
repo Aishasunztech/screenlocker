@@ -104,6 +104,11 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     }
 
     @Override
+    public boolean isPreviousAllow() {
+        return true;
+    }
+
+    @Override
     public String error() {
         return MyApplication.getAppContext().getResources().getString(R.string.please_select_an_option);
     }
