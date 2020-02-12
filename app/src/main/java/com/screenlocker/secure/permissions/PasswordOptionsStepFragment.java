@@ -23,6 +23,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_SETUP_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.GUEST_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
@@ -66,14 +67,14 @@ public class PasswordOptionsStepFragment extends AbstractStep {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         tittleIcon.setImageResource(R.drawable.ic_guest_icon);
-        titleText.setText("GUEST SPACE LOCK");
+        titleText.setText(MyApplication.getAppContext().getResources().getString(R.string.guest_space_lock));
 
 
         layout_pin.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
             //update to guest password
-            mListener.onPageUpdate(2);
+            mListener.onPageUpdate(STEP_SETUP_GUEST);
 
 
         });
@@ -81,14 +82,14 @@ public class PasswordOptionsStepFragment extends AbstractStep {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             //update to guest password
-            mListener.onPageUpdate(2);
+            mListener.onPageUpdate(STEP_SETUP_GUEST);
 
         });
         layout_combination.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
             //update to guest password
-            mListener.onPageUpdate(2);
+            mListener.onPageUpdate(STEP_SETUP_GUEST);
         });
     }
 
@@ -103,8 +104,13 @@ public class PasswordOptionsStepFragment extends AbstractStep {
     }
 
     @Override
+    public boolean isPreviousAllow() {
+        return true;
+    }
+
+    @Override
     public String error() {
-        return "Please Select An Option.";
+        return MyApplication.getAppContext().getResources().getString(R.string.please_select_an_option);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
@@ -94,12 +95,12 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                             appInfo.setVisible(true);
                             appInfo.setSetting_id(setting_id);
 
-                            int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+                            int i = MyAppDatabase.getInstance(context).getDao().updateApps(appInfo);
 
                             Timber.d("TEst%s", String.valueOf(i));
 
                             if (i == 0) {
-                                MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
+                                MyAppDatabase.getInstance(context).getDao().insertApps(appInfo);
                             }
                             saveAppsList(context, true, appInfo, false);
 
@@ -154,7 +155,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 if (!aPackageName.equals(context.getPackageName())) {
 
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                        MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName);
                         sendMessage(context);
                     }).start();
 
@@ -172,7 +173,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
 
                 if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
-                    new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName)).start();
+                    new Thread(() -> MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName)).start();
                     sendMessage(context);
                     return;
                 }
@@ -180,7 +181,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 if (!aPackageName.equals(context.getPackageName())) {
 
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                        MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName);
                         AppInfo info = new AppInfo();
                         info.setPackageName(aPackageName);
                         info.setUniqueName(aPackageName);info.setSetting_id(setting_id);
@@ -267,11 +268,11 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         appInfo.setIcon(icon);
                         appInfo.setSystemApp(false);
                         appInfo.setVisible(true);
-                        int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+                        int i = MyAppDatabase.getInstance(context).getDao().updateApps(appInfo);
 
 
                         if (i == 0) {
-                            MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
+                            MyAppDatabase.getInstance(context).getDao().insertApps(appInfo);
                         }
                         saveAppsList(context, true, appInfo, false);
 

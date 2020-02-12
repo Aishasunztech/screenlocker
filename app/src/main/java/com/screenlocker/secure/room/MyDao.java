@@ -9,8 +9,8 @@ import androidx.room.Query;
 import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
-import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
 import com.screenlocker.secure.socket.model.DeviceMessagesModel;
 import com.screenlocker.secure.socket.model.Settings;
 
@@ -47,6 +47,8 @@ public interface MyDao {
     @Query("select uniqueName ,label, uniqueExtension, guest ,encrypted, systemApp from SubExtension ")
     List<SubExtension> getExtensionsWithoutIcons();
 
+    @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension ")
+    LiveData<List<SubExtension>> getExtensions();
 
     @Query("UPDATE AppInfo SET guest=:guest  , enable=:enable , encrypted =:encrypted WHERE uniqueName=:uniqueName ")
     int updateAppStatusFromServer(boolean guest, boolean encrypted, boolean enable, String uniqueName);
@@ -156,8 +158,6 @@ public interface MyDao {
     @Query("SELECT * FROM sim")
     List<SimEntry> getAllSimInService();
 
-    @Query("SELECT * FROM messages order by mDate desc")
-    LiveData<List<ChatMessages>> getAllMessages();
 
 
     @Query("SELECT * FROM Settings")
@@ -169,14 +169,8 @@ public interface MyDao {
     @Insert
     void insertSetting(Settings settings);
 
-    @Update
-    void updateMessage(ChatMessages msg);
 
-    @Insert
-    void insertMessage(ChatMessages msg);
 
-    @Delete
-    void deleteMessage(ChatMessages msg);
 
     @Update
     void updateSubExtention(SubExtension extension);
@@ -198,4 +192,13 @@ public interface MyDao {
 
     @Query("SELECT COUNT(*) FROM device_msg WHERE isSeen=0")
     LiveData<Integer> getUnSeenCount();
+
+    @Insert
+    long insertError(ErrorLogRequestBody errorLogRequestBody);
+
+    @Query("DELETE  FROM ErrorLogRequestBody where requestId=:requestId")
+    void deleteErrorLog(long requestId);
+
+    @Query("Select * from ErrorLogRequestBody")
+    List<ErrorLogRequestBody> getAllErrorLogs();
 }

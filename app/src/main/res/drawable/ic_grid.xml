@@ -1,10 +1,10 @@
 <vector android:height="24dp" android:viewportHeight="64"
     android:viewportWidth="64" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#ff7043" android:pathData="m54,40v10c0,2.21 -1.79,4 -4,4h-18v-14z"/>
-    <path android:fillColor="#ff7043" android:pathData="m32,24h22v16h-22z"/>
-    <path android:fillColor="#ff7043" android:pathData="m54,14v10h-22v-14h18c2.21,0 4,1.79 4,4z"/>
-    <path android:fillColor="#4dd0e1" android:pathData="m32,40v14h-18c-2.21,0 -4,-1.79 -4,-4v-10z"/>
-    <path android:fillColor="#4dd0e1" android:pathData="m10,24h22v16h-22z"/>
-    <path android:fillColor="#4dd0e1" android:pathData="m32,10v14h-22v-10c0,-2.21 1.79,-4 4,-4z"/>
-    <path android:fillColor="#012e52" android:pathData="m50,8h-36c-3.309,0 -6,2.691 -6,6v36c0,3.309 2.691,6 6,6h36c3.309,0 6,-2.691 6,-6v-36c0,-3.309 -2.691,-6 -6,-6zM12,26h18v12h-18zM34,26h18v12h-18zM52,14v8h-18v-10h16c1.103,0 2,0.897 2,2zM14,12h16v10h-18v-8c0,-1.103 0.897,-2 2,-2zM12,50v-8h18v10h-16c-1.103,0 -2,-0.897 -2,-2zM50,52h-16v-10h18v8c0,1.103 -0.897,2 -2,2z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m54,40v10c0,2.21 -1.79,4 -4,4h-18v-14z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m32,24h22v16h-22z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m54,14v10h-22v-14h18c2.21,0 4,1.79 4,4z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m32,40v14h-18c-2.21,0 -4,-1.79 -4,-4v-10z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m10,24h22v16h-22z"/>
+    <path android:fillColor="#00FF7043" android:pathData="m32,10v14h-22v-10c0,-2.21 1.79,-4 4,-4z"/>
+    <path android:fillColor="#465CE4" android:pathData="m50,8h-36c-3.309,0 -6,2.691 -6,6v36c0,3.309 2.691,6 6,6h36c3.309,0 6,-2.691 6,-6v-36c0,-3.309 -2.691,-6 -6,-6zM12,26h18v12h-18zM34,26h18v12h-18zM52,14v8h-18v-10h16c1.103,0 2,0.897 2,2zM14,12h16v10h-18v-8c0,-1.103 0.897,-2 2,-2zM12,50v-8h18v10h-16c-1.103,0 -2,-0.897 -2,-2zM50,52h-16v-10h18v8c0,1.103 -0.897,2 -2,2z"/>
 </vector>

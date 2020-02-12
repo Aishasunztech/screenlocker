@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
@@ -55,7 +56,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                         @Override
                         public void run() {
                             checklistener.updateMenu();
-                            MyApplication.getAppDatabase(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                            MyAppDatabase.getInstance(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
                 }
@@ -69,7 +70,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                         @Override
                         public void run() {
                             checklistener.updateMenu();
-                            MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                            MyAppDatabase.getInstance(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
                 }

@@ -5,9 +5,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.room.MyAppDatabase;
 
 import java.util.List;
 
@@ -22,8 +21,8 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        mAppInfos = MyApplication.getAppDatabase(application).getDao().getAllApps();
-        mUnReadCount = MyApplication.getAppDatabase(application).getDao().getUnSeenCount();
+        mAppInfos = MyAppDatabase.getInstance(application).getDao().getAllApps();
+        mUnReadCount = MyAppDatabase.getInstance(application).getDao().getUnSeenCount();
     }
 
     LiveData<List<AppInfo>> getAllApps() {

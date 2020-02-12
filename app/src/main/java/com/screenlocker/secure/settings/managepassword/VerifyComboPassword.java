@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -29,11 +30,13 @@ public class VerifyComboPassword extends AppCompatActivity {
     private TextView msg;
     private PatternLockView mPatternLockView;
     private NCodeView codeView;
+    private SecuredSharedPref securedSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_combo_password);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         msg = findViewById(R.id.textView7);
@@ -56,21 +59,25 @@ public class VerifyComboPassword extends AppCompatActivity {
 
         codeView = findViewById(R.id.NCodeView);
         mPatternLockView = findViewById(R.id.patter_lock_view);
+        mPatternLockView.setHapticFeedbackEnabled(false);
         codeView.setListener(new NCodeView.OnPFCodeListener() {
             @Override
             public void onCodeCompleted(ArrayList<Integer> code) {
-                if (code.toString().equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.GUEST_COMBO_PIN)) && extra.equals(AppConstants.KEY_GUEST)) {
+                if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.GUEST_COMBO_PIN))
+                        && extra.equals(AppConstants.KEY_GUEST)) {
                     mPatternLockView.setNumberInputAllow(false);
                     mPatternLockView.invalidate();
-                    msg.setText("Draw Pattern");
-                } else if (code.toString().equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.ENCRYPT_COMBO_PIN)) && extra.equals(AppConstants.KEY_MAIN)) {
+                    msg.setText(getResources().getString(R.string.draw_pattern));
+                } else if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PIN))
+                        && extra.equals(AppConstants.KEY_MAIN)) {
                     mPatternLockView.setNumberInputAllow(false);
                     mPatternLockView.invalidate();
-                    msg.setText("Draw Pattern");
-                } else if (code.toString().equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.DURESS_COMBO_PIN)) && extra.equals(AppConstants.KEY_DURESS)) {
+                    msg.setText(getResources().getString(R.string.draw_pattern));
+                } else if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.DURESS_COMBO_PIN))
+                        && extra.equals(AppConstants.KEY_DURESS)) {
                     mPatternLockView.setNumberInputAllow(false);
                     mPatternLockView.invalidate();
-                    msg.setText("Draw Pattern");
+                    msg.setText(getResources().getString(R.string.draw_pattern));
                 } else {
                     codeView.setColor();
                     new Handler().postDelayed(() -> {
@@ -109,21 +116,21 @@ public class VerifyComboPassword extends AppCompatActivity {
                     return;
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
-                if (patternString.equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.GUEST_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_GUEST)) {
+                if (patternString.equals(securedSharedPref.getStringPref( AppConstants.GUEST_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_GUEST)) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
-                } else if (patternString.equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.ENCRYPT_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_MAIN)) {
+                } else if (patternString.equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_MAIN)) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
-                } else if (patternString.equals(PrefUtils.getStringPref(VerifyComboPassword.this, AppConstants.DURESS_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_DURESS)) {
+                } else if (patternString.equals(securedSharedPref.getStringPref( AppConstants.DURESS_COMBO_PATTERN)) && extra.equals(AppConstants.KEY_DURESS)) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();

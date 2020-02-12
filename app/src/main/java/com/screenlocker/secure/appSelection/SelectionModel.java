@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
@@ -116,24 +117,24 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
 
     @Override
     public AppInfo isAppPresentInDB(String primaryKey) {
-        return MyApplication.getAppDatabase(context).getDao().getParticularApp(primaryKey);
+        return MyAppDatabase.getInstance(context).getDao().getParticularApp(primaryKey);
     }
 
 
     @Override
     public void insertAppsInDB(AppInfo model) {
-        MyApplication.getAppDatabase(context).getDao().insertApps(model);
+        MyAppDatabase.getInstance(context).getDao().insertApps(model);
     }
 
     @Override
     public void updateAppInDB(AppInfo appInfo) {
-        MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+        MyAppDatabase.getInstance(context).getDao().updateApps(appInfo);
     }
 
 
     @Override
     public void deleteAppFromDB(String primaryKey) {
-        MyApplication.getAppDatabase(context).getDao().deleteOne(primaryKey);
+        MyAppDatabase.getInstance(context).getDao().deleteOne(primaryKey);
     }
 
 

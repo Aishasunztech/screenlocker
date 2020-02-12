@@ -2,18 +2,29 @@ package com.screenlocker.secure.settings.Wallpaper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.settings.AdvanceSettings;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingsPresenter;
@@ -23,27 +34,52 @@ import com.screenlocker.secure.settings.managepassword.VerifyComboPassword;
 import com.screenlocker.secure.settings.managepassword.VerifyPatternActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secureSetting.SecureSettingsMain;
+import com.secureSetting.SleepDialog;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
+import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
+import static com.secureSetting.UtilityFunctions.getScreenBrightness;
+import static com.secureSetting.UtilityFunctions.getWifiStatus;
+import static com.secureSetting.UtilityFunctions.permissionModify;
+import static com.secureSetting.UtilityFunctions.pxFromDp;
+import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
-public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
+public class WallpaperActivity extends BaseActivity implements View.OnClickListener , SleepDialog.SleepChangerListener {
 
     private boolean goToGuest,goToEncrypt,goToLockScreen;
     private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTCODE = 102;
-
+    private SharedPreferences sharedPref;
+    private PopupWindow popupWindow;
+    private LinearLayout brightnessContainer;
+    private TextView brightnessLevel;
+    private SecuredSharedPref securedSharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_wallpaper);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
+        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(mPreferencesListener);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.change_wallpaper_title));
@@ -51,10 +87,60 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         findViewById(R.id.btnGuestWallpaper).setOnClickListener(this);
         findViewById(R.id.btnEncryptedWallpaper).setOnClickListener(this);
         findViewById(R.id.btnLockScreenWallpaer).setOnClickListener(this);
+        findViewById(R.id.tvTheme).setOnClickListener(this);
+        findViewById(R.id.sleep_cotainer).setOnClickListener(this);
+        findViewById(R.id.tv_set_column).setOnClickListener(this);
+        brightnessContainer = findViewById(R.id.brightness_container_layout);
+        brightnessLevel = findViewById(R.id.brightness_lavel);
 
         goToGuest = false;
         goToEncrypt = false;
         goToLockScreen = false;
+        brightnessContainer.setOnClickListener(v -> {
+            boolean permission = permissionModify(WallpaperActivity.this);
+            if (permission) {
+                int width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.90);
+                LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.dialog_brightness, null);
+
+                popupWindow = new PopupWindow(container, width, (int) pxFromDp(WallpaperActivity.this, 60), true);
+                popupWindow.showAtLocation(findViewById(R.id.rootLayout), Gravity.CENTER_HORIZONTAL, 0, -400);
+                SeekBar seekBar = container.findViewById(R.id.seek_bar);
+
+                int brightness = getScreenBrightness(WallpaperActivity.this);
+                seekBar.setProgress(brightness);
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        setScreenBrightness(WallpaperActivity.this, progress);
+                        brightnessLevel.setText((int) (((float) getScreenBrightness(WallpaperActivity.this) / 255) * 100) + "%");
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+            }
+
+
+        });
+        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
+            if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                setUpPermissionSettingsEncrypted(subExtensions);
+            } else if (userType.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                setUpPermissionSettingsGuest(subExtensions);
+            }
+        });
     }
 
     @Override
@@ -78,6 +164,17 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             case R.id.btnLockScreenWallpaer:
                 handleSetMainPasswordForLS();
                 break;
+            case R.id.tvTheme:
+                themeDialogue();
+                break;
+            case R.id.sleep_cotainer:
+                SleepDialog sleepDialog = new SleepDialog(WallpaperActivity.this);
+                sleepDialog.show();
+                break;
+            case R.id.tv_set_column:
+                setColumnSizes();
+                break;
+
         }
     }
 
@@ -96,7 +193,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         input.setLayoutParams(lp);
         alertDialog.setView(input);
-        alertDialog.setIcon(R.mipmap.ic_launcher);
+        alertDialog.setIcon(R.drawable.ic_secure_settings);
         input.setFocusable(true);
         input.setFocusableInTouchMode(true);
         input.clearFocus();
@@ -126,7 +223,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     private void handlePassword(String password, String type) {
         switch (type) {
             case KEY_GUEST:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_GUEST_PASSWORD))) {
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_GUEST_PASSWORD))) {
                     //
 
                     goToGuest = true;
@@ -137,7 +234,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                     showInvalidPasswordDialog(this);
                 break;
             case KEY_MAIN:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_MAIN_PASSWORD))){
 
                     goToEncrypt = true;
 
@@ -150,7 +247,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
                 break;
             case KEY_CODE:
-                if (password.equals(PrefUtils.getStringPref(WallpaperActivity.this, AppConstants.KEY_MAIN_PASSWORD))){
+                if (password.equals(securedSharedPref.getStringPref( AppConstants.KEY_MAIN_PASSWORD))){
 
                     goToLockScreen = true;
 
@@ -179,6 +276,20 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        TextView textView = findViewById(R.id.coloumn_numbers);
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
+        brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
+        int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        if (item != 0) {
+            if (item == 3) {
+                textView.setText(R.string._4_columns);
+            } else {
+                textView.setText(R.string._5_columns);
+            }
+        } else {
+            textView.setText(R.string._5_columns);
+        }
+
     }
 
     @Override
@@ -234,9 +345,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetGuestPassword() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.GUEST_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_GUEST_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.guest_password_dialog_title),KEY_GUEST);
             return;
 
@@ -256,9 +367,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetMainPassword() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_MAIN_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_MAIN);
             return;
 
@@ -277,9 +388,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     public void handleSetMainPasswordForLS() {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_MAIN_PASSWORD) != null)
                 showAlertDialog(getResources().getString(R.string.encrypted_password_dialog_title),KEY_CODE);
             return;
 
@@ -335,4 +446,138 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
     }
+
+    SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
+
+        if (key.equals(AppConstants.KEY_THEME)) {
+            if (PrefUtils.getBooleanPref(WallpaperActivity.this, AppConstants.KEY_THEME)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+            getDelegate().applyDayNight();
+            restartActivity();
+
+        }
+    };
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
+        sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
+    }
+
+
+    private void themeDialogue() {
+        int item;
+        AtomicInteger selected = new AtomicInteger();
+        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
+            item = 0;
+            selected.set(0);
+        } else {
+            item = 1;
+            selected.set(1);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick A Theme");
+        builder.setSingleChoiceItems(R.array.themes, item, (dialog, which) -> {
+            selected.set(which);
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (selected.get() == 1) {
+                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, false);
+            } else if (selected.get() == 0) {
+                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, true);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
+    @Override
+    public void sleepTimeChanged(String time) {
+
+    }
+    private void setColumnSizes() {
+        int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        AtomicInteger selected = new AtomicInteger();
+        if (item != 0) {
+            if (item == 3) {
+                selected.set(0);
+
+            } else {
+                selected.set(1);
+            }
+        } else {
+            selected.set(1);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick Column Span");
+        builder.setSingleChoiceItems(R.array.column_sizes, selected.get(), (dialog, which) -> {
+            selected.set(which);
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (selected.get() == 1) {
+                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 4);
+            } else if (selected.get() == 0) {
+                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 3);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        builder.show();
+    }
+
+
+    void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsEncrypted: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Brightness:
+                    if (setting.isEncrypted()) {
+                        brightnessContainer.setVisibility(View.VISIBLE);
+                    } else brightnessContainer.setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Sleep:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.sleep_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.sleep_cotainer).setVisibility(View.GONE);
+                    break;
+
+            }
+        }
+    }
+
+    void setUpPermissionSettingsGuest(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsGuest: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Brightness:
+                    if (setting.isGuest()) {
+                        brightnessContainer.setVisibility(View.VISIBLE);
+                    } else brightnessContainer.setVisibility(View.GONE);
+                    break;
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Sleep:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.sleep_cotainer).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.sleep_cotainer).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+
+
 }

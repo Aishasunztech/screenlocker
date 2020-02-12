@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import timber.log.Timber;
 
@@ -153,12 +154,12 @@ public class SocketManager {
                     try {
                         if (args[0] instanceof  EngineIOException){
                             EngineIOException exception = (EngineIOException) args[0];
-                                if (onSocketConnectionListenerList != null) {
-                                    for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                                        new Handler(Looper.getMainLooper())
-                                                .post(listener::onSocketEventFailed);
-                                    }
+                            if (onSocketConnectionListenerList != null) {
+                                for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                                    new Handler(Looper.getMainLooper())
+                                            .post(listener::onSocketEventFailed);
                                 }
+                            }
                             Timber.e(exception);
 
                         }else if (args[0] instanceof String){
@@ -183,7 +184,7 @@ public class SocketManager {
                 socket.connect();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 
@@ -196,6 +197,7 @@ public class SocketManager {
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
+                opts.transports = new String[]{WebSocket.NAME};
                 opts.secure = true;
                 opts.query = "device_id=" + device_id;
 
@@ -403,9 +405,7 @@ public class SocketManager {
         }
     }
 
-    /**
-     * The type Net receiver.
-     */
+
 //    public static class NetReceiver extends BroadcastReceiver {
 //
 //        /**

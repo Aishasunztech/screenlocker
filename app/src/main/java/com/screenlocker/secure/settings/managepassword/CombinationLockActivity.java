@@ -10,9 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
@@ -32,11 +32,13 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
     private NCodeView codeView;
     private PatternLockView patternLockView;
     private Button btnCancel, btnConfirm;
+    private SecuredSharedPref securedSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combination_lock);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ImageView profile = findViewById(R.id.profile_image);
@@ -66,7 +68,7 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
             mTry = 0;
             mCode = "";
             mPattern = "";
-            msg.setText("Input PIN");
+            msg.setText(getResources().getString(R.string.input_pin));
             patternLockView.setInputEnabled(true);
             codeView.clearCode();
             patternLockView.clearPattern();
@@ -83,7 +85,7 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
             patternLockView.setNumberInputAllow(true);
             patternLockView.invalidate();
             btnConfirm.setEnabled(false);
-            msg.setText("Confirm PIN");
+            msg.setText(getResources().getString(R.string.confirm_pin));
         });
 
         patternLockView.addPatternLockListener(this);
@@ -96,39 +98,39 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
         if (mTry == 0) {
             switch (extra) {
                 case AppConstants.KEY_GUEST:
-                    if (code.toString().equals(PrefUtils.getStringPref(this, AppConstants.ENCRYPT_COMBO_PIN)) ||
-                            code.toString().equals(PrefUtils.getStringPref(this, AppConstants.DURESS_COMBO_PIN))) {
+                    if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PIN)) ||
+                            code.toString().equals(securedSharedPref.getStringPref( AppConstants.DURESS_COMBO_PIN))) {
                         //FIXME: duplicate
                         codeView.setColor();
                     } else {
                         mCode = code.toString();
                         patternLockView.setNumberInputAllow(false);
                         patternLockView.invalidate();
-                        msg.setText("Draw Pattern");
+                        msg.setText(getResources().getString(R.string.draw_pattern));
                     }
                     break;
                 case AppConstants.KEY_DURESS:
-                    if (code.toString().equals(PrefUtils.getStringPref(this, AppConstants.ENCRYPT_COMBO_PIN)) ||
-                            code.toString().equals(PrefUtils.getStringPref(this, AppConstants.GUEST_COMBO_PIN))) {
+                    if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_COMBO_PIN)) ||
+                            code.toString().equals(securedSharedPref.getStringPref( AppConstants.GUEST_COMBO_PIN))) {
                         //FIXME: duplicate
                         codeView.setColor();
                     } else {
                         mCode = code.toString();
                         patternLockView.setNumberInputAllow(false);
                         patternLockView.invalidate();
-                        msg.setText("Draw Pattern");
+                        msg.setText(getResources().getString(R.string.draw_pattern));
                     }
                     break;
                 case AppConstants.KEY_MAIN:
-                    if (code.toString().equals(PrefUtils.getStringPref(this, AppConstants.GUEST_COMBO_PIN)) ||
-                            code.toString().equals(PrefUtils.getStringPref(this, AppConstants.DURESS_COMBO_PIN))) {
+                    if (code.toString().equals(securedSharedPref.getStringPref( AppConstants.GUEST_COMBO_PIN)) ||
+                            code.toString().equals(securedSharedPref.getStringPref( AppConstants.DURESS_COMBO_PIN))) {
                         //FIXME: duplicate
                         codeView.setColor();
                     } else {
                         mCode = code.toString();
                         patternLockView.setNumberInputAllow(false);
                         patternLockView.invalidate();
-                        msg.setText("Draw Pattern");
+                        msg.setText(getResources().getString(R.string.draw_pattern));
                     }
                     break;
             }
@@ -138,7 +140,7 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
             if (code.toString().equals(mCode)) {
                 patternLockView.setNumberInputAllow(false);
                 patternLockView.invalidate();
-                msg.setText("Confirm Pattern");
+                msg.setText(getResources().getString(R.string.confirm_pattern));
             } else {
                 //FIXME: code did not match,  show a error
                 codeView.setColor();
@@ -185,29 +187,29 @@ public class CombinationLockActivity extends AppCompatActivity implements NCodeV
                 patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
                 switch (extra) {
                     case AppConstants.KEY_MAIN:
-                        PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
-                        PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PATTERN, mPattern);
-                        PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_COMBO_PIN, mCode);
-                        PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_PASSWORD, null);
-                        PrefUtils.saveStringPref(this, AppConstants.ENCRYPT_PATTERN, null);
+                        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
+                        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, mPattern);
+                        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, mCode);
+                        securedSharedPref.saveStringPref( AppConstants.KEY_MAIN_PASSWORD, null);
+                        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_PATTERN, null);
                         Toast.makeText(this, "Combo Updated", Toast.LENGTH_SHORT).show();
                         finish();
                         break;
                     case AppConstants.KEY_GUEST:
-                        PrefUtils.saveStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
-                        PrefUtils.saveStringPref(this, AppConstants.GUEST_COMBO_PATTERN, mPattern);
-                        PrefUtils.saveStringPref(this, AppConstants.GUEST_COMBO_PIN, mCode);
-                        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_PASSWORD, null);
-                        PrefUtils.saveStringPref(this, AppConstants.GUEST_PATTERN, null);
+                        securedSharedPref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
+                        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, mPattern);
+                        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PIN, mCode);
+                        securedSharedPref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, null);
+                        securedSharedPref.saveStringPref( AppConstants.GUEST_PATTERN, null);
                         Toast.makeText(this, "Combo Updated", Toast.LENGTH_SHORT).show();
                         finish();
                         break;
                     case AppConstants.KEY_DURESS:
-                        PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
-                        PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PATTERN, mPattern);
-                        PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PIN, mCode);
-                        PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, null);
-                        PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
+                        securedSharedPref.saveStringPref( AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.COMBO_PASSWORD);
+                        securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PATTERN, mPattern);
+                        securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PIN, mCode);
+                        securedSharedPref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD, null);
+                        securedSharedPref.saveStringPref( AppConstants.DURESS_PATTERN, null);
                         Toast.makeText(this, "Combo Updated", Toast.LENGTH_SHORT).show();
                         finish();
                         break;

@@ -1,5 +1,6 @@
 package com.screenlocker.secure.settings.managepassword;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,14 +10,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.settings.SettingContract;
@@ -26,15 +32,23 @@ import com.screenlocker.secure.settings.SettingsPresenter;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
+import java.util.List;
+
+import timber.log.Timber;
+
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.KEY_DURESS_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
+import static com.secureSetting.UtilityFunctions.getBlueToothStatus;
+import static com.secureSetting.UtilityFunctions.getWifiStatus;
 
 public class ManagePasswords extends BaseActivity implements View.OnClickListener {
 
     private static final int RESULTGUEST = 100, RESULTENCRYPTED = 101, RESULTDURES = 102;
 
-    private ConstraintLayout rootLayout;
+    private LinearLayout rootLayout;
     private SettingsActivity settingsActivity;
     private Toolbar mToolbar;
     private Chip duressStatus;
@@ -43,17 +57,20 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
      * request code for the set password activity
      */
     public static final int REQUEST_CODE_PASSWORD = 883;
+    private SecuredSharedPref securedSharedPref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_passwords);
+
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         setIds();
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
+        if (securedSharedPref.getStringPref( AppConstants.KEY_DURESS_PASSWORD) != null) {
             duressStatus.setText(getResources().getString(R.string.activated_code));
         } else {
-            if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
+            if (securedSharedPref.getStringPref( AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
             }else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
@@ -61,6 +78,17 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         }
         setListeners();
         settingsActivity = new SettingsActivity();
+        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
+
+        settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
+            if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
+                setUpPermissionSettingsEncrypted(subExtensions);
+            } else if (userType.equals(AppConstants.KEY_GUEST_PASSWORD)) {
+                setUpPermissionSettingsGuest(subExtensions);
+            }
+        });
+
 
     }
 
@@ -81,7 +109,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     intent.putExtra(Intent.EXTRA_TEXT, AppConstants.KEY_MAIN);
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
                 }else if (resultCode == RESULT_CANCELED){
-                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.rootLayout), getResources().getString(R.string.incorrect_password), Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case RESULTGUEST:
@@ -91,7 +119,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
                 }
                 else if (resultCode == RESULT_CANCELED){
-                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.rootLayout), getResources().getString(R.string.incorrect_password), Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case RESULTDURES:
@@ -101,7 +129,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
                     startActivityForResult(intent, REQUEST_CODE_PASSWORD);
                 }
                 else if (resultCode == RESULT_CANCELED){
-                    Snackbar.make(findViewById(R.id.rootLayout), "Incorrect Password", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.rootLayout), getResources().getString(R.string.incorrect_password), Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -116,6 +144,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
         findViewById(R.id.tvSetGuestPassword).setOnClickListener(this);
         findViewById(R.id.tvSetMainPassword).setOnClickListener(this);
         findViewById(R.id.tvSetDuressPassword).setOnClickListener(this);
+        findViewById(R.id.screen_lock_container).setOnClickListener(this);
         setToolbar(mToolbar);
     }
 
@@ -142,7 +171,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     private void setToolbar(Toolbar mToolbar) {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.manage_password_title));
+            getSupportActionBar().setTitle(getResources().getString(R.string.biometrics_and_security));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -175,6 +204,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 //                settingsActivity.handleSetDuressPassword(ManagePasswords.this, rootLayout);
                 handleSetDuressPassword(ManagePasswords.this, null, rootLayout);
                 break;
+            case R.id.screen_lock_container:
+                startActivity(new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD));
+                break;
 
         }
 
@@ -198,16 +230,17 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     protected void onResume() {
         super.onResume();
         isBackPressed = false;
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_DURESS_PASSWORD) != null) {
+        if (securedSharedPref.getStringPref( AppConstants.KEY_DURESS_PASSWORD) != null) {
             duressStatus.setText(getResources().getString(R.string.activated_code));
         } else {
-            if (PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
+            if (securedSharedPref.getStringPref( AppConstants.DUERESS_DEFAULT_CONFIG) != null) {
                 duressStatus.setText(getResources().getString(R.string.activated_code));
             }else {
                 duressStatus.setText(getResources().getString(R.string.not_set));
             }
         }
         setListeners();
+        AppConstants.TEMP_SETTINGS_ALLOWED = true;
     }
 
     @Override
@@ -228,9 +261,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     public void handleSetGuestPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.GUEST_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.GUEST_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_GUEST_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_GUEST_PASSWORD) != null)
                 showGuestPin(activity, settingsPresenter);
             return;
 
@@ -271,7 +304,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             }
 
             if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                    equalsIgnoreCase(securedSharedPref.getStringPref(
                             KEY_GUEST_PASSWORD))) {
                 // if password is right then allow user to change it
 
@@ -287,9 +320,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     public void handleSetMainPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.ENCRYPT_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_MAIN_PASSWORD) != null)
                 showEncryptedPin(activity, settingsPresenter);
             return;
 
@@ -327,7 +360,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             }
 
             if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                    equalsIgnoreCase(securedSharedPref.getStringPref(
                             KEY_MAIN_PASSWORD))) {
                 // if password is right then allow user to change it
                 goToEncrypt = true;
@@ -343,9 +376,9 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
     public void handleSetDuressPassword(AppCompatActivity activity, SettingsPresenter settingsPresenter, View rootLayout) {
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.DUERESS_DEFAULT_CONFIG);
         if (passConfig == null) {
-            if (PrefUtils.getStringPref(this, KEY_DURESS_PASSWORD) != null)
+            if (securedSharedPref.getStringPref( KEY_DURESS_PASSWORD) != null)
                 showDuressPin(activity, settingsPresenter);
             else {
                 new AlertDialog.Builder(activity).
@@ -397,7 +430,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             }
 
             if (input.getText().toString().
-                    equalsIgnoreCase(PrefUtils.getStringPref(activity,
+                    equalsIgnoreCase(securedSharedPref.getStringPref(
                             AppConstants.KEY_DURESS_PASSWORD))) {
                 // if password is right then allow user to change it
                 goToDuress = true;
@@ -454,5 +487,39 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
     }
 
 
+
+
+    void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsEncrypted: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Finger:
+                    if (setting.isEncrypted()) {
+                        findViewById(R.id.screen_lock_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.screen_lock_container).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    void setUpPermissionSettingsGuest(List<SubExtension> settings) {
+        for (SubExtension setting : settings) {
+            Timber.d("setUpPermissionSettingsGuest: %s", setting.getUniqueExtension());
+            switch (setting.getUniqueExtension()) {
+                case AppConstants.SECURE_SETTINGS_UNIQUE + AppConstants.SUB_Finger:
+                    if (setting.isGuest()) {
+                        findViewById(R.id.screen_lock_container).setVisibility(View.VISIBLE);
+                    } else findViewById(R.id.screen_lock_container).setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        AppConstants.TEMP_SETTINGS_ALLOWED = false;
+    }
 
 }

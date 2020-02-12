@@ -1,1 +1,1 @@
-include ':app', ':stepper', ':chatkit', ':commons', ':sfm';
+include ':app', ':stepper',  ':commons', ':sfm';

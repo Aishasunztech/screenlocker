@@ -26,6 +26,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_SETUP_WIPE;
 import static com.screenlocker.secure.utils.AppConstants.DURESS_PASSORD_OPTION;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
@@ -83,27 +84,27 @@ public class DuressPasswordOptionFragment extends AbstractStep {
                 }).create();
         builder.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         tittleIcon.setImageResource(R.drawable.ic_duress_icon);
-        titleText.setText("WIPE LOCK");
+        titleText.setText(MyApplication.getAppContext().getResources().getString(R.string.wipe_lock));
 
 
         layout_pin.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
-            mListener.onPageUpdate(6);
+            mListener.onPageUpdate(STEP_SETUP_WIPE);
 
 
         });
         layout_pattern.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
-            mListener.onPageUpdate(6);
+            mListener.onPageUpdate(STEP_SETUP_WIPE);
 
 
         });
         layout_combination.setOnClickListener(v -> {
             PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
-            mListener.onPageUpdate(6);
+            mListener.onPageUpdate(STEP_SETUP_WIPE);
         });
     }
 
@@ -119,7 +120,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
     @Override
     public String error() {
-        return "Please Select An Option";
+        return MyApplication.getAppContext().getResources().getString(R.string.please_select_an_option);
     }
 
     @Override
@@ -154,5 +155,10 @@ public class DuressPasswordOptionFragment extends AbstractStep {
             }
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public void onSkip() {
+        super.onSkip();
     }
 }

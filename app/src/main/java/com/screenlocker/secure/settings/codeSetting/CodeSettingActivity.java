@@ -28,6 +28,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.appSelection.AppSelectionActivity;
@@ -69,12 +71,14 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private boolean goToPolicyMenu;
     private boolean goToIMEIMenu;
     private boolean goToSettingsAppPermission, goToSimActivity;
+    private SecuredSharedPref securedSharedPref ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_setting);
         codeSettingsInstance = this;
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mPresenter = new CodeSettingPresenter(new CodeSettingModel(this), this);
         setIds();
@@ -92,7 +96,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                     settingPackageName = resolveInfos.get(0).activityInfo.packageName;
                 }
                 if (settingPackageName != null) {
-                    AppInfo particularApp = MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
+                    AppInfo particularApp = MyAppDatabase.getInstance(CodeSettingActivity.this).getDao().getParticularApp(settingPackageName);
                     if (particularApp == null) {
                         AppInfo appInfo = new AppInfo();
                         appInfo.setEncrypted(false);
@@ -101,7 +105,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
                         appInfo.setPackageName(resolveInfos.get(0).activityInfo.packageName);
                         appInfo.setLabel(String.valueOf(resolveInfos.get(0).loadLabel(getPackageManager())));
                         appInfo.setUniqueName(settingPackageName);
-                        MyApplication.getAppDatabase(CodeSettingActivity.this).getDao().insertApps(appInfo);
+                        MyAppDatabase.getInstance(CodeSettingActivity.this).getDao().insertApps(appInfo);
                     }
 
                 }
@@ -432,12 +436,17 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void resetPassword() {
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_PATTERN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_PATTERN, null);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
-        PrefUtils.saveStringPref(CodeSettingActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        securedSharedPref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, AppConstants.DEFAULT_GUEST_PASS);
+        securedSharedPref.saveStringPref( AppConstants.KEY_MAIN_PASSWORD, AppConstants.DEFAULT_MAIN_PASS);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, null);
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, null);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PIN, null);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, null);
+
+        securedSharedPref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+        securedSharedPref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
 
 //        if (isServiceRunning()) {
 //            final Intent lockScreenIntent = new Intent(CodeSettingActivity.this, LockScreenService.class);

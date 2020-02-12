@@ -117,18 +117,22 @@ public class AppConstants {
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //    public static String URL_1 = "http://192.168.0.125:3000";//local
     public static final String URL_2 = "https://securenet.guru";
+    //logs url
+    public static final String URL_3 = "https://logs.lockmesh.com";
 
     //super admin domain
     public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
 //    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
-    public static final String SUPER_END_POINT = "/api/v1/mobile/";
+    public static final String SUPER_END_POINT = "/api/";
     public static final String SM_END_POINT = "marketApplist/";
 
 
     //End points
     public static final String LOGO_END_POINT = "/users/getFile/";
-    public static final String MOBILE_END_POINT = "/api/v2/mobile/"; // dev
+    public static final String MOBILE_END_POINT = "/api/"; // dev
+    public static final String GET_APK_ENDPOINT = "v2/mobile/getApk/"; // dev
+    public static final String GET_UPDATE_ENDPOINT = "v2/mobile/getUpdate/";
 //    public static final String MOBILE_END_POINT = "/mobile/"; live
 
     //available live host
@@ -371,6 +375,7 @@ public class AppConstants {
     public static final String FINISH_POLICY_EXTENSIONS = "finish_policy_extensions_";
     public static final String SYSTEM_EVENT_BUS = "system_event_";
     public static final String GET_DEVICE_MSG = "send_device_msg_";
+    public static final String GET_DEVICE_INFO = "device_info_updated_";
     public static final String SEND_DEVICE_MSG = "ack_msg_to_device_";
     public static final String FINISH_POLICY = "finish_policy_";
     public static final String POLICY_NAME = "policy_name";
@@ -509,6 +514,24 @@ public class AppConstants {
     public static final String START_SOCKET = "start_socket";
     public static final String STOP_SOCKET = "stop_socket";
     public static final String SOCKET_STATUS = "socket_status";
+    public static final String SUB_WIFI = "wi-fi";
+    public static final String SUB_Bluetooth = "Bluetooth";
+    public static final String SUB_SIM = "SIM Cards";
+    public static final String SUB_DataRoaming = "Data Roaming";
+    public static final String SUB_MobileData = "Mobile Data";
+    public static final String SUB_Hotspot = "Hotspot";
+    public static final String SUB_Finger = "Finger Print + Lock";
+    public static final String SUB_Brightness = "Brightness";
+    public static final String SUB_Sleep = "Sleep";
+    public static final String SUB_Battery = "Battery";
+    public static final String SUB_Sound = "Sound";
+    public static final String SUB_DateTime = "Date & Time";
+    public static final String SUB_LanguagesInput = "Languages & Input";
+    public static final String SUB_Notifications = "Notifications";
+    public static final String SUB_AdminPanel = "Admin Panel";
+    //
+    public static final String DatabaseUnencryptedSecret = "getDatabaseUnencryptedSecret";
+    public static final String DatabaseEncryptedSecret = "getDatabaseEncryptedSecret";
 
 
 }

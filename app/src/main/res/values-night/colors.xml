@@ -7,7 +7,7 @@
     <color name="colorAccent">#40dcff</color>
     <color name="colorLine">#9f9f9f</color>
     <color name="textColorPrimary">#DAD9D9</color>
-    <color name="backgroundSim">#424242</color>
+    <color name="backgroundSim">#272727</color>
     <color name="background">#4b4b4b</color>
     <color name="icon_tint">#FFFFFFFF</color>
 
@@ -27,14 +27,8 @@
     <color name="colorHintMaterial">#9E9E9E</color>
 
 
-
-
-
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>
-
     <color name="pomegranate">#f4511e</color>
-
-
 </resources>

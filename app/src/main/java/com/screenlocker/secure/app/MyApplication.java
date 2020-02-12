@@ -15,6 +15,8 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -84,7 +86,6 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
-    private MyAppDatabase myAppDatabase;
     private ComponentName compName;
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
@@ -94,6 +95,9 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
     private ApiUtils apiUtils;
     private long mInterval = 10000; // 10 seconds by default, can be changed later
     private Handler mHandler;
+
+    private HandlerThread receiverHandlerThread;
+    private Handler braodcast;
 
 
     private static Context appContext;
@@ -125,7 +129,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),null, braodcast);
     }
 
     private void unRegisterNetworkPref() {
@@ -162,7 +166,10 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         mHandler = new Handler();
         appContext = getApplicationContext();
         PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
-
+        receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        braodcast = new Handler(looper);
         registerNetworkPref();
 
         if (LinkDeviceActivity.mListener == null)
@@ -193,14 +200,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                    .addMigrations(new Migration_11_13(11, 13),
-                            new Migration_13_14(13, 14)
-                            , new Migration_14_15(14, 15)
-                            , new Migration_15_16(15, 16))
-                    .build();
-        });
+
         Timber.plant(new Timber.DebugTree());
 
         BarryAppComponent component = DaggerBarryAppComponent
@@ -286,10 +286,6 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
      * @param context
      * @return room database object
      */
-
-    public static MyAppDatabase getAppDatabase(Context context) {
-        return ((MyApplication) context.getApplicationContext()).myAppDatabase;
-    }
 
     public static LinearLayout getScreenShotView(Context context) {
         return ((MyApplication) context.getApplicationContext()).screenShotView;

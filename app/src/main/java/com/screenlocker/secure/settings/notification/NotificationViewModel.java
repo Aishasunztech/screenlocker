@@ -23,7 +23,7 @@ public class NotificationViewModel extends AndroidViewModel {
     private LiveData<Integer> unReadCount;
     public NotificationViewModel(@NonNull Application application) {
         super(application);
-        database = MyApplication.getAppDatabase(application);
+        database = MyAppDatabase.getInstance(application);
         msgLists = database.getDao().getLiveMessage();
         unReadCount = database.getDao().getUnSeenCount();
     }

@@ -6,6 +6,7 @@ import android.os.Build;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -29,9 +30,9 @@ public class GetApplistTask extends AsyncTask<Void,Void, List<AppInfo>>
         @Override
         protected List<AppInfo> doInBackground(Void... voids) {
             if (isEnc){
-                return MyApplication.getAppDatabase(contextWeakReference.get()).getDao().getEncryptedApps(true);
+                return MyAppDatabase.getInstance(contextWeakReference.get()).getDao().getEncryptedApps(true);
             }else {
-                return MyApplication.getAppDatabase(contextWeakReference.get()).getDao().getGuestApps(true);
+                return MyAppDatabase.getInstance(contextWeakReference.get()).getDao().getGuestApps(true);
             }
 
             

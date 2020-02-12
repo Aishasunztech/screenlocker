@@ -21,7 +21,10 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -53,8 +56,11 @@ import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.room.Password;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.room.migrations.PasswordMigration;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.SocketManager;
@@ -126,100 +132,10 @@ import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_DEVICE_TYPE_VERSION;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_WIPE;
-import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
-import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
-import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
-import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
-import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST_ID_SAVED;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
-import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.GET_DEVICE_MSG;
-import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_SIM_UPDATES;
-import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.IMEI1;
-import static com.screenlocker.secure.utils.AppConstants.IMEI2;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.LIMITED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.OLD_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
-import static com.screenlocker.secure.utils.AppConstants.PERVIOUS_VERSION;
-import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
-import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_DEVICE_MSG;
-import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
-import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_DELETED;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_NEW_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_UNREGISTER;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_UPDATE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_GET_INSERTD_SIMS;
-import static com.screenlocker.secure.utils.AppConstants.SIM_UNREGISTER_FLAG;
-import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.START_SOCKET;
-import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
-import static com.screenlocker.secure.utils.AppConstants.SUSPENDED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.UNSYNC_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.AppConstants.*;
+import static com.screenlocker.secure.utils.AppConstants.GET_DEVICE_INFO;
+import static com.screenlocker.secure.utils.AppConstants.SIM_ID2;
+import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
@@ -259,12 +175,15 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private NetworkChangeReceiver networkChangeReceiver;
 
     private void registerNetworkPref() {
+        HandlerThread receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        Handler handler = new Handler(looper);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),null,handler);
     }
-
     private void unRegisterNetworkPref() {
         if (sharedPref != null)
             sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
@@ -541,7 +460,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     @Override
     public void onCreate() {
 
-
+        if (!PrefUtils.getBooleanPref(this, "isMigratedToSecure")){
+            PasswordMigration migration = new PasswordMigration(this);
+            migration.migrate();
+            PrefUtils.saveBooleanPref(this, "isMigratedToSecure", true);
+        }
         registerNetworkPref();
 
         // alarm manager for offline expiry
@@ -902,7 +825,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         String iccid1 = PrefUtils.getStringPref(this, SIM_1_ICCID);
         String space = PrefUtils.getStringPref(this, CURRENT_KEY);
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<SimEntry> simEntries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+            List<SimEntry> simEntries = MyAppDatabase.getInstance(this).getDao().getAllSimInService();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 assert simEntries != null;
                 Optional<SimEntry> op = simEntries.stream()
@@ -1115,7 +1038,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private void suspendPackages() {
         if (!mDPM.isDeviceOwnerApp(getPackageName())) return;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            List<AppInfo> appInfos = MyApplication.getAppDatabase(this).getDao().getAppsWithoutIcons();
+            List<AppInfo> appInfos = MyAppDatabase.getInstance(this).getDao().getAppsWithoutIcons();
             if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(KEY_GUEST_PASSWORD)) {
 
                 for (AppInfo appInfo : appInfos) {
@@ -1271,6 +1194,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             sendSystemEvents();
             getSystemEvents();
             getDeviceMessages();
+            getDeviceInfoUpdate();
             if (PrefUtils.getStringPref(this, APPS_HASH_MAP) != null) {
                 Type type = new TypeToken<HashMap<String, Boolean>>() {
                 }.getType();
@@ -1293,6 +1217,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
                 socketManager.getSocket().off(SYSTEM_EVENT_BUS + device_id);
                 socketManager.getSocket().off(GET_DEVICE_MSG + device_id);
+                socketManager.getSocket().off(GET_DEVICE_INFO + device_id);
             }
         }
     }
@@ -1439,7 +1364,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             public void run() {
                 try {
                     if (socketManager.getSocket().connected()) {
-                        List<AppInfo> apps = MyApplication.getAppDatabase(LockScreenService.this).getDao().getApps();
+                        List<AppInfo> apps = MyAppDatabase.getInstance(LockScreenService.this).getDao().getApps();
                         socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
                         Timber.d(" apps sent %s", apps.size());
                     } else
@@ -1453,12 +1378,17 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(screenOffReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
         Timber.d("service destroy");
         socketManager.destroy();
+        unRegisterNetworkPref();
         socketManager.removeSocketConnectionListener(this);
         socketManager.removeAllSocketConnectionListener();
+        sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
         super.onDestroy();
     }
 
@@ -1468,7 +1398,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         new Thread(() -> {
             try {
                 if (socketManager.getSocket().connected()) {
-                    List<SubExtension> extensions = MyApplication.getAppDatabase(LockScreenService.this).getDao().getAllSubExtensions();
+                    List<SubExtension> extensions = MyAppDatabase.getInstance(LockScreenService.this).getDao().getAllSubExtensions();
                     socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
                     Timber.d("extensions sent%s", extensions.size());
                 } else
@@ -1543,7 +1473,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         try {
             if (socketManager.getSocket().connected())
                 AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-                    List<Settings> settings = MyApplication.getAppDatabase(LockScreenService.this).getDao().getSettings();
+                    List<Settings> settings = MyAppDatabase.getInstance(LockScreenService.this).getDao().getSettings();
                     socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
                     PrefUtils.saveBooleanPref(LockScreenService.this, SETTINGS_CHANGE, false);
                 });
@@ -1580,7 +1510,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                 if (!PrefUtils.getBooleanPref(this, OLD_DEVICE)) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getAllSimInService();
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_NEW_DEVICE);
@@ -1599,7 +1529,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 Set<String> set1 = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
                 if (set1 != null && set1.size() > 0) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getSims(set1);
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getSims(set1);
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_UPDATE);
@@ -1654,7 +1584,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                 if (socketManager.getSocket().connected()) {
 
-                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(LockScreenService.this).getDao().getAppsWithoutIcons()));
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyAppDatabase.getInstance(LockScreenService.this).getDao().getAppsWithoutIcons()));
                     PrefUtils.saveBooleanPref(LockScreenService.this, APPS_SETTING_CHANGE, false);
 
                     Timber.d("Apps sent");
@@ -1674,7 +1604,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             try {
 
                 if (socketManager.getSocket().connected()) {
-                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyApplication.getAppDatabase(LockScreenService.this).getDao().getExtensionsWithoutIcons()));
+                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyAppDatabase.getInstance(LockScreenService.this).getDao().getExtensionsWithoutIcons()));
                     PrefUtils.saveBooleanPref(LockScreenService.this, SECURE_SETTINGS_CHANGE, false);
 
                     Timber.d("Extensions sent");
@@ -2231,7 +2161,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() {
                                     }.getType());
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                                        MyApplication.getAppDatabase(this).getDao().deleteSims(set);
+                                        MyAppDatabase.getInstance(this).getDao().deleteSims(set);
                                         try {
                                             socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                         } catch (JSONException e) {
@@ -2256,9 +2186,9 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
                                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
-                                            int no = MyApplication.getAppDatabase(this).getDao().updateSim(simEntry);
+                                            int no = MyAppDatabase.getInstance(this).getDao().updateSim(simEntry);
                                             if (no < 1) {
-                                                MyApplication.getAppDatabase(this).getDao().insertSim(simEntry);
+                                                MyAppDatabase.getInstance(this).getDao().insertSim(simEntry);
                                             }
                                         }
                                         try {
@@ -2326,10 +2256,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     SimEntry first = null, second = null;
                     List<SimEntry> entries = new ArrayList<>();
                     if (infoSim1 != null) {
-                        first = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim1.getIccId());
+                        first = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim1.getIccId());
                     }
                     if (infoSim2 != null) {
-                        second = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim2.getIccId());
+                        second = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim2.getIccId());
                     }
                     if (first == null && infoSim1 != null) {
                         first = new SimEntry(infoSim1.getIccId(), infoSim1.getDisplayName().toString(), "", false, false);
@@ -2427,7 +2357,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                             DeviceMessagesModel model = new Gson().fromJson(obj.toString(), DeviceMessagesModel.class);
                             model.setDate(new Date().getTime());
-                            MyApplication.getAppDatabase(this).getDao().insertDeviceMessage(model);
+                            MyAppDatabase.getInstance(this).getDao().insertDeviceMessage(model);
                             Notification notification = Utils.getDeviceNotification(this, R.drawable.ic_lock_black_24dp, model.getMsg());
                             NotificationManager manager = (NotificationManager) LockScreenService.this.getSystemService(NOTIFICATION_SERVICE);
                             manager.notify(0, notification);
@@ -2440,6 +2370,44 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         }
                     } catch (Exception error) {
                         Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void getDeviceInfoUpdate() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(GET_DEVICE_INFO + device_id, args -> {
+                    Timber.d("<<< GETTING Updates >>>");
+                    JSONObject object = (JSONObject) args[0];
+
+
+                    try {
+                        JSONObject obj = object.getJSONObject("data");
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+                            PrefUtils.saveStringPref(this, CHAT_ID, obj.getString("chat_id"));
+                            PrefUtils.saveStringPref(this, PGP_EMAIL, obj.getString("pgp_email"));
+                            PrefUtils.saveStringPref(this, USER_ID, obj.getString("user_id"));
+                            PrefUtils.saveStringPref(this, SIM_ID, obj.getString("sim_id"));
+                            PrefUtils.saveStringPref(this, SIM_ID2, obj.getString("sim_id2"));
+                            PrefUtils.saveStringPref(this, VALUE_EXPIRED, obj.getString("expiry_date"));
+                            AppExecutor.getInstance().getMainThread().execute(() -> startLockScreen(false));
+
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(error);
                     }
                 });
             } else {

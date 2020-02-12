@@ -57,8 +57,7 @@ import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
 
-    @BindView(R.id.tvSystemId)
-    TextView tvSystemId;
+
 
     @BindView(R.id.tvUserId)
     TextView tvUserId;
@@ -67,8 +66,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvLinkedStatus;
     @BindView(R.id.tvDeviceStatus)
     TextView tvDeviceStatus;
-    @BindView(R.id.tvCurrentDealerID)
-    TextView tvCurrentDealerID;
     @BindView(R.id.tvLinkedDealerPin)
     TextView tvLinkedDealerPin;
     @BindView(R.id.tvSimNo)
@@ -85,16 +82,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvPgpEmail;
     @BindView(R.id.tvChatId)
     TextView tvChatId;
-    @BindView(R.id.tvSimId)
-    TextView tvSimId;
-    @BindView(R.id.chatId)
-    LinearLayout chatId;
-    @BindView(R.id.dividerChatId)
-    View dividerChatId;
-    @BindView(R.id.simId)
-    LinearLayout simId;
-    @BindView(R.id.dividerSimId)
-    View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -126,9 +113,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.account));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        TextView systemId = findViewById(R.id.tvSystemId);
-        systemId.setText("N/A");
 
         onlineStatus = findViewById(R.id.tvLinkedStatus);
         tvDeviceId = findViewById(R.id.tvDeviceId);
@@ -185,12 +169,10 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         }
 
         /*Status*/
-        TextView textView18 = findViewById(R.id.textViewStatus);
         String device_status = PrefUtils.getStringPref(this, DEVICE_STATUS);
         boolean b = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
         if (b) {
             tvStatus.setVisibility(View.VISIBLE);
-            textView18.setVisibility(View.VISIBLE);
 
             if (PrefUtils.getBooleanPref(AboutActivity.this, DEVICE_LINKED_STATUS)) {
                 if (device_status == null) {
@@ -203,10 +185,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-
-        // Expiry Date
-        TextView textView16 = findViewById(R.id.textViewExpiry);
-
         String remaining_days = getRemainingDays(this);
 
         if (remaining_days != null) {
@@ -218,10 +196,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         List<String> imeis = DeviceIdUtils.getIMEI(this);
 
-
-        // IMEI 1
-        TextView textViewImei = findViewById(R.id.textViewImei);
-
         if (imeis.size() > 0) {
             String imei = imeis.get(0);
             if (imei != null) {
@@ -230,9 +204,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 tvImei1.setText(getResources().getString(R.string.n_a));
             }
         }
-
-        // IMEI 2
-        TextView textViewImei2 = findViewById(R.id.textViewImei2);
 
         if (imeis.size() > 1) {
             String imei2 = imeis.get(1);
@@ -252,16 +223,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         String chat_Id = PrefUtils.getStringPref(this, CHAT_ID);
         if (chat_Id != null) {
-            chatId.setVisibility(View.VISIBLE);
-            dividerChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
         }
         // sim ID
         String sim_Id = PrefUtils.getStringPref(this, SIM_ID);
         if (sim_Id != null) {
-            simId.setVisibility(View.VISIBLE);
-            dividerSimId.setVisibility(View.VISIBLE);
-            tvSimId.setText(sim_Id);
+//            tvSimId.setText(sim_Id);
         }
 
     }
@@ -412,8 +379,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             case R.id.tvUserId:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID copied to clipboard");
                 break;
-
-
         }
     }
 
@@ -453,13 +418,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void emergencyFlag(View view) {
 
-//        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-//            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
-//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
-//        } else {
-//            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
-//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
-//        }
+        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
+        } else {
+            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
+            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
+        }
 
     }
 
@@ -473,34 +438,34 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-//        String url = url_1.getText().toString();
-//
-//        if (TextUtils.isEmpty(url)) {
-//            url_1.setError("Please enter valid url !");
-//            return;
-//        }
-//
-//
-//        URL_1 = url;
-//
-//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {
 
-//        clickCount++;
-//        int total = 6;
-//
-//        if (clickCount == 6) {
-//            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
-//            button.setVisibility(View.VISIBLE);
-//            button2.setVisibility(View.VISIBLE);
-//            url_1.setVisibility(View.VISIBLE);
-//        } else {
-//            if (clickCount >= 2 && clickCount <= 6) {
-//                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
-//            }
-//        }
+        clickCount++;
+        int total = 6;
+
+        if (clickCount == 6) {
+            Toast.makeText(this, "Developer mode is enabled successfully. ", Toast.LENGTH_LONG).show();
+            button.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            url_1.setVisibility(View.VISIBLE);
+        } else {
+            if (clickCount >= 2 && clickCount <= 6) {
+                Toast.makeText(this, total - clickCount + " more clicks to enable developer mode.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }
