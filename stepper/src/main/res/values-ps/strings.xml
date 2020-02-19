@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">Skip</string>
+	<string name="ms_next">بل</string>
+	<string name="ms_end">پیل</string>
+	<string name="ms_continue">دوام</string>
+	<string name="ms_optional">اختیاري</string>
+	<string name="ms_text_step">د ټولو څخه $ $ اوسني پړاو</string>
+	<string name="previous">د مخکني</string>
+</resources>

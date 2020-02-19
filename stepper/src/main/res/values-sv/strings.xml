@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">HOPPA</string>
+	<string name="ms_next">NÄSTA</string>
+	<string name="ms_end">Lansera</string>
+	<string name="ms_continue">FORTSÄTTA</string>
+	<string name="ms_optional">Valfri</string>
+	<string name="ms_text_step">Steg $ ström på $ total</string>
+	<string name="previous">TIDIGARE</string>
+</resources>

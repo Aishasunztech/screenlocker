@@ -102,7 +102,7 @@ public class ReBootReciever extends BroadcastReceiver {
 
             }
             else if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
-                Log.d(TAG, "onReceive: locale chaneged");
+                Timber.d("onReceive: locale chaneged");
                 OneTimeWorkRequest insertionWork =
                         new OneTimeWorkRequest.Builder(BlurWorker.class)
                                 .build();

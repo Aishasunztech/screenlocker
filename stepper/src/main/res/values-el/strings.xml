@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">ΠΑΡΑΛΕΙΠΩ</string>
+	<string name="ms_next">ΕΠΟΜΕΝΟ</string>
+	<string name="ms_end">Εκτόξευση</string>
+	<string name="ms_continue">ΝΑ ΣΥΝΕΧΙΣΕΙ</string>
+	<string name="ms_optional">Προαιρετικός</string>
+	<string name="ms_text_step">Βήμα $ ρεύμα $ συνολικών</string>
+	<string name="previous">ΠΡΟΗΓΟΥΜΕΝΟΣ</string>
+</resources>

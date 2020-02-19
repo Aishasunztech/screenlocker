@@ -7,12 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-
 import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
 import com.screenlocker.secure.room.security.DatabaseSecretProvider;
-import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.model.DeviceMessagesModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.utils.AppConstants;
@@ -20,7 +18,7 @@ import com.screenlocker.secure.utils.AppConstants;
 import net.sqlcipher.database.SupportFactory;
 
 @Database(entities = {AppInfo.class, SubExtension.class, SimEntry.class,
-        ChatMessages.class, Settings.class, DeviceMessagesModel.class, ErrorLogRequestBody.class}, version = 17, exportSchema = false)
+        Settings.class, DeviceMessagesModel.class, ErrorLogRequestBody.class}, version =18, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class MyAppDatabase extends RoomDatabase {
 
@@ -40,7 +38,7 @@ public abstract class MyAppDatabase extends RoomDatabase {
         return instance;
     }
 
-        public abstract MyDao getDao();
+    public abstract MyDao getDao();
 
     @Override
     public void clearAllTables() {

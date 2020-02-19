@@ -63,6 +63,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     private int mTryCombo = 0;
     private boolean isAllowed = false;
     private SecuredSharedPref sharedPref;
+    private PrefUtils prefUtils;
 
     @Override
     public String name() {
@@ -72,18 +73,18 @@ public class SetDuressPasswordFragment extends AbstractStep {
 
     @Override
     public void onSkip() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_WIPE_PASS);
+        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_WIPE_PASS);
         super.onSkip();
     }
 
     @Override
     public boolean nextIf() {
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref( DURESS_PASSORD_OPTION)) {
             case OPTION_PIN:
                 if (setPassword()) {
 
                     if (sharedPref.getStringPref( KEY_DURESS_PASSWORD) != null) {
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_WIPE_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_WIPE_PASS);
                         return true;
                     }
                 }
@@ -91,7 +92,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
             case OPTION_PATTERN:
             case OPTION_COMBO:
                 if (sharedPref.getStringPref(KEY_DURESS_PASSWORD) != null || isAllowed) {
-                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_WIPE_PASS);
+                    prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_WIPE_PASS);
                     return true;
                 }
                 break;
@@ -119,7 +120,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref( DURESS_PASSORD_OPTION)) {
             case OPTION_PIN:
                 viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
@@ -179,6 +180,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         error = getResources().getString(R.string.set_skip_password);
+        prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
     }
 
 
@@ -296,7 +298,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
                         sharedPref.saveStringPref( DURESS_COMBO_PIN, null);
                         Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_updated), Toast.LENGTH_SHORT).show();
                         //move to next
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_WIPE_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_WIPE_PASS);
 //                        mListener.onPageUpdate(STEP_WIPE_PASS);
                         patternLock.setInputEnabled(false);
                         btnPatternCancel.setEnabled(false);
@@ -415,7 +417,7 @@ public class SetDuressPasswordFragment extends AbstractStep {
                                 sharedPref.saveStringPref(AppConstants.KEY_DURESS_PASSWORD, null);
                                 sharedPref.saveStringPref(AppConstants.DURESS_PATTERN, null);
                                 //update code here
-                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_WIPE_PASS);
+                                prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_WIPE_PASS);
 //                                mListener.onPageUpdate(STEP_WIPE_PASS);
                                 isAllowed = true;
                             } else {

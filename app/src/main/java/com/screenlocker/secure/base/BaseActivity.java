@@ -1,6 +1,7 @@
 package com.screenlocker.secure.base;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
@@ -14,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 
@@ -34,6 +36,9 @@ import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PermissionUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.EMERGENCY_FLAG;
@@ -57,6 +62,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
     private boolean statusViewAdded;
+    private Object statusBarService;
+    private Handler collapseNotificationHandler;
 
     public boolean isOverLayAllowed() {
         return overlayIsAllowed;
@@ -86,9 +93,11 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     };
 
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        statusBarService = getSystemService("statusbar");
         if (PrefUtils.getBooleanPref(BaseActivity.this, AppConstants.KEY_THEME)) {
             switch (AppCompatDelegate.getDefaultNightMode()) {
                 case AppCompatDelegate.MODE_NIGHT_UNSPECIFIED:
@@ -349,22 +358,76 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!hasFocus) {
 
-                BlockStatusBar blockStatusBar = new BlockStatusBar(this, false);
+
 
                 if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
                     // Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 
                     // sendBroadcast(closeDialog);
-//                Method that handles loss of window focus
-                    blockStatusBar.collapseNow(false);
-                } else {
-                    blockStatusBar.collapseNow(true);
+                    collapseNow();
                 }
-
 
             }
         }
 
+    }
+
+    public void collapseNow() {
+
+        try {
+            // Initialize 'collapseNotificationHandler'
+            if (collapseNotificationHandler == null) {
+                collapseNotificationHandler = new Handler();
+            }
+
+            // Post a Runnable with some delay - currently set to 300 ms
+            collapseNotificationHandler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    // Use reflection to trigger a method from 'StatusBarManager'
+
+                    Class<?> statusBarManager = null;
+
+                    try {
+                        statusBarManager = Class.forName("android.app.StatusBarManager");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    Method collapseStatusBar = null;
+                    try {
+                        // Prior to API 17, the method to call is 'collapse()'
+                        // API 17 onwards, the method to call is `collapsePanels()`
+                        if (Build.VERSION.SDK_INT > 16) {
+                            collapseStatusBar = statusBarManager.getMethod("collapsePanels");
+                        } else {
+                            collapseStatusBar = statusBarManager.getMethod("collapse");
+                        }
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+
+                    collapseStatusBar.setAccessible(true);
+
+                    try {
+                        collapseStatusBar.invoke(statusBarService);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    // Currently, the delay is 10 ms. You can change this
+                    // value to suit your needs.
+                    collapseNotificationHandler.postDelayed(this, 10L);
+                }
+            }, 10L);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

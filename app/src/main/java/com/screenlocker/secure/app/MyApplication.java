@@ -227,7 +227,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         Timber.plant(new Timber.DebugTree());
-
+        //
         BarryAppComponent component = DaggerBarryAppComponent
                 .builder()
                 .contextModule(new ContextModule(this))

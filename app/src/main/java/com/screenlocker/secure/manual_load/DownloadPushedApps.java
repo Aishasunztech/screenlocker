@@ -38,6 +38,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
     private String appName, setting_id;
     private ArrayList<InstallModel> InstallModels;
     private WeakReference<Context> contextWeakReference;
+    private PrefUtils prefUtils;
 
 
     private DownloadCompleteListener downloadCompleteListener;
@@ -48,6 +49,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
         this.InstallModels = InstallModels;
         this.setting_id = setting_id;
         this.downloadCompleteListener = downloadCompleteListener;
+        prefUtils = PrefUtils.getInstance(context);
 
     }
 
@@ -56,7 +58,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
 
     @Override
     protected ArrayList<InstallModel> doInBackground(Void... voids) {
-        String live_url = PrefUtils.getStringPref(contextWeakReference.get(), LIVE_URL);
+        String live_url = prefUtils.getStringPref(LIVE_URL);
 
         for (int i = 0; i < InstallModels.size(); i++) {
 
@@ -142,7 +144,7 @@ public class DownloadPushedApps extends AsyncTask<Void, Integer, ArrayList<Insta
                 fileOutputStream = new FileOutputStream(file);
                 URL downloadUrl = new URL(url);
                 URLConnection connection = downloadUrl.openConnection();
-                connection.setRequestProperty("authorization", PrefUtils.getStringPref(contextWeakReference.get(), TOKEN));
+                connection.setRequestProperty("authorization", prefUtils.getStringPref( TOKEN));
                 int contentLength = connection.getContentLength();
                 // input = body.byteStream();
                 input = new BufferedInputStream(downloadUrl.openStream());

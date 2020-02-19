@@ -197,6 +197,7 @@ public class SocketManager {
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
+                opts.transports = new String[]{WebSocket.NAME};
                 opts.secure = true;
                 opts.query = "device_id=" + device_id;
 
@@ -404,9 +405,7 @@ public class SocketManager {
         }
     }
 
-    /**
-     * The type Net receiver.
-     */
+
 //    public static class NetReceiver extends BroadcastReceiver {
 //
 //        /**

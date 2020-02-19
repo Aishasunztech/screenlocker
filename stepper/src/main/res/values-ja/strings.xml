@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">スキップ</string>
+	<string name="ms_next">次</string>
+	<string name="ms_end">打ち上げ</string>
+	<string name="ms_continue">継続する</string>
+	<string name="ms_optional">オプショナル</string>
+	<string name="ms_text_step">$合計の$現在のステップ</string>
+	<string name="previous">前</string>
+</resources>

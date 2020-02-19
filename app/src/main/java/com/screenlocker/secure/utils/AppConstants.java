@@ -34,7 +34,7 @@ public class AppConstants {
     public static final String KEY_MAIN_IMAGE = "main_image";
     public static final String KEY_LOCK_IMAGE = "lock_image";
     public static final String CURRENT_KEY = "current_key";
-    public static final String DATABASE_NAME = "app_db";
+    public static final String DATABASE_NAME = "secure_app_db";
     public static final String KEY_MAIN = "main";
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 4;
@@ -125,11 +125,13 @@ public class AppConstants {
     public static final String APPS_LIST = "apps_list";
 
     //servers links
-//    public static String URL_1 = "https://api.lockmesh.com";//live SL
-        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
-//    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.0.119:3000";//local
+    //public static String URL_1 = "https://api.lockmesh.com";//live SL
+    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //public static final String URL_1 = "https://api.titansecureserver.com";//live TL
+//    public static String URL_1 = "http://192.168.0.143:3005";//local
     public static final String URL_2 = "https://securenet.guru";
+    ///logs url
+    public static final String URL_3 = "https://securenet.guru";
 
     //super admin domain
 //    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
@@ -534,7 +536,7 @@ public class AppConstants {
     public static final String SUB_SIM = "SIM Cards";
     public static final String SUB_DataRoaming = "Data Roaming";
     public static final String SUB_MobileData = "Mobile Data";
-    public static final String SUB_Hotspot= "Hotspot";
+    public static final String SUB_Hotspot = "Hotspot";
     public static final String SUB_Finger = "Finger Print + Lock";
     public static final String SUB_Brightness = "Brightness";
     public static final String SUB_Sleep = "Sleep";

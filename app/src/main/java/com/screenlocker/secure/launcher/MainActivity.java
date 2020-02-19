@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -19,11 +18,10 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +36,6 @@ import com.screenlocker.secure.manual_load.ManualPullPush;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.settings.SettingContract;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -54,7 +51,6 @@ import timber.log.Timber;
 
 import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS;
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_IMAGE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_IMAGE;
@@ -70,11 +66,10 @@ import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 /**
  * this activity is the custom launcher for the app
  */
-public class MainActivity extends BaseActivity implements MainContract.MainMvpView,
-        SettingContract.SettingsMvpView,
+public class MainActivity extends BaseActivity implements
         RAdapter.ClearCacheListener,
         DownloadCompleteListener {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
     /**
      * adapter for recyclerView to show the apps of system
      */
@@ -89,10 +84,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     PowerManager powerManager;
 
     AppExecutor appExecutor;
+    private PrefUtils prefUtils;
 
     private MainViewModel viewModel;
     private RecyclerView rvApps;
-    private MainPresenter mainPresenter;
     private AppCompatImageView background;
     public static final int RESULT_ENABLE = 11;
     private ShutDownReceiver mShutDownReceiver;
@@ -104,73 +99,40 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
-        /*DEVELOPER OPTION*/
-//        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//                .detectDiskReads()
-//                .detectDiskWrites()
-//                .detectNetwork()   // or .detectAll() for all detectable problems
-//                .penaltyLog()
-//                .build());
-//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-//                .detectLeakedSqlLiteObjects()
-//                .detectLeakedClosableObjects()
-//                .penaltyLog()
-//                .penaltyDeath()
-//                .build());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        prefUtils = PrefUtils.getInstance(this);
+        if (!prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
             return;
         }
         LockScreenService.downloadCompleteListener = this;
-
-//
-//        NetWatch.builder(this)
-//                /* setIcon(R.drawable) : Sets notification icon drawable */
-//                .setIcon(R.drawable.ic_no_internet_connection)
-//                /* .setNotificationCancelable(boolean yes) : Sets if appbar notification can be closed via swipe */
-//                .setNotificationCancelable(false)
-//                /* setCallBack(): Network interaction events will be notified using this callback */
-//                .setCallBack(this)
-////                .setLogsEnabled(true)
-////                .setBannerTypeDialog(true)
-////                .setSensitivity(4)
-//                .build();
-
-//    ((TextView) findViewById(R.id.textView1)).setText(mString);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         allDbApps = new ArrayList<>();
         setRecyclerView();
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getAllApps().observe(this, appInfos -> {
             allDbApps = appInfos;
             int size = adapter.appsList.size();
             adapter.appsList.clear();
             adapter.notifyItemRangeRemoved(0, --size);
-            final String message = PrefUtils.getStringPref(this, CURRENT_KEY);
+            final String message = prefUtils.getStringPref( CURRENT_KEY);
             setBackground(message);
-            mainPresenter.addDataToList(allDbApps, message, adapter);
+            viewModel.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
             if (viewModel.getmUnReadCount().getValue() != null)
                 adapter.updateNotificationBadgeOfSL(viewModel.getmUnReadCount().getValue());
         });
-        viewModel.getmUnReadCount().observe(this, integer -> {
-            adapter.updateNotificationBadgeOfSL(integer);
-        });
+        viewModel.getmUnReadCount().observe(this, integer -> adapter.updateNotificationBadgeOfSL(integer));
 
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 
         appExecutor = AppExecutor.getInstance();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(appsBroadcast, new IntentFilter(BROADCAST_APPS_ACTION));
-
-        mainPresenter = new MainPresenter(this, new MainModel(this));
         background = findViewById(R.id.background);
 
         Intent lockScreenIntent = new Intent(this, LockScreenService.class);
@@ -179,7 +141,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(mainPresenter.getSendingIntent());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(viewModel.getSendingIntent(this));
 
 
         try {
@@ -192,11 +154,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
-                && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE) && PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getStringPref( AppConstants.KEY_SHUT_DOWN) != null
+                && prefUtils.getStringPref( AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE) && prefUtils.getBooleanPref( TOUR_STATUS)) {
 
-            if (!mainPresenter.isServiceRunning()) {
-                mainPresenter.startLockService(lockScreenIntent);
+            if (!viewModel.isServiceRunning(this)) {
+                viewModel.startLockService(this,lockScreenIntent);
             }
         }
     }
@@ -210,7 +172,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         adapter = new RAdapter(this);
         adapter.appsList = new ArrayList<>();
-        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        int column_span = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
         if (column_span == 0) {
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
@@ -222,27 +184,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     }
 
-    /**
-     * reciever to recieve for the action {@link AppConstants#BROADCAST_ACTION}
-     */
-
     public void clearRecentApp() {
-
-
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-
             Intent i = new Intent(this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(i);
-//            Instrumentation m_Instrumentation = new Instrumentation();
-//            try {
-//                m_Instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_HOME);
-//
-//            } catch (Exception e) {
-//                Timber.e(e.toString());
-//            }
 
         });
 
@@ -258,7 +206,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             clearRecentApp();
             final String message = intent.getStringExtra(AppConstants.BROADCAST_KEY);
             setBackground(message);
-            mainPresenter.addDataToList(allDbApps, message, adapter);
+            viewModel.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
 
 
@@ -296,10 +244,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     protected void onResume() {
         overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
         super.onResume();
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
+        prefUtils.saveBooleanPref( UNINSTALL_ALLOWED, false);
 
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
-        String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        String languageKey = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
 
         if (languageKey != null && languageKey.equals("ar")) {
 //            layoutManager.setReverseLayout(true);
@@ -310,21 +258,21 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         }
 
-        if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
+        if (!viewModel.isServiceRunning(this) && prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);
-            mainPresenter.startLockService(lockScreenIntent);
+            viewModel.startLockService(this, lockScreenIntent);
         }
 
-        String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
-        if (PrefUtils.getBooleanPref(this, SHOW_MANUAL_ACTIVITY) && msg != null && msg.equals(KEY_MAIN_PASSWORD)) {
+        String msg = prefUtils.getStringPref( AppConstants.CURRENT_KEY);
+        if (prefUtils.getBooleanPref( SHOW_MANUAL_ACTIVITY) && msg != null && msg.equals(KEY_MAIN_PASSWORD)) {
             Timber.d("<<< Policy Remaining >>>");
             Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
-        boolean pendingDialog = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG);
+        boolean pendingDialog = prefUtils.getBooleanPref( AppConstants.PENDING_ALARM_DIALOG);
         if (pendingDialog) {
-            String dialogMessage = PrefUtils.getStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE);
+            String dialogMessage = prefUtils.getStringPref( AppConstants.PENDING_DIALOG_MESSAGE);
             if (!dialogMessage.equals("")) {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.expiry_alert_online_title))
@@ -334,8 +282,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG, false);
-                PrefUtils.saveStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE, "");
+                prefUtils.saveBooleanPref( AppConstants.PENDING_ALARM_DIALOG, false);
+                prefUtils.saveStringPref( AppConstants.PENDING_DIALOG_MESSAGE, "");
             }
         }
 
@@ -363,7 +311,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (!message.equals("")) {
                 if (message.equals(KEY_MAIN_PASSWORD)) {
                     // for the encrypted user type
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
+                    bg = prefUtils.getStringPref( KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw._1239);
 
@@ -372,7 +320,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
+                    bg = prefUtils.getStringPref( KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw.texture);
 
@@ -381,7 +329,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     }
 
                 } else {
-                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
+                    bg = prefUtils.getStringPref( AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw._12318);
 
@@ -406,26 +354,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     }
 
 
-    private BroadcastReceiver appsBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() != null)
-                if (intent.getAction().equals(BROADCAST_APPS_ACTION)) {
-                    //refreshAppsList();
-                }
-        }
-    };
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         try {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
             unregisterReceiver(mShutDownReceiver);
             sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
-
 
         } catch (Exception ignored) {
             //
@@ -435,12 +370,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
         if (key.equals(KEY_GUEST_IMAGE) || key.equals(KEY_MAIN_IMAGE)) {
-            String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+            String msg = prefUtils.getStringPref( AppConstants.CURRENT_KEY);
             if (msg != null && !msg.equals("")) {
                 setBackground(msg);
             }
         } else if (key.equals(AppConstants.KEY_COLUMN_SIZE)) {
-            int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+            int column_span = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
             if (column_span == 0) {
                 column_span = AppConstants.LAUNCHER_GRID_SPAN;
             }
@@ -453,7 +388,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     .orElse(-1);
             if (index != -1) {
                 AppInfo app = adapter.appsList.get(index);
-                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this, NUMBER_OF_NOTIFICATIONS));
+                app.setNumberOfnotifications(prefUtils.getIntegerPref( NUMBER_OF_NOTIFICATIONS));
                 adapter.appsList.set(index, app);
                 adapter.notifyItemChanged(index);
 
@@ -475,7 +410,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             @Override
             public void run() {
                 clearRecenttasks();
-                clearNotif();
+                clearNotify();
                 appCache();
                 runOnUiThread(() -> {
                     hud.dismiss();
@@ -501,7 +436,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         sendBroadcast(intent);
     }
 
-    private void clearNotif() {
+    private void clearNotify() {
         Intent i = new Intent("com.example.clearNotificaiton.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
         i.putExtra("command", "clearall");
         sendBroadcast(i);
@@ -535,20 +470,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
     @Override
     public void onDownloadCompleted(ArrayList<InstallModel> downloadedApps) {
         Timber.d("<<< Downloading Completed >>>");
-        PrefUtils.saveBooleanPref(MainActivity.this, SHOW_MANUAL_ACTIVITY, true);
+        prefUtils.saveBooleanPref( SHOW_MANUAL_ACTIVITY, true);
         Intent intent = new Intent(MainActivity.this, ManualPullPush.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        Timber.d("onConfigurationChangedWithNadeem: " + newConfig.getLocales().toString());
-        super.onConfigurationChanged(newConfig);
-//        OneTimeWorkRequest insertionWork =
-//                new OneTimeWorkRequest.Builder(BlurWorker.class)
-//                        .build();
-//        WorkManager.getInstance().enqueue(insertionWork);
     }
 }
 

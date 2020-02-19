@@ -152,14 +152,6 @@ public class IMEIActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!backPress) {
-            if (CodeSettingActivity.codeSettingsInstance != null) {
-                //  finish previous activity and this activity
-                CodeSettingActivity.codeSettingsInstance.finish();
-            }
-        }
-        finish();
-
     }
 
     @OnClick(R.id.link_to_generate)

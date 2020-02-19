@@ -13,18 +13,18 @@ import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
 import com.screenlocker.secure.retrofit.ErrorResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.retrofitapis.LogsAPICaller;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import okhttp3.Credentials;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +38,7 @@ import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.URL_3;
 
 public class CheckUpdateService extends JobService {
 
@@ -55,7 +56,7 @@ public class CheckUpdateService extends JobService {
             }
 
             asyncCalls = new AsyncCalls(output -> {
-                Timber.d("output : " + output);
+                Timber.d("output : %s", output);
                 if (output != null) {
                     PrefUtils.saveStringPref(this, LIVE_URL, output);
                     String live_url = PrefUtils.getStringPref(this, LIVE_URL);
@@ -70,7 +71,6 @@ public class CheckUpdateService extends JobService {
             checkForDownload(params);
 
         }
-
 
 
         return true;
@@ -108,7 +108,7 @@ public class CheckUpdateService extends JobService {
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
                                     String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url +MOBILE_END_POINT+GET_APK_ENDPOINT  + CommonUtils.splitName(url), true, params);
+                                    obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), true, params);
                                     obj.execute();
 
                                 }  //                                            Toast.makeText(appContext, getString(R.string.uptodate), Toast.LENGTH_SHORT).show();
@@ -143,15 +143,18 @@ public class CheckUpdateService extends JobService {
 
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<ErrorLogRequestBody> errorLogRequestBodies = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().getAllErrorLogs();
+            LogsAPICaller caller = RetrofitClientInstance.getRetrofitLogsInstance(URL_3+MOBILE_END_POINT).create(LogsAPICaller.class);
             for (ErrorLogRequestBody errorLogRequestBody : errorLogRequestBodies) {
 
                 try {
-                    Response<ErrorResponse> responseResponse = MyApplication.oneCaller.submitLog(errorLogRequestBody).execute();
-                    if (responseResponse.isSuccessful()){
-                            AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                                if (responseResponse.body() != null)
-                                    MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(responseResponse.body().getRequestId());
-                            });
+                    Response<ErrorResponse> responseResponse = caller.submitLog(errorLogRequestBody, Credentials.basic("JBtRRpFqVcYFMggnsxpPh", "2qouqd#uk$*UcnQYwQKXoP4TX9vJSD")).execute();
+                    if (responseResponse.isSuccessful()) {
+                        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                            if (responseResponse.body() != null) {
+                                Timber.d("ID:%s", String.valueOf(responseResponse.body().getRequestId()));
+                                MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(responseResponse.body().getRequestId());
+                            }
+                        });
 
                     }
                 } catch (IOException e) {

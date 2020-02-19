@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -35,12 +36,14 @@ public class PasswordOptionsAcitivity extends AppCompatActivity implements View.
     TextView tvFingerPrint;
     @BindView(R.id.rest_duress)
     Button resetDuress;
+    private SecuredSharedPref securedSharedPref;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_options_acitivity);
         ButterKnife.bind(this);
+         securedSharedPref = SecuredSharedPref.getInstance(this);
 
         setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setTitle("Setup Passwords");
@@ -51,20 +54,21 @@ public class PasswordOptionsAcitivity extends AppCompatActivity implements View.
         tvPinOption.setOnClickListener(this);
         tvPatternOption.setOnClickListener(this);
         tvFingerPrint.setOnClickListener(this);
-        String passConfig = PrefUtils.getStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG);
+        String passConfig = securedSharedPref.getStringPref( AppConstants.DUERESS_DEFAULT_CONFIG);
         if (EXTRA != null && EXTRA.equals(AppConstants.KEY_DURESS)) {
-            if (passConfig != null || PrefUtils.getStringPref(this, KEY_DURESS_PASSWORD) != null) {
+            if (passConfig != null || securedSharedPref.getStringPref( KEY_DURESS_PASSWORD) != null) {
                 resetDuress.setVisibility(View.VISIBLE);
             }
         }
 
         resetDuress.setOnClickListener(v -> {
+            SecuredSharedPref securedSharedPref = SecuredSharedPref.getInstance(this);
 
-            PrefUtils.saveStringPref(this, AppConstants.DUERESS_DEFAULT_CONFIG, null);
-            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PATTERN, null);
-            PrefUtils.saveStringPref(this, AppConstants.DURESS_COMBO_PIN, null);
-            PrefUtils.saveStringPref(this, AppConstants.KEY_DURESS_PASSWORD, null);
-            PrefUtils.saveStringPref(this, AppConstants.DURESS_PATTERN, null);
+            securedSharedPref.saveStringPref( AppConstants.DUERESS_DEFAULT_CONFIG, null);
+            securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PATTERN, null);
+            securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PIN, null);
+            securedSharedPref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD, null);
+            securedSharedPref.saveStringPref( AppConstants.DURESS_PATTERN, null);
             finish();
         });
     }

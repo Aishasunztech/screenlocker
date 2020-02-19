@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
@@ -53,12 +51,13 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
     private ComponentName compName;
     private WifiManager wifimanager;
     private BluetoothAdapter mBluetoothAdapter;
+    private PrefUtils prefUtils;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system_controls);
-
+        prefUtils = PrefUtils.getInstance(this);
         wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -94,7 +93,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
             Intent intent = new Intent(BROADCAST_APPS_ACTION);
             intent.putExtra(KEY_DATABASE_CHANGE, "settings");
             LocalBroadcastManager.getInstance(SystemPermissionActivity.this).sendBroadcast(intent);
-            PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
+            prefUtils.saveBooleanPref( SETTINGS_CHANGE, true);
         }
 
     }
@@ -128,10 +127,10 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_WIFI);
                 } else {
                     if (isChecked) {
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_WIFI_ENABLE, true);
+                        prefUtils.saveBooleanPref( AppConstants.KEY_WIFI_ENABLE, true);
                     } else {
                         wifimanager.setWifiEnabled(false);
-                        PrefUtils.saveBooleanPref(this, AppConstants.KEY_WIFI_ENABLE, false);
+                        prefUtils.saveBooleanPref( AppConstants.KEY_WIFI_ENABLE, false);
 
                     }
                 }
@@ -145,11 +144,11 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
                         mDPM.addUserRestriction(compName, DISALLOW_CONFIG_BLUETOOTH);
                 } else {
                     if (isChecked) {
-                        PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, true);
+                        prefUtils.saveBooleanPref( KEY_BLUETOOTH_ENABLE, true);
                     } else {
                         if (mBluetoothAdapter != null)
                             mBluetoothAdapter.disable();
-                        PrefUtils.saveBooleanPref(this, KEY_BLUETOOTH_ENABLE, false);
+                        prefUtils.saveBooleanPref( KEY_BLUETOOTH_ENABLE, false);
 
                     }
                 }
@@ -163,7 +162,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
                 break;
             case AppConstants.SET_CALLS:
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, isChecked);
+                prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, isChecked);
                 break;
             case AppConstants.SET_CAM:
                 try {
@@ -225,7 +224,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
 
         }
-        PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
+        prefUtils.saveBooleanPref( SETTINGS_CHANGE, true);
         setting.setSetting_status(isChecked);
         isSettingsChanged = true;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {

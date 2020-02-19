@@ -215,19 +215,15 @@
 
 
         <TextView
+            android:id="@+id/switch_mobile_data"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:paddingEnd="@dimen/_16sdp"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/mobile_data"
             android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
 
-        <Switch
-            android:id="@+id/switch_mobile_data"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/_16sdp"
-            android:visibility="gone" />
 
 
 

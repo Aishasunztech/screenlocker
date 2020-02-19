@@ -4,6 +4,7 @@ package com.secureMarket.ui.home;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,10 @@ import com.secureMarket.SecureMarketAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
 import timber.log.Timber;
@@ -134,6 +139,9 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                 swipeRefreshLayout.setRefreshing(true);
                 errorLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+            }else if (msg==Msgs.SERVER_ERROR){
+                swipeRefreshLayout.setRefreshing(false);
+                onServerError();
             }
         });
     }
@@ -300,6 +308,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             info.setType(ServerAppInfo.PROG_TYPE.VISIBLE);
             installedAdapter.updateProgressOfItem(info, index);
         }
+
     }
 
     public void onNetworkError() {
@@ -307,7 +316,14 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
         progressBar.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         rc.setVisibility(View.GONE);
-        errorText.setText("No Internet Connection");
+        errorText.setText(getResources().getString(R.string.no_internet_connection));
+    }
+    public void onServerError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_server_error);
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.internal_server_error));
     }
 
 

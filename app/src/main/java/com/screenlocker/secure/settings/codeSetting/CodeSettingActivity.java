@@ -32,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
@@ -42,7 +43,6 @@ import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.codeSetting.Sim.SimActivity;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppsActivity;
 import com.screenlocker.secure.settings.codeSetting.policy.PolicyActivity;
-import com.screenlocker.secure.settings.codeSetting.secureSettings.SecureSettingsActivity;
 import com.screenlocker.secure.settings.codeSetting.systemControls.SystemPermissionActivity;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -66,7 +66,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
     private Toolbar mToolbar;
     private CodeSettingPresenter mPresenter;
     AlertDialog adminPasswordDialog;
-    public static AppCompatActivity codeSettingsInstance;
 
     private boolean goToAppSelection;
     private boolean gotoSystemControl;
@@ -81,7 +80,6 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_setting);
         securedSharedPref = SecuredSharedPref.getInstance(this);
-        codeSettingsInstance = this;
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mPresenter = new CodeSettingPresenter(new CodeSettingModel(this), this);
         setIds();

@@ -54,6 +54,7 @@ import com.secureMarket.ui.home.Msgs;
 import com.secureMarket.ui.home.SharedViwModel;
 import com.secureMarket.ui.home.UpdateAppsFragment;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -106,10 +107,12 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     private MainMarketPagerAdapter sectionsPagerAdapter;
     private String current_space;
     private AsyncCalls asyncCalls;
+    private PrefUtils prefUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefUtils = PrefUtils.getInstance(this);
         //Bind this activity to download service
         Intent intent = new Intent(this, LockScreenService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
@@ -347,8 +350,8 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 if (output == null) {
                     Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
@@ -386,20 +389,16 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 
                             } else {
-                                ////TODO: handle token auth fail
+
                                 Timber.d("onResponse: token auth fail");
                                 sharedViwModel.setMutableMsgs(Msgs.ERROR);
                             }
 
                         } else {
-                            //TODO: server responded with other then 200 response code
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Timber.d("onResponse: server error");
-                                Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                            Timber.d(response.message());
+                            Timber.d(response.toString());
+                            sharedViwModel.setMutableMsgs(Msgs.SERVER_ERROR);
+
                         }
                         //swipeRefreshLayout.setRefreshing(false);
 
@@ -408,14 +407,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     @Override
                     public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
                         Timber.d("onFailure: ");
-                        //TODO when network failure or error while creating request or building response
-                        if (t instanceof IOException) {
                             sharedViwModel.setMutableMsgs(Msgs.ERROR);
-                        } else {
-                            //TODO: handle your internal mapping permission
-                        }
-
-
                     }
                 });
 
@@ -464,53 +456,6 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         sharedViwModel.setUpdates(updatesInfo);
     }
 
-    private boolean isFailSafe = false;
-
-    private void getAdminApps() {
-
-        MyApplication.oneCaller
-                .getAdminApps(currentSpace(this))
-                .enqueue(new Callback<InstallAppModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().isSuccess()) {
-                                setupApps(response);
-                            } else {
-                                //TODO: handle token auth fail
-                            }
-
-                        } else {
-                            //TODO: server responded with other then 200 response code
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                            } catch (JSONException | IOException e) {
-                                Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<InstallAppModel> call, @NonNull Throwable t) {
-
-                        Timber.d("onFailure: ");
-
-                        if (t instanceof IOException) {
-                            sharedViwModel.setMutableMsgs(Msgs.ERROR);
-                        } else {
-                            //TODO: internal error
-                        }
-
-                    }
-
-                });
-
-
-
-    }
 
     private boolean appInstalledOrNot(String packageName) {
         try {
@@ -544,7 +489,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         if (mService != null) {
             mService.setMarketDownloadListener(null);
         }
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
+        prefUtils.saveBooleanPref( UNINSTALL_ALLOWED, false);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         unbindService(connection);
         unRegisterNetworkPref();
@@ -559,7 +504,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
 
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (PrefUtils.getIntegerPref(this, SECUREMARKETSIM) != 1) {
+                if (prefUtils.getIntegerPref( SECUREMARKETSIM) != 1) {
                     AppExecutor.getInstance().getMainThread().execute(() -> {
                         new AlertDialog.Builder(this)
                                 .setTitle("Mobile Data")
@@ -577,7 +522,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                 }
             }
             else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) != 1) {
+                if (prefUtils.getIntegerPref( SECUREMARKETWIFI) != 1) {
                     AppExecutor.getInstance().getMainThread().execute(() -> {
                         new AlertDialog.Builder(this)
                                 .setTitle("WiFi")
@@ -608,10 +553,10 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             packages.add(MyApplication.getAppContext().getPackageName());
             packages.add("com.vortexlocker.app");
             packages.add("com.secure.systemcontrol");
-            String userSpace = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
+            String userSpace = prefUtils.getStringPref( AppConstants.CURRENT_KEY);
 
             if (!packages.contains(app.getPackageName())) {
-                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
+                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, prefUtils.getStringPref( CURRENT_KEY), this);
                 Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
                 intent.setData(Uri.parse("package:" + app.getPackageName()));
                 startActivity(intent);
@@ -650,7 +595,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_capital), (dialog, which) -> {
 
 
-                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                String live_url = prefUtils.getStringPref( LIVE_URL);
 
                 AppConstants.INSTALLING_APP_NAME = app.getApkName();
                 AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
@@ -662,7 +607,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     apksPath.mkdir();
                 }
 
-                String url = live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT +
+                String url = live_url + GET_APK_ENDPOINT +
                         CommonUtils.splitName(app.getApk());
 
                 Timber.i("LIVE URL :%s", url);
@@ -725,7 +670,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
         try {
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
 //            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
-            String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+            String userType = prefUtils.getStringPref( CURRENT_KEY);
             savePackages(packageName, INSTALLED_PACKAGES, space, this);
 
             Intent intent = ShareCompat.IntentBuilder.from(this)
@@ -747,11 +692,11 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( UNINSTALL_ALLOWED, true);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         refreshApps(this);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
-        current_space = PrefUtils.getStringPref(this,CURRENT_KEY);
+        current_space = prefUtils.getStringPref(CURRENT_KEY);
         refreshAppList();
     }
 
@@ -763,7 +708,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 
     private void loadApps() {
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
+        String dealerId = prefUtils.getStringPref( AppConstants.KEY_DEVICE_LINKED);
         //Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
             //   getAdminApps();

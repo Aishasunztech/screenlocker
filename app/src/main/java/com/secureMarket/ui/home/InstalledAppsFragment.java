@@ -49,7 +49,6 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     private Button errorBtn;
     private ProgressBar progressBar;
     private List<ServerAppInfo> installedApps = new ArrayList<>();
-    private String url, fileName = "";
     private SecureMarketAdapter installedAdapter;
     private SharedViwModel viwModel;
 
@@ -129,6 +128,9 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                 swipeRefreshLayout.setRefreshing(true);
                 errorLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+            }else if (msg==Msgs.SERVER_ERROR){
+                swipeRefreshLayout.setRefreshing(false);
+                onServerError();
             }
         });
 
@@ -154,7 +156,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
 
     @Override
     public void onCancelClick(String requestId) {
-        Log.d("lkdfh","FragmentClicked");
+        Timber.d("FragmentClicked");
 
         mListener.onCancelClick(requestId);
     }
@@ -291,7 +293,14 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         progressBar.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         rc.setVisibility(View.GONE);
-        errorText.setText("No Internet Connection");
+        errorText.setText(getResources().getString(R.string.no_internet_connection));
+    }
+    public void onServerError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_server_error);
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.internal_server_error));
     }
 
     @Override

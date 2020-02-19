@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">SCIPEÁIL</string>
+	<string name="ms_next">NEXT</string>
+	<string name="ms_end">Seoladh</string>
+	<string name="ms_continue">LEANÚINT AR AGHAIDH</string>
+	<string name="ms_optional">Roghnach</string>
+	<string name="ms_text_step">Céim $ reatha $ iomlán</string>
+	<string name="previous">ROIMHE SEO</string>
+</resources>

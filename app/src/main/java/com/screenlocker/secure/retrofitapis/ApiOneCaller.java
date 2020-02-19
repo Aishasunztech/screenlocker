@@ -3,23 +3,20 @@ package com.screenlocker.secure.retrofitapis;
 
 import com.screenlocker.secure.mdm.base.DeviceExpiryResponse;
 import com.screenlocker.secure.mdm.retrofitmodels.DeleteDeviceResponse;
+import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.DeviceStatusResponse;
-import com.screenlocker.secure.mdm.retrofitmodels.DeviceLoginModle;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceModel;
 import com.screenlocker.secure.mdm.retrofitmodels.LinkDeviceResponse;
 import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
-import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
-import com.screenlocker.secure.retrofit.ErrorResponse;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.secureMarket.DeviceAndSpace;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -92,7 +89,4 @@ public interface ApiOneCaller {
             @Body LoginModel loginModel
     );
 
-    @Headers("Content-Type: aplication/json")
-    @POST("api/v1/logs")
-    Call<ErrorResponse> submitLog(@Body ErrorLogRequestBody body);
 }

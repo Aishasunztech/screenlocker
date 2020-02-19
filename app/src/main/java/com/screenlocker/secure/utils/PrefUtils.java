@@ -6,21 +6,27 @@ import android.content.SharedPreferences;
 import java.util.Set;
 
 public class PrefUtils {
+    private static PrefUtils instance;
+    private SharedPreferences sharedPref;
+
+    public  static  synchronized  PrefUtils getInstance(Context context){
+        if (instance==null){
+            instance = new PrefUtils(context);
+        }
+        return instance;
+    }
+
+    public PrefUtils(Context context) {
+        sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    }
 
     public static final String PREF_FILE = "settings_pref";
 
-    public static void saveToPref(Context context, boolean isEnabled) {
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    public  void saveToPref( boolean isEnabled) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("is_enabled", isEnabled);
         editor.apply();
     }
-
-    public static boolean isLockScreenEnabled(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        return sharedPref.getBoolean("is_enabled", false);
-    }
-
     public static void saveStringSetPref(Context context, String key, Set<String> value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -83,6 +89,61 @@ public class PrefUtils {
 
     public static long getLongPref(Context context, String key) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getLong(key, 0);
+
+    }
+
+    public void saveStringSetPref(String key, Set<String> value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putStringSet(key, value);
+        editor.apply();
+    }
+
+    public  void saveStringPref( String key, String value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public String getStringPref( String key) {
+        return sharedPref.getString(key, null);
+    }
+
+    public Set<String> getStringSet( String key) {
+        return sharedPref.getStringSet(key, null);
+    }
+
+    public boolean getBooleanPref( String key) {
+        return sharedPref.getBoolean(key, false);
+    }
+
+    public boolean getBooleanPrefWithDefTrue( String key) {
+        return sharedPref.getBoolean(key, true);
+    }
+
+    public void saveBooleanPref( String key, boolean value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    public void saveIntegerPref(String key, int value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    public int getIntegerPref( String key) {
+        return sharedPref.getInt(key, 0);
+    }
+
+    public void saveLongPref(String key, long value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(key, value);
+        editor.apply();
+    }
+
+    public long getLongPref( String key) {
         return sharedPref.getLong(key, 0);
     }
 

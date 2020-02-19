@@ -50,6 +50,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
 
     private LockScreenService mService;
     private boolean isSocketConnect;
+    private PrefUtils prefUtils;
 
     private NotificationManager notificationManager;
 
@@ -58,7 +59,8 @@ public class LiveClientChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_client_chat);
         ButterKnife.bind(this);
-        isSocketConnect = PrefUtils.getBooleanPref(this, AppConstants.CLIENT_CHAT_SOCKET);
+        prefUtils = PrefUtils.getInstance(this);
+        isSocketConnect = prefUtils.getBooleanPref( AppConstants.CLIENT_CHAT_SOCKET);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
@@ -91,7 +93,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
 
                 progressbar.setVisibility(View.GONE);
-                PrefUtils.saveIntegerPref(LiveClientChatActivity.this, NUMBER_OF_NOTIFICATIONS, 0);
+                prefUtils.saveIntegerPref( NUMBER_OF_NOTIFICATIONS, 0);
                 notificationManager.cancelAll();
 
                 super.onPageFinished(view, url);
@@ -100,7 +102,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
         });
         progressbar.setVisibility(View.GONE);
 
-        String deviceId = PrefUtils.getStringPref(LiveClientChatActivity.this, DEVICE_ID);
+        String deviceId = prefUtils.getStringPref( DEVICE_ID);
         String title = "";
         String subTitle = "";
 
@@ -110,7 +112,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
         } else {
             title = getResources().getString(R.string.live_client_device_id);
 
-            String offline_device = PrefUtils.getStringPref(LiveClientChatActivity.this, OFFLINE_DEVICE_ID);
+            String offline_device = prefUtils.getStringPref( OFFLINE_DEVICE_ID);
 
             if (offline_device == null) {
                 subTitle = "N/A";
@@ -196,7 +198,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        PrefUtils.saveBooleanPref(this, IS_LIVE_CLIENT_VISIBLE, true);
+        prefUtils.saveBooleanPref( IS_LIVE_CLIENT_VISIBLE, true);
     }
 
 //    private void bindToService() {
@@ -208,7 +210,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        PrefUtils.saveBooleanPref(this, IS_LIVE_CLIENT_VISIBLE, false);
+        prefUtils.saveBooleanPref( IS_LIVE_CLIENT_VISIBLE, false);
 
 //        if (mService != null)
 //            unbindService(connection);

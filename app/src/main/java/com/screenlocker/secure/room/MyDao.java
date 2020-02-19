@@ -110,7 +110,7 @@ public interface MyDao {
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension WHERE uniqueName=:uniqueName AND encrypted=:status")
     LiveData<List<SubExtension>> getEncryptedExtensions(String uniqueName, boolean status);
-
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT guest,encrypted,uniqueExtension, systemApp FROM subextension ")
     LiveData<List<SubExtension>> getExtensions();
 
@@ -160,8 +160,6 @@ public interface MyDao {
     @Query("SELECT * FROM sim")
     List<SimEntry> getAllSimInService();
 
-    @Query("SELECT * FROM messages order by mDate desc")
-    LiveData<List<ChatMessages>> getAllMessages();
 
 
     @Query("SELECT * FROM Settings")
@@ -172,15 +170,6 @@ public interface MyDao {
 
     @Insert
     void insertSetting(Settings settings);
-
-    @Update
-    void updateMessage(ChatMessages msg);
-
-    @Insert
-    void insertMessage(ChatMessages msg);
-
-    @Delete
-    void deleteMessage(ChatMessages msg);
 
     @Update
     void updateSubExtention(SubExtension extension);
@@ -204,7 +193,7 @@ public interface MyDao {
     LiveData<Integer> getUnSeenCount();
 
     @Insert
-    void insertError(ErrorLogRequestBody errorLogRequestBody);
+    long insertError(ErrorLogRequestBody errorLogRequestBody);
 
     @Query("DELETE  FROM ErrorLogRequestBody where requestId=:requestId")
     void deleteErrorLog(long requestId);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">SKIP</string>
+	<string name="ms_next">NEXT</string>
+	<string name="ms_end">pelancaran</string>
+	<string name="ms_continue">TERUS</string>
+	<string name="ms_optional">pilihan</string>
+	<string name="ms_text_step">Langkah $ semasa $ jumlah</string>
+	<string name="previous">TERDAHULU</string>
+</resources>

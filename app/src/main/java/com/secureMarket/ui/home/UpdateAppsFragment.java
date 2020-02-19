@@ -136,6 +136,9 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
                 rc.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+            }else if (msg==Msgs.SERVER_ERROR){
+                swipeRefreshLayout.setRefreshing(false);
+                onServerError();
             }
         });
 
@@ -305,7 +308,14 @@ public class UpdateAppsFragment extends Fragment implements AppInstallUpdateList
         progressBar.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         rc.setVisibility(View.GONE);
-        errorText.setText("No Internet Connection");
+        errorText.setText(getResources().getString(R.string.no_internet_connection));
+    }
+    public void onServerError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_server_error);
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.internal_server_error));
     }
 
     @Override

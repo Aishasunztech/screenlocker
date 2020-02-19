@@ -1,10 +1,5 @@
 package com.screenlocker.secure.launcher.subsettings;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
@@ -16,13 +11,16 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.AppExecutor;
-import com.screenlocker.secure.settings.AdvanceSettings;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.R;
@@ -38,10 +36,12 @@ import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 public class BackuoAndRestoreActivity extends AppCompatActivity implements View.OnClickListener {
+    private PrefUtils prefUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefUtils = PrefUtils.getInstance(this);
         setContentView(R.layout.activity_backuo_and_restore);
         setToolbar();
         findViewById(R.id.tvRestore).setOnClickListener(this);
@@ -91,10 +91,10 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
 
         //default wallpapers
 
-        PrefUtils.saveStringPref(this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._12318));
-        PrefUtils.saveStringPref(this, AppConstants.KEY_SUPPORT_IMAGE, String.valueOf(R.raw.texture));
-        PrefUtils.saveStringPref(this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._1239));
-        PrefUtils.saveStringPref(this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._12316));
+        prefUtils.saveStringPref( AppConstants.KEY_GUEST_IMAGE, String.valueOf(R.raw._12318));
+        prefUtils.saveStringPref(AppConstants.KEY_SUPPORT_IMAGE, String.valueOf(R.raw.texture));
+        prefUtils.saveStringPref(AppConstants.KEY_MAIN_IMAGE, String.valueOf(R.raw._1239));
+        prefUtils.saveStringPref(AppConstants.KEY_LOCK_IMAGE, String.valueOf(R.raw._12316));
 
         //enable wifi by default
 
@@ -124,7 +124,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
             dpm.clearUserRestriction(compName, DISALLOW_CONFIG_TETHERING);
         }
         //block calls
-        PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, false);
+        prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, false);
         //SS app permissions to default
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
             List<SubExtension> subExtensions = MyAppDatabase.getInstance(this).getDao().getAllSubExtensions();
@@ -141,7 +141,7 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
         });
 
         //change Grid Size to default
-        PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, AppConstants.LAUNCHER_GRID_SPAN);
+        prefUtils.saveIntegerPref( AppConstants.KEY_COLUMN_SIZE, AppConstants.LAUNCHER_GRID_SPAN);
 
         //Application permissions
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
@@ -186,15 +186,15 @@ public class BackuoAndRestoreActivity extends AppCompatActivity implements View.
             }
             AppExecutor.getInstance().getMainThread().execute(() -> {
 
-                PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+                prefUtils.saveBooleanPref( SECURE_SETTINGS_CHANGE, true);
 
-                PrefUtils.saveBooleanPref(this, APPS_SETTING_CHANGE, true);
+                prefUtils.saveBooleanPref( APPS_SETTING_CHANGE, true);
 
                 Intent intent = new Intent(BROADCAST_APPS_ACTION);
                 intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
                 LocalBroadcastManager.getInstance(BackuoAndRestoreActivity.this).sendBroadcast(intent);
 
-                PrefUtils.saveBooleanPref(BackuoAndRestoreActivity.this, AppConstants.KEY_THEME, false);
+                prefUtils.saveBooleanPref( AppConstants.KEY_THEME, false);
 
                 Intent intent1 = new Intent(BROADCAST_APPS_ACTION);
                 intent1.putExtra(KEY_DATABASE_CHANGE, "apps");

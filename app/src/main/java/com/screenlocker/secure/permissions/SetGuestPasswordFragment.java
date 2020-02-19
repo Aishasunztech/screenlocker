@@ -62,6 +62,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
     private String mCode;
     private String mPattern;
     private int mTryCombo = 0;
+    private PrefUtils prefUtils;
 
     @BindView(R.id.pin_input_layout)
     TextInputLayout pin_input_layout;
@@ -113,7 +114,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref( GUEST_PASSORD_OPTION)) {
             case OPTION_PIN:
                 viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
@@ -161,12 +162,12 @@ public class SetGuestPasswordFragment extends AbstractStep {
 
     @Override
     public boolean nextIf() {
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref( GUEST_PASSORD_OPTION)) {
             case OPTION_PIN:
                 if (setPassword()) {
 
                     if (sharedPref.getStringPref(KEY_GUEST_PASSWORD) != null) {
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_GUEST_PASS);
                         return true;
                     }
                 }
@@ -174,7 +175,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
             case OPTION_PATTERN:
             case OPTION_COMBO:
                 if (sharedPref.getStringPref(KEY_GUEST_PASSWORD) != null || isAllowed) {
-                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
+                    prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_GUEST_PASS);
                     return true;
                 }
                 break;
@@ -204,6 +205,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         error = getResources().getString(R.string.please_enter_password);
+        prefUtils = prefUtils.getInstance(MyApplication.getAppContext());
     }
 
     /**
@@ -265,7 +267,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                         sharedPref.saveStringPref(KEY_GUEST_PASSWORD, null);
                         Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_updated), Toast.LENGTH_SHORT).show();
                         //move to next
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_GUEST_PASS);
 //                        mListener.onPageUpdate(STEP_GUEST_PASS);
                         patternLock.setInputEnabled(false);
                         btnPatternCancel.setEnabled(false);
@@ -381,7 +383,7 @@ public class SetGuestPasswordFragment extends AbstractStep {
                                 sharedPref.saveStringPref(GUEST_PATTERN, null);
                                 //update code here
                                 isAllowed = true;
-//                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
+//                                prefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_GUEST_PASS);
 //                                mListener.onPageUpdate(STEP_GUEST_PASS);
                                 Timber.d("onComplete: ");
 
@@ -405,8 +407,8 @@ public class SetGuestPasswordFragment extends AbstractStep {
             @Override
             public void onCodeCompleted(ArrayList<Integer> code) {
                 if (mTryCombo == 0) {
-                    if (code.toString().equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.ENCRYPT_COMBO_PIN)) ||
-                            code.toString().equals(PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.DURESS_COMBO_PIN))) {
+                    if (code.toString().equals(prefUtils.getStringPref( AppConstants.ENCRYPT_COMBO_PIN)) ||
+                            code.toString().equals(prefUtils.getStringPref( AppConstants.DURESS_COMBO_PIN))) {
                         codeView.setColor();
                     } else {
                         mCode = code.toString();

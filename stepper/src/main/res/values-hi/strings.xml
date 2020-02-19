@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">छोड़ें</string>
+	<string name="ms_next">आगे</string>
+	<string name="ms_end">प्रक्षेपण</string>
+	<string name="ms_continue">जारी रखें</string>
+	<string name="ms_optional">ऐच्छिक</string>
+	<string name="ms_text_step">$ कुल के $ वर्तमान चरण</string>
+	<string name="previous">पिछला</string>
+</resources>

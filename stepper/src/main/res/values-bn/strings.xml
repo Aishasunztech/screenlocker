@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">MaterialStepper</string>
+	<string name="ms_prev">এড়িয়</string>
+	<string name="ms_next">পরবর্তী</string>
+	<string name="ms_end">শুরু করা</string>
+	<string name="ms_continue">চালিয়ে</string>
+	<string name="ms_optional">ঐচ্ছিক</string>
+	<string name="ms_text_step">$ মোট $ বর্তমান ধাপ</string>
+	<string name="previous">আগে</string>
+</resources>

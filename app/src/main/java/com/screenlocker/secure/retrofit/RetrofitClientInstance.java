@@ -1,11 +1,11 @@
 package com.screenlocker.secure.retrofit;
 
-import android.content.Intent;
 import android.os.Build;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.retrofitapis.LogsAPICaller;
 import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -14,8 +14,7 @@ import com.secure.launcher.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -30,23 +29,36 @@ import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.URL_3;
 
 
 public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
     private static Retrofit retrofit1;
+    private static Retrofit retrofit2;
 
 
     public static Retrofit getRetrofitSecondInstance(String url) {
         if (retrofit1 != null) {
             retrofit1 = null;
         }
-        retrofit1 = new retrofit2.Retrofit.Builder()
+        retrofit1 = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(url)
                 .build();
         return retrofit1;
+    }
+
+    public static Retrofit getRetrofitLogsInstance(String url) {
+        if (retrofit2 == null) {
+            retrofit2 = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(url)
+                    .build();
+        }
+
+        return retrofit2;
     }
 
 
@@ -75,28 +87,15 @@ public class RetrofitClientInstance {
 
                     ));
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().insertError(log);
+                        long id = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().insertError(log);
+                        log.setRequestId(id);
+                        submitLogs(log);
                     });
 
-                    if (MyApplication.oneCaller == null) {
-                        String[] urls = {URL_1, URL_2};
-                        new AsyncCalls(output -> {
-                            if (output == null) {
-                                //showError(getResources().getString(R.string.server_error));
-                            } else {
-                                PrefUtils.saveStringPref(MyApplication.getAppContext(), LIVE_URL, output);
-                                String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                Timber.d("live_url %s", live_url);
-                                MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                                submitLogs(log);
 
-                            }
-                        }, MyApplication.getAppContext(), urls);
-
-                    } else {
-                        submitLogs(log);
-                    }
-                    MyApplication.getAppContext().startActivity(new Intent(MyApplication.getAppContext(), GlobleErrorLogActivity.class));
+//                    Intent intent =new Intent(MyApplication.getAppContext(), GlobleErrorLogActivity.class);
+//                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+//                    MyApplication.getAppContext().startActivity(intent);
                     return response;
                 }
 
@@ -105,35 +104,35 @@ public class RetrofitClientInstance {
             .build();
 
     private static void submitLogs(ErrorLogRequestBody log) {
-        MyApplication.oneCaller.submitLog(log).enqueue(new Callback<ErrorResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<ErrorResponse> call, @NotNull retrofit2.Response<ErrorResponse> response) {
-                if (response.isSuccessful()) {
-                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        if (response.body() != null)
-                            MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(response.body().getRequestId());
-                    });
+        LogsAPICaller caller = RetrofitClientInstance.getRetrofitLogsInstance(URL_3+MOBILE_END_POINT).create(LogsAPICaller.class);
+        Timber.d("submitLogs: " + log.getMessage() + "\n" + log.getCode() + "\n" + log.getRequestUrl() + "\n" + log.getApiResponseTime());
+        caller.submitLog(log, Credentials.basic("JBtRRpFqVcYFMggnsxpPh", "2qouqd#uk$*UcnQYwQKXoP4TX9vJSD")).
+                enqueue(new Callback<ErrorResponse>() {
+                    @Override
+                    public void onResponse(@NotNull Call<ErrorResponse> call, @NotNull retrofit2.Response<ErrorResponse> response) {
+                        if (response.isSuccessful()) {
+                            AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                                if (response.body() != null) {
+                                    Timber.d("ID:%s", String.valueOf(response.body().getRequestId()));
+                                    MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(response.body().getRequestId());
+                                }
+                            });
 
-                }
+                        }
+                    }
 
-            }
+                    @Override
+                    public void onFailure(@NotNull Call<ErrorResponse> call, @NotNull Throwable t) {
 
-
-            @Override
-            public void onFailure(@NotNull Call<ErrorResponse> call, @NotNull Throwable t) {
-                if (t instanceof IOException) {
-                    //TODO: save into data base
-                }
-
-            }
-        });
+                    }
+                });
     }
 
     public static Retrofit getRetrofitInstance(String url) {
         if (retrofit != null) {
             retrofit = null;
         }
-        retrofit = new retrofit2.Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(url)
                 .client(okHttpClient)

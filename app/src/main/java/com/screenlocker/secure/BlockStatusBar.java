@@ -4,25 +4,24 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 
-import com.screenlocker.secure.utils.PrefUtils;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BlockStatusBar {
-    private Context context;
 
     // To keep track of activity's window focus
-    private boolean currentFocus;
     // To keep track of activity's foreground/background status
     private boolean isPaused;
 
-    private static Handler collapseNotificationHandler;
+    private Handler collapseNotificationHandler;
     private Method collapseStatusBar = null;
+    private Object statusBarService;
 
 
+    @SuppressLint("WrongConstant")
     public BlockStatusBar(Context context, boolean isPaused) {
-        this.context = context;
+
+         this.statusBarService = context.getSystemService("statusbar");
         this.isPaused = isPaused;
 
     }
@@ -48,7 +47,7 @@ public class BlockStatusBar {
         // Its a valid check because showing of notification panel
         // steals the focus from current activity's window, but does not
         // 'pause' the activity
-        if (!currentFocus && !isPaused) {
+        if (!isPaused) {
 
             // Post a Runnable with some delay - currently set to 300 ms
             collapseNotificationHandler.postDelayed(new Runnable() {
@@ -59,7 +58,7 @@ public class BlockStatusBar {
 
                     // Use reflection to trigger a method from 'StatusBarManager'
 
-                    @SuppressLint("WrongConstant") Object statusBarService = context.getSystemService("statusbar");
+
                     Class<?> statusBarManager = null;
 
                     try {
@@ -79,11 +78,7 @@ public class BlockStatusBar {
                     collapseStatusBar.setAccessible(true);
                     try {
                         collapseStatusBar.invoke(statusBarService);
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
+                    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
 
@@ -91,11 +86,11 @@ public class BlockStatusBar {
                     // If it hasn't been returned, post this Runnable again
                     // Currently, the delay is 100 ms. You can change this
                     // value to suit your needs.
-                    if (!currentFocus && !isPaused) {
+                    if (!isPaused) {
                         collapseNotificationHandler.postDelayed(this, 100L);
                     }
 
-                    if (!currentFocus && isPaused) {
+                    if (isPaused) {
                         collapseNotificationHandler.removeCallbacksAndMessages(null);
                     }
 
@@ -103,4 +98,5 @@ public class BlockStatusBar {
             }, 300L);
         }
     }
+
 }

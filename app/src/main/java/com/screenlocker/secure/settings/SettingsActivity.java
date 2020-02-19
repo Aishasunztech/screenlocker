@@ -3,11 +3,9 @@ package com.screenlocker.secure.settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -16,14 +14,15 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.provider.Settings;
+import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,10 +36,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
@@ -49,8 +45,6 @@ import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.launcher.subsettings.BackuoAndRestoreActivity;
 import com.screenlocker.secure.launcher.subsettings.ConnectionsSubSettings;
 import com.screenlocker.secure.launcher.subsettings.SSettingsViewModel;
-import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
-import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.permissions.SteppersActivity;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -58,16 +52,12 @@ import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.LockScreenService;
 import com.screenlocker.secure.settings.Wallpaper.WallpaperActivity;
 import com.screenlocker.secure.settings.codeSetting.CodeSettingActivity;
-import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageAdapter;
-import com.screenlocker.secure.settings.codeSetting.LanguageControls.LanguageModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.settings.managepassword.ManagePasswords;
 import com.screenlocker.secure.settings.managepassword.SetUpLockActivity;
 import com.screenlocker.secure.settings.notification.NotificationActivity;
 import com.screenlocker.secure.settings.notification.NotificationViewModel;
-import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
-import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -77,14 +67,11 @@ import com.secureSetting.AllNotificationActivity;
 import com.secureSetting.SecureSettingsMain;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kotlin.jvm.Throws;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,17 +79,12 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.app.MyApplication.saveToken;
 import static com.screenlocker.secure.launcher.MainActivity.RESULT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
 import static com.screenlocker.secure.utils.AppConstants.CHAT_ID;
-import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.GET_UPDATE_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.PGP_EMAIL;
@@ -114,14 +96,13 @@ import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.CommonUtils.hideKeyboard;
 import static com.screenlocker.secure.utils.CommonUtils.isNetworkAvailable;
-import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
-import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /***
  * this activity show the settings for the app
  * this activity is the launcher activity it means that whenever you open the app this activity will be shown
  */
-public class SettingsActivity extends BaseActivity implements View.OnClickListener, SettingContract.SettingsMvpView, CompoundButton.OnCheckedChangeListener {
+public class SettingsActivity extends BaseActivity
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 
     private Toolbar mToolbar;
@@ -129,8 +110,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      * request code for the set password activity
      */
     public static final int REQUEST_CODE_PASSWORD = 883;
-
-    private SettingsPresenter settingsPresenter;
     private boolean isEncryptedChecked;
     private String currentVersion;
 
@@ -164,79 +143,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Dialog aboutDialog = null, accountDialog = null;
     private AlertDialog limitedDialog;
 
-    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            finish();
-        }
-
-    };
-
-    private NetworkChangeReceiver networkChangeReceiver;
-    private SharedPreferences sharedPref;
-
-    private void registerNetworkPref() {
-        sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
-        networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-    }
-
-    private void unRegisterNetworkPref() {
-        if (sharedPref != null)
-            sharedPref.unregisterOnSharedPreferenceChangeListener(networkChange);
-        if (networkChangeReceiver != null)
-            unregisterReceiver(networkChangeReceiver);
-    }
-
-    SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
-
-        if (key.equals(CURRENT_NETWORK_STATUS)) {
-            String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
-            boolean isConnected = networkStatus.equals(CONNECTED);
-
-            if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
-                if (isConnected) {
-                    String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
-                    String serialNo = DeviceIdUtils.getSerialNumber();
-                    if (!isSocketConnected()) {
-                        ApiUtils apiUtils = new ApiUtils(SettingsActivity.this, macAddress, serialNo);
-                        apiUtils.connectToSocket();
-                    }
-                    if (limitedDialog != null && limitedDialog.isShowing()) {
-                        limitedDialog.dismiss();
-                        Intent limitedIntent = new Intent(this, com.screenlocker.secure.mdm.MainActivity.class);
-                        startActivity(limitedIntent);
-                    }
-                } else {
-                    utils.stopSocket(this);
-                }
-
-            }
-        }
-    };
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerNetworkPref();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unRegisterNetworkPref();
-    }
-
-
-    public static String splitName(String s) {
-        return s.replace(".apk", "");
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    private PrefUtils prefUtils ;
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 //                    .detectDiskReads()
 //                    .detectDiskWrites()
@@ -249,23 +156,29 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //                    .penaltyLog()
 //                    .penaltyDeath()
 //                    .build());
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
+        prefUtils = PrefUtils.getInstance(this);
 
         ButterKnife.bind(this);
         init();
 
 
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (!prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
 
             finish();
+            return;
         }
 
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
-        NotificationViewModel viewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
+        SSettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SSettingsViewModel.class);
+        NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         viewModel.getUnReadCount().observe(this, integer -> {
             unreadCount = integer;
             invalidateOptionsMenu();
@@ -283,13 +196,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+
+
+
+
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, true);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
-        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String currentKey = prefUtils.getStringPref( CURRENT_KEY);
 
         if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
 //            tvManagePasswords.setVisibility(View.GONE);
@@ -311,7 +232,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvAdvance.setVisibility(View.VISIBLE);
         }
 
-        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getBooleanPref( TOUR_STATUS)) {
             if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
                 Intent intent = new Intent(this, LockScreenService.class);
 
@@ -326,11 +247,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setIds();
         setToolbar(mToolbar);
         setListeners();
-        settingsPresenter = new SettingsPresenter(this, new SettingsModel(this));
 //        setSwipeToApiRequest();
         // switch change listener(on off service for vpn)
-        createActiveDialog();
-
     }
 
 
@@ -348,9 +266,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onPause();
     }
 
-    private void createActiveDialog() {
-        AlertDialog isActiveDialog = new AlertDialog.Builder(this).setMessage("").setCancelable(false).create();
-    }
+
 
 
     private void setIds() {
@@ -383,7 +299,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.secure_settings_activity_title);
-            String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
+            String deviceid = prefUtils.getStringPref( DEVICE_ID);
             if (deviceid != null) {
                 getSupportActionBar().setSubtitle(getResources().getString(R.string.device_id) + ": " + deviceid);
             }
@@ -480,7 +396,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         } else {
             final EditText input = new EditText(SettingsActivity.this);
-            settingsPresenter.showAlertDialog(input, (dialogInterface, i) -> {
+            showAlertDialog(input, (dialogInterface, i) -> {
                 if (TextUtils.isEmpty(input.getText().toString().trim())) {
 //                    Snackbar.make(rootLayout, R.string.please_enter_your_current_password, Snackbar.LENGTH_SHORT).show();
                     showAlertDialog(SettingsActivity.this, getResources().getString(R.string.invalid_password_title), getResources().getString(R.string.invalid_password_message), android.R.drawable.stat_sys_warning);
@@ -506,7 +422,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         try {
             NetworkCapabilities nc = manager.getNetworkCapabilities(n);
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (!PrefUtils.getBooleanPref(this, UPDATESIM)) {
+                if (!prefUtils.getBooleanPref( UPDATESIM)) {
                     new AlertDialog.Builder(this)
                             .setTitle(getResources().getString(R.string.warning))
                             .setMessage(getResources().getString(R.string.sim_update_warning))
@@ -564,8 +480,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             asyncCalls = new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     update(dialog);
@@ -583,7 +499,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void update(ProgressDialog dialog) {
         MyApplication.oneCaller
-                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name),
+                        prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -627,10 +544,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                     Timber.i("------------> updated apk url : %s", apkUrl);
 
 
-                                                    String live_url = PrefUtils.getStringPref(SettingsActivity.this, LIVE_URL);
+                                                    String live_url = prefUtils.getStringPref( LIVE_URL);
                                                     Timber.i("------------> Live Server Url :%s ", live_url);
 
-                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url +MOBILE_END_POINT+ "v2/mobile/getApk/" + CommonUtils.splitName(apkUrl), false, null);
+                                                    DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT + CommonUtils.splitName(apkUrl), false, null);
                                                     obj.execute();
 
 
@@ -737,7 +654,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // PGP Email
         TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
         TextView textView18 = aboutDialog.findViewById(R.id.textView18);
-        String pgpEmail = PrefUtils.getStringPref(SettingsActivity.this, PGP_EMAIL);
+        String pgpEmail = prefUtils.getStringPref( PGP_EMAIL);
         if (pgpEmail != null) {
             textView18.setVisibility(View.VISIBLE);
             tvPgpEmail.setVisibility(View.VISIBLE);
@@ -747,7 +664,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Chat ID
         TextView tvChatId = aboutDialog.findViewById(R.id.tvChatId);
         TextView textView19 = aboutDialog.findViewById(R.id.textView19);
-        String chatId = PrefUtils.getStringPref(SettingsActivity.this, CHAT_ID);
+        String chatId = prefUtils.getStringPref( CHAT_ID);
         if (chatId != null) {
             textView19.setVisibility(View.VISIBLE);
             tvChatId.setVisibility(View.VISIBLE);
@@ -767,7 +684,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
         TextView textView20 = aboutDialog.findViewById(R.id.textView20);
-        String simId = PrefUtils.getStringPref(SettingsActivity.this, SIM_ID);
+        String simId = prefUtils.getStringPref( SIM_ID);
         if (simId != null) {
             textView20.setVisibility(View.VISIBLE);
             tvSimId.setVisibility(View.VISIBLE);
@@ -784,10 +701,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         switch (requestCode) {
             case RESULT_ENABLE:
                 if (resultCode == Activity.RESULT_OK) {
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, true);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_ADMIN_ALLOWED, true);
                     Toast.makeText(SettingsActivity.this, getResources().getString(R.string.enable_admin_device_feature), Toast.LENGTH_SHORT).show();
                 } else {
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, false);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_ADMIN_ALLOWED, false);
                     Toast.makeText(SettingsActivity.this, getResources().getString(R.string.problem_admin_device_feature), Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -805,11 +722,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     Timber.e("onActivityResult: BG_CHANGER : %s", resultUri);
                     if (isEncryptedChecked) {
                         Toast.makeText(this, getResources().getString(R.string.bg_save_encrypted), Toast.LENGTH_SHORT).show();
-                        PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
+                        prefUtils.saveStringPref( AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
 
                     } else {
                         Toast.makeText(this, getResources().getString(R.string.bg_save_guest), Toast.LENGTH_SHORT).show();
-                        PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
+                        prefUtils.saveStringPref( AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
                     }
                 }
 //                 else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -820,76 +737,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
 
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    private void languageDialogue() {
-        int item;
-        AtomicInteger selected = new AtomicInteger();
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
-            item = 0;
-            selected.set(0);
-        } else {
-            item = 1;
-            selected.set(1);
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Language");
-        ArrayList<LanguageModel> models = new ArrayList<>();
-        String[] languages = getResources().getStringArray(R.array.languages);
-
-        for (String language : languages) {
-            String language_key = language.split(":")[0];
-            String language_name = language.split(":")[1];
-            LanguageModel languageModel2;
-            switch (language_key) {
-                case "en":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_the_united_states);
-                    break;
-                case "fr":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_france);
-                    break;
-                case "vi":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_vietnam);
-                    break;
-                case "zh":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_chinese_flag);
-                    break;
-                case "es":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_spain);
-                    break;
-                case "ar":
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
-                    break;
-                default:
-                    languageModel2 = new LanguageModel(language_key, language_name, R.drawable.ic_flag_of_saudi_arabia);
-                    break;
-
-            }
-
-            models.add(languageModel2);
-        }
-        String saved = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
-        if (saved == null || saved.equals("")) {
-            saved = "en";
-        }
-        LanguageAdapter adapter = new LanguageAdapter(this, languages, saved, models);
-        builder.setAdapter(adapter, (dialog, which) -> {
-
-        });
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            changeLanguage(adapter.getSelectedText());
-
-        });
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-            dialog.dismiss();
-        });
-        builder.show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.msg_alert, menu);
@@ -900,7 +747,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         if (unreadCount == 0) {
             itemMessagesBadgeTextView.setVisibility(View.GONE); // initially hidden}
         } else {
-            itemMessagesBadgeTextView.setText("" + unreadCount);
+            itemMessagesBadgeTextView.setText(String.valueOf( unreadCount));
             itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
         }
 
@@ -923,27 +770,6 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         return super.onOptionsItemSelected(item);
     }
 
-    private void changeLanguage(String code) {
-
-        Intent intent = new Intent(BROADCAST_APPS_ACTION);
-        intent.putExtra(KEY_DATABASE_CHANGE, "apps");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        CommonUtils.setAppLocale(code, SettingsActivity.this);
-        PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
-        restartActivity();
-        OneTimeWorkRequest insertionWork =
-                new OneTimeWorkRequest.Builder(BlurWorker.class)
-                        .build();
-        WorkManager.getInstance().enqueue(insertionWork);
-
-
-    }
-
-    private void restartActivity() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
-    }
 
     void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
         for (SubExtension setting : settings) {
@@ -991,5 +817,62 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
+    public void showAlertDialog(final EditText input, final DialogInterface.OnClickListener onClickListener, final DialogInterface.OnClickListener onNegativeClick, String title) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle(title);
+        alertDialog.setCancelable(false);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(10, 10, 10, 10);
+
+        input.setGravity(Gravity.CENTER);
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+        alertDialog.setIcon(R.drawable.ic_secure_settings);
+        input.setFocusable(true);
+        input.setFocusableInTouchMode(true);
+        input.clearFocus();
+        input.requestFocus();
+        input.postDelayed(() -> {
+            InputMethodManager keyboard=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            keyboard.showSoftInput(input,0);
+        }
+                ,100);
+//
+
+        alertDialog.setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onClickListener.onClick(dialog, which);
+                        try {
+//                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        alertDialog.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    try {
+                        if (onNegativeClick != null)
+                            onNegativeClick.onClick(dialog, which);
+//                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    dialog.cancel();
+                });
+
+        alertDialog.show();
+
+    }
 }

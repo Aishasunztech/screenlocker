@@ -11,6 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -26,7 +27,6 @@ import com.screenlocker.secure.utils.PrefUtils;
 import com.secure.launcher.BuildConfig;
 
 import java.util.HashSet;
-import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
@@ -53,6 +53,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
     private HashSet<String> previousTasksFor = new HashSet<>();
     private HashSet<String> callingApps = new HashSet<>();
     private String previous_task = null;
+    private PrefUtils prefUtils;
 
     public static ServiceConnectedListener serviceConnectedListener;
 
@@ -66,6 +67,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        prefUtils = PrefUtils.getInstance(this);
         setupStrings();
     }
 
@@ -101,12 +103,9 @@ public class WindowChangeDetectingService extends AccessibilityService {
 //                    Timber.d("call back fire");
                 }
                 return;
-            } else if (event.getAction() == GLOBAL_ACTION_RECENTS) {
-                Timber.d("onAccessibilityEvent: GLOBAL_ACTION_RECENTS");
-                performGlobalAction(GLOBAL_ACTION_RECENTS);
-                return;
             }
 
+            Timber.d("Activity: %s", event.getAction());
 
             if (event.getPackageName() != null && event.getClassName() != null) {
                 ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());
@@ -123,12 +122,12 @@ public class WindowChangeDetectingService extends AccessibilityService {
                 boolean isActivity = activityInfo != null;
                 Timber.d("Activity: %s", componentName.flattenToShortString());
 
-                if (!PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
+                if (!prefUtils.getBooleanPref(EMERGENCY_FLAG)) {
 
-                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                    if (prefUtils.getBooleanPref(TOUR_STATUS)) {
                         Timber.d("Tour Completed");
                         if (isActivity) {
-                            if (PrefUtils.getBooleanPref(this, UNINSTALL_ALLOWED)) {
+                            if (prefUtils.getBooleanPref(UNINSTALL_ALLOWED)) {
                                 Timber.d("uninstall allowed");
                                 if (smPermissions.contains(componentName.flattenToShortString())) {
                                     Timber.d("activity allowed");
@@ -137,7 +136,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
                                     Timber.d("activity not allowed");
                                     checkAppStatus(componentName);
                                 }
-                            } else if (PrefUtils.getBooleanPref(this, IS_SETTINGS_ALLOW)) {
+                            } else if (prefUtils.getBooleanPref(IS_SETTINGS_ALLOW)) {
 
                                 Timber.d("settings allowed");
                                 if (ssPermissions.contains(componentName.flattenToShortString())) {
@@ -152,7 +151,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
                                 } else {
                                     checkAppStatus(componentName);
                                 }
-                            } else if (PrefUtils.getBooleanPref(this, PERMISSION_GRANTING)) {
+                            } else if (prefUtils.getBooleanPref(PERMISSION_GRANTING)) {
                                 Timber.d("permission granting");
                                 AppConstants.TEMP_SETTINGS_ALLOWED = true;
                             } else {
@@ -187,22 +186,21 @@ public class WindowChangeDetectingService extends AccessibilityService {
             return;
         }
 
-        Future<Boolean> futureObject = AppExecutor.getInstance().getSingleThreadExecutor()
-                .submit(() -> isAllowed(WindowChangeDetectingService.this, componentName.getPackageName()));
 
-
-        try {
-            boolean status = futureObject.get();
-            Timber.d("isAllowed : %s", status);
-            if (!status) {
-                AppConstants.TEMP_SETTINGS_ALLOWED = false;
+        AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+            try {
+                boolean status = isAllowed(WindowChangeDetectingService.this, componentName.getPackageName());
+                Timber.d("isAllowed : %s", status);
+                if (!status) {
+                    AppConstants.TEMP_SETTINGS_ALLOWED = false;
+                    clearRecentApp(this, componentName.getPackageName());
+                } else {
+                    AppConstants.TEMP_SETTINGS_ALLOWED = true;
+                }
+            } catch (Exception e) {
                 clearRecentApp(this, componentName.getPackageName());
-            } else {
-                AppConstants.TEMP_SETTINGS_ALLOWED = true;
             }
-        } catch (Exception e) {
-            clearRecentApp(this, componentName.getPackageName());
-        }
+        });
     }
 
     @Override
@@ -225,7 +223,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
             handler.removeCallbacksAndMessages(null);
             handler = null;
         }
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
         ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("add"));
 
@@ -248,7 +246,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
 
     private boolean isAllowed(Context context, String packageName) {
 
-        String space = PrefUtils.getStringPref(context, CURRENT_KEY);
+        String space = prefUtils.getStringPref(CURRENT_KEY);
         String currentSpace = (space == null) ? "" : space;
         Timber.d("<<< QUERYING DATA >>>");
 
@@ -301,6 +299,8 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.providers.telephony/com.android.settings.Settings$ApnSettingsActivity");
         ssPermissions.add("com.android.settings/.Settings$ApnEditorActivity");
         ssPermissions.add("com.android.settings/.Settings$ApnSettingsActivity");
+        ssPermissions.add("com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity");
+        ssPermissions.add("Activity: com.sec.android.inputmethod/android.support.v7.widget.ActionBarContextView");
 
 
 //
@@ -321,7 +321,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/.password.ConfirmLockPattern$InternalActivity");
         ssPermissions.add("com.android.vpndialogs/.ConfirmDialog");
 
-        // samsung
+        // Samsung
         ssPermissions.add("com.android.settings/.Settings$ConnectionsSettingsActivity");
         ssPermissions.add("com.android.phone/com.samsung.telephony.phone.activities.SamsungMobileNetworkSettingsActivity");
         ssPermissions.add("com.android.settings/com.samsung.android.settings.personalvibration.SelectPatternDialog");
@@ -345,6 +345,15 @@ public class WindowChangeDetectingService extends AccessibilityService {
         // samsung
         ssPermissions.add("com.samsung.networkui/android.widget.FrameLayout");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.language.LanguagesAndTypesSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.SamsungKeypadSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.language.LanguagesSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.language.EditInputLanguages");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.typing.AutoSpacingSettings");
+        ssPermissions.add("com.sec.android.inputmethod/android.support.v7.widget.ActionBarContextView");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.typing.AutoReplacementSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.custom.CustomizationSettings");
+        ssPermissions.add("com.sec.android.inputmethod/.implement.setting.typing.SmartTypingSettings");
         ssPermissions.add("com.samsung.crane/com.android.settings.Settings$ApnSettingsActivity");
         ssPermissions.add("com.samsung.networkui/.MobileNetworkSettingsTab");
         ssPermissions.add("com.samsung.android.app.telephonyui/.netsettings.ui.NetSettingsActivity");

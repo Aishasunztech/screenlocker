@@ -9,20 +9,19 @@ import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.screenlocker.secure.room.MyAppDatabase;
-import com.secure.launcher.R;
-
-import com.screenlocker.secure.app.MyApplication;
-import com.screenlocker.secure.launcher.AppInfo;
-import com.screenlocker.secure.room.SubExtension;
-import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.CommonUtils;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import com.screenlocker.secure.app.MyApplication;
+import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
+import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.utils.AppConstants;
+import com.screenlocker.secure.utils.CommonUtils;
+import com.secure.launcher.R;
+
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -197,19 +196,18 @@ public class BlurWorker extends Worker {
                         app.setSystemApp(true);
                         MyAppDatabase.getInstance(applicationContext).getDao().updateApps(app);
                     }
-                    if (app.getPackageName().equals(applicationContext.getPackageName())){
-                        if (app.getPackageName().equals(applicationContext.getPackageName())) {
+                    if (app.getPackageName().equals(applicationContext.getPackageName())) {
 
-                            app.setGuest(false);
-                            app.setEncrypted(false);
-                            app.setEnable(false);
-                            app.setExtension(false);
-                            app.setVisible(false);
-                            app.setDefaultApp(true);
-                            app.setSystemApp(true);
-                            MyAppDatabase.getInstance(applicationContext).getDao().updateApps(app);
+                        app.setGuest(false);
+                        app.setEncrypted(false);
+                        app.setEnable(false);
+                        app.setExtension(false);
+                        app.setVisible(false);
+                        app.setDefaultApp(true);
+                        app.setSystemApp(true);
+                        MyAppDatabase.getInstance(applicationContext).getDao().updateApps(app);
 
-                        }
+
                     }
 
 
@@ -364,7 +362,6 @@ public class BlurWorker extends Worker {
             }
 
 
-
             Log.d(TAG, "doWork: Agya");
 
             List<SubExtension> dbExtensions = MyAppDatabase.getInstance(applicationContext).getDao().getSubExtensions(AppConstants.SECURE_SETTINGS_UNIQUE);
@@ -418,16 +415,13 @@ public class BlurWorker extends Worker {
                 Timber.d("adding screen capture settings");
                 com.screenlocker.secure.socket.model.Settings screen_capture_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_SS, false);
                 MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(screen_capture_settings);
-            }else if(settings != null && settings.size() == 3)
-            {
+            } else if (settings != null && settings.size() == 3) {
                 com.screenlocker.secure.socket.model.Settings wifi_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_WIFI, true);
                 MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(wifi_settings);
-            }else if(settings != null && settings.size() == 4)
-            {
+            } else if (settings != null && settings.size() == 4) {
                 com.screenlocker.secure.socket.model.Settings bluetooth_settings = new com.screenlocker.secure.socket.model.Settings(AppConstants.SET_BLUETOOTH, true);
                 MyAppDatabase.getInstance(applicationContext).getDao().insertSetting(bluetooth_settings);
             }
-
 
 
             return Result.success();
