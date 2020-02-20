@@ -2,12 +2,16 @@ package com.screenlocker.secure.launcher.subsettings;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -69,7 +73,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
 
         setToolbar();
         setListeners();
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
 
         settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
@@ -107,6 +111,9 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
         layout_mobiledata.setOnClickListener(this);
         layout_simcards.setOnClickListener(this);
         layoutDataRoaming.setOnClickListener(this);
+        mobileDataSim.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            setMobileDataState(isChecked);
+        });
 
     }
 
@@ -160,13 +167,36 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
         tvConnectedWIF.setText(getWifiStatus(this));
         tvConnectedBluetooth.setText(getBlueToothStatus(this));
-        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String currentKey = prefUtils.getStringPref( CURRENT_KEY);
 
         if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
 //            tvManagePasswords.setVisibility(View.GONE);
             bluethooth_layout.setVisibility(View.GONE);
             layout_hotspot.setVisibility(View.GONE);
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+
+            mobileDataSim.setVisibility(View.VISIBLE);
+            TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TelephonyManager telMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                int simStateMain = telMgr.getSimState(0);
+                int simStateSecond = telMgr.getSimState(1);
+
+                if (simStateMain == 5 || simStateSecond == 5) {
+                    mobileDataSim.setChecked(cm.isDataEnabled());
+                } else {
+                    // Toast.makeText(this, getResources().getString(R.string.list_is_empty), Toast.LENGTH_SHORT).show();
+                    mobileDataSim.setEnabled(false);
+                }
+            }
+
+        } else {
+            mobileDataSim.setVisibility(View.GONE);
+        }
+
+
     }
 
     void setUpPermissionSettingsEncrypted(List<SubExtension> settings) {
@@ -244,11 +274,18 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
             }
         }
     }
+    public void setMobileDataState(boolean mobileDataEnabled) {
+        TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            cm.setDataEnabled(mobileDataEnabled);
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
     }
 }

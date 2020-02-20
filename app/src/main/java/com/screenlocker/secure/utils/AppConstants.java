@@ -33,7 +33,7 @@ public class AppConstants {
     public static final String KEY_MAIN_IMAGE = "main_image";
     public static final String KEY_LOCK_IMAGE = "lock_image";
     public static final String CURRENT_KEY = "current_key";
-    public static final String DATABASE_NAME = "app_db";
+    public static final String DATABASE_NAME = "secure_app_db";
     public static final String KEY_MAIN = "main";
     public static final String KEY_DURESS = "duress";
     public static final int LAUNCHER_GRID_SPAN = 4;
@@ -115,7 +115,7 @@ public class AppConstants {
     public static String URL_1 = "https://api.lockmesh.com";//live SL
 //        public static String URL_1 = "https://devapi.lockmesh.com";// Dev
 //    public static final String URL_1 = "https://api.titansecureserver.com";//live TL
-//    public static String URL_1 = "http://192.168.0.125:3000";//local
+//    public static String URL_1 = "http://192.168.0.143:3000";//local
     public static final String URL_2 = "https://securenet.guru";
     //logs url
     public static final String URL_3 = "https://logs.lockmesh.com";

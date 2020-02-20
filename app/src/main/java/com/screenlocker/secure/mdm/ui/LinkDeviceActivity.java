@@ -19,8 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.secure.launcher.BuildConfig;
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.base.BaseActivity;
@@ -37,6 +35,8 @@ import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.utils.Utils;
+import com.secure.launcher.BuildConfig;
+import com.secure.launcher.R;
 
 import java.util.List;
 import java.util.Timer;
@@ -158,6 +158,8 @@ public class LinkDeviceActivity extends BaseActivity {
     @BindView(R.id.tvSimId)
     TextView tvSimId;
 
+    private PrefUtils prefUtils;
+
 
     @Override
     protected int getContentView() {
@@ -209,10 +211,12 @@ public class LinkDeviceActivity extends BaseActivity {
         setToolbar(toolbar);
 
 
+        if (prefUtils == null) {
+            prefUtils = PrefUtils.getInstance(this);
+        }
 
-
-        currentDealerID = PrefUtils.getStringPref(this, AppConstants.KEY_DEALER_ID);
-        connectedDid = PrefUtils.getStringPref(this, AppConstants.KEY_CONNECTED_ID);
+        currentDealerID = prefUtils.getStringPref(AppConstants.KEY_DEALER_ID);
+        connectedDid = prefUtils.getStringPref(AppConstants.KEY_CONNECTED_ID);
 
 
         linkedDealerPin = DEALER_ID_DEFAULT;
@@ -293,7 +297,7 @@ public class LinkDeviceActivity extends BaseActivity {
             pendingLinkViewState();
 
         } else if (status != null && status.equals(ACTIVE_STATE)) {
-            PrefUtils.saveBooleanPref(this, DEVICE_LINKED_STATUS, true);
+            prefUtils.saveBooleanPref(DEVICE_LINKED_STATUS, true);
             approvedLinkViewState();
         } else {
             processingLinkViewState();
@@ -307,8 +311,8 @@ public class LinkDeviceActivity extends BaseActivity {
                     if (output == null) {
                         Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     } else {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        prefUtils.saveStringPref(LIVE_URL, output);
+                        String live_url = prefUtils.getStringPref(LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                         linkDevice();
@@ -325,14 +329,14 @@ public class LinkDeviceActivity extends BaseActivity {
 
 
     private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String chatId, String pgpId, String simId1, String simId2) {
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, TOKEN, token);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, VALUE_EXPIRED, expiry_date);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, device_id);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, CHAT_ID, chatId);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, PGP_EMAIL, pgpId);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, SIM_ID, simId1);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, SIM_ID2, simId2);
-        PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, dealer_pin);
+        prefUtils.saveStringPref(TOKEN, token);
+        prefUtils.saveStringPref(VALUE_EXPIRED, expiry_date);
+        prefUtils.saveStringPref(DEVICE_ID, device_id);
+        prefUtils.saveStringPref(CHAT_ID, chatId);
+        prefUtils.saveStringPref(PGP_EMAIL, pgpId);
+        prefUtils.saveStringPref(SIM_ID, simId1);
+        prefUtils.saveStringPref(SIM_ID2, simId2);
+        prefUtils.saveStringPref(KEY_DEVICE_LINKED, dealer_pin);
     }
 
     private void setDealerPin(String id_or_msg) {
@@ -359,8 +363,8 @@ public class LinkDeviceActivity extends BaseActivity {
                     if (output == null) {
                         Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     } else {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        prefUtils.saveStringPref(LIVE_URL, output);
+                        String live_url = prefUtils.getStringPref(LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                         linkDevice();
@@ -381,7 +385,7 @@ public class LinkDeviceActivity extends BaseActivity {
         MyApplication.oneCaller
                 .linkDeviceToDealer(
                         new LinkDeviceModel(currentDealerID, connectedDid, IMEI, SimNo, SerialNo, MAC, IP, getResources().getString(R.string.apktype), BuildConfig.VERSION_NAME),
-                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+                        prefUtils.getStringPref(TOKEN)
 //                                +"INVALID_TOKEN"
                 )
                 .enqueue(new Callback<LinkDeviceResponse>() {
@@ -391,8 +395,8 @@ public class LinkDeviceActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             LinkDeviceResponse ldr = response.body();
                             if (ldr.isStatus()) {
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, ldr.getDealer_pin());
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, ldr.getDevice_id());
+                                prefUtils.saveStringPref(KEY_DEVICE_LINKED, ldr.getDealer_pin());
+                                prefUtils.saveStringPref(DEVICE_ID, ldr.getDevice_id());
                                 pendingLinkViewState();
                             } else {
                                 Toast.makeText(LinkDeviceActivity.this, getResources().getString(R.string.session_expired), Toast.LENGTH_SHORT).show();
@@ -414,7 +418,7 @@ public class LinkDeviceActivity extends BaseActivity {
         MyApplication.oneCaller
                 .stopLinkingDevice(
                         MAC, SerialNo,
-                        PrefUtils.getStringPref(LinkDeviceActivity.this, TOKEN)
+                        prefUtils.getStringPref(TOKEN)
 //                                +"INVALID_TOKEN"
                 )
                 .enqueue(new Callback<DeleteDeviceResponse>() {
@@ -426,8 +430,8 @@ public class LinkDeviceActivity extends BaseActivity {
                             DeleteDeviceResponse dDr = response.body();
 
                             if (dDr.isStatus()) {
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, null);
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED, null);
+                                prefUtils.saveStringPref(DEVICE_ID, null);
+                                prefUtils.saveStringPref(KEY_DEVICE_LINKED, null);
                                 newLinkViewState();
                             } else {
                                 pendingLinkViewState();
@@ -458,8 +462,8 @@ public class LinkDeviceActivity extends BaseActivity {
                 if (output == null) {
                     Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    prefUtils.saveStringPref(LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref(LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     stopLinking();
@@ -513,7 +517,7 @@ public class LinkDeviceActivity extends BaseActivity {
 
         Timber.i("<<<<<SwipedToRefresh>>>>>");
         freshViewState();
-        String device_id = PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID);
+        String device_id = prefUtils.getStringPref(DEVICE_ID);
         if (device_id != null) {
             if (MyApplication.oneCaller == null) {
                 if (asyncCalls != null) {
@@ -524,8 +528,8 @@ public class LinkDeviceActivity extends BaseActivity {
                     if (output == null) {
                         Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     } else {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        prefUtils.saveStringPref(LIVE_URL, output);
+                        String live_url = prefUtils.getStringPref(LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                         checkDeviceStatus();
@@ -558,7 +562,7 @@ public class LinkDeviceActivity extends BaseActivity {
                             String msg = response.body().getMsg();
 
 
-                            boolean isLinked = PrefUtils.getBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS);
+                            boolean isLinked = prefUtils.getBooleanPref(DEVICE_LINKED_STATUS);
                             if (response.body().isStatus()) {
 
                                 switch (msg) {
@@ -566,27 +570,27 @@ public class LinkDeviceActivity extends BaseActivity {
                                         DeviceStatusResponse dsr = response.body();
                                         saveInfo(response.body().getToken(), dsr.getDevice_id(), dsr.getExpiry_date(), dsr.getDealer_pin(), dsr.getChatId(), dsr.getPgpID(), dsr.getSimId1(), dsr.getSimId2());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
-                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref(DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case EXPIRED:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "expired");
-                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref(DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case SUSPENDED:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.suspendedDevice(LinkDeviceActivity.this, "suspended");
-                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref(DEVICE_LINKED_STATUS, true);
                                         isPendingActivation = false;
                                         finish();
                                         break;
                                     case TRIAL:
                                         saveInfo(response.body().getToken(), response.body().getDevice_id(), response.body().getExpiry_date(), response.body().getDealer_pin(), response.body().getChatId(), response.body().getPgpID(), response.body().getSimId1(), response.body().getSimId2());
                                         utils.unSuspendDevice(LinkDeviceActivity.this);
-                                        PrefUtils.saveBooleanPref(LinkDeviceActivity.this, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref(DEVICE_LINKED_STATUS, true);
                                         approvedLinkViewState();
                                         break;
                                     case PENDING:
@@ -596,7 +600,7 @@ public class LinkDeviceActivity extends BaseActivity {
                                         break;
                                 }
                             } else {
-                                PrefUtils.saveStringPref(LinkDeviceActivity.this, DEVICE_ID, response.body().getDevice_id());
+                                prefUtils.saveStringPref(DEVICE_ID, response.body().getDevice_id());
 
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
@@ -665,7 +669,7 @@ public class LinkDeviceActivity extends BaseActivity {
             t.cancel();
             t = null;
         }
-        PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ACTIVATION, isPendingActivation);
+        prefUtils.saveBooleanPref(AppConstants.PENDING_ACTIVATION, isPendingActivation);
 
         if (mListener != null)
             mListener.onScheduleTimer(isPendingActivation);
@@ -732,7 +736,7 @@ public class LinkDeviceActivity extends BaseActivity {
     private void pendingLinkViewState() {
         scheduleTimer();
         isPendingActivation = true;
-        setDealerPin(PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED));
+        setDealerPin(prefUtils.getStringPref(KEY_DEVICE_LINKED));
         btnLinkDevice.setVisibility(View.GONE);
         btnStopLink.setText(R.string.stop_linking);
         btnStopLink.setVisibility(View.VISIBLE);
@@ -740,7 +744,7 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setText(R.string.link_request_pending);
         tvLinkedStatus.setTextColor(Color.BLUE);
         tvLinkedStatus.setVisibility(View.VISIBLE);
-        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
+        tvDeviceId.setText(prefUtils.getStringPref(DEVICE_ID));
 
         showContainer(1);
 
@@ -815,14 +819,14 @@ public class LinkDeviceActivity extends BaseActivity {
         btnLinkDevice.setText(getResources().getString(R.string.next));
         btnLinkDevice.setEnabled(false);
         linked = true;
-        tvDeviceId.setText(PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID));
+        tvDeviceId.setText(prefUtils.getStringPref(DEVICE_ID));
 
-        String dealerPin = PrefUtils.getStringPref(LinkDeviceActivity.this, KEY_DEVICE_LINKED);
+        String dealerPin = prefUtils.getStringPref(KEY_DEVICE_LINKED);
         if (dealerPin != null) {
 
             tvLinkedDealerPin.setText(dealerPin);
             tv_label_dealer_pin.setText(String.format("%s: %s", getResources().getString(R.string.dealer_pin), dealerPin));
-            tv_linked_deviceId.setText(String.format("Device ID: %s", PrefUtils.getStringPref(LinkDeviceActivity.this, DEVICE_ID)));
+            tv_linked_deviceId.setText(String.format("Device ID: %s", prefUtils.getStringPref(DEVICE_ID)));
         }
 
 
@@ -830,19 +834,19 @@ public class LinkDeviceActivity extends BaseActivity {
         tvLinkedStatus.setTextColor(ContextCompat.getColor(this, R.color.green_dark));
         tvLinkedStatus.setVisibility(View.VISIBLE);
         // pgp Email
-        String pgp_Email = PrefUtils.getStringPref(LinkDeviceActivity.this, PGP_EMAIL);
+        String pgp_Email = prefUtils.getStringPref(PGP_EMAIL);
         if (pgp_Email != null) {
             pgpEmail.setVisibility(View.VISIBLE);
             tvPgpEmail.setText(pgp_Email);
         }
         // chat ID
-        String chat_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, CHAT_ID);
+        String chat_Id = prefUtils.getStringPref(CHAT_ID);
         if (chat_Id != null) {
             chatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
         }
         // sim ID
-        String sim_Id = PrefUtils.getStringPref(LinkDeviceActivity.this, SIM_ID);
+        String sim_Id = prefUtils.getStringPref(SIM_ID);
         if (sim_Id != null) {
             simId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
@@ -970,5 +974,6 @@ public class LinkDeviceActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+        prefUtils = PrefUtils.getInstance(this);
     }
 }

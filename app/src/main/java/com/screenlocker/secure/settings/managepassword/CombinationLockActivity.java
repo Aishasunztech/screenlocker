@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class CombinationLockActivity extends AppCompatActivity implements NCodeView.OnPFCodeListener, PatternLockViewListener {
+public class CombinationLockActivity extends BaseActivity implements NCodeView.OnPFCodeListener, PatternLockViewListener {
 
     private String extra;
     private String mCode;

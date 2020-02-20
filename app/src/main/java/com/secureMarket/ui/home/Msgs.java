@@ -7,5 +7,6 @@ package com.secureMarket.ui.home;
 public enum Msgs {
     ERROR,
     LOADING,
-    SUCCESS
+    SUCCESS,
+    SERVER_ERROR
 }

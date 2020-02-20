@@ -97,7 +97,9 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
     private void setListeners() {
         switchGuest.setOnCheckedChangeListener(this);
         switchEncrypt.setOnCheckedChangeListener(this);
+        switchEncrypt.setVisibility(View.GONE);
         switchEnable.setOnCheckedChangeListener(this);
+        switchEnable.setVisibility(View.GONE);
     }
 
     private void setRecyclerView(List<SubExtension> subExtensions) {
@@ -192,7 +194,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
         intent.putExtra(KEY_DATABASE_CHANGE, "extensions");
         LocalBroadcastManager.getInstance(SecureSettingsActivity.this).sendBroadcast(intent);
 
-        PrefUtils.saveBooleanPref(this, SECURE_SETTINGS_CHANGE, true);
+        prefUtils.saveBooleanPref( SECURE_SETTINGS_CHANGE, true);
 
 
         super.onStop();
@@ -266,7 +268,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         });
 
                     }).start();
-                    PrefUtils.saveBooleanPref(this, EXTENSION_GUEST_CHECKED, false);
+                    prefUtils.saveBooleanPref( EXTENSION_GUEST_CHECKED, false);
                     item.setChecked(false);
                 } else {
                     for (SubExtension subExtension : extensionsList) {
@@ -288,7 +290,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
 
                         }
                     }).start();
-                    PrefUtils.saveBooleanPref(this, EXTENSION_GUEST_CHECKED, true);
+                    prefUtils.saveBooleanPref( EXTENSION_GUEST_CHECKED, true);
 
                     item.setChecked(true);
                 }
@@ -311,7 +313,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         runOnUiThread(() -> setRecyclerView(extensionsList));
 
                     }).start();
-                    PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, false);
+                    prefUtils.saveBooleanPref( EXTENSION_ENCRYPTED_CHECKED, false);
 
 
                     item.setChecked(false);
@@ -333,7 +335,7 @@ public class SecureSettingsActivity extends BaseActivity implements SelectionCon
                         });
 
                     }).start();
-                    PrefUtils.saveBooleanPref(this, EXTENSION_ENCRYPTED_CHECKED, true);
+                    prefUtils.saveBooleanPref( EXTENSION_ENCRYPTED_CHECKED, true);
                     item.setChecked(true);
                 }
 

@@ -151,9 +151,9 @@ public class CommonUtils {
     }
 
     //get time remaining
-    public static long getTimeRemaining(Context context) {
+    public static long getTimeRemaining(PrefUtils prefUtils) {
         long current_time = new Date().getTime();
-        long time_remaining = PrefUtils.getLongPref(context, TIME_REMAINING_REBOOT);
+        long time_remaining = prefUtils.getLongPref( TIME_REMAINING_REBOOT);
         if (time_remaining - current_time <= 0) {
             return 0;
         } else {
@@ -162,10 +162,10 @@ public class CommonUtils {
     }
 
     //set time remaining
-    public static void setTimeRemaining(Context context) {
+    public static void setTimeRemaining( PrefUtils prefUtils) {
         long current_time = new Date().getTime();
-        long remaining_time = PrefUtils.getLongPref(context, TIME_REMAINING);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, current_time + remaining_time);
+        long remaining_time = prefUtils.getLongPref(TIME_REMAINING);
+        prefUtils.saveLongPref(TIME_REMAINING_REBOOT, current_time + remaining_time);
     }
 
     public static void hideKeyboard(AppCompatActivity activity) {
@@ -400,11 +400,11 @@ public class CommonUtils {
 
     // calculate expiry date
 
-    public static String getRemainingDays(Context context) {
+    public static String getRemainingDays(Context context, PrefUtils prefUtils) {
 
         String daysLeft = null;
 
-        String value_expired = PrefUtils.getStringPref(context, VALUE_EXPIRED);
+        String value_expired = prefUtils.getStringPref( VALUE_EXPIRED);
 
 
         if (value_expired != null) {
@@ -456,8 +456,8 @@ public class CommonUtils {
 
     }
 
-    public static boolean isNetworkConneted(Context context) {
-        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+    public static boolean isNetworkConneted(PrefUtils prefUtils) {
+        String state = prefUtils.getStringPref( CURRENT_NETWORK_STATUS);
         return state != null && state.equals(CONNECTED);
     }
 
@@ -506,7 +506,7 @@ public class CommonUtils {
         } else {
             isfileSharing = true;
         }
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, false);
+        PrefUtils.getInstance(context).saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, false);
 
 
         settings.add(new Settings(AppConstants.SET_WIFI, true));
@@ -542,9 +542,9 @@ public class CommonUtils {
         return minuteString + ":" + secondString;
     }
 
-    public static String currentSpace(Context context)
+    public static String currentSpace(PrefUtils prefUtils)
     {
-        String space = PrefUtils.getStringPref(context,CURRENT_KEY);
+        String space = prefUtils.getStringPref(CURRENT_KEY);
         if (KEY_MAIN_PASSWORD.equals(space)) {
             return "encrypted";
         }

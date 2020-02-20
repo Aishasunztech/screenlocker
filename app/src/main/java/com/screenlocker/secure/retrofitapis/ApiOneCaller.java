@@ -44,7 +44,7 @@ public interface ApiOneCaller {
     @POST("v2/mobile/getstatus")
     Call<NetworkResponse> checkStatus(@Field("imei") String imeiNumber, @Field("mac") String macAddress);
 
-    @GET("apklist")
+    @GET("v2/mobile/apklist")
     Call<InstallAppModel> getApps();
 
 

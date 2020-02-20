@@ -196,7 +196,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
             boolean isConnected = networkStatus.equals(CONNECTED);
 
-            if (PrefUtils.getBooleanPref(SettingsActivity.this, DEVICE_LINKED_STATUS)) {
+            if (prefUtils.getBooleanPref( DEVICE_LINKED_STATUS)) {
                 if (isConnected) {
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
@@ -257,14 +257,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         init();
 
 
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (!prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
 
             finish();
         }
 
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
         NotificationViewModel viewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
         viewModel.getUnReadCount().observe(this, integer -> {
@@ -288,9 +288,9 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, true);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
-        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String currentKey = prefUtils.getStringPref( CURRENT_KEY);
 
         if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
 //            tvManagePasswords.setVisibility(View.GONE);
@@ -312,7 +312,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             tvAdvance.setVisibility(View.VISIBLE);
         }
 
-        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getBooleanPref( TOUR_STATUS)) {
             if (!utils.isMyServiceRunning(LockScreenService.class, this)) {
                 Intent intent = new Intent(this, LockScreenService.class);
 
@@ -384,7 +384,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.secure_settings_activity_title);
-            String deviceid = PrefUtils.getStringPref(this, DEVICE_ID);
+            String deviceid = prefUtils.getStringPref( DEVICE_ID);
             if (deviceid != null) {
                 getSupportActionBar().setSubtitle(getResources().getString(R.string.device_id) + ": " + deviceid);
             }
@@ -507,7 +507,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         try {
             NetworkCapabilities nc = manager.getNetworkCapabilities(n);
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (!PrefUtils.getBooleanPref(this, UPDATESIM)) {
+                if (!prefUtils.getBooleanPref( UPDATESIM)) {
                     new AlertDialog.Builder(this)
                             .setTitle(getResources().getString(R.string.warning))
                             .setMessage(getResources().getString(R.string.sim_update_warning))
@@ -540,7 +540,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
         if (currentVersion != null)
-            if (CommonUtils.isNetworkConneted(this)) {
+            if (CommonUtils.isNetworkConneted(prefUtils)) {
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();
@@ -565,8 +565,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             asyncCalls = new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     update(dialog);
@@ -584,7 +584,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     private void update(ProgressDialog dialog) {
         MyApplication.oneCaller
-                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name),
+                        prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -628,7 +629,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                                                     Timber.i("------------> updated apk url : %s", apkUrl);
 
 
-                                                    String live_url = PrefUtils.getStringPref(SettingsActivity.this, LIVE_URL);
+                                                    String live_url = prefUtils.getStringPref( LIVE_URL);
                                                     Timber.i("------------> Live Server Url :%s ", live_url);
 
                                                     DownLoadAndInstallUpdate obj = new DownLoadAndInstallUpdate(SettingsActivity.this, live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT + CommonUtils.splitName(apkUrl), false, null,getPackageName());
@@ -738,7 +739,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // PGP Email
         TextView tvPgpEmail = aboutDialog.findViewById(R.id.tvPgpEmail);
         TextView textView18 = aboutDialog.findViewById(R.id.textView18);
-        String pgpEmail = PrefUtils.getStringPref(SettingsActivity.this, PGP_EMAIL);
+        String pgpEmail = prefUtils.getStringPref( PGP_EMAIL);
         if (pgpEmail != null) {
             textView18.setVisibility(View.VISIBLE);
             tvPgpEmail.setVisibility(View.VISIBLE);
@@ -748,7 +749,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Chat ID
         TextView tvChatId = aboutDialog.findViewById(R.id.tvChatId);
         TextView textView19 = aboutDialog.findViewById(R.id.textView19);
-        String chatId = PrefUtils.getStringPref(SettingsActivity.this, CHAT_ID);
+        String chatId = prefUtils.getStringPref( CHAT_ID);
         if (chatId != null) {
             textView19.setVisibility(View.VISIBLE);
             tvChatId.setVisibility(View.VISIBLE);
@@ -768,7 +769,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         // Sim ID
         TextView tvSimId = aboutDialog.findViewById(R.id.tvSimId);
         TextView textView20 = aboutDialog.findViewById(R.id.textView20);
-        String simId = PrefUtils.getStringPref(SettingsActivity.this, SIM_ID);
+        String simId = prefUtils.getStringPref( SIM_ID);
         if (simId != null) {
             textView20.setVisibility(View.VISIBLE);
             tvSimId.setVisibility(View.VISIBLE);
@@ -785,10 +786,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         switch (requestCode) {
             case RESULT_ENABLE:
                 if (resultCode == Activity.RESULT_OK) {
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, true);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_ADMIN_ALLOWED, true);
                     Toast.makeText(SettingsActivity.this, getResources().getString(R.string.enable_admin_device_feature), Toast.LENGTH_SHORT).show();
                 } else {
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ADMIN_ALLOWED, false);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_ADMIN_ALLOWED, false);
                     Toast.makeText(SettingsActivity.this, getResources().getString(R.string.problem_admin_device_feature), Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -806,11 +807,11 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                     Timber.e("onActivityResult: BG_CHANGER : %s", resultUri);
                     if (isEncryptedChecked) {
                         Toast.makeText(this, getResources().getString(R.string.bg_save_encrypted), Toast.LENGTH_SHORT).show();
-                        PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
+                        prefUtils.saveStringPref( AppConstants.KEY_MAIN_IMAGE, resultUri.toString());
 
                     } else {
                         Toast.makeText(this, getResources().getString(R.string.bg_save_guest), Toast.LENGTH_SHORT).show();
-                        PrefUtils.saveStringPref(SettingsActivity.this, AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
+                        prefUtils.saveStringPref( AppConstants.KEY_GUEST_IMAGE, resultUri.toString());
                     }
                 }
 //                 else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -830,7 +831,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private void languageDialogue() {
         int item;
         AtomicInteger selected = new AtomicInteger();
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
+        if (prefUtils.getBooleanPref( AppConstants.KEY_THEME)) {
             item = 0;
             selected.set(0);
         } else {
@@ -873,7 +874,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
             models.add(languageModel2);
         }
-        String saved = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        String saved = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
         if (saved == null || saved.equals("")) {
             saved = "en";
         }
@@ -930,7 +931,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         intent.putExtra(KEY_DATABASE_CHANGE, "apps");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         CommonUtils.setAppLocale(code, SettingsActivity.this);
-        PrefUtils.saveStringPref(this, AppConstants.LANGUAGE_PREF, code);
+        prefUtils.saveStringPref( AppConstants.LANGUAGE_PREF, code);
         restartActivity();
         OneTimeWorkRequest insertionWork =
                 new OneTimeWorkRequest.Builder(BlurWorker.class)

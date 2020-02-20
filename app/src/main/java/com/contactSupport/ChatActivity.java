@@ -26,24 +26,15 @@ import com.secure.launcher.R;
 import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity  {
-    private ChatViewModel viewModel;
 
 
-    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            finish();
-        }
 
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
-        Toolbar mToolBar = findViewById(R.id.toolbar);
+
 
 
     }

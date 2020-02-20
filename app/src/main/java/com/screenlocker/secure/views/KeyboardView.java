@@ -3,9 +3,6 @@ package com.screenlocker.secure.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-
-import androidx.annotation.IdRes;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
@@ -16,18 +13,21 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.secure.launcher.R;
+import androidx.annotation.IdRes;
 
 import com.screenlocker.secure.socket.interfaces.RefreshListener;
+import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.util.Random;
 
-import static com.screenlocker.secure.socket.utils.utils.getDeviceStatus;
+import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
 
 public class KeyboardView extends LinearLayout implements View.OnClickListener, RefreshListener {
 
     private EditText mPasswordField;
     private TextView txtWarning;
+    private PrefUtils prefUtils;
 
     public KeyboardView(Context context) {
         super(context);
@@ -53,6 +53,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
     private void initViews() {
 
         mPasswordField = $(R.id.password_field);
+        prefUtils = PrefUtils.getInstance(getContext());
         txtWarning = $(R.id.txtWarning);
 
         $(R.id.t9_key_clear).setOnClickListener(this);
@@ -114,7 +115,7 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String device_status = getDeviceStatus(getContext());
+                String device_status = prefUtils.getStringPref( DEVICE_STATUS);
                 if (device_status == null) {
                     txtWarning.setVisibility(INVISIBLE);
                 }
@@ -199,7 +200,6 @@ public class KeyboardView extends LinearLayout implements View.OnClickListener, 
 //        if(!msg.equals(getResources().getString(R.string.wrong_password_try_again))){
 //            txtWarning.setBackgroundResource(R.drawable.error_msg);
 //        }
-
 
 
         txtWarning.setText(msg);

@@ -75,11 +75,11 @@ public class SimStateChangeListener extends BroadcastReceiver {
         }
     }
     void saveIccid(Context context,String iccid){
-        Set<String> set = PrefUtils.getStringSet(context, UNSYNC_ICCIDS);
+        Set<String> set = PrefUtils.getInstance(context).getStringSet( UNSYNC_ICCIDS);
         if (set == null)
             set = new HashSet<>();
         set.add(iccid);
-        PrefUtils.saveStringSetPref(context, UNSYNC_ICCIDS, set);
+        PrefUtils.getInstance(context).saveStringSetPref( UNSYNC_ICCIDS, set);
         Intent intent = new Intent(BROADCAST_APPS_ACTION);
         intent.putExtra(KEY_DATABASE_CHANGE, "simSettings");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

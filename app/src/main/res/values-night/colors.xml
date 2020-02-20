@@ -11,6 +11,8 @@
     <color name="background">#4b4b4b</color>
     <color name="icon_tint">#FFFFFFFF</color>
 
+    <color name="white_five">#fff</color>
+
     <!--<color name="guest_default_background_color">#4b4b4b</color>-->
 
     <color name="green_dark">#0e7904</color>
@@ -27,8 +29,14 @@
     <color name="colorHintMaterial">#9E9E9E</color>
 
 
+
+
+
     //Secure Settings colors
     <color name="SettingsColorPrimary">#008577</color>
     <color name="SettingsColorAccent">#D81B60</color>
+
     <color name="pomegranate">#f4511e</color>
+
+
 </resources>

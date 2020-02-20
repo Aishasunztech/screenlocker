@@ -16,6 +16,8 @@
     <color name="seekbarColor">#EF9C00</color>
     <color name="switchContainerColor">#eeeeee</color>
 
+    <color name="white_five">#fff</color>
+
 
     <color name="colorBlack">#999999</color>
     <color name="colorLightBlack">#FFFFFF</color>
@@ -35,7 +37,7 @@
     <color name="SettingsColorAccent">#D81B60</color>
 
     <color name="pomegranate">#f4511e</color>
-    <color name="white_five">#FFF1F1F1</color>
+
 
 
 </resources>

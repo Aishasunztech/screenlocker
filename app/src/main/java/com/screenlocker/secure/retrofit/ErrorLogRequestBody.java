@@ -11,7 +11,7 @@ import okhttp3.ResponseBody;
  * @author : Muhammad Nadeem
  * Created at: 2/10/2020
  */
-@Entity()
+@Entity
 public class ErrorLogRequestBody {
     @PrimaryKey(autoGenerate = true)
     private long requestId;

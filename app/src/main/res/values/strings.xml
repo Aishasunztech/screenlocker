@@ -5,10 +5,10 @@
         <item>2</item>
         <item>3</item>
     </integer-array>
-    <string name="my_apk_name" translatable="false">Screen Locker BYOD</string>
-    <string name="app_name" translatable="false">Screen Locker BYOD</string>
-    <string name="toolbar_title" translatable="false">Screen Locker BYOD</string>
-    <string name="apktype" translatable="false">BYOD</string>
+    <string name="my_apk_name" translatable="false">Test Locker</string>
+    <string name="app_name" translatable="false">Test Locker</string>
+    <string name="toolbar_title" translatable="false">Test Locker</string>
+    <string name="apktype" translatable="false">SW</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
     <string name="number_two" translatable="false">2</string>

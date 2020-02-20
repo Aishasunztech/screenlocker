@@ -1,3 +1,4 @@
+/*
 package com.screenlocker.secure.socket.service;
 
 import android.Manifest;
@@ -198,7 +199,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             device_id = PrefUtils.getStringPref(SocketService.this, DEVICE_ID);
             if (token != null && device_id != null && action != null)
                 switch (action) {
-                    case "start":/* connecting to socket*/
+                    case "start":*/
+/* connecting to socket*//*
+
                         String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
                         socketManager.destroy();
                         socketManager.connectSocket(token, device_id, live_url);
@@ -271,7 +274,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             case 1:
                 Timber.d("Socket is connecting");
                 break;
-            case 2:/*                Timber.d("Socket is connected");*/
+            case 2:*/
+/*                Timber.d("Socket is connected");*//*
+
                 break;
             case 3:
                 Timber.d("Socket is disconnected");
@@ -1444,3 +1449,4 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
 }
+*/

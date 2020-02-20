@@ -54,6 +54,7 @@ public class SocketManager {
 
     private String notify = "";
     private ToneGenerator toneGen1;
+    private PrefUtils prefUtils;
 
 
     private static SocketManager instance;
@@ -62,6 +63,7 @@ public class SocketManager {
 
 
     private SocketManager() {
+        prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
     }
 
 
@@ -206,7 +208,7 @@ public class SocketManager {
 
                 clientChatSocket.on(Socket.EVENT_CONNECT, args -> {
                     Timber.i("clientChatSocket connected");
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
+                    prefUtils.saveBooleanPref( AppConstants.CLIENT_CHAT_SOCKET, true);
 
                     notify = device_id;
                     clientChatSocket.on(notify, args1 -> {
@@ -218,7 +220,7 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(getAppContext(), IS_LIVE_CLIENT_VISIBLE);
+                                    boolean isLiveActivityVisible = prefUtils.getBooleanPref( IS_LIVE_CLIENT_VISIBLE);
                                     JSONObject data = (JSONObject) args1[1];
                                     if (!data.getString("msg").equals("")) {
                                         if (!isLiveActivityVisible) {
@@ -232,8 +234,8 @@ public class SocketManager {
 
 
                                             notificationManager.notify((int) System.currentTimeMillis(), notification);
-                                            int numberOfNotifications = PrefUtils.getIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS);
-                                            PrefUtils.saveIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS, ++numberOfNotifications);
+                                            int numberOfNotifications = prefUtils.getIntegerPref( NUMBER_OF_NOTIFICATIONS);
+                                            prefUtils.saveIntegerPref( NUMBER_OF_NOTIFICATIONS, ++numberOfNotifications);
 
                                         } else {
 
@@ -277,7 +279,7 @@ public class SocketManager {
                         clientChatSocket.off(notify);
                     }
 
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
+                    prefUtils.saveBooleanPref( AppConstants.CLIENT_CHAT_SOCKET, false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {

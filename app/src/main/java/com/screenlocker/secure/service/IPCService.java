@@ -38,19 +38,19 @@ public class IPCService extends Service {
     IPCWithSL.Stub binder =  new IPCWithSL.Stub() {
         @Override
         public String getChatId() throws RemoteException {
-            Timber.d("getChatId: %s", PrefUtils.getStringPref(IPCService.this, CHAT_ID));
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), CHAT_ID);
+//            Timber.d("getChatId: %s", PrefUtils.getStringPref(IPCService.this, CHAT_ID));
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( CHAT_ID);
         }
 
         @Override
         public String getDeviceId() throws RemoteException {
-            Timber.d("getDeviceId: %s", PrefUtils.getStringPref(IPCService.this, DEVICE_ID));
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID);
+//            Timber.d("getDeviceId: %s", PrefUtils.getStringPref(IPCService.this, DEVICE_ID));
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( DEVICE_ID);
         }
 
         @Override
         public String getPGPEmail() throws RemoteException {
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), PGP_EMAIL);
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( PGP_EMAIL);
         }
 
         @Override

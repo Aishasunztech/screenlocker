@@ -9,19 +9,19 @@ import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_PACKAGES;
 public class MarketUtils {
 
 
-    public static void savePackages(String packageName, String type, String userSpace, Context context) {
+    public static void savePackages(String packageName, String type, String userSpace, PrefUtils prefUtils) {
 
-        String packages = PrefUtils.getStringPref(context, type);
+        String packages = prefUtils.getStringPref( type);
         if (packages == null) {
             packages = "";
         }
 
-        PrefUtils.saveStringPref(context, type, packages + packageName + ":" + userSpace + ",");
+        prefUtils.saveStringPref( type, packages + packageName + ":" + userSpace + ",");
     }
 
-    public static boolean isInUninstalled(Context context,String packageName)
+    public static boolean isInUninstalled(PrefUtils prefUtils,String packageName)
     {
-        String packages = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
+        String packages = prefUtils.getStringPref( UNINSTALLED_PACKAGES);
         if(packages != null)
         {
             if(packages.contains(packageName))

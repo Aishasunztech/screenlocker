@@ -28,5 +28,9 @@ interface IPCWithSL {
 
     boolean isPackageSuspended(String packageName);
 
+    /*
+    *get if package is suspended
+    */
+
     int getWhiteLabelType();
 }

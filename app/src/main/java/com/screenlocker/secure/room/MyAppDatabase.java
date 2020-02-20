@@ -7,8 +7,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-
-import com.contactSupport.ChatMessages;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
 import com.screenlocker.secure.room.security.DatabaseSecretProvider;
@@ -40,9 +38,5 @@ public abstract class MyAppDatabase extends RoomDatabase {
     }
     public abstract MyDao getDao();
 
-    @Override
-    public void clearAllTables() {
-
-    }
 
 }

@@ -17,7 +17,7 @@ import static com.screenlocker.secure.utils.AppConstants.VALUE_EXPIRED;
 public class LinkStatusJobScheduler extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
-        String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
+//        String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
         /*if (device_id != null) {
             new CheckInstance(internet -> {
                 if (internet) {
@@ -122,9 +122,9 @@ public class LinkStatusJobScheduler extends JobService {
         return false;
     }
     private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin) {
-        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, TOKEN, token);
-        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, VALUE_EXPIRED, expiry_date);
-        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, DEVICE_ID, device_id);
-        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, KEY_DEVICE_LINKED, dealer_pin);
+//        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, TOKEN, token);
+//        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, VALUE_EXPIRED, expiry_date);
+//        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, DEVICE_ID, device_id);
+//        PrefUtils.saveStringPref(LinkStatusJobScheduler.this, KEY_DEVICE_LINKED, dealer_pin);
     }
 }

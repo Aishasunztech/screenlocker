@@ -59,10 +59,12 @@ public class ApiUtils implements ApiRequests {
     private Context context;
     private String macAddress;
     private String serialNo;
+    private PrefUtils prefUtils;
 
 
     public ApiUtils(Context context, String macAddress, String serialNo) {
         this.context = context;
+        prefUtils = PrefUtils.getInstance(context);
         this.macAddress = macAddress;
         this.serialNo = serialNo;
 
@@ -86,8 +88,8 @@ public class ApiUtils implements ApiRequests {
 
             asyncCalls = new AsyncCalls(output -> {
                 if (output != null) {
-                    PrefUtils.saveStringPref(context, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(context, LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     runSocket();
@@ -122,34 +124,34 @@ public class ApiUtils implements ApiRequests {
                                 switch (msg) {
                                     case ACTIVE:
                                     case TRIAL:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
-                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, false);
+                                        prefUtils.saveBooleanPref( DEVICE_LINKED_STATUS, true);
                                         utils.unSuspendDevice(context);
                                         break;
                                     case EXPIRED:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
-                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, false);
+                                        prefUtils.saveBooleanPref( DEVICE_LINKED_STATUS, true);
                                         utils.suspendedDevice(context, "expired");
                                         break;
                                     case SUSPENDED:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
-                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, false);
+                                        prefUtils.saveBooleanPref( DEVICE_LINKED_STATUS, true);
                                         utils.suspendedDevice(context, "suspended");
                                         break;
                                     case FLAGGED:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
-                                        PrefUtils.saveBooleanPref(context, DEVICE_LINKED_STATUS, true);
+                                        prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, false);
+                                        prefUtils.saveBooleanPref( DEVICE_LINKED_STATUS, true);
                                         suspendedDevice(context, "flagged");
                                         break;
                                     case PENDING:
-                                        PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, true);
+                                        prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, true);
                                         break;
                                 }
                             } else {
 
-                                PrefUtils.saveStringPref(context, DEVICE_ID, response.body().getDevice_id());
+                                prefUtils.saveStringPref( DEVICE_ID, response.body().getDevice_id());
 
-                                PrefUtils.saveBooleanPref(context, AppConstants.PENDING_ACTIVATION, false);
+                                prefUtils.saveBooleanPref( AppConstants.PENDING_ACTIVATION, false);
                                 switch (msg) {
                                     case UNLINKED_DEVICE:
                                         utils.unlinkDeviceWithMsg(context, true, "unlinked");
@@ -175,7 +177,7 @@ public class ApiUtils implements ApiRequests {
                     @Override
                     public void onFailure(@NonNull Call<DeviceStatusResponse> call, @NonNull Throwable t) {
                         Timber.d(t);
-                        String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
+                        String device_status = prefUtils.getStringPref( DEVICE_STATUS);
                         Intent intent = new Intent(DEVICE_STATUS_CHANGE_RECEIVER);
                         if (device_status == null) {
                             intent.putExtra("device_status", (String) null);
@@ -213,15 +215,15 @@ public class ApiUtils implements ApiRequests {
     }
 
     private void saveInfo(String token, String device_id, String expiry_date, String dealer_pin, String userId, String chatId, String pgpId, String simId1, String simId2) {
-        PrefUtils.saveStringPref(context, TOKEN, token);
-        PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
-        PrefUtils.saveStringPref(context, VALUE_EXPIRED, expiry_date);
-        PrefUtils.saveStringPref(context, USER_ID, userId);
-        PrefUtils.saveStringPref(context, CHAT_ID, chatId);
-        PrefUtils.saveStringPref(context, PGP_EMAIL, pgpId);
-        PrefUtils.saveStringPref(context, SIM_ID, simId1);
-        PrefUtils.saveStringPref(context, SIM_ID2, simId2);
-        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, dealer_pin);
+        prefUtils.saveStringPref( TOKEN, token);
+        prefUtils.saveStringPref( DEVICE_ID, device_id);
+        prefUtils.saveStringPref( VALUE_EXPIRED, expiry_date);
+        prefUtils.saveStringPref( USER_ID, userId);
+        prefUtils.saveStringPref( CHAT_ID, chatId);
+        prefUtils.saveStringPref( PGP_EMAIL, pgpId);
+        prefUtils.saveStringPref( SIM_ID, simId1);
+        prefUtils.saveStringPref( SIM_ID2, simId2);
+        prefUtils.saveStringPref( KEY_DEVICE_LINKED, dealer_pin);
 
     }
 

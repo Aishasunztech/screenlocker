@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.screenlocker.secure.utils.AppConstants.SUB_AdminPanel;
+
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private final List<SubExtension> subExtensionList;
@@ -111,6 +113,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         vh.guestSwitch.setChecked(info.isGuest());
         vh.encryptedSwitch.setChecked(info.isEncrypted());
         vh.enabledSwitch.setVisibility(View.GONE);
+        if (info.getUniqueExtension().equals(AppConstants.SECURE_SETTINGS_UNIQUE + SUB_AdminPanel)){
+            vh.encryptedSwitch.setVisibility(View.INVISIBLE);
+        }else vh.encryptedSwitch.setVisibility(View.VISIBLE);
 
     }
 

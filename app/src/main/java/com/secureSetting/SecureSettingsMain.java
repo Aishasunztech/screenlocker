@@ -107,7 +107,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     // showing allowed menu for each user type
     private void showMenus() {
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = PrefUtils.getInstance(this).getStringPref( CURRENT_KEY);
         if (userType != null) {
             switch (userType) {
                 // encrypted user
@@ -452,7 +452,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        PrefUtils.getInstance(this).saveBooleanPref( IS_SETTINGS_ALLOW, true);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         bluetoothName.setText(getBlueToothStatus(this));

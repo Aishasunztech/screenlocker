@@ -84,7 +84,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
             Intent intent = new Intent(BROADCAST_APPS_ACTION);
             intent.putExtra(KEY_DATABASE_CHANGE, "settings");
             LocalBroadcastManager.getInstance(SystemPermissionActivity.this).sendBroadcast(intent);
-            PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
+            prefUtils.saveBooleanPref( SETTINGS_CHANGE, true);
         }
 
     }
@@ -141,7 +141,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
                 break;
             case AppConstants.SET_CALLS:
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_CALLS, isChecked);
+                prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, isChecked);
                 break;
             case AppConstants.SET_CAM:
                 try {
@@ -202,7 +202,7 @@ public class SystemPermissionActivity extends BaseActivity implements Permission
 
 
         }
-        PrefUtils.saveBooleanPref(SystemPermissionActivity.this, SETTINGS_CHANGE, true);
+        prefUtils.saveBooleanPref( SETTINGS_CHANGE, true);
         setting.setSetting_status(isChecked);
         isSettingsChanged = true;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {

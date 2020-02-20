@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
@@ -86,6 +87,7 @@ import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.EXTRA_IS_PACKAGE_INSTALLED;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
@@ -149,11 +151,11 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
         viewPager.setOffscreenPageLimit(3);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        sharedViwModel = ViewModelProviders.of(this).get(SharedViwModel.class);
+        sharedViwModel =new ViewModelProvider(this).get(SharedViwModel.class);
 
 
         registerNetworkPref();
-        if (isNetworkConneted(this)) {
+        if (isNetworkConneted(prefUtils)) {
             Timber.d("onCreate: NetworkConneted");
             loadApps();
         } else {
@@ -164,7 +166,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     }
 
     private void loadApps() {
-        String dealerId = PrefUtils.getStringPref(this, AppConstants.KEY_DEVICE_LINKED);
+        String dealerId = prefUtils.getStringPref( AppConstants.KEY_DEVICE_LINKED);
         //Log.d("ConnectedDealer",dealerId);
         if (dealerId == null || dealerId.equals("")) {
             //   getAdminApps();
@@ -388,8 +390,8 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                 if (output == null) {
                     Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 } else {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
@@ -432,14 +434,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                             }
 
                         } else {
-                            //TODO: server responded with other then 200 response code
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Timber.d("onResponse: server error");
-                                Toast.makeText(SMActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                Toast.makeText(SMActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                            sharedViwModel.setMutableMsgs(Msgs.SERVER_ERROR);
                         }
                         //swipeRefreshLayout.setRefreshing(false);
 
@@ -462,7 +457,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     }
 
     private String currentSpace() {
-        String space = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String space = prefUtils.getStringPref( CURRENT_KEY);
         if (KEY_MAIN_PASSWORD.equals(space)) {
             return "encrypted";
         }
@@ -472,10 +467,10 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
     private void setupApps(@NonNull Response<InstallAppModel> response) {
         Map<String, DownloadStatusCls> map = null;
-        if (PrefUtils.getStringPref(SMActivity.this, DOWNLAOD_HASH_MAP) != null) {
+        if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
             Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
             }.getType();
-            String hashmap = PrefUtils.getStringPref(SMActivity.this, DOWNLAOD_HASH_MAP);
+            String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
             map = new Gson().fromJson(hashmap, typetoken);
 
         }
@@ -615,7 +610,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
             final NetworkCapabilities nc = cm.getNetworkCapabilities(n);
 
             if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                if (PrefUtils.getIntegerPref(this, SECUREMARKETSIM) != 1) {
+                if (prefUtils.getIntegerPref( SECUREMARKETSIM) != 1) {
                     AppExecutor.getInstance().getMainThread().execute(() -> {
                         new AlertDialog.Builder(this)
                                 .setTitle("Mobile Data")
@@ -632,7 +627,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                     downloadAndInstallApp(app, position, isUpdate, currentSpace);
                 }
             } else if (nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) != 1) {
+                if (prefUtils.getIntegerPref( SECUREMARKETWIFI) != 1) {
                     AppExecutor.getInstance().getMainThread().execute(() -> {
                         new AlertDialog.Builder(this)
                                 .setTitle("WiFi")
@@ -662,7 +657,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
             Set<String> packages = new HashSet<>();
             packages.add(MyApplication.getAppContext().getPackageName());
             packages.add("com.secure.systemcontrol");
-            String userSpace = PrefUtils.getStringPref(this, CURRENT_KEY);
+            String userSpace = prefUtils.getStringPref( CURRENT_KEY);
 
             if (!packages.contains(app.getPackageName())) {
                 try {
@@ -707,7 +702,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
 
     @Override
     public void onAppsRefreshRequest() {
-        if (isNetworkConneted(SMActivity.this)) {
+        if (isNetworkConneted(prefUtils)) {
             Timber.d("connected");
             loadApps();
         } else {
@@ -733,7 +728,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.ok_capital), (dialog, which) -> {
 
 
-                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                String live_url = prefUtils.getStringPref( LIVE_URL);
                 AppConstants.INSTALLING_APP_NAME = app.getApkName();
                 AppConstants.INSTALLING_APP_PACKAGE = app.getPackageName();
 
@@ -743,7 +738,7 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
                 if (!apksPath.exists()) {
                     apksPath.mkdir();
                 }
-                String url = live_url + MOBILE_END_POINT + "getApk/" +
+                String url = live_url + MOBILE_END_POINT + GET_APK_ENDPOINT +
                         CommonUtils.splitName(app.getApk());
                 String fileName = file.getAbsolutePath();
                 if (!file.exists()) {
@@ -813,10 +808,10 @@ public class SMActivity extends BaseActivity implements DownloadServiceCallBacks
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+        prefUtils.saveBooleanPref( UNINSTALL_ALLOWED, true);
         refreshApps(this);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
-        currentSpace = PrefUtils.getStringPref(this, CURRENT_KEY);
+        currentSpace = prefUtils.getStringPref( CURRENT_KEY);
     }
 
     @Override

@@ -42,6 +42,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
@@ -132,8 +133,8 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
 
         });
-        SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        SSettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SSettingsViewModel.class);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
             if (userType.equals(AppConstants.KEY_MAIN_PASSWORD)) {
                 setUpPermissionSettingsEncrypted(subExtensions);
@@ -279,7 +280,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         TextView textView = findViewById(R.id.coloumn_numbers);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
         brightnessLevel.setText((int) (((float) getScreenBrightness(this) / 255) * 100) + "%");
-        int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        int item = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
         if (item != 0) {
             if (item == 3) {
                 textView.setText(R.string._4_columns);
@@ -450,7 +451,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = (sharedPreferences, key) -> {
 
         if (key.equals(AppConstants.KEY_THEME)) {
-            if (PrefUtils.getBooleanPref(WallpaperActivity.this, AppConstants.KEY_THEME)) {
+            if (prefUtils.getBooleanPref( AppConstants.KEY_THEME)) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             } else {
@@ -471,7 +472,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
         sharedPref.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
     }
@@ -480,7 +481,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
     private void themeDialogue() {
         int item;
         AtomicInteger selected = new AtomicInteger();
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_THEME)) {
+        if (prefUtils.getBooleanPref( AppConstants.KEY_THEME)) {
             item = 0;
             selected.set(0);
         } else {
@@ -494,9 +495,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         });
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             if (selected.get() == 1) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, false);
+                prefUtils.saveBooleanPref( AppConstants.KEY_THEME, false);
             } else if (selected.get() == 0) {
-                PrefUtils.saveBooleanPref(this, AppConstants.KEY_THEME, true);
+                prefUtils.saveBooleanPref( AppConstants.KEY_THEME, true);
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -510,7 +511,7 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
 
     }
     private void setColumnSizes() {
-        int item = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        int item = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
         AtomicInteger selected = new AtomicInteger();
         if (item != 0) {
             if (item == 3) {
@@ -529,9 +530,9 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
         });
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             if (selected.get() == 1) {
-                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 4);
+                prefUtils.saveIntegerPref( AppConstants.KEY_COLUMN_SIZE, 4);
             } else if (selected.get() == 0) {
-                PrefUtils.saveIntegerPref(this, AppConstants.KEY_COLUMN_SIZE, 3);
+                prefUtils.saveIntegerPref( AppConstants.KEY_COLUMN_SIZE, 3);
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {

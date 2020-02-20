@@ -59,7 +59,7 @@ import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 
-public class SetEncryptedPasswordFragment extends AbstractStep {
+public class SetEncryptedPasswordFragment extends ExtentedAbstractStep {
     private String error = "";
     private int mTry = 0;
     private String tryPattern;
@@ -85,12 +85,12 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
 
     @Override
     public boolean nextIf() {
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref( ENCRYPT_PASSORD_OPTION)) {
             case OPTION_PIN:
                 if (setPassword()) {
 
                     if (sharedPref.getStringPref(KEY_MAIN_PASSWORD) != null ) {
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_ENCRYPT_PASS);
                         return true;
                     }
                 }
@@ -98,7 +98,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
             case OPTION_PATTERN:
             case OPTION_COMBO:
                 if (sharedPref.getStringPref(KEY_MAIN_PASSWORD) != null || isAllowed) {
-                    PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                    prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_ENCRYPT_PASS);
                     return true;
                 }
                 break;
@@ -111,7 +111,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     @Override
     public void onStepVisible() {
         super.onStepVisible();
-        switch (PrefUtils.getIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION)) {
+        switch (prefUtils.getIntegerPref(ENCRYPT_PASSORD_OPTION)) {
             case OPTION_PIN:
                 viewSwitcher.setDisplayedChild(1);
                 if (etEnterPin != null) {
@@ -275,7 +275,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                         sharedPref.saveStringPref(KEY_MAIN_PASSWORD, null);
                         Toast.makeText(MyApplication.getAppContext(), MyApplication.getAppContext().getResources().getString(R.string.pattern_updated), Toast.LENGTH_SHORT).show();
                         //move to next
-                        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_ENCRYPT_PASS);
 //                        mListener.onPageUpdate(STEP_ENCRYPT_PASS);
                         patternLock.setInputEnabled(false);
                         btnPatternCancel.setEnabled(false);
@@ -394,7 +394,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
                                 sharedPref.saveStringPref(KEY_MAIN_PASSWORD, null);
                                 sharedPref.saveStringPref(ENCRYPT_PATTERN, null);
                                 //update code here
-                                PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_ENCRYPT_PASS);
+                                prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_ENCRYPT_PASS);
 //                                mListener.onPageUpdate(STEP_ENCRYPT_PASS);
                                 isAllowed = true;
 
