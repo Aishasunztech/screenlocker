@@ -5,9 +5,9 @@
         <item>2</item>
         <item>3</item>
     </integer-array>
-    <string name="my_apk_name" translatable="false">Test Locker</string>
-    <string name="app_name" translatable="false">Test Locker</string>
-    <string name="toolbar_title" translatable="false">Test Locker</string>
+    <string name="my_apk_name" translatable="false">Screen Locker</string>
+    <string name="app_name" translatable="false">Screen Locker</string>
+    <string name="toolbar_title" translatable="false">Screen Locker</string>
     <string name="apktype" translatable="false">SW</string>
     <string name="number_zero" translatable="false">0</string>
     <string name="number_one" translatable="false">1</string>
@@ -433,7 +433,7 @@
 </string>
     <string name="accessibility_service_msg">This permission is required for devices that running Android 5.0 and above where Usage Statics permission is not working.</string>
     <string name="bugs"> \u25CB Screen capture enabled By default.\n\u25CB Black tint bug on app icons fixed.\n\u25CB IMEI settings shifted to Advance Settings. \n\u25CB Fixed Wallpaper bug. \n\u25CB Fixed SL launch bugs(e.g. takes to stepper)</string>
-    <string name="what_s_new_v5_15">What\'s New v6.2.0</string>
+    <string name="what_s_new_v5_15">What\'s New v6.4.0</string>
     <string name="general_notifications">General Notifications</string>
     <string name="all_apps_notifications">All Apps Notifications</string>
     <string name="action_restricted">Action Restricted</string>
