@@ -61,7 +61,7 @@ public class InstallAppsAdapter extends RecyclerView.Adapter<InstallAppsAdapter.
         holder.tvAppName.setText(app.getApkName());
         //load logo
 
-        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.LIVE_URL);
+        String live_url = PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( AppConstants.LIVE_URL);
 
         Glide.with(holder.itemView.getContext())
                 .load(live_url.replaceAll("/api/v2/mobile/", "") + LOGO_END_POINT + app.getLogo())

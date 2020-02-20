@@ -11,24 +11,24 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
-import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
-import com.screenlocker.secure.async.DownLoadAndInstallUpdate;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
+import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
+import com.screenlocker.secure.retrofit.ErrorResponse;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
+import com.screenlocker.secure.retrofitapis.LogsAPICaller;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.secure.launcher.R;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -41,13 +41,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import okhttp3.Credentials;
 import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-import static com.screenlocker.secure.app.MyApplication.saveToken;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
+import static com.screenlocker.secure.utils.AppConstants.GET_UPDATE_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
 import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
@@ -55,15 +55,16 @@ import static com.screenlocker.secure.utils.AppConstants.UEM_PKG;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
-import static com.screenlocker.secure.utils.AppConstants.isProgress;
+import static com.screenlocker.secure.utils.AppConstants.URL_3;
 
 public class CheckUpdateService extends JobService {
 
     private AsyncCalls asyncCalls;
+    private PrefUtils prefUtils;
 
     @Override
     public boolean onStartJob(JobParameters params) {
-
+        prefUtils = PrefUtils.getInstance(this);
         if (MyApplication.oneCaller == null) {
 
             String[] urls = {URL_1, URL_2};
@@ -75,8 +76,8 @@ public class CheckUpdateService extends JobService {
             asyncCalls = new AsyncCalls(output -> {
                 Timber.d("output : " + output);
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     checkUpdatesIfAvailAble(params);
@@ -110,7 +111,8 @@ public class CheckUpdateService extends JobService {
             Network n = manager.getActiveNetwork();
             try {
                 NetworkCapabilities nc = manager.getNetworkCapabilities(n);
-                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) && !PrefUtils.getBooleanPref(this, UPDATESIM)) {
+                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) &&
+                        !prefUtils.getBooleanPref( UPDATESIM)) {
                     //check only featured apps
                     checkUpdateOfFeaturedApps(parameters);
                     return;
@@ -125,15 +127,15 @@ public class CheckUpdateService extends JobService {
     private void tryForCheckUpdates(JobParameters parameters) {
         try {
             String currentVersion = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-            Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+            Response<UpdateModel> response = MyApplication.oneCaller.getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.my_apk_name), prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                     .execute();
             if (response.isSuccessful()) {
                 if (response.body() != null && response.body().isSuccess()) {
                     Timber.d("tryForCheckUpdates: %s", response.body());
                     if (response.body().isApkStatus()) {
                         String url = response.body().getApkUrl();
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), getPackageName());
+                        String live_url = prefUtils.getStringPref( LIVE_URL);
+                        downloadApp(live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), getPackageName());
                     }
                 } else {
                     if (saveTokens())
@@ -149,14 +151,14 @@ public class CheckUpdateService extends JobService {
                 ApplicationInfo info = getPackageManager().getApplicationInfo(UEM_PKG, 0);
                 String uemCurrentVersion = String.valueOf(getPackageManager().getPackageInfo(UEM_PKG, 0).versionCode);
                 String uemName = getPackageManager().getApplicationLabel(info).toString();
-                Response<UpdateModel> uemResponse = MyApplication.oneCaller.getUpdate("getUpdate/" + uemCurrentVersion + "/" + UEM_PKG + "/" + uemName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                Response<UpdateModel> uemResponse = MyApplication.oneCaller.getUpdate(GET_UPDATE_ENDPOINT + uemCurrentVersion + "/" + UEM_PKG + "/" + uemName, prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                         .execute();
                 if (uemResponse.isSuccessful()) {
                     if (uemResponse.body() != null && uemResponse.body().isSuccess()) {
                         if (uemResponse.body().isApkStatus()) {
                             String url = uemResponse.body().getApkUrl();
-                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                            downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), UEM_PKG);
+                            String live_url = prefUtils.getStringPref( LIVE_URL);
+                            downloadApp(live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), UEM_PKG);
                         }
                     } else {
                         if (saveTokens())
@@ -187,14 +189,14 @@ public class CheckUpdateService extends JobService {
                     //Log.d(TAG, currAppName+": "+srcDir);
                     if (srcDir.startsWith("/data/app/") && getPackageManager().getLaunchIntentForPackage(appInfo.packageName) != null) {
                         Response<UpdateModel> response2 = MyApplication.oneCaller
-                                .getUpdate("getUpdate/" + version + "/" + appInfo.packageName + "/" + currAppName, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                                .getUpdate(GET_UPDATE_ENDPOINT + version + "/" + appInfo.packageName + "/" + currAppName, prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                                 .execute();
                         if (response2.isSuccessful()) {
                             if (response2.body() != null && response2.body().isSuccess()) {
                                 if (response2.body().isApkStatus()) {
                                     String url = response2.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                                    downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), appInfo.packageName);
+                                    String live_url = prefUtils.getStringPref( LIVE_URL);
+                                    downloadApp(live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), appInfo.packageName);
                                 }
 
                             } else {
@@ -238,7 +240,7 @@ public class CheckUpdateService extends JobService {
 
                 URL downloadUrl = new URL(url);
                 URLConnection connection = downloadUrl.openConnection();
-                connection.setRequestProperty("authorization", PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN));
+                connection.setRequestProperty("authorization", prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN));
                 int contentLength = connection.getContentLength();
                 Timber.d("downloadUrl: %s ", downloadUrl.toString());
                 // input = body.byteStream();
@@ -300,7 +302,7 @@ public class CheckUpdateService extends JobService {
             if (response.body() != null) {
                 if (response.body().isStatus()) {
                     Timber.d("saveTokens: true");
-                    PrefUtils.saveStringPref(CheckUpdateService.this, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                    prefUtils.saveStringPref( SYSTEM_LOGIN_TOKEN, response.body().getToken());
                     return true;
 
                 }
@@ -321,15 +323,15 @@ public class CheckUpdateService extends JobService {
                 ApplicationInfo info = getPackageManager().getApplicationInfo(aPackage, 0);
                 String label = getPackageManager().getApplicationLabel(info).toString();
                 String currentVersion = String.valueOf(getPackageManager().getPackageInfo(aPackage, 0).versionCode);
-                Response<UpdateModel> response = MyApplication.oneCaller.getUpdate("getUpdate/" + currentVersion + "/" + aPackage + "/" + label, PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                Response<UpdateModel> response = MyApplication.oneCaller.getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + aPackage + "/" + label, prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                         .execute();
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().isSuccess()) {
                         Timber.d("tryForCheckUpdates: %s", response.body());
                         if (response.body().isApkStatus()) {
                             String url = response.body().getApkUrl();
-                            String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                            downloadApp(live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(url), getPackageName());
+                            String live_url = prefUtils.getStringPref( LIVE_URL);
+                            downloadApp(live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), getPackageName());
                         }
                     } else {
                         if (saveTokens())
@@ -348,6 +350,27 @@ public class CheckUpdateService extends JobService {
                 jobFinished(parameters, false);
             }
         }
+        List<ErrorLogRequestBody> errorLogRequestBodies = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().getAllErrorLogs();
+        LogsAPICaller caller = RetrofitClientInstance.getRetrofitLogsInstance(URL_3+MOBILE_END_POINT).create(LogsAPICaller.class);
+        for (ErrorLogRequestBody errorLogRequestBody : errorLogRequestBodies) {
+
+            try {
+                Response<ErrorResponse> responseResponse = caller.submitLog(errorLogRequestBody, Credentials.basic("JBtRRpFqVcYFMggnsxpPh", "2qouqd#uk$*UcnQYwQKXoP4TX9vJSD")).execute();
+                if (responseResponse.isSuccessful()) {
+                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
+                        if (responseResponse.body() != null) {
+                            Timber.d("ID:%s", String.valueOf(responseResponse.body().getRequestId()));
+                            MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().deleteErrorLog(responseResponse.body().getRequestId());
+                        }
+                    });
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         jobFinished(parameters, false);
     }
 

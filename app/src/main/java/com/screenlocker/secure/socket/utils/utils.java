@@ -21,10 +21,10 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.listener.OnAppsRefreshListener;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.service.CheckUpdateService;
 import com.screenlocker.secure.service.LockScreenService;
@@ -37,6 +37,7 @@ import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,11 +113,11 @@ public class utils {
 
 
     public static boolean passwordsOk(Context context, String key) {
-
-        String guest = PrefUtils.getStringPref(context, AppConstants.KEY_GUEST_PASSWORD);
-        String main = PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD);
-        String code = PrefUtils.getStringPref(context, AppConstants.KEY_CODE_PASSWORD);
-        String duress = PrefUtils.getStringPref(context, AppConstants.KEY_DURESS_PASSWORD);
+        SecuredSharedPref pref = SecuredSharedPref.getInstance(context);
+        String guest = pref.getStringPref(AppConstants.KEY_GUEST_PASSWORD);
+        String main = pref.getStringPref(AppConstants.KEY_MAIN_PASSWORD);
+        String code = pref.getStringPref(AppConstants.KEY_CODE_PASSWORD);
+        String duress = pref.getStringPref(AppConstants.KEY_DURESS_PASSWORD);
 
         if (guest != null) {
             if (guest.equals(key)) {
@@ -138,9 +139,7 @@ public class utils {
         }
 
         if (duress != null) {
-            if (duress.equals(key)) {
-                return false;
-            }
+            return !duress.equals(key);
 
         }
 
@@ -183,7 +182,7 @@ public class utils {
                 super.run();
 
                 if (isPolicy) {
-//                    MyApplication.getAppDatabase(context).getDao().updateAllApps(false, false, false);
+//                    MyAppDatabase.getInstance(context).getDao().updateAllApps(false, false, false);
                 }
 
                 for (int i = 0; i < apps.length(); i++) {
@@ -200,25 +199,25 @@ public class utils {
 
                         switch (packageName) {
                             case SECURE_CLEAR_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_CLEAR_UNIQUE);
                                 break;
                             case SECURE_MARKET_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_MARKET_UNIQUE);
                                 break;
                             case LIVE_CLIENT_CHAT_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, LIVE_CLIENT_CHAT_UNIQUE);
                                 break;
                             case SECURE_SETTINGS_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SECURE_SETTINGS_UNIQUE);
                                 break;
                             case SFM_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SFM_UNIQUE);
                                 break;
                             case SUPPORT_PACKAGE:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, SUPPORT_UNIQUE);
                                 break;
                             default:
-                                MyApplication.getAppDatabase(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
+                                MyAppDatabase.getInstance(context).getDao().updateAppStatusFromServer(guest, encrypted, enable, packageName);
                         }
 
 
@@ -239,8 +238,8 @@ public class utils {
     public static void saveAppsList(Context context, boolean install, AppInfo info, boolean status) {
 
         Timber.d("<<<============= save installed or uninstalled apps ============>>>");
-
-        if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        if (prefUtils.getBooleanPref(DEVICE_LINKED_STATUS)) {
             Timber.d("device is linked");
             Gson gson = new Gson();
             Timber.d("<<<====saved apps======>>>");
@@ -249,9 +248,9 @@ public class utils {
             // flag will check is package installed or uninstalled
 
             if (install) {
-                json = PrefUtils.getStringPref(context, INSTALLED_APPS);
+                json = prefUtils.getStringPref(INSTALLED_APPS);
             } else {
-                json = PrefUtils.getStringPref(context, UNINSTALLED_APPS);
+                json = prefUtils.getStringPref(UNINSTALLED_APPS);
             }
 
 
@@ -276,26 +275,26 @@ public class utils {
                 json = gson.toJson(list);
 
                 if (install) {
-                    PrefUtils.saveStringPref(context, INSTALLED_APPS, json);
+                    prefUtils.saveStringPref(INSTALLED_APPS, json);
                 } else {
-                    PrefUtils.saveStringPref(context, UNINSTALLED_APPS, json);
+                    prefUtils.saveStringPref(UNINSTALLED_APPS, json);
                 }
 
             }
 
 
             Socket socket = SocketManager.getInstance().getSocket();
-            String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+            String device_id = prefUtils.getStringPref(DEVICE_ID);
             Timber.d("device id %s", device_id);
 
             if (socket != null && socket.connected()) {
                 Timber.d("<<<=======Socket connected=============>>>");
                 if (install) {
                     SocketManager.getInstance().getSocket().emit(SEND_INSTALLED_APPS + device_id, json);
-                    PrefUtils.saveStringPref(context, INSTALLED_APPS, null);
+                    prefUtils.saveStringPref(INSTALLED_APPS, null);
                 } else {
                     SocketManager.getInstance().getSocket().emit(SEND_UNINSTALLED_APPS + device_id, json);
-                    PrefUtils.saveStringPref(context, UNINSTALLED_APPS, null);
+                    prefUtils.saveStringPref(UNINSTALLED_APPS, null);
                 }
             }
 
@@ -309,8 +308,8 @@ public class utils {
     public static void refreshApps(Context context) {
 
         OnAppsRefreshListener listener = (OnAppsRefreshListener) context;
-
-        String unInstalledPackage = PrefUtils.getStringPref(context, UNINSTALLED_PACKAGES);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        String unInstalledPackage = prefUtils.getStringPref(UNINSTALLED_PACKAGES);
 
         if (unInstalledPackage != null) {
             String[] data = unInstalledPackage.split(",");
@@ -325,20 +324,20 @@ public class utils {
                     e.printStackTrace();
                     int finalI = i;
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deletePackage(packageName);
+                        MyAppDatabase.getInstance(context).getDao().deletePackage(packageName);
                         AppInfo info = new AppInfo();
                         info.setPackageName(packageName);
                         info.setUniqueName(packageName);
                         saveAppsList(context, false, info, false);
                         if (finalI == data.length - 1) {
                             listener.onAppsRefresh();
-                            PrefUtils.saveStringPref(context, UNINSTALLED_PACKAGES, null);
+                            prefUtils.saveStringPref(UNINSTALLED_PACKAGES, null);
                         }
                     }).start();
                 }
             }
         }
-        /*String installedPackages = PrefUtils.getStringPref(context, INSTALLED_PACKAGES);
+        /*String installedPackages = prefUtils.getStringPref(context, INSTALLED_PACKAGES);
 
         if (installedPackages != null) {
             String[] data = installedPackages.split(",");
@@ -376,11 +375,11 @@ public class utils {
 
                             app.setEnable(true);
                             new Thread(() -> {
-                                MyApplication.getAppDatabase(context).getDao().insertApps(app);
+                                MyAppDatabase.getInstance(context).getDao().insertApps(app);
                                 saveAppsList(context, true, app, false);
                                 if (finalI == data.length - 1) {
                                     listener.onAppsRefresh();
-                                    PrefUtils.saveStringPref(context, INSTALLED_PACKAGES, null);
+                                    prefUtils.saveStringPref(context, INSTALLED_PACKAGES, null);
                                 }
                             }).start();
                         }
@@ -406,7 +405,7 @@ public class utils {
                 super.run();
 
                 if (isPolicy) {
-//                    MyApplication.getAppDatabase(context).getDao().updateAllExtensions(false,false);
+//                    MyAppDatabase.getInstance(context).getDao().updateAllExtensions(false,false);
                 }
 
                 for (int i = 0; i < extensions.length(); i++) {
@@ -425,7 +424,7 @@ public class utils {
                         int encrypted = (int) app.get("encrypted");
 
 
-                        MyApplication.getAppDatabase(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
+                        MyAppDatabase.getInstance(context).getDao().updateExtensionStatusFromServer(guest != 0, encrypted != 0, uniqueExtension);
 
                         if (i == extensions.length() - 1) {
                             listener.onExtensionsReady();
@@ -451,7 +450,7 @@ public class utils {
 
     public static void updatePasswords(Context context, JSONObject object, String device_id) {
         try {
-
+            SecuredSharedPref pref = SecuredSharedPref.getInstance(context);
             String guest_pass = object.getString("guest_password");
             String encrypted_pass = object.getString("encrypted_password");
             String admin_pass = object.getString("admin_password");
@@ -459,55 +458,53 @@ public class utils {
 
             if (checkString(guest_pass)) {
                 Timber.d("guest pass : %s", guest_pass);
-                if (PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD)!=null && PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD).equals(guest_pass) ){
+                if (pref.getStringPref(KEY_MAIN_PASSWORD) != null && pref.getStringPref(KEY_MAIN_PASSWORD).equals(guest_pass)) {
                     passAlreadyExist(device_id);
-                }
-                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null &&
-                        PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                } else if (pref.getStringPref(KEY_DURESS_PASSWORD) != null &&
+                        pref.getStringPref(KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
 
                 } else {
-                    PrefUtils.saveStringPref(context, AppConstants.KEY_GUEST_PASSWORD, guest_pass);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                    pref.saveStringPref(AppConstants.KEY_GUEST_PASSWORD, guest_pass);
+                    pref.saveStringPref(AppConstants.GUEST_PATTERN, null);
+                    pref.saveStringPref(AppConstants.GUEST_COMBO_PATTERN, null);
+                    pref.saveStringPref(AppConstants.GUEST_COMBO_PIN, null);
+                    pref.saveStringPref(AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
             if (checkString(encrypted_pass)) {
                 Timber.d("encrypted pass : %s", encrypted_pass);
-                if (PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD)!=null
-                        && PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD).equals(guest_pass)) {
+                if (pref.getStringPref(KEY_GUEST_PASSWORD) != null
+                        && pref.getStringPref(KEY_GUEST_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
-                }
-                else if (PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD)!=null
-                        && PrefUtils.getStringPref(context, KEY_DURESS_PASSWORD).equals(guest_pass)) {
+                } else if (pref.getStringPref(KEY_DURESS_PASSWORD) != null
+                        && pref.getStringPref(KEY_DURESS_PASSWORD).equals(guest_pass)) {
                     //password is already taken
                     passAlreadyExist(device_id);
 
                 } else {
-                    PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, encrypted_pass);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
+                    pref.saveStringPref(KEY_MAIN_PASSWORD, encrypted_pass);
+                    pref.saveStringPref(AppConstants.ENCRYPT_PATTERN, null);
+                    pref.saveStringPref(AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                    pref.saveStringPref(AppConstants.ENCRYPT_COMBO_PIN, null);
+                    pref.saveStringPref(AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PIN_PASSWORD);
                 }
             }
             if (checkString(admin_pass)) {
                 Timber.d("admin pass : %s", admin_pass);
-                PrefUtils.saveStringPref(context, AppConstants.KEY_CODE_PASSWORD, admin_pass);
+                pref.saveStringPref(AppConstants.KEY_CODE_PASSWORD, admin_pass);
             }
             if (checkString(duress_password)) {
                 if (duress_password.equals("clear")) {
-                    PrefUtils.saveStringPref(context, AppConstants.KEY_DURESS_PASSWORD, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PATTERN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DURESS_COMBO_PIN, null);
-                    PrefUtils.saveStringPref(context, AppConstants.DUERESS_DEFAULT_CONFIG, null);
+                    pref.saveStringPref(AppConstants.KEY_DURESS_PASSWORD, null);
+                    pref.saveStringPref(AppConstants.DURESS_PATTERN, null);
+                    pref.saveStringPref(AppConstants.DURESS_COMBO_PATTERN, null);
+                    pref.saveStringPref(AppConstants.DURESS_COMBO_PIN, null);
+                    pref.saveStringPref(AppConstants.DUERESS_DEFAULT_CONFIG, null);
 
                 }
             }
@@ -515,6 +512,7 @@ public class utils {
 
             Timber.e(e);
         }
+
 
     }
 
@@ -552,32 +550,33 @@ public class utils {
 
     public static void suspendedDevice(final Context context, String msg) {
         Timber.d("%s device", msg);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
 
-        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String device_id = prefUtils.getStringPref( DEVICE_ID);
 
         if (device_id == null) {
-            device_id = PrefUtils.getStringPref(context, OFFLINE_DEVICE_ID);
+            device_id = prefUtils.getStringPref( OFFLINE_DEVICE_ID);
         }
 
         switch (msg) {
             case "suspended":
-                PrefUtils.saveStringPref(context, DEVICE_STATUS, "suspended");
+                prefUtils.saveStringPref( DEVICE_STATUS, "suspended");
                 break;
             case "expired":
-                PrefUtils.saveStringPref(context, DEVICE_STATUS, "expired");
+                prefUtils.saveStringPref( DEVICE_STATUS, "expired");
                 break;
             case "flagged":
-                PrefUtils.saveStringPref(context, DEVICE_STATUS, "flagged");
+                prefUtils.saveStringPref( DEVICE_STATUS, "flagged");
                 break;
             case "transfered":
-                PrefUtils.saveStringPref(context, DEVICE_STATUS, "transfered");
+                prefUtils.saveStringPref( DEVICE_STATUS, "transfered");
 
                 break;
         }
-        PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
-        String main_password = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
+        prefUtils.saveStringPref( DEVICE_ID, device_id);
+        String main_password = prefUtils.getStringPref( KEY_MAIN_PASSWORD);
         if (main_password == null) {
-            PrefUtils.saveStringPref(context, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+            prefUtils.saveStringPref( KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
         }
 
         sendBroadcast(context, msg);
@@ -593,33 +592,33 @@ public class utils {
         }
 
 
-        boolean device_linked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+        boolean device_linked = prefUtils.getBooleanPref( DEVICE_LINKED_STATUS);
 
         if (device_linked && SocketManager.getInstance().getSocket() == null) {
-            String token = PrefUtils.getStringPref(context, TOKEN);
-            startSocket(context, device_id, token);
+            String token = prefUtils.getStringPref( TOKEN);
+            startSocket(context,prefUtils, device_id, token);
         } else if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
-            String token = PrefUtils.getStringPref(context, TOKEN);
-            startSocket(context, device_id, token);
+            String token = prefUtils.getStringPref( TOKEN);
+            startSocket(context,prefUtils, device_id, token);
         }
 
 
     }
 
     public static void newDevice(Context context, boolean status) {
-
-        PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, null);
-        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
-        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
-        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
-        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-        PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
-        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        prefUtils.saveBooleanPref( AppConstants.DEVICE_LINKED_STATUS, false);
+        prefUtils.saveStringPref( AppConstants.DEVICE_STATUS, null);
+        prefUtils.saveBooleanPref( AppConstants.IS_SYNCED, false);
+        prefUtils.saveBooleanPref( AppConstants.SETTINGS_CHANGE, false);
+        prefUtils.saveBooleanPref( AppConstants.LOCK_SCREEN_STATUS, false);
+        prefUtils.saveBooleanPref( AppConstants.APPS_SETTING_CHANGE, false);
+        prefUtils.saveStringPref( AppConstants.DEVICE_ID, null);
+        prefUtils.saveBooleanPref( APPS_SENT_STATUS, false);
+        prefUtils.saveBooleanPref( EXTENSIONS_SENT_STATUS, false);
+        prefUtils.saveBooleanPref( SETTINGS_SENT_STATUS, false);
+        prefUtils.saveStringPref( VALUE_EXPIRED, null);
+        prefUtils.saveStringPref( KEY_DEVICE_LINKED, null);
 
        /* String guest_pass = PrefUtils.getStringPref(context, KEY_GUEST_PASSWORD);
         String main_pass = PrefUtils.getStringPref(context, KEY_MAIN_PASSWORD);
@@ -652,19 +651,18 @@ public class utils {
 
 
     public static void unlinkDeviceWithMsg(Context context, boolean status, String device_status) {
-
-        PrefUtils.saveStringPref(context, AppConstants.DEVICE_STATUS, device_status);
-        PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.IS_SYNCED, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.SETTINGS_CHANGE, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.LOCK_SCREEN_STATUS, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.APPS_SETTING_CHANGE, false);
-//        PrefUtils.saveStringPref(context, AppConstants.DEVICE_ID, null);
-        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, false);
-        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, false);
-        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, false);
-        PrefUtils.saveStringPref(context, VALUE_EXPIRED, null);
-        PrefUtils.saveStringPref(context, KEY_DEVICE_LINKED, null);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        prefUtils.saveStringPref(AppConstants.DEVICE_STATUS, device_status);
+        prefUtils.saveBooleanPref(AppConstants.DEVICE_LINKED_STATUS, false);
+        prefUtils.saveBooleanPref(AppConstants.IS_SYNCED, false);
+        prefUtils.saveBooleanPref(AppConstants.SETTINGS_CHANGE, false);
+        prefUtils.saveBooleanPref(AppConstants.LOCK_SCREEN_STATUS, false);
+        prefUtils.saveBooleanPref(AppConstants.APPS_SETTING_CHANGE, false);
+        prefUtils.saveBooleanPref(APPS_SENT_STATUS, false);
+        prefUtils.saveBooleanPref(EXTENSIONS_SENT_STATUS, false);
+        prefUtils.saveBooleanPref(SETTINGS_SENT_STATUS, false);
+        prefUtils.saveStringPref(VALUE_EXPIRED, null);
+        prefUtils.saveStringPref(KEY_DEVICE_LINKED, null);
 
 
 
@@ -679,7 +677,7 @@ public class utils {
         }*/
 
 
-       utils.stopSocket(context);
+        utils.stopSocket(context);
 
         Intent lockScreen = new Intent(context, LockScreenService.class);
         lockScreen.setAction(device_status);
@@ -697,13 +695,16 @@ public class utils {
     }
 
 
-    public static void startSocket(Context context, String device_id, String token) {
+    public static void startSocket(Context context,PrefUtils prefUtils, String device_id, String token) {
 
         if (device_id != null && token != null) {
-            PrefUtils.saveStringPref(context, DEVICE_ID, device_id);
-            PrefUtils.saveStringPref(context, TOKEN, token);
-            PrefUtils.saveBooleanPref(context, AppConstants.DEVICE_LINKED_STATUS, true);
-            utils.startSocket(context);
+            prefUtils.saveStringPref( DEVICE_ID, device_id);
+            prefUtils.saveStringPref( TOKEN, token);
+            prefUtils.saveBooleanPref( AppConstants.DEVICE_LINKED_STATUS, true);
+            Intent intent = new Intent(context, LockScreenService.class);
+            intent.putExtra(SOCKET_STATUS, START_SOCKET);
+            ActivityCompat.startForegroundService(context, intent);
+
         }
 
     }
@@ -720,8 +721,8 @@ public class utils {
     }
 
     public static void unSuspendDevice(Context context) {
-
-        boolean lock_screen_status = PrefUtils.getBooleanPref(context, LOCK_SCREEN_STATUS);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        boolean lock_screen_status = prefUtils.getBooleanPref( LOCK_SCREEN_STATUS);
         if (lock_screen_status) {
             Intent intent = new Intent(context, LockScreenService.class);
             context.stopService(intent);
@@ -730,20 +731,20 @@ public class utils {
         sendBroadcast(context, null);
         Timber.d("activeDevice");
 
-        String token = PrefUtils.getStringPref(context, TOKEN);
-        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String token = prefUtils.getStringPref( TOKEN);
+        String device_id = prefUtils.getStringPref( DEVICE_ID);
 
 
-        boolean device_linked = PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS);
+        boolean device_linked = prefUtils.getBooleanPref( DEVICE_LINKED_STATUS);
 
         if (device_linked && SocketManager.getInstance().getSocket() == null) {
-            startSocket(context, device_id, token);
+            startSocket(context,prefUtils, device_id, token);
         } else if (SocketManager.getInstance().getSocket() != null && !SocketManager.getInstance().getSocket().connected()) {
-            startSocket(context, device_id, token);
+            startSocket(context,prefUtils, device_id, token);
         }
 
 
-        PrefUtils.saveStringPref(context, DEVICE_STATUS, null);
+        prefUtils.saveStringPref( DEVICE_STATUS, null);
 
     }
 
@@ -798,9 +799,7 @@ public class utils {
     }
 
 
-    public static String getDeviceStatus(Context context) {
-        return PrefUtils.getStringPref(context, DEVICE_STATUS);
-    }
+    
 
     public static void registerDeviceStatusReceiver(Context context, DeviceStatusReceiver deviceStatusReceiver) {
         IntentFilter filter = new IntentFilter();
@@ -808,12 +807,11 @@ public class utils {
         LocalBroadcastManager.getInstance(context).registerReceiver(deviceStatusReceiver, filter);
     }
 
-    public static void loginAsGuest(Context context) {
-
-        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
+    public static void loginAsGuest(Context context, SecuredSharedPref securedSharedPref, PrefUtils prefUtils) {
+        securedSharedPref.saveIntegerPref(LOGIN_ATTEMPTS, 0);
+        securedSharedPref.saveLongPref(TIME_REMAINING, 0);
+        securedSharedPref.saveLongPref(TIME_REMAINING_REBOOT, 0);
+        prefUtils.saveStringPref(AppConstants.CURRENT_KEY, AppConstants.KEY_GUEST_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_GUEST_PASSWORD, context);
         Intent service = new Intent(context, LockScreenService.class);
@@ -825,9 +823,9 @@ public class utils {
         }
     }
 
-    public static void chatLogin(Context context) {
+    public static void chatLogin(Context context, PrefUtils prefUtils) {
 
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+        prefUtils.saveStringPref(AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_SUPPORT_PASSWORD, context);
         Intent service = new Intent(context, LockScreenService.class);
@@ -839,12 +837,11 @@ public class utils {
         }
     }
 
-    public static void loginAsEncrypted(Context context) {
-
-        PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING, 0);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, 0);
-        PrefUtils.saveStringPref(context, AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
+    public static void loginAsEncrypted(Context context, SecuredSharedPref securedSharedPref, PrefUtils prefUtils) {
+        securedSharedPref.saveIntegerPref(LOGIN_ATTEMPTS, 0);
+        securedSharedPref.saveLongPref(TIME_REMAINING, 0);
+        securedSharedPref.saveLongPref(TIME_REMAINING_REBOOT, 0);
+        prefUtils.saveStringPref(AppConstants.CURRENT_KEY, AppConstants.KEY_MAIN_PASSWORD);
 //                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show();
         sendMessageToActivity(AppConstants.KEY_MAIN_PASSWORD, context);
 
@@ -866,13 +863,13 @@ public class utils {
     }
 
     public static String getUserType(String enteredPin, Context context) {
+        SecuredSharedPref sharedPref = SecuredSharedPref.getInstance(context);
+        String duressPin = sharedPref.getStringPref(AppConstants.KEY_DURESS_PASSWORD);
 
-        String duressPin = PrefUtils.getStringPref(context, AppConstants.KEY_DURESS_PASSWORD);
 
-
-        if (enteredPin.equals(PrefUtils.getStringPref(context, AppConstants.KEY_GUEST_PASSWORD))) {
+        if (enteredPin.equals(sharedPref.getStringPref(AppConstants.KEY_GUEST_PASSWORD))) {
             return "guest";
-        } else if (enteredPin.equals(PrefUtils.getStringPref(context, AppConstants.KEY_MAIN_PASSWORD))) {
+        } else if (enteredPin.equals(sharedPref.getStringPref(AppConstants.KEY_MAIN_PASSWORD))) {
             return "encrypted";
         } else if (duressPin != null) {
             if (enteredPin.equals(duressPin)) {
@@ -889,12 +886,12 @@ public class utils {
     }
 
 
-    public static void syncDevice(Context context, boolean isSync, boolean apps, boolean extensions, boolean settings) {
+    public static void syncDevice(PrefUtils prefUtils, boolean isSync, boolean apps, boolean extensions, boolean settings) {
 
-        PrefUtils.saveBooleanPref(context, IS_SYNCED, isSync);
-        PrefUtils.saveBooleanPref(context, APPS_SENT_STATUS, apps);
-        PrefUtils.saveBooleanPref(context, EXTENSIONS_SENT_STATUS, extensions);
-        PrefUtils.saveBooleanPref(context, SETTINGS_SENT_STATUS, settings);
+        prefUtils.saveBooleanPref( IS_SYNCED, isSync);
+        prefUtils.saveBooleanPref( APPS_SENT_STATUS, apps);
+        prefUtils.saveBooleanPref( EXTENSIONS_SENT_STATUS, extensions);
+        prefUtils.saveBooleanPref( SETTINGS_SENT_STATUS, settings);
 
     }
 
@@ -924,19 +921,19 @@ public class utils {
     }
 
 
-    public static boolean checkIMei(Context context) {
+    public static boolean checkIMei(Context context, PrefUtils prefUtils) {
 
         boolean status = false;
 
         List<String> imeis = DeviceIdUtils.getIMEI(context);
 
-        String imei1 = PrefUtils.getStringPref(context, IMEI1);
-        String imei2 = PrefUtils.getStringPref(context, IMEI2);
+        String imei1 = prefUtils.getStringPref( IMEI1);
+        String imei2 = prefUtils.getStringPref( IMEI2);
 
         if (imeis != null && imeis.size() >= 1) {
 
             if (imei1 != null && !imeis.get(0).equals(imei1)) {
-                PrefUtils.saveStringPref(context, IMEI1, imeis.get(0));
+                prefUtils.saveStringPref( IMEI1, imeis.get(0));
                 status = true;
             }
 
@@ -944,7 +941,7 @@ public class utils {
 
         if (imeis != null && imeis.size() >= 2) {
             if (imei2 != null && !imeis.get(1).equals(imei2)) {
-                PrefUtils.saveStringPref(context, IMEI2, imeis.get(1));
+                prefUtils.saveStringPref( IMEI2, imeis.get(1));
                 status = true;
             }
         }
@@ -1058,7 +1055,7 @@ public class utils {
 
                 break;
             case AppConstants.SET_CALLS:
-                PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, isChecked);
+                PrefUtils.getInstance(context).saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, isChecked);
                 break;
             case AppConstants.SET_CAM:
                 try {
@@ -1116,14 +1113,14 @@ public class utils {
 
         }
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            MyApplication.getAppDatabase(context).getDao().updateSetting(setting);
+            MyAppDatabase.getInstance(context).getDao().updateSetting(setting);
         });
 
     }
 
     public static void verifySettings(Context context) {
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<Settings> settings = MyApplication.getAppDatabase(context).getDao().getSettings();
+            List<Settings> settings = MyAppDatabase.getInstance(context).getDao().getSettings();
             for (Settings setting : settings) {
                 applySettings(context, setting, setting.isSetting_status());
             }
@@ -1131,11 +1128,7 @@ public class utils {
     }
 
 
-    public static void startSocket(Context context) {
-        Intent intent = new Intent(context, LockScreenService.class);
-        intent.putExtra(SOCKET_STATUS, START_SOCKET);
-        ActivityCompat.startForegroundService(context, intent);
-    }
+
 
     public static void stopSocket(Context context) {
         Intent intent = new Intent(context, LockScreenService.class);

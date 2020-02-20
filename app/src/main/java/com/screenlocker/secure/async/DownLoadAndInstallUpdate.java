@@ -87,7 +87,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
 
                 URL downloadUrl = new URL(url);
                 URLConnection connection = downloadUrl.openConnection();
-                connection.setRequestProperty("authorization", PrefUtils.getStringPref(contextWeakReference.get(), SYSTEM_LOGIN_TOKEN));
+                connection.setRequestProperty("authorization", PrefUtils.getInstance(contextWeakReference.get()).getStringPref( SYSTEM_LOGIN_TOKEN));
                 int contentLength = connection.getContentLength();
                 Timber.d("downloadUrl: %s ", downloadUrl.toString());
                 Timber.d("downloadUrl: %s ", url);

@@ -180,9 +180,9 @@ public class PatternLockWithDotsOnly extends View {
             mPathWidth = (int) typedArray.getDimension(R.styleable.PatternLockWithDotsOnly_pathWidth1,
                     ResourceUtils.getDimensionInPx(getContext(), R.dimen.pattern_lock_path_width));
             mNormalStateColor = typedArray.getColor(R.styleable.PatternLockWithDotsOnly_normalStateColor1,
-                    ResourceUtils.getColor(getContext(), R.color.white));
+                    ResourceUtils.getColor(getContext(), android.R.color.white));
             mCorrectStateColor = typedArray.getColor(R.styleable.PatternLockWithDotsOnly_correctStateColor1,
-                    ResourceUtils.getColor(getContext(), R.color.white));
+                    ResourceUtils.getColor(getContext(), android.R.color.white));
             mWrongStateColor = typedArray.getColor(R.styleable.PatternLockWithDotsOnly_wrongStateColor1,
                     ResourceUtils.getColor(getContext(), R.color.pomegranate));
 //            mDotNormalSize = (int) typedArray.getDimension(R.styleable.PatternLockView_dotNormalSize,

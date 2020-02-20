@@ -12,11 +12,14 @@ import com.screenlocker.secure.networkResponseModels.DeviceLoginResponse;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
 import com.screenlocker.secure.networkResponseModels.LoginResponse;
 import com.screenlocker.secure.networkResponseModels.NetworkResponse;
+import com.screenlocker.secure.retrofit.ErrorLogRequestBody;
+import com.screenlocker.secure.retrofit.ErrorResponse;
 import com.screenlocker.secure.settings.codeSetting.installApps.InstallAppModel;
 import com.screenlocker.secure.settings.codeSetting.installApps.UpdateModel;
 import com.secureMarket.DeviceAndSpace;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -31,17 +34,17 @@ import retrofit2.http.Url;
 public interface ApiOneCaller {
 
     @Headers("Content-Type: application/json")
-    @POST("check_expiry")
+    @POST("v1/mobile/check_expiry")
     Call<DeviceExpiryResponse> getOfflineExpiry(
             @Body DeviceModel deviceModel
     );
 
 
     @FormUrlEncoded
-    @POST("getstatus")
+    @POST("v2/mobile/getstatus")
     Call<NetworkResponse> checkStatus(@Field("imei") String imeiNumber, @Field("mac") String macAddress);
 
-    @GET("apklist")
+    @GET("v2/mobile/apklist")
     Call<InstallAppModel> getApps();
 
 
@@ -49,13 +52,13 @@ public interface ApiOneCaller {
     Call<UpdateModel> getUpdate(@Url String url, @Header("authorization") String authHeader);
 
     @Headers("Content-Type: application/json")
-    @POST("login")
+    @POST("v2/mobile/login")
     Call<DeviceLoginResponse> deviceLogin(
             @Body DeviceLoginModle deviceLoginModle
     );
 
     @Headers("Content-Type: application/json")
-    @POST("linkdevice")
+    @POST("v2/mobile/linkdevice")
     Call<LinkDeviceResponse> linkDeviceToDealer(
             @Body LinkDeviceModel dealerLoginModel,
             @Header("authorization") String token
@@ -63,7 +66,7 @@ public interface ApiOneCaller {
 
 
     @Headers("Content-Type: application/json")
-    @DELETE("unlink/{macAddr}/{serialNo}")
+    @DELETE("v2/mobile/unlink/{macAddr}/{serialNo}")
     Call<DeleteDeviceResponse> stopLinkingDevice(
             @Path("macAddr") String MAC,
             @Path("serialNo") String SerialNo,
@@ -71,22 +74,23 @@ public interface ApiOneCaller {
     );
 
     @Headers("Content-Type: application/json")
-    @POST("device_status")
+    @POST("v2/mobile/device_status")
     Call<DeviceStatusResponse> checkDeviceStatus(
             @Body DeviceModel deviceModel
     );
 
-    @GET("marketApplist/admin/{space}")
+    @GET("v2/mobile/marketApplist/admin/{space}")
     Call<InstallAppModel> getAdminApps(@Path("space") String space);
 
 
-    @POST("market-app-list")
+    @POST("v2/mobile/market-app-list")
     Call<InstallAppModel> getAllApps(@Body DeviceAndSpace deviceAndSpace);
 
     @Headers("Content-Type: application/json")
-    @POST("systemlogin")
+    @POST("v2/mobile/systemlogin")
     Call<LoginResponse> login(
             @Body LoginModel loginModel
     );
+
 
 }

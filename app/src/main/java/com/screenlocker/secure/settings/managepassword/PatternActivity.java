@@ -10,9 +10,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
 import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
@@ -25,11 +25,13 @@ public class PatternActivity extends AppCompatActivity {
     private PatternLockWithDotsOnly mPatternView;
     private int mTry = 0;
     private String tryPattern;
+    private SecuredSharedPref securedSharedPref;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pattern);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         mPatternView = findViewById(R.id.patter_lock_view);
         setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,7 +67,7 @@ public class PatternActivity extends AppCompatActivity {
             public void onComplete(List<PatternLockWithDotsOnly.Dot> pattern) {
 
                 if (pattern.size() < 4) {
-                    Toast.makeText(PatternActivity.this, "Pattern is too Short", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PatternActivity.this, getResources().getString(R.string.pattern_is_too_short), Toast.LENGTH_SHORT).show();
                     mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                     new Handler().postDelayed(mPatternView::clearPattern, 500);
                     return;
@@ -74,8 +76,9 @@ public class PatternActivity extends AppCompatActivity {
                     tryPattern = PatternLockUtils.patternToString(mPatternView, pattern);
                     switch (extra) {
                         case AppConstants.KEY_MAIN:
-                            if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN))) {
-                                Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
+                            if (tryPattern.equals(securedSharedPref.getStringPref( AppConstants.GUEST_PATTERN)) ||
+                                    tryPattern.equals(securedSharedPref.getStringPref( AppConstants.DURESS_PATTERN))) {
+                                Toast.makeText(PatternActivity.this, getResources().getString(R.string.pattern_already_aken), Toast.LENGTH_SHORT).show();
                                 mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
@@ -85,8 +88,9 @@ public class PatternActivity extends AppCompatActivity {
                             }
                             break;
                         case AppConstants.KEY_GUEST:
-                            if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN))) {
-                                Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
+                            if (tryPattern.equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_PATTERN)) ||
+                                    tryPattern.equals(securedSharedPref.getStringPref( AppConstants.DURESS_PATTERN))) {
+                                Toast.makeText(PatternActivity.this, getResources().getString(R.string.pattern_already_aken), Toast.LENGTH_SHORT).show();
                                 mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
@@ -95,8 +99,9 @@ public class PatternActivity extends AppCompatActivity {
                             }
                             break;
                         case AppConstants.KEY_DURESS:
-                            if (tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN)) || tryPattern.equals(PrefUtils.getStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN))) {
-                                Toast.makeText(PatternActivity.this, "Pattern already Taken", Toast.LENGTH_SHORT).show();
+                            if (tryPattern.equals(securedSharedPref.getStringPref( AppConstants.GUEST_PATTERN)) ||
+                                    tryPattern.equals(securedSharedPref.getStringPref( AppConstants.ENCRYPT_PATTERN))) {
+                                Toast.makeText(PatternActivity.this, getResources().getString(R.string.pattern_already_aken), Toast.LENGTH_SHORT).show();
                                 mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
                                 new Handler().postDelayed(() -> {
                                     mPatternView.clearPattern();
@@ -107,69 +112,69 @@ public class PatternActivity extends AppCompatActivity {
                     }
 
 
-                        mTry++;
-                        message.setText("Confirm Pattern");
-                        mPatternView.clearPattern();
+                    mTry++;
+                    message.setText(getResources().getString(R.string.confirm_pattern));
+                    mPatternView.clearPattern();
 
-                    } else if (mTry == 1) {
-                        if (tryPattern.equals(PatternLockUtils.patternToString(mPatternView, pattern))) {
-                            switch (extra) {
-                                case AppConstants.KEY_MAIN:
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_PATTERN, tryPattern);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_COMBO_PATTERN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.ENCRYPT_COMBO_PIN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_MAIN_PASSWORD, null);
-                                    Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    break;
-                                case AppConstants.KEY_GUEST:
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_PATTERN, tryPattern);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_COMBO_PATTERN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.GUEST_COMBO_PIN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_GUEST_PASSWORD, null);
-                                    Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    break;
-                                case AppConstants.KEY_DURESS:
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_PATTERN, tryPattern);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_COMBO_PATTERN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.DURESS_COMBO_PIN, null);
-                                    PrefUtils.saveStringPref(PatternActivity.this, AppConstants.KEY_DURESS_PASSWORD, null);
-                                    Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    break;
-                            }
-
-
-                            //right pattern
-                        } else {
-                            mTry = 0;
-                            Toast.makeText(PatternActivity.this, "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
-                            mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
-                            new Handler().postDelayed(() -> mPatternView.clearPattern(), 500);
-                            message.setText("Please Draw Pattern");
-
+                } else if (mTry == 1) {
+                    if (tryPattern.equals(PatternLockUtils.patternToString(mPatternView, pattern))) {
+                        switch (extra) {
+                            case AppConstants.KEY_MAIN:
+                                securedSharedPref.saveStringPref( AppConstants.ENCRYPT_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                securedSharedPref.saveStringPref( AppConstants.ENCRYPT_PATTERN, tryPattern);
+                                securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PATTERN, null);
+                                securedSharedPref.saveStringPref( AppConstants.ENCRYPT_COMBO_PIN, null);
+                                securedSharedPref.saveStringPref( AppConstants.KEY_MAIN_PASSWORD, null);
+                                Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                            case AppConstants.KEY_GUEST:
+                                securedSharedPref.saveStringPref( AppConstants.GUEST_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                securedSharedPref.saveStringPref( AppConstants.GUEST_PATTERN, tryPattern);
+                                securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PATTERN, null);
+                                securedSharedPref.saveStringPref( AppConstants.GUEST_COMBO_PIN, null);
+                                securedSharedPref.saveStringPref( AppConstants.KEY_GUEST_PASSWORD, null);
+                                Toast.makeText( PatternActivity.this,"Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                            case AppConstants.KEY_DURESS:
+                                securedSharedPref.saveStringPref( AppConstants.DUERESS_DEFAULT_CONFIG, AppConstants.PATTERN_PASSWORD);
+                                securedSharedPref.saveStringPref( AppConstants.DURESS_PATTERN, tryPattern);
+                                securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PATTERN, null);
+                                securedSharedPref.saveStringPref( AppConstants.DURESS_COMBO_PIN, null);
+                                securedSharedPref.saveStringPref( AppConstants.KEY_DURESS_PASSWORD, null);
+                                Toast.makeText(PatternActivity.this, "Pattern Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
                         }
+
+
+                        //right pattern
+                    } else {
+                        mTry = 0;
+                        Toast.makeText(PatternActivity.this, "Pattern Did Not Match", Toast.LENGTH_SHORT).show();
+                        mPatternView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.WRONG);
+                        new Handler().postDelayed(() -> mPatternView.clearPattern(), 500);
+                        message.setText(getResources().getString(R.string.please_draw_pattern));
+
                     }
                 }
-
-                @Override
-                public void onCleared () {
-
-                }
-            });
-
-        }
-
-        @Override
-        public boolean onOptionsItemSelected (MenuItem item){
-            if (item.getItemId() == android.R.id.home) {
-                finish();
-                return true;
             }
-            return super.onOptionsItemSelected(item);
-        }
+
+            @Override
+            public void onCleared () {
+
+            }
+        });
+
     }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item){
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}

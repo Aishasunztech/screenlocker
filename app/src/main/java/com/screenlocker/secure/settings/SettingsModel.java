@@ -104,7 +104,7 @@ public class SettingsModel implements SettingContract.SettingsMvpModel {
         //input.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         input.setLayoutParams(lp);
         alertDialog.setView(input);
-        alertDialog.setIcon(R.mipmap.ic_launcher);
+        alertDialog.setIcon(R.drawable.ic_secure_settings);
         input.setFocusable(true);
         input.setFocusableInTouchMode(true);
         input.clearFocus();

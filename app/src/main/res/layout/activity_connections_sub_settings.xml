@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.screenlocker.secure.launcher.subsettings.ConnectionsSubSettings">
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/main_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/connection_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_wifi_s" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_1sdp"
+                android:text="@string/wi_fi"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+            <TextView
+                android:id="@+id/tvConnectedWIF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_8sdp"
+                tools:text="Lockmesh"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:background="@color/gray_darken" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_hotspot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_wifi_hotspot" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/hotspot"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+
+
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@color/gray_darken" />
+    <LinearLayout
+        android:id="@+id/bluethooth_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_bluetooth" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_1sdp"
+                android:text="@string/bluetooth"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+            <TextView
+                android:id="@+id/tvConnectedBluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_8sdp"
+                tools:text="Disable"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:background="@color/gray_darken" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/layout_simcards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_sim_card" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/sim_cards"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+
+
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@color/gray_darken" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_mobiledata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_data_s" />
+
+
+
+        <Switch
+            android:id="@+id/switch_mobile_data"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:paddingEnd="@dimen/_16sdp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/mobile_data"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@color/gray_darken" />
+
+
+
+    <LinearLayout
+        android:id="@+id/layoutDataRoaming"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_8sdp"
+            android:contentDescription="@string/description_app_image"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_roaming" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/data_roaming"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+
+
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@color/gray_darken" />
+
+
+
+
+
+</LinearLayout>

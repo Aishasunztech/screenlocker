@@ -25,25 +25,26 @@ public class NetworkSocketAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Timber.d("onReceive");
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
         if (isNetworkConnected(context)) {
             if (isSocketConnected()) {
-                PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, CONNECTED);
+                        prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_STATUS, CONNECTED);
                 Timber.d("socket connected");
             } else {
                 Timber.d("checking connection....");
                 new CheckInternetTask(data -> {
-                    PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
-                    PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_CHANGED, String.valueOf(new Date().getTime()));
+                    prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_STATUS, data ? CONNECTED : DISCONNECTED);
+                    prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_CHANGED, String.valueOf(new Date().getTime()));
                     Timber.d("connection status :%s", data);
                 }).execute();
             }
 
-//            if (PrefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
+//            if (prefUtils.getBooleanPref(context, DEVICE_LINKED_STATUS)) {
             setAlarmManager(context, System.currentTimeMillis() + 1500L, 1);
 //            }
 
         } else {
-            PrefUtils.saveStringPref(context, AppConstants.CURRENT_NETWORK_STATUS, DISCONNECTED);
+            prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_STATUS, DISCONNECTED);
             Timber.d("disconnected");
         }
 

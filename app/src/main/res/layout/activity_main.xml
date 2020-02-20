@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_root"
-    tools:context=".launcher.MainActivity">
+    android:id="@+id/main_root">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/background"
@@ -30,10 +29,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvApps"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layoutAnimation="@anim/layout_animation"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

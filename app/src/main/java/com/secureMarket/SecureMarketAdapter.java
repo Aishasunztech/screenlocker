@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 
 import com.screenlocker.secure.app.MyApplication;
@@ -46,7 +47,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         this.appModelServerAppInfo = appModelServerAppInfo;
         this.context = context;
         this.listener = listener;
-        userSpace = PrefUtils.getStringPref(context, CURRENT_KEY);
+        userSpace = PrefUtils.getInstance(context).getStringPref( CURRENT_KEY);
         this.fragmentType = fragmentType;
 
 
@@ -82,7 +83,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
 
-        String live_url = PrefUtils.getStringPref(context, LIVE_URL);
+        String live_url = PrefUtils.getInstance(context).getStringPref( LIVE_URL);
 
         Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo());
 
@@ -186,7 +187,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                     case KEY_GUEST_PASSWORD:
 
                         new Thread(() -> {
-                            boolean isGuest = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
+                            boolean isGuest = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().checkGuest(app.getPackageName());
 
                             AppExecutor.getInstance().getMainThread().execute(() -> {
                                 if (isGuest) {
@@ -207,7 +208,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
                     case KEY_MAIN_PASSWORD:
 
                         new Thread(() -> {
-                            boolean isEncrypted = MyApplication.getAppDatabase(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
+                            boolean isEncrypted = MyAppDatabase.getInstance(MyApplication.getAppContext()).getDao().checkEncrypt(app.getPackageName());
                             AppExecutor.getInstance().getMainThread().execute(() -> {
                                 if (isEncrypted) {
                                     if (app.getIs_restrict_uninstall() == 0) {

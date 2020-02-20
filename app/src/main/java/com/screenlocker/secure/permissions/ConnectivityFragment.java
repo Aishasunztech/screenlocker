@@ -62,7 +62,7 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
 
     @Override
     public void onSkip() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        PrefUtils.getInstance(MyApplication.getAppContext()).saveIntegerPref( DEF_PAGE_NO, 5);
         super.onSkip();
     }
 

@@ -15,6 +15,8 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -52,6 +54,8 @@ import com.secureSetting.t.db.DbIgnoreExecutor;
 import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +77,7 @@ import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.isProgress;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
@@ -84,16 +89,18 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     public static final String CHANNEL_1_ID = "channel_1_id";
     public static boolean recent = false;
-    private MyAppDatabase myAppDatabase;
     private ComponentName compName;
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
     private ApiOneCaller apiOneCaller;
-    private PrefManager preferenceManager;
     private AppsStatusReceiver appsStatusReceiver;
     private ApiUtils apiUtils;
     private long mInterval = 10000; // 10 seconds by default, can be changed later
     private Handler mHandler;
+
+    private HandlerThread receiverHandlerThread;
+    private Handler braodcast;
+    private PrefUtils prefUtils;
 
 
     private static Context appContext;
@@ -125,7 +132,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),null, braodcast);
     }
 
     private void unRegisterNetworkPref() {
@@ -161,8 +168,12 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
         super.onCreate();
         mHandler = new Handler();
         appContext = getApplicationContext();
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
-
+         prefUtils = PrefUtils.getInstance(this);
+        prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
+        receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        braodcast = new Handler(looper);
         registerNetworkPref();
 
         if (LinkDeviceActivity.mListener == null)
@@ -193,14 +204,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, AppConstants.DATABASE_NAME)
-                    .addMigrations(new Migration_11_13(11, 13),
-                            new Migration_13_14(13, 14)
-                            , new Migration_14_15(14, 15)
-                            , new Migration_15_16(15, 16))
-                    .build();
-        });
+
         Timber.plant(new Timber.DebugTree());
 
         BarryAppComponent component = DaggerBarryAppComponent
@@ -221,7 +225,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
         registerReceiver(appsStatusReceiver, filter);
 
-        String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+        String language_key = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
 
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, getAppContext());
@@ -231,7 +235,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
-                String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+                String language_key = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
                 }
@@ -287,10 +291,6 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
      * @return room database object
      */
 
-    public static MyAppDatabase getAppDatabase(Context context) {
-        return ((MyApplication) context.getApplicationContext()).myAppDatabase;
-    }
-
     public static LinearLayout getScreenShotView(Context context) {
         return ((MyApplication) context.getApplicationContext()).screenShotView;
     }
@@ -305,10 +305,6 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     public ApiOneCaller getApiOneCaller() {
         return apiOneCaller;
-    }
-
-    public PrefManager getPreferenceManager() {
-        return preferenceManager;
     }
 
 
@@ -337,17 +333,17 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
             Timber.d("output : " + output);
 
             if (output != null) {
-                PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                prefUtils.saveStringPref( LIVE_URL, output);
+                String live_url = prefUtils.getStringPref( LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+                boolean linkStatus = prefUtils.getBooleanPref( AppConstants.DEVICE_LINKED_STATUS);
 
-                boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+                boolean old_device_status = prefUtils.getBooleanPref( AppConstants.OLD_DEVICE_STATUS);
 
                 Timber.d("LinkStatus :" + linkStatus);
-                boolean pendingActivation = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ACTIVATION);
+                boolean pendingActivation = prefUtils.getBooleanPref( AppConstants.PENDING_ACTIVATION);
                 Timber.d("pendingActivation " + pendingActivation);
 
                 Timber.d("LinkStatus :" + linkStatus);
@@ -355,11 +351,11 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
                 if (!old_device_status) {
-                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                    if (prefUtils.getBooleanPref( TOUR_STATUS)) {
                         if (apiUtils == null)
                             apiUtils = new ApiUtils(MyApplication.this, macAddress, serialNo);
                         apiUtils.connectToSocket();
-                        PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                        prefUtils.saveBooleanPref( AppConstants.OLD_DEVICE_STATUS, true);
                     }
                 }
 
@@ -393,6 +389,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
     public static void saveToken() {
 
+        PrefUtils prefUtils = PrefUtils.getInstance(appContext);
         if (MyApplication.oneCaller == null) {
 
             String[] urls = {URL_1, URL_2};
@@ -400,8 +397,8 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
             new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     MyApplication.oneCaller
@@ -410,7 +407,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
                         public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                             if (response.body() != null) {
                                 if (response.body().isStatus()) {
-                                    PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                                    prefUtils.saveStringPref( SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
                                 }
                             }
@@ -432,7 +429,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
                 public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                     if (response.body() != null) {
                         if (response.body().isStatus()) {
-                            PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                            prefUtils.saveStringPref( SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
                         }
                     }
@@ -486,7 +483,7 @@ public class MyApplication extends Application implements LinkDeviceActivity.OnS
 
             boolean schedule = true;
             try {
-                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
+                if (prefUtils.getBooleanPref( AppConstants.PENDING_ACTIVATION)) {
                     switch (UtilityFunctions.getNetworkType(MyApplication.this)) {
                         case NetworkCapabilities.TRANSPORT_CELLULAR:
                             mInterval = mInterval + 10000;

@@ -57,6 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     public boolean isOverLayAllowed() {
         return overlayIsAllowed;
     }
+    protected PrefUtils prefUtils;
 
     AlertDialog alertDialog;
 
@@ -85,7 +86,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (PrefUtils.getBooleanPref(BaseActivity.this, AppConstants.KEY_THEME)) {
+        prefUtils = PrefUtils.getInstance(this);
+        if (prefUtils.getBooleanPref( AppConstants.KEY_THEME)) {
             switch (AppCompatDelegate.getDefaultNightMode()) {
                 case AppCompatDelegate.MODE_NIGHT_UNSPECIFIED:
                 case AppCompatDelegate.MODE_NIGHT_NO:
@@ -108,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
             if (alertDialog == null) {
                 createAlertDialog();
             } else {
-                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this, DEVICE_LINKED_STATUS))
+                if (!alertDialog.isShowing() && prefUtils.getBooleanPref( DEVICE_LINKED_STATUS))
                     alertDialog.show();
             }
 
@@ -146,7 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
         policyDialog.setMessage("Please wait, Loading Policy to your Device. This may take a few minutes , Do not turn OFF device.");
         policyDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
             policyDialog.dismiss();
-            PrefUtils.saveBooleanPref(this, LOADING_POLICY, false);
+            prefUtils.saveBooleanPref(LOADING_POLICY, false);
         });
         policyDialog.setCancelable(false);
         policyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -178,7 +180,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
         LocalBroadcastManager.getInstance(this).registerReceiver(loadingPolicyReceiver, new IntentFilter(FINISH_POLICY));
 
-        boolean status = PrefUtils.getBooleanPref(BaseActivity.this, LOADING_POLICY);
+        boolean status = prefUtils.getBooleanPref( LOADING_POLICY);
 
         if (status) {
             if (!getPolicyDialog().isShowing()) {
@@ -210,7 +212,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
             if (alertDialog == null) {
                 createAlertDialog();
             } else {
-                if (!alertDialog.isShowing() && PrefUtils.getBooleanPref(BaseActivity.this, DEVICE_LINKED_STATUS))
+                if (!alertDialog.isShowing() && prefUtils.getBooleanPref( DEVICE_LINKED_STATUS))
                     alertDialog.show();
             }
         }
@@ -223,7 +225,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
     public AlertDialog getPolicyConfirmation() {
 
-        String policyName = PrefUtils.getStringPref(BaseActivity.this, POLICY_NAME);
+        String policyName = prefUtils.getStringPref( POLICY_NAME);
 
         if (policyName == null) {
             policyName = "#default_policy";
@@ -235,8 +237,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
         policyConfirmation.setMessage("Policy \"" + policyName + "\" successfully loaded to device");
         policyConfirmation.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
             dialog.dismiss();
-            PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, false);
-            PrefUtils.saveStringPref(this, POLICY_NAME, null);
+            prefUtils.saveBooleanPref( PENDING_FINISH_DIALOG, false);
+            prefUtils.saveStringPref( POLICY_NAME, null);
         });
 
         return policyConfirmation;
@@ -244,7 +246,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 
     private void showpolicyConfirmstion() {
 
-        if (PrefUtils.getBooleanPref(this, PENDING_FINISH_DIALOG)) {
+        if (prefUtils.getBooleanPref( PENDING_FINISH_DIALOG)) {
             if (!getPolicyConfirmation().isShowing()) {
                 getPolicyConfirmation().show();
             }
@@ -261,7 +263,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
 
-        String language_key = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        String language_key = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, this);
         }
@@ -303,14 +305,14 @@ public abstract class BaseActivity extends AppCompatActivity implements OnAppsRe
 //            launchPermissions();
 //        }
         else {
-            PrefUtils.saveBooleanPref(MyApplication.getAppContext(), PERMISSION_GRANTING, false);
+            prefUtils.saveBooleanPref( PERMISSION_GRANTING, false);
 //            ActivityCompat.startForegroundService(this, new Intent(this, LockScreenService.class).setAction("stopThread"));
         }
     }
 
     private void launchPermissions() {
         Intent a = new Intent(this, SteppersActivity.class);
-        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getBooleanPref( TOUR_STATUS)) {
             a.putExtra("emergency", true);
         }
         startActivity(a);

@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -95,7 +96,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (!prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
             finish();
@@ -120,13 +121,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
         allDbApps = new ArrayList<>();
         setRecyclerView();
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getAllApps().observe(this, appInfos -> {
             allDbApps = appInfos;
             int size = adapter.appsList.size();
             adapter.appsList.clear();
             adapter.notifyItemRangeRemoved(0, --size);
-            final String message = PrefUtils.getStringPref(this, CURRENT_KEY);
+            final String message = prefUtils.getStringPref( CURRENT_KEY);
             setBackground(message);
             mainPresenter.addDataToList(allDbApps, message, adapter);
             runLayoutAnimation();
@@ -166,8 +167,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         }
 
 
-        if (PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN) != null
-                && PrefUtils.getStringPref(this, AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE) && PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getStringPref( AppConstants.KEY_SHUT_DOWN) != null
+                && prefUtils.getStringPref( AppConstants.KEY_SHUT_DOWN).equals(AppConstants.VALUE_SHUT_DOWN_TRUE) && prefUtils.getBooleanPref(TOUR_STATUS)) {
 
             if (!mainPresenter.isServiceRunning()) {
                 mainPresenter.startLockService(lockScreenIntent);
@@ -182,9 +183,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
 
-        adapter = new RAdapter(this);
+        adapter = new RAdapter(this, prefUtils);
         adapter.appsList = new ArrayList<>();
-        int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+        int column_span = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
         if (column_span == 0) {
             column_span = AppConstants.LAUNCHER_GRID_SPAN;
         }
@@ -267,7 +268,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
 
 //        Log.d(TAG, "DISPLAY: "+Build.DISPLAY);
-        String languageKey = PrefUtils.getStringPref(this, AppConstants.LANGUAGE_PREF);
+        String languageKey = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
 
         if (languageKey != null && languageKey.equals("ar")) {
 //            layoutManager.setReverseLayout(true);
@@ -278,14 +279,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
         }
 
-        if (!mainPresenter.isServiceRunning() && PrefUtils.getBooleanPref(MainActivity.this, TOUR_STATUS)) {
+        if (!mainPresenter.isServiceRunning() && prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent lockScreenIntent = new Intent(this, LockScreenService.class);
             mainPresenter.startLockService(lockScreenIntent);
         }
 
-        boolean pendingDialog = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG);
+        boolean pendingDialog = prefUtils.getBooleanPref( AppConstants.PENDING_ALARM_DIALOG);
         if (pendingDialog) {
-            String dialogMessage = PrefUtils.getStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE);
+            String dialogMessage = prefUtils.getStringPref( AppConstants.PENDING_DIALOG_MESSAGE);
             if (!dialogMessage.equals("")) {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.expiry_alert_online_title))
@@ -295,8 +296,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                PrefUtils.saveBooleanPref(this, AppConstants.PENDING_ALARM_DIALOG, false);
-                PrefUtils.saveStringPref(this, AppConstants.PENDING_DIALOG_MESSAGE, "");
+                prefUtils.saveBooleanPref( AppConstants.PENDING_ALARM_DIALOG, false);
+                prefUtils.saveStringPref( AppConstants.PENDING_DIALOG_MESSAGE, "");
             }
         }
 
@@ -324,7 +325,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
             if (!message.equals("")) {
                 if (message.equals(KEY_MAIN_PASSWORD)) {
                     // for the encrypted user type
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_MAIN_IMAGE);
+                    bg = prefUtils.getStringPref( KEY_MAIN_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw._1239);
 
@@ -333,7 +334,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     }
                 } else if (message.equals(KEY_SUPPORT_PASSWORD)) {
                     // for the guest type user
-                    bg = PrefUtils.getStringPref(MainActivity.this, KEY_SUPPORT_IMAGE);
+                    bg = prefUtils.getStringPref( KEY_SUPPORT_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw.texture);
 
@@ -342,7 +343,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     }
 
                 } else {
-                    bg = PrefUtils.getStringPref(MainActivity.this, AppConstants.KEY_GUEST_IMAGE);
+                    bg = prefUtils.getStringPref( AppConstants.KEY_GUEST_IMAGE);
                     if (bg == null || bg.equals("")) {
                         background.setImageResource(R.raw._12318);
 
@@ -396,12 +397,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
         if (key.equals(KEY_GUEST_IMAGE) || key.equals(KEY_MAIN_IMAGE)) {
-            String msg = PrefUtils.getStringPref(MainActivity.this, AppConstants.CURRENT_KEY);
+            String msg = prefUtils.getStringPref( AppConstants.CURRENT_KEY);
             if (msg != null && !msg.equals("")) {
                 setBackground(msg);
             }
         } else if (key.equals(AppConstants.KEY_COLUMN_SIZE)) {
-            int column_span = PrefUtils.getIntegerPref(this, AppConstants.KEY_COLUMN_SIZE);
+            int column_span = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
             if (column_span == 0) {
                 column_span = AppConstants.LAUNCHER_GRID_SPAN;
             }
@@ -414,7 +415,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainMvpVi
                     .orElse(-1);
             if (index != -1) {
                 AppInfo app = adapter.appsList.get(index);
-                app.setNumberOfnotifications(PrefUtils.getIntegerPref(MainActivity.this, NUMBER_OF_NOTIFICATIONS));
+                app.setNumberOfnotifications(prefUtils.getIntegerPref( NUMBER_OF_NOTIFICATIONS));
                 adapter.appsList.set(index, app);
                 adapter.notifyItemChanged(index);
 

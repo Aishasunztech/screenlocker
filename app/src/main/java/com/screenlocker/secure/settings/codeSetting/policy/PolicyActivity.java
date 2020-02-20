@@ -72,7 +72,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnected();
-        if (!CommonUtils.isNetworkConneted(this)) {
+        if (!CommonUtils.isNetworkConneted(prefUtils)) {
             showNetworkDialog();
 
         } else {
@@ -80,7 +80,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
         }
 
 
-        boolean isDeviceLink = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+        boolean isDeviceLink = prefUtils.getBooleanPref( AppConstants.DEVICE_LINKED_STATUS);
 
         if (isConnected && !isDeviceLink) {
             showLinkDialog();
@@ -151,7 +151,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
 
             if (mService != null) {
                 mService.onLoadPolicy(policyName);
-                PrefUtils.saveStringPref(PolicyActivity.this, POLICY_NAME, policyName);
+                prefUtils.saveStringPref( POLICY_NAME, policyName);
                 processingView();
             }
 
@@ -297,7 +297,7 @@ public class PolicyActivity extends BaseActivity implements View.OnClickListener
     public void onResponse(boolean status) {
         Timber.d("Policy status %s", status);
         if (status) {
-            PrefUtils.saveBooleanPref(this, LOADING_POLICY, true);
+            prefUtils.saveBooleanPref( LOADING_POLICY, true);
             AppExecutor.getInstance().getMainThread().execute(this::successView);
         } else {
             AppExecutor.getInstance().getMainThread().execute(this::errorView);

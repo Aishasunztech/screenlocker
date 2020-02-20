@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.screenlocker.secure.base.BaseActivity;
 import com.secure.launcher.R;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -27,7 +28,7 @@ import static com.screenlocker.secure.utils.AppConstants.KEY_CODE;
 import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST;
 import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN;
 
-public class ChangeWallpaper extends AppCompatActivity
+public class ChangeWallpaper extends BaseActivity
         implements WallpaperAdapter.OnClickListner, SetWallpaperDialog.OnSetWallpaperListener {
     List<Integer> ids = new ArrayList<>();
     private String type;
@@ -162,15 +163,15 @@ public class ChangeWallpaper extends AppCompatActivity
         switch (type) {
             case KEY_MAIN:
                 Toast.makeText(this, getResources().getString(R.string.bg_set_encrypted), Toast.LENGTH_SHORT).show();
-                PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_MAIN_IMAGE, String.valueOf(id));
+                prefUtils.saveStringPref( AppConstants.KEY_MAIN_IMAGE, String.valueOf(id));
                 break;
             case KEY_GUEST:
                 Toast.makeText(this, getResources().getString(R.string.bg_set_guest), Toast.LENGTH_SHORT).show();
-                PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_GUEST_IMAGE, String.valueOf(id));
+                prefUtils.saveStringPref( AppConstants.KEY_GUEST_IMAGE, String.valueOf(id));
                 break;
             case KEY_CODE:
                 Toast.makeText(this, getResources().getString(R.string.bg_set_lockscreen), Toast.LENGTH_SHORT).show();
-                PrefUtils.saveStringPref(ChangeWallpaper.this, AppConstants.KEY_LOCK_IMAGE, String.valueOf(id));
+                prefUtils.saveStringPref( AppConstants.KEY_LOCK_IMAGE, String.valueOf(id));
                 break;
         }
         newFragment.dismiss();

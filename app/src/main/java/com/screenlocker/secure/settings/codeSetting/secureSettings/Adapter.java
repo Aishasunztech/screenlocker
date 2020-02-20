@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.room.SubExtension;
@@ -23,6 +24,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.screenlocker.secure.utils.AppConstants.SUB_AdminPanel;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
@@ -55,7 +58,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                         @Override
                         public void run() {
                             checklistener.updateMenu();
-                            MyApplication.getAppDatabase(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                            MyAppDatabase.getInstance(context).getDao().setGuest(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
                 }
@@ -69,7 +72,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                         @Override
                         public void run() {
                             checklistener.updateMenu();
-                            MyApplication.getAppDatabase(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
+                            MyAppDatabase.getInstance(context).getDao().setEncrypted(isChecked, subExtensionList.get(getAdapterPosition()).getUniqueExtension());
                         }
                     }).start();
                 }
@@ -110,6 +113,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         vh.guestSwitch.setChecked(info.isGuest());
         vh.encryptedSwitch.setChecked(info.isEncrypted());
         vh.enabledSwitch.setVisibility(View.GONE);
+        if (info.getUniqueExtension().equals(AppConstants.SECURE_SETTINGS_UNIQUE + SUB_AdminPanel)){
+            vh.encryptedSwitch.setVisibility(View.INVISIBLE);
+        }else vh.encryptedSwitch.setVisibility(View.VISIBLE);
 
     }
 

@@ -93,7 +93,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     @SuppressLint("PrivateApi")
     public static void endCall(Context context) {
-        boolean isCallDisable = PrefUtils.getBooleanPref(context, AppConstants.KEY_DISABLE_CALLS);
+        boolean isCallDisable = PrefUtils.getInstance(context).getBooleanPref( AppConstants.KEY_DISABLE_CALLS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
             if (telecomManager != null && ContextCompat.checkSelfPermission(context, Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED) {

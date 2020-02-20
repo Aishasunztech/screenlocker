@@ -74,13 +74,14 @@ public class MainModel implements MainContract.MainMvpModel {
 
         //i am sending the key from here to receiver
         //sending the broadcast to show the apps
-        if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY) != null) {
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        if (prefUtils.getStringPref( AppConstants.CURRENT_KEY) != null) {
             // from the guest part
-            if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_GUEST_PASSWORD)) {
+            if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_GUEST_PASSWORD)) {
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_GUEST_PASSWORD);
-            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_MAIN_PASSWORD)) {    //  from the encrypted part
+            } else if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_MAIN_PASSWORD)) {    //  from the encrypted part
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_MAIN_PASSWORD);
-            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_SUPPORT_PASSWORD)) {
+            } else if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_SUPPORT_PASSWORD)) {
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
         } else {
@@ -90,8 +91,7 @@ public class MainModel implements MainContract.MainMvpModel {
     }
 
     /**
-     * @param pm      package manager to get the list  of all apps and display it
-     * @param message this is the message to the broadcast catches when thrown from {@link MainActivity#onCreate(Bundle)} OR {@link com.screenlocker.secure.utils.Utils#sendMessageToActivity(String, Context)}
+     * @param message this is the message to the broadcast catches when thrown from {@link MainActivity#(Bundle)} OR {@link com.screenlocker.secure.utils.Utils#sendMessageToActivity(String, Context)}
      * @param adapter adapter instance to populate the  list of apps we get from the package manager
      */
     @Override
@@ -114,8 +114,6 @@ public class MainModel implements MainContract.MainMvpModel {
                             if (model.getUniqueName().equals(AppConstants.LIVE_CLIENT_CHAT_UNIQUE)) {
                                 adapter.appsList.add(model);
                             } else if (model.getUniqueName().equals(AppConstants.SECURE_SETTINGS_UNIQUE)) {
-                                adapter.appsList.add(model);
-                            }else if (model.getPackageName().equals(context.getPackageName())){
                                 adapter.appsList.add(model);
                             }
                             break;

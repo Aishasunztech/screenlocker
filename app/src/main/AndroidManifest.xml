@@ -31,6 +31,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_PACKAGE_INSTALLS" />
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY" />
     <uses-permission
         android:name="android.permission.INJECT_EVENTS"
@@ -311,10 +313,17 @@
         <activity
             android:name="com.secureSetting.t.ui.StateAboutActivity"
             android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.screenlocker.secure.launcher.subsettings.BackuoAndRestoreActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.screenlocker.secure.launcher.subsettings.ConnectionsSubSettings"
             android:screenOrientation="portrait" /> <!-- reciever to block calls -->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4ae69637afb36cd9f3268feda60e462831a0cd2e" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

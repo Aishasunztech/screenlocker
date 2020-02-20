@@ -1,34 +1,39 @@
 package com.screenlocker.secure.settings.managepassword;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.secure.launcher.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.screenlocker.secure.utils.AppConstants;
-import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.screenlocker.secure.views.patternlock.PatternLockWithDotsOnly;
 import com.screenlocker.secure.views.patternlock.listener.PatternLockWithDotListener;
 import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
+import com.secure.launcher.R;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class VerifyPatternActivity extends AppCompatActivity {
-private String extra ;
+    private String extra;
+    private SecuredSharedPref pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pref = SecuredSharedPref.getInstance(this);
         setContentView(R.layout.activity_verify_pattern_acitivity);
         ImageView imageView = findViewById(R.id.profile_image);
 
-        Intent intent =  getIntent();
-        if (intent !=null){
-            extra =intent.getStringExtra(Intent.EXTRA_TEXT);
-            switch (extra){
+        Intent intent = getIntent();
+        if (intent != null) {
+            extra = intent.getStringExtra(Intent.EXTRA_TEXT);
+            switch (extra) {
                 case AppConstants.KEY_MAIN:
                     imageView.setImageResource(R.drawable.ic_encrypted_third);
                     break;
@@ -41,6 +46,7 @@ private String extra ;
             }
         }
         PatternLockWithDotsOnly mPatternLockView = findViewById(R.id.patter_lock_view);
+        mPatternLockView.setHapticFeedbackEnabled(false);
         mPatternLockView.addPatternLockListener(new PatternLockWithDotListener() {
             @Override
             public void onStarted() {
@@ -62,21 +68,24 @@ private String extra ;
                     return;
                 }
                 String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
-                if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.GUEST_PATTERN)) && extra.equals(AppConstants.KEY_GUEST)) {
+                if (patternString.equals(pref.getStringPref( AppConstants.GUEST_PATTERN))
+                        && extra.equals(AppConstants.KEY_GUEST)) {
                     mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
-                } else if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.ENCRYPT_PATTERN))&& extra.equals(AppConstants.KEY_MAIN)) {
+                } else if (patternString.equals(pref.getStringPref( AppConstants.ENCRYPT_PATTERN))
+                        && extra.equals(AppConstants.KEY_MAIN)) {
                     mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
                         setResult(RESULT_OK);
                         onBackPressed();
                     }, 150);
-                } else if (patternString.equals(PrefUtils.getStringPref(VerifyPatternActivity.this, AppConstants.DURESS_PATTERN)) && extra.equals(AppConstants.KEY_DURESS)) {
+                } else if (patternString.equals(pref.getStringPref( AppConstants.DURESS_PATTERN))
+                        && extra.equals(AppConstants.KEY_DURESS)) {
                     mPatternLockView.setViewMode(PatternLockWithDotsOnly.PatternViewMode.CORRECT);
                     new Handler().postDelayed(() -> {
                         mPatternLockView.clearPattern();
@@ -97,7 +106,7 @@ private String extra ;
 
             @Override
             public void onCleared() {
-                Log.d(getClass().getName(), "Pattern has been cleared");
+                Timber.d("Pattern has been cleared");
             }
         });
     }

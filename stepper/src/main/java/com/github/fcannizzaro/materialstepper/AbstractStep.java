@@ -13,7 +13,6 @@ import com.github.fcannizzaro.materialstepper.style.BaseStyle;
 public abstract class AbstractStep extends Fragment implements Nextable {
 
     protected BaseStyle mStepper;
-
     public AbstractStep stepper(BaseStyle mStepper) {
         this.mStepper = mStepper;
         return this;

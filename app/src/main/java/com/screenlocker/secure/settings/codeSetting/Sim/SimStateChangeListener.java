@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.service.AppExecutor;
@@ -55,7 +56,7 @@ public class SimStateChangeListener extends BroadcastReceiver {
                 SubscriptionInfo infoSim2 = sManager.getActiveSubscriptionInfoForSimSlotIndex(1);
                 if (infoSim1 != null) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(0,context.getString(R.string.status_active),infoSim1.getIccId());
+                        int result =  MyAppDatabase.getInstance(context).getDao().updateSimStatus(0,context.getString(R.string.status_active),infoSim1.getIccId());
                         if (result>0){
                             saveIccid(context,infoSim1.getIccId());
                         }
@@ -63,7 +64,7 @@ public class SimStateChangeListener extends BroadcastReceiver {
                 }
                 if (infoSim2 != null) {
                    AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                       int result =  MyApplication.getAppDatabase(context).getDao().updateSimStatus(1,context.getString(R.string.status_active),infoSim2.getIccId());
+                       int result =  MyAppDatabase.getInstance(context).getDao().updateSimStatus(1,context.getString(R.string.status_active),infoSim2.getIccId());
                        if (result>0){
                            saveIccid(context,infoSim2.getIccId());
                        }
@@ -74,11 +75,11 @@ public class SimStateChangeListener extends BroadcastReceiver {
         }
     }
     void saveIccid(Context context,String iccid){
-        Set<String> set = PrefUtils.getStringSet(context, UNSYNC_ICCIDS);
+        Set<String> set = PrefUtils.getInstance(context).getStringSet( UNSYNC_ICCIDS);
         if (set == null)
             set = new HashSet<>();
         set.add(iccid);
-        PrefUtils.saveStringSetPref(context, UNSYNC_ICCIDS, set);
+        PrefUtils.getInstance(context).saveStringSetPref( UNSYNC_ICCIDS, set);
         Intent intent = new Intent(BROADCAST_APPS_ACTION);
         intent.putExtra(KEY_DATABASE_CHANGE, "simSettings");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

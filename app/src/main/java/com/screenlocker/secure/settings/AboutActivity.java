@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.async.AsyncCalls;
+import com.screenlocker.secure.base.BaseActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.retrofit.RetrofitClientInstance;
 import com.screenlocker.secure.retrofitapis.ApiOneCaller;
@@ -55,10 +56,9 @@ import static com.screenlocker.secure.utils.AppConstants.URL_2;
 import static com.screenlocker.secure.utils.AppConstants.USER_ID;
 import static com.screenlocker.secure.utils.CommonUtils.getRemainingDays;
 
-public class AboutActivity extends AppCompatActivity implements View.OnClickListener, OnSocketConnectionListener {
+public class AboutActivity extends BaseActivity implements View.OnClickListener, OnSocketConnectionListener {
 
-    @BindView(R.id.tvSystemId)
-    TextView tvSystemId;
+
 
     @BindView(R.id.tvUserId)
     TextView tvUserId;
@@ -67,8 +67,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvLinkedStatus;
     @BindView(R.id.tvDeviceStatus)
     TextView tvDeviceStatus;
-    @BindView(R.id.tvCurrentDealerID)
-    TextView tvCurrentDealerID;
     @BindView(R.id.tvLinkedDealerPin)
     TextView tvLinkedDealerPin;
     @BindView(R.id.tvSimNo)
@@ -85,16 +83,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     TextView tvPgpEmail;
     @BindView(R.id.tvChatId)
     TextView tvChatId;
-    @BindView(R.id.tvSimId)
-    TextView tvSimId;
-    @BindView(R.id.chatId)
-    LinearLayout chatId;
-    @BindView(R.id.dividerChatId)
-    View dividerChatId;
-    @BindView(R.id.simId)
-    LinearLayout simId;
-    @BindView(R.id.dividerSimId)
-    View dividerSimId;
     private TextView tvImei1, tvImei2, tvExpiresIn, tvStatus, tvDeviceId, onlineStatus;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -127,9 +115,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setTitle(getResources().getString(R.string.account));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView systemId = findViewById(R.id.tvSystemId);
-        systemId.setText("N/A");
-
         onlineStatus = findViewById(R.id.tvLinkedStatus);
         tvDeviceId = findViewById(R.id.tvDeviceId);
         tvStatus = findViewById(R.id.tvDeviceStatus);
@@ -154,7 +139,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             swipeRefreshLayout.setRefreshing(false);
             refresh();
         });
-        tvUserId.setText(PrefUtils.getStringPref(this, USER_ID) == null ? "N/A" : PrefUtils.getStringPref(this, USER_ID));
+        tvUserId.setText(prefUtils.getStringPref( USER_ID) == null ? "N/A" : prefUtils.getStringPref( USER_ID));
 
         tvLinkedDealerPin.setOnClickListener(this);
         tvSimNo.setOnClickListener(this);
@@ -164,7 +149,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvSimNo2.setOnClickListener(this);
 
         tvSimNo2.setText(simNos != null && simNos.size() > 1 ? simNos.get(1) : "N/A");
-        tvPgpEmail.setText(PrefUtils.getStringPref(this, PGP_EMAIL) != null ? PrefUtils.getStringPref(this, PGP_EMAIL) : "N/A");
+        tvPgpEmail.setText(prefUtils.getStringPref( PGP_EMAIL) != null ? prefUtils.getStringPref( PGP_EMAIL) : "N/A");
 
         tvSerialNo.setOnClickListener(this);
         tvMAC.setOnClickListener(this);
@@ -172,9 +157,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvPgpEmail.setOnClickListener(this);
 
 
-        String device_id = PrefUtils.getStringPref(this, DEVICE_ID);
+        String device_id = prefUtils.getStringPref( DEVICE_ID);
         if (device_id == null) {
-            String offline_device = PrefUtils.getStringPref(this, OFFLINE_DEVICE_ID);
+            String offline_device = prefUtils.getStringPref( OFFLINE_DEVICE_ID);
             if (offline_device == null) {
                 tvDeviceId.setText(getResources().getString(R.string.n_a));
             } else {
@@ -185,14 +170,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         }
 
         /*Status*/
-        TextView textView18 = findViewById(R.id.textViewStatus);
-        String device_status = PrefUtils.getStringPref(this, DEVICE_STATUS);
-        boolean b = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+        String device_status = prefUtils.getStringPref( DEVICE_STATUS);
+        boolean b = prefUtils.getBooleanPref( DEVICE_LINKED_STATUS);
         if (b) {
             tvStatus.setVisibility(View.VISIBLE);
-            textView18.setVisibility(View.VISIBLE);
 
-            if (PrefUtils.getBooleanPref(AboutActivity.this, DEVICE_LINKED_STATUS)) {
+            if (prefUtils.getBooleanPref(DEVICE_LINKED_STATUS)) {
                 if (device_status == null) {
                     tvStatus.setText(getResources().getString(R.string.active));
                 } else
@@ -203,11 +186,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-
-        // Expiry Date
-        TextView textView16 = findViewById(R.id.textViewExpiry);
-
-        String remaining_days = getRemainingDays(this);
+        String remaining_days = getRemainingDays(this, prefUtils);
 
         if (remaining_days != null) {
             tvExpiresIn.setText(remaining_days);
@@ -218,10 +197,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
         List<String> imeis = DeviceIdUtils.getIMEI(this);
 
-
-        // IMEI 1
-        TextView textViewImei = findViewById(R.id.textViewImei);
-
         if (imeis.size() > 0) {
             String imei = imeis.get(0);
             if (imei != null) {
@@ -231,9 +206,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             }
         }
 
-        // IMEI 2
-        TextView textViewImei2 = findViewById(R.id.textViewImei2);
-
         if (imeis.size() > 1) {
             String imei2 = imeis.get(1);
             if (imei2 != null) {
@@ -242,7 +214,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 tvImei2.setText(getResources().getString(R.string.n_a));
             }
         }
-        String linkedDealerPin = PrefUtils.getStringPref(this, KEY_DEVICE_LINKED);
+        String linkedDealerPin = prefUtils.getStringPref( KEY_DEVICE_LINKED);
         if (linkedDealerPin != null) {
             tvLinkedDealerPin.setText(linkedDealerPin);
         }
@@ -250,18 +222,14 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         tvSerialNo.setText(DeviceIdUtils.getSerialNumber());
         tvIP.setText(DeviceIdUtils.getIPAddress(true));
 
-        String chat_Id = PrefUtils.getStringPref(this, CHAT_ID);
+        String chat_Id = prefUtils.getStringPref( CHAT_ID);
         if (chat_Id != null) {
-            chatId.setVisibility(View.VISIBLE);
-            dividerChatId.setVisibility(View.VISIBLE);
             tvChatId.setText(chat_Id);
         }
         // sim ID
-        String sim_Id = PrefUtils.getStringPref(this, SIM_ID);
+        String sim_Id = prefUtils.getStringPref( SIM_ID);
         if (sim_Id != null) {
-            simId.setVisibility(View.VISIBLE);
-            dividerSimId.setVisibility(View.VISIBLE);
-            tvSimId.setText(sim_Id);
+//            tvSimId.setText(sim_Id);
         }
 
     }
@@ -339,11 +307,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 asyncCalls = new AsyncCalls(output -> {
                     Timber.d("output : " + output);
                     if (output != null) {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                        prefUtils.saveStringPref( LIVE_URL, output);
+                        String live_url = prefUtils.getStringPref( LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
-                        boolean linkStatus = PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS);
+                        boolean linkStatus = prefUtils.getBooleanPref( DEVICE_LINKED_STATUS);
                         Timber.d("LinkStatus :" + linkStatus);
                         if (linkStatus) {
                             Timber.d("LinkStatus :" + linkStatus);
@@ -412,8 +380,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             case R.id.tvUserId:
                 Utils.copyToClipBoard(this, AppConstants.COPIED_USER_ID, tvUserId.getText().toString(), "USER ID copied to clipboard");
                 break;
-
-
         }
     }
 
@@ -453,13 +419,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void emergencyFlag(View view) {
 
-//        if (PrefUtils.getBooleanPref(this, EMERGENCY_FLAG)) {
-//            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
-//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, false);
-//        } else {
-//            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
-//            PrefUtils.saveBooleanPref(this, EMERGENCY_FLAG, true);
-//        }
+        if (prefUtils.getBooleanPref( EMERGENCY_FLAG)) {
+            Toast.makeText(this, "SECURITY ON", Toast.LENGTH_SHORT).show();
+            prefUtils.saveBooleanPref( EMERGENCY_FLAG, false);
+        } else {
+            Toast.makeText(this, "SECURITY OFF", Toast.LENGTH_SHORT).show();
+            prefUtils.saveBooleanPref( EMERGENCY_FLAG, true);
+        }
 
     }
 
@@ -473,17 +439,17 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeUrl(View view) {
 
-//        String url = url_1.getText().toString();
-//
-//        if (TextUtils.isEmpty(url)) {
-//            url_1.setError("Please enter valid url !");
-//            return;
-//        }
-//
-//
-//        URL_1 = url;
-//
-//        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
+        String url = url_1.getText().toString();
+
+        if (TextUtils.isEmpty(url)) {
+            url_1.setError("Please enter valid url !");
+            return;
+        }
+
+
+        URL_1 = url;
+
+        Toast.makeText(this, "URL changed Successfully.", Toast.LENGTH_SHORT).show();
     }
 
     public void counter(View view) {

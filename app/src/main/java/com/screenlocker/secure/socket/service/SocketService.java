@@ -1,3 +1,4 @@
+/*
 package com.screenlocker.secure.socket.service;
 
 import android.Manifest;
@@ -23,6 +24,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 
 import com.screenlocker.secure.app.MyApplication;
@@ -197,7 +199,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             device_id = PrefUtils.getStringPref(SocketService.this, DEVICE_ID);
             if (token != null && device_id != null && action != null)
                 switch (action) {
-                    case "start":/* connecting to socket*/
+                    case "start":*/
+/* connecting to socket*//*
+
                         String live_url = PrefUtils.getStringPref(SocketService.this, LIVE_URL);
                         socketManager.destroy();
                         socketManager.connectSocket(token, device_id, live_url);
@@ -270,7 +274,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
             case 1:
                 Timber.d("Socket is connecting");
                 break;
-            case 2:/*                Timber.d("Socket is connected");*/
+            case 2:*/
+/*                Timber.d("Socket is connected");*//*
+
                 break;
             case 3:
                 Timber.d("Socket is disconnected");
@@ -402,7 +408,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             public void run() {
                 try {
                     if (socketManager.getSocket().connected()) {
-                        List<AppInfo> apps = MyApplication.getAppDatabase(SocketService.this).getDao().getApps();
+                        List<AppInfo> apps = MyAppDatabase.getInstance(SocketService.this).getDao().getApps();
                         socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
                         Timber.d(" apps sent %s", apps.size());
                     } else
@@ -431,7 +437,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         new Thread(() -> {
             try {
                 if (socketManager.getSocket().connected()) {
-                    List<SubExtension> extensions = MyApplication.getAppDatabase(SocketService.this).getDao().getAllSubExtensions();
+                    List<SubExtension> extensions = MyAppDatabase.getInstance(SocketService.this).getDao().getAllSubExtensions();
                     socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
                     Timber.d("extensions sent%s", extensions.size());
                 } else
@@ -506,7 +512,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
         try {
             if (socketManager.getSocket().connected())
                 AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-                    List<Settings> settings = MyApplication.getAppDatabase(SocketService.this).getDao().getSettings();
+                    List<Settings> settings = MyAppDatabase.getInstance(SocketService.this).getDao().getSettings();
                     socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
                     PrefUtils.saveBooleanPref(SocketService.this, SETTINGS_CHANGE, false);
                 });
@@ -543,7 +549,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 if (!PrefUtils.getBooleanPref(this, OLD_DEVICE)) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getAllSimInService();
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_NEW_DEVICE);
@@ -562,7 +568,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                 Set<String> set1 = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
                 if (set1 != null && set1.size() > 0) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getSims(set1);
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getSims(set1);
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_UPDATE);
@@ -617,7 +623,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
                 if (socketManager.getSocket().connected()) {
 
-                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(SocketService.this).getDao().getAppsWithoutIcons()));
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyAppDatabase.getInstance(SocketService.this).getDao().getAppsWithoutIcons()));
                     PrefUtils.saveBooleanPref(SocketService.this, APPS_SETTING_CHANGE, false);
 
                     Timber.d("Apps sent");
@@ -637,7 +643,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
             try {
 
                 if (socketManager.getSocket().connected()) {
-                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyApplication.getAppDatabase(SocketService.this).getDao().getExtensionsWithoutIcons()));
+                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyAppDatabase.getInstance(SocketService.this).getDao().getExtensionsWithoutIcons()));
                     PrefUtils.saveBooleanPref(SocketService.this, SECURE_SETTINGS_CHANGE, false);
 
                     Timber.d("Extensions sent");
@@ -1187,7 +1193,7 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() {
                                     }.getType());
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                                        MyApplication.getAppDatabase(this).getDao().deleteSims(set);
+                                        MyAppDatabase.getInstance(this).getDao().deleteSims(set);
                                         try {
                                             socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                         } catch (JSONException e) {
@@ -1212,9 +1218,9 @@ public class SocketService extends Service implements OnSocketConnectionListener
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
                                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
-                                            int no = MyApplication.getAppDatabase(this).getDao().updateSim(simEntry);
+                                            int no = MyAppDatabase.getInstance(this).getDao().updateSim(simEntry);
                                             if (no < 1) {
-                                                MyApplication.getAppDatabase(this).getDao().insertSim(simEntry);
+                                                MyAppDatabase.getInstance(this).getDao().insertSim(simEntry);
                                             }
                                         }
                                         try {
@@ -1282,10 +1288,10 @@ public class SocketService extends Service implements OnSocketConnectionListener
                     SimEntry first = null, second = null;
                     List<SimEntry> entries = new ArrayList<>();
                     if (infoSim1 != null) {
-                        first = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim1.getIccId());
+                        first = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim1.getIccId());
                     }
                     if (infoSim2 != null) {
-                        second = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim2.getIccId());
+                        second = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim2.getIccId());
                     }
                     if (first == null && infoSim1 != null) {
                         first = new SimEntry(infoSim1.getIccId(), infoSim1.getDisplayName().toString(), "", false, false);
@@ -1371,6 +1377,11 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
     }
 
+    @Override
+    public void getDeviceInfoUpdate() {
+
+    }
+
     private void updateExtensions(JSONObject object, boolean isPolicy) throws JSONException {
         String extensionList = object.getString("extension_list");
         String id = null;
@@ -1438,3 +1449,4 @@ public class SocketService extends Service implements OnSocketConnectionListener
 
 
 }
+*/

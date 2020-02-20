@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.secure.launcher.R;
 
 import com.screenlocker.secure.app.MyApplication;
@@ -106,14 +107,14 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
 
     // showing allowed menu for each user type
     private void showMenus() {
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = PrefUtils.getInstance(this).getStringPref( CURRENT_KEY);
         if (userType != null) {
             switch (userType) {
                 // encrypted user
                 case KEY_MAIN_PASSWORD:
 
                     new Thread(() -> {
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        List<SubExtension> subExtensions = MyAppDatabase.getInstance(SecureSettingsMain.this).getDao().getEncryptedExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
                         if (subExtensions == null || subExtensions.size() == 0) {
                             runOnUiThread(() -> {
                                 settingsLayout.setVisibility(View.GONE);
@@ -140,7 +141,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
                 case KEY_GUEST_PASSWORD:
                     new Thread(() -> {
 
-                        List<SubExtension> subExtensions = MyApplication.getAppDatabase(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
+                        List<SubExtension> subExtensions = MyAppDatabase.getInstance(SecureSettingsMain.this).getDao().getGuestExtensions(AppConstants.SECURE_SETTINGS_UNIQUE, true);
 
                         if (subExtensions == null || subExtensions.size() == 0) {
                             runOnUiThread(() -> {
@@ -451,7 +452,7 @@ public class SecureSettingsMain extends BaseActivity implements BrightnessDialog
     @Override
     protected void onResume() {
         super.onResume();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, true);
+        PrefUtils.getInstance(this).saveBooleanPref( IS_SETTINGS_ALLOW, true);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         bluetoothName.setText(getBlueToothStatus(this));

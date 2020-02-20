@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import timber.log.Timber;
 
@@ -53,6 +54,7 @@ public class SocketManager {
 
     private String notify = "";
     private ToneGenerator toneGen1;
+    private PrefUtils prefUtils;
 
 
     private static SocketManager instance;
@@ -61,6 +63,7 @@ public class SocketManager {
 
 
     private SocketManager() {
+        prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
     }
 
 
@@ -153,12 +156,12 @@ public class SocketManager {
                     try {
                         if (args[0] instanceof  EngineIOException){
                             EngineIOException exception = (EngineIOException) args[0];
-                                if (onSocketConnectionListenerList != null) {
-                                    for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
-                                        new Handler(Looper.getMainLooper())
-                                                .post(listener::onSocketEventFailed);
-                                    }
+                            if (onSocketConnectionListenerList != null) {
+                                for (final OnSocketConnectionListener listener : onSocketConnectionListenerList) {
+                                    new Handler(Looper.getMainLooper())
+                                            .post(listener::onSocketEventFailed);
                                 }
+                            }
                             Timber.e(exception);
 
                         }else if (args[0] instanceof String){
@@ -183,7 +186,7 @@ public class SocketManager {
                 socket.connect();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 
@@ -196,6 +199,7 @@ public class SocketManager {
                 opts.forceNew = true;
                 opts.reconnection = true;
                 opts.reconnectionAttempts = 1000;
+                opts.transports = new String[]{WebSocket.NAME};
                 opts.secure = true;
                 opts.query = "device_id=" + device_id;
 
@@ -204,7 +208,7 @@ public class SocketManager {
 
                 clientChatSocket.on(Socket.EVENT_CONNECT, args -> {
                     Timber.i("clientChatSocket connected");
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, true);
+                    prefUtils.saveBooleanPref( AppConstants.CLIENT_CHAT_SOCKET, true);
 
                     notify = device_id;
                     clientChatSocket.on(notify, args1 -> {
@@ -216,7 +220,7 @@ public class SocketManager {
                                 Notification notification = null;
                                 try {
 
-                                    boolean isLiveActivityVisible = PrefUtils.getBooleanPref(getAppContext(), IS_LIVE_CLIENT_VISIBLE);
+                                    boolean isLiveActivityVisible = prefUtils.getBooleanPref( IS_LIVE_CLIENT_VISIBLE);
                                     JSONObject data = (JSONObject) args1[1];
                                     if (!data.getString("msg").equals("")) {
                                         if (!isLiveActivityVisible) {
@@ -230,8 +234,8 @@ public class SocketManager {
 
 
                                             notificationManager.notify((int) System.currentTimeMillis(), notification);
-                                            int numberOfNotifications = PrefUtils.getIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS);
-                                            PrefUtils.saveIntegerPref(getAppContext(), NUMBER_OF_NOTIFICATIONS, ++numberOfNotifications);
+                                            int numberOfNotifications = prefUtils.getIntegerPref( NUMBER_OF_NOTIFICATIONS);
+                                            prefUtils.saveIntegerPref( NUMBER_OF_NOTIFICATIONS, ++numberOfNotifications);
 
                                         } else {
 
@@ -275,7 +279,7 @@ public class SocketManager {
                         clientChatSocket.off(notify);
                     }
 
-                    PrefUtils.saveBooleanPref(getAppContext(), AppConstants.CLIENT_CHAT_SOCKET, false);
+                    prefUtils.saveBooleanPref( AppConstants.CLIENT_CHAT_SOCKET, false);
 
                 }).on(Socket.EVENT_ERROR, args -> {
                     try {
@@ -403,9 +407,7 @@ public class SocketManager {
         }
     }
 
-    /**
-     * The type Net receiver.
-     */
+
 //    public static class NetReceiver extends BroadcastReceiver {
 //
 //        /**

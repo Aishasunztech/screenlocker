@@ -24,6 +24,7 @@ import com.screenlocker.secure.utils.PrefUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_DEFAULT_LAUNCHER;
 import static com.screenlocker.secure.utils.AppConstants.CODE_LAUNCHER;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
@@ -32,7 +33,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.isMyLauncherDefault;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SetDefaultLauncherFragment extends AbstractStep {
+public class SetDefaultLauncherFragment extends ExtentedAbstractStep {
 
 
     OnPageUpdateListener mListener;
@@ -46,7 +47,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     @Override
     public boolean nextIf() {
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
+            prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_DEFAULT_LAUNCHER);
             return true;
         }
         return false;
@@ -56,7 +57,7 @@ public class SetDefaultLauncherFragment extends AbstractStep {
     public void onStepVisible() {
         super.onStepVisible();
         if (isMyLauncherDefault(MyApplication.getAppContext())) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 9);
+            prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_DEFAULT_LAUNCHER);
             if (mListener != null) {
                 mListener.onPageUpdate(9);
             }
@@ -97,11 +98,8 @@ public class SetDefaultLauncherFragment extends AbstractStep {
         }
         setLauncher.setOnClickListener(v -> {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                {
                     Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
-                    startActivityForResult(intent, CODE_LAUNCHER);
-                } else {
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
                     startActivityForResult(intent, CODE_LAUNCHER);
                 }
             } catch (Exception ignored) {

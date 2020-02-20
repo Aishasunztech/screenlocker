@@ -93,7 +93,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viwModel.getInstalled().observe(this, serverAppInfos -> {
+        viwModel.getInstalled().observe(getActivity(), serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
             installedApps.clear();
             if (serverAppInfos.size() == 0){
@@ -107,7 +107,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             swipeRefreshLayout.setRefreshing(false);
             installedAdapter.notifyDataSetChanged();
         });
-        viwModel.getMutableMsgs().observe(this, msg -> {
+        viwModel.getMutableMsgs().observe(getActivity(), msg -> {
             if (msg == Msgs.ERROR) {
                 swipeRefreshLayout.setRefreshing(false);
                 onNetworkError();
@@ -121,6 +121,9 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
                 swipeRefreshLayout.setRefreshing(true);
                 errorLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+            }else if (msg==Msgs.SERVER_ERROR){
+                swipeRefreshLayout.setRefreshing(false);
+                onServerError();
             }
         });
 
@@ -270,14 +273,20 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
         }
     }
 
-    public void onNetworkError() {
+    private void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-        rc.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
-        errorText.setText("No Internet Connection");
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.no_internet_connection));
     }
-
+    private void onServerError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_server_error);
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.internal_server_error));
+    }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

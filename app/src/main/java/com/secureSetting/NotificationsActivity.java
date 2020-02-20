@@ -57,7 +57,7 @@ public class NotificationsActivity extends BaseActivity implements GetApplistTas
         rc.setAdapter(new NotificationsAdapter(appInfos,this));
         rc.setLayoutManager(new LinearLayoutManager(this));
 
-        String key = PrefUtils.getStringPref(this, AppConstants.CURRENT_KEY);
+        String key = PrefUtils.getInstance(this).getStringPref( AppConstants.CURRENT_KEY);
         if (key.equals(AppConstants.KEY_MAIN_PASSWORD)){
             new GetApplistTask(this,true).execute();
         }else if (key.equals(AppConstants.KEY_GUEST_PASSWORD)){

@@ -24,7 +24,7 @@ public class SimViewModel extends AndroidViewModel {
     private LiveData<List<SimEntry>> simEntries;
     public SimViewModel(@NonNull Application application) {
         super(application);
-        database = MyApplication.getAppDatabase(this.getApplication());
+        database = MyAppDatabase.getInstance(this.getApplication());
         simEntries = database.getDao().getAllSims();
     }
     LiveData<List<SimEntry>> getAllSimEntries(){return simEntries;}

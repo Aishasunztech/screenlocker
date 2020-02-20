@@ -36,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static com.screenlocker.secure.permissions.SteppersActivity.STEP_LINK;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 
@@ -43,7 +44,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LinkDeviceFragment extends AbstractStep {
+public class LinkDeviceFragment extends ExtentedAbstractStep {
     public static final int REQUEST_LINK_DEVICE = 7;
 
     private OnPageUpdateListener pageUpdate;
@@ -60,7 +61,7 @@ public class LinkDeviceFragment extends AbstractStep {
     public void onSkip() {
         super.onSkip();
         //save the status of this step as completed
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+        prefUtils.saveIntegerPref(DEF_PAGE_NO, STEP_LINK);
     }
 
     //next only if device is linked other wise skip
@@ -68,8 +69,8 @@ public class LinkDeviceFragment extends AbstractStep {
     public boolean nextIf() {
 
 
-        if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 8);
+        if (prefUtils.getBooleanPref( DEVICE_LINKED_STATUS)) {
+            prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_LINK);
             return true;
         }
         return false;
@@ -134,7 +135,7 @@ public class LinkDeviceFragment extends AbstractStep {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_LINK_DEVICE && resultCode == RESULT_OK) {
-            if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), DEVICE_LINKED_STATUS)) {
+            if (prefUtils.getBooleanPref( DEVICE_LINKED_STATUS)) {
                 /**
                  * @param 5 is launcher fragment page no
                  */

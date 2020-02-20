@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.utils.AppConstants;
@@ -94,12 +95,12 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                             appInfo.setVisible(true);
                             appInfo.setSetting_id(setting_id);
 
-                            int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+                            int i = MyAppDatabase.getInstance(context).getDao().updateApps(appInfo);
 
                             Timber.d("TEst%s", String.valueOf(i));
 
                             if (i == 0) {
-                                MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
+                                MyAppDatabase.getInstance(context).getDao().insertApps(appInfo);
                             }
                             saveAppsList(context, true, appInfo, false);
 
@@ -133,17 +134,17 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
                 } else {
 
-                    String hashMApGson = PrefUtils.getStringPref(context, APPS_HASH_MAP);
+                    String hashMApGson = PrefUtils.getInstance(context).getStringPref( APPS_HASH_MAP);
                     if (hashMApGson == null) {
                         HashMap<String, Boolean> h = new HashMap<>();
                         h.put(installModel.getPackage_name(), status);
-                        PrefUtils.saveStringPref(context, APPS_HASH_MAP, new Gson().toJson(h));
+                        PrefUtils.getInstance(context).saveStringPref( APPS_HASH_MAP, new Gson().toJson(h));
                     } else {
                         Type hashType = new TypeToken<HashMap<String, Boolean>>() {
                         }.getType();
                         HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
                         h.put(installModel.getPackage_name(), status);
-                        PrefUtils.saveStringPref(context, APPS_HASH_MAP, new Gson().toJson(h));
+                        PrefUtils.getInstance(context).saveStringPref( APPS_HASH_MAP, new Gson().toJson(h));
                     }
 
 
@@ -154,7 +155,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 if (!aPackageName.equals(context.getPackageName())) {
 
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                        MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName);
                         sendMessage(context);
                     }).start();
 
@@ -172,7 +173,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 boolean SecureMarket = intent.getBooleanExtra("SecureMarket", false);
 
                 if (SecureMarket && !aPackageName.equals(context.getPackageName())) {
-                    new Thread(() -> MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName)).start();
+                    new Thread(() -> MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName)).start();
                     sendMessage(context);
                     return;
                 }
@@ -180,7 +181,7 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 if (!aPackageName.equals(context.getPackageName())) {
 
                     new Thread(() -> {
-                        MyApplication.getAppDatabase(context).getDao().deleteOne(aPackageName);
+                        MyAppDatabase.getInstance(context).getDao().deleteOne(aPackageName);
                         AppInfo info = new AppInfo();
                         info.setPackageName(aPackageName);
                         info.setUniqueName(aPackageName);info.setSetting_id(setting_id);
@@ -207,19 +208,19 @@ public class AppsStatusReceiver extends BroadcastReceiver {
 
                     localBroadcastManager.sendBroadcast(pulledIntent);
                 } else {
-                    String hashMApGson = PrefUtils.getStringPref(context, DELETE_HASH_MAP);
+                    String hashMApGson = PrefUtils.getInstance(context).getStringPref( DELETE_HASH_MAP);
                     if (hashMApGson == null) {
                         HashMap<String, Boolean> h = new HashMap<>();
                         h.put(aPackageName, true);
                         h.put("isLastAvailable", isLast);
-                        PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
+                        PrefUtils.getInstance(context).saveStringPref( DELETE_HASH_MAP, new Gson().toJson(h));
                     } else {
                         Type hashType = new TypeToken<HashMap<String, Boolean>>() {
                         }.getType();
                         HashMap<String, Boolean> h = new Gson().fromJson(hashMApGson, hashType);
                         h.put(aPackageName, true);
                         h.put("isLastAvailable", isLast);
-                        PrefUtils.saveStringPref(context, DELETE_HASH_MAP, new Gson().toJson(h));
+                        PrefUtils.getInstance(context).saveStringPref( DELETE_HASH_MAP, new Gson().toJson(h));
                     }
                 }
 
@@ -230,13 +231,13 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                 String userSpace = intent.getStringExtra("userSpace");
 
                 PackageManager pm = context.getPackageManager();
-                if (PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP) != null) {
+                if (PrefUtils.getInstance(context).getStringPref( DOWNLAOD_HASH_MAP) != null) {
                     Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                     }.getType();
-                    String hashmap = PrefUtils.getStringPref(context, DOWNLAOD_HASH_MAP);
+                    String hashmap = PrefUtils.getInstance(context).getStringPref( DOWNLAOD_HASH_MAP);
                     Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                     map1.remove(packageName);
-                    PrefUtils.saveStringPref(context, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                    PrefUtils.getInstance(context).saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
                 }
 
                 try {
@@ -267,11 +268,11 @@ public class AppsStatusReceiver extends BroadcastReceiver {
                         appInfo.setIcon(icon);
                         appInfo.setSystemApp(false);
                         appInfo.setVisible(true);
-                        int i = MyApplication.getAppDatabase(context).getDao().updateApps(appInfo);
+                        int i = MyAppDatabase.getInstance(context).getDao().updateApps(appInfo);
 
 
                         if (i == 0) {
-                            MyApplication.getAppDatabase(context).getDao().insertApps(appInfo);
+                            MyAppDatabase.getInstance(context).getDao().insertApps(appInfo);
                         }
                         saveAppsList(context, true, appInfo, false);
 

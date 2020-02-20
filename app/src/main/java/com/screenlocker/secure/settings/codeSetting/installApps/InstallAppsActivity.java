@@ -55,6 +55,7 @@ import timber.log.Timber;
 
 import static com.screenlocker.secure.socket.utils.utils.refreshApps;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
+import static com.screenlocker.secure.utils.AppConstants.GET_APK_ENDPOINT;
 import static com.screenlocker.secure.utils.AppConstants.IS_SETTINGS_ALLOW;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -130,8 +131,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             asyncCalls = new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     getAllApps();
@@ -159,7 +160,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
 
     private void getAllApps() {
-        if (CommonUtils.isNetworkConneted(this)) {
+        if (CommonUtils.isNetworkConneted(prefUtils)) {
 
             MyApplication.oneCaller
                     .getApps()
@@ -241,7 +242,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     public void onRefresh() {
 
-        if (CommonUtils.isNetworkConneted(this)) {
+        if (CommonUtils.isNetworkConneted(prefUtils)) {
 
 
             if (MyApplication.oneCaller == null) {
@@ -254,8 +255,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 asyncCalls = new AsyncCalls(output -> {
 
                     if (output != null) {
-                        PrefUtils.saveStringPref(this, LIVE_URL, output);
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                        prefUtils.saveStringPref( LIVE_URL, output);
+                        String live_url = prefUtils.getStringPref( LIVE_URL);
                         Timber.d("live_url %s", live_url);
                         MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                         refreshLocalApps();
@@ -425,7 +426,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     public void onInstallClick(View v, final ServerAppInfo app, int position) {
 
 
-        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+        String live_url = prefUtils.getStringPref( LIVE_URL);
 //        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
 //                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
 //                        CommonUtils.splitName(app.getApk()), app.getApk());
@@ -437,13 +438,14 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!apksPath.exists()) {
             apksPath.mkdir();
         }
-        String url = live_url + MOBILE_END_POINT + "getApk/" +
+        String url = live_url + MOBILE_END_POINT + GET_APK_ENDPOINT +
                 CommonUtils.splitName(app.getApk());
         String fileName = file.getAbsolutePath();
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
+                mService.startDownload(url, fileName, app.getPackageName(),
+                        AppConstants.EXTRA_INSTALL_APP,current_space);
 
             }
 
@@ -455,7 +457,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,current_space);
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(),
+                            AppConstants.EXTRA_INSTALL_APP,current_space);
 
                 }
             }
@@ -466,7 +469,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     @Override
     public void onUnInstallClick(View v, ServerAppInfo app, int position) {
-        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
+        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, prefUtils.getStringPref( CURRENT_KEY), prefUtils);
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app.getPackageName()));
         startActivity(intent);
@@ -483,8 +486,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     protected void onResume() {
         super.onResume();
         refreshApps(InstallAppsActivity.this);
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref(UNINSTALL_ALLOWED, true);
+        prefUtils.saveBooleanPref(IS_SETTINGS_ALLOW, false);
         isBackPressed = false;
         isInstallDialogOpen = false;
         checkAppInstalledOrNot(appModelServerAppInfo);
@@ -493,7 +496,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             mService.setInstallAppDownloadListener(this);
         }
 
-        current_space = PrefUtils.getStringPref(this,CURRENT_KEY);
+        current_space = prefUtils.getStringPref(CURRENT_KEY);
     }
 
     @Override

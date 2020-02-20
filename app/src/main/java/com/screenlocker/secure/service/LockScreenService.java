@@ -1,6 +1,7 @@
 package com.screenlocker.secure.service;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Instrumentation;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -13,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
@@ -21,11 +23,19 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,11 +44,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -47,14 +60,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.screenlocker.secure.MyAdmin;
-import com.screenlocker.secure.app.MyApplication;
 import com.screenlocker.secure.launcher.AppInfo;
 import com.screenlocker.secure.launcher.MainActivity;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
-import com.screenlocker.secure.notifications.NotificationItem;
+import com.screenlocker.secure.room.MyAppDatabase;
 import com.screenlocker.secure.room.SimEntry;
 import com.screenlocker.secure.room.SubExtension;
+import com.screenlocker.secure.room.migrations.PasswordMigration;
 import com.screenlocker.secure.settings.SettingsActivity;
 import com.screenlocker.secure.settings.managepassword.NCodeView;
 import com.screenlocker.secure.socket.SocketManager;
@@ -67,15 +80,20 @@ import com.screenlocker.secure.socket.model.ImeiModel;
 import com.screenlocker.secure.socket.model.InstallModel;
 import com.screenlocker.secure.socket.model.Settings;
 import com.screenlocker.secure.socket.model.UnRegisterModel;
+import com.screenlocker.secure.socket.receiver.DeviceStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.CommonUtils;
 import com.screenlocker.secure.utils.PrefUtils;
+import com.screenlocker.secure.utils.SecuredSharedPref;
 import com.screenlocker.secure.utils.Utils;
+import com.screenlocker.secure.views.HiddenPassTransformationMethod;
 import com.screenlocker.secure.views.PrepareLockScreen;
 import com.screenlocker.secure.views.patternlock.PatternLockView;
+import com.screenlocker.secure.views.patternlock.listener.PatternLockViewListener;
+import com.screenlocker.secure.views.patternlock.utils.PatternLockUtils;
 import com.secure.launcher.R;
 import com.secureMarket.DownloadStatusCls;
 import com.secureMarket.SMActivity;
@@ -110,10 +128,18 @@ import java.util.Set;
 import timber.log.Timber;
 
 import static android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES;
+import static android.text.Html.FROM_HTML_MODE_LEGACY;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static com.screenlocker.secure.app.MyApplication.getAppContext;
 import static com.screenlocker.secure.mdm.utils.DeviceIdUtils.isValidImei;
 import static com.screenlocker.secure.socket.utils.utils.changeSettings;
+import static com.screenlocker.secure.socket.utils.utils.chatLogin;
 import static com.screenlocker.secure.socket.utils.utils.checkIMei;
+import static com.screenlocker.secure.socket.utils.utils.getUserType;
+import static com.screenlocker.secure.socket.utils.utils.loginAsEncrypted;
+import static com.screenlocker.secure.socket.utils.utils.loginAsGuest;
+import static com.screenlocker.secure.socket.utils.utils.registerDeviceStatusReceiver;
 import static com.screenlocker.secure.socket.utils.utils.saveAppsList;
 import static com.screenlocker.secure.socket.utils.utils.scheduleUpdateJob;
 import static com.screenlocker.secure.socket.utils.utils.suspendedDevice;
@@ -126,104 +152,13 @@ import static com.screenlocker.secure.socket.utils.utils.updatePasswords;
 import static com.screenlocker.secure.socket.utils.utils.validateRequest;
 import static com.screenlocker.secure.socket.utils.utils.verifySettings;
 import static com.screenlocker.secure.socket.utils.utils.wipeDevice;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_DEVICE_TYPE_VERSION;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PULL_APPS;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.ACTION_WIPE;
-import static com.screenlocker.secure.utils.AppConstants.ALLOW_ENCRYPTED_ALL;
-import static com.screenlocker.secure.utils.AppConstants.ALLOW_GUEST_ALL;
-import static com.screenlocker.secure.utils.AppConstants.APPS_HASH_MAP;
-import static com.screenlocker.secure.utils.AppConstants.APPS_SETTING_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.BROADCAST_APPS_ACTION;
-import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEFAULT_MAIN_PASS;
-import static com.screenlocker.secure.utils.AppConstants.DELETED_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_ID;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_LINKED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_MAC_AND_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.DUPLICATE_SERIAL;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_FILE_PATH;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_INSTALL_APP;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_MARKET_FRAGMENT;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_PACKAGE_NAME;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_REQUEST_ID_SAVED;
-import static com.screenlocker.secure.utils.AppConstants.EXTRA_SPACE;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISHED_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_PUSH_APPS;
-import static com.screenlocker.secure.utils.AppConstants.FINISH_POLICY_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.FORCE_UPDATE_CHECK;
-import static com.screenlocker.secure.utils.AppConstants.GET_APPLIED_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.GET_DEVICE_MSG;
-import static com.screenlocker.secure.utils.AppConstants.GET_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.GET_PULLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_PUSHED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.GET_SIM_UPDATES;
-import static com.screenlocker.secure.utils.AppConstants.GET_SYNC_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.IMEI1;
-import static com.screenlocker.secure.utils.AppConstants.IMEI2;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_APPLIED;
-import static com.screenlocker.secure.utils.AppConstants.IMEI_HISTORY;
-import static com.screenlocker.secure.utils.AppConstants.INSTALLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.IS_SYNCED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DATABASE_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEF_BRIGHTNESS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_DEVICE_LINKED;
-import static com.screenlocker.secure.utils.AppConstants.KEY_GUEST_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.KEY_LOCK_IMAGE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
-import static com.screenlocker.secure.utils.AppConstants.LIMITED;
-import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
-import static com.screenlocker.secure.utils.AppConstants.LOADING_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.LOAD_POLICY;
-import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
-import static com.screenlocker.secure.utils.AppConstants.OLD_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.PENDING_FINISH_DIALOG;
-import static com.screenlocker.secure.utils.AppConstants.PERVIOUS_VERSION;
-import static com.screenlocker.secure.utils.AppConstants.POLICY_NAME;
-import static com.screenlocker.secure.utils.AppConstants.SECURE_SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SEND_APPS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_DEVICE_MSG;
-import static com.screenlocker.secure.utils.AppConstants.SEND_EXTENSIONS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PULLED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_PUSHED_APPS_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SETTINGS;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM;
-import static com.screenlocker.secure.utils.AppConstants.SEND_SIM_ACK;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_APPLIED_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.SETTINGS_CHANGE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
-import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_DELETED;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_NEW_DEVICE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_UNREGISTER;
-import static com.screenlocker.secure.utils.AppConstants.SIM_ACTION_UPDATE;
-import static com.screenlocker.secure.utils.AppConstants.SIM_GET_INSERTD_SIMS;
-import static com.screenlocker.secure.utils.AppConstants.SIM_UNREGISTER_FLAG;
-import static com.screenlocker.secure.utils.AppConstants.SOCKET_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.START_SOCKET;
-import static com.screenlocker.secure.utils.AppConstants.STOP_SOCKET;
-import static com.screenlocker.secure.utils.AppConstants.SUSPENDED_PACKAGES;
-import static com.screenlocker.secure.utils.AppConstants.SYSTEM_EVENT_BUS;
-import static com.screenlocker.secure.utils.AppConstants.TOKEN;
-import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.UNINSTALLED_APPS;
-import static com.screenlocker.secure.utils.AppConstants.UNSYNC_ICCIDS;
-import static com.screenlocker.secure.utils.AppConstants.WRITE_IMEI;
+import static com.screenlocker.secure.utils.AppConstants.*;
+import static com.screenlocker.secure.utils.CommonUtils.getTimeRemaining;
+import static com.screenlocker.secure.utils.CommonUtils.getTimeString;
 import static com.screenlocker.secure.utils.CommonUtils.setAlarmManager;
+import static com.screenlocker.secure.utils.CommonUtils.setTimeRemaining;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 import static com.screenlocker.secure.utils.Utils.scheduleExpiryCheck;
-import static com.screenlocker.secure.views.PrepareLockScreen.setDeviceId;
 import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 /**
@@ -234,12 +169,11 @@ import static com.secureSetting.UtilityFunctions.setScreenBrightness;
 
 public class LockScreenService extends Service implements OnSocketConnectionListener, SocketEvents {
 
-
+    private PrefUtils prefUtils;
     private SharedPreferences sharedPref;
     private KeyguardManager myKM;
     private RelativeLayout mLayout = null;
     private ScreenOffReceiver screenOffReceiver;
-    private List<NotificationItem> notificationItems;
     private WindowManager windowManager;
     private WindowManager.LayoutParams localLayoutParams;
     private FrameLayout mView;
@@ -247,11 +181,13 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private boolean isLocked = false;
     private WindowManager.LayoutParams params;
     private Fetch fetch;
-    private int downloadId = 0;
     private boolean viewAdded = false;
     private View view;
     private ComponentName compName;
     private DevicePolicyManager mDPM;
+    private SecuredSharedPref securedSharedPref;
+    private boolean isClockTicking = false;
+    private String incomingComboRequest = null;
 
 
     private NetworkSocketAlarm networkSocketAlarm;
@@ -259,10 +195,14 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private NetworkChangeReceiver networkChangeReceiver;
 
     private void registerNetworkPref() {
+        HandlerThread receiverHandlerThread = new HandlerThread("threadName");
+        receiverHandlerThread.start();
+        Looper looper = receiverHandlerThread.getLooper();
+        Handler handler = new Handler(looper);
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), null, handler);
     }
 
     private void unRegisterNetworkPref() {
@@ -311,17 +251,17 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
             String space = extras.getString(EXTRA_SPACE, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+            if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 DownloadStatusCls status = map1.get(packageName);
                 if (status != null) {
                     status.setStatus(SMActivity.INSTALLING);
                 }
                 map1.put(packageName, status);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             }
             try {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
@@ -361,13 +301,13 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+            if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.remove(packageName);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             }
 
             switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
@@ -413,17 +353,17 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     break;
             }
 
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+            if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 DownloadStatusCls status = map1.get(packageName);
                 if (status != null) {
                     status.setStatus(SMActivity.INSTALLING);
                 }
                 map1.put(packageName, status);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             }
         }
 
@@ -468,13 +408,13 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
             //get file path of download
             String path = extras.getString(EXTRA_FILE_PATH, "null");
-            if (PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP) != null) {
+            if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.remove(packageName);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             }
             File file = new File(download.getFile());
             file.delete();
@@ -517,7 +457,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     }
 
     public void connectClientChatSocket() {
-        String deviceId = PrefUtils.getStringPref(this, DEVICE_ID);
+        String deviceId = prefUtils.getStringPref( DEVICE_ID);
 
         if (deviceId == null) {
             String serialNumber = DeviceIdUtils.getSerialNumber();
@@ -540,8 +480,15 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
-
-
+        prefUtils = PrefUtils.getInstance(this);
+        securedSharedPref = SecuredSharedPref.getInstance(this);
+        if (prefUtils.getBooleanPref( TOUR_STATUS)) {
+            if (!prefUtils.getBooleanPref( "isMigratedToSecure")) {
+                PasswordMigration migration = new PasswordMigration(this);
+                migration.migrate();
+                prefUtils.saveBooleanPref( "isMigratedToSecure", true);
+            }
+        }
         registerNetworkPref();
 
         // alarm manager for offline expiry
@@ -552,17 +499,17 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
         broadCastIntentForActivatingAdmin();
 
-        boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+        boolean old_device_status = prefUtils.getBooleanPref( AppConstants.OLD_DEVICE_STATUS);
 
         if (!old_device_status) {
-            if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+            if (prefUtils.getBooleanPref( TOUR_STATUS)) {
                 final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 final NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
                 if (netInfo != null && netInfo.isConnected()) {
                     String macAddress = DeviceIdUtils.generateUniqueDeviceId(this);
                     String serialNo = DeviceIdUtils.getSerialNumber();
                     new ApiUtils(this, macAddress, serialNo).connectToSocket();
-                    PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                    prefUtils.saveBooleanPref( AppConstants.OLD_DEVICE_STATUS, true);
                 }
 
             }
@@ -594,7 +541,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         WorkManager.getInstance().enqueue(insertionWork);
 
 
-        if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
+        if (!prefUtils.getBooleanPref( DEVICE_LINKED_STATUS)) {
             scheduleExpiryCheck(this);
         }
 
@@ -603,8 +550,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
-        notificationItems = new ArrayList<>();
-        params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
+        params = getParams( mLayout);
         appExecutor = AppExecutor.getInstance();
         //smalliew
         localLayoutParams = new WindowManager.LayoutParams();
@@ -619,10 +565,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         screenOffReceiver = new ScreenOffReceiver(() -> startLockScreen(true));
 
         //default brightness only once
-        if (!PrefUtils.getBooleanPref(this, KEY_DEF_BRIGHTNESS)) {
+        if (!prefUtils.getBooleanPref( KEY_DEF_BRIGHTNESS)) {
             //40% brightness by default
             setScreenBrightness(this, 102);
-            PrefUtils.saveBooleanPref(this, KEY_DEF_BRIGHTNESS, true);
+            prefUtils.saveBooleanPref( KEY_DEF_BRIGHTNESS, true);
         }
 
         //local
@@ -637,7 +583,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         intentFilter.addAction(ACTION_PULL_APPS);
         LocalBroadcastManager.getInstance(this).registerReceiver(pushPullBroadcast, intentFilter);
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        PrefUtils.saveToPref(this, true);
+        prefUtils.saveToPref( true);
         Notification notification = Utils.getNotification(this, R.drawable.ic_lock_black_24dp, getString(R.string.service_notification_text));
         // Whitelist two apps.
 
@@ -672,7 +618,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (PrefUtils.getBooleanPref(LockScreenService.this, TOUR_STATUS)) {
+            if (prefUtils.getBooleanPref( TOUR_STATUS)) {
                 sheduleScreenOffMonitor();
             }
         }
@@ -680,11 +626,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     BroadcastReceiver viewAddRemoveReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("add")) {
-                //addView(android.R.color.transparent);
-            } else {
-                //removeView();
-            }
+            intent.hasExtra("add");//addView(android.R.color.transparent);
+            //removeView();
         }
     };
 
@@ -733,18 +676,17 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             //Request was successfully enqueued for download.
             int id = updatedRequest.getId();
             DownloadStatusCls status = new DownloadStatusCls(id, SMActivity.PENDING);
-            if (PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP) != null) {
+            if (prefUtils.getStringPref( DOWNLAOD_HASH_MAP) != null) {
                 Type typetoken = new TypeToken<HashMap<String, DownloadStatusCls>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(this, DOWNLAOD_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( DOWNLAOD_HASH_MAP);
                 Map<String, DownloadStatusCls> map1 = new Gson().fromJson(hashmap, typetoken);
                 map1.put(packageName, status);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             } else {
                 Map<String, DownloadStatusCls> map1 = new HashMap<>();
                 map1.put(packageName, status);
-                PrefUtils.saveStringPref(LockScreenService.this, DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
-
+                prefUtils.saveStringPref( DOWNLAOD_HASH_MAP, new Gson().toJson(map1));
             }
 
 
@@ -796,9 +738,9 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
             Timber.d("locker screen action :%s", action);
             if (action == null) {
-                String main_password = PrefUtils.getStringPref(this, KEY_MAIN_PASSWORD);
+                String main_password = prefUtils.getStringPref( KEY_MAIN_PASSWORD);
                 if (main_password == null) {
-                    PrefUtils.saveStringPref(this, KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
+                    prefUtils.saveStringPref( KEY_MAIN_PASSWORD, DEFAULT_MAIN_PASS);
                 }
                 if (socketStatus == null)
                     startLockScreen(false);
@@ -808,17 +750,18 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     case "suspended":
                     case "expired":
                     case "unlinked":
-                    case "locked":
                     case DUPLICATE_MAC:
                     case DUPLICATE_SERIAL:
                     case DUPLICATE_MAC_AND_SERIAL:
                     case "flagged":
                     case "transfered":
-                        startLockScreen(true);
-                        break;
                     case "reboot":
                         startLockScreen(false);
                         break;
+                    case "locked":
+                        startLockScreen(true);
+                        break;
+
                     case "unlocked":
                         removeLockScreenView();
                         suspendPackages();
@@ -846,16 +789,15 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
     private void startLockScreen(boolean refresh) {
 
-        if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+        if (prefUtils.getBooleanPref( TOUR_STATUS)) {
             try {
                 if (refresh)
                     refreshKeyboard();
-                notificationItems.clear();
 
                 if (mLayout.getWindowToken() == null) {
                     removeView();
                     if (params == null) {
-                        params = PrepareLockScreen.getParams(this, mLayout);
+                        params = getParams( mLayout);
                     }
                     windowManager.addView(mLayout, params);
 
@@ -870,7 +812,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         e.printStackTrace();
                     }
 
-                    PrefUtils.saveStringPref(this, AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
+                    prefUtils.saveStringPref( AppConstants.CURRENT_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
                 }
 
 
@@ -898,11 +840,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     }
 
     private void simPermissionsCheck() {
-        String iccid0 = PrefUtils.getStringPref(this, SIM_0_ICCID);
-        String iccid1 = PrefUtils.getStringPref(this, SIM_1_ICCID);
-        String space = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String iccid0 = prefUtils.getStringPref( SIM_0_ICCID);
+        String iccid1 = prefUtils.getStringPref( SIM_1_ICCID);
+        String space = prefUtils.getStringPref( CURRENT_KEY);
         AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-            List<SimEntry> simEntries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+            List<SimEntry> simEntries = MyAppDatabase.getInstance(this).getDao().getAllSimInService();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 assert simEntries != null;
                 Optional<SimEntry> op = simEntries.stream()
@@ -931,14 +873,14 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private void byDefaultBehaviour(String space, int slot) {
         switch (space) {
             case KEY_GUEST_PASSWORD:
-                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_GUEST_ALL)) {
+                if (prefUtils.getBooleanPrefWithDefTrue( ALLOW_GUEST_ALL)) {
                     broadCastIntent(true, slot);
                 } else {
                     broadCastIntent(false, slot);
                 }
                 break;
             case KEY_MAIN_PASSWORD:
-                if (PrefUtils.getBooleanPrefWithDefTrue(this, ALLOW_ENCRYPTED_ALL)) {
+                if (prefUtils.getBooleanPrefWithDefTrue( ALLOW_ENCRYPTED_ALL)) {
                     broadCastIntent(true, slot);
                 } else {
                     broadCastIntent(false, slot);
@@ -994,7 +936,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 EditText pin = mLayout.findViewById(R.id.password_field);
                 pin.setText(null);
                 pin.setHint(getResources().getString(R.string.enter_pin_or_draw_pattern_to_unlock));
-                setDeviceId(this, warningText, PrefUtils.getStringPref(this, DEVICE_ID), null, utils.getDeviceStatus(this));
+                setDeviceId( warningText, prefUtils.getStringPref( DEVICE_ID), null, prefUtils.getStringPref(DEVICE_STATUS));
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) mLayout.getLayoutParams();
                 windowManager.updateViewLayout(mLayout, params);
             }
@@ -1012,18 +954,39 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         sendBroadcast(intent);
     }
 
+    @SuppressLint("ResourceType")
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        if (key.equals(KEY_LOCK_IMAGE)) {
-            mLayout = null;
-            mLayout = new RelativeLayout(LockScreenService.this);
-            params = null;
-            params = PrepareLockScreen.getParams(LockScreenService.this, mLayout);
-            //windowManager.removeViewImmediate(mLayout);
-        } else if (key.equals(DEVICE_ID)) {
-            destroyClientChatSocket();
-            connectClientChatSocket();
-        } else if (key.equals(SUSPENDED_PACKAGES)) {
-            suspendPackages();
+        switch (key) {
+            case KEY_LOCK_IMAGE:
+                ConstraintLayout rootView = mLayout.findViewById(R.id.background);
+                String bg = prefUtils.getStringPref(AppConstants.KEY_LOCK_IMAGE);
+                if (bg == null || bg.equals("")) {
+                    rootView.setBackgroundResource(R.raw._12316);
+
+                } else {
+                    try {
+                        rootView.setBackgroundResource(Integer.parseInt(bg));
+                    } catch (RuntimeException e) {
+                        rootView.setBackgroundResource(R.raw._12316);
+                    }
+                }
+                break;
+            case DEVICE_ID:
+                destroyClientChatSocket();
+                connectClientChatSocket();
+                break;
+            case SUSPENDED_PACKAGES:
+                suspendPackages();
+                break;
+            case CURRENT_NETWORK_CHANGED: {
+                String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
+                boolean isConnected = networkStatus.equals(CONNECTED);
+                if (!isConnected) {
+                    destroyClientChatSocket();
+                } else {
+                    connectClientChatSocket();
+                }
+            }
         }
     };
 
@@ -1115,8 +1078,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     private void suspendPackages() {
         if (!mDPM.isDeviceOwnerApp(getPackageName())) return;
         AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-            List<AppInfo> appInfos = MyApplication.getAppDatabase(this).getDao().getAppsWithoutIcons();
-            if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(KEY_GUEST_PASSWORD)) {
+            List<AppInfo> appInfos = MyAppDatabase.getInstance(this).getDao().getAppsWithoutIcons();
+            if (prefUtils.getStringPref( CURRENT_KEY).equals(KEY_GUEST_PASSWORD)) {
 
                 for (AppInfo appInfo : appInfos) {
                     if (!appInfo.isGuest() || !appInfo.isEnable()) {
@@ -1127,7 +1090,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         mDPM.setPackagesSuspended(compName, new String[]{appInfo.getPackageName()}, false);
                     }
                 }
-            } else if (PrefUtils.getStringPref(this, CURRENT_KEY).equals(AppConstants.KEY_MAIN_PASSWORD)) {
+            } else if (prefUtils.getStringPref( CURRENT_KEY).equals(AppConstants.KEY_MAIN_PASSWORD)) {
                 for (AppInfo appInfo : appInfos) {
                     if (!appInfo.isEncrypted() || !appInfo.isEnable()) {
                         if (!appInfo.getPackageName().equals(getPackageName()) && !appInfo.getPackageName().equals("com.android.settings"))
@@ -1153,13 +1116,12 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         socketManager.setSocketConnectionListener(this);
 
 
-
-        String token = PrefUtils.getStringPref(LockScreenService.this, TOKEN);
-        device_id = PrefUtils.getStringPref(LockScreenService.this, DEVICE_ID);
+        String token = prefUtils.getStringPref( TOKEN);
+        device_id = prefUtils.getStringPref( DEVICE_ID);
 
         if (token != null && device_id != null) {
             // connecting to socket
-            String live_url = PrefUtils.getStringPref(LockScreenService.this, LIVE_URL);
+            String live_url = prefUtils.getStringPref( LIVE_URL);
             socketManager.destroy();
             socketManager.connectSocket(token, device_id, live_url);
             Timber.d("connecting to socket....");
@@ -1168,7 +1130,6 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     }
 
     private void stopSocket() {
-
 
 
         Log.d("LockScreenService", "service destroy");
@@ -1223,7 +1184,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null && intent.getAction().equals(BROADCAST_APPS_ACTION)) {
                 String action = intent.getStringExtra(KEY_DATABASE_CHANGE);
-                if (action != null && PrefUtils.getBooleanPref(context, IS_SYNCED)) {
+                if (action != null && prefUtils.getBooleanPref( IS_SYNCED)) {
                     if (action.equals("apps"))
                         sendAppsWithoutIcons();
                     if (action.equals("extensions")) sendExtensionsWithoutIcons();
@@ -1232,7 +1193,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     if (action.equals("simSettings")) sendSimSettings(null);
                     try {
                         if (socketManager.getSocket() != null && socketManager.getSocket().connected())
-                            socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id));
+                            socketManager.getSocket().emit(SETTINGS_APPLIED_STATUS + device_id, new JSONObject().put("device_id", device_id).put("msg","Settings changed"));
                     } catch (Exception e) {
                         Timber.d(e);
                     }
@@ -1253,8 +1214,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             Timber.d("Socket is connecting");
         else if (socketState == 2) {
             Timber.d("Socket is connected");
-            String installedApps = PrefUtils.getStringPref(this, INSTALLED_APPS);
-            String uninstalledApps = PrefUtils.getStringPref(this, UNINSTALLED_APPS);
+            String installedApps = prefUtils.getStringPref( INSTALLED_APPS);
+            String uninstalledApps = prefUtils.getStringPref( UNINSTALLED_APPS);
             if (installedApps != null)
                 saveAppsList(this, true, null, true);
             if (uninstalledApps != null) saveAppsList(this, false, null, true);
@@ -1271,13 +1232,14 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             sendSystemEvents();
             getSystemEvents();
             getDeviceMessages();
-            if (PrefUtils.getStringPref(this, APPS_HASH_MAP) != null) {
+            getDeviceInfoUpdate();
+            if (prefUtils.getStringPref( APPS_HASH_MAP) != null) {
                 Type type = new TypeToken<HashMap<String, Boolean>>() {
                 }.getType();
-                String hashmap = PrefUtils.getStringPref(this, APPS_HASH_MAP);
+                String hashmap = prefUtils.getStringPref( APPS_HASH_MAP);
                 HashMap<String, Boolean> map = new Gson().fromJson(hashmap, type);
                 sendPushedAppsStatus(map);
-                PrefUtils.saveStringPref(this, APPS_HASH_MAP, null);
+                prefUtils.saveStringPref( APPS_HASH_MAP, null);
             }
         } else if (socketState == 3) {
             Timber.d("Socket is disconnected");
@@ -1293,6 +1255,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 socketManager.getSocket().off(GET_SIM_UPDATES + device_id);
                 socketManager.getSocket().off(SYSTEM_EVENT_BUS + device_id);
                 socketManager.getSocket().off(GET_DEVICE_MSG + device_id);
+                socketManager.getSocket().off(GET_DEVICE_INFO + device_id);
             }
         }
     }
@@ -1326,13 +1289,13 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                             boolean apps = obj.getBoolean("apps_status");
                             boolean extensions = obj.getBoolean("extensions_status");
                             boolean settings = obj.getBoolean("settings_status");
-                            syncDevice(LockScreenService.this, is_synced, apps, extensions, settings);
-                            if (!PrefUtils.getBooleanPref(LockScreenService.this, AppConstants.IS_SYNCED))
-                                if (!PrefUtils.getBooleanPref(LockScreenService.this, AppConstants.APPS_SENT_STATUS))
+                            syncDevice(prefUtils, is_synced, apps, extensions, settings);
+                            if (!prefUtils.getBooleanPref( AppConstants.IS_SYNCED))
+                                if (!prefUtils.getBooleanPref( AppConstants.APPS_SENT_STATUS))
                                     sendApps();
-                                else if (!PrefUtils.getBooleanPref(LockScreenService.this, AppConstants.EXTENSIONS_SENT_STATUS))
+                                else if (!prefUtils.getBooleanPref( AppConstants.EXTENSIONS_SENT_STATUS))
                                     sendExtensions();
-                                else if (!PrefUtils.getBooleanPref(LockScreenService.this, AppConstants.SETTINGS_SENT_STATUS))
+                                else if (!prefUtils.getBooleanPref( AppConstants.SETTINGS_SENT_STATUS))
                                     sendSettings();
                         } else Timber.e(" invalid request ");
                     } catch (Exception error) {
@@ -1374,15 +1337,15 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                             Timber.d(" settings applied status sent ");
                         } else {
                             Timber.d(" no settings available in history ");
-                            boolean appsSettingStatus = PrefUtils.getBooleanPref(LockScreenService.this, APPS_SETTING_CHANGE);
+                            boolean appsSettingStatus = prefUtils.getBooleanPref( APPS_SETTING_CHANGE);
                             Timber.d(" apps settings status in local : %S", appsSettingStatus);
                             if (appsSettingStatus)
                                 sendAppsWithoutIcons();
-                            boolean settingsStatus = PrefUtils.getBooleanPref(LockScreenService.this, SETTINGS_CHANGE);
+                            boolean settingsStatus = prefUtils.getBooleanPref( SETTINGS_CHANGE);
                             Timber.d(" settings status in local : %S", settingsStatus);
                             if (settingsStatus)
                                 sendSettings();
-                            boolean extensionsStatus = PrefUtils.getBooleanPref(LockScreenService.this, SECURE_SETTINGS_CHANGE);
+                            boolean extensionsStatus = prefUtils.getBooleanPref( SECURE_SETTINGS_CHANGE);
                             Timber.d(" extensions status in local : %S", extensionsStatus);
                             if (extensionsStatus)
                                 sendExtensionsWithoutIcons();
@@ -1434,31 +1397,33 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     @Override
     public void sendApps() {
         Timber.d("<<< sending apps >>>");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (socketManager.getSocket().connected()) {
-                        List<AppInfo> apps = MyApplication.getAppDatabase(LockScreenService.this).getDao().getApps();
-                        socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
-                        Timber.d(" apps sent %s", apps.size());
-                    } else
-                        Timber.d("Socket not connected");
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
+        new Thread(() -> {
+            try {
+                if (socketManager.getSocket().connected()) {
+                    List<AppInfo> apps = MyAppDatabase.getInstance(LockScreenService.this).getDao().getApps();
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(apps));
+                    Timber.d(" apps sent %s", apps.size());
+                } else
+                    Timber.d("Socket not connected");
+            } catch (Exception e) {
+                Timber.d(e);
             }
         }).start();
     }
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(screenOffReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(appsBroadcast);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushPullBroadcast);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(viewAddRemoveReceiver);
         Timber.d("service destroy");
         socketManager.destroy();
+        unRegisterNetworkPref();
         socketManager.removeSocketConnectionListener(this);
         socketManager.removeAllSocketConnectionListener();
+        sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
         super.onDestroy();
     }
 
@@ -1468,7 +1433,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         new Thread(() -> {
             try {
                 if (socketManager.getSocket().connected()) {
-                    List<SubExtension> extensions = MyApplication.getAppDatabase(LockScreenService.this).getDao().getAllSubExtensions();
+                    List<SubExtension> extensions = MyAppDatabase.getInstance(LockScreenService.this).getDao().getAllSubExtensions();
                     socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(extensions));
                     Timber.d("extensions sent%s", extensions.size());
                 } else
@@ -1543,9 +1508,9 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         try {
             if (socketManager.getSocket().connected())
                 AppExecutor.getInstance().getSingleThreadExecutor().submit(() -> {
-                    List<Settings> settings = MyApplication.getAppDatabase(LockScreenService.this).getDao().getSettings();
+                    List<Settings> settings = MyAppDatabase.getInstance(LockScreenService.this).getDao().getSettings();
                     socketManager.getSocket().emit(SEND_SETTINGS + device_id, new Gson().toJson(settings));
-                    PrefUtils.saveBooleanPref(LockScreenService.this, SETTINGS_CHANGE, false);
+                    prefUtils.saveBooleanPref( SETTINGS_CHANGE, false);
                 });
             else
                 Timber.d("Socket not connected");
@@ -1559,7 +1524,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
         Timber.d("<<< Sending  Sim Settings >>>");
         try {
             if (socketManager.getSocket().connected()) {
-                Set<String> set = PrefUtils.getStringSet(this, DELETED_ICCIDS);
+                Set<String> set = prefUtils.getStringSet( DELETED_ICCIDS);
                 if (simEntries != null) {
                     for (SimEntry simEntry : simEntries) {
                         set.remove(simEntry.getIccid());
@@ -1571,22 +1536,22 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         try {
                             json.put("action", SIM_ACTION_DELETED).put("entries", new Gson().toJson(set));
                             socketManager.getSocket().emit(SEND_SIM + device_id, json);
-                            PrefUtils.saveStringSetPref(this, DELETED_ICCIDS, null);
+                            prefUtils.saveStringSetPref( DELETED_ICCIDS, null);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                     });
 
-                if (!PrefUtils.getBooleanPref(this, OLD_DEVICE)) {
+                if (!prefUtils.getBooleanPref( OLD_DEVICE)) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getAllSimInService();
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getAllSimInService();
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_NEW_DEVICE);
                             json.put("entries", new Gson().toJson(entries));
                             socketManager.getSocket().emit(SEND_SIM + device_id, json);
-                            PrefUtils.saveBooleanPref(this, OLD_DEVICE, true);
+                            prefUtils.saveBooleanPref( OLD_DEVICE, true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1596,29 +1561,29 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                 }
 
-                Set<String> set1 = PrefUtils.getStringSet(this, UNSYNC_ICCIDS);
+                Set<String> set1 = prefUtils.getStringSet( UNSYNC_ICCIDS);
                 if (set1 != null && set1.size() > 0) {
                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                        List<SimEntry> entries = MyApplication.getAppDatabase(this).getDao().getSims(set1);
+                        List<SimEntry> entries = MyAppDatabase.getInstance(this).getDao().getSims(set1);
                         JSONObject json = new JSONObject();
                         try {
                             json.put("action", SIM_ACTION_UPDATE);
                             json.put("entries", new Gson().toJson(entries));
                             socketManager.getSocket().emit(SEND_SIM + device_id, json);
-                            PrefUtils.saveStringSetPref(this, UNSYNC_ICCIDS, null);
+                            prefUtils.saveStringSetPref( UNSYNC_ICCIDS, null);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     });
 
                 }
-                if (PrefUtils.getBooleanPref(this, SIM_UNREGISTER_FLAG)) {
+                if (prefUtils.getBooleanPref( SIM_UNREGISTER_FLAG)) {
                     JSONObject json = new JSONObject();
                     try {
                         json.put("action", SIM_ACTION_UNREGISTER);
-                        json.put("entries", new JSONObject().put("unrGuest", PrefUtils.getBooleanPref(this, ALLOW_GUEST_ALL)).put("unrEncrypt", PrefUtils.getBooleanPref(this, ALLOW_ENCRYPTED_ALL)).toString());
+                        json.put("entries", new JSONObject().put("unrGuest", prefUtils.getBooleanPref( ALLOW_GUEST_ALL)).put("unrEncrypt", prefUtils.getBooleanPref( ALLOW_ENCRYPTED_ALL)).toString());
                         socketManager.getSocket().emit(SEND_SIM + device_id, json);
-                        PrefUtils.saveBooleanPref(this, SIM_UNREGISTER_FLAG, false);
+                        prefUtils.saveBooleanPref( SIM_UNREGISTER_FLAG, false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1654,8 +1619,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                 if (socketManager.getSocket().connected()) {
 
-                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyApplication.getAppDatabase(LockScreenService.this).getDao().getAppsWithoutIcons()));
-                    PrefUtils.saveBooleanPref(LockScreenService.this, APPS_SETTING_CHANGE, false);
+                    socketManager.getSocket().emit(SEND_APPS + device_id, new Gson().toJson(MyAppDatabase.getInstance(LockScreenService.this).getDao().getAppsWithoutIcons()));
+                    prefUtils.saveBooleanPref( APPS_SETTING_CHANGE, false);
 
                     Timber.d("Apps sent");
                 } else {
@@ -1674,8 +1639,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             try {
 
                 if (socketManager.getSocket().connected()) {
-                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyApplication.getAppDatabase(LockScreenService.this).getDao().getExtensionsWithoutIcons()));
-                    PrefUtils.saveBooleanPref(LockScreenService.this, SECURE_SETTINGS_CHANGE, false);
+                    socketManager.getSocket().emit(SEND_EXTENSIONS + device_id, new Gson().toJson(MyAppDatabase.getInstance(LockScreenService.this).getDao().getExtensionsWithoutIcons()));
+                    prefUtils.saveBooleanPref( SECURE_SETTINGS_CHANGE, false);
 
                     Timber.d("Extensions sent");
                 } else {
@@ -1738,10 +1703,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                         String apk = item.getApk();
 
-                        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
-                        String url = live_url + MOBILE_END_POINT + "getApk/" + CommonUtils.splitName(apk);
+                        String live_url = prefUtils.getStringPref( LIVE_URL);
+                        String url = live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(apk);
                         item.setApk(url);
-                        item.setToken(PrefUtils.getStringPref(this, PrefUtils.getStringPref(LockScreenService.this, TOKEN)));
+                        item.setToken(prefUtils.getStringPref( prefUtils.getStringPref( TOKEN)));
                         list.set(i, item);
                     }
 
@@ -1902,11 +1867,11 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
 
                                 if (imei != null && imei.size() >= 1) {
-                                    PrefUtils.saveStringPref(this, IMEI1, imei.get(0));
+                                    prefUtils.saveStringPref( IMEI1, imei.get(0));
                                 }
 
                                 if (imei != null && imei.size() >= 2) {
-                                    PrefUtils.saveStringPref(this, IMEI2, imei.get(1));
+                                    prefUtils.saveStringPref( IMEI2, imei.get(1));
                                 }
 
 
@@ -1970,7 +1935,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
     public void imeiHistory() {
 
 
-        if (socketManager.getSocket().connected() && checkIMei(this)) {
+        if (socketManager.getSocket().connected() && checkIMei(this, prefUtils)) {
 
 
             Timber.d("<<<IMEI HISTORY >>> ");
@@ -2025,7 +1990,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
             try {
                 JSONObject object = new JSONObject();
 
-                String link_code = PrefUtils.getStringPref(LockScreenService.this, KEY_DEVICE_LINKED);
+                String link_code = prefUtils.getStringPref( KEY_DEVICE_LINKED);
 
                 Timber.d("%s", link_code);
                 object.put("device_id", device_id);
@@ -2037,7 +2002,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 } else {
                     object.put("is_default", false);
                 }
-                PrefUtils.saveStringPref(LockScreenService.this, POLICY_NAME, policyName);
+                prefUtils.saveStringPref( POLICY_NAME, policyName);
                 socketManager.getSocket().emit(LOAD_POLICY + device_id, object);
 
             } catch (JSONException e) {
@@ -2197,8 +2162,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                 jsonObject.put("status", true);
                 jsonObject.put("setting_id", setting_id);
                 socketManager.getSocket().emit(FINISH_POLICY + device_id, jsonObject);
-                PrefUtils.saveBooleanPref(this, LOADING_POLICY, false);
-                PrefUtils.saveBooleanPref(this, PENDING_FINISH_DIALOG, true);
+                prefUtils.saveBooleanPref( LOADING_POLICY, false);
+                prefUtils.saveBooleanPref( PENDING_FINISH_DIALOG, true);
                 Intent intent = new Intent(FINISH_POLICY);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 setScreenLock();
@@ -2231,7 +2196,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     Set<String> set = new Gson().fromJson(obj.getString("entries"), new TypeToken<Set<String>>() {
                                     }.getType());
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
-                                        MyApplication.getAppDatabase(this).getDao().deleteSims(set);
+                                        MyAppDatabase.getInstance(this).getDao().deleteSims(set);
                                         try {
                                             socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                         } catch (JSONException e) {
@@ -2247,8 +2212,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                                     try {
                                         UnRegisterModel sims = gson.fromJson(obj.getString("unregSettings"), UnRegisterModel.class);
-                                        PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sims.isUnrGuest());
-                                        PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sims.isUnrEncrypt());
+                                        prefUtils.saveBooleanPref( ALLOW_GUEST_ALL, sims.isUnrGuest());
+                                        prefUtils.saveBooleanPref( ALLOW_ENCRYPTED_ALL, sims.isUnrEncrypt());
                                         socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                     } catch (JSONException e) {
                                         Timber.e(e);
@@ -2256,9 +2221,9 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                                     AppExecutor.getInstance().getSingleThreadExecutor().execute(() -> {
                                         for (SimEntry simEntry : simEntries) {
                                             simEntry.setStatus(getResources().getString(R.string.status_not_inserted));
-                                            int no = MyApplication.getAppDatabase(this).getDao().updateSim(simEntry);
+                                            int no = MyAppDatabase.getInstance(this).getDao().updateSim(simEntry);
                                             if (no < 1) {
-                                                MyApplication.getAppDatabase(this).getDao().insertSim(simEntry);
+                                                MyAppDatabase.getInstance(this).getDao().insertSim(simEntry);
                                             }
                                         }
                                         try {
@@ -2273,8 +2238,8 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                                     UnRegisterModel sim = gson.fromJson(obj.getString("entries"), UnRegisterModel.class);
 
-                                    PrefUtils.saveBooleanPref(this, ALLOW_GUEST_ALL, sim.isUnrGuest());
-                                    PrefUtils.saveBooleanPref(this, ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
+                                    prefUtils.saveBooleanPref( ALLOW_GUEST_ALL, sim.isUnrGuest());
+                                    prefUtils.saveBooleanPref( ALLOW_ENCRYPTED_ALL, sim.isUnrEncrypt());
                                     try {
                                         socketManager.getSocket().emit(SEND_SIM_ACK + device_id, new JSONObject().put("device_id", device_id));
                                     } catch (JSONException e) {
@@ -2326,10 +2291,10 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                     SimEntry first = null, second = null;
                     List<SimEntry> entries = new ArrayList<>();
                     if (infoSim1 != null) {
-                        first = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim1.getIccId());
+                        first = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim1.getIccId());
                     }
                     if (infoSim2 != null) {
-                        second = MyApplication.getAppDatabase(this).getDao().getSimById(infoSim2.getIccId());
+                        second = MyAppDatabase.getInstance(this).getDao().getSimById(infoSim2.getIccId());
                     }
                     if (first == null && infoSim1 != null) {
                         first = new SimEntry(infoSim1.getIccId(), infoSim1.getDisplayName().toString(), "", false, false);
@@ -2358,7 +2323,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
             JSONObject jsonObject = new JSONObject();
             try {
-                if (PrefUtils.getIntegerPref(this, AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                if (prefUtils.getIntegerPref( AppConstants.PERVIOUS_VERSION) < getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
                     JSONObject object = new JSONObject();
                     object.put("type", getResources().getString(R.string.apktype));
                     object.put("firmware_info", Build.DISPLAY);
@@ -2393,7 +2358,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                             String action = obj.getString("action");
                             if (ACTION_DEVICE_TYPE_VERSION.equals(action)) {
                                 Timber.d("Saved");
-                                PrefUtils.saveIntegerPref(this, PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+                                prefUtils.saveIntegerPref( PERVIOUS_VERSION, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                             }
                         } else {
                             Timber.e(" invalid request ");
@@ -2427,7 +2392,7 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
                             DeviceMessagesModel model = new Gson().fromJson(obj.toString(), DeviceMessagesModel.class);
                             model.setDate(new Date().getTime());
-                            MyApplication.getAppDatabase(this).getDao().insertDeviceMessage(model);
+                            MyAppDatabase.getInstance(this).getDao().insertDeviceMessage(model);
                             Notification notification = Utils.getDeviceNotification(this, R.drawable.ic_lock_black_24dp, model.getMsg());
                             NotificationManager manager = (NotificationManager) LockScreenService.this.getSystemService(NOTIFICATION_SERVICE);
                             manager.notify(0, notification);
@@ -2440,6 +2405,44 @@ public class LockScreenService extends Service implements OnSocketConnectionList
                         }
                     } catch (Exception error) {
                         Timber.e(" JSON error : %s", error.getMessage());
+                    }
+                });
+            } else {
+                Timber.d("Socket not connected");
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void getDeviceInfoUpdate() {
+        try {
+
+            if (socketManager.getSocket().connected()) {
+
+                socketManager.getSocket().on(GET_DEVICE_INFO + device_id, args -> {
+                    Timber.d("<<< GETTING Updates >>>");
+                    JSONObject object = (JSONObject) args[0];
+
+
+                    try {
+                        JSONObject obj = object.getJSONObject("data");
+                        if (validateRequest(device_id, obj.getString("device_id"))) {
+                            prefUtils.saveStringPref( CHAT_ID, obj.getString("chat_id"));
+                            prefUtils.saveStringPref( PGP_EMAIL, obj.getString("pgp_email"));
+                            prefUtils.saveStringPref( USER_ID, obj.getString("user_id"));
+                            prefUtils.saveStringPref( SIM_ID, obj.getString("sim_id"));
+                            prefUtils.saveStringPref( SIM_ID2, obj.getString("sim_id2"));
+                            prefUtils.saveStringPref( VALUE_EXPIRED, obj.getString("expiry_date"));
+                            AppExecutor.getInstance().getMainThread().execute(() -> startLockScreen(false));
+
+                        } else {
+                            Timber.e(" invalid request ");
+                        }
+                    } catch (Exception error) {
+                        Timber.e(error);
                     }
                 });
             } else {
@@ -2522,6 +2525,777 @@ public class LockScreenService extends Service implements OnSocketConnectionList
 
 
         }
+    }
+    @SuppressLint({"ResourceType", "SetTextI18n", "StringFormatInvalid"})
+    public WindowManager.LayoutParams getParams( final RelativeLayout layout) {
+
+        int windowType;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            windowType = WindowManager.LayoutParams.TYPE_TOAST |
+                    WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        }
+
+        DeviceStatusReceiver deviceStatusReceiver = new DeviceStatusReceiver();
+
+        registerDeviceStatusReceiver(LockScreenService.this, deviceStatusReceiver);
+
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                windowType,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                        | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+
+                PixelFormat.TRANSLUCENT);
+
+        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        params.gravity = Gravity.CENTER;
+
+
+//        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        final LayoutInflater inflater = LayoutInflater.from(LockScreenService.this);
+        //whole view
+        final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
+
+        TextView txtWarning = keypadView.findViewById(R.id.txtWarning);
+        NCodeView codeView = keypadView.findViewById(R.id.codeView);
+        ConstraintLayout rootView = keypadView.findViewById(R.id.background);
+        String bg = prefUtils.getStringPref( AppConstants.KEY_LOCK_IMAGE);
+        if (bg == null || bg.equals("")) {
+            rootView.setBackgroundResource(R.raw._12316);
+
+        } else {
+            try {
+                rootView.setBackgroundResource(Integer.parseInt(bg));
+            } catch (RuntimeException e) {
+                rootView.setBackgroundResource(R.raw._12316);
+            }
+        }
+
+        ImageView unLockButton = keypadView.findViewById(R.id.t9_unlock);
+        EditText mPasswordField = keypadView.findViewById(R.id.password_field);
+        String device_id = prefUtils.getStringPref( DEVICE_ID);
+        PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
+        mPatternLockView.setEnableHapticFeedback(false);
+        codeView.setListener(new NCodeView.OnPFCodeListener() {
+            @Override
+            public void onCodeCompleted(ArrayList<Integer> code) {
+
+                if (code.toString().equals(securedSharedPref.getStringPref(AppConstants.ENCRYPT_COMBO_PIN))) {
+
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_MAIN;
+                } else if (code.toString().equals(securedSharedPref.getStringPref(AppConstants.GUEST_COMBO_PIN))) {
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_GUEST;
+                } else if (code.toString().equals(securedSharedPref.getStringPref(AppConstants.DURESS_COMBO_PIN))) {
+                    mPatternLockView.setNumberInputAllow(false);
+                    mPasswordField.invalidate();
+                    incomingComboRequest = KEY_DURESS;
+                }
+            }
+
+            @Override
+            public void onCodeNotCompleted(ArrayList<Integer> code) {
+
+            }
+        });
+        mPatternLockView.addPatternLockListener(new PatternLockViewListener() {
+            @Override
+            public void onStarted() {
+            }
+
+            @Override
+            public void onProgress(List<PatternLockView.Dot> progressPattern) {
+            }
+
+            @Override
+            public void onComplete(List<PatternLockView.Dot> pattern) {
+                String patternString = PatternLockUtils.patternToString(mPatternLockView, pattern);
+                String device_status = prefUtils.getStringPref(DEVICE_STATUS);
+                boolean clearance;
+                if (device_status == null) {
+                    clearance = false;
+                } else {
+                    clearance = device_status.equals(SUSPENDED.toLowerCase()) || device_status.equals(EXPIRED.toLowerCase());
+
+                }
+                if (pattern.size() == 1) {
+                    if (!mPatternLockView.isNumberInputAllow()) {
+                        mPatternLockView.clearPattern();
+                        return;
+                    }
+                    mPasswordField.append(String.valueOf(pattern.get(0).getRandom()));
+                    codeView.input(pattern.get(0).getRandom());
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+                    mPatternLockView.clearPattern();
+                } else if (!mPatternLockView.isNumberInputAllow()) {
+                    switch (incomingComboRequest) {
+                        case KEY_MAIN:
+                            if (patternString.equals(securedSharedPref.getStringPref(AppConstants.ENCRYPT_COMBO_PATTERN))) {
+                                //correct
+
+                                encryptLogin(clearance, mPatternLockView, mPasswordField, codeView);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
+
+                            }
+                            break;
+                        case KEY_GUEST:
+                            if (patternString.equals(securedSharedPref.getStringPref(AppConstants.GUEST_COMBO_PATTERN))) {
+                                //correct
+                                guestLogin(clearance, mPatternLockView, mPasswordField, codeView);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
+                            }
+                            break;
+                        case KEY_DURESS:
+                            if (patternString.equals(securedSharedPref.getStringPref(AppConstants.DURESS_COMBO_PATTERN))) {
+                                //correct
+                                duressLogin(clearance, mPatternLockView, codeView);
+                            } else {
+                                //wrong
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
+                            }
+                            break;
+                    }
+                    new Handler().postDelayed(() -> {
+                        incomingComboRequest = null;
+                        codeView.clearCode();
+                        mPatternLockView.setNumberInputAllow(true);
+                        mPatternLockView.invalidate();
+                    }, 800);
+
+                } else if (pattern.size() > 1 && pattern.size() < 4) {
+                    mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                    Toast.makeText(LockScreenService.this, "Pattern too Short", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+                } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.GUEST_PATTERN))) {
+                    guestLogin(clearance, mPatternLockView,  mPasswordField, codeView);
+
+
+                } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.ENCRYPT_PATTERN))) {
+
+                    encryptLogin(clearance, mPatternLockView,  mPasswordField, codeView);
+                } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.DURESS_PATTERN))) {
+                    duressLogin(clearance, mPatternLockView, codeView);
+                } else if (device_status != null) {
+                    String device_id = prefUtils.getStringPref( DEVICE_ID);
+                    setDeviceId( txtWarning, device_id, mPatternLockView, device_status);
+                    if (clearance) {
+                        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+                        new Handler().postDelayed(mPatternLockView::clearPattern, 500);
+                    }
+                } else {
+                    patternWromgAttempt(mPatternLockView,  txtWarning, unLockButton, mPasswordField, codeView);
+                }
+            }
+
+            @Override
+            public void onCleared() {
+
+            }
+        });
+
+
+        if (device_id == null) {
+            device_id = prefUtils.getStringPref( OFFLINE_DEVICE_ID);
+        }
+
+        final String device_status = prefUtils.getStringPref( DEVICE_STATUS);
+
+        if (device_status == null) {
+//            keyboardView.clearWaringText();
+            txtWarning.setVisibility(INVISIBLE);
+            txtWarning.setText(null);
+            mPatternLockView.setInputEnabled(true);
+        }
+
+
+        if (device_status != null) {
+            setDeviceId( txtWarning, device_id, mPatternLockView, device_status);
+        }
+
+
+        deviceStatusReceiver.setListener(status ->
+
+        {
+            if (status == null) {
+                if (!isClockTicking) {
+                    txtWarning.setVisibility(INVISIBLE);
+                    txtWarning.setText(null);
+                    mPatternLockView.setInputEnabled(true);
+                }
+
+            } else {
+                String dev_id = prefUtils.getStringPref( DEVICE_ID);
+                switch (status) {
+                    case "suspended":
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, dev_id));
+                            // mPatternLockView.setInputEnabled(false);
+//                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
+
+
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                            //mPatternLockView.setInputEnabled(false);
+
+                        }
+                        break;
+                    case "expired":
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_expired, dev_id));
+                            //mPatternLockView.setInputEnabled(false);
+
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_expired, "N/A"));
+                            //mPatternLockView.setInputEnabled(false);
+
+
+                        }
+                        break;
+                    case "unlinked":
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, dev_id));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                        break;
+                    case "flagged":
+                        txtWarning.setVisibility(VISIBLE);
+                        txtWarning.setText(getResources().getString(R.string.account_device_id_flagged));
+                        mPatternLockView.setInputEnabled(false);
+                        break;
+                    case "transfered":
+
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_transferred, dev_id));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_transferred, "N/A"));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+                        break;
+
+                    case DUPLICATE_MAC:
+
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error_321) + dev_id + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error_321) + "N/A" + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+
+
+                        break;
+                    case DUPLICATE_SERIAL:
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error_322) + dev_id + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error_322) + "N/A" + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+                        break;
+                    case DUPLICATE_MAC_AND_SERIAL:
+                        if (dev_id != null) {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error323) + dev_id + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        } else {
+                            txtWarning.setVisibility(VISIBLE);
+                            txtWarning.setText(getResources().getString(R.string.error323) + "N/A" + getResources().getString(R.string.contact_support));
+                            mPatternLockView.setInputEnabled(false);
+                        }
+                        break;
+                }
+            }
+
+        });
+
+        ImageView backPress = keypadView.findViewById(R.id.t9_key_backspace);
+        backPress.setOnClickListener(v ->
+
+        {
+            Editable editable = mPasswordField.getText();
+            int charCount = editable.length();
+            if (charCount > 0) {
+                editable.delete(charCount - 1, charCount);
+                codeView.delete();
+            }
+        });
+        LinearLayout supportButton = keypadView.findViewById(R.id.t9_key_support);
+        TextView clearAll = keypadView.findViewById(R.id.t9_key_clear);
+        clearAll.setOnClickListener(v -> {
+            mPasswordField.setText(null);
+            codeView.clearCode();
+            mPatternLockView.setNumberInputAllow(true);
+            mPatternLockView.invalidate();
+        });
+
+        mPasswordField.setTransformationMethod(new
+
+                HiddenPassTransformationMethod());
+        mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        mPasswordField.setTextColor(getResources().
+
+                getColor(R.color.textColorPrimary, null));
+        mPasswordField.addTextChangedListener(new
+
+                                                      TextWatcher() {
+                                                          @Override
+                                                          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                              String device_status = prefUtils.getStringPref( DEVICE_STATUS);
+                                                              if (device_status == null) {
+                                                                  txtWarning.setVisibility(INVISIBLE);
+                                                              }
+                                                          }
+
+                                                          @Override
+                                                          public void afterTextChanged(Editable s) {
+
+                                                          }
+                                                      });
+
+        supportButton.setOnClickListener(v ->
+
+        {
+            chatLogin(LockScreenService.this, prefUtils);
+
+            mPasswordField.setText(null);
+            codeView.clearCode();
+        });
+
+        long time_remaining = getTimeRemaining(prefUtils);
+
+
+        int attempts = 10;
+        int count = securedSharedPref.getIntegerPref(LOGIN_ATTEMPTS);
+        int x = attempts - count;
+
+        if (time_remaining != 0) {
+
+            if (count >= 5) {
+
+                if (count > 9) {
+                    wipeDevice(LockScreenService.this);
+                }
+
+                switch (count) {
+                    case 5:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_5);
+                        break;
+                    case 6:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_6);
+                        break;
+                    case 7:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_7);
+                        break;
+                    case 8:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_8);
+                        break;
+                    case 9:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_9);
+                        break;
+                    case 10:
+                        remainingTime( mPasswordField, mPatternLockView, txtWarning, unLockButton, time_remaining, count, x, AppConstants.attempt_10);
+                        break;
+                }
+            } else {
+                securedSharedPref.saveLongPref(TIME_REMAINING_REBOOT, 0);
+                securedSharedPref.saveLongPref(TIME_REMAINING, 0);
+            }
+
+        }
+
+
+        String finalDevice_id1 = device_id;
+        unLockButton.setOnClickListener(v -> {
+
+            String enteredPin = mPasswordField.getText().toString();
+            String device_status1 = prefUtils.getStringPref( DEVICE_STATUS);
+            boolean clearance;
+            if (device_status1 == null) {
+                clearance = false;
+            } else {
+                clearance = device_status1.equals(SUSPENDED.toLowerCase()) || device_status1.equals(EXPIRED.toLowerCase());
+
+            }
+
+            if (enteredPin.length() != 0) {
+                if (getUserType(enteredPin, LockScreenService.this).equals(KEY_GUEST)) {
+                    if (clearance) {
+                        chatLogin(LockScreenService.this,prefUtils);
+                        mPasswordField.setText(null);
+                        codeView.clearCode();
+                    } else {
+                        loginAsGuest(LockScreenService.this,securedSharedPref,prefUtils);
+                        mPasswordField.setText(null);
+                        codeView.clearCode();
+                    }
+                }
+                //if input is for encrypted
+                else if (getUserType(enteredPin, LockScreenService.this).equals(KEY_ENCRYPTED)) {
+                    if (!clearance) {
+                        loginAsEncrypted(LockScreenService.this, securedSharedPref, prefUtils);
+                        mPasswordField.setText(null);
+                        codeView.clearCode();
+                    } else {
+                        chatLogin(LockScreenService.this,prefUtils);
+                        mPasswordField.setText(null);
+                        codeView.clearCode();
+                    }
+
+                } else if (getUserType(enteredPin, LockScreenService.this).equals(KEY_DURESS)) {
+                    if (!clearance)
+                        if (!wipeDevice(LockScreenService.this)) {
+                            Toast.makeText(LockScreenService.this, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                        } else chatLogin(LockScreenService.this, prefUtils);
+
+                } else if (device_status1 != null) {
+                    if (clearance) {
+                        mPasswordField.setText(null);
+                        codeView.clearCode();
+                    }
+                    setDeviceId( txtWarning, finalDevice_id1, mPatternLockView, device_status1);
+                } else {
+//                    PrefUtils.saveIntegerPref(context, LOGIN_ATTEMPTS, 0);
+
+                    wrongAttempt( txtWarning, unLockButton, mPatternLockView, mPasswordField, codeView);
+
+                }
+
+            }
+            if (!mPatternLockView.isNumberInputAllow()) {
+                mPatternLockView.setNumberInputAllow(true);
+                mPatternLockView.invalidate();
+            }
+            codeView.clearCode();
+
+        });
+
+
+        return params;
+    }
+
+    private void patternWromgAttempt(PatternLockView mPatternLockView,  TextView txtWarning, ImageView unLockButton, EditText mPasswordField, NCodeView codeview) {
+        mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+        new Handler().postDelayed(() -> {
+            mPatternLockView.clearPattern();
+            wrongAttempt( txtWarning, unLockButton, mPatternLockView, mPasswordField, codeview);
+        }, 500);
+    }
+
+    private void guestLogin(boolean clearance, PatternLockView mPatternLockView, EditText mPasswordField, NCodeView codeView) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                chatLogin(LockScreenService.this, prefUtils);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                loginAsGuest(LockScreenService.this,securedSharedPref, prefUtils);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        }
+    }
+
+    private void duressLogin(boolean clearance, PatternLockView mPatternLockView, NCodeView codeView) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                codeView.clearCode();
+                chatLogin(LockScreenService.this, prefUtils);
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                codeView.clearCode();
+                if (!wipeDevice(LockScreenService.this)) {
+                    Toast.makeText(LockScreenService.this, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                }
+            }, 150);
+        }
+    }
+
+    private void encryptLogin(boolean clearance, PatternLockView mPatternLockView, EditText mPasswordField, NCodeView codeView) {
+        if (clearance) {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                chatLogin(LockScreenService.this, prefUtils);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        } else {
+            mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
+            new Handler().postDelayed(() -> {
+                mPatternLockView.clearPattern();
+                loginAsEncrypted(LockScreenService.this, securedSharedPref,prefUtils);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+            }, 150);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setDeviceId( TextView txtWarning, String finalDevice_id1, PatternLockView patternLockView, String device_status1) {
+        switch (device_status1) {
+            case "suspended":
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, finalDevice_id1));
+                    //patternLockView.setInputEnabled(false);
+
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Suspended. Please contact support");
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                    //patternLockView.setInputEnabled(false);
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Suspended. Please contact support");
+
+                }
+                break;
+            case "expired":
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_expired, finalDevice_id1));
+                    //patternLockView.setInputEnabled(false);
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+
+
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_expired, "N/A"));
+                    //patternLockView.setInputEnabled(false);
+//                                keyboardView.setWarningText("Your account with Device ID = N/A is Expired. Please contact support ");
+
+                }
+                break;
+            case "unlinked":
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, finalDevice_id1));
+                    if (patternLockView != null)
+                        patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                    if (patternLockView != null)
+                        patternLockView.setInputEnabled(false);
+                }
+//                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
+                break;
+            case "flagged":
+                txtWarning.setVisibility(VISIBLE);
+                txtWarning.setText(getResources().getString(R.string.account_device_id_flagged));
+                if (patternLockView != null)
+                    patternLockView.setInputEnabled(false);
+                break;
+            case DUPLICATE_MAC:
+
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error_321) + finalDevice_id1 + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error_321) + "N/A" + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+
+
+                break;
+            case DUPLICATE_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error_322) + finalDevice_id1 + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error_322) + "N/A" + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+                break;
+            case DUPLICATE_MAC_AND_SERIAL:
+                if (finalDevice_id1 != null) {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error323) + finalDevice_id1 + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                } else {
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(getResources().getString(R.string.error323) + "N/A" + getResources().getString(R.string.contact_support));
+                    patternLockView.setInputEnabled(false);
+                }
+                break;
+
+        }
+    }
+    @SuppressLint("StringFormatInvalid")
+    private void wrongAttempt( TextView txtWarning,
+                               ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField, NCodeView codeView) {
+        int attempts1 = 10;
+        int count1 = securedSharedPref.getIntegerPref(LOGIN_ATTEMPTS);
+        int x1 = attempts1 - count1;
+
+        if (count1 > 9) {
+            wipeDevice(this);
+        }
+
+        switch (count1) {
+
+            case 5:
+                CountDownTimer countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_5, x1, count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            case 6:
+                countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_6, x1, count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            case 7:
+                countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_7, x1,  count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            case 8:
+                countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_8, x1,  count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            case 9:
+                countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_9, x1,  count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            case 10:
+                countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, AppConstants.attempt_10, x1,  count1);
+                if (countDownTimer != null)
+                    countDownTimer.start();
+                break;
+            default:
+                securedSharedPref.saveIntegerPref(LOGIN_ATTEMPTS, count1 + 1);
+                unLockButton.setEnabled(true);
+                unLockButton.setClickable(true);
+                mPasswordField.setText(null);
+                codeView.clearCode();
+//                            String text_view_str = "Incorrect PIN ! <br><br> You have " + x + " attempts before device resets <br > and all data is lost ! ";
+
+                String text_view_str = getResources().getString(R.string.incorrect_pin) + " <br><br> " + getResources().getString(R.string.number_of_attempts_remaining, x1 + "");
+                txtWarning.setVisibility(VISIBLE);
+                txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
+        }
+    }
+
+    private void remainingTime( EditText mPasswordField, PatternLockView patternLockView,
+                                TextView txtWarning, ImageView unLockButton, long time_remaining, int count, int x, int attempt_10) {
+        long time;
+        CountDownTimer countDownTimer;
+        unLockButton.setEnabled(false);
+        unLockButton.setClickable(false);
+        patternLockView.setInputEnabled(false);
+        time = (time_remaining > attempt_10) ? attempt_10 : time_remaining;
+        securedSharedPref.saveLongPref(TIME_REMAINING_REBOOT, 0);
+        securedSharedPref.saveLongPref(TIME_REMAINING, 0);
+        countDownTimer = timer(unLockButton, mPasswordField, patternLockView, txtWarning, time, x, count);
+        if (countDownTimer != null)
+            countDownTimer.start();
+    }
+
+    private CountDownTimer timer(ImageView unLockButton, EditText mPasswordField, PatternLockView patternLockView,
+                                 TextView txtWarning, long timeRemaining, int x, int count) {
+
+        CountDownTimer countDownTimer = null;
+        try {
+
+            unLockButton.setEnabled(false);
+            unLockButton.setClickable(false);
+            patternLockView.setInputEnabled(false);
+
+            countDownTimer = new CountDownTimer(timeRemaining, 1000) {
+                @Override
+                public void onTick(long l) {
+//                    String.format("%1$tM:%1$tS", l)
+//                    String text_view_str = "Incorrect PIN! <br><br>You have " + x + " attempts before device resets <br>and all data is lost!<br><br>Next attempt in <b>" + String.format("%1$tM:%1$tS", l) + "</b>";
+                    String text_view_str = getResources().getString(R.string.incorrect_pin)
+                            + "<br><br>" + getResources().getString(R.string.number_of_attempts_remaining, x + "")
+                            + "<br><br>" + getResources().getString(R.string.next_attempt_in) + " " + "<b>" + getTimeString(l) + "</b>";
+                    mPasswordField.setText(null);
+                    txtWarning.setVisibility(VISIBLE);
+                    txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
+                    securedSharedPref.saveLongPref(TIME_REMAINING, l);
+                    isClockTicking = true;
+                    setTimeRemaining(prefUtils);
+                }
+
+                @Override
+                public void onFinish() {
+                    unLockButton.setEnabled(true);
+                    patternLockView.setInputEnabled(true);
+                    unLockButton.setClickable(true);
+                    mPasswordField.setText(null);
+
+                    //codeView.clearCode();
+                    txtWarning.setVisibility(INVISIBLE);
+                    txtWarning.setText(null);
+                    isClockTicking = false;
+                    securedSharedPref.saveIntegerPref(LOGIN_ATTEMPTS, count + 1);
+                    securedSharedPref.saveLongPref(TIME_REMAINING, 0);
+                    securedSharedPref.saveLongPref(TIME_REMAINING_REBOOT, 0);
+                }
+
+
+            };
+        } catch (Exception ignored) {
+
+        }
+        return countDownTimer;
     }
 
 }

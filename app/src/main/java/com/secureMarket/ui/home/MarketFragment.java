@@ -76,6 +76,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_market, container, false);
         rc = view.findViewById(R.id.appList);
         errorLayout = view.findViewById(R.id.error_layout);
@@ -116,7 +117,7 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
             swipeRefreshLayout.setRefreshing(false);
             installedAdapter.notifyDataSetChanged();
         });
-        viwModel.getMutableMsgs().observe(this, msg -> {
+        viwModel.getMutableMsgs().observe(getActivity(), msg -> {
             if (msg == Msgs.ERROR) {
                 swipeRefreshLayout.setRefreshing(false);
                 onNetworkError();
@@ -130,6 +131,9 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
                 swipeRefreshLayout.setRefreshing(true);
                 errorLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
+            }else if (msg==Msgs.SERVER_ERROR){
+                swipeRefreshLayout.setRefreshing(false);
+                onServerError();
             }
         });
     }
@@ -300,12 +304,19 @@ public class MarketFragment extends Fragment implements AppInstallUpdateListener
 
     }
 
-    public void onNetworkError() {
+    private void onNetworkError() {
         errorLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         errorImage.setImageResource(R.drawable.ic_no_internet_connection);
         rc.setVisibility(View.GONE);
-        errorText.setText("No Internet Connection");
+        errorText.setText(getResources().getString(R.string.no_internet_connection));
+    }
+    private void onServerError() {
+        errorLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        errorImage.setImageResource(R.drawable.ic_server_error);
+        rc.setVisibility(View.GONE);
+        errorText.setText(getResources().getString(R.string.internal_server_error));
     }
 
 

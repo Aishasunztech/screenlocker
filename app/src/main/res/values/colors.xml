@@ -16,6 +16,8 @@
     <color name="seekbarColor">#EF9C00</color>
     <color name="switchContainerColor">#eeeeee</color>
 
+    <color name="white_five">#fff</color>
+
 
     <color name="colorBlack">#999999</color>
     <color name="colorLightBlack">#FFFFFF</color>
