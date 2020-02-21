@@ -46,7 +46,7 @@ public class CheckExpiryFromSuperAdmin extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
 
-        if (!PrefUtils.getBooleanPref(this, DEVICE_LINKED_STATUS)) {
+        if (!PrefUtils.getInstance(this).getBooleanPref(DEVICE_LINKED_STATUS)) {
             checkOfflineExpiry(CheckExpiryFromSuperAdmin.this);
         }
 
@@ -92,7 +92,7 @@ public class CheckExpiryFromSuperAdmin extends JobService {
                                  * Offline device ID for dealers to assist
                                  * */
                                 String of_device_id = deviceExpiryResponse.getOfDeviceId();
-                                PrefUtils.saveStringPref(context, OFFLINE_DEVICE_ID, of_device_id);
+                                PrefUtils.getInstance(context).saveStringPref( OFFLINE_DEVICE_ID, of_device_id);
                                 if (of_device_status != null) {
 
                                     switch (of_device_status) {
@@ -147,7 +147,7 @@ public class CheckExpiryFromSuperAdmin extends JobService {
     }
 
     private void expire(Context context) {
-        PrefUtils.saveStringPref(context, DEVICE_STATUS, "expired");
+        PrefUtils.getInstance(context).saveStringPref( DEVICE_STATUS, "expired");
         Intent intent = new Intent(context, LockScreenService.class);
         intent.setAction("expired");
         ActivityCompat.startForegroundService(context, intent);

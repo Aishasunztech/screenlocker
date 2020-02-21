@@ -101,7 +101,7 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
                 fileOutputStream = new FileOutputStream(file);
                 downloadUrl = new URL(url);
                 connection = downloadUrl.openConnection();
-                connection.setRequestProperty("authorization", PrefUtils.getStringPref(contextWeakReference.get(), SYSTEM_LOGIN_TOKEN));
+                connection.setRequestProperty("authorization", PrefUtils.getInstance(contextWeakReference.get()).getStringPref( SYSTEM_LOGIN_TOKEN));
                 int contentLength = connection.getContentLength();
                 Timber.d("downloadUrl: %s ", url);
                 // input = body.byteStream();
@@ -177,8 +177,8 @@ public class DownLoadAndInstallUpdate extends AsyncTask<Void, Integer, Uri> {
     private void showInstallDialog(Uri apkUri, Context context) {
         //for Build.VERSION.SDK_INT <= 24
 
-        PrefUtils.saveBooleanPref(contextWeakReference.get(), AppConstants.IS_SETTINGS_ALLOW, false);
-        PrefUtils.saveBooleanPref(contextWeakReference.get(), UNINSTALL_ALLOWED, true);
+        PrefUtils.getInstance(contextWeakReference.get()).saveBooleanPref( AppConstants.IS_SETTINGS_ALLOW, false);
+        PrefUtils.getInstance(contextWeakReference.get()).saveBooleanPref( UNINSTALL_ALLOWED, true);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, apkUri);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);

@@ -66,7 +66,7 @@ public class ManualPushPullAdapter extends RecyclerView.Adapter<ManualPushPullAd
 
         //   Glide.with(context).load(installModel.getApk()).thumbnail(0.5f).into(holder.imageView);
 
-        String live_url = PrefUtils.getStringPref(context, LIVE_URL);
+        String live_url = PrefUtils.getInstance(context).getStringPref( LIVE_URL);
 
         Timber.d("skljdgvhsdgsgsj :%s", live_url.replaceAll("/mobile/", "") + LOGO_END_POINT + installModelArrayList.get(position).getApk());
 

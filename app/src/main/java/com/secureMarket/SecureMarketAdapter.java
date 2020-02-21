@@ -47,7 +47,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
         this.appModelServerAppInfo = appModelServerAppInfo;
         this.context = context;
         this.listener = listener;
-        userSpace = PrefUtils.getStringPref(context, CURRENT_KEY);
+        userSpace = PrefUtils.getInstance(context).getStringPref( CURRENT_KEY);
         this.fragmentType = fragmentType;
 
 
@@ -83,7 +83,7 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             holder.btnInstall.setVisibility(View.VISIBLE);
         }
 
-        String live_url = PrefUtils.getStringPref(context, LIVE_URL);
+        String live_url = PrefUtils.getInstance(context).getStringPref( LIVE_URL);
 
         Timber.d("skljdgvhsdgsgsj :%s", live_url + LOGO_END_POINT + appModelServerAppInfo.get(position).getLogo());
 
@@ -228,7 +228,8 @@ public class SecureMarketAdapter extends RecyclerView.Adapter<SecureMarketAdapte
             }else if(v.getId() == R.id.cancel_download)
             {
                 Log.d("lkdfh","ButtonLCicked" + app.getRequest_id());
-               listener.onCancelClick(app.getRequest_id());
+//               listener.onCancelClick(app.getRequest_id());
+                listener.onCancelClick(app.getPackageName());
             }
 
         }

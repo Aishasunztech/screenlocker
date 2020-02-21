@@ -273,7 +273,7 @@ public class CodeSettingActivity extends BaseActivity implements View.OnClickLis
         goToPolicyMenu = true;
         if (!isNetworkAvailable(this)) {
             showNetworkDialog(getResources().getString(R.string.network_not_connected), getResources().getString(R.string.network_not_connected_message), getResources().getString(R.string.network_setup));
-        } else if (!isNetworkConneted(this)) {
+        } else if (!isNetworkConneted(prefUtils)) {
             showNetworkDialog(getResources().getString(R.string.network_limited), getResources().getString(R.string.network_limited_message), getResources().getString(R.string.change_network));
         } else {
             startActivity(new Intent(CodeSettingActivity.this, PolicyActivity.class));

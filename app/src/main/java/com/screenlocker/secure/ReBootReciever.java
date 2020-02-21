@@ -15,12 +15,9 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.screenlocker.secure.offline.CheckExpiryFromSuperAdmin;
 import com.screenlocker.secure.service.LockScreenService;
-import com.screenlocker.secure.updateDB.BlurWorker;
 import com.screenlocker.secure.utils.AppConstants;
 import com.screenlocker.secure.utils.PrefUtils;
 
@@ -28,6 +25,7 @@ import timber.log.Timber;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.screenlocker.secure.utils.AppConstants.DEVICE_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.DOWNLAOD_HASH_MAP;
 import static com.screenlocker.secure.utils.AppConstants.ONE_DAY_INTERVAL;
 import static com.screenlocker.secure.utils.AppConstants.SIM_0_ICCID;
 import static com.screenlocker.secure.utils.AppConstants.SIM_1_ICCID;
@@ -42,10 +40,10 @@ public class ReBootReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.tag(TAG).e("onReceive: triggered");
 
-        PrefUtils.saveBooleanPref(context, AppConstants.REBOOT_STATUS, true);
+        PrefUtils.getInstance(context).saveBooleanPref( AppConstants.REBOOT_STATUS, true);
 
 
-        if (intent.getAction() != null) {
+        if (intent.getAction() != null)
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 
                 ComponentName componentName1 = new ComponentName(context, CheckExpiryFromSuperAdmin.class);
@@ -63,10 +61,10 @@ public class ReBootReciever extends BroadcastReceiver {
                     Timber.d("Job Scheduled Failed");
                 }
 
-                String device_status = PrefUtils.getStringPref(context, DEVICE_STATUS);
+                String device_status = PrefUtils.getInstance(context).getStringPref( DEVICE_STATUS);
                 Timber.d("<<< device status >>>%S", device_status);
 
-                if (PrefUtils.getBooleanPref(context, TOUR_STATUS)) {
+                if (PrefUtils.getInstance(context).getBooleanPref( TOUR_STATUS)) {
                     if (device_status != null) {
                         Intent lockScreenIntent = new Intent(context, LockScreenService.class);
                         lockScreenIntent.setAction("reboot");
@@ -78,7 +76,7 @@ public class ReBootReciever extends BroadcastReceiver {
                     }
                 }
                 SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                PrefUtils.saveStringPref(context, AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_FALSE);
+                PrefUtils.getInstance(context).saveStringPref( AppConstants.KEY_SHUT_DOWN, AppConstants.VALUE_SHUT_DOWN_FALSE);
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -90,26 +88,19 @@ public class ReBootReciever extends BroadcastReceiver {
                 SubscriptionInfo si0 = sm.getActiveSubscriptionInfoForSimSlotIndex(0);
                 SubscriptionInfo si1 = sm.getActiveSubscriptionInfoForSimSlotIndex(1);
                 if (si0 != null) {
-                    PrefUtils.saveStringPref(context, SIM_0_ICCID, si0.getIccId());
+                    PrefUtils.getInstance(context).saveStringPref( SIM_0_ICCID, si0.getIccId());
 
                 } else
-                    PrefUtils.saveStringPref(context, SIM_0_ICCID, null);
+                    PrefUtils.getInstance(context).saveStringPref( SIM_0_ICCID, null);
                 if (si1 != null) {
-                    PrefUtils.saveStringPref(context, SIM_1_ICCID, si1.getIccId());
+                    PrefUtils.getInstance(context).saveStringPref( SIM_1_ICCID, si1.getIccId());
 
                 } else
-                    PrefUtils.saveStringPref(context, SIM_1_ICCID, null);
+                    PrefUtils.getInstance(context).saveStringPref( SIM_1_ICCID, null);
 
             }
-            else if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
-                Timber.d("onReceive: locale chaneged");
-                OneTimeWorkRequest insertionWork =
-                        new OneTimeWorkRequest.Builder(BlurWorker.class)
-                                .build();
-                WorkManager.getInstance().enqueue(insertionWork);
-            }
 
-        }
+
     }
 
 }

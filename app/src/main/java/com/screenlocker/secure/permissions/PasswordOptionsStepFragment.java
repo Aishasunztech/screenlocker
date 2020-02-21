@@ -33,7 +33,7 @@ import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PasswordOptionsStepFragment extends AbstractStep {
+public class PasswordOptionsStepFragment extends ExtentedAbstractStep {
 
 
     public PasswordOptionsStepFragment() {
@@ -71,7 +71,7 @@ public class PasswordOptionsStepFragment extends AbstractStep {
 
 
         layout_pin.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PIN);
+            prefUtils.saveIntegerPref( GUEST_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(STEP_SETUP_GUEST);
@@ -79,14 +79,14 @@ public class PasswordOptionsStepFragment extends AbstractStep {
 
         });
         layout_pattern.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_PATTERN);
+            prefUtils.saveIntegerPref( GUEST_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(STEP_SETUP_GUEST);
 
         });
         layout_combination.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), GUEST_PASSORD_OPTION, OPTION_COMBO);
+            prefUtils.saveIntegerPref( GUEST_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
             //update to guest password
             mListener.onPageUpdate(STEP_SETUP_GUEST);

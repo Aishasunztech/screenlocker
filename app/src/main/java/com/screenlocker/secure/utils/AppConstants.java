@@ -125,13 +125,14 @@ public class AppConstants {
     public static final String APPS_LIST = "apps_list";
 
     //servers links
-    //public static String URL_1 = "https://api.lockmesh.com";//live SL
-    public static String URL_1 = "https://devapi.lockmesh.com";// Dev
+    //public static String URL_1 = "https://lockmesh.com";//live SL
+    public static String URL_1 = "https://dev.lockmesh.com";// Dev
     //public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //    public static String URL_1 = "http://192.168.0.143:3005";//local
     public static final String URL_2 = "https://securenet.guru";
+    public static final String SOCKET_POSTFIX = "/api/device/socket";
     ///logs url
-    public static final String URL_3 = "https://securenet.guru";
+    public static final String URL_3 = "https://logs.lockmesh.com";
 
     //super admin domain
 //    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live

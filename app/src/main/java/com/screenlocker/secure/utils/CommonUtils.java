@@ -26,12 +26,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.screenlocker.secure.MyAdmin;
-import com.secure.launcher.R;
 import com.screenlocker.secure.room.SubExtension;
 import com.screenlocker.secure.service.NetworkSocketAlarm;
 import com.screenlocker.secure.service.OfflineExpiryAlarm;
 import com.screenlocker.secure.socket.SocketManager;
 import com.screenlocker.secure.socket.model.Settings;
+import com.secure.launcher.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,10 +49,10 @@ import static android.os.UserManager.DISALLOW_CONFIG_BLUETOOTH;
 import static android.os.UserManager.DISALLOW_CONFIG_TETHERING;
 import static android.os.UserManager.DISALLOW_CONFIG_WIFI;
 import static android.os.UserManager.DISALLOW_UNMUTE_MICROPHONE;
-import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
-import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
+import static com.screenlocker.secure.utils.AppConstants.CURRENT_KEY;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
+import static com.screenlocker.secure.utils.AppConstants.KEY_MAIN_PASSWORD;
 import static com.screenlocker.secure.utils.AppConstants.SUB_AdminPanel;
 import static com.screenlocker.secure.utils.AppConstants.SUB_Battery;
 import static com.screenlocker.secure.utils.AppConstants.SUB_Bluetooth;
@@ -151,9 +151,9 @@ public class CommonUtils {
     }
 
     //get time remaining
-    public static long getTimeRemaining(Context context) {
+    public static long getTimeRemaining(PrefUtils prefUtils) {
         long current_time = new Date().getTime();
-        long time_remaining = PrefUtils.getLongPref(context, TIME_REMAINING_REBOOT);
+        long time_remaining = prefUtils.getLongPref( TIME_REMAINING_REBOOT);
         if (time_remaining - current_time <= 0) {
             return 0;
         } else {
@@ -162,10 +162,10 @@ public class CommonUtils {
     }
 
     //set time remaining
-    public static void setTimeRemaining(Context context) {
+    public static void setTimeRemaining( PrefUtils prefUtils) {
         long current_time = new Date().getTime();
-        long remaining_time = PrefUtils.getLongPref(context, TIME_REMAINING);
-        PrefUtils.saveLongPref(context, TIME_REMAINING_REBOOT, current_time + remaining_time);
+        long remaining_time = prefUtils.getLongPref(TIME_REMAINING);
+        prefUtils.saveLongPref(TIME_REMAINING_REBOOT, current_time + remaining_time);
     }
 
     public static void hideKeyboard(AppCompatActivity activity) {
@@ -400,11 +400,11 @@ public class CommonUtils {
 
     // calculate expiry date
 
-    public static String getRemainingDays(Context context) {
+    public static String getRemainingDays(Context context, PrefUtils prefUtils) {
 
         String daysLeft = null;
 
-        String value_expired = PrefUtils.getStringPref(context, VALUE_EXPIRED);
+        String value_expired = prefUtils.getStringPref(VALUE_EXPIRED);
 
 
         if (value_expired != null) {
@@ -447,17 +447,17 @@ public class CommonUtils {
         return (SocketManager.getInstance().getSocket() != null && SocketManager.getInstance().getSocket().connected());
     }
 
-    public static boolean isNetworkAvailable(Context context){
+    public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
-       return activeNetwork != null && activeNetwork.isConnected();
+        return activeNetwork != null && activeNetwork.isConnected();
 
     }
 
-    public static boolean isNetworkConneted(Context context) {
-        String state = PrefUtils.getStringPref(context, CURRENT_NETWORK_STATUS);
+    public static boolean isNetworkConneted(PrefUtils prefUtils) {
+        String state = prefUtils.getStringPref( CURRENT_NETWORK_STATUS);
         return state != null && state.equals(CONNECTED);
     }
 
@@ -506,8 +506,9 @@ public class CommonUtils {
         } else {
             isfileSharing = true;
         }
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_CALLS, false);
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_SCREENSHOT, true);
+        PrefUtils prefUtils = PrefUtils.getInstance(context);
+        prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_CALLS, false);
+        prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_SCREENSHOT, true);
 
         settings.add(new Settings(AppConstants.SET_WIFI, true));
         settings.add(new Settings(AppConstants.SET_BLUETOOTH, true));
@@ -522,29 +523,25 @@ public class CommonUtils {
         return settings;
     }
 
-    public static String getTimeString(long l)
-    {
+    public static String getTimeString(long l) {
         int seconds = (int) (l / 1000);
-        int minutes = (int) Math.floor(seconds /60);
-        seconds = (int) Math.floor(seconds%60);
+        int minutes = (int) Math.floor(seconds / 60);
+        seconds = (int) Math.floor(seconds % 60);
         String minuteString = "" + minutes;
         String secondString = "" + seconds;
 
-        if(minutes < 10)
-        {
+        if (minutes < 10) {
             minuteString = "0" + minuteString;
         }
-        if(seconds<10)
-        {
+        if (seconds < 10) {
             secondString = "0" + secondString;
         }
 
         return minuteString + ":" + secondString;
     }
 
-    public static String currentSpace(Context context)
-    {
-        String space = PrefUtils.getStringPref(context,CURRENT_KEY);
+    public static String currentSpace(PrefUtils prefUtils) {
+        String space = prefUtils.getStringPref( CURRENT_KEY);
         if (KEY_MAIN_PASSWORD.equals(space)) {
             return "encrypted";
         }

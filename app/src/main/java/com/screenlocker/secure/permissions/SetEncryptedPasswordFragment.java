@@ -59,7 +59,7 @@ import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 
-public class SetEncryptedPasswordFragment extends AbstractStep {
+public class SetEncryptedPasswordFragment extends ExtentedAbstractStep {
     private String error = "";
     private int mTry = 0;
     private String tryPattern;
@@ -68,7 +68,7 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     private String mPattern;
     private int mTryCombo = 0;
     private SecuredSharedPref sharedPref;
-    private PrefUtils prefUtils;
+
 
     @Override
     public String name() {
@@ -174,7 +174,6 @@ public class SetEncryptedPasswordFragment extends AbstractStep {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
     }
 
     @BindView(R.id.pin_input_layout)

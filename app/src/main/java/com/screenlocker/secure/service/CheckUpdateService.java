@@ -44,9 +44,11 @@ public class CheckUpdateService extends JobService {
 
     boolean isFailSafe = false;
     private AsyncCalls asyncCalls;
+    private PrefUtils prefUtils;
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        prefUtils = PrefUtils.getInstance(this);
         if (MyApplication.oneCaller == null) {
 
             String[] urls = {URL_1, URL_2};
@@ -58,8 +60,8 @@ public class CheckUpdateService extends JobService {
             asyncCalls = new AsyncCalls(output -> {
                 Timber.d("output : %s", output);
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                    prefUtils.saveStringPref(LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     checkForDownload(params);
@@ -98,7 +100,7 @@ public class CheckUpdateService extends JobService {
         }
 
         MyApplication.oneCaller
-                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), PrefUtils.getStringPref(this, SYSTEM_LOGIN_TOKEN))
+                .getUpdate(GET_UPDATE_ENDPOINT + currentVersion + "/" + getPackageName() + "/" + getString(R.string.label), prefUtils.getStringPref( SYSTEM_LOGIN_TOKEN))
                 .enqueue(new Callback<UpdateModel>() {
                     @Override
                     public void onResponse(@NonNull Call<UpdateModel> call, @NonNull Response<UpdateModel> response) {
@@ -107,7 +109,7 @@ public class CheckUpdateService extends JobService {
                             if (response.body().isSuccess()) {
                                 if (response.body().isApkStatus()) {
                                     String url = response.body().getApkUrl();
-                                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                                    String live_url = prefUtils.getStringPref( LIVE_URL);
                                     obj = new DownLoadAndInstallUpdate(CheckUpdateService.this, live_url + MOBILE_END_POINT + GET_APK_ENDPOINT + CommonUtils.splitName(url), true, params);
                                     obj.execute();
 

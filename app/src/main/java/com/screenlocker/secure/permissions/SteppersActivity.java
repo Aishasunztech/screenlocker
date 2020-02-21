@@ -52,7 +52,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
         /**
          * if user has completed setup wizard move to Home Activity
          */
-        boolean tour_status = PrefUtils.getBooleanPref(SteppersActivity.this, TOUR_STATUS);
+        boolean tour_status = PrefUtils.getInstance(this).getBooleanPref( TOUR_STATUS);
 
 
         if (getIntent().hasExtra("emergency")) {
@@ -83,7 +83,7 @@ public class SteppersActivity extends DotStepper implements OnPageUpdateListener
 
         //mPager.requestDisallowInterceptTouchEvent(true);
         //move user to position were he/she left
-        int position = PrefUtils.getIntegerPref(getApplication(), DEF_PAGE_NO);
+        int position = PrefUtils.getInstance(this).getIntegerPref( DEF_PAGE_NO);
         if (getIntent().hasExtra("emergencyLauncher")){
             isEmergency = true;
 

@@ -211,12 +211,12 @@ public class ManualPullPush extends BaseActivity implements ManualPushPullAdapte
         if (appsList != null && appsList.size() > 0) {
             Timber.d(" AppsList Size : %s", appsList.size());
             setRecyclerAdapter(appsList);
-            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
+            PrefUtils.getInstance(this).saveBooleanPref( UNINSTALL_ALLOWED, true);
 
         } else {
             Timber.d("Completed Manual Push Pull");
-            PrefUtils.saveBooleanPref(ManualPullPush.this, SHOW_MANUAL_ACTIVITY, false);
-            PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, false);
+            PrefUtils.getInstance(this).saveBooleanPref( SHOW_MANUAL_ACTIVITY, false);
+            PrefUtils.getInstance(this).saveBooleanPref( UNINSTALL_ALLOWED, false);
             finish();
         }
     }

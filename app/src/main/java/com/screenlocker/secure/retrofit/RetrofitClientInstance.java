@@ -79,7 +79,7 @@ public class RetrofitClientInstance {
                     log.setResponseHeaders(response.headers());
                     log.setRequestUrl(request.url().toString());
                     log.setInfo(new ErrorLogRequestBody.DeviceInfo(
-                            PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID),
+                            PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( DEVICE_ID),
                             BuildConfig.VERSION_NAME,
                             MyApplication.getAppContext().getResources().getString(R.string.app_name),
                             MyApplication.getAppContext().getResources().getString(R.string.apktype),

@@ -95,11 +95,11 @@ public class DeviceIdUtils {
 
             uniqueId = getMacAddress();
 
-
+            PrefUtils prefUtils = PrefUtils.getInstance(context);
             assert uniqueId != null;
             if (uniqueId.equals("02:00:00:00:00:00")) {
 
-                uniqueId = PrefUtils.getStringPref(context, DFAULT_MAC);
+                uniqueId = prefUtils.getStringPref( DFAULT_MAC);
 
                 if (uniqueId == null) {
 
@@ -128,7 +128,7 @@ public class DeviceIdUtils {
 
 
             } else {
-                PrefUtils.saveStringPref(context, DFAULT_MAC, uniqueId);
+                prefUtils.saveStringPref(DFAULT_MAC, uniqueId);
             }
 
         }
@@ -189,7 +189,7 @@ public class DeviceIdUtils {
                 }
             } catch (SecurityException e) {
                 e.printStackTrace();
-                Log.d("responseData", String.valueOf(e.getMessage()));
+                Timber.d(String.valueOf(e.getMessage()));
             }
         }
 

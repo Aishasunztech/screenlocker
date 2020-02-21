@@ -84,7 +84,6 @@ public class MainActivity extends BaseActivity implements
     PowerManager powerManager;
 
     AppExecutor appExecutor;
-    private PrefUtils prefUtils;
 
     private MainViewModel viewModel;
     private RecyclerView rvApps;
@@ -101,7 +100,6 @@ public class MainActivity extends BaseActivity implements
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        prefUtils = PrefUtils.getInstance(this);
         if (!prefUtils.getBooleanPref( TOUR_STATUS)) {
             Intent intent = new Intent(this, SteppersActivity.class);
             startActivity(intent);
@@ -141,7 +139,7 @@ public class MainActivity extends BaseActivity implements
         //local
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(AppConstants.BROADCAST_ACTION));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(viewModel.getSendingIntent(this));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(viewModel.getSendingIntent());
 
 
         try {
@@ -170,7 +168,7 @@ public class MainActivity extends BaseActivity implements
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, resId);
         rvApps.setLayoutAnimation(animation);
 
-        adapter = new RAdapter(this);
+        adapter = new RAdapter(this,prefUtils);
         adapter.appsList = new ArrayList<>();
         int column_span = prefUtils.getIntegerPref( AppConstants.KEY_COLUMN_SIZE);
         if (column_span == 0) {

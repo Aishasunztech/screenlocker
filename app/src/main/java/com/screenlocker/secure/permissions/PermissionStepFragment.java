@@ -70,7 +70,7 @@ import static com.screenlocker.secure.utils.PermissionUtils.requestNotificationA
 import static com.screenlocker.secure.utils.PermissionUtils.requestUsageStatePermission1;
 import static com.screenlocker.secure.utils.Utils.isAccessServiceEnabled;
 
-public class PermissionStepFragment extends AbstractStep implements CompoundButton.OnCheckedChangeListener {
+public class PermissionStepFragment extends ExtentedAbstractStep implements CompoundButton.OnCheckedChangeListener {
 
 
     private static final int DRAW_OVERLAY = 111;
@@ -230,7 +230,7 @@ public class PermissionStepFragment extends AbstractStep implements CompoundButt
     LinearLayout layoutNotification;
     @BindView(R.id.layout_accessibility)
     LinearLayout layoutAccessibility;
-    private PrefUtils prefUtils;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)

@@ -43,6 +43,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
     public List<AppInfo> appsList;
     private Context context;
     private ClearCacheListener listener;
+    private PrefUtils prefUtils;
 
 
     @Override
@@ -80,7 +81,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                 return;
             }
 
-            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
+            if (prefUtils.getStringPref( CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
                 String unique = info.getUniqueName();
 
                 switch (unique) {
@@ -112,9 +113,7 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
                     switch (unique) {
                         case AppConstants.SECURE_SETTINGS_UNIQUE:
                             Intent i = new Intent(context, SettingsActivity.class);
-                            if (PrefUtils.getStringPref(context, CURRENT_KEY).equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
-                                i.putExtra("show_default", "show_default");
-                            }
+                            i.putExtra("show_default", "show_default");
                             context.startActivity(i);
                             ((Activity) context).overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                             break;
@@ -191,12 +190,13 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
 
     }
 
-    RAdapter(Context context) {
+    RAdapter(Context context, PrefUtils prefUtils) {
 
         this.context = context;
         if (context instanceof ClearCacheListener) {
             listener = (ClearCacheListener) context;
         }
+        this.prefUtils = prefUtils;
 
     }
 
@@ -229,10 +229,10 @@ public class RAdapter extends RecyclerView.Adapter<RAdapter.ViewHolder> {
             case "Live Chat Support":
                 textView.setText(context.getResources().getString(R.string.live_client_device_id));
 //
-                int number = PrefUtils.getIntegerPref(context, NUMBER_OF_NOTIFICATIONS);
+                int number = prefUtils.getIntegerPref( NUMBER_OF_NOTIFICATIONS);
                 if (number > 0) {
                     viewHolder.badge.setVisibility(View.VISIBLE);
-                    viewHolder.numberOfNotifications.setText(number + "");
+                    viewHolder.numberOfNotifications.setText( String.valueOf(number));
                 } else {
                     viewHolder.badge.setVisibility(View.GONE);
                 }

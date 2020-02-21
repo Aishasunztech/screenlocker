@@ -5,7 +5,6 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,17 +12,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -32,7 +27,6 @@ import com.crashlytics.android.Crashlytics;
 import com.screenlocker.secure.MyAdmin;
 import com.screenlocker.secure.async.AsyncCalls;
 import com.screenlocker.secure.mdm.ui.LinkDeviceActivity;
-import com.screenlocker.secure.mdm.utils.BluetoothHotSpotChangeReceiver;
 import com.screenlocker.secure.mdm.utils.DeviceIdUtils;
 import com.screenlocker.secure.network.NetworkChangeReceiver;
 import com.screenlocker.secure.networkResponseModels.LoginModel;
@@ -45,7 +39,6 @@ import com.screenlocker.secure.room.migrations.Migration_11_13;
 import com.screenlocker.secure.room.migrations.Migration_13_14;
 import com.screenlocker.secure.room.migrations.Migration_14_15;
 import com.screenlocker.secure.room.migrations.Migration_15_16;
-import com.screenlocker.secure.room.security.DatabaseSecretProvider;
 import com.screenlocker.secure.service.AppExecutor;
 import com.screenlocker.secure.socket.receiver.AppsStatusReceiver;
 import com.screenlocker.secure.socket.utils.ApiUtils;
@@ -62,9 +55,9 @@ import com.secureSetting.t.service.AppService;
 import com.secureSetting.t.util.PreferenceManager;
 
 import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SupportFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -77,9 +70,6 @@ import static com.screenlocker.secure.utils.AppConstants.ALARM_TIME_COMPLETED;
 import static com.screenlocker.secure.utils.AppConstants.CONNECTED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_CHANGED;
 import static com.screenlocker.secure.utils.AppConstants.CURRENT_NETWORK_STATUS;
-import static com.screenlocker.secure.utils.AppConstants.KEY_BLUETOOTH_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_HOTSPOT_ENABLE;
-import static com.screenlocker.secure.utils.AppConstants.KEY_WIFI_ENABLE;
 import static com.screenlocker.secure.utils.AppConstants.LIMITED;
 import static com.screenlocker.secure.utils.AppConstants.LIVE_URL;
 import static com.screenlocker.secure.utils.AppConstants.MOBILE_END_POINT;
@@ -87,13 +77,14 @@ import static com.screenlocker.secure.utils.AppConstants.SYSTEM_LOGIN_TOKEN;
 import static com.screenlocker.secure.utils.AppConstants.TOUR_STATUS;
 import static com.screenlocker.secure.utils.AppConstants.URL_1;
 import static com.screenlocker.secure.utils.AppConstants.URL_2;
+import static com.screenlocker.secure.utils.AppConstants.isProgress;
 import static com.screenlocker.secure.utils.CommonUtils.isSocketConnected;
 import static com.screenlocker.secure.utils.PrefUtils.PREF_FILE;
 
 /**
  * application class to get the database instance
  */
-public class MyApplication extends Application implements BluetoothHotSpotChangeReceiver.BluetoothHotSpotStateListener, LinkDeviceActivity.OnScheduleTimerListener {
+public class MyApplication extends Application implements LinkDeviceActivity.OnScheduleTimerListener {
 
 
     public static final String CHANNEL_1_ID = "channel_1_id";
@@ -102,18 +93,13 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
     private DevicePolicyManager devicePolicyManager;
     private LinearLayout screenShotView;
     private ApiOneCaller apiOneCaller;
-    private WifiManager wifimanager;
-
-    private BluetoothAdapter bluetoothAdapter;
-    private WifiManager.LocalOnlyHotspotReservation mReservation;
-    private BluetoothHotSpotChangeReceiver bluetoothChangeReceiver;
-    private PrefManager preferenceManager;
-    private AppsStatusReceiver appsStatusReceiver;
     private ApiUtils apiUtils;
     private long mInterval = 10000; // 10 seconds by default, can be changed later
     private Handler mHandler;
+
     private HandlerThread receiverHandlerThread;
     private Handler braodcast;
+    private PrefUtils prefUtils;
 
 
     private static Context appContext;
@@ -142,7 +128,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
     private SharedPreferences sharedPref;
 
     private void registerNetworkPref() {
-
         sharedPref = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(networkChange);
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -159,16 +144,9 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
         if (key.equals(CURRENT_NETWORK_CHANGED)) {
-
             String networkStatus = sharedPreferences.getString(CURRENT_NETWORK_STATUS, LIMITED);
 
             boolean isConnected = networkStatus.equals(CONNECTED);
-
-            boolean isWifiEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_WIFI_ENABLE);
-            if (!isWifiEnable) {
-                wifimanager.setWifiEnabled(false);
-                Toast.makeText(appContext, "Wifi is disabled by admin. ", Toast.LENGTH_SHORT).show();
-            }
 
             Timber.d("ksdklfgsmksls : " + isConnected);
 
@@ -189,9 +167,8 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
         super.onCreate();
         mHandler = new Handler();
         appContext = getApplicationContext();
-        wifimanager = (WifiManager) getSystemService(WIFI_SERVICE);
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        PrefUtils.saveStringPref(this, AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
+        prefUtils = PrefUtils.getInstance(this);
+        prefUtils.saveStringPref( AppConstants.CURRENT_NETWORK_STATUS, AppConstants.LIMITED);
         receiverHandlerThread = new HandlerThread("threadName");
         receiverHandlerThread.start();
         Looper looper = receiverHandlerThread.getLooper();
@@ -226,8 +203,9 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
 
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+
         Timber.plant(new Timber.DebugTree());
-        //
+
         BarryAppComponent component = DaggerBarryAppComponent
                 .builder()
                 .contextModule(new ContextModule(this))
@@ -237,22 +215,8 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
 
         //   startService(new Intent(this,LifecycleReceiverService.class));
-        bluetoothChangeReceiver = new BluetoothHotSpotChangeReceiver();
-        bluetoothChangeReceiver.setBluetoothListener(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        intentFilter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-        registerReceiver(bluetoothChangeReceiver, intentFilter);
 
-        IntentFilter filter = new IntentFilter();
-
-        filter.addAction("com.secure.systemcontroll.PackageAdded");
-        filter.addAction("com.secure.systemcontroll.PackageDeleted");
-        filter.addAction("com.secure.systemcontrol.PACKAGE_ADDED_SECURE_MARKET");
-
-        registerReceiver(appsStatusReceiver, filter);
-
-        String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+        String language_key = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
 
         if (language_key != null && !language_key.equals("")) {
             CommonUtils.setAppLocale(language_key, getAppContext());
@@ -262,7 +226,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
-                String language_key = PrefUtils.getStringPref(getAppContext(), AppConstants.LANGUAGE_PREF);
+                String language_key = prefUtils.getStringPref( AppConstants.LANGUAGE_PREF);
                 if (language_key != null && !language_key.equals("")) {
                     CommonUtils.setAppLocale(language_key, getAppContext());
                 }
@@ -318,8 +282,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
      * @return room database object
      */
 
-
-
     public static LinearLayout getScreenShotView(Context context) {
         return ((MyApplication) context.getApplicationContext()).screenShotView;
     }
@@ -336,14 +298,9 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
         return apiOneCaller;
     }
 
-    public PrefManager getPreferenceManager() {
-        return preferenceManager;
-    }
-
 
     @Override
     public void onTerminate() {
-        unregisterReceiver(appsStatusReceiver);
         unregisterReceiver(myAlarmBroadcastReceiver);
         unRegisterNetworkPref();
         stopRepeatingTask();
@@ -366,17 +323,17 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
             Timber.d("output : " + output);
 
             if (output != null) {
-                PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-                String live_url = PrefUtils.getStringPref(this, LIVE_URL);
+                prefUtils.saveStringPref( LIVE_URL, output);
+                String live_url = prefUtils.getStringPref( LIVE_URL);
                 Timber.d("live_url %s", live_url);
                 oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
 
-                boolean linkStatus = PrefUtils.getBooleanPref(this, AppConstants.DEVICE_LINKED_STATUS);
+                boolean linkStatus = prefUtils.getBooleanPref( AppConstants.DEVICE_LINKED_STATUS);
 
-                boolean old_device_status = PrefUtils.getBooleanPref(this, AppConstants.OLD_DEVICE_STATUS);
+                boolean old_device_status = prefUtils.getBooleanPref( AppConstants.OLD_DEVICE_STATUS);
 
                 Timber.d("LinkStatus :" + linkStatus);
-                boolean pendingActivation = PrefUtils.getBooleanPref(this, AppConstants.PENDING_ACTIVATION);
+                boolean pendingActivation = prefUtils.getBooleanPref( AppConstants.PENDING_ACTIVATION);
                 Timber.d("pendingActivation " + pendingActivation);
 
                 Timber.d("LinkStatus :" + linkStatus);
@@ -384,11 +341,11 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
                 String serialNo = DeviceIdUtils.getSerialNumber();
 
                 if (!old_device_status) {
-                    if (PrefUtils.getBooleanPref(this, TOUR_STATUS)) {
+                    if (prefUtils.getBooleanPref( TOUR_STATUS)) {
                         if (apiUtils == null)
                             apiUtils = new ApiUtils(MyApplication.this, macAddress, serialNo);
                         apiUtils.connectToSocket();
-                        PrefUtils.saveBooleanPref(this, AppConstants.OLD_DEVICE_STATUS, true);
+                        prefUtils.saveBooleanPref( AppConstants.OLD_DEVICE_STATUS, true);
                     }
                 }
 
@@ -422,6 +379,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
     public static void saveToken() {
 
+        PrefUtils prefUtils = PrefUtils.getInstance(appContext);
         if (MyApplication.oneCaller == null) {
 
             String[] urls = {URL_1, URL_2};
@@ -429,8 +387,8 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
             new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(appContext, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     MyApplication.oneCaller
@@ -439,7 +397,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
                         public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                             if (response.body() != null) {
                                 if (response.body().isStatus()) {
-                                    PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                                    prefUtils.saveStringPref( SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
                                 }
                             }
@@ -461,7 +419,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
                 public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                     if (response.body() != null) {
                         if (response.body().isStatus()) {
-                            PrefUtils.saveStringPref(appContext, SYSTEM_LOGIN_TOKEN, response.body().getToken());
+                            prefUtils.saveStringPref( SYSTEM_LOGIN_TOKEN, response.body().getToken());
 
                         }
                     }
@@ -515,7 +473,7 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
 
             boolean schedule = true;
             try {
-                if (PrefUtils.getBooleanPref(MyApplication.getAppContext(), AppConstants.PENDING_ACTIVATION)) {
+                if (prefUtils.getBooleanPref( AppConstants.PENDING_ACTIVATION)) {
                     switch (UtilityFunctions.getNetworkType(MyApplication.this)) {
                         case NetworkCapabilities.TRANSPORT_CELLULAR:
                             mInterval = mInterval + 10000;
@@ -539,53 +497,6 @@ public class MyApplication extends Application implements BluetoothHotSpotChange
             }
         }
     };
-
-    @Override
-    public void isBlueToothEnable(boolean enable) {
-        if (enable) {
-            boolean isBluetoothEnable = PrefUtils.getBooleanPrefWithDefTrue(this, KEY_BLUETOOTH_ENABLE);
-            if (isBluetoothEnable)
-                bluetoothAdapter.enable();
-            else {
-                bluetoothAdapter.disable();
-                Toast.makeText(appContext, "Bluetooth is disabled by admin. ", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
-
-    @Override
-    public void isHotspotEnable(boolean enable) {
-        if (enable) {
-            boolean isHotSpotEnable = PrefUtils.getBooleanPref(this, KEY_HOTSPOT_ENABLE);
-            if (isHotSpotEnable) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    wifimanager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
-
-                        @Override
-                        public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
-                            super.onStarted(reservation);
-                            mReservation = reservation;
-                        }
-
-                        @Override
-                        public void onStopped() {
-                            super.onStopped();
-                        }
-
-                        @Override
-                        public void onFailed(int reason) {
-                            super.onFailed(reason);
-                        }
-                    }, new Handler());
-                }
-            } else {
-                if (mReservation != null) {
-                    mReservation.close();
-                }
-            }
-        }
-    }
 }
 
 

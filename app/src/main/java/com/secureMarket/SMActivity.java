@@ -379,7 +379,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
 //        progressBar.setVisibility(View.GONE);
         MyApplication.oneCaller
-                .getAllApps(new DeviceAndSpace(dealerId, currentSpace(this)))
+                .getAllApps(new DeviceAndSpace(dealerId, currentSpace(prefUtils)))
                 .enqueue(new Callback<InstallAppModel>() {
                     @Override
                     public void onResponse(@NonNull Call<InstallAppModel> call, @NonNull Response<InstallAppModel> response) {
@@ -442,7 +442,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     installedInfo.add(appInfo);
                 }
             } else {
-                if(isInUninstalled(SMActivity.this,appInfo.getPackageName()))
+                if(isInUninstalled(prefUtils,appInfo.getPackageName()))
                 {
                     appInfo.setInstalled(false);
                 }
@@ -556,7 +556,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             String userSpace = prefUtils.getStringPref( AppConstants.CURRENT_KEY);
 
             if (!packages.contains(app.getPackageName())) {
-                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, prefUtils.getStringPref( CURRENT_KEY), this);
+                savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, prefUtils.getStringPref( CURRENT_KEY), prefUtils);
                 Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
                 intent.setData(Uri.parse("package:" + app.getPackageName()));
                 startActivity(intent);
@@ -571,7 +571,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
 
     @Override
     public void onAppsRefreshRequest() {
-        if (isNetworkConneted(SMActivity.this)) {
+        if (isNetworkConneted(prefUtils)) {
             loadApps();
         } else{
             sharedViwModel.setMutableMsgs(Msgs.ERROR);
@@ -607,7 +607,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
                     apksPath.mkdir();
                 }
 
-                String url = live_url + GET_APK_ENDPOINT +
+                String url = live_url +MOBILE_END_POINT+ GET_APK_ENDPOINT +
                         CommonUtils.splitName(app.getApk());
 
                 Timber.i("LIVE URL :%s", url);
@@ -671,7 +671,7 @@ public class SMActivity extends AppCompatActivity implements DownloadServiceCall
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
 //            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
             String userType = prefUtils.getStringPref( CURRENT_KEY);
-            savePackages(packageName, INSTALLED_PACKAGES, space, this);
+            savePackages(packageName, INSTALLED_PACKAGES, space, prefUtils);
 
             Intent intent = ShareCompat.IntentBuilder.from(this)
                     .setStream(uri) // uri from FileProvider

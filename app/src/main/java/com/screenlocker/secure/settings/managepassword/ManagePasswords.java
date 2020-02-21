@@ -76,7 +76,7 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
             }
         }
         setListeners();
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
 
         settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
@@ -506,8 +506,8 @@ public class ManagePasswords extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         super.onDestroy();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
     }
     public void showAlertDialog(final EditText input, final DialogInterface.OnClickListener onClickListener, final DialogInterface.OnClickListener onNegativeClick, String title) {

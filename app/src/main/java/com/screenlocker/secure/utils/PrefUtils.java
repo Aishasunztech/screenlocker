@@ -27,7 +27,7 @@ public class PrefUtils {
         editor.putBoolean("is_enabled", isEnabled);
         editor.apply();
     }
-    public static void saveStringSetPref(Context context, String key, Set<String> value) {
+   /* public static void saveStringSetPref(Context context, String key, Set<String> value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putStringSet(key, value);
@@ -91,7 +91,7 @@ public class PrefUtils {
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         return sharedPref.getLong(key, 0);
 
-    }
+    }*/
 
     public void saveStringSetPref(String key, Set<String> value) {
         SharedPreferences.Editor editor = sharedPref.edit();

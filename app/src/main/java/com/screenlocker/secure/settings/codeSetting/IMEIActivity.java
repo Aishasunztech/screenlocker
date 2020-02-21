@@ -115,7 +115,7 @@ public class IMEIActivity extends BaseActivity {
     private void sendIntent(int slot, String imei) {
         if (isValidImei(imei)) {
 
-            PrefUtils.saveBooleanPref(this, AppConstants.IMEI_CHANGED, true);
+            PrefUtils.getInstance(this).saveBooleanPref( AppConstants.IMEI_CHANGED, true);
 
             Intent intent = new Intent("com.sysadmin.action.APPLY_SETTING");
             intent.putExtra("setting", "write.imei");

@@ -192,7 +192,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     @Override
     public void onCreate() {
-
+        securedSharedPref = SecuredSharedPref.getInstance(this);
         registerNetworkPref();
 
         setAlarmManager(this, System.currentTimeMillis() + 15000, 0);
@@ -268,7 +268,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         }
 
         mLayout = new RelativeLayout(LockScreenService.this);
-        params = getParams(LockScreenService.this, mLayout);
+        params = getParams( mLayout);
         appExecutor = AppExecutor.getInstance();
         frameLayout = new FrameLayout(this);
         //smalliew
@@ -469,8 +469,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             file.delete();
 
             Extras extras = download.getExtras();
-            String packageName = extras.getString(EXTRA_PACKAGE_NAME, null);
-            if (packageName != null && !packageName.equals("null")) {
+            String packageName = extras.getString(EXTRA_PACKAGE_NAME, "null");
+            if (!packageName.equals("null")) {
                 switch (extras.getString(EXTRA_REQUEST, EXTRA_INSTALL_APP)) {
                     case EXTRA_INSTALL_APP:
                         if (installAppListener != null)
@@ -523,6 +523,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             unregisterReceiver(networkChangeReceiver);
     }
 
+    @SuppressLint("ResourceType")
     SharedPreferences.OnSharedPreferenceChangeListener networkChange = (sharedPreferences, key) -> {
 
         if (key.equals(CURRENT_NETWORK_CHANGED)) {
@@ -534,10 +535,18 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 connectClientChatSocket();
             }
         } else if (key.equals(KEY_LOCK_IMAGE)) {
-            mLayout = null;
-            mLayout = new RelativeLayout(LockScreenService.this);
-            params = null;
-            params = getParams(LockScreenService.this, mLayout);
+            ConstraintLayout rootView = mLayout.findViewById(R.id.background);
+            String bg = prefUtils.getStringPref( AppConstants.KEY_LOCK_IMAGE);
+            if (bg == null || bg.equals("")) {
+                rootView.setBackgroundResource(R.raw._12316);
+
+            } else {
+                try {
+                    rootView.setBackgroundResource(Integer.parseInt(bg));
+                } catch (RuntimeException e) {
+                    rootView.setBackgroundResource(R.raw._12316);
+                }
+            }
             //windowManager.removeViewImmediate(mLayout);
         } else if (key.equals(DEVICE_ID)) {
             destroyClientChatSocket();
@@ -614,6 +623,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         Request request = new Request(url, filePath);
         request.setPriority(Priority.HIGH);
         request.setNetworkType(NetworkType.ALL);
+        request.setTag(packageName);
         request.addHeader("clientKey", "SD78DF93_3947&MVNGHE1WONG");
         Map<String, String> map = new HashMap<>();
         map.put(EXTRA_PACKAGE_NAME, packageName);
@@ -1013,7 +1023,13 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
     public void cancelDownload(String request_id) {
         if (request_id != null && !request_id.equals("null")) {
-            fetch.cancel(Integer.parseInt(request_id));
+            fetch.getDownloadsByTag(request_id, result -> {
+                for (Download download : result) {
+                    if (download.getTag().equals(request_id)){
+                        fetch.cancel(download.getId());
+                    }
+                }
+            });
         }
     }
 
@@ -1441,7 +1457,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                             boolean extensions = obj.getBoolean("extensions_status");
                             boolean settings = obj.getBoolean("settings_status");
 
-                            syncDevice(LockScreenService.this, is_synced, apps, extensions, settings);
+                            syncDevice(prefUtils, is_synced, apps, extensions, settings);
 
                             if (!prefUtils.getBooleanPref(AppConstants.IS_SYNCED)) {
 
@@ -2207,7 +2223,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     public void imeiHistory() {
 
 
-        if (socketManager.getSocket().connected() && checkIMei(this)) {
+        if (socketManager.getSocket().connected() && checkIMei(this, prefUtils)) {
 
 
             Timber.d("<<<IMEI HISTORY >>> ");
@@ -2737,8 +2753,8 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     }
 
     @SuppressLint({"ResourceType", "SetTextI18n", "StringFormatInvalid"})
-    public WindowManager.LayoutParams getParams(final Context context, final RelativeLayout layout) {
-        securedSharedPref = SecuredSharedPref.getInstance(context);
+    public WindowManager.LayoutParams getParams( final RelativeLayout layout) {
+
         int windowType;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -2749,7 +2765,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         DeviceStatusReceiver deviceStatusReceiver = new DeviceStatusReceiver();
 
-        registerDeviceStatusReceiver(context, deviceStatusReceiver);
+        registerDeviceStatusReceiver(LockScreenService.this, deviceStatusReceiver);
 
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -2774,14 +2790,14 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 //        ((MdmMainActivity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        final LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(LockScreenService.this);
         //whole view
         final View keypadView = inflater.inflate(R.layout.keypad_screen, layout);
 
         TextView txtWarning = keypadView.findViewById(R.id.txtWarning);
         NCodeView codeView = keypadView.findViewById(R.id.codeView);
         ConstraintLayout rootView = keypadView.findViewById(R.id.background);
-        String bg = PrefUtils.getStringPref(context, AppConstants.KEY_LOCK_IMAGE);
+        String bg = prefUtils.getStringPref( AppConstants.KEY_LOCK_IMAGE);
         if (bg == null || bg.equals("")) {
             rootView.setBackgroundResource(R.raw._12316);
 
@@ -2795,7 +2811,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
         ImageView unLockButton = keypadView.findViewById(R.id.t9_unlock);
         EditText mPasswordField = keypadView.findViewById(R.id.password_field);
-        String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+        String device_id = prefUtils.getStringPref( DEVICE_ID);
         PatternLockView mPatternLockView = keypadView.findViewById(R.id.patternLock);
         mPatternLockView.setEnableHapticFeedback(false);
         codeView.setListener(new NCodeView.OnPFCodeListener() {
@@ -2858,29 +2874,29 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                             if (patternString.equals(securedSharedPref.getStringPref(AppConstants.ENCRYPT_COMBO_PATTERN))) {
                                 //correct
 
-                                encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                                encryptLogin(clearance, mPatternLockView, mPasswordField, codeView);
                             } else {
                                 //wrong
-                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
 
                             }
                             break;
                         case KEY_GUEST:
                             if (patternString.equals(securedSharedPref.getStringPref(AppConstants.GUEST_COMBO_PATTERN))) {
                                 //correct
-                                guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                                guestLogin(clearance, mPatternLockView, mPasswordField, codeView);
                             } else {
                                 //wrong
-                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
                             }
                             break;
                         case KEY_DURESS:
                             if (patternString.equals(securedSharedPref.getStringPref(AppConstants.DURESS_COMBO_PATTERN))) {
                                 //correct
-                                duressLogin(clearance, mPatternLockView, codeView, context);
+                                duressLogin(clearance, mPatternLockView, codeView);
                             } else {
                                 //wrong
-                                patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                                patternWromgAttempt(mPatternLockView, txtWarning, unLockButton, mPasswordField, codeView);
                             }
                             break;
                     }
@@ -2893,26 +2909,26 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
                 } else if (pattern.size() > 1 && pattern.size() < 4) {
                     mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-                    Toast.makeText(context, "Pattern too Short", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LockScreenService.this, "Pattern too Short", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(mPatternLockView::clearPattern, 500);
                 } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.GUEST_PATTERN))) {
-                    guestLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                    guestLogin(clearance, mPatternLockView,  mPasswordField, codeView);
 
 
                 } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.ENCRYPT_PATTERN))) {
 
-                    encryptLogin(clearance, mPatternLockView, context, mPasswordField, codeView);
+                    encryptLogin(clearance, mPatternLockView,  mPasswordField, codeView);
                 } else if (patternString.equals(securedSharedPref.getStringPref(AppConstants.DURESS_PATTERN))) {
-                    duressLogin(clearance, mPatternLockView, codeView, context);
+                    duressLogin(clearance, mPatternLockView, codeView);
                 } else if (device_status != null) {
-                    String device_id = PrefUtils.getStringPref(context, DEVICE_ID);
+                    String device_id = prefUtils.getStringPref( DEVICE_ID);
                     setDeviceId( txtWarning, device_id, mPatternLockView, device_status);
                     if (clearance) {
                         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
                         new Handler().postDelayed(mPatternLockView::clearPattern, 500);
                     }
                 } else {
-                    patternWromgAttempt(mPatternLockView, context, txtWarning, unLockButton, mPasswordField, codeView);
+                    patternWromgAttempt(mPatternLockView,  txtWarning, unLockButton, mPasswordField, codeView);
                 }
             }
 
@@ -2924,7 +2940,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
 
         if (device_id == null) {
-            device_id = PrefUtils.getStringPref(context, OFFLINE_DEVICE_ID);
+            device_id = prefUtils.getStringPref( OFFLINE_DEVICE_ID);
         }
 
         final String device_status = prefUtils.getStringPref( DEVICE_STATUS);
@@ -2953,19 +2969,19 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                 }
 
             } else {
-                String dev_id = PrefUtils.getStringPref(context, DEVICE_ID);
+                String dev_id = prefUtils.getStringPref( DEVICE_ID);
                 switch (status) {
                     case "suspended":
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, dev_id));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, dev_id));
                             // mPatternLockView.setInputEnabled(false);
 //                        keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id + " is Suspended. Please contact support");
 
 
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_suspended, "N/A"));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_suspended, "N/A"));
                             //mPatternLockView.setInputEnabled(false);
 
                         }
@@ -2973,12 +2989,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     case "expired":
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, dev_id));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_expired, dev_id));
                             //mPatternLockView.setInputEnabled(false);
 
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_expired, "N/A"));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_expired, "N/A"));
                             //mPatternLockView.setInputEnabled(false);
 
 
@@ -2987,29 +3003,29 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     case "unlinked":
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, dev_id));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, dev_id));
                             mPatternLockView.setInputEnabled(false);
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_unlinked, "N/A"));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_unlinked, "N/A"));
                             mPatternLockView.setInputEnabled(false);
                         }
 //                                keyboardView.setWarningText("Your account with Device ID = " + finalDevice_id1 + " is Expired. Please contact support ");
                         break;
                     case "flagged":
                         txtWarning.setVisibility(VISIBLE);
-                        txtWarning.setText(context.getResources().getString(R.string.account_device_id_flagged));
+                        txtWarning.setText(getResources().getString(R.string.account_device_id_flagged));
                         mPatternLockView.setInputEnabled(false);
                         break;
                     case "transfered":
 
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, dev_id));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_transferred, dev_id));
                             mPatternLockView.setInputEnabled(false);
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.account_device_id_transferred, "N/A"));
+                            txtWarning.setText(getResources().getString(R.string.account_device_id_transferred, "N/A"));
                             mPatternLockView.setInputEnabled(false);
                         }
                         break;
@@ -3018,11 +3034,11 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error_321) + dev_id + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error_321) + dev_id + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error_321) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error_321) + "N/A" + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         }
 
@@ -3031,22 +3047,22 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     case DUPLICATE_SERIAL:
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error_322) + dev_id + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error_322) + dev_id + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error_322) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error_322) + "N/A" + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         }
                         break;
                     case DUPLICATE_MAC_AND_SERIAL:
                         if (dev_id != null) {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error323) + dev_id + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error323) + dev_id + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         } else {
                             txtWarning.setVisibility(VISIBLE);
-                            txtWarning.setText(context.getResources().getString(R.string.error323) + "N/A" + context.getResources().getString(R.string.contact_support));
+                            txtWarning.setText(getResources().getString(R.string.error323) + "N/A" + getResources().getString(R.string.contact_support));
                             mPatternLockView.setInputEnabled(false);
                         }
                         break;
@@ -3079,7 +3095,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
 
                 HiddenPassTransformationMethod());
         mPasswordField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        mPasswordField.setTextColor(context.getResources().
+        mPasswordField.setTextColor(getResources().
 
                 getColor(R.color.textColorPrimary, null));
         mPasswordField.addTextChangedListener(new
@@ -3107,13 +3123,13 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         supportButton.setOnClickListener(v ->
 
         {
-            chatLogin(context);
+            chatLogin(LockScreenService.this, prefUtils);
 
             mPasswordField.setText(null);
             codeView.clearCode();
         });
 
-        long time_remaining = getTimeRemaining(context);
+        long time_remaining = getTimeRemaining(prefUtils);
 
 
         int attempts = 10;
@@ -3125,7 +3141,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             if (count >= 5) {
 
                 if (count > 9) {
-                    wipeDevice(context);
+                    wipeDevice(LockScreenService.this);
                 }
 
                 switch (count) {
@@ -3170,34 +3186,34 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             }
 
             if (enteredPin.length() != 0) {
-                if (getUserType(enteredPin, context).equals(KEY_GUEST)) {
+                if (getUserType(enteredPin, LockScreenService.this).equals(KEY_GUEST)) {
                     if (clearance) {
-                        chatLogin(context);
+                        chatLogin(LockScreenService.this,prefUtils);
                         mPasswordField.setText(null);
                         codeView.clearCode();
                     } else {
-                        loginAsGuest(context);
+                        loginAsGuest(LockScreenService.this,securedSharedPref,prefUtils);
                         mPasswordField.setText(null);
                         codeView.clearCode();
                     }
                 }
                 //if input is for encrypted
-                else if (getUserType(enteredPin, context).equals(KEY_ENCRYPTED)) {
+                else if (getUserType(enteredPin, LockScreenService.this).equals(KEY_ENCRYPTED)) {
                     if (!clearance) {
-                        loginAsEncrypted(context);
+                        loginAsEncrypted(LockScreenService.this, securedSharedPref, prefUtils);
                         mPasswordField.setText(null);
                         codeView.clearCode();
                     } else {
-                        chatLogin(context);
+                        chatLogin(LockScreenService.this,prefUtils);
                         mPasswordField.setText(null);
                         codeView.clearCode();
                     }
 
-                } else if (getUserType(enteredPin, context).equals(KEY_DURESS)) {
+                } else if (getUserType(enteredPin, LockScreenService.this).equals(KEY_DURESS)) {
                     if (!clearance)
-                        if (!wipeDevice(context)) {
-                            Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
-                        } else chatLogin(context);
+                        if (!wipeDevice(LockScreenService.this)) {
+                            Toast.makeText(LockScreenService.this, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                        } else chatLogin(LockScreenService.this, prefUtils);
 
                 } else if (device_status1 != null) {
                     if (clearance) {
@@ -3225,7 +3241,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         return params;
     }
 
-    private void patternWromgAttempt(PatternLockView mPatternLockView, Context context, TextView txtWarning, ImageView unLockButton, EditText mPasswordField, NCodeView codeview) {
+    private void patternWromgAttempt(PatternLockView mPatternLockView,  TextView txtWarning, ImageView unLockButton, EditText mPasswordField, NCodeView codeview) {
         mPatternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
         new Handler().postDelayed(() -> {
             mPatternLockView.clearPattern();
@@ -3233,12 +3249,12 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         }, 500);
     }
 
-    private void guestLogin(boolean clearance, PatternLockView mPatternLockView, Context context, EditText mPasswordField, NCodeView codeView) {
+    private void guestLogin(boolean clearance, PatternLockView mPatternLockView, EditText mPasswordField, NCodeView codeView) {
         if (clearance) {
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
-                chatLogin(context);
+                chatLogin(LockScreenService.this, prefUtils);
                 mPasswordField.setText(null);
                 codeView.clearCode();
             }, 150);
@@ -3246,39 +3262,39 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
-                loginAsGuest(context);
+                loginAsGuest(LockScreenService.this,securedSharedPref, prefUtils);
                 mPasswordField.setText(null);
                 codeView.clearCode();
             }, 150);
         }
     }
 
-    private void duressLogin(boolean clearance, PatternLockView mPatternLockView, NCodeView codeView, Context context) {
+    private void duressLogin(boolean clearance, PatternLockView mPatternLockView, NCodeView codeView) {
         if (clearance) {
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
                 codeView.clearCode();
-                chatLogin(context);
+                chatLogin(LockScreenService.this, prefUtils);
             }, 150);
         } else {
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
                 codeView.clearCode();
-                if (!wipeDevice(context)) {
-                    Toast.makeText(context, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
+                if (!wipeDevice(LockScreenService.this)) {
+                    Toast.makeText(LockScreenService.this, "Cannot Wipe Device for now.", Toast.LENGTH_SHORT).show();
                 }
             }, 150);
         }
     }
 
-    private void encryptLogin(boolean clearance, PatternLockView mPatternLockView, Context context, EditText mPasswordField, NCodeView codeView) {
+    private void encryptLogin(boolean clearance, PatternLockView mPatternLockView, EditText mPasswordField, NCodeView codeView) {
         if (clearance) {
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
-                chatLogin(context);
+                chatLogin(LockScreenService.this, prefUtils);
                 mPasswordField.setText(null);
                 codeView.clearCode();
             }, 150);
@@ -3286,7 +3302,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
             mPatternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT);
             new Handler().postDelayed(() -> {
                 mPatternLockView.clearPattern();
-                loginAsEncrypted(context);
+                loginAsEncrypted(LockScreenService.this, securedSharedPref,prefUtils);
                 mPasswordField.setText(null);
                 codeView.clearCode();
             }, 150);
@@ -3388,7 +3404,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     }
     @SuppressLint("StringFormatInvalid")
     private void wrongAttempt( TextView txtWarning,
-                              ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField, NCodeView codeView) {
+                               ImageView unLockButton, PatternLockView patternLockView, EditText mPasswordField, NCodeView codeView) {
         int attempts1 = 10;
         int count1 = securedSharedPref.getIntegerPref(LOGIN_ATTEMPTS);
         int x1 = attempts1 - count1;
@@ -3444,7 +3460,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
     }
 
     private void remainingTime( EditText mPasswordField, PatternLockView patternLockView,
-                               TextView txtWarning, ImageView unLockButton, long time_remaining, int count, int x, int attempt_10) {
+                                TextView txtWarning, ImageView unLockButton, long time_remaining, int count, int x, int attempt_10) {
         long time;
         CountDownTimer countDownTimer;
         unLockButton.setEnabled(false);
@@ -3481,7 +3497,7 @@ public class LockScreenService extends Service implements ServiceConnectedListen
                     txtWarning.setText(String.valueOf(Html.fromHtml(text_view_str, FROM_HTML_MODE_LEGACY)));
                     securedSharedPref.saveLongPref(TIME_REMAINING, l);
                     isClockTicking = true;
-                    setTimeRemaining(LockScreenService.this);
+                    setTimeRemaining(prefUtils);
                 }
 
                 @Override
@@ -3505,7 +3521,6 @@ public class LockScreenService extends Service implements ServiceConnectedListen
         } catch (Exception ignored) {
 
         }
-
         return countDownTimer;
     }
 

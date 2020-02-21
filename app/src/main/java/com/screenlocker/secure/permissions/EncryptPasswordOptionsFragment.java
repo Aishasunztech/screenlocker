@@ -36,7 +36,7 @@ import static com.screenlocker.secure.utils.Utils.hideKeyboard;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EncryptPasswordOptionsFragment extends AbstractStep {
+public class EncryptPasswordOptionsFragment extends ExtentedAbstractStep {
 
 
     public EncryptPasswordOptionsFragment() {
@@ -74,21 +74,21 @@ public class EncryptPasswordOptionsFragment extends AbstractStep {
 
 
         layout_pin.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_PIN);
+            prefUtils.saveIntegerPref( ENCRYPT_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
 
 
         });
         layout_pattern.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_PATTERN);
+            prefUtils.saveIntegerPref( ENCRYPT_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
 
 
         });
         layout_combination.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), ENCRYPT_PASSORD_OPTION, OPTION_COMBO);
+            prefUtils.saveIntegerPref( ENCRYPT_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_ENCRYPT);
         });

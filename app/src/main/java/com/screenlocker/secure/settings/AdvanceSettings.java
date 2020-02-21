@@ -51,7 +51,7 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
 
         setIds();
 
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
 
         settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
@@ -187,7 +187,7 @@ public class AdvanceSettings extends BaseActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         removeview();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
         super.onDestroy();
     }

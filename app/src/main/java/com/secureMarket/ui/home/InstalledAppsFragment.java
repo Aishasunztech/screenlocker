@@ -97,7 +97,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viwModel.getInstalled().observe(this, serverAppInfos -> {
+        viwModel.getInstalled().observe(getActivity(), serverAppInfos -> {
             Timber.d("setupApps: %s", serverAppInfos.size());
             installedApps.clear();
             if (serverAppInfos.size() == 0) {
@@ -114,7 +114,7 @@ public class InstalledAppsFragment extends Fragment implements AppInstallUpdateL
             swipeRefreshLayout.setRefreshing(false);
             installedAdapter.notifyDataSetChanged();
         });
-        viwModel.getMutableMsgs().observe(this, msg -> {
+        viwModel.getMutableMsgs().observe(getActivity(), msg -> {
             if (msg == Msgs.ERROR) {
                 swipeRefreshLayout.setRefreshing(false);
                 onNetworkError();

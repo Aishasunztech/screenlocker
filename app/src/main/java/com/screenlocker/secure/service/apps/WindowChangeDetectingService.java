@@ -300,7 +300,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         ssPermissions.add("com.android.settings/.Settings$ApnEditorActivity");
         ssPermissions.add("com.android.settings/.Settings$ApnSettingsActivity");
         ssPermissions.add("com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.SettingsActivity");
-        ssPermissions.add("Activity: com.sec.android.inputmethod/android.support.v7.widget.ActionBarContextView");
+        ssPermissions.add("com.android.providers.media/.RingtonePickerActivity");
 
 
 //
@@ -472,6 +472,7 @@ public class WindowChangeDetectingService extends AccessibilityService {
         globalActions.add("com.android.settings/.applications.InstalledAppDetailsTop");
         globalActions.add("com.android.vpndialogs/android.app.Dialog");
         globalActions.add("com.android.settings/.Settings$AccessibilitySettingsActivity");
+        globalActions.add("com.android.providers.media/.RingtonePickerActivity");
 
 
         //calling app package name samsung

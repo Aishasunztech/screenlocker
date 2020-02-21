@@ -232,7 +232,7 @@ public class UtilityFunctions {
     }
 
     private static int getTheme(Context context) {
-        if (PrefUtils.getBooleanPref(context, AppConstants.KEY_THEME)) {
+        if (PrefUtils.getInstance(context).getBooleanPref( AppConstants.KEY_THEME)) {
             return 1;
         }
         return 0;

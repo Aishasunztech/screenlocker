@@ -37,19 +37,19 @@ public class IPCService extends Service {
         @Override
         public String getChatId() throws RemoteException {
             Timber.d("getChatId");
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), CHAT_ID);
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( CHAT_ID);
         }
 
         @Override
         public String getDeviceId() throws RemoteException {
             Timber.d("getdevice Id");
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), DEVICE_ID);
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( DEVICE_ID);
         }
 
         @Override
         public String getPGPEmail() throws RemoteException {
 
-            return PrefUtils.getStringPref(MyApplication.getAppContext(), PGP_EMAIL);
+            return PrefUtils.getInstance(MyApplication.getAppContext()).getStringPref( PGP_EMAIL);
         }
 
         @Override

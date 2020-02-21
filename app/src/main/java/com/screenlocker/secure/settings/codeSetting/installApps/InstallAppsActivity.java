@@ -134,8 +134,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
             asyncCalls = new AsyncCalls(output -> {
 
                 if (output != null) {
-                    PrefUtils.saveStringPref(this, LIVE_URL, output);
-                    String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+                    prefUtils.saveStringPref( LIVE_URL, output);
+                    String live_url = prefUtils.getStringPref( LIVE_URL);
                     Timber.d("live_url %s", live_url);
                     MyApplication.oneCaller = RetrofitClientInstance.getRetrofitInstance(live_url + MOBILE_END_POINT).create(ApiOneCaller.class);
                     getAllApps();
@@ -166,7 +166,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     private void getAllApps() {
         Timber.d("<<< Getting all apps from server >>> ");
 
-        if (CommonUtils.isNetworkConneted(this)) {
+        if (CommonUtils.isNetworkConneted(prefUtils)) {
 
             MyApplication.oneCaller
                     .getApps()
@@ -264,7 +264,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
         Timber.d("<<< On Refresh >>>");
 
-        if (CommonUtils.isNetworkConneted(this)) {
+        if (CommonUtils.isNetworkConneted(prefUtils)) {
             refreshLocalApps();
         } else {
             refreshLayout.setRefreshing(false);
@@ -396,8 +396,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         try {
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", file);
 //            Utils.installSielentInstall(this, Objects.requireNonNull(getContentResolver().openInputStream(uri)), packageName);
-            String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
-            savePackages(packageName, INSTALLED_PACKAGES, space, this);
+            String userType = prefUtils.getStringPref( CURRENT_KEY);
+            savePackages(packageName, INSTALLED_PACKAGES, space, prefUtils);
 
             Intent intent = ShareCompat.IntentBuilder.from(this)
                     .setStream(uri) // uri from FileProvider
@@ -420,7 +420,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     public void onInstallClick(View v, final ServerAppInfo app, int position) {
 
 
-        String live_url = PrefUtils.getStringPref(MyApplication.getAppContext(), LIVE_URL);
+        String live_url = prefUtils.getStringPref(LIVE_URL);
 //        DownLoadAndInstallUpdate downLoadAndInstallUpdate =
 //                new DownLoadAndInstallUpdate(InstallAppsActivity.this, live_url + MOBILE_END_POINT + "getApk/" +
 //                        CommonUtils.splitName(app.getApk()), app.getApk());
@@ -438,19 +438,19 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
         if (!file.exists()) {
 
             if (mService != null) {
-                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
+                mService.startDownload(url, fileName, app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(prefUtils));
 
             }
 
         } else {
             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
             if (file_size >= (101 * 1024)) {
-                showInstallDialog(new File(fileName), app.getPackageName(),currentSpace(InstallAppsActivity.this));
+                showInstallDialog(new File(fileName), app.getPackageName(),currentSpace(prefUtils));
             } else {
                 if (mService != null) {
                     File file1 = new File(file.getAbsolutePath());
                     file.delete();
-                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(InstallAppsActivity.this));
+                    mService.startDownload(url, file1.getAbsolutePath(), app.getPackageName(), AppConstants.EXTRA_INSTALL_APP,currentSpace(prefUtils));
 
                 }
             }
@@ -461,7 +461,7 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
 
     @Override
     public void onUnInstallClick(View v, ServerAppInfo app, int position) {
-        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, PrefUtils.getStringPref(this, CURRENT_KEY), this);
+        savePackages(app.getPackageName(), UNINSTALLED_PACKAGES, prefUtils.getStringPref( CURRENT_KEY), prefUtils);
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(Uri.parse("package:" + app.getPackageName()));
         startActivity(intent);
@@ -477,8 +477,8 @@ public class InstallAppsActivity extends BaseActivity implements InstallAppsAdap
     protected void onResume() {
         super.onResume();
 
-        PrefUtils.saveBooleanPref(this, UNINSTALL_ALLOWED, true);
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( UNINSTALL_ALLOWED, true);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
 
         refreshApps(this);

@@ -73,7 +73,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
 
         setToolbar();
         setListeners();
-        String userType = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String userType = prefUtils.getStringPref( CURRENT_KEY);
         SSettingsViewModel settingsViewModel = ViewModelProviders.of(this).get(SSettingsViewModel.class);
 
         settingsViewModel.getSubExtensions().observe(this, subExtensions -> {
@@ -167,7 +167,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
         AppConstants.TEMP_SETTINGS_ALLOWED = true;
         tvConnectedWIF.setText(getWifiStatus(this));
         tvConnectedBluetooth.setText(getBlueToothStatus(this));
-        String currentKey = PrefUtils.getStringPref(this, CURRENT_KEY);
+        String currentKey = prefUtils.getStringPref( CURRENT_KEY);
 
         if (currentKey != null && currentKey.equals(AppConstants.KEY_SUPPORT_PASSWORD)) {
 //            tvManagePasswords.setVisibility(View.GONE);
@@ -176,7 +176,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
 
-            mobileDataSim.setVisibility(View.VISIBLE);
+            //mobileDataSim.setVisibility(View.VISIBLE);
             TelephonyManager cm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelephonyManager telMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -193,7 +193,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
             }
 
         } else {
-            mobileDataSim.setVisibility(View.GONE);
+//            mobileDataSim.setVisibility(View.GONE);
         }
 
 
@@ -285,7 +285,7 @@ public class ConnectionsSubSettings extends BaseActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrefUtils.saveBooleanPref(this, IS_SETTINGS_ALLOW, false);
+        prefUtils.saveBooleanPref( IS_SETTINGS_ALLOW, false);
         AppConstants.TEMP_SETTINGS_ALLOWED = false;
     }
 }

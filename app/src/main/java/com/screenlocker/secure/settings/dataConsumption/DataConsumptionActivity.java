@@ -8,6 +8,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.screenlocker.secure.base.BaseActivity;
 import com.secure.launcher.R;
 import com.screenlocker.secure.socket.utils.utils;
 import com.screenlocker.secure.utils.PrefUtils;
@@ -22,7 +23,7 @@ import static com.screenlocker.secure.utils.AppConstants.SECUREMARKETWIFI;
 import static com.screenlocker.secure.utils.AppConstants.UPDATESIM;
 import static com.screenlocker.secure.utils.AppConstants.UPDATE_JOB;
 
-public class DataConsumptionActivity extends AppCompatActivity {
+public class DataConsumptionActivity extends BaseActivity {
 
 
     @BindView(R.id.switch_us)
@@ -45,41 +46,41 @@ public class DataConsumptionActivity extends AppCompatActivity {
             updateWifi.setChecked(false);*/
         //update sim toggle
 
-            updateSim.setChecked(PrefUtils.getBooleanPref(this, UPDATESIM));
+            updateSim.setChecked(prefUtils.getBooleanPref( UPDATESIM));
 
 
         //sm wifi
-        if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) == 1) {
+        if (prefUtils.getIntegerPref( SECUREMARKETWIFI) == 1) {
             secureMarketWifi.setChecked(true);
         } else
             secureMarketWifi.setChecked(false);
         //sm sim
-        if (PrefUtils.getIntegerPref(this, SECUREMARKETSIM) == 1) {
+        if (prefUtils.getIntegerPref( SECUREMARKETSIM) == 1) {
             secureMarketSim.setChecked(true);
         } else
             secureMarketSim.setChecked(false);
         //checked change listener
 //        updateWifi.setOnCheckedChangeListener( (buttonView, isChecked) -> {
 //            if (isChecked){
-//                PrefUtils.saveIntegerPref(this,UPDATEWIFI,1);
+//                prefUtils.saveIntegerPref(UPDATEWIFI,1);
 //            }else
-//                PrefUtils.saveIntegerPref(this,UPDATEWIFI,2);
+//                prefUtils.saveIntegerPref(UPDATEWIFI,2);
 //        });
         updateSim.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                PrefUtils.saveBooleanPref(this, UPDATESIM, isChecked);
+                prefUtils.saveBooleanPref( UPDATESIM, isChecked);
         });
 
         secureMarketWifi.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                PrefUtils.saveIntegerPref(this, SECUREMARKETWIFI, 1);
+                prefUtils.saveIntegerPref( SECUREMARKETWIFI, 1);
             } else
-                PrefUtils.saveIntegerPref(this, SECUREMARKETWIFI, 2);
+                prefUtils.saveIntegerPref( SECUREMARKETWIFI, 2);
         });
         secureMarketSim.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                PrefUtils.saveIntegerPref(this, SECUREMARKETSIM, 1);
+                prefUtils.saveIntegerPref( SECUREMARKETSIM, 1);
             } else
-                PrefUtils.saveIntegerPref(this, SECUREMARKETSIM, 2);
+                prefUtils.saveIntegerPref( SECUREMARKETSIM, 2);
         });
     }
 

@@ -73,6 +73,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
     private boolean isBackPressed = false;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +119,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_app_select, menu);
 
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_DISABLE_ALL)) {
+        if (prefUtils.getBooleanPref( AppConstants.KEY_DISABLE_ALL)) {
             // all disabled switch is turned on
             menu.findItem(R.id.action_enable_all).setChecked(true);
         } else {
@@ -126,7 +127,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
             menu.findItem(R.id.action_enable_all).setChecked(false);
         }
 
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_GUEST_ALL)) {
+        if (prefUtils.getBooleanPref( AppConstants.KEY_GUEST_ALL)) {
             // all hide switch is turned on
             menu.findItem(R.id.action_guest_all).setChecked(true);
         } else {
@@ -134,7 +135,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
             menu.findItem(R.id.action_guest_all).setChecked(false);
         }
 
-        if (PrefUtils.getBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL)) {
+        if (prefUtils.getBooleanPref( AppConstants.KEY_ENCRYPTED_ALL)) {
             // all hide switch is turned on
             menu.findItem(R.id.action_encryption_all).setChecked(true);
         } else {
@@ -187,7 +188,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
                         }
                     }
                     item.setChecked(false);
-                    //   PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_ALL, false);
+                    //   prefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_ALL, false);
                 } else {
                     //  make all disable switch on
                     for (AppInfo model :
@@ -198,7 +199,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
                         }
                     }
                     item.setChecked(true);
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_DISABLE_ALL, true);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_DISABLE_ALL, true);
                 }
                 adapter.notifyDataSetChanged();
                 break;
@@ -216,7 +217,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
                         }
                     }
                     item.setChecked(false);
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL, false);
+                    prefUtils.saveBooleanPref( AppConstants.KEY_ENCRYPTED_ALL, false);
                 } else {
                     //  make all disable switch on
                     for (AppInfo model :
@@ -227,7 +228,7 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
                         }
                     }
                     item.setChecked(true);
-                    PrefUtils.saveBooleanPref(this, AppConstants.KEY_ENCRYPTED_ALL, true);
+                    prefUtils.saveBooleanPref(AppConstants.KEY_ENCRYPTED_ALL, true);
                 }
                 adapter.notifyDataSetChanged();
                 break;
@@ -292,8 +293,8 @@ public class  AppSelectionActivity extends BaseActivity implements SelectionCont
                     for (AppInfo model : mAppsList) {
                         selectionPresenter.updateAppInDB(model);
                     }
-                    PrefUtils.saveBooleanPref(AppSelectionActivity.this, APPS_SETTING_CHANGE, true);
-                    PrefUtils.saveLongPref(AppSelectionActivity.this, SUSPENDED_PACKAGES, new Date().getTime());
+                    prefUtils.saveBooleanPref( APPS_SETTING_CHANGE, true);
+                    prefUtils.saveLongPref( SUSPENDED_PACKAGES, new Date().getTime());
                     Intent intent = new Intent(BROADCAST_APPS_ACTION);
                     intent.putExtra(KEY_DATABASE_CHANGE, "apps");
                     LocalBroadcastManager.getInstance(AppSelectionActivity.this).sendBroadcast(intent);

@@ -22,7 +22,7 @@ import java.util.Locale;
 import static com.screenlocker.secure.permissions.SteppersActivity.STEP_LANGUAGE;
 import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 
-public class LaungaugeSelectionStepFragment extends AbstractStep {
+public class LaungaugeSelectionStepFragment extends ExtentedAbstractStep {
     TextView language;
     public LaungaugeSelectionStepFragment() {
         // Required empty public constructor
@@ -76,6 +76,6 @@ public class LaungaugeSelectionStepFragment extends AbstractStep {
     @Override
     public void onNext() {
         super.onNext();
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, STEP_LANGUAGE);
+        prefUtils.saveIntegerPref( DEF_PAGE_NO, STEP_LANGUAGE);
     }
 }

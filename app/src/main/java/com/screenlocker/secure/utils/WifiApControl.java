@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import timber.log.Timber;
 
 public class WifiApControl {
-    private static Method getWifiApState;
+    /*private static Method getWifiApState;
     private static Method isWifiApEnabled;
     private static Method setWifiApEnabled;
     private static Method getWifiApConfiguration;
@@ -114,5 +114,5 @@ public class WifiApControl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

@@ -51,7 +51,7 @@ import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 
-public class SetDuressPasswordFragment extends AbstractStep {
+public class SetDuressPasswordFragment extends ExtentedAbstractStep {
     private String error = "";
     private Context mContext;
     private int mTry = 0;
@@ -63,7 +63,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
     private int mTryCombo = 0;
     private boolean isAllowed = false;
     private SecuredSharedPref sharedPref;
-    private PrefUtils prefUtils;
 
     @Override
     public String name() {
@@ -180,7 +179,6 @@ public class SetDuressPasswordFragment extends AbstractStep {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         error = getResources().getString(R.string.set_skip_password);
-        prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
     }
 
 

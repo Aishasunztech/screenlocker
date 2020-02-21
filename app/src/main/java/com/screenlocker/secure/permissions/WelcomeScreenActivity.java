@@ -34,7 +34,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         imageView = findViewById(R.id.rotating_image);
         //enable data and roaming
         broadCastIntent();
-        PrefUtils.saveBooleanPref(WelcomeScreenActivity.this, TOUR_STATUS, true);
+        PrefUtils prefUtils = PrefUtils.getInstance(this);
+        prefUtils.saveBooleanPref( TOUR_STATUS, true);
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate_infinite);
         rotation.setFillAfter(true);
         imageView.startAnimation(rotation);
@@ -51,16 +52,16 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
             finish();
         }, 5000);
-        if (PrefUtils.getIntegerPref(this, UPDATEWIFI) == 0) {
-            PrefUtils.saveIntegerPref(this, UPDATEWIFI, 1);
+        if (prefUtils.getIntegerPref( UPDATEWIFI) == 0) {
+            prefUtils.saveIntegerPref( UPDATEWIFI, 1);
         }
         //sm wifi
-        if (PrefUtils.getIntegerPref(this, SECUREMARKETWIFI) == 0) {
-            PrefUtils.saveIntegerPref(this, SECUREMARKETWIFI, 1);
+        if (prefUtils.getIntegerPref( SECUREMARKETWIFI) == 0) {
+            prefUtils.saveIntegerPref( SECUREMARKETWIFI, 1);
         }
         //sm sim
-        if (PrefUtils.getIntegerPref(this, SECUREMARKETSIM) == 0) {
-            PrefUtils.saveIntegerPref(this, SECUREMARKETSIM, 2);
+        if (prefUtils.getIntegerPref( SECUREMARKETSIM) == 0) {
+            prefUtils.saveIntegerPref( SECUREMARKETSIM, 2);
         }
 
 

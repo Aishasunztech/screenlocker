@@ -26,7 +26,7 @@ import static com.screenlocker.secure.utils.AppConstants.DEF_PAGE_NO;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConnectivityFragment extends AbstractStep implements View.OnClickListener {
+public class ConnectivityFragment extends ExtentedAbstractStep implements View.OnClickListener {
 
 
     public ConnectivityFragment() {
@@ -62,7 +62,7 @@ public class ConnectivityFragment extends AbstractStep implements View.OnClickLi
 
     @Override
     public void onSkip() {
-        PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DEF_PAGE_NO, 5);
+        prefUtils.saveIntegerPref( DEF_PAGE_NO, 5);
         super.onSkip();
     }
 

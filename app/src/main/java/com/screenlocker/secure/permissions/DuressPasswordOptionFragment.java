@@ -37,7 +37,7 @@ import static com.screenlocker.secure.utils.Utils.hideKeyboard;
  * @author Muhammad Nadeem
  * @Date 8/21/2019.
  */
-public class DuressPasswordOptionFragment extends AbstractStep {
+public class DuressPasswordOptionFragment extends ExtentedAbstractStep {
 
 
     public DuressPasswordOptionFragment() {
@@ -88,21 +88,21 @@ public class DuressPasswordOptionFragment extends AbstractStep {
 
 
         layout_pin.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_PIN);
+            prefUtils.saveIntegerPref( DURESS_PASSORD_OPTION, OPTION_PIN);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_WIPE);
 
 
         });
         layout_pattern.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_PATTERN);
+            prefUtils.saveIntegerPref( DURESS_PASSORD_OPTION, OPTION_PATTERN);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_WIPE);
 
 
         });
         layout_combination.setOnClickListener(v -> {
-            PrefUtils.saveIntegerPref(MyApplication.getAppContext(), DURESS_PASSORD_OPTION, OPTION_COMBO);
+            prefUtils.saveIntegerPref( DURESS_PASSORD_OPTION, OPTION_COMBO);
             isSelected = true;
             mListener.onPageUpdate(STEP_SETUP_WIPE);
         });
@@ -149,7 +149,7 @@ public class DuressPasswordOptionFragment extends AbstractStep {
         try {
             hideKeyboard(Objects.requireNonNull(getActivity()));
 
-            if (PrefUtils.getStringPref(MyApplication.getAppContext(), AppConstants.KEY_DURESS_PASSWORD) == null) {
+            if (prefUtils.getStringPref( AppConstants.KEY_DURESS_PASSWORD) == null) {
 
                 builder.show();
             }

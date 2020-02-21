@@ -46,18 +46,19 @@ public class MainViewModel extends AndroidViewModel {
         return mUnReadCount;
     }
 
-    public Intent getSendingIntent(Context context) {
+    public Intent getSendingIntent() {
         Intent intent = new Intent(AppConstants.BROADCAST_ACTION);
 
         //i am sending the key from here to receiver
         //sending the broadcast to show the apps
-        if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY) != null) {
+        PrefUtils prefUtils = PrefUtils.getInstance(MyApplication.getAppContext());
+        if (prefUtils.getStringPref( AppConstants.CURRENT_KEY) != null) {
             // from the guest part
-            if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_GUEST_PASSWORD)) {
+            if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_GUEST_PASSWORD)) {
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_GUEST_PASSWORD);
-            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_MAIN_PASSWORD)) {    //  from the encrypted part
+            } else if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_MAIN_PASSWORD)) {    //  from the encrypted part
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_MAIN_PASSWORD);
-            } else if (PrefUtils.getStringPref(context, AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_SUPPORT_PASSWORD)) {
+            } else if (prefUtils.getStringPref( AppConstants.CURRENT_KEY).equalsIgnoreCase(AppConstants.KEY_SUPPORT_PASSWORD)) {
                 intent.putExtra(AppConstants.BROADCAST_KEY, AppConstants.KEY_SUPPORT_PASSWORD);
             }
         } else {

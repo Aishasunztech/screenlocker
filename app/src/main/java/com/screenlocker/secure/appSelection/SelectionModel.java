@@ -108,9 +108,9 @@ public class SelectionModel implements SelectionContract.SelectionMvpModel {
 
         }
 
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_GUEST_ALL, allGuest);
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_ENCRYPTED_ALL, allEncrypted);
-        PrefUtils.saveBooleanPref(context, AppConstants.KEY_DISABLE_ALL, allDisable);
+        PrefUtils.getInstance(context).saveBooleanPref( AppConstants.KEY_GUEST_ALL, allGuest);
+        PrefUtils.getInstance(context).saveBooleanPref( AppConstants.KEY_ENCRYPTED_ALL, allEncrypted);
+        PrefUtils.getInstance(context).saveBooleanPref( AppConstants.KEY_DISABLE_ALL, allDisable);
 
 
     }

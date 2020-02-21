@@ -54,7 +54,7 @@ import static com.screenlocker.secure.utils.AppConstants.OPTION_COMBO;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PATTERN;
 import static com.screenlocker.secure.utils.AppConstants.OPTION_PIN;
 
-public class SetGuestPasswordFragment extends AbstractStep {
+public class SetGuestPasswordFragment extends ExtentedAbstractStep {
     private volatile String error = "";
     private Context mContext;
     private int mTry = 0;
@@ -62,7 +62,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
     private String mCode;
     private String mPattern;
     private int mTryCombo = 0;
-    private PrefUtils prefUtils;
 
     @BindView(R.id.pin_input_layout)
     TextInputLayout pin_input_layout;
@@ -205,7 +204,6 @@ public class SetGuestPasswordFragment extends AbstractStep {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         error = getResources().getString(R.string.please_enter_password);
-        prefUtils = prefUtils.getInstance(MyApplication.getAppContext());
     }
 
     /**

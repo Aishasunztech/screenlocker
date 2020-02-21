@@ -455,7 +455,7 @@ public class SettingsActivity extends BaseActivity
             e.printStackTrace();
         }
         if (currentVersion != null)
-            if (CommonUtils.isNetworkConneted(this)) {
+            if (CommonUtils.isNetworkConneted(prefUtils)) {
                 requestCheckForUpdate(dialog);
             } else {
                 dialog.dismiss();
