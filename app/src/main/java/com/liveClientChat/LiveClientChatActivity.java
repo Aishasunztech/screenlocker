@@ -41,7 +41,7 @@ public class LiveClientChatActivity extends AppCompatActivity {
 //    SwipeRefreshLayout swipeRefresh;
 
 
-    //    String url = "http://devlivechat.lockmesh.com/livezilla/chat.php?ptn="; //Live Url
+    //    String url = "https://mdm-lc.sunztech.com/livezilla/chat.php?ptn="; //Live Url
     String url = "";
     @BindView(R.id.webviewProgress)
     ProgressBar progressbar;

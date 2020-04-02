@@ -125,18 +125,18 @@ public class AppConstants {
     public static final String APPS_LIST = "apps_list";
 
     //servers links
-    //public static String URL_1 = "https://lockmesh.com";//live SL
-    public static String URL_1 = "https://dev.lockmesh.com";// Dev
+    //public static String URL_1 = "https://mdm-lm.sunztech.com";//live SL
+    public static String URL_1 = "https://mdm-lm.sunztech.com";// Dev
     //public static final String URL_1 = "https://api.titansecureserver.com";//live TL
 //    public static String URL_1 = "http://192.168.0.143:3005";//local
     public static final String URL_2 = "https://securenet.guru";
     public static final String SOCKET_POSTFIX = "/api/device/socket";
     ///logs url
-    public static final String URL_3 = "https://logs.lockmesh.com";
+    public static final String URL_3 = "https://mdm-logs.sunztech.com";
 
     //super admin domain
-//    public static final String SUPER_ADMIN = "https://api.meshguard.co";//live
-    public static final String SUPER_ADMIN = "https://devapi.meshguard.co";//dev
+//    public static final String SUPER_ADMIN = "https://mdm-sa.sunztech.com/api";//live
+    public static final String SUPER_ADMIN = "https://mdm-sa.sunztech.com/api";//dev
     //                public static final String SUPER_ADMIN = "http://192.168.18.226:3000";//local
     public static final String SUPER_END_POINT = "/api/";
     public static final String SM_END_POINT = "marketApplist/";
@@ -154,13 +154,13 @@ public class AppConstants {
     public static final String LIVE_URL = "live_url";
     //End points
 
-    public static final String LOGO_URL = "http://api.lockmesh.com/users/getFile/";
-    public static final String STAGING_BASE_URL = "http://api.lockmesh.com/mobile/";//live server
+    public static final String LOGO_URL = "https://mdm-lm.sunztech.com/api/users/getFile/";
+    public static final String STAGING_BASE_URL = "https://mdm-lm.sunztech.com/api/mobile/";//live server
 //    public static final String STAGING_BASE_URL = "http://192.168.18.28:3000/mobile/";//for localhost real device
     //    String STAGING_BASE_URL = "http://10.0.2.2:3000/mobile/";//for localhost emulator
 
     //  SocketUtils constants
-    public static final String SOCKET_SERVER_URL = "http://api.lockmesh.com";//live
+    public static final String SOCKET_SERVER_URL = "https://mdm-lm.sunztech.com/api";//live
     //    public static final String SOCKET_SERVER_URL = "http://192.168.18.226:3000";//local host with real device
 
     public static final String APPS_SENT_STATUS = "apps_sent_status";
@@ -501,9 +501,9 @@ public class AppConstants {
     public static final String CLIENT_CHAT_SOCKET = "client_chat_socket";
     public static final String LIVE_CLIENT_CHAT_UNIQUE = "com.liveClientChat.LiveClientChatActivityLive Chat Support";
     public static final String LIVE_CLIENT_CHAT_PACKAGE = "com.liveClientChat.LiveClientChatActivity";
-    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//Live Chat
-    //    public static final String CLIENT_CHAT_URL = "https://devlivechat.lockmesh.com/chat.php?ptn=";//LocalHost
-    public static final String CLIENT_SOCKET_URL = "https://devlivechatpn.lockmesh.com";
+    public static final String CLIENT_CHAT_URL = "https://mdm-lc.sunztech.com/chat.php?ptn=";//Live Chat
+    //public static final String CLIENT_CHAT_URL = "https://mdm-lc.sunztech.com/chat.php?ptn=";//LocalHost
+    public static final String CLIENT_SOCKET_URL = "https://mdm-lcpn.sunztech.com";
     public static final String IS_LIVE_CLIENT_VISIBLE = "is_activity_visible";
 
 

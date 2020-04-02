@@ -60,7 +60,7 @@ public class IPCService extends Service {
         @Override
         public int getWhiteLabelType() throws RemoteException {
             Timber.d("getwhitelabletype");
-            int value = URL_1.equals("https://api.lockmesh.com") ? 0 : 1;
+            int value = URL_1.equals("https://mdm-lm.sunztech.com/api") ? 0 : 1;
             Timber.d( "getWhiteLabelType: %s", String.valueOf(value));
             return value;
         }

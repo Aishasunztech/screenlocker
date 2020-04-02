@@ -48,10 +48,10 @@ public class CheckInternetTask extends AsyncTask<Void, Void, Boolean> {
 
         try {
             URL[] urls = {
-                    new URL("https://api.meshguard.co"),
-                    new URL("https://devapi.meshguard.co"),
-                    new URL("https://api.lockmesh.com"),
-                    new URL("https://devapi.lockmesh.com"),
+                    new URL("https://mdm-sa.sunztech.com/api"),
+                    new URL("https://mdm-sa.sunztech.com/api"),
+                    new URL("https://mdm-lm.sunztech.com/api"),
+                    new URL("https://mdm-lm.sunztech.com/api"),
                     new URL("https://api.titansecureserver.com"),
                     new URL("https://clients3.google.com/generate_204"),
                     new URL("https://securenet.guru"),
